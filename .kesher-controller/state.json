@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-17",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1461,15 +1461,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-16T18:26:14.935546+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-16T18:31:18.805540+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -2271,9 +2262,21 @@
         "item_id": "video-20261017-202441-34994678e6",
         "task_id": "f2dacea7-e000-4ace-9bc9-dc229bedd803"
       }
+    },
+    {
+      "at": "2026-10-17T17:51:24.295974+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_recovery",
+      "reason": "long-form provider stalled; resumed the same durable provider identity",
+      "details": {
+        "item_id": "video-20261017-202441-34994678e6",
+        "task_id": "f2dacea7-e000-4ace-9bc9-dc229bedd803",
+        "slug": "fear-of-ending-up-alone-late-singleness",
+        "content_sha256": "34994678e6b38002b9b07de186c345dc917405378a23c98c2e274c9831318c25"
+      }
     }
   ],
-  "updated_at": "2026-10-17T17:45:56.547629+00:00",
+  "updated_at": "2026-10-17T17:51:24.295981+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2292,7 +2295,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "generating",
+    "status": "running",
     "last_error": null,
     "next_retry_at": "2026-10-17T17:33:11.904732+00:00",
     "run_id": 39053521586,
@@ -2303,7 +2306,7 @@
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_run_conclusion": "success",
-    "last_dispatch_at": "2026-10-17T17:23:10.756707+00:00",
+    "last_dispatch_at": "2026-10-17T17:51:24.295961+00:00",
     "attempts": 1,
     "item_id": "video-20261017-202441-34994678e6",
     "source_slug": "fear-of-ending-up-alone-late-singleness",
@@ -2319,9 +2322,11 @@
       "hard_started_at": "2026-10-17T17:24:48.129471+00:00",
       "last_progress_at": "2026-10-17T17:28:11.904732+00:00",
       "last_fingerprint": "dfb61e1899f35e91af79bc7a4a015f1833edbee3206e515337307483abe6b29b",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    }
+      "recovery_count": 1,
+      "last_recovery_at": "2026-10-17T17:50:58.775550+00:00"
+    },
+    "pending_resume_ready": false,
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
@@ -2358,9 +2363,10 @@
         "target_item_id": "video-20261017-202441-34994678e6"
       },
       "intent_at": "2026-10-17T17:50:58.775550+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39053521586,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39055569913,
+      "dispatched_at": "2026-10-17T17:50:58.775550+00:00"
     }
   },
   "last_child_notification": {
@@ -2396,11 +2402,12 @@
       "strike_count": 1,
       "last_check_token": "2026-10-17T20",
       "last_fingerprint": "635db0e1d97158bdf71b15b8531bc5e43b9cce32b476af88c6cacea5870a4ee5",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
+      "last_controller_action_token": "recovery:1:2026-10-17T17:50:58.775550+00:00",
+      "controller_action_observed": true,
       "last_observed_at": "2026-10-17T17:50:58.775550+00:00",
-      "last_action": "observe_controller",
-      "direct_takeover_required": false
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-10-17T17:50:58.775550+00:00"
     }
   }
 }
