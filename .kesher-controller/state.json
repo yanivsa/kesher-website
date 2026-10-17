@@ -88,7 +88,7 @@
     "last_deploy_dispatch_at": "2026-10-17T17:17:39.825417+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39053114609,
-    "live_verified_at": "2026-10-17T18:15:47.071129+00:00"
+    "live_verified_at": "2026-10-17T18:16:01.625445+00:00"
   },
   "backlog": [
     {
@@ -1461,21 +1461,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-16T18:45:57.554310+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T18:46:16.991950+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-16T18:51:00.965023+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -2287,9 +2272,24 @@
       "details": {
         "retry_at": "2026-10-17T18:16:03.672767+00:00"
       }
+    },
+    {
+      "at": "2026-10-17T18:16:01.625465+00:00",
+      "from": "long_video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-17T18:16:02.916638+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-17T18:16:03.672767+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-17T18:11:03.672818+00:00",
+  "updated_at": "2026-10-17T18:16:02.916656+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
