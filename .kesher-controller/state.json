@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-17",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-17T17:01:06.726889+00:00",
+    "next_retry_at": null,
     "run_id": 39048311811,
     "processed_run_id": 39048311811,
     "provider_id": null,
@@ -18,7 +18,7 @@
     "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-10-17T16:11:20.096154+00:00",
+    "last_dispatch_at": "2026-10-17T16:56:11.686937+00:00",
     "watchdog": {
       "identity": "2026-10-17",
       "session_id": "sessions/7980362767248953807",
@@ -59,7 +59,8 @@
       }
     },
     "last_jules_session_id": "sessions/7980362767248953807",
-    "last_failed_run_id": 39048311811
+    "last_failed_run_id": 39048311811,
+    "resume_dispatches": 1
   },
   "backlog": [
     {
@@ -1429,21 +1430,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to run a fully autonomous article publication task that creates exactly one new Hebrew blog post for the date `2026-10-17` on the Kesher website, strictly following an extensive list of editorial, stylistic, and technical constraints (including omitting image fields per the V3 pipeline). 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates and integrates exactly one new Hebrew article (\"הפחד להישאר לבד...\") under the approved category \"זוגיות\" and subcategory \"רווקות מאוחרת\". It properly in…",
-    "retryable": true,
-    "retry_at": "2026-10-17T17:01:06.726889+00:00",
-    "at": "2026-10-17T16:56:06.726912+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-16T17:55:54.089381+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-10-16T17:56:13.521774+00:00",
       "from": "article_live",
@@ -2227,9 +2215,19 @@
         "run_id": 39048311811,
         "session_id": "sessions/7980362767248953807"
       }
+    },
+    {
+      "at": "2026-10-17T16:56:11.686942+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "timed-out Jules session preserved; same-session recovery dispatched immediately",
+      "details": {
+        "run_id": 39048311811,
+        "session_id": "sessions/7980362767248953807"
+      }
     }
   ],
-  "updated_at": "2026-10-17T16:56:06.726922+00:00",
+  "updated_at": "2026-10-17T16:56:11.686951+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2286,9 +2284,10 @@
         "slot": "2026-10-17"
       },
       "intent_at": "2026-10-17T16:55:40.973726+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39048311811,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-17T16:55:40.973726+00:00"
     }
   },
   "last_child_notification": {
@@ -2308,17 +2307,5 @@
     "Kesher Daily Article Short V4:38975757218",
     "Kesher Daily Article Short V4:38976219993",
     "Kesher Daily Article Short V4:38976744012"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": "2026-10-16T21:28:19.856763+00:00",
-    "run_id": 38974743923,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  ]
 }
