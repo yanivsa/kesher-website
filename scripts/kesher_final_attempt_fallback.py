@@ -456,20 +456,33 @@ def promote_last_usable_after_third_attempt(
 
     if s_file.is_file():
         try:
-            authoritative = json.loads(s_file.read_text(encoding="utf-8"))
-            authoritative["state_revision"] = rev
-            authoritative["fallback_winner"] = copy.deepcopy(state["fallback_winner"])
-            auth_items = authoritative.get("items", [])
-            for a_row in auth_items:
-                if a_row.get("id") == chosen["id"]:
-                    a_row.update(chosen)
-                elif _slug(a_row) == slug and _source_hash(a_row) == source_hash and a_row.get("uploaded") is not True:
-                    a_row["status"] = "superseded"
-                    a_row["superseded_reason"] = "final_attempt_fallback_selected_other_existing_artifact"
-                    a_row["upload_eligible"] = False
-            temp_file = s_file.with_suffix(".json.tmp")
-            temp_file.write_text(json.dumps(authoritative, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-            temp_file.replace(s_file)
+            import fcntl
+            lock_path = s_file.with_name(s_file.name + ".lock")
+            with open(lock_path, "a+", encoding="utf-8") as lock_file:
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+                try:
+                    authoritative = json.loads(s_file.read_text(encoding="utf-8"))
+                    authoritative["state_revision"] = rev
+                    authoritative["fallback_winner"] = copy.deepcopy(state["fallback_winner"])
+                    auth_items = authoritative.get("items", [])
+                    for a_row in auth_items:
+                        if a_row.get("id") == chosen["id"]:
+                            a_row.update(chosen)
+                        elif _slug(a_row) == slug and _source_hash(a_row) == source_hash and a_row.get("uploaded") is not True:
+                            a_row["status"] = "superseded"
+                            a_row["superseded_reason"] = "final_attempt_fallback_selected_other_existing_artifact"
+                            a_row["upload_eligible"] = False
+                    temp_file = s_file.with_suffix(".json.tmp")
+                    with open(temp_file, "w", encoding="utf-8") as handle:
+                        handle.write(json.dumps(authoritative, ensure_ascii=False, indent=2) + "\n")
+                        handle.flush()
+                        os.fsync(handle.fileno())
+                    temp_file.replace(s_file)
+                finally:
+                    try:
+                        fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+                    except OSError:
+                        pass
         except Exception:
             pass
 

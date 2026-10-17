@@ -665,8 +665,7 @@ def technical_publication_ready(item: dict[str, Any]) -> bool:
     if video_policy.get("publication_gate") != "technical" or video_policy.get("jules_is_advisory") is not True:
         raise pipeline.PipelineError("Video policy no longer declares technical publication with advisory Jules review")
     return bool(
-        item.get("technical_verified") is True
-        and item.get("status") in {"pending_review", "approved", "rejected", "uploading"}
+        pipeline.can_long_item_proceed_toward_publication(item)
         and item.get("final_sha256")
     )
 
@@ -748,7 +747,7 @@ def prepare_upload(
             )
 
         try:
-            pipeline.verify_single_upload_authority(
+            authoritative_item = pipeline.verify_single_upload_authority(
                 state, target, target_content_sha256, target_item_id, candidate_items=unresolved
             )
         except pipeline.PipelineError:
@@ -846,12 +845,19 @@ def prepare_upload(
         )
     if cand_slug and cand_hash:
         try:
-            pipeline.verify_single_upload_authority(
+            authoritative_item = pipeline.verify_single_upload_authority(
                 state, cand_slug, cand_hash, item.get("id"), candidate_items=unresolved
             )
         except pipeline.PipelineError:
             workflow_output("ready", "false")
             raise
+        state_item = next((r for r in state.get("items", []) if str(r.get("id")) == str(authoritative_item.get("id"))), None)
+        if state_item is not None:
+            state_item.update(authoritative_item)
+            item = state_item
+        else:
+            item = authoritative_item
+        export_target(item)
 
     if bool(str(item.get("youtube_id") or "").strip()) and not (item.get("uploaded") is True and _has_valid_youtube_verification(item)):
         if recover_persisted_youtube_id(state, item):

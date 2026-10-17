@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import base64
 import copy
+import fcntl
 import hashlib
 import html
 import importlib.metadata
@@ -55,6 +56,7 @@ except ImportError:
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
 STATE_DIR = Path(os.environ.get("KESHER_STATE_DIR", PROJECT_DIR / "notebooklm-output" / "cloud"))
 STATE_FILE = STATE_DIR / "state.json"
+STATE_LOCK_FILE = STATE_FILE.with_name(STATE_FILE.name + ".lock")
 NOTEBOOK_ID = os.environ.get("KESHER_NOTEBOOK_ID", "e101e7d7-5305-45b3-a611-21a5475ceb63")
 NOTEBOOKLM_BIN = os.environ.get("NOTEBOOKLM_BIN", "notebooklm")
 NOTEBOOKLM_REQUIRED_VERSION = "0.8.0"
@@ -112,8 +114,26 @@ def sha256_text(value: str) -> str:
 def atomic_json_write(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    with open(temporary, "w", encoding="utf-8") as handle:
+        handle.write(json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
     os.replace(temporary, path)
+
+
+def _read_state_payload(path: Path) -> dict[str, Any] | None:
+    if not path.is_file():
+        return None
+    try:
+        content = path.read_text(encoding="utf-8").strip()
+        if not content:
+            return None
+        payload = json.loads(content)
+        if isinstance(payload, dict):
+            return payload
+    except (OSError, json.JSONDecodeError):
+        pass
+    return None
 
 
 def load_state() -> dict[str, Any]:
@@ -133,31 +153,45 @@ def save_state(state: dict[str, Any]) -> None:
     if isinstance(state, CanonicalMediaState):
         state.persist()
         return
-    # Legacy snapshots may be restored by a later controller cycle. A stale
-    # snapshot must never erase or decrement an already persisted attempt.
-    if STATE_FILE.exists():
-        previous = load_state()
-        prev_rev = int(previous.get("state_revision", 1))
-        curr_rev = int(state.get("state_revision", 1))
-        if curr_rev < prev_rev:
-            raise PipelineError(f"STALE_SNAPSHOT_REGRESSION: incoming state_revision {curr_rev} < persisted {prev_rev}")
-        prev_fw = previous.get("fallback_winner")
-        if prev_fw and prev_fw.get("fallback_committed") is True:
-            curr_fw = state.get("fallback_winner")
-            if not curr_fw or curr_fw.get("winner_item_id") != prev_fw.get("winner_item_id"):
-                raise PipelineError(f"STALE_SNAPSHOT_REGRESSION: cannot overwrite committed fallback winner {prev_fw.get('winner_item_id')}")
-        incoming = {row.get('id'): row for row in state.get('items', [])}
-        for prior in previous.get('items', []):
-            attempt = prior.get('fresh_generation_attempt', 1)
-            if type(attempt) is not int or attempt < 1:
-                continue  # release tombstones are not generation attempts
-            current = incoming.get(prior.get('id'))
-            if current is None and (attempt > 1 or prior.get('retry_of')):
-                raise PipelineError('FRESH_GENERATION_ATTEMPT_REGRESSION: receipt missing')
-            if current is not None and (type(current.get('fresh_generation_attempt',1)) is not int or current.get('fresh_generation_attempt',1) < attempt):
-                raise PipelineError('FRESH_GENERATION_ATTEMPT_REGRESSION: stale item')
-    state["updated_at"] = utc_now()
-    atomic_json_write(STATE_FILE, state)
+
+    lock_path = STATE_FILE.with_name(STATE_FILE.name + ".lock")
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(lock_path, "a+", encoding="utf-8") as lock_file:
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+        try:
+            # 1. READ CURRENT STATE (inside lock)
+            # Legacy snapshots may be restored by a later controller cycle. A stale
+            # snapshot must never erase or decrement an already persisted attempt.
+            if STATE_FILE.exists():
+                previous = _read_state_payload(STATE_FILE)
+                if previous is not None:
+                    prev_rev = int(previous.get("state_revision", 1))
+                    curr_rev = int(state.get("state_revision", 1))
+                    if curr_rev < prev_rev:
+                        raise PipelineError(f"STALE_SNAPSHOT_REGRESSION: incoming state_revision {curr_rev} < persisted {prev_rev}")
+                    prev_fw = previous.get("fallback_winner")
+                    if prev_fw and prev_fw.get("fallback_committed") is True:
+                        curr_fw = state.get("fallback_winner")
+                        if not curr_fw or curr_fw.get("winner_item_id") != prev_fw.get("winner_item_id"):
+                            raise PipelineError(f"STALE_SNAPSHOT_REGRESSION: cannot overwrite committed fallback winner {prev_fw.get('winner_item_id')}")
+                    incoming = {row.get('id'): row for row in state.get('items', [])}
+                    for prior in previous.get('items', []):
+                        attempt = prior.get('fresh_generation_attempt', 1)
+                        if type(attempt) is not int or attempt < 1:
+                            continue  # release tombstones are not generation attempts
+                        current = incoming.get(prior.get('id'))
+                        if current is None and (attempt > 1 or prior.get('retry_of')):
+                            raise PipelineError('FRESH_GENERATION_ATTEMPT_REGRESSION: receipt missing')
+                        if current is not None and (type(current.get('fresh_generation_attempt',1)) is not int or current.get('fresh_generation_attempt',1) < attempt):
+                            raise PipelineError('FRESH_GENERATION_ATTEMPT_REGRESSION: stale item')
+            # 2. WRITE NEW STATE (inside lock)
+            state["updated_at"] = utc_now()
+            atomic_json_write(STATE_FILE, state)
+        finally:
+            try:
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+            except OSError:
+                pass
 
 
 def clean_article_html(value: str) -> str:
@@ -2057,6 +2091,38 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
         time.sleep(20)
 
 
+def can_long_item_proceed_toward_publication(item: dict[str, Any] | None) -> bool:
+    """Canonical predicate: can this Long item proceed toward publication or upload?
+
+    Used identically by:
+    - verify_single_upload_authority()
+    - prepare_upload()
+    - upload_only()
+    - technical_publication_ready()
+
+    Includes legacy compatibility where upload_eligible is omitted on older attempts:
+    if technical_verified is True and status is in {pending_review, approved, rejected, uploading},
+    the item can proceed toward publication unless explicitly superseded or ineligible.
+    """
+    if not isinstance(item, dict):
+        return False
+    if item.get("type") not in {"video_overview", None}:
+        return False
+    if item.get("status") == "superseded":
+        return False
+    if item.get("upload_eligible") is False:
+        return False
+    if item.get("final_attempt_fallback") is True:
+        from scripts import kesher_final_attempt_fallback as fallback
+        if not fallback.is_fallback_promotion_enabled():
+            return False
+    if item.get("uploaded") is True and bool(str(item.get("youtube_id") or "").strip()):
+        return True
+    if item.get("technical_verified") is True:
+        return item.get("status") in {"pending_review", "approved", "rejected", "uploading"}
+    return False
+
+
 def verify_single_upload_authority(
     state: dict[str, Any],
     slug: str,
@@ -2066,12 +2132,14 @@ def verify_single_upload_authority(
 ) -> dict[str, Any]:
     """Verify that exactly one authoritative Long item exists for the exact slug + content_sha256.
 
-    Fails closed with PipelineError('AMBIGUOUS_LONG_UPLOAD_AUTHORITY: ...') if:
-    - more than one item is already uploaded for this source;
-    - more than one non-superseded exact Long item satisfies upload eligibility;
-    - multiple attempts exist and there is no durable authoritative winner visible to this worker.
+    Re-reads authoritative media state from disk.
+    The target item must be the ONLY authorized publication candidate.
+    If more than one candidate can proceed toward publication:
+    FAILS CLOSED with PipelineError('AMBIGUOUS_LONG_UPLOAD_AUTHORITY: ...').
+
+    Returns the authoritative item loaded from authoritative state.
     """
-    auth_state = load_state() if STATE_FILE.is_file() else state
+    auth_state = state if (state and state.get("items")) else (load_state() if STATE_FILE.is_file() else state)
     if candidate_items is not None:
         items = [
             row for row in candidate_items
@@ -2088,7 +2156,7 @@ def verify_single_upload_authority(
             and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
             and (row.get("type") == "video_overview" or row.get("type") is None)
         ]
-        if not items:
+        if not items and auth_state is not state:
             items = [
                 row for row in state.get("items", [])
                 if isinstance(row, dict)
@@ -2097,7 +2165,7 @@ def verify_single_upload_authority(
                 and (row.get("type") == "video_overview" or row.get("type") is None)
             ]
 
-    # 1. Check already public / uploaded items
+    # 1. Check already public / uploaded deliverables
     uploaded = [
         row for row in items
         if row.get("uploaded") is True and bool(str(row.get("youtube_id") or "").strip())
@@ -2108,54 +2176,54 @@ def verify_single_upload_authority(
         )
     if len(uploaded) == 1:
         pub = uploaded[0]
-        if target_item_id and pub.get("id") != target_item_id:
+        if target_item_id and str(pub.get("id") or "").strip() != str(target_item_id).strip():
             raise PipelineError(
                 f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: item {target_item_id} attempted upload but {pub.get('id')} is already uploaded"
             )
-        return pub
+        auth_match = next((r for r in auth_state.get("items", []) if str(r.get("id")) == str(pub.get("id"))), pub)
+        return auth_match
 
-    # 2. Check non-superseded and non-rejected items that satisfy upload eligibility
-    eligible = [
-        row for row in items
-        if row.get("status") not in {"superseded", "rejected"}
-        and row.get("upload_eligible") is not False
-        and (
-            row.get("technical_verified") is True
-            or row.get("status") in {"pending_review", "approved", "uploading"}
-        )
-    ]
-    if len(eligible) > 1:
-        raise PipelineError(
-            f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: more than one ({len(eligible)}) non-superseded item satisfies upload eligibility for {slug}"
-        )
+    # 2. Check candidates that can proceed toward publication
+    candidates = [row for row in items if can_long_item_proceed_toward_publication(row)]
 
-    # 3. Check multiple attempts with no durable authoritative winner
-    non_superseded = [
-        row for row in items
-        if row.get("status") not in {"superseded", "rejected"}
-    ]
-    if len(non_superseded) > 1:
+    if len(candidates) > 1:
         fw = auth_state.get("fallback_winner") or state.get("fallback_winner")
         has_winner = bool(
             fw
             and fw.get("slug") == slug
             and fw.get("content_sha256") == content_sha256
             and fw.get("fallback_committed") is True
-            and any(row.get("id") == fw.get("winner_item_id") for row in non_superseded)
+            and any(str(row.get("id")) == str(fw.get("winner_item_id")) for row in candidates)
         )
         if not has_winner:
             raise PipelineError(
-                f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: multiple ({len(non_superseded)}) non-superseded attempts exist for {slug} with no durable authoritative winner"
+                f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: more than one ({len(candidates)}) candidate can proceed toward publication for {slug}"
             )
+        winner_id = str(fw.get("winner_item_id"))
+        if target_item_id and str(target_item_id).strip() != winner_id:
+            raise PipelineError(
+                f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: target item {target_item_id} is not the authoritative winner {winner_id}"
+            )
+        target_id = winner_id
+    elif len(candidates) == 1:
+        cand = candidates[0]
+        cand_id = str(cand.get("id") or "").strip()
+        if target_item_id and str(target_item_id).strip() != cand_id:
+            raise PipelineError(
+                f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: target item {target_item_id} is not the authorized publication candidate {cand_id}"
+            )
+        target_id = cand_id
+    else:
+        target_id = target_item_id
 
-    target_id = target_item_id or (eligible[0].get("id") if eligible else None)
     if target_id:
-        matched = [row for row in items if row.get("id") == target_id]
-        if matched:
-            return matched[0]
-    if eligible:
-        return eligible[0]
-    return items[0] if items else {}
+        auth_matched = [row for row in auth_state.get("items", []) if str(row.get("id") or "").strip() == str(target_id).strip()]
+        if auth_matched:
+            return auth_matched[0]
+        state_matched = [row for row in state.get("items", []) if str(row.get("id") or "").strip() == str(target_id).strip()]
+        if state_matched:
+            return state_matched[0]
+    return candidates[0] if candidates else (items[0] if items else {})
 
 
 def upload_only(slug: str | None = None, item_id: str | None = None, *, state: dict | None = None) -> int:
@@ -2174,11 +2242,23 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
         auth_item = next((r for r in auth_state.get("items", []) if r.get("id") == item.get("id")), None)
         if auth_item and (auth_item.get("status") == "superseded" or auth_item.get("upload_eligible") is False):
             raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item.get('id')} is superseded")
+
+    from scripts import kesher_final_attempt_fallback as fallback
+    if item.get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
+        raise PipelineError("FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled")
+
     if item.get('uploaded') is True and item.get('youtube_verification'):
         print(f"NO_DUPLICATE_UPLOAD item={item['id']}")
         return 0
-    if (item.get('technical_verified') is not True
-            or item.get('status') not in {'approved', 'uploading'}):
+
+    # Global authority guard runs immediately before upload progression
+    if target_slug and target_hash and not item.get("youtube_id"):
+        item = verify_single_upload_authority(state, target_slug, target_hash, item.get("id"))
+        state_item = next((r for r in state.get("items", []) if str(r.get("id")) == str(item.get("id"))), None)
+        if state_item is not None:
+            item = state_item
+
+    if not can_long_item_proceed_toward_publication(item) or item.get('status') not in {'approved', 'uploading'}:
         print(f"NO_TECHNICALLY_VERIFIED_UPLOAD item={item['id']}")
         return 0
     if item.get("youtube_id"):
@@ -2189,13 +2269,6 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
         verify_authenticated_channel(token)
         _verify_and_record_upload(state, item, token)
         return 0
-
-    from scripts import kesher_final_attempt_fallback as fallback
-    if item.get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
-        raise PipelineError("FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled")
-
-    if target_slug and target_hash:
-        verify_single_upload_authority(state, target_slug, target_hash, item.get("id"))
 
     if not item.get("final_mp4"):
         raise PipelineError("Upload candidate is missing final MP4 path")
