@@ -88,7 +88,7 @@
     "last_deploy_dispatch_at": "2026-10-17T17:17:39.825417+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39053114609,
-    "live_verified_at": "2026-10-17T18:25:52.902358+00:00"
+    "live_verified_at": "2026-10-17T18:26:14.322741+00:00"
   },
   "backlog": [
     {
@@ -1461,30 +1461,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-16T19:01:02.007731+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-10-16T19:06:03.452325+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T19:06:27.952956+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-16T19:10:53.264235+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -2285,9 +2261,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-10-17T18:26:14.322757+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-17T18:26:15.236518+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-17T18:26:19.416253+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-10-17T18:24:36.051889+00:00",
+  "updated_at": "2026-10-17T18:26:19.416272+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
