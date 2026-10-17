@@ -2032,7 +2032,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-17T22:17:48.349017+00:00",
     "artifact_sha256": "3e89fbdfc3f8d8400fe7b3e5d17d057dcae6ba55227a86c41b102737ab8af2ed",
-    "source_id": "local://public/images/fallback/dating/dating_relationship_conversation.jpg"
+    "source_id": "local://public/images/fallback/dating/dating_relationship_conversation.jpg",
+    "run_id": 39074482466
   },
   "long_video": {
     "attempt_count": 0,
