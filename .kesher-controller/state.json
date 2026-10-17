@@ -3,8 +3,8 @@
   "cycle": "2026-10-18",
   "status": "blocked",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39071624401,
@@ -13,7 +13,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-17T21:36:03.178460+00:00",
@@ -41,7 +41,17 @@
     "merge_candidate_sha": "19705f262d4ebf0ced8b164e611c8f4f87c830f3",
     "merge_dispatch_at": "2026-10-17T22:21:45.486211+00:00",
     "merge_dispatch_count": 2,
-    "merge_run_id": 39074603621
+    "merge_run_id": 39074753397,
+    "slug": "why-is-it-so-hard-to-find-a-relationship",
+    "title": "למה כל כך קשה למצוא זוגיות: העייפות, השחיקה ואיך מתחילים לשנות גישה",
+    "url": "https://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-a-relationship",
+    "published_date": "2026-10-18",
+    "quality_content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-10-17T22:23:41.131122+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2048,7 +2058,8 @@
     "last_dispatch_at": "2026-10-17T22:17:48.349017+00:00",
     "artifact_sha256": "3e89fbdfc3f8d8400fe7b3e5d17d057dcae6ba55227a86c41b102737ab8af2ed",
     "source_id": "local://public/images/fallback/dating/dating_relationship_conversation.jpg",
-    "run_id": 39074482466
+    "run_id": 39074482466,
+    "image_path": "/images/generated/blog/why-is-it-so-hard-to-find-a-relationship.jpg"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2098,11 +2109,21 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-17T21:35:44.239366+00:00"
+    },
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-10-18",
+      "inputs": {},
+      "intent_at": "2026-10-17T22:23:37.772182+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "a05990f3152f3b579712510114f5ab907dfe0fcd"
     }
   },
   "last_child_notification": {
     "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 39074603621,
+    "run_id": 39074753397,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-18"
