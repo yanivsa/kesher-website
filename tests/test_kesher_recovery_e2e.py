@@ -198,6 +198,7 @@ class KesherRecoveryE2ETests(unittest.TestCase):
 
         os.environ["KESHER_MEDIA_MODE"] = "video_overview"
         os.environ["TARGET_ITEM_ID"] = item_id
+        os.environ["KESHER_RECOVERY_MODE"] = "true"
         with mock.patch.object(reconcile, "retry_technical_rejection") as mock_retry:
             code = reconcile.prepare_generation(src["slug"])
             self.assertEqual(code, 0)
@@ -572,6 +573,20 @@ class KesherRecoveryE2ETests(unittest.TestCase):
         self.assertEqual(target2, item_id)
         self.assertEqual(count1, 1)
         self.assertEqual(count2, 1)
+
+    def test_recovery_mode_guards_direct_calls(self) -> None:
+        """Recovery mode assertions: new_item, add_source, start_generation raise RECOVERY_MODE_VIOLATION."""
+        src = sample_source()
+        state = {"version": 1, "items": []}
+        item = {"id": "test-item", "source": src, "status": "source_selected"}
+
+        with mock.patch.dict(os.environ, {"KESHER_RECOVERY_MODE": "true"}):
+            with self.assertRaisesRegex(pipeline.PipelineError, "RECOVERY_MODE_VIOLATION"):
+                pipeline.new_item(src)
+            with self.assertRaisesRegex(pipeline.PipelineError, "RECOVERY_MODE_VIOLATION"):
+                pipeline.add_source(state, item)
+            with self.assertRaisesRegex(pipeline.PipelineError, "RECOVERY_MODE_VIOLATION"):
+                pipeline.start_generation(state, item)
 
 
 if __name__ == "__main__":

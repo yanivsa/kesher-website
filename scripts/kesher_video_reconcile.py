@@ -178,11 +178,18 @@ def release_without_short(slug: str, reason: str = "controller_bounded_release")
     return 0
 
 
+def is_recovery_mode() -> bool:
+    if (os.environ.get("KESHER_RECOVERY_MODE") or "").lower().strip() in {"true", "1", "yes"}:
+        return True
+    if (os.environ.get("OPERATION") or "").lower().strip() in {"recovery", "reconcile"}:
+        return True
+    return False
+
+
 def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dict[str, Any] | None:
     if not (old.get("status") == "rejected" and old.get("technical_verified") is not True):
         raise pipeline.PipelineError("Technical retry requested for a non-technical rejection")
-    requested_id = (os.environ.get("TARGET_ITEM_ID") or os.environ.get("KESHER_REQUESTED_TARGET_ITEM_ID") or "").strip()
-    if requested_id and requested_id == str(old.get("id") or "").strip():
+    if is_recovery_mode():
         raise pipeline.PipelineError("RECOVERY_MODE_VIOLATION: retry_technical_rejection forbidden in same-identity recovery mode")
     slug = source_slug(old)
     if not slug:
@@ -416,6 +423,36 @@ def prepare_generation(target_slug: str = "") -> int:
                 raise pipeline.PipelineError("EXACT_MEDIA_ITEM_ID_MISMATCH")
             item = exact[0]
             _reconcile_item_technical_rejection(state, item)
+
+            is_voice_retry = (
+                not is_recovery_mode()
+                and item.get("status") == "rejected"
+                and item.get("technical_verified") is not True
+                and (
+                    item.get("failure_signature") == "wrong_narrator_gender"
+                    or "Detected male voice" in str((item.get("review_notes") or {}).get("technical", ""))
+                )
+                and int(item.get("fresh_generation_attempt") or 1) < 3
+            )
+            if is_voice_retry:
+                replacement = retry_technical_rejection(state, item)
+                pipeline.save_state(state)
+                if replacement is None:
+                    workflow_output("skip_generation", "true")
+                    print(
+                        "VIDEO_RECONCILED_GENERATION "
+                        f"slug={target_slug} released_without_video=yes"
+                    )
+                    return 0
+                export_target(replacement)
+                workflow_output("skip_generation", "false")
+                print(
+                    "VIDEO_RECONCILED_GENERATION "
+                    f"slug={target_slug} technical_retry=yes "
+                    f"attempt={replacement.get('fresh_generation_attempt', 1)}"
+                )
+                return 0
+
             export_target(item)
             # Recovery mode invariant: structurally incapable of creating a replacement item or fresh generation.
             if item.get("status") == "generating":

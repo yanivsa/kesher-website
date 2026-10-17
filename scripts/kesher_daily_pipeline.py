@@ -462,8 +462,16 @@ def generation_prompt(source: dict[str, Any]) -> str:
     return prompt
 
 
+def is_recovery_mode() -> bool:
+    if (os.environ.get("KESHER_RECOVERY_MODE") or "").lower().strip() in {"true", "1", "yes"}:
+        return True
+    if (os.environ.get("OPERATION") or "").lower().strip() in {"recovery", "reconcile"}:
+        return True
+    return False
+
+
 def new_item(source: dict[str, Any]) -> dict[str, Any]:
-    if os.environ.get("TARGET_ITEM_ID"):
+    if is_recovery_mode():
         raise PipelineError("RECOVERY_MODE_VIOLATION: new_item forbidden in same-identity recovery mode")
     stamp = israel_now().strftime("%Y%m%d-%H%M%S")
     return {
@@ -787,7 +795,7 @@ def legacy_external_effect(
 
 
 def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
-    if os.environ.get("TARGET_ITEM_ID"):
+    if is_recovery_mode():
         raise PipelineError("RECOVERY_MODE_VIOLATION: add_source forbidden in same-identity recovery mode")
     from scripts.kesher_runtime.media_state import CanonicalMediaState
     from scripts.kesher_runtime.legacy_retirement import media_mutation
@@ -822,7 +830,7 @@ def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
 
 
 def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
-    if os.environ.get("TARGET_ITEM_ID"):
+    if is_recovery_mode():
         raise PipelineError("RECOVERY_MODE_VIOLATION: start_generation forbidden in same-identity recovery mode")
     from scripts.kesher_runtime.media_state import CanonicalMediaState
     from scripts.kesher_runtime.legacy_retirement import media_mutation
@@ -1440,8 +1448,8 @@ def run_generation(
     auth_preflight()
     state = load_state()
     target_item_id = (item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
-    is_recovery_mode = bool(target_item_id)
-    if is_recovery_mode:
+    is_recovery = is_recovery_mode() or bool(item_id)
+    if is_recovery:
         item = active_item(state, slug=slug, item_id=target_item_id)
         if not item:
             raise PipelineError(f"RECOVERY_MODE_VIOLATION: target item {target_item_id} does not exist in state")
@@ -1457,7 +1465,7 @@ def run_generation(
         if item.get("uploaded") is True or item["status"] in {"pending_review", "approved", "rejected", "uploading", "uploaded", "superseded"}:
             print(f"NO_GENERATION recovery mode active_item={item['id']} status={item['status']}")
             return 0
-        if item["status"] in {"source_selected", "source_added"}:
+        if is_recovery_mode() and item["status"] in {"source_selected", "source_added"}:
             raise PipelineError(f"RECOVERY_MODE_VIOLATION: target item {target_item_id} has invalid status {item['status']} for recovery; provider source creation/generation forbidden")
         if item["status"] == "generating":
             if not item.get("task_id") or not item.get("source_id"):
