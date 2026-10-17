@@ -17,7 +17,7 @@
     },
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "last_dispatch_at": "2026-10-17T16:56:11.686937+00:00",
     "watchdog": {
       "identity": "2026-10-17",
@@ -63,11 +63,12 @@
     "resume_dispatches": 1,
     "pr_number": 1132,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1132",
-    "current_pr_head_sha": "4255d29abaa3d2a81ccf7496366fc7a6018e2b3e",
+    "current_pr_head_sha": "f7019a2fde960e981257a4368c65fcb52510a5f0",
     "jules_head_sha": "4255d29abaa3d2a81ccf7496366fc7a6018e2b3e",
     "normalization_slot": "2026-10-17",
     "normalization_dispatched_at": "2026-10-17T17:05:36.219094+00:00",
-    "normalization_run_id": 39052236182
+    "normalization_run_id": 39052236182,
+    "normalized_head_sha": "f7019a2fde960e981257a4368c65fcb52510a5f0"
   },
   "backlog": [
     {
@@ -2287,7 +2288,19 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
+      "cycle": "2026-10-17",
+      "inputs": {
+        "pr_number": "1132"
+      },
+      "intent_at": "2026-10-17T17:06:43.172066+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Normalize Article PR",
     "run_id": 39052236182,
@@ -2306,5 +2319,17 @@
     "Kesher Daily Article Short V4:38976219993",
     "Kesher Daily Article Short V4:38976744012",
     "Kesher Article Generation:39051561772"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": "2026-10-16T21:28:19.856763+00:00",
+    "run_id": 38974743923,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
