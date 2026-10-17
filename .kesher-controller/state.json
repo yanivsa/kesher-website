@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-17",
-  "status": "article_normalizing",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -1441,15 +1441,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-16T17:57:26.877090+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-16T18:01:12.237429+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -2237,12 +2228,22 @@
         "pr_number": 1132,
         "slot": "2026-10-17"
       }
+    },
+    {
+      "at": "2026-10-17T17:07:12.216575+00:00",
+      "from": "article_normalizing",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 1,
+        "pr_number": 1132
+      }
     }
   ],
-  "updated_at": "2026-10-17T17:05:36.219122+00:00",
+  "updated_at": "2026-10-17T17:07:12.216583+00:00",
   "image": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2250,7 +2251,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-10-17T17:07:12.216553+00:00"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2296,9 +2298,10 @@
         "pr_number": "1132"
       },
       "intent_at": "2026-10-17T17:06:43.172066+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39052349063,
+      "dispatched_at": "2026-10-17T17:06:43.172066+00:00"
     }
   },
   "last_child_notification": {
@@ -2319,17 +2322,5 @@
     "Kesher Daily Article Short V4:38976219993",
     "Kesher Daily Article Short V4:38976744012",
     "Kesher Article Generation:39051561772"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": "2026-10-16T21:28:19.856763+00:00",
-    "run_id": 38974743923,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  ]
 }
