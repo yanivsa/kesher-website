@@ -88,7 +88,7 @@
     "last_deploy_dispatch_at": "2026-10-17T17:17:39.825417+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39053114609,
-    "live_verified_at": "2026-10-17T19:40:53.959283+00:00"
+    "live_verified_at": "2026-10-17T19:41:20.794500+00:00"
   },
   "backlog": [
     {
@@ -1461,27 +1461,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-16T20:20:54.213808+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T20:21:15.271057+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-10-16T20:25:50.628694+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-16T20:26:03.176591+00:00",
       "from": "article_live",
       "to": "blocked",
@@ -2241,9 +2220,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-17T19:41:20.794519+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-17T19:41:21.992893+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-17T19:41:23.154868+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-17T19:36:25.839741+00:00",
+  "updated_at": "2026-10-17T19:41:23.154886+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
