@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-17",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -63,12 +63,15 @@
     "resume_dispatches": 1,
     "pr_number": 1132,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1132",
-    "current_pr_head_sha": "f7019a2fde960e981257a4368c65fcb52510a5f0",
+    "current_pr_head_sha": "4803e7c6648d0796aa26913dcb7c3860bb9b312e",
     "jules_head_sha": "4255d29abaa3d2a81ccf7496366fc7a6018e2b3e",
     "normalization_slot": "2026-10-17",
     "normalization_dispatched_at": "2026-10-17T17:05:36.219094+00:00",
     "normalization_run_id": 39052236182,
-    "normalized_head_sha": "f7019a2fde960e981257a4368c65fcb52510a5f0"
+    "normalization_drift_count": 1,
+    "normalized_head_sha": "4803e7c6648d0796aa26913dcb7c3860bb9b312e",
+    "image_head_sha": "4803e7c6648d0796aa26913dcb7c3860bb9b312e",
+    "merge_candidate_sha": "4803e7c6648d0796aa26913dcb7c3860bb9b312e"
   },
   "backlog": [
     {
@@ -1441,12 +1444,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-16T18:01:12.237429+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-16T18:01:34.085844+00:00",
       "from": "article_live",
       "to": "blocked",
@@ -2238,21 +2235,28 @@
         "attempt": 1,
         "pr_number": 1132
       }
+    },
+    {
+      "at": "2026-10-17T17:08:48.554035+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-17T17:07:12.216583+00:00",
+  "updated_at": "2026-10-17T17:08:48.554053+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 39052349063,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "Local",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-17T17:07:12.216553+00:00"
+    "last_dispatch_at": "2026-10-17T17:07:12.216553+00:00",
+    "artifact_sha256": "c01fe88b784eb0a43057b7e184081b09099d68944b52f853d7c0a4ba0a328aa9",
+    "source_id": "local://public/images/fallback/singles/adulthood_singleness_reflection.jpg"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2290,7 +2294,20 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-17",
+      "inputs": {
+        "pr_number": "1132",
+        "slot": "2026-10-17"
+      },
+      "intent_at": "2026-10-17T17:08:19.259258+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Trusted Article Image",
     "run_id": 39052349063,
@@ -2310,5 +2327,17 @@
     "Kesher Daily Article Short V4:38976744012",
     "Kesher Article Generation:39051561772",
     "Kesher Normalize Article PR:39052236182"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": "2026-10-16T21:28:19.856763+00:00",
+    "run_id": 38974743923,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
