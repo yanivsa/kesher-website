@@ -45,6 +45,12 @@ describe('preloadRoute', () => {
     expect(mediationPromise).toBe(mediationPromise2);
     expect(mediationPromise).not.toBe(ganYavnePromise);
 
+    const familyResourcesPromise = preloadRoute('/blog/ashdod-family-parent-resources');
+    const familyResourcesPromise2 = preloadRoute('/blog/ashdod-family-parent-resources/');
+    const genericBlogPromise = preloadRoute('/blog/generic-article-slug');
+    expect(familyResourcesPromise).toBe(familyResourcesPromise2);
+    expect(familyResourcesPromise).not.toBe(genericBlogPromise);
+
     const notFoundPromise1 = preloadRoute('/this-does-not-exist');
     const notFoundPromise2 = preloadRoute('/also-missing');
 
@@ -61,6 +67,8 @@ describe('preloadRoute', () => {
       adhdPromise,
       ganYavnePromise,
       mediationPromise,
+      familyResourcesPromise,
+      genericBlogPromise,
       notFoundPromise1,
     ]);
   });
