@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-17",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_retry_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -88,7 +88,7 @@
     "last_deploy_dispatch_at": "2026-10-17T17:17:39.825417+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39053114609,
-    "live_verified_at": "2026-10-17T18:10:47.639762+00:00"
+    "live_verified_at": "2026-10-17T18:11:02.301938+00:00"
   },
   "backlog": [
     {
@@ -1461,30 +1461,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-16T18:36:23.072570+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-10-16T18:40:54.630440+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T18:41:22.005443+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-16T18:45:57.554310+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -2283,9 +2259,37 @@
         "item_id": "video-20261017-202441-34994678e6",
         "task_id": "f2dacea7-e000-4ace-9bc9-dc229bedd803"
       }
+    },
+    {
+      "at": "2026-10-17T18:11:02.301957+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-17T18:11:03.672788+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "VIDEO_WORKFLOW_FAILED",
+      "details": {
+        "message": "video run 39055569913 completed with conclusion=failure",
+        "retry_at": "2026-10-17T18:16:03.672767+00:00",
+        "failure_streak": 1,
+        "run_id": 39055569913,
+        "session_id": null
+      }
+    },
+    {
+      "at": "2026-10-17T18:11:03.672814+00:00",
+      "from": "video_retry_wait",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-17T18:16:03.672767+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-17T18:06:08.718244+00:00",
+  "updated_at": "2026-10-17T18:11:03.672818+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2306,15 +2310,17 @@
     "attempt_count": 1,
     "status": "generating",
     "last_error": null,
-    "next_retry_at": "2026-10-17T17:33:11.904732+00:00",
+    "next_retry_at": "2026-10-17T18:16:03.672767+00:00",
     "run_id": 39055569913,
-    "processed_run_id": 39053521586,
+    "processed_run_id": 39055569913,
     "provider_id": "f2dacea7-e000-4ace-9bc9-dc229bedd803",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "VIDEO_WORKFLOW_FAILED": 1
+    },
     "overview_evidence_required": true,
-    "last_run_conclusion": "success",
+    "last_run_conclusion": "failure",
     "last_dispatch_at": "2026-10-17T17:51:24.295961+00:00",
     "attempts": 1,
     "item_id": "video-20261017-202441-34994678e6",
@@ -2335,7 +2341,8 @@
       "last_recovery_at": "2026-10-17T17:50:58.775550+00:00"
     },
     "pending_resume_ready": false,
-    "resume_dispatches": 1
+    "resume_dispatches": 1,
+    "last_failed_run_id": 39055569913
   },
   "short": {
     "attempt_count": 0,
