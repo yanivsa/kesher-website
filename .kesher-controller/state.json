@@ -3,19 +3,19 @@
   "cycle": "2026-10-17",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 2,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39051561772,
     "processed_run_id": 39048311811,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-17T16:56:11.686937+00:00",
@@ -74,7 +74,17 @@
     "merge_candidate_sha": "4803e7c6648d0796aa26913dcb7c3860bb9b312e",
     "merge_dispatch_at": "2026-10-17T17:16:20.707827+00:00",
     "merge_dispatch_count": 2,
-    "merge_run_id": 39052470893
+    "merge_run_id": 39053018181,
+    "slug": "fear-of-ending-up-alone-late-singleness",
+    "title": "הפחד להישאר לבד: מה עושים כשהחרדה מהרווקות מנהלת את קבלת ההחלטות?",
+    "url": "https://kesher.saharoni.com/blog/fear-of-ending-up-alone-late-singleness",
+    "published_date": "2026-10-17",
+    "quality_content_sha256": "34994678e6b38002b9b07de186c345dc917405378a23c98c2e274c9831318c25",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-10-17T17:17:35.456335+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2260,7 +2270,8 @@
     "last_dispatch_at": "2026-10-17T17:07:12.216553+00:00",
     "artifact_sha256": "c01fe88b784eb0a43057b7e184081b09099d68944b52f853d7c0a4ba0a328aa9",
     "source_id": "local://public/images/fallback/singles/adulthood_singleness_reflection.jpg",
-    "run_id": 39052349063
+    "run_id": 39052349063,
+    "image_path": "/images/generated/blog/fear-of-ending-up-alone-late-singleness.jpg"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2299,23 +2310,20 @@
     "short_origin_verified": false
   },
   "pending_dispatches": {
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "deploy.yml": {
+      "workflow": "deploy.yml",
       "cycle": "2026-10-17",
-      "inputs": {
-        "pr_number": "1132",
-        "slot": "2026-10-17"
-      },
-      "intent_at": "2026-10-17T17:15:45.690302+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39052470893,
-      "observed_active_run_id": 39053018181,
-      "dispatched_at": "2026-10-17T17:15:45.690302+00:00"
+      "inputs": {},
+      "intent_at": "2026-10-17T17:17:32.984775+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "d0ccd462a9d6933cda65c79b6901fffaffe217a5"
     }
   },
   "last_child_notification": {
     "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 39052470893,
+    "run_id": 39053018181,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-17"
