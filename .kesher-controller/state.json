@@ -82,13 +82,13 @@
     "quality_content_sha256": "34994678e6b38002b9b07de186c345dc917405378a23c98c2e274c9831318c25",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-17T18:20:53.390569+00:00",
+    "quality_checked_at": "2026-10-17T18:23:52.953711+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-17T17:17:39.825417+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39053114609,
-    "live_verified_at": "2026-10-17T18:21:19.676744+00:00"
+    "live_verified_at": "2026-10-17T18:23:54.879370+00:00"
   },
   "backlog": [
     {
@@ -2311,7 +2311,7 @@
     "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-17T18:28:48.544243+00:00",
     "run_id": 39057727311,
     "processed_run_id": 39055569913,
     "provider_id": "f2dacea7-e000-4ace-9bc9-dc229bedd803",
@@ -2332,7 +2332,7 @@
     "task_id": "f2dacea7-e000-4ace-9bc9-dc229bedd803",
     "artifact_id": "f2dacea7-e000-4ace-9bc9-dc229bedd803",
     "provider_status": "pending",
-    "verified": false,
+    "verified": true,
     "watchdog": {
       "identity": "long_video:fear-of-ending-up-alone-late-singleness:34994678e6b38002b9b07de186c345dc917405378a23c98c2e274c9831318c25:video-20261017-202441-34994678e6",
       "hard_started_at": "2026-10-17T17:24:48.129471+00:00",
@@ -2343,7 +2343,20 @@
     },
     "pending_resume_ready": false,
     "resume_dispatches": 2,
-    "last_failed_run_id": 39055569913
+    "last_failed_run_id": 39055569913,
+    "youtube_id": "PB3boenpvlY",
+    "youtube_url": "https://youtu.be/PB3boenpvlY",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 107.7,
+    "content_duration_seconds": 107.708,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
@@ -2369,26 +2382,10 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-17",
-      "inputs": {
-        "operation": "upload",
-        "target_slug": "fear-of-ending-up-alone-late-singleness",
-        "target_content_sha256": "34994678e6b38002b9b07de186c345dc917405378a23c98c2e274c9831318c25",
-        "target_item_id": "video-20261017-202441-34994678e6"
-      },
-      "intent_at": "2026-10-17T18:20:51.003160+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39055569913,
-      "observed_active_run_id": 39057727311,
-      "dispatched_at": "2026-10-17T18:20:51.003160+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 39053521586,
+    "run_id": 39057727311,
     "conclusion": "success",
     "source_slug": "fear-of-ending-up-alone-late-singleness",
     "slot": "2026-10-17"
