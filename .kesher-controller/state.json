@@ -1,18 +1,20 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-17",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-17T17:01:06.726889+00:00",
     "run_id": 39048311811,
-    "processed_run_id": null,
+    "processed_run_id": 39048311811,
     "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "JULES_TIMEOUT_SESSION_ACTIVE": 1
+    },
     "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "pending",
@@ -27,7 +29,37 @@
       "worker_restart_count": 0,
       "last_restart_at": null,
       "last_restart_run_id": null
-    }
+    },
+    "last_run_conclusion": "failure",
+    "last_worker_result": {
+      "schema_version": 1,
+      "slot": "2026-10-17",
+      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "retryable": true,
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to run a fully autonomous article publication task that creates exactly one new Hebrew blog post for the date `2026-10-17` on the Kesher website, strictly following an extensive list of editorial, stylistic, and technical constraints (including omitting image fields per the V3 pipeline). 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates and integrates exactly one new Hebrew article (\"הפחד להישאר לבד...\") under the approved category \"זוגיות\" and subcategory \"רווקות מאוחרת\". It properly in…",
+      "session_id": "sessions/7980362767248953807",
+      "pr_url": "",
+      "github_run_id": "39048311811",
+      "completed_at": "2026-10-17T16:51:39.261205+00:00",
+      "diagnostic": {
+        "source": {
+          "name": "sources/github/yanivsa/kesher-website",
+          "owner": "yanivsa",
+          "repo": "kesher-website",
+          "default_branch": "main",
+          "main_available": true
+        },
+        "activity_count": 25,
+        "change_set_count": 22,
+        "change_set_fingerprints": [],
+        "last_agent_message": "",
+        "last_progress": "Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to run a fully autonomous article publication task that creates exactly one new Hebrew blog post for the date `2026-10-17` on the Kesher website, strictly following an extensive list of editorial, stylistic, and technical constraints (including omitting image fields per the V3 pipeline). 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates and integrates exactly one new Hebrew article (\"הפחד להישאר לבד...\") under the approved category \"זוגיות\" and subcategory \"רווקות מאוחרת\". It properly in…",
+        "last_description": "",
+        "session_failed_reason": ""
+      }
+    },
+    "last_jules_session_id": "sessions/7980362767248953807",
+    "last_failed_run_id": 39048311811
   },
   "backlog": [
     {
@@ -1397,17 +1429,15 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to run a fully autonomous article publication task that creates exactly one new Hebrew blog post for the date `2026-10-17` on the Kesher website, strictly following an extensive list of editorial, stylistic, and technical constraints (including omitting image fields per the V3 pipeline). 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates and integrates exactly one new Hebrew article (\"הפחד להישאר לבד...\") under the approved category \"זוגיות\" and subcategory \"רווקות מאוחרת\". It properly in…",
+    "retryable": true,
+    "retry_at": "2026-10-17T17:01:06.726889+00:00",
+    "at": "2026-10-17T16:56:06.726912+00:00"
+  },
   "history": [
-    {
-      "at": "2026-10-16T17:51:04.643926+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
     {
       "at": "2026-10-16T17:55:54.089381+00:00",
       "from": "blocked",
@@ -2184,9 +2214,22 @@
       "details": {
         "session_id": "sessions/7980362767248953807"
       }
+    },
+    {
+      "at": "2026-10-17T16:56:06.726917+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "details": {
+        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to run a fully autonomous article publication task that creates exactly one new Hebrew blog post for the date `2026-10-17` on the Kesher website, strictly following an extensive list of editorial, stylistic, and technical constraints (including omitting image fields per the V3 pipeline). 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates and integrates exactly one new Hebrew article (\"הפחד להישאר לבד...\") under the approved category \"זוגיות\" and subcategory \"רווקות מאוחרת\". It properly in…",
+        "retry_at": "2026-10-17T17:01:06.726889+00:00",
+        "failure_streak": 1,
+        "run_id": 39048311811,
+        "session_id": "sessions/7980362767248953807"
+      }
     }
   ],
-  "updated_at": "2026-10-17T16:54:04.824649+00:00",
+  "updated_at": "2026-10-17T16:56:06.726922+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2242,11 +2285,10 @@
       "inputs": {
         "slot": "2026-10-17"
       },
-      "intent_at": "2026-10-17T16:10:44.984494+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-17T16:10:44.984494+00:00"
+      "intent_at": "2026-10-17T16:55:40.973726+00:00",
+      "status": "intent",
+      "previous_run_id": 39048311811,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2266,5 +2308,17 @@
     "Kesher Daily Article Short V4:38975757218",
     "Kesher Daily Article Short V4:38976219993",
     "Kesher Daily Article Short V4:38976744012"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": "2026-10-16T21:28:19.856763+00:00",
+    "run_id": 38974743923,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
