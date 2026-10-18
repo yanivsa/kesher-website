@@ -268,7 +268,7 @@ def validate_primary_keyword_contract(
                     trusted_env_brief = p.read_text(encoding="utf-8").strip()
             except OSError:
                 pass
-        required_kw = parse_owner_required_keyword(trusted_env_brief) or str(post.get("ownerRequiredPrimaryKeyword") or "").strip()
+        required_kw = parse_owner_required_keyword(trusted_env_brief)
 
     if required_kw:
         norm_req = normalize_hebrew_text(required_kw).lower()
@@ -300,10 +300,9 @@ def validate_primary_keyword_contract(
     if not slug:
         errors.append("Article slug is missing")
     else:
-        trusted_stems = None
-        if isinstance(post.get("slugSemanticTokens"), list):
-            trusted_stems = set(str(s).strip().lower() for s in post["slugSemanticTokens"] if str(s).strip())
-        valid_slug, slug_msg = slug_represents_keyword(slug, keyword, trusted_stems=trusted_stems)
+        # Article/PR-controlled semantic-token fields are not trusted. Unknown keywords
+        # fail closed until a repository-controlled mapping is added.
+        valid_slug, slug_msg = slug_represents_keyword(slug, keyword)
         if not valid_slug:
             errors.append(slug_msg)
 

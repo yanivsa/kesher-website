@@ -7,6 +7,7 @@ from typing import Any
 import base64
 import hashlib
 import html
+import io
 from datetime import datetime, timezone
 import json
 import os
@@ -15,6 +16,7 @@ import sys
 from pathlib import Path
 import urllib.parse
 import urllib.request
+import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from scripts.kesher_article_contract import (
@@ -154,8 +156,11 @@ def resolve_latest_verify_check(candidates: list[dict]) -> tuple[dict | None, st
     return None, "Multiple indistinguishable or conflicting latest verify checks"
 
 
-def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader, extra_base_posts=None):
-    errors = evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra_base_posts=extra_base_posts)
+def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader, extra_base_posts=None, owner_topic_brief=""):
+    errors = evaluate_content(
+        pr, files_data, base_posts, head_posts, image_loader,
+        extra_base_posts=extra_base_posts, owner_topic_brief=owner_topic_brief,
+    )
     head_sha = str((pr.get("head") or {}).get("sha") or "").strip()
     if not head_sha:
         errors.append("Fresh successful verify check is required on the current head")
@@ -185,7 +190,7 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader, extra
     return errors
 
 
-def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra_base_posts=None):
+def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra_base_posts=None, owner_topic_brief=""):
     """Pure content policy, also run inside canonical CI before CI can finish."""
     errors: list[str] = []
     files = [entry["filename"] for entry in files_data]
@@ -240,16 +245,8 @@ def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra
     )
 
     if not is_true_image_only:
-        trusted_brief = os.environ.get("KESHER_ARTICLE_TOPIC_BRIEF", "").strip()
-        if not trusted_brief and os.environ.get("KESHER_ARTICLE_TOPIC_BRIEF_FILE", "").strip():
-            try:
-                p = Path(os.environ["KESHER_ARTICLE_TOPIC_BRIEF_FILE"].strip())
-                if p.is_file():
-                    trusted_brief = p.read_text(encoding="utf-8").strip()
-            except OSError:
-                pass
         content_errors.extend(
-            validate_primary_keyword_contract(post, body, owner_topic_brief=trusted_brief)
+            validate_primary_keyword_contract(post, body, owner_topic_brief=owner_topic_brief)
         )
 
     # Pipeline v2 invariant: publication without an independently verified local
@@ -323,6 +320,85 @@ def api_json(url: str, token: str):
         return json.loads(response.read().decode("utf-8"))
 
 
+def api_bytes(url: str, token: str) -> bytes:
+    request = urllib.request.Request(
+        url,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {token}",
+            "User-Agent": "kesher-article-gate",
+        },
+    )
+    with urllib.request.urlopen(request) as response:
+        return response.read()
+
+
+def fetch_repo_json(repo: str, ref: str, token: str, filename: str):
+    quoted_ref = urllib.parse.quote(ref, safe="")
+    quoted_path = urllib.parse.quote(filename, safe="/")
+    payload = api_json(f"https://api.github.com/repos/{repo}/contents/{quoted_path}?ref={quoted_ref}", token)
+    blob_sha = payload.get("sha")
+    if not isinstance(blob_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", blob_sha):
+        raise ValueError(f"Trusted JSON blob identity unavailable for {filename}")
+    if payload.get("encoding") == "none":
+        payload = api_json(f"https://api.github.com/repos/{repo}/git/blobs/{blob_sha}", token)
+    if payload.get("sha") != blob_sha or payload.get("encoding") != "base64":
+        raise ValueError(f"Trusted JSON blob unavailable for {filename}")
+    raw = base64.b64decode("".join(str(payload.get("content") or "").split()), validate=True)
+    actual_sha = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+    if actual_sha != blob_sha:
+        raise ValueError(f"Trusted JSON blob identity changed for {filename}")
+    return json.loads(raw.decode("utf-8"))
+
+
+def trusted_owner_topic_brief(repo: str, pr: dict, token: str) -> str:
+    """Load owner keyword only from the exact controller-bound workflow artifact.
+
+    Neither PR body nor article fields are trusted for owner intent. The controller
+    state lives on the separate automation-state branch and binds the PR to the
+    Article Generation run whose result artifact was produced by trusted main code.
+    """
+    state = fetch_repo_json(repo, "automation-state", token, ".kesher-controller/state.json")
+    article = state.get("article") if isinstance(state, dict) else None
+    if not isinstance(article, dict):
+        return ""
+    pr_number = int(pr.get("number") or 0)
+    if int(article.get("pr_number") or 0) != pr_number:
+        return ""
+    run_id = int(article.get("run_id") or 0)
+    if run_id <= 0:
+        return ""
+    artifacts = api_json(
+        f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/artifacts?per_page=100", token
+    )
+    exact_name = f"kesher-article-result-{run_id}"
+    matches = [
+        a for a in (artifacts.get("artifacts") or [])
+        if isinstance(a, dict) and a.get("name") == exact_name and a.get("expired") is not True
+    ]
+    if len(matches) != 1:
+        raise ValueError(f"Trusted article result artifact {exact_name} is not unique/available")
+    artifact_id = int(matches[0].get("id") or 0)
+    if artifact_id <= 0:
+        raise ValueError("Trusted article result artifact id is invalid")
+    archive = api_bytes(f"https://api.github.com/repos/{repo}/actions/artifacts/{artifact_id}/zip", token)
+    with zipfile.ZipFile(io.BytesIO(archive)) as zf:
+        result_names = [name for name in zf.namelist() if name.endswith("result.json")]
+        if len(result_names) != 1:
+            raise ValueError("Trusted article result artifact does not contain exactly one result.json")
+        result = json.loads(zf.read(result_names[0]).decode("utf-8"))
+    expected_pr_url = str(pr.get("html_url") or pr.get("url") or "").rstrip("/")
+    artifact_pr_url = str(result.get("pr_url") or "").rstrip("/")
+    if expected_pr_url and artifact_pr_url != expected_pr_url:
+        raise ValueError("Trusted article result artifact PR identity mismatch")
+    expected_slot = str(state.get("cycle") or "").strip()
+    artifact_slot = str(result.get("slot") or "").strip()
+    if expected_slot and artifact_slot and expected_slot != artifact_slot:
+        raise ValueError("Trusted article result artifact slot mismatch")
+    keyword = str(result.get("owner_required_primary_keyword") or "").strip()
+    return f"Required Primary Keyword: {keyword}" if keyword else ""
+
+
 def fetch_posts(repo: str, ref: str, token: str, filename: str = "src/data/posts.json"):
     quoted_ref = urllib.parse.quote(ref, safe="")
     quoted_path = urllib.parse.quote(filename, safe="/")
@@ -368,7 +444,15 @@ def main() -> int:
         with urllib.request.urlopen(request) as response:
             return response.read()
 
-    errors = evaluate(pr, files_data, checks, base_posts, head_posts, load_image, extra_base_posts=extra_base_posts)
+    try:
+        owner_topic_brief = trusted_owner_topic_brief(repo, pr, token)
+    except Exception as exc:
+        print(f"Trusted owner keyword provenance could not be verified: {exc}", file=sys.stderr)
+        return 1
+    errors = evaluate(
+        pr, files_data, checks, base_posts, head_posts, load_image,
+        extra_base_posts=extra_base_posts, owner_topic_brief=owner_topic_brief,
+    )
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1

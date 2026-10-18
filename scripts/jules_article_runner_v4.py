@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import sys
@@ -10,8 +11,10 @@ from pathlib import Path
 
 if __package__:
     from . import jules_article_runner_v3 as v3
+    from .kesher_primary_keyword_contract import parse_owner_required_keyword
 else:
     import jules_article_runner_v3 as v3
+    from kesher_primary_keyword_contract import parse_owner_required_keyword
 
 _v3_build_prompt = v3.build_prompt
 
@@ -269,12 +272,35 @@ def build_prompt(slot: str, policy: str) -> str:
     return prompt
 
 
+def persist_owner_keyword_result_metadata() -> None:
+    """Bind owner keyword requirements to the trusted workflow result artifact.
+
+    The article PR can edit its own body/content, so those are never authoritative
+    for owner intent. This metadata is written by the trusted main-branch runner and
+    later consumed by the GitHub merge gate through the exact controller run artifact.
+    """
+    result = v3.core.result_path()
+    if not result.is_file():
+        return
+    brief = load_owner_topic_brief()
+    required = parse_owner_required_keyword(brief) or ""
+    payload = json.loads(result.read_text(encoding="utf-8"))
+    payload["owner_required_primary_keyword"] = required
+    payload["owner_topic_brief_sha256"] = hashlib.sha256(brief.encode("utf-8")).hexdigest() if brief else ""
+    tmp = result.with_suffix(result.suffix + ".tmp")
+    tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    tmp.replace(result)
+
+
 def main() -> int:
     # V3 remains the implementation owner for slot-scoped identity, test mode,
     # safe Jules session reuse and terminal PR settling. Only the prompt contract
     # changes here.
     v3.build_prompt = build_prompt
-    return v3.main()
+    code = v3.main()
+    if code == 0:
+        persist_owner_keyword_result_metadata()
+    return code
 
 
 def attach_failure_diagnostic() -> None:

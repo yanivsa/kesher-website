@@ -2226,6 +2226,7 @@ def verify_single_upload_authority(
     content_sha256: str,
     target_item_id: str | None = None,
     candidate_items: list[dict[str, Any]] | None = None,
+    reconciled_predecessor_item_id: str | None = None,
 ) -> dict[str, Any]:
     """Verify that exactly one authoritative Long item exists for the exact slug + content_sha256.
 
@@ -2279,8 +2280,18 @@ def verify_single_upload_authority(
         auth_match = next((r for r in state_to_use.get("items", []) if str(r.get("id")) == str(pub.get("id"))), pub)
         return auth_match
 
-    # 2. Check candidates that can proceed toward publication
+    # 2. Check candidates that can proceed toward publication. A trusted reconciliation
+    # may replace the exact originally requested predecessor with a newer exact target.
+    # Only that one explicit predecessor may be excluded; every other authoritative
+    # competitor on disk remains visible and still makes the guard fail closed.
     candidates = [row for row in items if can_long_item_proceed_toward_publication(row)]
+    predecessor_id = str(reconciled_predecessor_item_id or "").strip()
+    requested_target_id = str(target_item_id or "").strip()
+    if predecessor_id and requested_target_id and predecessor_id != requested_target_id:
+        target_matches = [row for row in candidates if str(row.get("id") or "").strip() == requested_target_id]
+        predecessor_matches = [row for row in candidates if str(row.get("id") or "").strip() == predecessor_id]
+        if len(target_matches) == 1 and len(predecessor_matches) == 1:
+            candidates = [row for row in candidates if str(row.get("id") or "").strip() != predecessor_id]
 
     if len(candidates) > 1:
         fw = auth_state.get("fallback_winner") or state.get("fallback_winner")
@@ -2342,6 +2353,7 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
     if is_long:
         if STATE_FILE.is_file() and item.get("id"):
             auth_state = load_state()
+            state = auth_state
             auth_items_by_id = {str(r.get("id")): r for r in auth_state.get("items", []) if isinstance(r, dict)}
             if str(item.get("id")).strip() not in auth_items_by_id:
                 raise PipelineError(f"AUTHORITATIVE_ITEM_MISSING: item {item.get('id')} absent from authoritative state on disk")
@@ -2378,6 +2390,7 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
     elif is_short:
         if STATE_FILE.is_file() and item.get("id"):
             auth_state = load_state()
+            state = auth_state
             auth_items_by_id = {str(r.get("id")): r for r in auth_state.get("items", []) if isinstance(r, dict)}
             if str(item.get("id")).strip() not in auth_items_by_id:
                 raise PipelineError(f"AUTHORITATIVE_ITEM_MISSING: item {item.get('id')} absent from authoritative state on disk")

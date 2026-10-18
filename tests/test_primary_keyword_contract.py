@@ -366,5 +366,59 @@ class TestPrimaryKeywordContract(unittest.TestCase):
         self.assertIn("unknown keyword", msg)
 
 
+    def test_u_untrusted_post_metadata_cannot_override_owner_or_slug_semantics(self):
+        """PR-controlled metadata is never a trusted owner requirement or slug semantic mapping."""
+        post = {
+            "id": "stock-market-investments",
+            "slug": "stock-market-investments",
+            "title": "שאילתה עברית לא מוכרת כלל: מדריך",
+            "content": "<p>שאילתה עברית לא מוכרת כלל היא נושא לבחינה.</p>",
+            "primaryKeyword": "שאילתה עברית לא מוכרת כלל",
+            "ownerRequiredPrimaryKeyword": "שאילתה עברית לא מוכרת כלל",
+            "slugSemanticTokens": ["stock", "market"],
+        }
+        errors = validate_primary_keyword_contract(post, "- Primary Keyword: שאילתה עברית לא מוכרת כלל\n")
+        self.assertTrue(any("unknown keyword" in e for e in errors), errors)
+
+    def test_v_trusted_owner_keyword_is_loaded_only_from_bound_controller_artifact(self):
+        """GitHub gate binds owner keyword to controller run artifact, not PR body/post fields."""
+        import io
+        import zipfile
+        validator = self._load_validator()
+        pr = {"number": 123, "html_url": "https://github.com/yanivsa/kesher-website/pull/123"}
+        state = {"cycle": "2026-10-18", "article": {"pr_number": 123, "run_id": 999}}
+        artifact_listing = {"artifacts": [{"id": 77, "name": "kesher-article-result-999", "expired": False}]}
+        payload = {
+            "slot": "2026-10-18",
+            "pr_url": pr["html_url"],
+            "owner_required_primary_keyword": "גמילה מטיטול",
+        }
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w") as zf:
+            zf.writestr("result.json", json.dumps(payload, ensure_ascii=False))
+        with mock.patch.object(validator, "fetch_repo_json", return_value=state), \
+                mock.patch.object(validator, "api_json", return_value=artifact_listing), \
+                mock.patch.object(validator, "api_bytes", return_value=buf.getvalue()):
+            brief = validator.trusted_owner_topic_brief("yanivsa/kesher-website", pr, "token")
+        self.assertEqual(brief, "Required Primary Keyword: גמילה מטיטול")
+
+    def test_w_runner_persists_owner_keyword_into_trusted_result_artifact(self):
+        """Article runner persists owner keyword to the workflow result artifact after Jules returns."""
+        import os
+        import tempfile
+        import scripts.jules_article_runner_v4 as runner
+        with tempfile.TemporaryDirectory() as td:
+            result = Path(td) / "result.json"
+            result.write_text(json.dumps({"slot": "2026-10-18", "pr_url": "https://github.com/x/y/pull/1"}), encoding="utf-8")
+            brief = Path(td) / "brief.txt"
+            brief.write_text("Topic: גמילה\nRequired Primary Keyword: גמילה מטיטול\n", encoding="utf-8")
+            with mock.patch.dict(os.environ, {"KESHER_ARTICLE_TOPIC_BRIEF_FILE": str(brief)}, clear=False), \
+                    mock.patch.object(runner.v3.core, "result_path", return_value=result):
+                runner.persist_owner_keyword_result_metadata()
+            payload = json.loads(result.read_text(encoding="utf-8"))
+            self.assertEqual(payload["owner_required_primary_keyword"], "גמילה מטיטול")
+            self.assertTrue(payload["owner_topic_brief_sha256"])
+
+
 if __name__ == "__main__":
     unittest.main()

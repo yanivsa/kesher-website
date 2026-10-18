@@ -283,7 +283,17 @@ def is_verified_public_short(item: dict[str, Any], source: dict[str, Any]) -> bo
 
 
 def is_uploaded_unverified_short(item: dict[str, Any], source: dict[str, Any]) -> bool:
-    if not _short_media_and_signature_verified(item, source):
+    """Recognize an existing external Short identity without treating it as publication-safe.
+
+    Legacy/external insertions may predate today's local provenance fields. They must
+    block duplicate generation and be routed to remote verification, but they are not
+    considered a verified public Short until the full canonical Short contract passes.
+    """
+    if not isinstance(item, dict) or item.get("type") != "article_short":
+        return False
+    if source_slug(item) != str(source.get("slug") or "").strip():
+        return False
+    if str((item.get("source") or {}).get("content_sha256") or "") != str(source.get("content_sha256") or ""):
         return False
     if not bool(str(item.get("youtube_id") or "").strip()):
         return False
@@ -723,6 +733,9 @@ def prepare_upload(
     ).strip()
     exact_required = (os.environ.get("KESHER_EXACT_UPLOAD_REQUIRED") or "").strip().lower() == "true"
     media_mode = os.environ.get('KESHER_MEDIA_MODE', '')
+    reconciled_predecessor_item_id = (os.environ.get("KESHER_REQUESTED_TARGET_ITEM_ID") or "").strip()
+    if reconciled_predecessor_item_id == target_item_id:
+        reconciled_predecessor_item_id = ""
     target_candidates = [
         i for i in state.get("items", [])
         if isinstance(i, dict) and str(i.get("id") or "").strip() == target_item_id
@@ -766,7 +779,8 @@ def prepare_upload(
 
             try:
                 authoritative_item = pipeline.verify_single_upload_authority(
-                    state, target, target_content_sha256, target_item_id, candidate_items=unresolved
+                    state, target, target_content_sha256, target_item_id, candidate_items=unresolved,
+                    reconciled_predecessor_item_id=reconciled_predecessor_item_id,
                 )
             except pipeline.PipelineError:
                 workflow_output("ready", "false")
@@ -880,7 +894,8 @@ def prepare_upload(
         if cand_slug and cand_hash:
             try:
                 authoritative_item = pipeline.verify_single_upload_authority(
-                    state, cand_slug, cand_hash, item.get("id"), candidate_items=unresolved
+                    state, cand_slug, cand_hash, item.get("id"), candidate_items=unresolved,
+                    reconciled_predecessor_item_id=reconciled_predecessor_item_id,
                 )
             except pipeline.PipelineError:
                 workflow_output("ready", "false")
@@ -956,6 +971,20 @@ def prepare_upload(
         raise pipeline.PipelineError(
             f"Published source changed before upload for {slug}"
         )
+
+    if is_long and reconciled_predecessor_item_id:
+        for predecessor in state.get("items", []) or []:
+            if (
+                isinstance(predecessor, dict)
+                and str(predecessor.get("id") or "").strip() == reconciled_predecessor_item_id
+                and source_slug(predecessor) == cand_slug
+                and str((predecessor.get("source") or {}).get("content_sha256") or "").strip() == cand_hash
+                and predecessor.get("uploaded") is not True
+            ):
+                predecessor["status"] = "superseded"
+                predecessor["superseded_reason"] = "reconciled_target_replacement"
+                predecessor["superseded_at"] = pipeline.utc_now()
+                predecessor["updated_at"] = pipeline.utc_now()
 
     prior_status = item.get("status")
     item["review_gate"] = "advisory-jules"
