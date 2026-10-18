@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "article_live",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -56,7 +56,7 @@
     "next_deploy_retry_at": null,
     "deploy_run_id": 39097912612,
     "deploy_status": "exhausted",
-    "live_verified_at": "2026-10-18T08:55:49.035976+00:00"
+    "live_verified_at": "2026-10-18T08:56:01.755883+00:00"
   },
   "backlog": [
     {
@@ -1429,24 +1429,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T03:30:51.243146+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
-    {
-      "at": "2026-10-18T03:35:49.330213+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
-    {
       "at": "2026-10-18T03:40:47.488189+00:00",
       "from": "article_needed",
       "to": "blocked",
@@ -2231,9 +2213,21 @@
       "from": "blocked",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-18T08:56:02.234972+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-18T08:56:04.351139+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-10-18T08:55:49.036010+00:00",
+  "updated_at": "2026-10-18T08:56:04.351157+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2303,7 +2297,7 @@
   },
   "short": {
     "attempt_count": 3,
-    "status": "retry_wait",
+    "status": "running",
     "last_error": {
       "code": "SHORT_WORKFLOW_FAILED",
       "message": "Short derive run 39107989848 completed with conclusion=failure",
@@ -2312,7 +2306,7 @@
       "at": "2026-10-18T07:36:25.910268+00:00"
     },
     "next_retry_at": "2026-10-18T07:51:25.910241+00:00",
-    "run_id": 39107989848,
+    "run_id": 39113326224,
     "processed_run_id": 39107989848,
     "provider_id": "7f8f596c-4dd9-4092-9859-3b5c838eed38",
     "failure_fingerprint": "SHORT_WORKFLOW_FAILED",
