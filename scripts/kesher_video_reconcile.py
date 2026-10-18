@@ -1121,6 +1121,101 @@ def adopt_long_form_provider(state_path: str, slug: str, content_sha256: str, lo
     print(f"SHORT_DERIVE_ADOPTED slug={slug} item={item.get('id')} long_item={long_item_id}")
     return 0
 
+
+def bind_short_overview_identity(
+    long_state_path: str,
+    slug: str,
+    content_sha256: str,
+    long_item_id: str,
+    short_item_id: str = "",
+) -> int:
+    """Persist exact authoritative Overview provenance onto an existing native Short.
+
+    This is recovery metadata only. It never copies Long provider IDs into the Short's
+    own provider identity and never generates, renders, uploads, or replaces media.
+    """
+    slug = str(slug or "").strip()
+    content_sha256 = str(content_sha256 or "").strip()
+    long_item_id = str(long_item_id or "").strip()
+    short_item_id = str(short_item_id or "").strip()
+    if not slug or not content_sha256 or not long_item_id:
+        raise pipeline.PipelineError("Short Overview binding requires slug, content hash and long item id")
+
+    source = current_source_snapshot(slug)
+    if str(source.get("content_sha256") or "") != content_sha256:
+        raise pipeline.PipelineError(f"Published source hash changed before Short Overview binding for {slug}")
+
+    path = Path(long_state_path)
+    if not path.is_file():
+        raise pipeline.PipelineError("Authoritative Overview state artifact is missing")
+    long_state = json.loads(path.read_text(encoding="utf-8"))
+    if long_state.get("version") != 1 or not isinstance(long_state.get("items"), list):
+        raise pipeline.PipelineError("Authoritative Overview state schema is unsupported")
+
+    long_matches = [
+        row for row in long_state["items"]
+        if isinstance(row, dict)
+        and str(row.get("id") or "").strip() == long_item_id
+        and row.get("type") == "video_overview"
+        and source_slug(row) == slug
+        and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
+    ]
+    if len(long_matches) != 1:
+        raise pipeline.PipelineError("Exact authoritative Overview item was not found uniquely")
+    long_item = long_matches[0]
+    verification = long_item.get("youtube_verification") or {}
+    if not (
+        long_item.get("technical_verified") is True
+        and long_item.get("uploaded") is True
+        and long_item.get("status") == "uploaded"
+        and bool(str(long_item.get("youtube_id") or "").strip())
+        and verification.get("channel_id") == pipeline.YOUTUBE_CHANNEL_ID
+        and verification.get("privacy_status") == "public"
+        and verification.get("processing_status") == "succeeded"
+    ):
+        raise pipeline.PipelineError("Exact authoritative Overview item is not verified public")
+
+    identity_fields = ("notebook_id", "source_id", "task_id", "artifact_id", "raw_sha256")
+    overview_identity = {field: str(long_item.get(field) or "").strip() for field in identity_fields}
+    if any(not overview_identity[field] for field in identity_fields):
+        raise pipeline.PipelineError("Exact authoritative Overview provider identity is incomplete")
+    raw_sha = overview_identity["raw_sha256"]
+    if len(raw_sha) != 64 or any(ch not in "0123456789abcdef" for ch in raw_sha.lower()):
+        raise pipeline.PipelineError("Exact authoritative Overview raw SHA is invalid")
+
+    state = pipeline.load_state()
+    candidates = [
+        row for row in state.get("items", [])
+        if isinstance(row, dict)
+        and row.get("type") == "article_short"
+        and source_slug(row) == slug
+        and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
+        and row.get("status") != "superseded"
+        and (not short_item_id or str(row.get("id") or "").strip() == short_item_id)
+    ]
+    if len(candidates) != 1:
+        raise pipeline.PipelineError("Exact native Short item was not found uniquely for Overview binding")
+    short_item = candidates[0]
+    if short_item.get("uploaded") is True:
+        raise pipeline.PipelineError("Refusing to mutate already-uploaded Short provenance")
+
+    existing = short_item.get("overview_provider_identity")
+    if existing is not None and existing != overview_identity:
+        raise pipeline.PipelineError("Existing Short Overview identity conflicts with authoritative Overview")
+
+    short_item["overview_provider_identity"] = overview_identity
+    if not delivery_guard._short_origin_verified(short_item):
+        short_item.pop("overview_provider_identity", None)
+        raise pipeline.PipelineError("Authoritative Overview identity does not prove independent Short origin")
+    short_item["updated_at"] = pipeline.utc_now()
+    pipeline.save_state(state)
+    export_target(short_item)
+    print(
+        "SHORT_OVERVIEW_IDENTITY_BOUND "
+        f"slug={slug} short_item={short_item.get('id')} long_item={long_item_id}"
+    )
+    return 0
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -1128,6 +1223,7 @@ def main() -> int:
     mode.add_argument("--prepare-upload", action="store_true")
     mode.add_argument("--release-without-short", metavar="SLUG")
     mode.add_argument("--adopt-long-form-state", metavar="STATE_PATH")
+    mode.add_argument("--bind-short-overview-identity", metavar="STATE_PATH")
     parser.add_argument("--slug", default="")
     parser.add_argument("--content-sha256", default="")
     parser.add_argument("--item-id", default="")
@@ -1139,6 +1235,10 @@ def main() -> int:
         return prepare_upload(args.slug, args.content_sha256, args.item_id)
     if args.adopt_long_form_state:
         return adopt_long_form_provider(args.adopt_long_form_state, args.slug, args.content_sha256, args.long_item_id)
+    if args.bind_short_overview_identity:
+        return bind_short_overview_identity(
+            args.bind_short_overview_identity, args.slug, args.content_sha256, args.long_item_id, args.item_id
+        )
     return release_without_short(str(args.release_without_short))
 
 
