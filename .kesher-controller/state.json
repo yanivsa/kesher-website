@@ -49,14 +49,14 @@
     "quality_content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-18T04:50:51.766043+00:00",
+    "quality_checked_at": "2026-10-18T04:53:17.008545+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-17T23:09:07.361763+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39097912612,
     "deploy_status": "exhausted",
-    "live_verified_at": "2026-10-18T04:51:28.185064+00:00"
+    "live_verified_at": "2026-10-18T04:53:18.049573+00:00"
   },
   "backlog": [
     {
@@ -2325,7 +2325,7 @@
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-18T04:58:14.911720+00:00",
     "run_id": 39098327293,
     "processed_run_id": null,
     "provider_id": null,
@@ -2372,27 +2372,13 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-17T21:35:44.239366+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-18",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "why-is-it-so-hard-to-find-a-relationship",
-        "target_content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008"
-      },
-      "intent_at": "2026-10-18T04:47:01.807375+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 39098327293,
-      "dispatched_at": "2026-10-18T04:47:01.807375+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 39097912612,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 39098327293,
     "conclusion": "success",
-    "source_slug": null,
+    "source_slug": "why-is-it-so-hard-to-find-a-relationship",
     "slot": "2026-10-18"
   },
   "processed_child_notifications": [
