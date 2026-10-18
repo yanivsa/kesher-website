@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39071624401,
@@ -56,7 +56,7 @@
     "next_deploy_retry_at": null,
     "deploy_run_id": 39097912612,
     "deploy_status": "exhausted",
-    "live_verified_at": "2026-10-18T08:58:00.567636+00:00"
+    "live_verified_at": "2026-10-18T08:58:23.374498+00:00"
   },
   "backlog": [
     {
@@ -1429,33 +1429,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T03:40:47.488189+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
-    {
-      "at": "2026-10-18T03:45:51.403386+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
-    {
-      "at": "2026-10-18T03:50:52.120231+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
-    {
       "at": "2026-10-18T03:55:47.138705+00:00",
       "from": "article_needed",
       "to": "blocked",
@@ -2225,9 +2198,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-10-18T08:58:23.374526+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-18T08:58:24.302529+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-18T08:58:25.191630+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-18T08:56:04.351157+00:00",
+  "updated_at": "2026-10-18T08:58:25.191650+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2297,7 +2288,7 @@
   },
   "short": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "complete",
     "last_error": {
       "code": "SHORT_WORKFLOW_FAILED",
       "message": "Short derive run 39107989848 completed with conclusion=failure",
@@ -2308,16 +2299,16 @@
     "next_retry_at": "2026-10-18T07:51:25.910241+00:00",
     "run_id": 39113326224,
     "processed_run_id": 39107989848,
-    "provider_id": "7f8f596c-4dd9-4092-9859-3b5c838eed38",
+    "provider_id": "18aafe87-a4b2-4e0f-9221-c748a36ee72a",
     "failure_fingerprint": "SHORT_WORKFLOW_FAILED",
     "same_failure_streak": 2,
     "failure_count_by_type": {
       "SHORT_WORKFLOW_FAILED": 2
     },
     "last_dispatch_at": "2026-10-18T07:31:33.478934+00:00",
-    "artifact_id": "7f8f596c-4dd9-4092-9859-3b5c838eed38",
-    "source_id": "7765372e-f3ef-4927-88be-dd3385e810e9",
-    "adopted_from_long_item_id": "video-20261018-082526-b7925c4cbe-a2",
+    "artifact_id": "18aafe87-a4b2-4e0f-9221-c748a36ee72a",
+    "source_id": "874ad390-ac9c-450d-9c3b-c0f35bd44c82",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:why-is-it-so-hard-to-find-a-relationship:b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008:video-20261018-094315-b7925c4cbe",
       "hard_started_at": "2026-10-18T06:43:22.840494+00:00",
@@ -2327,7 +2318,125 @@
       "last_recovery_at": "2026-10-18T07:10:47.767223+00:00"
     },
     "last_run_conclusion": "failure",
-    "last_failed_run_id": 39107989848
+    "last_failed_run_id": 39107989848,
+    "source": {
+      "id": "why-is-it-so-hard-to-find-a-relationship",
+      "slug": "why-is-it-so-hard-to-find-a-relationship",
+      "title": "למה כל כך קשה למצוא זוגיות: העייפות, השחיקה ואיך מתחילים לשנות גישה",
+      "date": "2026-10-18",
+      "category": "זוגיות",
+      "subcategory": "מציאת זוגיות",
+      "excerpt": "החיפוש אחרי זוגיות יכול להפוך ממסע מרגש למשימה שוחקת ומעייפת. איך ההצפה באפליקציות, הקריטריונים הנוקשים והפחד מדחייה משפיעים על האנרגיה שלנו, ומה אפשר לעשות כדי להחזיר את הסקרנות והפתיחות לתהליך ההיכרות?",
+      "canonical_url": "https://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-a-relationship",
+      "content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
+      "video_title": "למה כל כך קשה למצוא זוגיות: העייפות, השחיקה ואיך מתחילים לשנות גישה",
+      "short_title": "למה כל כך קשה למצוא זוגיות: העייפות, השחיקה ואיך מתחילים לשנות גישה",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "למה כל כך קשה למצוא זוגיות: העייפות, השחיקה ואיך מתחילים לשנות גישה",
+        "description": "החיפוש אחרי זוגיות יכול להפוך ממסע מרגש למשימה שוחקת ומעייפת. איך ההצפה באפליקציות, הקריטריונים הנוקשים והפחד מדחייה משפיעים על האנרגיה שלנו, ומה אפשר לעשות כדי להחזיר את הסקרנות והפתיחות לתהליך ההיכרות?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-a-relationship\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "זוגיות",
+          "מציאת זוגיות"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: למה כל כך קשה למצוא זוגיות: העייפות, השחיקה ואיך מתחילים לשנות גישה",
+        "description": "החיפוש אחרי זוגיות יכול להפוך ממסע מרגש למשימה שוחקת ומעייפת. איך ההצפה באפליקציות, הקריטריונים הנוקשים והפחד מדחייה משפיעים על האנרגיה שלנו, ומה אפשר לעשות כדי להחזיר את הסקרנות והפתיחות לתהליך ההיכרות?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-a-relationship\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "זוגיות",
+          "מציאת זוגיות"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "18aafe87-a4b2-4e0f-9221-c748a36ee72a",
+    "raw_sha256": "6484c5c4153a429946fa7b306e7b05ac74d9f3cb54385b7fe14ebeae8c93e015",
+    "final_sha256": "e3ba1e526194145543cae27f39997356aca80d06a770c4549dec88d2cd76b493",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 71.2,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 71.2,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "7765372e-f3ef-4927-88be-dd3385e810e9",
+      "task_id": "7f8f596c-4dd9-4092-9859-3b5c838eed38",
+      "artifact_id": "7f8f596c-4dd9-4092-9859-3b5c838eed38",
+      "raw_sha256": "3b9b5089ad82c90798eadd063b8e9ec4cdcb8e4ba5152cce34b80558cd01b4e1"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 71.2,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "6484c5c4153a429946fa7b306e7b05ac74d9f3cb54385b7fe14ebeae8c93e015",
+      "final_sha256": "e3ba1e526194145543cae27f39997356aca80d06a770c4549dec88d2cd76b493",
+      "raw_audio_sha256": "6576889e9c5b2e3b1d63a14e7308d258563349046678947c6594aa678d05b50c",
+      "final_audio_sha256": "6576889e9c5b2e3b1d63a14e7308d258563349046678947c6594aa678d05b50c",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 71.262041
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 71.262041
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "e3ba1e526194145543cae27f39997356aca80d06a770c4549dec88d2cd76b493",
+      "raw_sha256": "6484c5c4153a429946fa7b306e7b05ac74d9f3cb54385b7fe14ebeae8c93e015",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "141683e33a5c6c601a8093e3cee7086c2c0511a2d811bded066e12c33e4e02de",
+      "source_duration_seconds": 71.2,
+      "final_duration_seconds": 71.2,
+      "start_seconds": 68.2,
+      "end_seconds": 71.2,
+      "audio_source_sha256": "6484c5c4153a429946fa7b306e7b05ac74d9f3cb54385b7fe14ebeae8c93e015"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261018-094315-b7925c4cbe",
+    "type": "article_short",
+    "youtube_id": "pS5COsG_z6s",
+    "youtube_url": "https://youtu.be/pS5COsG_z6s",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "141683e33a5c6c601a8093e3cee7086c2c0511a2d811bded066e12c33e4e02de",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
