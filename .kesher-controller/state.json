@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1429,15 +1429,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-17T22:04:21.982730+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/16861805342818085118"
-      }
-    },
-    {
       "at": "2026-10-17T22:09:20.814372+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2321,9 +2312,19 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-10-18T05:31:04.758287+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261018-082526-b7925c4cbe-a2",
+        "task_id": "7f8f596c-4dd9-4092-9859-3b5c838eed38"
+      }
     }
   ],
-  "updated_at": "2026-10-18T05:26:14.349386+00:00",
+  "updated_at": "2026-10-18T05:31:04.758296+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2342,7 +2343,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "rejected",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-10-18T05:33:53.006400+00:00",
     "run_id": 39100391697,
