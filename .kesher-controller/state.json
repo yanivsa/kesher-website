@@ -1429,12 +1429,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-17T21:00:41.472432+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
       "at": "2026-10-17T21:00:41.472968+00:00",
       "from": "article_needed",
       "to": "v5_migrated",
@@ -2314,9 +2308,19 @@
         "item_id": "video-20261018-074945-b7925c4cbe",
         "task_id": "d71791d3-381b-4947-b59f-b3f45afec3b5"
       }
+    },
+    {
+      "at": "2026-10-18T05:06:00.292185+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261018-074945-b7925c4cbe",
+        "task_id": "d71791d3-381b-4947-b59f-b3f45afec3b5"
+      }
     }
   ],
-  "updated_at": "2026-10-18T05:01:14.917839+00:00",
+  "updated_at": "2026-10-18T05:06:00.292191+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
