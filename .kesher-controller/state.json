@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1449,12 +1449,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T11:11:01.880749+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-18T11:11:02.306846+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2164,9 +2158,19 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-10-18T22:44:36.598536+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261019-014058-ecf4f1b219-a3",
+        "task_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0"
+      }
     }
   ],
-  "updated_at": "2026-10-18T22:41:01.444220+00:00",
+  "updated_at": "2026-10-18T22:44:36.598546+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2185,12 +2189,12 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "rejected",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-10-18T22:49:23.070284+00:00",
     "run_id": 39173173727,
-    "processed_run_id": 39172631354,
-    "provider_id": "44341586-b6fa-4c04-9c5c-11c687cc60ed",
+    "processed_run_id": 39173173727,
+    "provider_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
@@ -2198,20 +2202,20 @@
     "last_dispatch_at": "2026-10-18T22:39:17.913105+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
-    "item_id": "video-20261019-012752-ecf4f1b219-a2",
+    "item_id": "video-20261019-014058-ecf4f1b219-a3",
     "source_slug": "pacifier-weaning",
     "source_content_sha256": "ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a",
     "content_sha256": "ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a",
-    "source_id": "8c6dd34f-b900-4bf8-af0b-42f81c8c797c",
-    "task_id": "44341586-b6fa-4c04-9c5c-11c687cc60ed",
-    "artifact_id": "44341586-b6fa-4c04-9c5c-11c687cc60ed",
+    "source_id": "da9bbdbe-8255-4c02-ab5b-b8a584da2c9e",
+    "task_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0",
+    "artifact_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0",
     "provider_status": "pending",
     "verified": false,
     "watchdog": {
-      "identity": "long_video:pacifier-weaning:ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a:video-20261019-012752-ecf4f1b219-a2",
-      "hard_started_at": "2026-10-18T22:28:00.998788+00:00",
-      "last_progress_at": "2026-10-18T22:30:45.148287+00:00",
-      "last_fingerprint": "fe79b93085225273efcfd0bdefbf181315a015123eb74105bafc88454f52a0d7",
+      "identity": "long_video:pacifier-weaning:ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a:video-20261019-014058-ecf4f1b219-a3",
+      "hard_started_at": "2026-10-18T22:41:04.987004+00:00",
+      "last_progress_at": "2026-10-18T22:44:23.070284+00:00",
+      "last_fingerprint": "dd00f58331b5864a2e922c4bff27f87fc52d8f942c9024904ecfdef16b302ab5",
       "recovery_count": 0,
       "last_recovery_at": null
     },
