@@ -49,14 +49,14 @@
     "quality_content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-18T08:55:48.317945+00:00",
+    "quality_checked_at": "2026-10-18T08:57:58.993120+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-17T23:09:07.361763+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39097912612,
     "deploy_status": "exhausted",
-    "live_verified_at": "2026-10-18T08:56:01.755883+00:00"
+    "live_verified_at": "2026-10-18T08:58:00.567636+00:00"
   },
   "backlog": [
     {
@@ -2306,7 +2306,7 @@
       "at": "2026-10-18T07:36:25.910268+00:00"
     },
     "next_retry_at": "2026-10-18T07:51:25.910241+00:00",
-    "run_id": 39107989848,
+    "run_id": 39113326224,
     "processed_run_id": 39107989848,
     "provider_id": "7f8f596c-4dd9-4092-9859-3b5c838eed38",
     "failure_fingerprint": "SHORT_WORKFLOW_FAILED",
@@ -2353,26 +2353,11 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-17T21:35:44.239366+00:00"
-    },
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-10-18",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "why-is-it-so-hard-to-find-a-relationship",
-        "derive_content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
-        "derive_long_item_id": "video-20261018-082526-b7925c4cbe-a2"
-      },
-      "intent_at": "2026-10-18T07:30:49.333976+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39106723723,
-      "observed_active_run_id": 39107989848,
-      "dispatched_at": "2026-10-18T07:30:49.333976+00:00"
     }
   },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
-    "run_id": 39104943434,
+    "run_id": 39113326224,
     "conclusion": "success",
     "source_slug": "why-is-it-so-hard-to-find-a-relationship",
     "slot": "2026-10-18"
