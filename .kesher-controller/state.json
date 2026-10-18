@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-18",
-  "status": "blocked",
+  "cycle": "2026-10-19",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 2,
-    "status": "exhausted",
+    "status": "in_progress",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39132616244,
@@ -52,17 +52,20 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1144",
     "current_pr_head_sha": "2e02105828cbdf6210e3c16faf8777cc145d92f4",
     "jules_head_sha": "a98961493e41911275ae1a7eb7751bf8f65d5661",
-    "normalization_status": "pending",
+    "normalization_status": "complete",
     "normalization_slot": "2026-10-19",
     "normalization_dispatched_at": "2026-10-18T13:57:53.572837+00:00",
     "normalization_run_id": 39133853811,
     "normalization_drift_count": 2,
     "merge_dispatch_at": "2026-10-18T21:26:00.257566+00:00",
-    "merge_dispatch_count": 3,
+    "merge_dispatch_count": 0,
     "merge_run_id": 39134462056,
     "quality_content_sha256": "ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a",
     "slug": "pacifier-weaning",
-    "title": "גמילה ממוצץ בגיל שנתיים או שלוש: איך נפרדים בלי מאבקים מיותרים"
+    "title": "גמילה ממוצץ בגיל שנתיים או שלוש: איך נפרדים בלי מאבקים מיותרים",
+    "normalized_head_sha": "2e02105828cbdf6210e3c16faf8777cc145d92f4",
+    "image_head_sha": "2e02105828cbdf6210e3c16faf8777cc145d92f4",
+    "merge_candidate_sha": "2e02105828cbdf6210e3c16faf8777cc145d92f4"
   },
   "backlog": [
     {
@@ -1432,12 +1435,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "PR #1144 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-18T21:45:47.382182+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-18T10:41:27.293586+00:00",
@@ -2121,7 +2119,7 @@
   "updated_at": "2026-10-18T21:45:47.382203+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
