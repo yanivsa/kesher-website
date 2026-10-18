@@ -51,6 +51,21 @@ on:
         required: false
         default: ""
         type: string
+      idea_id:
+        description: Optional stable owner idea ID to enqueue (lowercase slug-like token)
+        required: false
+        default: ""
+        type: string
+      topic_brief:
+        description: Owner-authored topic brief for the queued idea
+        required: false
+        default: ""
+        type: string
+      required_primary_keyword:
+        description: Exact Hebrew Primary Keyword required for the queued article
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: write
@@ -102,4 +117,7 @@ jobs:
           KESHER_CHILD_SOURCE_SLUG: ${{ inputs.source_slug || '' }}
           KESHER_CHILD_SOURCE_SHA: ${{ inputs.source_sha || '' }}
           KESHER_CHILD_SLOT: ${{ inputs.slot || '' }}
+          KESHER_IDEA_ID: ${{ inputs.idea_id || '' }}
+          KESHER_IDEA_TOPIC_BRIEF: ${{ inputs.topic_brief || '' }}
+          KESHER_IDEA_REQUIRED_PRIMARY_KEYWORD: ${{ inputs.required_primary_keyword || '' }}
         run: PYTHONPATH=. python3 -u scripts/kesher_content_controller_stabilized.py --report-json
