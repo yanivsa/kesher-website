@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-18T13:36:03.515861+00:00",
+    "next_retry_at": null,
     "run_id": 39128725815,
     "processed_run_id": 39128725815,
     "provider_id": null,
@@ -15,9 +15,9 @@
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
-    "attempts": 1,
+    "attempts": 2,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-10-18T12:46:58.537334+00:00",
+    "last_dispatch_at": "2026-10-18T13:41:00.958929+00:00",
     "last_run_conclusion": "failure",
     "last_worker_result": {
       "schema_version": 1,
@@ -1420,12 +1420,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T10:25:58.358077+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-18T10:25:58.812387+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2063,9 +2057,19 @@
       "details": {
         "retry_at": "2026-10-18T13:36:03.515861+00:00"
       }
+    },
+    {
+      "at": "2026-10-18T13:41:00.958955+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 2,
+        "publication_slot": "2026-10-19"
+      }
     }
   ],
-  "updated_at": "2026-10-18T13:35:47.028439+00:00",
+  "updated_at": "2026-10-18T13:41:00.958963+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2123,9 +2127,10 @@
         "topic_brief": "כתוב מאמר עברי מקצועי, ברור ומעשי להורים לפעוטות בנושא גמילה ממוצץ. התייחס למתי נכון להתחיל, איך להכין את הילד בהדרגה, איך מציבים גבולות עקביים ורגועים, ההבדל בין גמילה ביום לבין הירדמות ושינה, התמודדות עם בכי, התנגדות ונסיגה, ומה עושים כשהמוצץ הוא כלי הרגעה מרכזי. כלול טעויות נפוצות, צעדים מעשיים ודוגמאות לניסוח מול הילד. שמור על טון רגוע, לא שיפוטי ומבוסס, בלי הבטחות מוחלטות. המאמר חייב להישאר ממוקד בכוונת החיפוש של גמילה ממוצץ.\n\nIdea Request ID: pacifier-weaning-20261018-v1\nRequired Primary Keyword: גמילה ממוצץ"
       },
       "intent_at": "2026-10-18T13:40:47.597483+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39128725815,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-18T13:40:47.597483+00:00"
     }
   },
   "last_child_notification": {
