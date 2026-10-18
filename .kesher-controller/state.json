@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "blocked",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1417,19 +1417,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "IDEA_SLOT_MISMATCH",
-    "message": "IDEA_SLOT_MISMATCH",
-    "at": "2026-10-18T13:31:03.515920+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-18T10:21:22.665183+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
     {
       "at": "2026-10-18T10:25:58.358077+00:00",
       "from": "complete",
@@ -2065,9 +2054,18 @@
       "details": {
         "message": "IDEA_SLOT_MISMATCH"
       }
+    },
+    {
+      "at": "2026-10-18T13:35:47.028425+00:00",
+      "from": "blocked",
+      "to": "article_retry_wait",
+      "reason": "owner run-now article retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-18T13:36:03.515861+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-18T13:31:03.515926+00:00",
+  "updated_at": "2026-10-18T13:35:47.028439+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
