@@ -1,21 +1,21 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "blocked",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 2,
-    "status": "exhausted",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39132616244,
     "processed_run_id": 39128725815,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
-    "attempts": 2,
+    "attempts": 0,
     "deploy_attempts": 0,
     "last_dispatch_at": "2026-10-18T13:41:00.958929+00:00",
     "last_run_conclusion": "failure",
@@ -59,13 +59,20 @@
     "normalization_drift_count": 2,
     "merge_dispatch_at": "2026-10-18T21:56:06.342564+00:00",
     "merge_dispatch_count": 1,
-    "merge_run_id": 39170003767,
+    "merge_run_id": 39170053635,
     "quality_content_sha256": "ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a",
     "slug": "pacifier-weaning",
     "title": "גמילה ממוצץ בגיל שנתיים או שלוש: איך נפרדים בלי מאבקים מיותרים",
     "normalized_head_sha": "e01fe6b636f1cf6c73a5ede2c684d89c53cebc2d",
     "image_head_sha": "e01fe6b636f1cf6c73a5ede2c684d89c53cebc2d",
-    "merge_candidate_sha": "e01fe6b636f1cf6c73a5ede2c684d89c53cebc2d"
+    "merge_candidate_sha": "e01fe6b636f1cf6c73a5ede2c684d89c53cebc2d",
+    "url": "https://kesher.saharoni.com/blog/pacifier-weaning",
+    "published_date": "2026-10-19",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-10-18T21:58:41.644377+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -1435,12 +1442,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "PR #1144 exhausted 3 total article content attempts (initial + 2 repairs)",
-    "at": "2026-10-18T21:57:31.420367+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-18T10:46:12.536348+00:00",
@@ -2138,7 +2140,8 @@
     "last_dispatch_at": "2026-10-18T13:59:14.089596+00:00",
     "artifact_sha256": "3544cc3ed211ba3ca7c2c5772cd34abb1eb12ec3f97f793fa0da85fd623b61c1",
     "source_id": "local://public/images/fallback/parenting/parenting_emotional_support_reading.jpg",
-    "run_id": 39133949030
+    "run_id": 39133949030,
+    "image_path": "/images/generated/blog/pacifier-weaning.jpg"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2176,10 +2179,21 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-10-19",
+      "inputs": {},
+      "intent_at": "2026-10-18T21:58:36.786725+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "7bcb4a0ca8cee98bba1256397e5e2703f8c2cad4"
+    }
+  },
   "last_child_notification": {
     "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 39170003767,
+    "run_id": 39170053635,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-19"
