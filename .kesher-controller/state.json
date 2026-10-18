@@ -47,7 +47,11 @@
       }
     },
     "last_jules_session_id": "sessions/2770575462461790479",
-    "last_failed_run_id": 39128725815
+    "last_failed_run_id": 39128725815,
+    "pr_number": 1144,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1144",
+    "current_pr_head_sha": "a98961493e41911275ae1a7eb7751bf8f65d5661",
+    "jules_head_sha": "a98961493e41911275ae1a7eb7751bf8f65d5661"
   },
   "backlog": [
     {
@@ -2128,26 +2132,25 @@
     "short_origin_verified": false
   },
   "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
       "cycle": "2026-10-18",
       "inputs": {
-        "slot": "2026-10-19",
-        "topic_brief": "כתוב מאמר עברי מקצועי, ברור ומעשי להורים לפעוטות בנושא גמילה ממוצץ. התייחס למתי נכון להתחיל, איך להכין את הילד בהדרגה, איך מציבים גבולות עקביים ורגועים, ההבדל בין גמילה ביום לבין הירדמות ושינה, התמודדות עם בכי, התנגדות ונסיגה, ומה עושים כשהמוצץ הוא כלי הרגעה מרכזי. כלול טעויות נפוצות, צעדים מעשיים ודוגמאות לניסוח מול הילד. שמור על טון רגוע, לא שיפוטי ומבוסס, בלי הבטחות מוחלטות. המאמר חייב להישאר ממוקד בכוונת החיפוש של גמילה ממוצץ.\n\nIdea Request ID: pacifier-weaning-20261018-v1\nRequired Primary Keyword: גמילה ממוצץ"
+        "pr_number": "1144",
+        "slot": "2026-10-19"
       },
-      "intent_at": "2026-10-18T13:40:47.597483+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39128725815,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-18T13:40:47.597483+00:00"
+      "intent_at": "2026-10-18T13:57:38.434824+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 39113326224,
+    "workflow": "Kesher Article Generation",
+    "run_id": 39132616244,
     "conclusion": "success",
-    "source_slug": "why-is-it-so-hard-to-find-a-relationship",
-    "slot": "2026-10-18"
+    "source_slug": null,
+    "slot": "2026-10-19"
   },
   "processed_child_notifications": [],
   "deploy_history": [
