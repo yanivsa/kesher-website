@@ -21,7 +21,12 @@
     "serviceLabel": "הדרכת הורים",
     "directAnswer": "גמילה ממוצץ היא תהליך הדרגתי שכדאי להתחיל כאשר המשפחה פנויה רגשית, ולא סביב שינויים גדולים אחרים בחיי הילד. חשוב להכין את הילד מראש, להבין את הקושי סביב ההירדמות, ולהציע נוכחות עקבית ומנחמת מול הבכי, בלי הבטחות של פרסים מוגזמים.",
     "evidence": [],
-    "controllerManaged": true
+    "controllerManaged": true,
+    "image": "/images/generated/blog/pacifier-weaning.jpg",
+    "imageAlt": "צילום מציאותי של הורה וילד באינטראקציה ביתית רגועה ותומכת",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/fallback/parenting/parenting_emotional_support_reading.jpg",
+    "imageIsFallback": true
   },
   {
     "id": "why-is-it-so-hard-to-find-a-relationship",
