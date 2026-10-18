@@ -706,6 +706,218 @@ sys.exit(0)
         self.assertEqual(final_state["state_revision"], 6)
         self.assertEqual(final_state["version"], 1)
 
+    # -------------------------------------------------------------------------
+    # Codex P1 Fix Tests: Authoritative Rebinding & Short Routing Boundary
+    # -------------------------------------------------------------------------
+
+    def test_codex_p1_authoritative_rebinding_stale_snapshot_rejected_on_disk(self):
+        """P1 #1 Scenario A:
+        authoritative disk state has status=rejected, technical_verified=False,
+        but stale caller snapshot has status=approved, technical_verified=True.
+        verify_single_upload_authority must load disk, return rejected item,
+        and downstream must fail closed (no upload).
+        """
+        src = sample_source()
+        item_id = "attempt-stale-1"
+
+        # Item on disk is REJECTED
+        disk_item = make_item(item_id, 1, status="rejected", technical_verified=False)
+        disk_state = {
+            "version": 1,
+            "state_revision": 5,
+            "items": [disk_item],
+        }
+        pipeline.save_state(disk_state)
+
+        # Stale in-memory snapshot has status="approved", technical_verified=True
+        stale_item = make_item(item_id, 1, status="approved", technical_verified=True)
+        stale_state = {
+            "version": 1,
+            "state_revision": 4,
+            "items": [stale_item],
+        }
+
+        # 1. verify_single_upload_authority must read disk, ignore stale state, and return disk_item
+        returned = pipeline.verify_single_upload_authority(
+            stale_state, src["slug"], src["content_sha256"], target_item_id=item_id
+        )
+        self.assertEqual(returned.get("status"), "rejected")
+        self.assertFalse(returned.get("technical_verified"))
+        self.assertFalse(pipeline.can_long_item_proceed_toward_publication(returned))
+
+    def test_codex_p1_prepare_upload_does_not_revert_to_stale_caller_snapshot(self):
+        """P1 #1 Scenario B:
+        prepare_upload() must use the returned authoritative item directly and NOT
+        revert to stale caller snapshot values. Must return ready=false and stop.
+        """
+        src = sample_source()
+        item_id = "attempt-stale-2"
+
+        # Item on disk is REJECTED with upload_eligible True (legacy unflagged)
+        disk_item = make_item(item_id, 1, status="rejected", technical_verified=False)
+        disk_item["upload_eligible"] = True
+        disk_state = {
+            "version": 1,
+            "state_revision": 5,
+            "items": [disk_item],
+        }
+        pipeline.save_state(disk_state)
+
+        # Stale in-memory snapshot has status="approved", technical_verified=True
+        stale_item = make_item(item_id, 1, status="approved", technical_verified=True)
+        stale_state = {
+            "version": 1,
+            "state_revision": 4,
+            "items": [stale_item],
+        }
+
+        outputs = {}
+        with mock.patch.dict(os.environ, {
+            "KESHER_MEDIA_MODE": "video_overview",
+            "TARGET_SLUG": src["slug"],
+            "TARGET_CONTENT_SHA256": src["content_sha256"],
+            "TARGET_ITEM_ID": item_id,
+        }), mock.patch.object(reconcile, "current_source_snapshot", return_value=src), \
+           mock.patch.object(reconcile, "workflow_output", lambda k, v: outputs.update({k: v})):
+            code = reconcile.prepare_upload(src["slug"], src["content_sha256"], item_id)
+            self.assertEqual(code, 0)
+            self.assertEqual(outputs.get("ready"), "false")
+
+    def test_codex_p1_upload_only_does_not_revert_to_stale_caller_snapshot(self):
+        """P1 #1 Scenario C:
+        upload_only() must use the returned authoritative item directly and NOT
+        revert to stale caller snapshot values. Must print NO_TECHNICALLY_VERIFIED_UPLOAD and return 0.
+        """
+        src = sample_source()
+        item_id = "attempt-stale-3"
+
+        # Item on disk is REJECTED with upload_eligible True (legacy or unflagged)
+        disk_item = make_item(item_id, 1, status="rejected", technical_verified=False)
+        disk_item["upload_eligible"] = True
+        disk_state = {
+            "version": 1,
+            "state_revision": 5,
+            "items": [disk_item],
+        }
+        pipeline.save_state(disk_state)
+
+        # Stale caller snapshot
+        stale_item = make_item(item_id, 1, status="approved", technical_verified=True)
+        stale_state = {
+            "version": 1,
+            "state_revision": 4,
+            "items": [stale_item],
+        }
+
+        with mock.patch.dict(os.environ, {
+            "KESHER_MEDIA_MODE": "video_overview",
+        }):
+            res = pipeline.upload_only(slug=src["slug"], item_id=item_id, state=stale_state)
+            self.assertEqual(res, 0)
+
+    def test_codex_p1_short_publication_readiness(self):
+        """P1 #2 Scenario D:
+        Valid Short item (type=article_short, approved, technical_verified=True)
+        must pass can_short_item_proceed_toward_publication and technical_publication_ready.
+        Long predicate must return False.
+        """
+        short_item = make_item("short-valid-1", 1, status="approved", technical_verified=True)
+        short_item["type"] = "article_short"
+        short_item["visual_pipeline"] = "remotion-v4-notebooklm-short-motion-plan-v1"
+
+        self.assertTrue(pipeline.can_short_item_proceed_toward_publication(short_item))
+        self.assertTrue(pipeline.can_item_proceed_toward_publication(short_item))
+        self.assertFalse(pipeline.can_long_item_proceed_toward_publication(short_item))
+        self.assertTrue(reconcile.technical_publication_ready(short_item))
+
+    def test_codex_p1_long_and_short_items_do_not_conflict_on_same_slug(self):
+        """P1 #2 Scenario E:
+        Long item and Short item coexist for the exact same slug + content_sha256.
+        Long authority check must filter only Long items and not conflict with Short.
+        Short must not be evaluated against video_overview constraints.
+        """
+        src = sample_source()
+        long_item = make_item("long-attempt-1", 1, status="approved", technical_verified=True)
+        long_item["type"] = "video_overview"
+
+        short_item = make_item("short-attempt-1", 1, status="approved", technical_verified=True)
+        short_item["type"] = "article_short"
+        short_item["visual_pipeline"] = "remotion-v4-notebooklm-short-motion-plan-v1"
+
+        state = {
+            "version": 1,
+            "state_revision": 2,
+            "items": [long_item, short_item],
+        }
+        pipeline.save_state(state)
+
+        # Long authority verification succeeds for long_item without ambiguity from short_item
+        long_auth = pipeline.verify_single_upload_authority(
+            state, src["slug"], src["content_sha256"], target_item_id="long-attempt-1"
+        )
+        self.assertEqual(long_auth["id"], "long-attempt-1")
+
+        # Short item publication readiness is completely unaffected by Long
+        self.assertTrue(pipeline.can_short_item_proceed_toward_publication(short_item))
+
+    def test_codex_p1_prepare_upload_short_does_not_execute_long_ambiguity(self):
+        """P1 #2 Scenario F:
+        When preparing Short upload, verify_single_upload_authority (Long check)
+        must NOT execute, and Short publication must proceed with advisory review.
+        """
+        src = sample_source()
+        short_item = make_item("short-pub-1", 1, status="approved", technical_verified=True)
+        short_item["type"] = "article_short"
+        short_item["visual_pipeline"] = "remotion-v4-notebooklm-short-motion-plan-v1"
+        short_item["source_mode"] = "independent"
+        short_item["signature_verified"] = True
+        short_item["signature_duration_seconds"] = 3.0
+
+        state = {
+            "version": 1,
+            "state_revision": 3,
+            "items": [short_item],
+        }
+        pipeline.save_state(state)
+
+        outputs = {}
+        with mock.patch.dict(os.environ, {
+            "KESHER_MEDIA_MODE": "article_short",
+            "TARGET_SLUG": src["slug"],
+            "TARGET_CONTENT_SHA256": src["content_sha256"],
+            "TARGET_ITEM_ID": "short-pub-1",
+        }), mock.patch.object(reconcile, "current_source_snapshot", return_value=src), \
+           mock.patch("scripts.kesher_e2e_delivery_guard._signature_verified", return_value=True), \
+           mock.patch.object(reconcile, "workflow_output", lambda k, v: outputs.update({k: v})):
+            code = reconcile.prepare_upload(src["slug"], src["content_sha256"], "short-pub-1")
+            self.assertEqual(code, 0)
+            self.assertEqual(outputs.get("ready"), "true")
+
+    def test_codex_p1_unknown_media_type_fails_closed(self):
+        """P1 #2 Scenario G:
+        Any unknown media type must fail closed across all gates.
+        """
+        src = sample_source()
+        unknown_item = {
+            "id": "unknown-1",
+            "type": "unsupported_media_type",
+            "status": "approved",
+            "technical_verified": True,
+            "final_sha256": "f" * 64,
+            "source": src,
+        }
+        self.assertFalse(pipeline.can_item_proceed_toward_publication(unknown_item))
+        self.assertFalse(pipeline.can_long_item_proceed_toward_publication(unknown_item))
+        self.assertFalse(pipeline.can_short_item_proceed_toward_publication(unknown_item))
+        self.assertFalse(reconcile.technical_publication_ready(unknown_item))
+
+        state = {"version": 1, "items": [unknown_item]}
+        pipeline.save_state(state)
+        with mock.patch.object(reconcile, "current_source_snapshot", return_value=src), \
+             self.assertRaises(pipeline.PipelineError) as ctx:
+            reconcile.prepare_upload(src["slug"], src["content_sha256"], "unknown-1")
+        self.assertIn("UNKNOWN_MEDIA_TYPE", str(ctx.exception))
+
 
 if __name__ == "__main__":
     unittest.main()

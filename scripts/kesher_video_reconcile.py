@@ -664,10 +664,20 @@ def technical_publication_ready(item: dict[str, Any]) -> bool:
     video_policy = policy["video"]
     if video_policy.get("publication_gate") != "technical" or video_policy.get("jules_is_advisory") is not True:
         raise pipeline.PipelineError("Video policy no longer declares technical publication with advisory Jules review")
-    return bool(
-        pipeline.can_long_item_proceed_toward_publication(item)
-        and item.get("final_sha256")
-    )
+    if not isinstance(item, dict):
+        return False
+    item_type = item.get("type")
+    if item_type in {"video_overview", None}:
+        return bool(
+            pipeline.can_long_item_proceed_toward_publication(item)
+            and item.get("final_sha256")
+        )
+    elif item_type == "article_short":
+        return bool(
+            pipeline.can_short_item_proceed_toward_publication(item)
+            and item.get("final_sha256")
+        )
+    return False
 
 
 def recover_persisted_youtube_id(state: dict[str, Any], item: dict[str, Any]) -> bool:
@@ -727,8 +737,13 @@ def prepare_upload(
     ).strip()
     exact_required = (os.environ.get("KESHER_EXACT_UPLOAD_REQUIRED") or "").strip().lower() == "true"
     media_mode = os.environ.get('KESHER_MEDIA_MODE', '')
-    overview = media_mode == 'video_overview' or (media_mode != 'article_short'
-                and any(item.get('type') == 'video_overview' for item in state.get('items', [])))
+    target_candidates = [
+        i for i in state.get("items", [])
+        if isinstance(i, dict) and str(i.get("id") or "").strip() == target_item_id
+    ] if target_item_id else []
+    is_target_short = any(i.get("type") == "article_short" for i in target_candidates) or media_mode == "article_short"
+    overview = (media_mode == 'video_overview' or (media_mode != 'article_short'
+                and any(item.get('type') == 'video_overview' for item in state.get('items', [])))) and not is_target_short
     exact_requested = overview or exact_required or bool(target_item_id or target_content_sha256)
     if exact_requested:
         if not all((target, target_content_sha256, target_item_id)):
@@ -736,32 +751,29 @@ def prepare_upload(
                 "Exact identity lock requires target_slug, content_sha256, and target_item_id"
             )
         from scripts import kesher_final_attempt_fallback as fallback
-        target_candidates = [
-            i for i in state.get("items", [])
-            if isinstance(i, dict) and str(i.get("id") or "").strip() == target_item_id
-        ]
-        if target_candidates and target_candidates[0].get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
-            workflow_output("ready", "false")
-            raise pipeline.PipelineError(
-                "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled"
-            )
+        if overview:
+            if target_candidates and target_candidates[0].get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
+                workflow_output("ready", "false")
+                raise pipeline.PipelineError(
+                    "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled"
+                )
 
-        try:
-            authoritative_item = pipeline.verify_single_upload_authority(
-                state, target, target_content_sha256, target_item_id, candidate_items=unresolved
-            )
-        except pipeline.PipelineError:
-            workflow_output("ready", "false")
-            raise
+            try:
+                authoritative_item = pipeline.verify_single_upload_authority(
+                    state, target, target_content_sha256, target_item_id, candidate_items=unresolved
+                )
+            except pipeline.PipelineError:
+                workflow_output("ready", "false")
+                raise
 
-        if state.get("fallback_winner"):
-            fw = state["fallback_winner"]
-            if fw.get("slug") == target and fw.get("content_sha256") == target_content_sha256:
-                if fw.get("fallback_committed") is True and fw.get("winner_item_id") != target_item_id:
-                    workflow_output("ready", "false")
-                    raise pipeline.PipelineError(
-                        f"EXACT_UPLOAD_SUPERSEDED: item {target_item_id} superseded by fallback winner {fw.get('winner_item_id')}"
-                    )
+            if state.get("fallback_winner"):
+                fw = state["fallback_winner"]
+                if fw.get("slug") == target and fw.get("content_sha256") == target_content_sha256:
+                    if fw.get("fallback_committed") is True and fw.get("winner_item_id") != target_item_id:
+                        workflow_output("ready", "false")
+                        raise pipeline.PipelineError(
+                            f"EXACT_UPLOAD_SUPERSEDED: item {target_item_id} superseded by fallback winner {fw.get('winner_item_id')}"
+                        )
         exact = [
             item for item in unresolved
             if str(item.get("id") or "").strip() == target_item_id
@@ -837,26 +849,50 @@ def prepare_upload(
     export_target(item)
     cand_slug = source_slug(item)
     cand_hash = str((item.get("source") or {}).get("content_sha256") or "").strip()
-    from scripts import kesher_final_attempt_fallback as fallback
-    if item.get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
+    item_type = item.get("type")
+    if item_type not in {"video_overview", "article_short", None}:
         workflow_output("ready", "false")
-        raise pipeline.PipelineError(
-            "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled"
-        )
-    if cand_slug and cand_hash:
-        try:
-            authoritative_item = pipeline.verify_single_upload_authority(
-                state, cand_slug, cand_hash, item.get("id"), candidate_items=unresolved
-            )
-        except pipeline.PipelineError:
+        raise pipeline.PipelineError(f"UNKNOWN_MEDIA_TYPE: unsupported media item type '{item_type}'")
+
+    is_short = item_type == "article_short"
+    is_long = item_type in {"video_overview", None}
+
+    if is_long:
+        from scripts import kesher_final_attempt_fallback as fallback
+        if item.get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
             workflow_output("ready", "false")
-            raise
-        state_item = next((r for r in state.get("items", []) if str(r.get("id")) == str(authoritative_item.get("id"))), None)
-        if state_item is not None:
-            state_item.update(authoritative_item)
-            item = state_item
-        else:
+            raise pipeline.PipelineError(
+                "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled"
+            )
+        if cand_slug and cand_hash:
+            try:
+                authoritative_item = pipeline.verify_single_upload_authority(
+                    state, cand_slug, cand_hash, item.get("id"), candidate_items=unresolved
+                )
+            except pipeline.PipelineError:
+                workflow_output("ready", "false")
+                raise
             item = authoritative_item
+            if isinstance(state.get("items"), list):
+                for idx, existing in enumerate(state["items"]):
+                    if isinstance(existing, dict) and str(existing.get("id") or "").strip() == str(item.get("id") or "").strip():
+                        state["items"][idx] = item
+                        break
+            export_target(item)
+    elif is_short:
+        if pipeline.STATE_FILE.is_file():
+            auth_state = pipeline.load_state()
+            auth_item = next((r for r in auth_state.get("items", []) if str(r.get("id") or "").strip() == str(item.get("id") or "").strip()), None)
+            if auth_item is not None:
+                item = auth_item
+                if isinstance(state.get("items"), list):
+                    for idx, existing in enumerate(state["items"]):
+                        if isinstance(existing, dict) and str(existing.get("id") or "").strip() == str(item.get("id") or "").strip():
+                            state["items"][idx] = item
+                            break
+            if auth_item and (auth_item.get("status") == "superseded" or auth_item.get("upload_eligible") is False):
+                workflow_output("ready", "false")
+                raise pipeline.PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item.get('id')} is superseded")
         export_target(item)
 
     if bool(str(item.get("youtube_id") or "").strip()) and not (item.get("uploaded") is True and _has_valid_youtube_verification(item)):

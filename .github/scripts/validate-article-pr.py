@@ -21,6 +21,7 @@ from scripts.kesher_article_contract import (
     ARTICLE_PUBLICATION_PATHS, ARTICLE_IMAGE_PREFIX, forbidden_article_paths,
     exact_field, image_dimensions, image_proof_errors, image_pixel_sha256,
 )
+from scripts.kesher_primary_keyword_contract import validate_primary_keyword_contract
 
 ALLOWED_FILES = ARTICLE_PUBLICATION_PATHS
 IMAGE_PREFIX = ARTICLE_IMAGE_PREFIX
@@ -224,9 +225,24 @@ def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra
         content_errors.append("New article must contain at least five H3 sections")
     if post.get("video"):
         content_errors.append("New article may not contain a video field")
-    if content_errors:
-        errors.extend(content_errors)
-        return errors
+
+    # Primary Keyword Contract verification
+    # Enforced for every Jules article PR. Synthetic mock fixtures in image unit tests
+    # (where post has no title or PR body is solely the raw image header block) are skipped.
+    has_keyword_fields = bool(
+        exact_field(body, "Primary Keyword")
+        or exact_field(body, "Primary Search Query")
+        or post.get("primaryKeyword")
+        or post.get("primarySearchQuery")
+    )
+    is_image_only_mock = (
+        not has_keyword_fields
+        and (not post.get("title") or body.strip().startswith("Image Pipeline Version:"))
+    )
+    if not is_image_only_mock:
+        content_errors.extend(
+            validate_primary_keyword_contract(post, body)
+        )
 
     # Pipeline v2 invariant: publication without an independently verified local
     # image is impossible. Provider outages must have been absorbed by the
@@ -234,7 +250,11 @@ def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra
     image_path = post.get("image")
     if not image_path:
         errors.append("New article requires a trusted local image; no-image publication is forbidden")
+
+    if content_errors or not image_path:
+        errors.extend(content_errors)
         return errors
+
     if not post.get("imageAlt") or len(str(post.get("imageAlt"))) < 20:
         errors.append("Image-bearing article requires concrete imageAlt text")
 

@@ -177,6 +177,8 @@ subject constraint, not merely a suggestion.
 5. Write original Kesher copy. Do not reproduce substantial source wording.
 6. In the PR body include: Owner topic brief: applied.
 
+7. When the owner topic brief specifies `Required Primary Keyword: <keyword>`, you MUST adopt that exact Primary Keyword in the title, opening paragraph, slug, and PR body audit block.
+
 Owner topic brief:
 {topic_brief}
 --- END OWNER-SUPPLIED TOPIC BRIEF CONTRACT ---
@@ -201,6 +203,29 @@ def load_owner_topic_brief() -> str:
             "owner topic brief exceeds 16000 characters",
         )
     return brief
+
+
+PRIMARY_KEYWORD_CONTRACT = r"""
+
+--- PRIMARY KEYWORD CONTRACT ---
+Every Kesher article must enforce an explicit Primary Keyword across title, URL slug, opening paragraph, and PR audit metadata.
+
+1. Definition:
+   - The Primary Keyword must be an explicit, targeted search term (1-4 words).
+   - In Hebrew, the canonical form or a natural prefix variant (using Hebrew prefixes: ב, כ, ל, מ, ש, ה, ו...) is required.
+   - If an owner topic brief specifies `Required Primary Keyword: <keyword>`, you MUST use that exact keyword.
+2. Title / H1:
+   - The final article title (H1) MUST contain the Primary Keyword (or close Hebrew prefix variant).
+3. First Paragraph:
+   - The Primary Keyword MUST appear in the opening of the article body — within the first sentence or the first 20-25 words of the first paragraph.
+4. Slug / URL:
+   - The article `slug`/`id` MUST semantically represent the Primary Keyword in clean, lowercase kebab-case English (e.g. 'גמילה מטיטול' -> 'potty-training-toddlers').
+   - The resulting article URL must be `/blog/<slug>`.
+5. PR Body Audit Block:
+   - In the PR body, include the audit line:
+     `- Primary Keyword: <exact keyword>`
+--- END PRIMARY KEYWORD CONTRACT ---
+"""
 
 EVIDENCE_CONTRACT = r"""
 
@@ -238,7 +263,7 @@ def build_prompt(slot: str, policy: str) -> str:
     prompt = _v3_build_prompt(slot, policy)
     if not topic_brief:
         prompt += VIRAL_TOPIC_DISCOVERY_CONTRACT
-    prompt += SEARCH_FIRST_CONTRACT + EVIDENCE_CONTRACT
+    prompt += SEARCH_FIRST_CONTRACT + PRIMARY_KEYWORD_CONTRACT + EVIDENCE_CONTRACT
     if topic_brief:
         prompt += CUSTOM_TOPIC_CONTRACT.format(topic_brief=topic_brief)
     return prompt
