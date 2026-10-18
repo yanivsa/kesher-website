@@ -568,12 +568,14 @@ def existing_item(state: dict[str, Any], item_id: str | None = None,
         target_slug = target_slug or state.context.target.source.slug
         target_sha = target_sha or state.context.target.source.content_sha256
     else:
+        env_mode = os.environ.get("KESHER_MEDIA_MODE")
+        if kind is None and env_mode:
+            kind = {"article_short": "short", "video_overview": "overview"}.get(env_mode)
         if kind is None and target_id and isinstance(state.get("items"), list):
             matches = [i for i in state["items"] if isinstance(i, dict) and str(i.get("id") or "").strip() == target_id]
             if len(matches) == 1:
                 kind = {"article_short": "short", "video_overview": "overview"}.get(matches[0].get("type"))
-        kind = kind or {"article_short": "short", "video_overview": "overview"}.get(
-            os.environ.get("KESHER_MEDIA_MODE", "video_overview"), "overview")
+        kind = kind or "overview"
     try:
         return exact_item(state, target_id, slug=target_slug, content_sha256=target_sha,
                           kind=kind, generation_attempt=generation_attempt)
@@ -2184,29 +2186,37 @@ def verify_single_upload_authority(
     Returns the authoritative item loaded from authoritative state.
     """
     auth_state = load_state() if STATE_FILE.is_file() else (state or {"items": []})
-    items = [
-        row for row in auth_state.get("items", [])
-        if isinstance(row, dict)
-        and str((row.get("source") or {}).get("slug") or "").strip() == slug
-        and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
-        and (row.get("type") == "video_overview" or row.get("type") is None)
-    ]
-    if not items and candidate_items is not None:
-        items = [
+    if candidate_items is not None:
+        raw_items = [
             row for row in candidate_items
             if isinstance(row, dict)
             and str((row.get("source") or {}).get("slug") or "").strip() == slug
             and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
             and (row.get("type") == "video_overview" or row.get("type") is None)
         ]
-    elif not items and auth_state is not state and state:
+        # Rebind to authoritative versions from auth_state
+        auth_items_by_id = {
+            str(r.get("id")): r
+            for r in auth_state.get("items", [])
+            if isinstance(r, dict)
+        }
+        items = [auth_items_by_id.get(str(r.get("id")), r) for r in raw_items]
+    else:
         items = [
-            row for row in state.get("items", [])
+            row for row in auth_state.get("items", [])
             if isinstance(row, dict)
             and str((row.get("source") or {}).get("slug") or "").strip() == slug
             and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
             and (row.get("type") == "video_overview" or row.get("type") is None)
         ]
+        if not items and auth_state is not state and state:
+            items = [
+                row for row in state.get("items", [])
+                if isinstance(row, dict)
+                and str((row.get("source") or {}).get("slug") or "").strip() == slug
+                and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
+                and (row.get("type") == "video_overview" or row.get("type") is None)
+            ]
 
     # 1. Check already public / uploaded deliverables
     uploaded = [
