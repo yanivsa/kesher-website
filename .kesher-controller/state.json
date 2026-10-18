@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "short_running",
+  "status": "short_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1429,15 +1429,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-17T23:35:57.692817+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
-    {
       "at": "2026-10-17T23:40:47.138024+00:00",
       "from": "article_needed",
       "to": "blocked",
@@ -2305,9 +2296,19 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-10-18T07:11:17.192273+00:00",
+      "from": "short_running",
+      "to": "short_watchdog_recovery",
+      "reason": "Short provider stalled; re-dispatched derivation from the same verified long-form identity",
+      "details": {
+        "item_id": "video-20261018-094315-b7925c4cbe",
+        "long_item_id": "video-20261018-082526-b7925c4cbe-a2"
+      }
     }
   ],
-  "updated_at": "2026-10-18T06:42:45.966355+00:00",
+  "updated_at": "2026-10-18T07:11:17.192281+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2376,7 +2377,7 @@
     "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -2386,7 +2387,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-18T06:41:38.079543+00:00",
+    "last_dispatch_at": "2026-10-18T07:11:17.192254+00:00",
     "artifact_id": "7f8f596c-4dd9-4092-9859-3b5c838eed38",
     "source_id": "7765372e-f3ef-4927-88be-dd3385e810e9",
     "adopted_from_long_item_id": "video-20261018-082526-b7925c4cbe-a2",
@@ -2395,8 +2396,8 @@
       "hard_started_at": "2026-10-18T06:43:22.840494+00:00",
       "last_progress_at": "2026-10-18T06:45:57.831704+00:00",
       "last_fingerprint": "859e01aa3acaa52bd6d8b8560604f00873a832af20b9d94ce132f107b800264c",
-      "recovery_count": 0,
-      "last_recovery_at": null
+      "recovery_count": 1,
+      "last_recovery_at": "2026-10-18T07:10:47.767223+00:00"
     }
   },
   "migration": {
@@ -2434,9 +2435,10 @@
         "derive_long_item_id": "video-20261018-082526-b7925c4cbe-a2"
       },
       "intent_at": "2026-10-18T07:10:47.767223+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39104943434,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39106723723,
+      "dispatched_at": "2026-10-18T07:10:47.767223+00:00"
     }
   },
   "last_child_notification": {
@@ -2492,11 +2494,12 @@
       "strike_count": 1,
       "last_check_token": "2026-10-18T10",
       "last_fingerprint": "59c246d6ff47415bd6df5988541c56f055af8269747bf22e7729d03c2b22ac02",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
+      "last_controller_action_token": "recovery:1:2026-10-18T07:10:47.767223+00:00",
+      "controller_action_observed": true,
       "last_observed_at": "2026-10-18T07:10:47.767223+00:00",
-      "last_action": "observe_controller",
-      "direct_takeover_required": false
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-10-18T07:10:47.767223+00:00"
     }
   }
 }
