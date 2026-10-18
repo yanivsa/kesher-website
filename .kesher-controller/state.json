@@ -56,7 +56,7 @@
     "next_deploy_retry_at": null,
     "deploy_run_id": 39097912612,
     "deploy_status": "exhausted",
-    "live_verified_at": "2026-10-18T07:50:46.247195+00:00"
+    "live_verified_at": "2026-10-18T07:51:07.992493+00:00"
   },
   "backlog": [
     {
@@ -1429,33 +1429,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T01:15:45.555728+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
-    {
-      "at": "2026-10-18T01:20:46.717552+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
-    {
-      "at": "2026-10-18T01:25:56.613982+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
-    {
       "at": "2026-10-18T01:30:48.032199+00:00",
       "from": "article_needed",
       "to": "blocked",
@@ -2273,9 +2246,30 @@
       "details": {
         "retry_at": "2026-10-18T07:51:25.910241+00:00"
       }
+    },
+    {
+      "at": "2026-10-18T07:51:07.992511+00:00",
+      "from": "short_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-18T07:51:08.838712+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-18T07:51:12.416171+00:00",
+      "from": "long_video_complete",
+      "to": "short_retry_wait",
+      "reason": "Short retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-18T07:51:25.910241+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-18T07:46:20.830561+00:00",
+  "updated_at": "2026-10-18T07:51:12.416181+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
