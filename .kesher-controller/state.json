@@ -57,8 +57,8 @@
     "normalization_dispatched_at": "2026-10-18T13:57:53.572837+00:00",
     "normalization_run_id": 39133853811,
     "normalization_drift_count": 2,
-    "merge_dispatch_at": "2026-10-18T21:26:00.257566+00:00",
-    "merge_dispatch_count": 0,
+    "merge_dispatch_at": "2026-10-18T21:56:06.342564+00:00",
+    "merge_dispatch_count": 1,
     "merge_run_id": 39134462056,
     "quality_content_sha256": "ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a",
     "slug": "pacifier-weaning",
@@ -2177,9 +2177,10 @@
         "slot": "2026-10-19"
       },
       "intent_at": "2026-10-18T21:55:45.079282+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39134462056,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39170003767,
+      "dispatched_at": "2026-10-18T21:55:45.079282+00:00"
     }
   },
   "last_child_notification": {
