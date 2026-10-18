@@ -2316,6 +2316,20 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-10-18T07:10:47.767223+00:00"
+    },
+    "v5|pacifier-weaning|ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a|long_video": {
+      "pipeline_id": "v5",
+      "slug": "pacifier-weaning",
+      "content_sha256": "ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-10-19T02",
+      "last_fingerprint": "e0c64654775bf3328eaac09f7fb57ea613fc57f70f58c0ee6e474eec6df9c09a",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-18T23:05:53.301589+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   },
   "idea_queue": [
