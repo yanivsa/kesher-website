@@ -56,7 +56,7 @@
     "next_deploy_retry_at": null,
     "deploy_run_id": 39097912612,
     "deploy_status": "exhausted",
-    "live_verified_at": "2026-10-18T11:00:52.534523+00:00"
+    "live_verified_at": "2026-10-18T11:01:15.623800+00:00"
   },
   "backlog": [
     {
@@ -1429,30 +1429,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T08:06:23.576254+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts"
-      }
-    },
-    {
-      "at": "2026-10-18T08:10:45.846452+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-18T08:11:00.628979+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts"
-      }
-    },
-    {
       "at": "2026-10-18T08:15:50.459051+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -2057,9 +2033,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-18T11:01:15.623826+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-18T11:01:16.563965+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-18T11:01:17.482962+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-18T10:56:26.283276+00:00",
+  "updated_at": "2026-10-18T11:01:17.482980+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
