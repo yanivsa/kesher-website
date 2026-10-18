@@ -15,6 +15,16 @@ SEMANTIC_KEYWORD_DICTIONARY: dict[str, set[str]] = {
     "גמילה מחיתולים": {"potty", "toilet", "diaper"},
     "גמילה מחיתול": {"potty", "toilet", "diaper"},
     "גמילת לילה": {"night", "potty", "bedwetting", "diaper"},
+    # Pacifier weaning / Toddler transitions
+    "גמילה ממוצץ": {"pacifier", "weaning", "soother", "dummy"},
+    "גמילה ממוצצים": {"pacifier", "weaning", "soother", "dummy"},
+    "מוצץ": {"pacifier", "soother", "dummy"},
+    "מוצצים": {"pacifier", "soother", "dummy"},
+    "גמילה מבקבוק": {"bottle", "weaning"},
+    "גמילה מהנקה": {"breastfeeding", "nursing", "weaning"},
+    # Separation anxiety
+    "חרדת נטישה": {"separation", "anxiety"},
+    "חרדת פרידה": {"separation", "anxiety"},
     # Gifted children / Education
     "ילד מחונן": {"gifted", "child", "giftedness"},
     "ילדים מחוננים": {"gifted", "children", "giftedness"},
@@ -170,6 +180,23 @@ def parse_owner_required_keyword(topic_brief: str) -> str | None:
     return None
 
 
+def parse_owner_semantic_stems(topic_brief: str) -> set[str] | None:
+    """Extract optional trusted semantic stems from owner topic brief if specified."""
+    if not topic_brief:
+        return None
+    for line in topic_brief.splitlines():
+        match = re.match(
+            r"^\s*(?:[-*]\s*)?(?:Trusted\s+|Semantic\s+)?(?:Stems|Concepts)\s*:\s*(.*?)\s*$",
+            line,
+            re.I,
+        )
+        if match and match.group(1).strip():
+            stems = {s.strip().lower() for s in re.split(r"[,;|\s]+", match.group(1).strip()) if s.strip()}
+            if stems:
+                return stems
+    return None
+
+
 def slug_represents_keyword(slug: str, keyword: str, *, trusted_stems: set[str] | None = None) -> tuple[bool, str]:
     """Verify that slug is valid kebab-case and semantically maps to the Primary Keyword."""
     clean_slug = str(slug or "").strip().lower()
@@ -269,6 +296,9 @@ def validate_primary_keyword_contract(
             except OSError:
                 pass
         required_kw = parse_owner_required_keyword(trusted_env_brief)
+    trusted_stems = parse_owner_semantic_stems(owner_topic_brief)
+    if not trusted_stems and 'trusted_env_brief' in locals():
+        trusted_stems = parse_owner_semantic_stems(trusted_env_brief)
 
     if required_kw:
         norm_req = normalize_hebrew_text(required_kw).lower()
@@ -302,7 +332,7 @@ def validate_primary_keyword_contract(
     else:
         # Article/PR-controlled semantic-token fields are not trusted. Unknown keywords
         # fail closed until a repository-controlled mapping is added.
-        valid_slug, slug_msg = slug_represents_keyword(slug, keyword)
+        valid_slug, slug_msg = slug_represents_keyword(slug, keyword, trusted_stems=trusted_stems)
         if not valid_slug:
             errors.append(slug_msg)
 

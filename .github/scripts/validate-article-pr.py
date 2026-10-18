@@ -320,6 +320,15 @@ def api_json(url: str, token: str):
         return json.loads(response.read().decode("utf-8"))
 
 
+class StripAuthRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        new_req = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if new_req is not None:
+            new_req.headers = {k: v for k, v in new_req.headers.items() if k.lower() != "authorization"}
+            new_req.unredirected_hdrs = {k: v for k, v in new_req.unredirected_hdrs.items() if k.lower() != "authorization"}
+        return new_req
+
+
 def api_bytes(url: str, token: str) -> bytes:
     request = urllib.request.Request(
         url,
@@ -329,7 +338,8 @@ def api_bytes(url: str, token: str) -> bytes:
             "User-Agent": "kesher-article-gate",
         },
     )
-    with urllib.request.urlopen(request) as response:
+    opener = urllib.request.build_opener(StripAuthRedirectHandler)
+    with opener.open(request) as response:
         return response.read()
 
 

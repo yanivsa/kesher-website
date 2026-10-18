@@ -419,6 +419,51 @@ class TestPrimaryKeywordContract(unittest.TestCase):
             self.assertEqual(payload["owner_required_primary_keyword"], "גמילה מטיטול")
             self.assertTrue(payload["owner_topic_brief_sha256"])
 
+    def test_x_pacifier_weaning_contract_passes(self):
+        """Pacifier weaning keyword and slug pass semantic validation."""
+        post = {
+            "id": "pacifier-weaning",
+            "slug": "pacifier-weaning",
+            "title": "גמילה ממוצץ בגיל שנתיים או שלוש: איך נפרדים בלי מאבקים מיותרים",
+            "content": "<p>גמילה ממוצץ היא אחד המעברים הרגישים ביותר עבור פעוטות והורים כאחד.</p>",
+            "canonicalUrl": "https://kesher.saharoni.com/blog/pacifier-weaning",
+            "primaryKeyword": "גמילה ממוצץ",
+        }
+        pr_body = "- Primary Keyword: גמילה ממוצץ\n"
+        errors = validate_primary_keyword_contract(post, pr_body)
+        self.assertEqual(errors, [])
+
+    def test_y_owner_trusted_semantic_stems_allow_unmapped_keyword(self):
+        """Owner topic brief can supply trusted semantic stems for novel concepts."""
+        post = {
+            "id": "kindergarten-readiness-adaptation",
+            "slug": "kindergarten-readiness-adaptation",
+            "title": "הסתגלות לגן חדש: איך מסייעים לילד להתאקלם ברוגע",
+            "content": "<p>הסתגלות לגן חדש דורשת סבלנות והכלה רגשית מצד ההורים והצוות.</p>",
+            "canonicalUrl": "https://kesher.saharoni.com/blog/kindergarten-readiness-adaptation",
+            "primaryKeyword": "הסתגלות לגן חדש",
+        }
+        pr_body = "- Primary Keyword: הסתגלות לגן חדש\n"
+        brief = "Required Primary Keyword: הסתגלות לגן חדש\nSemantic Stems: kindergarten, readiness, adaptation"
+        errors = validate_primary_keyword_contract(post, pr_body, owner_topic_brief=brief)
+        self.assertEqual(errors, [])
+
+    def test_z_strip_auth_redirect_handler_strips_authorization(self):
+        """StripAuthRedirectHandler removes Authorization header upon redirect."""
+        import urllib.request
+        validator = self._load_validator()
+        handler = validator.StripAuthRedirectHandler()
+        req = urllib.request.Request(
+            "https://api.github.com/artifacts/123",
+            headers={"Authorization": "Bearer token123", "User-Agent": "test"},
+        )
+        new_req = handler.redirect_request(
+            req, None, 302, "Found", {}, "https://pipelines.actions.githubusercontent.com/blob"
+        )
+        self.assertIsNotNone(new_req)
+        self.assertNotIn("Authorization", new_req.headers)
+        self.assertNotIn("authorization", new_req.headers)
+
 
 if __name__ == "__main__":
     unittest.main()

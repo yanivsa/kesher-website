@@ -64,6 +64,8 @@ def extract_target_article(
     extracted = copy.deepcopy(candidates[0])
     if extracted.get("controllerManaged") is False:
         extracted["controllerManaged"] = True
+    if "subcategory" in extracted and extracted["subcategory"] is None:
+        del extracted["subcategory"]
     return extracted
 
 
