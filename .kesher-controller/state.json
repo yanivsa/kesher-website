@@ -50,7 +50,7 @@
     "last_failed_run_id": 39128725815,
     "pr_number": 1144,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1144",
-    "current_pr_head_sha": "2e02105828cbdf6210e3c16faf8777cc145d92f4",
+    "current_pr_head_sha": "e01fe6b636f1cf6c73a5ede2c684d89c53cebc2d",
     "jules_head_sha": "a98961493e41911275ae1a7eb7751bf8f65d5661",
     "normalization_status": "complete",
     "normalization_slot": "2026-10-19",
@@ -63,9 +63,9 @@
     "quality_content_sha256": "ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a",
     "slug": "pacifier-weaning",
     "title": "גמילה ממוצץ בגיל שנתיים או שלוש: איך נפרדים בלי מאבקים מיותרים",
-    "normalized_head_sha": "2e02105828cbdf6210e3c16faf8777cc145d92f4",
-    "image_head_sha": "2e02105828cbdf6210e3c16faf8777cc145d92f4",
-    "merge_candidate_sha": "2e02105828cbdf6210e3c16faf8777cc145d92f4"
+    "normalized_head_sha": "e01fe6b636f1cf6c73a5ede2c684d89c53cebc2d",
+    "image_head_sha": "e01fe6b636f1cf6c73a5ede2c684d89c53cebc2d",
+    "merge_candidate_sha": "e01fe6b636f1cf6c73a5ede2c684d89c53cebc2d"
   },
   "backlog": [
     {
