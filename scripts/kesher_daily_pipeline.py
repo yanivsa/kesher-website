@@ -2147,9 +2147,60 @@ def can_short_item_proceed_toward_publication(item: dict[str, Any] | None) -> bo
         return False
     if item.get("uploaded") is True and bool(str(item.get("youtube_id") or "").strip()):
         return True
-    if item.get("technical_verified") is True:
-        return item.get("status") in {"pending_review", "approved", "rejected", "uploading"}
-    return False
+    if item.get("technical_verified") is not True:
+        return False
+    if item.get("status") not in {"pending_review", "approved", "rejected", "uploading"}:
+        return False
+
+    # 1. Expected vertical dimensions / portrait contract (1080x1920, height > width)
+    media = item.get("media") or {}
+    try:
+        width = int(media.get("width") or 0)
+        height = int(media.get("height") or 0)
+    except (TypeError, ValueError):
+        return False
+    if width != 1080 or height != 1920 or height <= width:
+        return False
+
+    raw = item.get("provider_raw_media") or {}
+    try:
+        raw_w = int(raw.get("width") or 0)
+        raw_h = int(raw.get("height") or 0)
+    except (TypeError, ValueError):
+        return False
+    if raw_w <= 0 or raw_h <= 0 or raw_h <= raw_w:
+        return False
+
+    # 2. Canonical Short origin and overview binding
+    from scripts import kesher_e2e_delivery_guard as delivery_guard
+    if not delivery_guard._short_origin_verified(item):
+        return False
+
+    # 3. Audio provenance and signature proof
+    if not delivery_guard._signature_verified(item):
+        return False
+
+    # 4. Final SHA and immutable evidence hashes
+    if not str(item.get("final_sha256") or "").strip():
+        return False
+    required_hashes = (
+        "manifest_sha256",
+        "transcript_sha256",
+        "source_file_sha256",
+        "visual_review_sha256",
+    )
+    if any(not str(item.get(field) or "").strip() for field in required_hashes):
+        return False
+    frame_hashes = item.get("frame_sha256")
+    if not isinstance(frame_hashes, dict) or not frame_hashes:
+        return False
+
+    # 5. Source identity binding
+    source = item.get("source") or {}
+    if not (source.get("slug") or source.get("id")) or not str(source.get("content_sha256") or "").strip():
+        return False
+
+    return True
 
 
 def can_item_proceed_toward_publication(item: dict[str, Any] | None) -> bool:
@@ -2185,38 +2236,30 @@ def verify_single_upload_authority(
 
     Returns the authoritative item loaded from authoritative state.
     """
-    auth_state = load_state() if STATE_FILE.is_file() else (state or {"items": []})
-    if candidate_items is not None:
-        raw_items = [
-            row for row in candidate_items
-            if isinstance(row, dict)
-            and str((row.get("source") or {}).get("slug") or "").strip() == slug
-            and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
-            and (row.get("type") == "video_overview" or row.get("type") is None)
-        ]
-        # Rebind to authoritative versions from auth_state
+    has_disk_state = STATE_FILE.is_file()
+    auth_state = load_state() if has_disk_state else (state or {"items": []})
+
+    if has_disk_state and target_item_id:
         auth_items_by_id = {
             str(r.get("id")): r
             for r in auth_state.get("items", [])
             if isinstance(r, dict)
         }
-        items = [auth_items_by_id.get(str(r.get("id")), r) for r in raw_items]
-    else:
-        items = [
-            row for row in auth_state.get("items", [])
-            if isinstance(row, dict)
-            and str((row.get("source") or {}).get("slug") or "").strip() == slug
-            and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
-            and (row.get("type") == "video_overview" or row.get("type") is None)
-        ]
-        if not items and auth_state is not state and state:
-            items = [
-                row for row in state.get("items", [])
-                if isinstance(row, dict)
-                and str((row.get("source") or {}).get("slug") or "").strip() == slug
-                and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
-                and (row.get("type") == "video_overview" or row.get("type") is None)
-            ]
+        if str(target_item_id).strip() not in auth_items_by_id:
+            raise PipelineError(
+                f"AUTHORITATIVE_ITEM_MISSING: item {target_item_id} absent from authoritative state on disk"
+            )
+
+    # Authoritative disk state defines ALL competing candidates for exact media kind, slug, content_sha256.
+    # Stale candidate list supplied by caller must NEVER be able to hide a competitor on disk.
+    state_to_use = auth_state if has_disk_state else (state or {"items": []})
+    items = [
+        row for row in state_to_use.get("items", [])
+        if isinstance(row, dict)
+        and str((row.get("source") or {}).get("slug") or "").strip() == slug
+        and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
+        and (row.get("type") == "video_overview" or row.get("type") is None)
+    ]
 
     # 1. Check already public / uploaded deliverables
     uploaded = [
@@ -2233,7 +2276,7 @@ def verify_single_upload_authority(
             raise PipelineError(
                 f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: item {target_item_id} attempted upload but {pub.get('id')} is already uploaded"
             )
-        auth_match = next((r for r in auth_state.get("items", []) if str(r.get("id")) == str(pub.get("id"))), pub)
+        auth_match = next((r for r in state_to_use.get("items", []) if str(r.get("id")) == str(pub.get("id"))), pub)
         return auth_match
 
     # 2. Check candidates that can proceed toward publication
@@ -2270,9 +2313,13 @@ def verify_single_upload_authority(
         target_id = target_item_id
 
     if target_id:
-        auth_matched = [row for row in auth_state.get("items", []) if str(row.get("id") or "").strip() == str(target_id).strip()]
+        auth_matched = [row for row in state_to_use.get("items", []) if str(row.get("id") or "").strip() == str(target_id).strip()]
         if auth_matched:
             return auth_matched[0]
+        if has_disk_state:
+            raise PipelineError(
+                f"AUTHORITATIVE_ITEM_MISSING: item {target_id} absent from authoritative state on disk"
+            )
         state_matched = [row for row in state.get("items", []) if str(row.get("id") or "").strip() == str(target_id).strip()]
         if state_matched:
             return state_matched[0]
@@ -2293,22 +2340,25 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
     is_long = item_type in {"video_overview", None}
 
     if is_long:
-        if target_slug and item.get("id") and STATE_FILE.is_file():
+        if STATE_FILE.is_file() and item.get("id"):
             auth_state = load_state()
+            auth_items_by_id = {str(r.get("id")): r for r in auth_state.get("items", []) if isinstance(r, dict)}
+            if str(item.get("id")).strip() not in auth_items_by_id:
+                raise PipelineError(f"AUTHORITATIVE_ITEM_MISSING: item {item.get('id')} absent from authoritative state on disk")
+            item = auth_items_by_id[str(item.get("id")).strip()]
             if auth_state.get("fallback_winner"):
                 fw = auth_state["fallback_winner"]
                 if fw.get("slug") == target_slug and fw.get("fallback_committed") is True:
                     if fw.get("winner_item_id") != item.get("id"):
                         raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item.get('id')} superseded by fallback winner {fw.get('winner_item_id')}")
-            auth_item = next((r for r in auth_state.get("items", []) if r.get("id") == item.get("id")), None)
-            if auth_item and (auth_item.get("status") == "superseded" or auth_item.get("upload_eligible") is False):
+            if item.get("status") == "superseded" or item.get("upload_eligible") is False:
                 raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item.get('id')} is superseded")
 
         from scripts import kesher_final_attempt_fallback as fallback
         if item.get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
             raise PipelineError("FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled")
 
-        if item.get('uploaded') is True and item.get('youtube_verification'):
+        if item.get('uploaded') is True and bool(str(item.get('youtube_id') or "").strip()):
             print(f"NO_DUPLICATE_UPLOAD item={item['id']}")
             return 0
 
@@ -2326,20 +2376,16 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
             return 0
 
     elif is_short:
-        if STATE_FILE.is_file():
+        if STATE_FILE.is_file() and item.get("id"):
             auth_state = load_state()
-            auth_item = next((r for r in auth_state.get("items", []) if str(r.get("id") or "").strip() == str(item.get("id") or "").strip()), None)
-            if auth_item is not None:
-                item = auth_item
-                if isinstance(state.get("items"), list):
-                    for idx, existing in enumerate(state["items"]):
-                        if isinstance(existing, dict) and str(existing.get("id") or "").strip() == str(item.get("id") or "").strip():
-                            state["items"][idx] = item
-                            break
-            if auth_item and (auth_item.get("status") == "superseded" or auth_item.get("upload_eligible") is False):
+            auth_items_by_id = {str(r.get("id")): r for r in auth_state.get("items", []) if isinstance(r, dict)}
+            if str(item.get("id")).strip() not in auth_items_by_id:
+                raise PipelineError(f"AUTHORITATIVE_ITEM_MISSING: item {item.get('id')} absent from authoritative state on disk")
+            item = auth_items_by_id[str(item.get("id")).strip()]
+            if item.get("status") == "superseded" or item.get("upload_eligible") is False:
                 raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item.get('id')} is superseded")
 
-        if item.get('uploaded') is True and item.get('youtube_verification'):
+        if item.get('uploaded') is True and bool(str(item.get('youtube_id') or "").strip()):
             print(f"NO_DUPLICATE_UPLOAD item={item['id']}")
             return 0
 

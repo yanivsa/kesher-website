@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import json
 import os
 import subprocess
@@ -81,6 +82,48 @@ def make_item(item_id: str, attempt: int, *, status: str = "approved", technical
         "youtube_metadata": manifest["youtube_metadata"],
         "visual_pipeline": "remotion-v1-notebooklm-audio",
     }
+
+
+def make_valid_short_item(item_id: str = "short-1", attempt: int = 1, slug: str = "test-fail-closed-article", day: str = "2026-10-18") -> dict:
+    from tests.test_media_provenance_contract import bound_short
+    src = sample_source(slug=slug, day=day)
+    duration = 132.0
+    item = bound_short(duration)
+    item["id"] = item_id
+    item["status"] = "approved"
+    item["technical_verified"] = True
+    item["upload_eligible"] = True
+    item["fresh_generation_attempt"] = attempt
+    item["manifest_sha256"] = "m" * 64
+    item["transcript_sha256"] = "t" * 64
+    item["source_file_sha256"] = "s" * 64
+    item["visual_review_sha256"] = "v" * 64
+    item["frame_sha256"] = {"0": "f" * 64}
+    item["source"] = src
+    canonical_url = src["canonical_url"]
+    description = f"כותרת קצרה\n{canonical_url}\nhttps://kesher.saharoni.com\nhttps://kesher.saharoni.com/appointment"
+    manifest = {
+        "item_id": item_id,
+        "source": src,
+        "final_mp4": f"{item_id}.mp4",
+        "final_sha256": item["final_sha256"],
+        "raw_sha256": item["raw_sha256"],
+        "media": item["media"],
+        "content_duration_seconds": duration,
+        "signature_overlay": True,
+        "signature_asset_sha256": item["signature_sha256"],
+        "youtube_metadata": {
+            "title": "כותרת קצרה",
+            "description": description,
+            "tags": ["זוגיות"],
+        },
+        "visual_pipeline": item["visual_pipeline"],
+    }
+    item["manifest"] = manifest
+    item["manifest_path"] = f"{item_id}-manifest.json"
+    item["final_mp4"] = f"{item_id}.mp4"
+    item["youtube_metadata"] = manifest["youtube_metadata"]
+    return item
 
 
 class _TestControllerHarness(three_strike.ThreeStrikeMediaInterventionMixin):
@@ -710,50 +753,95 @@ sys.exit(0)
     # Codex P1 Fix Tests: Authoritative Rebinding & Short Routing Boundary
     # -------------------------------------------------------------------------
 
-    def test_codex_p1_authoritative_rebinding_stale_snapshot_rejected_on_disk(self):
-        """P1 #1 Scenario A:
-        authoritative disk state has status=rejected, technical_verified=False,
-        but stale caller snapshot has status=approved, technical_verified=True.
-        verify_single_upload_authority must load disk, return rejected item,
-        and downstream must fail closed (no upload).
+    def test_codex_scenario_a_disk_item_missing_fails_closed(self):
+        """Scenario A:
+        Disk empty / item missing. Stale approved item in caller state.
+        prepare_upload => fails closed (AUTHORITATIVE_ITEM_MISSING).
+        upload_only => fails closed before credentials/network (AUTHORITATIVE_ITEM_MISSING).
         """
         src = sample_source()
-        item_id = "attempt-stale-1"
-
-        # Item on disk is REJECTED
-        disk_item = make_item(item_id, 1, status="rejected", technical_verified=False)
-        disk_state = {
-            "version": 1,
-            "state_revision": 5,
-            "items": [disk_item],
-        }
-        pipeline.save_state(disk_state)
-
-        # Stale in-memory snapshot has status="approved", technical_verified=True
+        item_id = "attempt-missing-1"
         stale_item = make_item(item_id, 1, status="approved", technical_verified=True)
         stale_state = {
             "version": 1,
-            "state_revision": 4,
+            "state_revision": 1,
             "items": [stale_item],
         }
 
-        # 1. verify_single_upload_authority must read disk, ignore stale state, and return disk_item
-        returned = pipeline.verify_single_upload_authority(
-            stale_state, src["slug"], src["content_sha256"], target_item_id=item_id
-        )
-        self.assertEqual(returned.get("status"), "rejected")
-        self.assertFalse(returned.get("technical_verified"))
-        self.assertFalse(pipeline.can_long_item_proceed_toward_publication(returned))
+        # Disk state is empty / missing the item
+        disk_state = {
+            "version": 1,
+            "state_revision": 2,
+            "items": [],
+        }
+        pipeline.save_state(disk_state)
 
-    def test_codex_p1_prepare_upload_does_not_revert_to_stale_caller_snapshot(self):
-        """P1 #1 Scenario B:
-        prepare_upload() must use the returned authoritative item directly and NOT
-        revert to stale caller snapshot values. Must return ready=false and stop.
+        # 1. prepare_upload fails closed
+        outputs = {}
+        with mock.patch.dict(os.environ, {
+            "KESHER_MEDIA_MODE": "video_overview",
+            "TARGET_SLUG": src["slug"],
+            "TARGET_CONTENT_SHA256": src["content_sha256"],
+            "TARGET_ITEM_ID": item_id,
+        }), mock.patch.object(reconcile, "current_source_snapshot", return_value=src), \
+           mock.patch.object(reconcile, "workflow_output", lambda k, v: outputs.update({k: v})):
+            with self.assertRaises(pipeline.PipelineError) as ctx:
+                reconcile.prepare_upload(src["slug"], src["content_sha256"], item_id)
+            self.assertIn("AUTHORITATIVE_ITEM_MISSING", str(ctx.exception))
+            self.assertEqual(outputs.get("ready"), "false")
+
+        # 2. upload_only fails closed before credentials / network
+        with mock.patch.dict(os.environ, {
+            "KESHER_MEDIA_MODE": "video_overview",
+        }), mock.patch.object(pipeline, "youtube_access_token") as mock_token:
+            with self.assertRaises(pipeline.PipelineError) as ctx:
+                pipeline.upload_only(slug=src["slug"], item_id=item_id, state=stale_state)
+            self.assertIn("AUTHORITATIVE_ITEM_MISSING", str(ctx.exception))
+            mock_token.assert_not_called()
+
+    def test_codex_scenario_b_caller_cannot_hide_competing_candidates_on_disk(self):
+        """Scenario B:
+        Disk contains Attempt2 + Attempt3 (both Long, approved, technical_verified=True).
+        Caller candidate_items contains only Attempt2.
+        Authority verifier must still see BOTH from disk and detect ambiguity.
         """
         src = sample_source()
-        item_id = "attempt-stale-2"
+        item2 = make_item("attempt-2", 2, status="approved", technical_verified=True)
+        item3 = make_item("attempt-3", 3, status="approved", technical_verified=True)
 
-        # Item on disk is REJECTED with upload_eligible True (legacy unflagged)
+        disk_state = {
+            "version": 1,
+            "state_revision": 5,
+            "items": [item2, item3],
+        }
+        pipeline.save_state(disk_state)
+
+        stale_caller_state = {
+            "version": 1,
+            "state_revision": 4,
+            "items": [item2],
+        }
+
+        # Caller provides candidate_items=[item2], trying to hide item3.
+        # verify_single_upload_authority must evaluate all items on disk.
+        with self.assertRaises(pipeline.PipelineError) as ctx:
+            pipeline.verify_single_upload_authority(
+                stale_caller_state,
+                src["slug"],
+                src["content_sha256"],
+                target_item_id="attempt-2",
+                candidate_items=[item2],
+            )
+        self.assertIn("AMBIGUOUS_LONG_UPLOAD_AUTHORITY", str(ctx.exception))
+
+    def test_codex_scenario_c_disk_rejected_wins_over_stale_ready(self):
+        """Scenario C:
+        Disk item is rejected/unverified. Stale snapshot has status=approved, technical_verified=True.
+        Disk wins: prepare_upload sets ready=false; upload_only prints NO_TECHNICALLY_VERIFIED_UPLOAD.
+        """
+        src = sample_source()
+        item_id = "attempt-stale-c"
+
         disk_item = make_item(item_id, 1, status="rejected", technical_verified=False)
         disk_item["upload_eligible"] = True
         disk_state = {
@@ -763,7 +851,6 @@ sys.exit(0)
         }
         pipeline.save_state(disk_state)
 
-        # Stale in-memory snapshot has status="approved", technical_verified=True
         stale_item = make_item(item_id, 1, status="approved", technical_verified=True)
         stale_state = {
             "version": 1,
@@ -771,6 +858,14 @@ sys.exit(0)
             "items": [stale_item],
         }
 
+        # verify_single_upload_authority returns disk item
+        returned = pipeline.verify_single_upload_authority(
+            stale_state, src["slug"], src["content_sha256"], target_item_id=item_id
+        )
+        self.assertEqual(returned.get("status"), "rejected")
+        self.assertFalse(returned.get("technical_verified"))
+
+        # prepare_upload sets ready=false and returns 0
         outputs = {}
         with mock.patch.dict(os.environ, {
             "KESHER_MEDIA_MODE": "video_overview",
@@ -783,66 +878,264 @@ sys.exit(0)
             self.assertEqual(code, 0)
             self.assertEqual(outputs.get("ready"), "false")
 
-    def test_codex_p1_upload_only_does_not_revert_to_stale_caller_snapshot(self):
-        """P1 #1 Scenario C:
-        upload_only() must use the returned authoritative item directly and NOT
-        revert to stale caller snapshot values. Must print NO_TECHNICALLY_VERIFIED_UPLOAD and return 0.
+        # upload_only returns 0 and does not upload
+        with mock.patch.dict(os.environ, {"KESHER_MEDIA_MODE": "video_overview"}):
+            res = pipeline.upload_only(slug=src["slug"], item_id=item_id, state=stale_state)
+            self.assertEqual(res, 0)
+
+    def test_codex_scenario_d_disk_already_uploaded_is_idempotent_no_op(self):
+        """Scenario D:
+        Disk item is already uploaded (uploaded=True, valid youtube_id).
+        Stale snapshot is approved (uploaded=False).
+        Both prepare_upload AND upload_only produce idempotent no-op behavior.
+        No state downgrade, no upload session, no network.
         """
         src = sample_source()
-        item_id = "attempt-stale-3"
+        item_id = "attempt-already-up-d"
 
-        # Item on disk is REJECTED with upload_eligible True (legacy or unflagged)
-        disk_item = make_item(item_id, 1, status="rejected", technical_verified=False)
-        disk_item["upload_eligible"] = True
+        disk_item = make_item(item_id, 1, status="uploaded", technical_verified=True)
+        disk_item["uploaded"] = True
+        disk_item["youtube_id"] = "yt-already-uploaded"
+        disk_item["youtube_url"] = "https://youtu.be/yt-already-uploaded"
+        disk_item["youtube_verification"] = {"public": True}
         disk_state = {
             "version": 1,
-            "state_revision": 5,
+            "state_revision": 10,
             "items": [disk_item],
         }
         pipeline.save_state(disk_state)
 
-        # Stale caller snapshot
         stale_item = make_item(item_id, 1, status="approved", technical_verified=True)
+        stale_item["uploaded"] = False
+        stale_item["youtube_id"] = None
         stale_state = {
             "version": 1,
-            "state_revision": 4,
+            "state_revision": 9,
             "items": [stale_item],
         }
 
+        # prepare_upload: candidate=already_public, ready=false, returns 0 without state change
+        outputs = {}
         with mock.patch.dict(os.environ, {
             "KESHER_MEDIA_MODE": "video_overview",
-        }):
-            res = pipeline.upload_only(slug=src["slug"], item_id=item_id, state=stale_state)
-            self.assertEqual(res, 0)
+            "TARGET_SLUG": src["slug"],
+            "TARGET_CONTENT_SHA256": src["content_sha256"],
+            "TARGET_ITEM_ID": item_id,
+        }), mock.patch.object(reconcile, "current_source_snapshot", return_value=src), \
+           mock.patch.object(reconcile, "workflow_output", lambda k, v: outputs.update({k: v})):
+            code = reconcile.prepare_upload(src["slug"], src["content_sha256"], item_id)
+            self.assertEqual(code, 0)
+            self.assertEqual(outputs.get("ready"), "false")
 
-    def test_codex_p1_short_publication_readiness(self):
-        """P1 #2 Scenario D:
-        Valid Short item (type=article_short, approved, technical_verified=True)
-        must pass can_short_item_proceed_toward_publication and technical_publication_ready.
-        Long predicate must return False.
+        # verify disk state was not downgraded
+        loaded_state = pipeline.load_state()
+        self.assertEqual(loaded_state["items"][0]["status"], "uploaded")
+        self.assertTrue(loaded_state["items"][0]["uploaded"])
+        self.assertEqual(loaded_state["items"][0]["youtube_id"], "yt-already-uploaded")
+
+        # upload_only: NO_DUPLICATE_UPLOAD, returns 0 without credentials
+        with mock.patch.dict(os.environ, {"KESHER_MEDIA_MODE": "video_overview"}), \
+             mock.patch.object(pipeline, "youtube_access_token") as mock_token:
+            code = pipeline.upload_only(slug=src["slug"], item_id=item_id, state=stale_state)
+            self.assertEqual(code, 0)
+            mock_token.assert_not_called()
+
+    def test_codex_scenario_e_valid_production_short_passes_prepare_and_reaches_upload(self):
+        """Scenario E:
+        Valid production-shaped Short (using real production Short fixture, zero monkeypatching):
+        - verify prepare_upload passes (ready=true)
+        - mock ONLY external YouTube upload boundary
+        - verify upload_only reaches that boundary cleanly.
         """
-        short_item = make_item("short-valid-1", 1, status="approved", technical_verified=True)
-        short_item["type"] = "article_short"
-        short_item["visual_pipeline"] = "remotion-v4-notebooklm-short-motion-plan-v1"
+        src = sample_source()
+        short_item = make_valid_short_item("short-valid-e", 1, slug=src["slug"])
 
-        self.assertTrue(pipeline.can_short_item_proceed_toward_publication(short_item))
-        self.assertTrue(pipeline.can_item_proceed_toward_publication(short_item))
-        self.assertFalse(pipeline.can_long_item_proceed_toward_publication(short_item))
-        self.assertTrue(reconcile.technical_publication_ready(short_item))
+        # Write dummy files matching exact hashes
+        mp4_bytes = b"sample-short-mp4-stream-data"
+        manifest_bytes = json.dumps(short_item["manifest"], ensure_ascii=False).encode("utf-8")
+        short_item["final_sha256"] = hashlib.sha256(mp4_bytes).hexdigest()
+        short_item["manifest_sha256"] = hashlib.sha256(manifest_bytes).hexdigest()
+        short_item["audio_provenance"]["final_sha256"] = short_item["final_sha256"]
+        short_item["signature_provenance"]["final_sha256"] = short_item["final_sha256"]
+        short_item["manifest"]["final_sha256"] = short_item["final_sha256"]
+        short_item["manifest"]["manifest_sha256"] = short_item["manifest_sha256"]
 
-    def test_codex_p1_long_and_short_items_do_not_conflict_on_same_slug(self):
-        """P1 #2 Scenario E:
-        Long item and Short item coexist for the exact same slug + content_sha256.
-        Long authority check must filter only Long items and not conflict with Short.
-        Short must not be evaluated against video_overview constraints.
+        (self.state_dir / short_item["final_mp4"]).write_bytes(mp4_bytes)
+        (self.state_dir / short_item["manifest_path"]).write_bytes(manifest_bytes)
+
+        state = {
+            "version": 1,
+            "state_revision": 1,
+            "items": [short_item],
+        }
+        pipeline.save_state(state)
+
+        # 1. prepare_upload passes cleanly
+        outputs = {}
+        with mock.patch.dict(os.environ, {
+            "KESHER_MEDIA_MODE": "article_short",
+            "TARGET_SLUG": src["slug"],
+            "TARGET_CONTENT_SHA256": src["content_sha256"],
+            "TARGET_ITEM_ID": "short-valid-e",
+        }), mock.patch.object(reconcile, "current_source_snapshot", return_value=src), \
+           mock.patch.object(reconcile, "workflow_output", lambda k, v: outputs.update({k: v})):
+            code = reconcile.prepare_upload(src["slug"], src["content_sha256"], "short-valid-e")
+            self.assertEqual(code, 0)
+            self.assertEqual(outputs.get("ready"), "true")
+
+        # 2. upload_only reaches external YouTube boundary cleanly (zero internal monkeypatching)
+        upload_calls = []
+        with mock.patch.dict(os.environ, {"KESHER_MEDIA_MODE": "article_short"}), \
+             mock.patch.object(pipeline, "youtube_access_token", return_value="fake-token"), \
+             mock.patch.object(pipeline, "verify_authenticated_channel", return_value="fake-channel"), \
+             mock.patch.object(pipeline, "start_resumable_upload", side_effect=lambda *a, **k: upload_calls.append("start") or "https://upload.url"), \
+             mock.patch.object(pipeline, "upload_bytes", side_effect=lambda *a, **k: upload_calls.append("bytes") or "yt-id-short-e"), \
+             mock.patch.object(pipeline, "_verify_and_record_upload", side_effect=lambda *a, **k: upload_calls.append("record")):
+            code = pipeline.upload_only(slug=src["slug"], item_id="short-valid-e", state=state)
+            self.assertEqual(code, 0)
+            self.assertEqual(upload_calls, ["start", "bytes", "record"])
+
+    def test_codex_scenario_f_horizontal_short_blocked_in_both_gates(self):
+        """Scenario F:
+        Horizontal Short (1280x720):
+        - blocked in prepare_upload
+        - blocked in direct upload_only
+        - zero monkeypatching of Short checks.
+        """
+        src = sample_source()
+        short_item = make_valid_short_item("short-horizontal-f", 1, slug=src["slug"])
+        short_item["media"] = {"width": 1280, "height": 720, "duration": 132.0, "codec": "h264", "audio_codec": "aac"}
+        short_item["provider_raw_media"] = {"width": 1280, "height": 720, "duration": 132.0, "audio_codec": "aac"}
+
+        state = {"version": 1, "state_revision": 1, "items": [short_item]}
+        pipeline.save_state(state)
+
+        # 1. prepare_upload fails closed
+        outputs = {}
+        with mock.patch.dict(os.environ, {
+            "KESHER_MEDIA_MODE": "article_short",
+            "TARGET_SLUG": src["slug"],
+            "TARGET_CONTENT_SHA256": src["content_sha256"],
+            "TARGET_ITEM_ID": "short-horizontal-f",
+        }), mock.patch.object(reconcile, "current_source_snapshot", return_value=src), \
+           mock.patch.object(reconcile, "workflow_output", lambda k, v: outputs.update({k: v})):
+            with self.assertRaises(pipeline.PipelineError):
+                reconcile.prepare_upload(src["slug"], src["content_sha256"], "short-horizontal-f")
+
+        # 2. direct upload_only blocked without credentials/upload
+        with mock.patch.dict(os.environ, {"KESHER_MEDIA_MODE": "article_short"}), \
+             mock.patch.object(pipeline, "youtube_access_token") as mock_token:
+            res = pipeline.upload_only(slug=src["slug"], item_id="short-horizontal-f", state=state)
+            self.assertEqual(res, 0)
+            mock_token.assert_not_called()
+
+    def test_codex_scenario_g_short_missing_overview_provider_identity_blocked(self):
+        """Scenario G:
+        Short with missing overview_provider_identity:
+        - blocked in prepare_upload
+        - blocked in direct upload_only
+        - zero monkeypatching.
+        """
+        src = sample_source()
+        short_item = make_valid_short_item("short-no-overview-g", 1, slug=src["slug"])
+        short_item["overview_provider_identity"] = None
+
+        state = {"version": 1, "state_revision": 1, "items": [short_item]}
+        pipeline.save_state(state)
+
+        # 1. prepare_upload blocked
+        with mock.patch.dict(os.environ, {
+            "KESHER_MEDIA_MODE": "article_short",
+            "TARGET_SLUG": src["slug"],
+            "TARGET_CONTENT_SHA256": src["content_sha256"],
+            "TARGET_ITEM_ID": "short-no-overview-g",
+        }), mock.patch.object(reconcile, "current_source_snapshot", return_value=src):
+            with self.assertRaises(pipeline.PipelineError):
+                reconcile.prepare_upload(src["slug"], src["content_sha256"], "short-no-overview-g")
+
+        # 2. upload_only blocked
+        with mock.patch.dict(os.environ, {"KESHER_MEDIA_MODE": "article_short"}), \
+             mock.patch.object(pipeline, "youtube_access_token") as mock_token:
+            res = pipeline.upload_only(slug=src["slug"], item_id="short-no-overview-g", state=state)
+            self.assertEqual(res, 0)
+            mock_token.assert_not_called()
+
+    def test_codex_scenario_h_short_missing_audio_provenance_or_signature_blocked(self):
+        """Scenario H:
+        Short with missing audio provenance / signature:
+        - blocked in prepare_upload
+        - blocked in direct upload_only
+        - zero monkeypatching.
+        """
+        src = sample_source()
+        short_item = make_valid_short_item("short-no-sig-h", 1, slug=src["slug"])
+        short_item["signature_verified"] = False
+
+        state = {"version": 1, "state_revision": 1, "items": [short_item]}
+        pipeline.save_state(state)
+
+        # 1. prepare_upload blocked
+        with mock.patch.dict(os.environ, {
+            "KESHER_MEDIA_MODE": "article_short",
+            "TARGET_SLUG": src["slug"],
+            "TARGET_CONTENT_SHA256": src["content_sha256"],
+            "TARGET_ITEM_ID": "short-no-sig-h",
+        }), mock.patch.object(reconcile, "current_source_snapshot", return_value=src):
+            with self.assertRaises(pipeline.PipelineError):
+                reconcile.prepare_upload(src["slug"], src["content_sha256"], "short-no-sig-h")
+
+        # 2. upload_only blocked
+        with mock.patch.dict(os.environ, {"KESHER_MEDIA_MODE": "article_short"}), \
+             mock.patch.object(pipeline, "youtube_access_token") as mock_token:
+            res = pipeline.upload_only(slug=src["slug"], item_id="short-no-sig-h", state=state)
+            self.assertEqual(res, 0)
+            mock_token.assert_not_called()
+
+    def test_codex_scenario_i_short_invalid_source_long_binding_blocked(self):
+        """Scenario I:
+        Short with invalid source/Long binding (raw_sha256 same as overview raw_sha256):
+        - blocked in prepare_upload
+        - blocked in direct upload_only
+        - zero monkeypatching.
+        """
+        src = sample_source()
+        short_item = make_valid_short_item("short-bad-binding-i", 1, slug=src["slug"])
+        # Same raw_sha256 as overview proves it is NOT independent
+        short_item["overview_provider_identity"]["raw_sha256"] = short_item["raw_sha256"]
+
+        state = {"version": 1, "state_revision": 1, "items": [short_item]}
+        pipeline.save_state(state)
+
+        # 1. prepare_upload blocked
+        with mock.patch.dict(os.environ, {
+            "KESHER_MEDIA_MODE": "article_short",
+            "TARGET_SLUG": src["slug"],
+            "TARGET_CONTENT_SHA256": src["content_sha256"],
+            "TARGET_ITEM_ID": "short-bad-binding-i",
+        }), mock.patch.object(reconcile, "current_source_snapshot", return_value=src):
+            with self.assertRaises(pipeline.PipelineError):
+                reconcile.prepare_upload(src["slug"], src["content_sha256"], "short-bad-binding-i")
+
+        # 2. upload_only blocked
+        with mock.patch.dict(os.environ, {"KESHER_MEDIA_MODE": "article_short"}), \
+             mock.patch.object(pipeline, "youtube_access_token") as mock_token:
+            res = pipeline.upload_only(slug=src["slug"], item_id="short-bad-binding-i", state=state)
+            self.assertEqual(res, 0)
+            mock_token.assert_not_called()
+
+    def test_codex_scenario_j_coexistence_long_and_short_no_cross_kind_ambiguity(self):
+        """Scenario J:
+        Coexistence:
+        - valid Long item + valid Short item for SAME slug + content_sha256:
+        - Long authority passes for Long
+        - Short path passes for Short
+        - no cross-kind ambiguity.
         """
         src = sample_source()
         long_item = make_item("long-attempt-1", 1, status="approved", technical_verified=True)
         long_item["type"] = "video_overview"
 
-        short_item = make_item("short-attempt-1", 1, status="approved", technical_verified=True)
-        short_item["type"] = "article_short"
-        short_item["visual_pipeline"] = "remotion-v4-notebooklm-short-motion-plan-v1"
+        short_item = make_valid_short_item("short-attempt-1", 1, slug=src["slug"])
 
         state = {
             "version": 1,
@@ -851,50 +1144,31 @@ sys.exit(0)
         }
         pipeline.save_state(state)
 
-        # Long authority verification succeeds for long_item without ambiguity from short_item
+        # 1. Long authority verification succeeds for long_item without ambiguity from short_item
         long_auth = pipeline.verify_single_upload_authority(
             state, src["slug"], src["content_sha256"], target_item_id="long-attempt-1"
         )
         self.assertEqual(long_auth["id"], "long-attempt-1")
 
-        # Short item publication readiness is completely unaffected by Long
+        # 2. Short item publication readiness is completely unaffected by Long
         self.assertTrue(pipeline.can_short_item_proceed_toward_publication(short_item))
+        self.assertTrue(reconcile.technical_publication_ready(short_item))
 
-    def test_codex_p1_prepare_upload_short_does_not_execute_long_ambiguity(self):
-        """P1 #2 Scenario F:
-        When preparing Short upload, verify_single_upload_authority (Long check)
-        must NOT execute, and Short publication must proceed with advisory review.
-        """
-        src = sample_source()
-        short_item = make_item("short-pub-1", 1, status="approved", technical_verified=True)
-        short_item["type"] = "article_short"
-        short_item["visual_pipeline"] = "remotion-v4-notebooklm-short-motion-plan-v1"
-        short_item["source_mode"] = "independent"
-        short_item["signature_verified"] = True
-        short_item["signature_duration_seconds"] = 3.0
-
-        state = {
-            "version": 1,
-            "state_revision": 3,
-            "items": [short_item],
-        }
-        pipeline.save_state(state)
-
+        # 3. Short prepare_upload succeeds without Long ambiguity
         outputs = {}
         with mock.patch.dict(os.environ, {
             "KESHER_MEDIA_MODE": "article_short",
             "TARGET_SLUG": src["slug"],
             "TARGET_CONTENT_SHA256": src["content_sha256"],
-            "TARGET_ITEM_ID": "short-pub-1",
+            "TARGET_ITEM_ID": "short-attempt-1",
         }), mock.patch.object(reconcile, "current_source_snapshot", return_value=src), \
-           mock.patch("scripts.kesher_e2e_delivery_guard._signature_verified", return_value=True), \
            mock.patch.object(reconcile, "workflow_output", lambda k, v: outputs.update({k: v})):
-            code = reconcile.prepare_upload(src["slug"], src["content_sha256"], "short-pub-1")
+            code = reconcile.prepare_upload(src["slug"], src["content_sha256"], "short-attempt-1")
             self.assertEqual(code, 0)
             self.assertEqual(outputs.get("ready"), "true")
 
-    def test_codex_p1_unknown_media_type_fails_closed(self):
-        """P1 #2 Scenario G:
+    def test_codex_scenario_unknown_media_type_fails_closed(self):
+        """Scenario Unknown Media:
         Any unknown media type must fail closed across all gates.
         """
         src = sample_source()

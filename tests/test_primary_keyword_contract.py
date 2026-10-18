@@ -215,6 +215,156 @@ class TestPrimaryKeywordContract(unittest.TestCase):
         b4 = "No keyword requirement here"
         self.assertIsNone(parse_owner_required_keyword(b4))
 
+    @staticmethod
+    def _load_validator():
+        import importlib.util
+        path = Path(__file__).resolve().parent.parent / ".github" / "scripts" / "validate-article-pr.py"
+        spec = importlib.util.spec_from_file_location("validate_article_pr", path)
+        validator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(validator)
+        return validator
+
+    def test_k_article_content_changed_with_image_pipeline_prefix_fails_without_keyword(self):
+        """K: Article content changed. PR body starts with Image Pipeline Version: 2, no keyword => FAILS."""
+        validator = self._load_validator()
+        content = "<p>תוכן מאמר עברי חדש ללא הצהרת מילת מפתח. " + ("מילה " * 750) + "</p>" + ("<h3>כותרת</h3>" * 5)
+        new_post = {
+            "id": "new-test-article",
+            "title": "מאמר חדש לבדיקה",
+            "content": content,
+            "image": "/images/generated/blog/new-test-article.png",
+            "imageAlt": "תיאור תמונה מפורט העומד בכללי השער האוטומטי",
+        }
+        pr = {
+            "state": "open",
+            "draft": False,
+            "title": "Publish Kesher article: new-test-article",
+            "body": "Image Pipeline Version: 2\nImage Provider: Local\n",
+            "base": {"ref": "main", "sha": "0" * 40, "repo": {"full_name": "yanivsa/kesher-website"}},
+            "head": {"sha": "1" * 40, "repo": {"full_name": "yanivsa/kesher-website"}},
+        }
+        files = [{"filename": "src/data/posts.json"}, {"filename": "public/images/generated/blog/new-test-article.png"}]
+        errors = validator.evaluate_content(pr, files, [], [new_post], lambda _: b"png")
+        self.assertTrue(
+            any("missing required 'Primary Keyword'" in e for e in errors),
+            f"Expected Primary Keyword required error, got: {errors}",
+        )
+
+    def test_l_true_image_only_pr_no_article_content_modified_passes_without_keyword_check(self):
+        """L: True image-only PR, no article content modified => passes without keyword check."""
+        validator = self._load_validator()
+        content = "<p>תוכן קיים ומאושר. " + ("מילה " * 750) + "</p>" + ("<h3>כותרת</h3>" * 5)
+        base_post = {
+            "id": "existing-art",
+            "slug": "existing-art",
+            "title": "כותרת קיימת ומאושרת",
+            "excerpt": "תקציר קיים",
+            "content": content,
+            "image": "/images/old.png",
+            "imageAlt": "תיאור תמונה ישן",
+        }
+        # Head post updates only image fields, zero content modification
+        head_post = {
+            "id": "existing-art",
+            "slug": "existing-art",
+            "title": "כותרת קיימת ומאושרת",
+            "excerpt": "תקציר קיים",
+            "content": content,
+            "image": "/images/generated/blog/new.png",
+            "imageAlt": "תיאור תמונה חדש ומפורט העומד בכללי השער",
+        }
+        pr = {
+            "state": "open",
+            "draft": False,
+            "title": "Publish Kesher article: existing-art",
+            "body": "Image Pipeline Version: 2\n",
+            "base": {"ref": "main", "sha": "0" * 40, "repo": {"full_name": "yanivsa/kesher-website"}},
+            "head": {"sha": "1" * 40, "repo": {"full_name": "yanivsa/kesher-website"}},
+        }
+        files = [{"filename": "src/data/posts.json"}, {"filename": "public/images/generated/blog/new.png"}]
+        errors = validator.evaluate_content(pr, files, [base_post], [head_post], lambda _: b"png")
+        # Assert no Primary Keyword error was raised
+        self.assertFalse(any("Primary Keyword" in e for e in errors), f"Unexpected Primary Keyword error: {errors}")
+
+    def test_m_owner_required_exact_match_passes(self):
+        """M: Required = 'גמילה מטיטול', Declared = 'גמילה מטיטול' => PASS."""
+        post = {
+            "id": "potty-training-toddlers",
+            "slug": "potty-training-toddlers",
+            "title": "גמילה מטיטול: מדריך מעשי",
+            "content": "<p>גמילה מטיטול היא שלב חשוב בהתפתחות הפעוט.</p>",
+            "primaryKeyword": "גמילה מטיטול",
+        }
+        pr_body = "- Primary Keyword: גמילה מטיטול\n"
+        topic_brief = "Required Primary Keyword: גמילה מטיטול"
+        errors = validate_primary_keyword_contract(post, pr_body, owner_topic_brief=topic_brief)
+        self.assertEqual(errors, [])
+
+    def test_n_owner_required_substring_match_fails(self):
+        """N: Required = 'גמילה מטיטול', Declared = 'גמילה' => FAIL (substring matching forbidden)."""
+        post = {
+            "id": "potty-training-toddlers",
+            "slug": "potty-training-toddlers",
+            "title": "גמילה: מדריך מעשי",
+            "content": "<p>גמילה היא שלב חשוב בהתפתחות הפעוט.</p>",
+            "primaryKeyword": "גמילה",
+        }
+        pr_body = "- Primary Keyword: גמילה\n"
+        topic_brief = "Required Primary Keyword: גמילה מטיטול"
+        errors = validate_primary_keyword_contract(post, pr_body, owner_topic_brief=topic_brief)
+        self.assertTrue(any("does not match required owner keyword" in e for e in errors))
+
+    def test_o_owner_required_unrelated_fails(self):
+        """O: Required = 'גמילה מטיטול', Declared = 'תקשורת זוגית' => FAIL."""
+        post = {
+            "id": "couples-communication",
+            "slug": "couples-communication",
+            "title": "תקשורת זוגית: מדריך מעשי",
+            "content": "<p>תקשורת זוגית היא הבסיס לכל מערכת יחסים.</p>",
+            "primaryKeyword": "תקשורת זוגית",
+        }
+        pr_body = "- Primary Keyword: תקשורת זוגית\n"
+        topic_brief = "Required Primary Keyword: גמילה מטיטול"
+        errors = validate_primary_keyword_contract(post, pr_body, owner_topic_brief=topic_brief)
+        self.assertTrue(any("does not match required owner keyword" in e for e in errors))
+
+    def test_p_altered_pr_body_cannot_override_trusted_owner_requirement(self):
+        """P: Attempt to alter PR body to hide/change owner requirement fails; trusted metadata wins."""
+        post = {
+            "id": "couples-communication",
+            "slug": "couples-communication",
+            "title": "תקשורת זוגית: מדריך מעשי",
+            "content": "<p>תקשורת זוגית היא הבסיס לכל מערכת יחסים.</p>",
+            "primaryKeyword": "תקשורת זוגית",
+        }
+        # Attacker PR body attempts to declare owner required keyword as something else
+        pr_body = "- Primary Keyword: תקשורת זוגית\n- Required Primary Keyword: תקשורת זוגית\n"
+        with mock.patch.dict("os.environ", {"KESHER_ARTICLE_TOPIC_BRIEF": "Required Primary Keyword: גמילה מטיטול"}):
+            errors = validate_primary_keyword_contract(post, pr_body)
+            self.assertTrue(any("does not match required owner keyword 'גמילה מטיטול'" in e for e in errors))
+
+    def test_q_potty_training_toddlers_slug_passes(self):
+        """Q: גמילה מטיטול -> potty-training-toddlers PASS."""
+        ok, msg = slug_represents_keyword("potty-training-toddlers", "גמילה מטיטול")
+        self.assertTrue(ok, f"Expected PASS, got: {msg}")
+
+    def test_r_marathon_training_shoes_slug_fails(self):
+        """R: גמילה מטיטול -> marathon-training-shoes FAIL (generic training alone forbidden)."""
+        ok, msg = slug_represents_keyword("marathon-training-shoes", "גמילה מטיטול")
+        self.assertFalse(ok)
+        self.assertIn("does not contain expected semantic concepts", msg)
+
+    def test_s_stock_market_investments_slug_fails(self):
+        """S: גמישות מחשבתית -> stock-market-investments FAIL."""
+        ok, msg = slug_represents_keyword("stock-market-investments", "גמישות מחשבתית")
+        self.assertFalse(ok)
+
+    def test_t_unknown_hebrew_keyword_without_semantic_mapping_fails_closed(self):
+        """T: Unknown Hebrew Primary Keyword with no trusted semantic mapping => FAIL CLOSED, not pass."""
+        ok, msg = slug_represents_keyword("any-random-english-slug", "שאילתה עברית לא מוכרת כלל")
+        self.assertFalse(ok)
+        self.assertIn("unknown keyword", msg)
+
 
 if __name__ == "__main__":
     unittest.main()

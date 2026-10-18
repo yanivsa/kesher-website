@@ -29,22 +29,24 @@ class ArticlePrVerifyCheckOrderingTests(unittest.TestCase):
         self.image_bytes = output.getvalue()
         self.image_sha = hashlib.sha256(self.image_bytes).hexdigest()
 
-        content = "<p>" + ("מילה " * 750) + "</p>" + ("<h3>כותרת משנה</h3>" * 5)
+        content = "<p>תקשורת זוגית היא הבסיס החשוב ביותר לכל זוג בישראל. " + ("מילה " * 750) + "</p>" + ("<h3>כותרת משנה</h3>" * 5)
         self.post = {
-            "id": "new-post",
-            "title": "פוסט לבדיקת תקינות סדר בדיקות האימות",
+            "id": "couples-communication",
+            "title": "תקשורת זוגית בישראל",
             "date": "2026-10-14",
             "category": "זוגיות",
             "excerpt": "תקציר ברור ומפורט העומד בכללי השער",
             "content": content,
-            "image": "/images/generated/blog/new-post.png",
+            "image": "/images/generated/blog/couples-communication.png",
             "imageAlt": "זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור",
+            "primaryKeyword": "תקשורת זוגית",
         }
         post_sha = hashlib.sha256(
             json.dumps(self.post, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
         ).hexdigest()
 
-        self.body = f"""Image Pipeline Version: 2
+        self.body = f"""Primary Keyword: תקשורת זוגית
+Image Pipeline Version: 2
 Image Provider: Local
 Image Attempt Chain: gemini-1/gemini-2/pexels/pixabay/local-curated
 Image Generation Result: local_fallback
@@ -52,21 +54,21 @@ Image Source URL: local://public/images/generated/blog/listening-in-relationship
 Image SHA-256: {self.image_sha}
 Image Dimensions: 1200x675
 Image Visual Match: זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור
-Image Article ID: new-post
+Image Article ID: couples-communication
 Image Article SHA-256: {post_sha}
 Image Evidence Head: {self.head_sha}"""
 
         self.pr = {
             "state": "open",
             "draft": False,
-            "title": "Publish Kesher article: new-post",
+            "title": "Publish Kesher article: couples-communication",
             "body": self.body,
             "base": {"ref": "main", "sha": self.base_sha, "repo": {"full_name": "yanivsa/kesher-website"}},
             "head": {"sha": self.head_sha, "repo": {"full_name": "yanivsa/kesher-website"}},
         }
         self.files = [
             {"filename": "src/data/posts.json"},
-            {"filename": "public/images/generated/blog/new-post.png"},
+            {"filename": "public/images/generated/blog/couples-communication.png"},
         ]
         self.base_posts: list[dict] = []
         self.head_posts: list[dict] = [self.post]

@@ -227,21 +227,29 @@ def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra
         content_errors.append("New article may not contain a video field")
 
     # Primary Keyword Contract verification
-    # Enforced for every Jules article PR. Synthetic mock fixtures in image unit tests
-    # (where post has no title or PR body is solely the raw image header block) are skipped.
-    has_keyword_fields = bool(
-        exact_field(body, "Primary Keyword")
-        or exact_field(body, "Primary Search Query")
-        or post.get("primaryKeyword")
-        or post.get("primarySearchQuery")
+    # Required for every article PR containing new or changed article content.
+    # Detect deterministically from content fields diff vs base_posts — NEVER from attacker-controlled PR body text.
+    base_match = next(
+        (p for p in base_posts if isinstance(p, dict) and (p.get("id") == post.get("id") or (p.get("slug") and p.get("slug") == post.get("slug")))),
+        None
     )
-    is_image_only_mock = (
-        not has_keyword_fields
-        and (not post.get("title") or body.strip().startswith("Image Pipeline Version:"))
+    content_fields = ("title", "content", "excerpt", "slug")
+    is_true_image_only = (
+        base_match is not None
+        and all(str(post.get(f) or "").strip() == str(base_match.get(f) or "").strip() for f in content_fields)
     )
-    if not is_image_only_mock:
+
+    if not is_true_image_only:
+        trusted_brief = os.environ.get("KESHER_ARTICLE_TOPIC_BRIEF", "").strip()
+        if not trusted_brief and os.environ.get("KESHER_ARTICLE_TOPIC_BRIEF_FILE", "").strip():
+            try:
+                p = Path(os.environ["KESHER_ARTICLE_TOPIC_BRIEF_FILE"].strip())
+                if p.is_file():
+                    trusted_brief = p.read_text(encoding="utf-8").strip()
+            except OSError:
+                pass
         content_errors.extend(
-            validate_primary_keyword_contract(post, body)
+            validate_primary_keyword_contract(post, body, owner_topic_brief=trusted_brief)
         )
 
     # Pipeline v2 invariant: publication without an independently verified local

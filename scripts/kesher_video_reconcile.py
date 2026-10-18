@@ -255,21 +255,7 @@ def _has_valid_youtube_verification(item: dict[str, Any]) -> bool:
 def _short_item_canonical_origin_verified(item: dict[str, Any]) -> bool:
     if not isinstance(item, dict):
         return False
-    if item.get("overview_provider_identity") is not None:
-        return delivery_guard._short_origin_verified(item)
-    raw_sha = str(item.get("raw_sha256") or "").strip()
-    dummy_overview_sha = "0" * 64 if raw_sha != "0" * 64 else "1" * 64
-    probe = {
-        **item,
-        "overview_provider_identity": {
-            "notebook_id": "__reconcile_independent_notebook__",
-            "source_id": "__reconcile_overview_source__",
-            "task_id": "__reconcile_overview_task__",
-            "artifact_id": "__reconcile_overview_artifact__",
-            "raw_sha256": dummy_overview_sha,
-        },
-    }
-    return delivery_guard._short_origin_verified(probe)
+    return delivery_guard._short_origin_verified(item)
 
 
 def _short_media_and_signature_verified(item: dict[str, Any], source: dict[str, Any]) -> bool:
@@ -750,6 +736,26 @@ def prepare_upload(
             raise pipeline.PipelineError(
                 "Exact identity lock requires target_slug, content_sha256, and target_item_id"
             )
+
+        if target_item_id and pipeline.STATE_FILE.is_file():
+            auth_state = pipeline.load_state()
+            auth_items_by_id = {
+                str(r.get("id")): r
+                for r in auth_state.get("items", [])
+                if isinstance(r, dict)
+            }
+            if str(target_item_id).strip() not in auth_items_by_id:
+                workflow_output("ready", "false")
+                raise pipeline.PipelineError(
+                    f"AUTHORITATIVE_ITEM_MISSING: item {target_item_id} absent from authoritative state on disk"
+                )
+            target_auth = auth_items_by_id[str(target_item_id).strip()]
+            if target_auth.get("uploaded") is True and bool(str(target_auth.get("youtube_id") or "").strip()):
+                export_target(target_auth)
+                workflow_output("ready", "false")
+                print(f"VIDEO_RECONCILED_UPLOAD candidate=already_public slug={target or source_slug(target_auth)} item={target_auth.get('id')}")
+                return 0
+
         from scripts import kesher_final_attempt_fallback as fallback
         if overview:
             if target_candidates and target_candidates[0].get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
@@ -765,6 +771,12 @@ def prepare_upload(
             except pipeline.PipelineError:
                 workflow_output("ready", "false")
                 raise
+
+            if authoritative_item.get("uploaded") is True and bool(str(authoritative_item.get("youtube_id") or "").strip()):
+                export_target(authoritative_item)
+                workflow_output("ready", "false")
+                print(f"VIDEO_RECONCILED_UPLOAD candidate=already_public slug={target} item={authoritative_item.get('id')}")
+                return 0
 
             if state.get("fallback_winner"):
                 fw = state["fallback_winner"]
@@ -795,12 +807,13 @@ def prepare_upload(
             ]
             if len(exact_all) == 1:
                 matched_item = exact_all[0]
+                if matched_item.get("uploaded") is True and bool(str(matched_item.get("youtube_id") or "").strip()):
+                    export_target(matched_item)
+                    workflow_output("ready", "false")
+                    print(f"VIDEO_RECONCILED_UPLOAD candidate=already_public slug={target} item={matched_item.get('id')}")
+                    return 0
                 if bool(str(matched_item.get("youtube_id") or "").strip()):
                     export_target(matched_item)
-                    if matched_item.get("uploaded") is True and _has_valid_youtube_verification(matched_item):
-                        workflow_output("ready", "false")
-                        print(f"VIDEO_RECONCILED_UPLOAD candidate=already_public slug={target} item={matched_item.get('id')}")
-                        return 0
                     if recover_persisted_youtube_id(state, matched_item):
                         workflow_output("ready", "false")
                         return 0
@@ -893,7 +906,12 @@ def prepare_upload(
             if auth_item and (auth_item.get("status") == "superseded" or auth_item.get("upload_eligible") is False):
                 workflow_output("ready", "false")
                 raise pipeline.PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item.get('id')} is superseded")
-        export_target(item)
+    export_target(item)
+
+    if item.get("uploaded") is True and bool(str(item.get("youtube_id") or "").strip()):
+        workflow_output("ready", "false")
+        print(f"VIDEO_RECONCILED_UPLOAD candidate=already_public slug={cand_slug} item={item.get('id')}")
+        return 0
 
     if bool(str(item.get("youtube_id") or "").strip()) and not (item.get("uploaded") is True and _has_valid_youtube_verification(item)):
         if recover_persisted_youtube_id(state, item):

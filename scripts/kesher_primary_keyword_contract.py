@@ -9,11 +9,11 @@ from typing import Any
 
 # Canonical semantic English stems for Kesher therapeutic, parenting, and relationship topics
 SEMANTIC_KEYWORD_DICTIONARY: dict[str, set[str]] = {
-    # Potty training / Toddler transitions
-    "גמילה מטיטול": {"potty", "toilet", "diaper", "training", "weaning"},
-    "גמילה מטיטולים": {"potty", "toilet", "diaper", "training", "weaning"},
-    "גמילה מחיתולים": {"potty", "toilet", "diaper", "training", "weaning"},
-    "גמילה מחיתול": {"potty", "toilet", "diaper", "training", "weaning"},
+    # Potty training / Toddler transitions (requires potty/toilet/diaper concepts, generic training alone forbidden)
+    "גמילה מטיטול": {"potty", "toilet", "diaper"},
+    "גמילה מטיטולים": {"potty", "toilet", "diaper"},
+    "גמילה מחיתולים": {"potty", "toilet", "diaper"},
+    "גמילה מחיתול": {"potty", "toilet", "diaper"},
     "גמילת לילה": {"night", "potty", "bedwetting", "diaper"},
     # Gifted children / Education
     "ילד מחונן": {"gifted", "child", "giftedness"},
@@ -170,7 +170,7 @@ def parse_owner_required_keyword(topic_brief: str) -> str | None:
     return None
 
 
-def slug_represents_keyword(slug: str, keyword: str) -> tuple[bool, str]:
+def slug_represents_keyword(slug: str, keyword: str, *, trusted_stems: set[str] | None = None) -> tuple[bool, str]:
     """Verify that slug is valid kebab-case and semantically maps to the Primary Keyword."""
     clean_slug = str(slug or "").strip().lower()
     if not clean_slug:
@@ -181,7 +181,16 @@ def slug_represents_keyword(slug: str, keyword: str) -> tuple[bool, str]:
     norm_kw = normalize_hebrew_text(keyword).lower()
     slug_tokens = set(clean_slug.split("-"))
 
-    # 1. Direct dictionary match
+    # 1. Explicit trusted stems if supplied
+    if trusted_stems:
+        if any(stem in slug_tokens or any(stem in token for token in slug_tokens) for stem in trusted_stems):
+            return True, ""
+        return False, (
+            f"Slug '{clean_slug}' does not contain trusted semantic concepts "
+            f"for '{keyword}' (expected one of: {sorted(trusted_stems)})"
+        )
+
+    # 2. Direct dictionary match
     expected_stems = SEMANTIC_KEYWORD_DICTIONARY.get(norm_kw)
     if expected_stems:
         if any(stem in slug_tokens or any(stem in token for token in slug_tokens) for stem in expected_stems):
@@ -191,18 +200,14 @@ def slug_represents_keyword(slug: str, keyword: str) -> tuple[bool, str]:
             f"for '{keyword}' (expected one of: {sorted(expected_stems)})"
         )
 
-    # 2. Check partial dictionary matches (sub-phrase matching)
+    # 3. Check partial dictionary matches (sub-phrase matching)
     for dict_kw, stems in SEMANTIC_KEYWORD_DICTIONARY.items():
         if dict_kw in norm_kw or norm_kw in dict_kw:
             if any(stem in slug_tokens or any(stem in token for token in slug_tokens) for stem in stems):
                 return True, ""
 
-    # 3. Fallback: Transliteration / Romanization check
-    # If the slug has meaningful alphanumeric tokens (at least 2 letters)
-    if len(slug_tokens) >= 1 and any(len(t) >= 3 for t in slug_tokens):
-        return True, ""
-
-    return False, f"Slug '{clean_slug}' could not be semantically verified for keyword '{keyword}'"
+    # Unknown Primary Keyword without trusted semantic mapping: fail closed
+    return False, f"Slug '{clean_slug}' could not be semantically verified: unknown keyword '{keyword}' has no trusted semantic mapping"
 
 
 def exact_field(body: str, label: str) -> str | None:
@@ -251,10 +256,24 @@ def validate_primary_keyword_contract(
 
     # 2. Verify against Owner Topic Brief requirement if present
     required_kw = parse_owner_required_keyword(owner_topic_brief)
+    if not required_kw:
+        # Check trusted repository environment/metadata if not passed directly
+        import os
+        trusted_env_brief = os.environ.get("KESHER_ARTICLE_TOPIC_BRIEF", "").strip()
+        if not trusted_env_brief and os.environ.get("KESHER_ARTICLE_TOPIC_BRIEF_FILE", "").strip():
+            try:
+                from pathlib import Path
+                p = Path(os.environ["KESHER_ARTICLE_TOPIC_BRIEF_FILE"].strip())
+                if p.is_file():
+                    trusted_env_brief = p.read_text(encoding="utf-8").strip()
+            except OSError:
+                pass
+        required_kw = parse_owner_required_keyword(trusted_env_brief) or str(post.get("ownerRequiredPrimaryKeyword") or "").strip()
+
     if required_kw:
         norm_req = normalize_hebrew_text(required_kw).lower()
         norm_decl = normalize_hebrew_text(keyword).lower()
-        if norm_req != norm_decl and norm_req not in norm_decl and norm_decl not in norm_req:
+        if norm_req != norm_decl:
             errors.append(
                 f"Declared Primary Keyword '{keyword}' does not match required owner keyword '{required_kw}'"
             )
@@ -281,7 +300,10 @@ def validate_primary_keyword_contract(
     if not slug:
         errors.append("Article slug is missing")
     else:
-        valid_slug, slug_msg = slug_represents_keyword(slug, keyword)
+        trusted_stems = None
+        if isinstance(post.get("slugSemanticTokens"), list):
+            trusted_stems = set(str(s).strip().lower() for s in post["slugSemanticTokens"] if str(s).strip())
+        valid_slug, slug_msg = slug_represents_keyword(slug, keyword, trusted_stems=trusted_stems)
         if not valid_slug:
             errors.append(slug_msg)
 

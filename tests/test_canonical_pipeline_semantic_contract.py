@@ -124,7 +124,7 @@ class CanonicalPipelineSemanticContractTests(unittest.TestCase):
         colliding_sha = hashlib.sha256(colliding_bytes).hexdigest()
 
         content_with_5_h3 = (
-            "<p>Intro</p>\n"
+            "<p>תקשורת זוגית היא הבסיס לכל מערכת יחסים בריאה ומאושרת. </p>\n"
             + "".join(f"<h3>Section {i}</h3>\n<p>" + "word " * 160 + "</p>\n" for i in range(1, 6))
         )
         base_post = {
@@ -134,22 +134,25 @@ class CanonicalPipelineSemanticContractTests(unittest.TestCase):
             "imageSha256": colliding_sha,
         }
         new_post = {
-            "id": "new-article-slug",
+            "id": "couples-communication",
+            "title": "תקשורת זוגית מעשית",
+            "primaryKeyword": "תקשורת זוגית",
             "content": content_with_5_h3,
-            "image": "/images/generated/blog/new-article-slug.jpg",
+            "image": "/images/generated/blog/couples-communication.jpg",
             "imageAlt": "A very detailed alt text description of the image content here",
         }
         pr = {
             "state": "open",
             "draft": False,
-            "title": "Publish Kesher article: New Article",
+            "title": "Publish Kesher article: couples-communication",
             "body": (
                 "<!-- image-evidence -->\n"
+                "- Primary Keyword: תקשורת זוגית\n"
                 "Image Pipeline Version: 2\n"
                 "Image Provider: Local\n"
                 "Image Generation Result: local_fallback\n"
                 "Image Attempt Chain: gemini-1/gemini-2/pexels/pixabay/local-curated\n"
-                "Image Source URL: local://public/images/generated/blog/new-article-slug.jpg\n"
+                "Image Source URL: local://public/images/generated/blog/couples-communication.jpg\n"
                 f"Image SHA-256: {colliding_sha}\n"
                 "Image Dimensions: 1200x675\n"
                 "Image Visual Match: A very detailed alt text description of the image content here\n"
@@ -162,7 +165,7 @@ class CanonicalPipelineSemanticContractTests(unittest.TestCase):
         }
         files_data = [
             {"filename": "src/data/posts.json"},
-            {"filename": "public/images/generated/blog/new-article-slug.jpg"},
+            {"filename": "public/images/generated/blog/couples-communication.jpg"},
         ]
 
         def mock_loader(entry):
@@ -172,7 +175,7 @@ class CanonicalPipelineSemanticContractTests(unittest.TestCase):
             pr,
             files_data,
             [base_post],
-            [new_post],
+            [base_post, new_post],
             image_loader=mock_loader,
         )
         self.assertTrue(
