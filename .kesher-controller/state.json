@@ -56,7 +56,7 @@
     "next_deploy_retry_at": null,
     "deploy_run_id": 39097912612,
     "deploy_status": "exhausted",
-    "live_verified_at": "2026-10-18T06:30:53.639651+00:00"
+    "live_verified_at": "2026-10-18T06:31:21.285057+00:00"
   },
   "backlog": [
     {
@@ -1429,25 +1429,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-17T22:45:45.400493+00:00",
-      "from": "article_deploying",
-      "to": "article_deploy_wait",
-      "reason": "deploy retry backoff is active",
-      "details": {
-        "retry_at": "2026-10-17T22:45:42.708351+00:00"
-      }
-    },
-    {
-      "at": "2026-10-17T22:51:02.173360+00:00",
-      "from": "article_deploy_wait",
-      "to": "article_deploying",
-      "reason": "public article check failed; recovery deploy dispatched",
-      "details": {
-        "http_status": 404,
-        "attempt": 4
-      }
-    },
-    {
       "at": "2026-10-17T22:55:50.537330+00:00",
       "from": "article_deploying",
       "to": "article_deploy_wait",
@@ -2330,9 +2311,24 @@
       "details": {
         "retry_at": "2026-10-18T06:31:01.171022+00:00"
       }
+    },
+    {
+      "at": "2026-10-18T06:31:21.285081+00:00",
+      "from": "long_video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-18T06:31:23.260905+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-18T06:31:01.171022+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-18T06:26:01.171096+00:00",
+  "updated_at": "2026-10-18T06:31:23.260924+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
