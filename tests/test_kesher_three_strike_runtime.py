@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 from unittest import mock
 
 from scripts import kesher_content_controller_v5 as v5
+from scripts import kesher_final_attempt_fallback as fallback
 from scripts.kesher_three_strike_runtime import ThreeStrikeMediaInterventionMixin
 
 
@@ -294,15 +295,23 @@ class KesherThreeStrikeRuntimeTests(unittest.TestCase):
         self.assertEqual(action1.kind, "blocked")
         self.assertEqual(len(harness.github.dispatches), 0)
 
-        # Strike 2 (FORCE_CONTROLLER_RECOVERY under exhausted attempt 3): fallback candidate is authoritatively promoted!
+        # Strike 2: Under production default (fallback disabled), fails closed
         harness.now += timedelta(hours=1)
-        action2 = harness._media_watchdog_preflight(state, source)
-        self.assertEqual(action2.kind, "long_video_watchdog_recover")
-        self.assertEqual(len(harness.github.dispatches), 1)
-        wf, inputs = harness.github.dispatches[0]
-        self.assertEqual(wf, v5.LONG_VIDEO_WORKFLOW)
-        self.assertEqual(inputs.get("target_item_id"), "item-attempt-2")
-        self.assertEqual(state["long_video"].get("authoritative_item_id"), "item-attempt-2")
+        action2_disabled = harness._media_watchdog_preflight(state, source)
+        self.assertEqual(action2_disabled.kind, "blocked")
+        self.assertEqual(action2_disabled.reason, "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE")
+        self.assertEqual(len(harness.github.dispatches), 0)
+
+        # Strike 2 (FORCE_CONTROLLER_RECOVERY under exhausted attempt 3 when fallback explicitly enabled):
+        # fallback candidate is authoritatively promoted!
+        with mock.patch.object(fallback, "FALLBACK_PROMOTION_ENABLED", True):
+            action2 = harness._media_watchdog_preflight(state, source)
+            self.assertEqual(action2.kind, "long_video_watchdog_recover")
+            self.assertEqual(len(harness.github.dispatches), 1)
+            wf, inputs = harness.github.dispatches[0]
+            self.assertEqual(wf, v5.LONG_VIDEO_WORKFLOW)
+            self.assertEqual(inputs.get("target_item_id"), "item-attempt-2")
+            self.assertEqual(state["long_video"].get("authoritative_item_id"), "item-attempt-2")
 
     def test_media_blocked_state_does_not_oscillate_to_article_live(self):
         from scripts.kesher_content_controller_stabilized import StabilizedRuntimeV5Controller

@@ -57,6 +57,22 @@ class FinalAttemptFallbackTests(unittest.TestCase):
             "updated_at": f"2026-09-10T0{attempt}:00:00Z",
         }
 
+    def setUp(self):
+        super().setUp()
+        self.fallback_gate_patcher = mock.patch.object(fallback, "FALLBACK_PROMOTION_ENABLED", True)
+        self.fallback_gate_patcher.start()
+
+    def tearDown(self):
+        self.fallback_gate_patcher.stop()
+        super().tearDown()
+
+    def test_production_default_refuses_fallback(self):
+        with mock.patch.object(fallback, "FALLBACK_PROMOTION_ENABLED", False):
+            self.assertFalse(fallback.is_fallback_promotion_enabled())
+            state = {"version": 1, "items": [self._item("first", 1), self._item("second", 2), self._item("third", 3, voice_only=False)]}
+            chosen = fallback.promote_last_usable_after_third_attempt(state)
+            self.assertIsNone(chosen)
+
     def test_third_attempt_failure_promotes_latest_usable_same_source_artifact(self):
         with tempfile.TemporaryDirectory() as tmp:
             state_dir = Path(tmp)

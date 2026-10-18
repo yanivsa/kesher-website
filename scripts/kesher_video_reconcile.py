@@ -665,8 +665,7 @@ def technical_publication_ready(item: dict[str, Any]) -> bool:
     if video_policy.get("publication_gate") != "technical" or video_policy.get("jules_is_advisory") is not True:
         raise pipeline.PipelineError("Video policy no longer declares technical publication with advisory Jules review")
     return bool(
-        item.get("technical_verified") is True
-        and item.get("status") in {"pending_review", "approved", "rejected", "uploading"}
+        pipeline.can_long_item_proceed_toward_publication(item)
         and item.get("final_sha256")
     )
 
@@ -736,6 +735,25 @@ def prepare_upload(
             raise pipeline.PipelineError(
                 "Exact identity lock requires target_slug, content_sha256, and target_item_id"
             )
+        from scripts import kesher_final_attempt_fallback as fallback
+        target_candidates = [
+            i for i in state.get("items", [])
+            if isinstance(i, dict) and str(i.get("id") or "").strip() == target_item_id
+        ]
+        if target_candidates and target_candidates[0].get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
+            workflow_output("ready", "false")
+            raise pipeline.PipelineError(
+                "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled"
+            )
+
+        try:
+            authoritative_item = pipeline.verify_single_upload_authority(
+                state, target, target_content_sha256, target_item_id, candidate_items=unresolved
+            )
+        except pipeline.PipelineError:
+            workflow_output("ready", "false")
+            raise
+
         if state.get("fallback_winner"):
             fw = state["fallback_winner"]
             if fw.get("slug") == target and fw.get("content_sha256") == target_content_sha256:
@@ -817,6 +835,30 @@ def prepare_upload(
 
     item = unresolved[0]
     export_target(item)
+    cand_slug = source_slug(item)
+    cand_hash = str((item.get("source") or {}).get("content_sha256") or "").strip()
+    from scripts import kesher_final_attempt_fallback as fallback
+    if item.get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
+        workflow_output("ready", "false")
+        raise pipeline.PipelineError(
+            "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled"
+        )
+    if cand_slug and cand_hash:
+        try:
+            authoritative_item = pipeline.verify_single_upload_authority(
+                state, cand_slug, cand_hash, item.get("id"), candidate_items=unresolved
+            )
+        except pipeline.PipelineError:
+            workflow_output("ready", "false")
+            raise
+        state_item = next((r for r in state.get("items", []) if str(r.get("id")) == str(authoritative_item.get("id"))), None)
+        if state_item is not None:
+            state_item.update(authoritative_item)
+            item = state_item
+        else:
+            item = authoritative_item
+        export_target(item)
+
     if bool(str(item.get("youtube_id") or "").strip()) and not (item.get("uploaded") is True and _has_valid_youtube_verification(item)):
         if recover_persisted_youtube_id(state, item):
             workflow_output("ready", "false")
