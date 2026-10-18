@@ -133,15 +133,15 @@ validator = controller['load_validator_best_effort']()
 evaluate = validator.evaluate
 head_sha = 'a' * 40
 base = [{'id':'older'}]
-content = '<p>' + ('מילה ' * 700) + '</p>' + ('<h3>שאלה</h3>' * 5)
+content = '<p>תקשורת זוגית היא הבסיס לכל מערכת יחסים בריאה ומאושרת. ' + ('מילה ' * 700) + '</p>' + ('<h3>שאלה</h3>' * 5)
 base_pr = {
-  'state':'open','draft':False,'title':'Publish Kesher article: valid-new-post',
+  'state':'open','draft':False,'title':'Publish Kesher article: couples-communication',
   'base':{'sha':'c' * 40,'ref':'main','repo':{'full_name':'test/repo'}},
   'head':{'sha':head_sha,'repo':{'full_name':'test/repo'}},
 }
 checks = [{'name':'verify','conclusion':'success','head_sha':head_sha}]
 
-no_image = {'id':'valid-new-post','content':content}
+no_image = {'id':'couples-communication','title':'תקשורת זוגית מעשית','primaryKeyword':'תקשורת זוגית','content':content}
 errors = evaluate(base_pr, [{'filename':'src/data/posts.json'}], checks, base, base+[no_image], lambda _: b'')
 assert any('no-image publication is forbidden' in e for e in errors), errors
 
@@ -149,9 +149,10 @@ output = io.BytesIO()
 Image.new('RGB', (1200,675), (96,127,150)).save(output, format='PNG')
 png = output.getvalue()
 sha = hashlib.sha256(png).hexdigest()
-post = dict(no_image, image='/images/generated/blog/valid-new-post.png', imageAlt='זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור')
+post = dict(no_image, image='/images/generated/blog/couples-communication.png', imageAlt='זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור')
 post_sha = hashlib.sha256(json.dumps(post, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
-body = f'''Image Pipeline Version: 2
+body = f'''Primary Keyword: תקשורת זוגית
+Image Pipeline Version: 2
 Image Provider: Local
 Image Attempt Chain: gemini-1/gemini-2/pexels/pixabay/local-curated
 Image Generation Result: local_fallback
@@ -159,11 +160,11 @@ Image Source URL: local://public/images/generated/blog/listening-in-relationship
 Image SHA-256: {sha}
 Image Dimensions: 1200x675
 Image Visual Match: זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור
-Image Article ID: valid-new-post
+Image Article ID: couples-communication
 Image Article SHA-256: {post_sha}
 Image Evidence Head: {head_sha}'''
 pr = dict(base_pr, body=body)
-files = [{'filename':'src/data/posts.json'}, {'filename':'public/images/generated/blog/valid-new-post.png'}]
+files = [{'filename':'src/data/posts.json'}, {'filename':'public/images/generated/blog/couples-communication.png'}]
 errors = evaluate(pr, files, checks, base, base+[post], lambda _: png)
 assert errors == [], errors
 
@@ -180,7 +181,7 @@ for old, new, expected in [
   errors = evaluate(dict(pr, body=body.replace(old, new)), files, checks, base, base+[post], lambda _: png)
   assert any(expected in e for e in errors), (expected, errors)
 
-for changed in [dict(post, title='changed'), dict(post, imageAlt='תיאור חלופי שאינו תואם להוכחת המאמר')]:
+for changed in [dict(post, title='תקשורת זוגית בישראל ואתגריה'), dict(post, imageAlt='תיאור חלופי שאינו תואם להוכחת המאמר')]:
   errors = evaluate(pr, files, checks, base, base+[changed], lambda _: png)
   assert any('current article content' in e for e in errors), errors
 errors = evaluate(pr, files, [dict(checks[0], head_sha='b'*40)], base, base+[post], lambda _: png)

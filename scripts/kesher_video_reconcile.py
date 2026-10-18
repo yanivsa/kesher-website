@@ -255,21 +255,7 @@ def _has_valid_youtube_verification(item: dict[str, Any]) -> bool:
 def _short_item_canonical_origin_verified(item: dict[str, Any]) -> bool:
     if not isinstance(item, dict):
         return False
-    if item.get("overview_provider_identity") is not None:
-        return delivery_guard._short_origin_verified(item)
-    raw_sha = str(item.get("raw_sha256") or "").strip()
-    dummy_overview_sha = "0" * 64 if raw_sha != "0" * 64 else "1" * 64
-    probe = {
-        **item,
-        "overview_provider_identity": {
-            "notebook_id": "__reconcile_independent_notebook__",
-            "source_id": "__reconcile_overview_source__",
-            "task_id": "__reconcile_overview_task__",
-            "artifact_id": "__reconcile_overview_artifact__",
-            "raw_sha256": dummy_overview_sha,
-        },
-    }
-    return delivery_guard._short_origin_verified(probe)
+    return delivery_guard._short_origin_verified(item)
 
 
 def _short_media_and_signature_verified(item: dict[str, Any], source: dict[str, Any]) -> bool:
@@ -297,7 +283,17 @@ def is_verified_public_short(item: dict[str, Any], source: dict[str, Any]) -> bo
 
 
 def is_uploaded_unverified_short(item: dict[str, Any], source: dict[str, Any]) -> bool:
-    if not _short_media_and_signature_verified(item, source):
+    """Recognize an existing external Short identity without treating it as publication-safe.
+
+    Legacy/external insertions may predate today's local provenance fields. They must
+    block duplicate generation and be routed to remote verification, but they are not
+    considered a verified public Short until the full canonical Short contract passes.
+    """
+    if not isinstance(item, dict) or item.get("type") != "article_short":
+        return False
+    if source_slug(item) != str(source.get("slug") or "").strip():
+        return False
+    if str((item.get("source") or {}).get("content_sha256") or "") != str(source.get("content_sha256") or ""):
         return False
     if not bool(str(item.get("youtube_id") or "").strip()):
         return False
@@ -664,10 +660,20 @@ def technical_publication_ready(item: dict[str, Any]) -> bool:
     video_policy = policy["video"]
     if video_policy.get("publication_gate") != "technical" or video_policy.get("jules_is_advisory") is not True:
         raise pipeline.PipelineError("Video policy no longer declares technical publication with advisory Jules review")
-    return bool(
-        pipeline.can_long_item_proceed_toward_publication(item)
-        and item.get("final_sha256")
-    )
+    if not isinstance(item, dict):
+        return False
+    item_type = item.get("type")
+    if item_type in {"video_overview", None}:
+        return bool(
+            pipeline.can_long_item_proceed_toward_publication(item)
+            and item.get("final_sha256")
+        )
+    elif item_type == "article_short":
+        return bool(
+            pipeline.can_short_item_proceed_toward_publication(item)
+            and item.get("final_sha256")
+        )
+    return False
 
 
 def recover_persisted_youtube_id(state: dict[str, Any], item: dict[str, Any]) -> bool:
@@ -727,41 +733,73 @@ def prepare_upload(
     ).strip()
     exact_required = (os.environ.get("KESHER_EXACT_UPLOAD_REQUIRED") or "").strip().lower() == "true"
     media_mode = os.environ.get('KESHER_MEDIA_MODE', '')
-    overview = media_mode == 'video_overview' or (media_mode != 'article_short'
-                and any(item.get('type') == 'video_overview' for item in state.get('items', [])))
+    reconciled_predecessor_item_id = (os.environ.get("KESHER_REQUESTED_TARGET_ITEM_ID") or "").strip()
+    if reconciled_predecessor_item_id == target_item_id:
+        reconciled_predecessor_item_id = ""
+    target_candidates = [
+        i for i in state.get("items", [])
+        if isinstance(i, dict) and str(i.get("id") or "").strip() == target_item_id
+    ] if target_item_id else []
+    is_target_short = any(i.get("type") == "article_short" for i in target_candidates) or media_mode == "article_short"
+    overview = (media_mode == 'video_overview' or (media_mode != 'article_short'
+                and any(item.get('type') == 'video_overview' for item in state.get('items', [])))) and not is_target_short
     exact_requested = overview or exact_required or bool(target_item_id or target_content_sha256)
     if exact_requested:
         if not all((target, target_content_sha256, target_item_id)):
             raise pipeline.PipelineError(
                 "Exact identity lock requires target_slug, content_sha256, and target_item_id"
             )
+
+        if target_item_id and pipeline.STATE_FILE.is_file():
+            auth_state = pipeline.load_state()
+            auth_items_by_id = {
+                str(r.get("id")): r
+                for r in auth_state.get("items", [])
+                if isinstance(r, dict)
+            }
+            if str(target_item_id).strip() not in auth_items_by_id:
+                workflow_output("ready", "false")
+                raise pipeline.PipelineError(
+                    f"AUTHORITATIVE_ITEM_MISSING: item {target_item_id} absent from authoritative state on disk"
+                )
+            target_auth = auth_items_by_id[str(target_item_id).strip()]
+            if target_auth.get("uploaded") is True and bool(str(target_auth.get("youtube_id") or "").strip()):
+                export_target(target_auth)
+                workflow_output("ready", "false")
+                print(f"VIDEO_RECONCILED_UPLOAD candidate=already_public slug={target or source_slug(target_auth)} item={target_auth.get('id')}")
+                return 0
+
         from scripts import kesher_final_attempt_fallback as fallback
-        target_candidates = [
-            i for i in state.get("items", [])
-            if isinstance(i, dict) and str(i.get("id") or "").strip() == target_item_id
-        ]
-        if target_candidates and target_candidates[0].get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
-            workflow_output("ready", "false")
-            raise pipeline.PipelineError(
-                "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled"
-            )
+        if overview:
+            if target_candidates and target_candidates[0].get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
+                workflow_output("ready", "false")
+                raise pipeline.PipelineError(
+                    "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled"
+                )
 
-        try:
-            authoritative_item = pipeline.verify_single_upload_authority(
-                state, target, target_content_sha256, target_item_id, candidate_items=unresolved
-            )
-        except pipeline.PipelineError:
-            workflow_output("ready", "false")
-            raise
+            try:
+                authoritative_item = pipeline.verify_single_upload_authority(
+                    state, target, target_content_sha256, target_item_id, candidate_items=unresolved,
+                    reconciled_predecessor_item_id=reconciled_predecessor_item_id,
+                )
+            except pipeline.PipelineError:
+                workflow_output("ready", "false")
+                raise
 
-        if state.get("fallback_winner"):
-            fw = state["fallback_winner"]
-            if fw.get("slug") == target and fw.get("content_sha256") == target_content_sha256:
-                if fw.get("fallback_committed") is True and fw.get("winner_item_id") != target_item_id:
-                    workflow_output("ready", "false")
-                    raise pipeline.PipelineError(
-                        f"EXACT_UPLOAD_SUPERSEDED: item {target_item_id} superseded by fallback winner {fw.get('winner_item_id')}"
-                    )
+            if authoritative_item.get("uploaded") is True and bool(str(authoritative_item.get("youtube_id") or "").strip()):
+                export_target(authoritative_item)
+                workflow_output("ready", "false")
+                print(f"VIDEO_RECONCILED_UPLOAD candidate=already_public slug={target} item={authoritative_item.get('id')}")
+                return 0
+
+            if state.get("fallback_winner"):
+                fw = state["fallback_winner"]
+                if fw.get("slug") == target and fw.get("content_sha256") == target_content_sha256:
+                    if fw.get("fallback_committed") is True and fw.get("winner_item_id") != target_item_id:
+                        workflow_output("ready", "false")
+                        raise pipeline.PipelineError(
+                            f"EXACT_UPLOAD_SUPERSEDED: item {target_item_id} superseded by fallback winner {fw.get('winner_item_id')}"
+                        )
         exact = [
             item for item in unresolved
             if str(item.get("id") or "").strip() == target_item_id
@@ -783,12 +821,13 @@ def prepare_upload(
             ]
             if len(exact_all) == 1:
                 matched_item = exact_all[0]
+                if matched_item.get("uploaded") is True and bool(str(matched_item.get("youtube_id") or "").strip()):
+                    export_target(matched_item)
+                    workflow_output("ready", "false")
+                    print(f"VIDEO_RECONCILED_UPLOAD candidate=already_public slug={target} item={matched_item.get('id')}")
+                    return 0
                 if bool(str(matched_item.get("youtube_id") or "").strip()):
                     export_target(matched_item)
-                    if matched_item.get("uploaded") is True and _has_valid_youtube_verification(matched_item):
-                        workflow_output("ready", "false")
-                        print(f"VIDEO_RECONCILED_UPLOAD candidate=already_public slug={target} item={matched_item.get('id')}")
-                        return 0
                     if recover_persisted_youtube_id(state, matched_item):
                         workflow_output("ready", "false")
                         return 0
@@ -837,27 +876,57 @@ def prepare_upload(
     export_target(item)
     cand_slug = source_slug(item)
     cand_hash = str((item.get("source") or {}).get("content_sha256") or "").strip()
-    from scripts import kesher_final_attempt_fallback as fallback
-    if item.get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
+    item_type = item.get("type")
+    if item_type not in {"video_overview", "article_short", None}:
         workflow_output("ready", "false")
-        raise pipeline.PipelineError(
-            "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled"
-        )
-    if cand_slug and cand_hash:
-        try:
-            authoritative_item = pipeline.verify_single_upload_authority(
-                state, cand_slug, cand_hash, item.get("id"), candidate_items=unresolved
-            )
-        except pipeline.PipelineError:
+        raise pipeline.PipelineError(f"UNKNOWN_MEDIA_TYPE: unsupported media item type '{item_type}'")
+
+    is_short = item_type == "article_short"
+    is_long = item_type in {"video_overview", None}
+
+    if is_long:
+        from scripts import kesher_final_attempt_fallback as fallback
+        if item.get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
             workflow_output("ready", "false")
-            raise
-        state_item = next((r for r in state.get("items", []) if str(r.get("id")) == str(authoritative_item.get("id"))), None)
-        if state_item is not None:
-            state_item.update(authoritative_item)
-            item = state_item
-        else:
+            raise pipeline.PipelineError(
+                "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled"
+            )
+        if cand_slug and cand_hash:
+            try:
+                authoritative_item = pipeline.verify_single_upload_authority(
+                    state, cand_slug, cand_hash, item.get("id"), candidate_items=unresolved,
+                    reconciled_predecessor_item_id=reconciled_predecessor_item_id,
+                )
+            except pipeline.PipelineError:
+                workflow_output("ready", "false")
+                raise
             item = authoritative_item
-        export_target(item)
+            if isinstance(state.get("items"), list):
+                for idx, existing in enumerate(state["items"]):
+                    if isinstance(existing, dict) and str(existing.get("id") or "").strip() == str(item.get("id") or "").strip():
+                        state["items"][idx] = item
+                        break
+            export_target(item)
+    elif is_short:
+        if pipeline.STATE_FILE.is_file():
+            auth_state = pipeline.load_state()
+            auth_item = next((r for r in auth_state.get("items", []) if str(r.get("id") or "").strip() == str(item.get("id") or "").strip()), None)
+            if auth_item is not None:
+                item = auth_item
+                if isinstance(state.get("items"), list):
+                    for idx, existing in enumerate(state["items"]):
+                        if isinstance(existing, dict) and str(existing.get("id") or "").strip() == str(item.get("id") or "").strip():
+                            state["items"][idx] = item
+                            break
+            if auth_item and (auth_item.get("status") == "superseded" or auth_item.get("upload_eligible") is False):
+                workflow_output("ready", "false")
+                raise pipeline.PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item.get('id')} is superseded")
+    export_target(item)
+
+    if item.get("uploaded") is True and bool(str(item.get("youtube_id") or "").strip()):
+        workflow_output("ready", "false")
+        print(f"VIDEO_RECONCILED_UPLOAD candidate=already_public slug={cand_slug} item={item.get('id')}")
+        return 0
 
     if bool(str(item.get("youtube_id") or "").strip()) and not (item.get("uploaded") is True and _has_valid_youtube_verification(item)):
         if recover_persisted_youtube_id(state, item):
@@ -902,6 +971,20 @@ def prepare_upload(
         raise pipeline.PipelineError(
             f"Published source changed before upload for {slug}"
         )
+
+    if is_long and reconciled_predecessor_item_id:
+        for predecessor in state.get("items", []) or []:
+            if (
+                isinstance(predecessor, dict)
+                and str(predecessor.get("id") or "").strip() == reconciled_predecessor_item_id
+                and source_slug(predecessor) == cand_slug
+                and str((predecessor.get("source") or {}).get("content_sha256") or "").strip() == cand_hash
+                and predecessor.get("uploaded") is not True
+            ):
+                predecessor["status"] = "superseded"
+                predecessor["superseded_reason"] = "reconciled_target_replacement"
+                predecessor["superseded_at"] = pipeline.utc_now()
+                predecessor["updated_at"] = pipeline.utc_now()
 
     prior_status = item.get("status")
     item["review_gate"] = "advisory-jules"
