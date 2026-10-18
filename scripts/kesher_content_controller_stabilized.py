@@ -15,10 +15,12 @@ if __package__:
     from . import article_claim_quality as quality
     from . import kesher_content_controller_v5 as v5
     from . import kesher_content_controller_v5_runtime as runtime
+    from . import kesher_idea_queue as idea_queue
 else:
     import article_claim_quality as quality
     import kesher_content_controller_v5 as v5
     import kesher_content_controller_v5_runtime as runtime
+    import kesher_idea_queue as idea_queue
 
 
 _ORIGINAL_PUBLIC_SITE_GET = v5.core.PublicSiteClient.get
@@ -393,7 +395,9 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         return state
 
     def state(self):
+        previous = self.github.load_controller_state() if getattr(self, "github", None) is not None else None
         state = super().state()
+        idea_queue.carry_forward(state, previous)
         if isinstance(state, dict) and isinstance(state.get("article"), dict):
             state["article"].pop("_tick_live_verified", None)
         try:
@@ -1219,6 +1223,15 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                         f"VIDEO_ATTEMPTS_EXHAUSTED: Long Video exhausted {v5.v3.MAX_STAGE_ATTEMPTS} fresh generation attempts"
                     )
         elif workflow == v5.core.ARTICLE_WORKFLOW:
+            try:
+                if not isinstance(active_state.get("active_idea"), dict) and active_state.get("idea_queue"):
+                    idea_queue.claim_next(
+                        active_state, str((inputs or {}).get("slot") or active_state.get("cycle") or "").strip(),
+                        now_iso=v5.core.utc_now(),
+                    )
+                inputs = idea_queue.article_dispatch_inputs(active_state, inputs)
+            except idea_queue.IdeaQueueError as exc:
+                raise v5.core.ControllerError(str(exc)) from exc
             art_state = active_state.get("article") if isinstance(active_state.get("article"), dict) else {}
             count = int(art_state.get("attempts") or 0)
             if count >= v5.v3.MAX_STAGE_ATTEMPTS:
@@ -1833,6 +1846,21 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
     def tick(self):
         state = self.state()
         self._active_state_ref = state
+        if idea_queue.finalize_if_complete(state, now_iso=v5.core.utc_now()):
+            self._safe_save_controller_state(state)
+        try:
+            idea_result = idea_queue.ingest_from_env(state, os.environ, now_iso=v5.core.utc_now())
+        except idea_queue.IdeaQueueError as exc:
+            v5.core.block(state, "controller", str(exc), str(exc))
+            self._safe_save_controller_state(state)
+            return state, v5.core.Action("blocked", str(exc))
+        if idea_result in {"queued", "duplicate"}:
+            self._safe_save_controller_state(state)
+            return state, v5.core.Action(
+                "idea_queued",
+                "owner idea queued for the next controller-authorized article slot"
+                if idea_result == "queued" else "owner idea already exists; duplicate submission ignored",
+            )
         if v5.v3.entry.irrelevant_child_workflow_run():
             return state, v5.core.Action(
                 "wait",
@@ -1946,6 +1974,8 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             self._safe_save_controller_state(state)
             state, action = super().tick()
             self._active_state_ref = state
+            if idea_queue.finalize_if_complete(state, now_iso=v5.core.utc_now()):
+                self._safe_save_controller_state(state)
             if info["workflow"] and notification_key:
                 processed = state.get("processed_child_notifications")
                 if not isinstance(processed, list):
