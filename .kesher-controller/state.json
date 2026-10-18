@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "article_needed",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,8 +13,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
-    "deploy_attempts": 0
+    "attempts": 1,
+    "deploy_attempts": 0,
+    "last_dispatch_at": "2026-10-18T12:46:58.537334+00:00"
   },
   "backlog": [
     {
@@ -1387,12 +1388,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T10:05:57.941540+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-18T10:05:58.433861+00:00",
       "from": "article_live",
       "to": "complete",
@@ -1989,9 +1984,19 @@
         "idea_id": "pacifier-weaning-20261018-v1",
         "publication_slot": "2026-10-19"
       }
+    },
+    {
+      "at": "2026-10-18T12:46:58.537354+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 1,
+        "publication_slot": "2026-10-19"
+      }
     }
   ],
-  "updated_at": "2026-10-18T12:46:11.528483+00:00",
+  "updated_at": "2026-10-18T12:46:58.537360+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2049,9 +2054,10 @@
         "topic_brief": "כתוב מאמר עברי מקצועי, ברור ומעשי להורים לפעוטות בנושא גמילה ממוצץ. התייחס למתי נכון להתחיל, איך להכין את הילד בהדרגה, איך מציבים גבולות עקביים ורגועים, ההבדל בין גמילה ביום לבין הירדמות ושינה, התמודדות עם בכי, התנגדות ונסיגה, ומה עושים כשהמוצץ הוא כלי הרגעה מרכזי. כלול טעויות נפוצות, צעדים מעשיים ודוגמאות לניסוח מול הילד. שמור על טון רגוע, לא שיפוטי ומבוסס, בלי הבטחות מוחלטות. המאמר חייב להישאר ממוקד בכוונת החיפוש של גמילה ממוצץ.\n\nIdea Request ID: pacifier-weaning-20261018-v1\nRequired Primary Keyword: גמילה ממוצץ"
       },
       "intent_at": "2026-10-18T12:46:42.915474+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-18T12:46:42.915474+00:00"
     }
   },
   "last_child_notification": {
