@@ -1,5 +1,11 @@
 import { expect, test } from '@playwright/test';
-import publishedPosts from '../../src/data/publishedPosts';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const { loadPosts } = require('../../scripts/load-posts.cjs') as {
+  loadPosts: () => Array<{ id: string; title: string; excerpt: string; content: string }>;
+};
+const publishedPosts = loadPosts();
 
 test('prerendered articles load exact content without React recovery errors', async ({ page }) => {
   const errors: string[] = [];
