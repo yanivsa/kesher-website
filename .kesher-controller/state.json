@@ -70,13 +70,13 @@
     "published_date": "2026-10-19",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-18T22:40:45.600807+00:00",
+    "quality_checked_at": "2026-10-18T22:44:25.803150+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-18T21:58:48.072711+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39170192374,
-    "live_verified_at": "2026-10-18T22:41:00.325041+00:00"
+    "live_verified_at": "2026-10-18T22:44:26.711774+00:00"
   },
   "backlog": [
     {
@@ -2187,7 +2187,7 @@
     "attempt_count": 3,
     "status": "rejected",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-18T22:49:23.070284+00:00",
     "run_id": 39173173727,
     "processed_run_id": 39172631354,
     "provider_id": "44341586-b6fa-4c04-9c5c-11c687cc60ed",
@@ -2241,26 +2241,10 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-19",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "pacifier-weaning",
-        "target_content_sha256": "ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a",
-        "target_item_id": "video-20261019-012752-ecf4f1b219-a2"
-      },
-      "intent_at": "2026-10-18T22:38:47.325442+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39172631354,
-      "observed_active_run_id": 39173173727,
-      "dispatched_at": "2026-10-18T22:38:47.325442+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 39172631354,
+    "run_id": 39173173727,
     "conclusion": "success",
     "source_slug": "pacifier-weaning",
     "slot": "2026-10-19"
