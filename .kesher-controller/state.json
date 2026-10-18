@@ -2410,6 +2410,20 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-17T21:35:44.239366+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-18",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "why-is-it-so-hard-to-find-a-relationship",
+        "target_content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
+        "target_item_id": "video-20261018-074945-b7925c4cbe"
+      },
+      "intent_at": "2026-10-18T05:15:47.762716+00:00",
+      "status": "intent",
+      "previous_run_id": 39098327293,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2436,5 +2450,21 @@
       "superseded_run_id": 39077891986,
       "reason": "deploy for SHA a05990f3152f3b579712510114f5ab907dfe0fcd superseded by newer main SHA ec57c444f33fd9a15d9d228cdb083e93b745f03d"
     }
-  ]
+  ],
+  "interventions": {
+    "v5|why-is-it-so-hard-to-find-a-relationship|b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008|long_video": {
+      "pipeline_id": "v5",
+      "slug": "why-is-it-so-hard-to-find-a-relationship",
+      "content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-10-18T08",
+      "last_fingerprint": "5755dc14bbe8036cacd5c3366efa5300f121bfe98c75b4eb2e031665044e0980",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-18T05:15:47.762716+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
