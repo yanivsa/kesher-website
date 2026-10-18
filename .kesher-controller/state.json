@@ -49,14 +49,14 @@
     "quality_content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-18T06:35:55.709938+00:00",
+    "quality_checked_at": "2026-10-18T06:40:53.949739+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-17T23:09:07.361763+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39097912612,
     "deploy_status": "exhausted",
-    "live_verified_at": "2026-10-18T06:36:30.774996+00:00"
+    "live_verified_at": "2026-10-18T06:40:55.922435+00:00"
   },
   "backlog": [
     {
@@ -2368,7 +2368,7 @@
     "task_id": "7f8f596c-4dd9-4092-9859-3b5c838eed38",
     "artifact_id": "7f8f596c-4dd9-4092-9859-3b5c838eed38",
     "provider_status": "pending",
-    "verified": false,
+    "verified": true,
     "watchdog": {
       "identity": "long_video:why-is-it-so-hard-to-find-a-relationship:b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008:video-20261018-082526-b7925c4cbe-a2",
       "hard_started_at": "2026-10-18T05:25:34.030531+00:00",
@@ -2379,7 +2379,20 @@
     },
     "pending_resume_ready": false,
     "resume_dispatches": 4,
-    "last_failed_run_id": 39102541481
+    "last_failed_run_id": 39102541481,
+    "youtube_id": "lCGmwwMGJt8",
+    "youtube_url": "https://youtu.be/lCGmwwMGJt8",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 108.3,
+    "content_duration_seconds": 108.292,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
