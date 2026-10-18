@@ -56,7 +56,7 @@
     "next_deploy_retry_at": null,
     "deploy_run_id": 39097912612,
     "deploy_status": "exhausted",
-    "live_verified_at": "2026-10-18T10:50:51.297158+00:00"
+    "live_verified_at": "2026-10-18T10:51:04.965735+00:00"
   },
   "backlog": [
     {
@@ -1429,30 +1429,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T07:51:08.838712+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-18T07:51:12.416171+00:00",
-      "from": "long_video_complete",
-      "to": "short_retry_wait",
-      "reason": "Short retry backoff is active",
-      "details": {
-        "retry_at": "2026-10-18T07:51:25.910241+00:00"
-      }
-    },
-    {
-      "at": "2026-10-18T07:56:26.722158+00:00",
-      "from": "short_retry_wait",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts"
-      }
-    },
-    {
       "at": "2026-10-18T08:00:50.736481+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -2066,9 +2042,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-18T10:51:04.965762+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-18T10:51:05.528420+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-18T10:51:06.060074+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-18T10:46:14.830310+00:00",
+  "updated_at": "2026-10-18T10:51:06.060089+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
