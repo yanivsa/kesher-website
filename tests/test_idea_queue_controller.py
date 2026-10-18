@@ -69,3 +69,89 @@ class IdeaQueueTests(unittest.TestCase):
         with mock.patch.object(ctrl,"_safe_save_controller_state",lambda s: None):
             ctrl._guarded_dispatch(state,core.ARTICLE_WORKFLOW,{"slot":"2026-10-19"},lambda w,i: raw.append((w,i)))
         self.assertEqual(len(raw),1); self.assertIn("Required Primary Keyword: גמילה מטיטול",raw[0][1]["topic_brief"]); self.assertEqual(state["active_idea"]["idea_id"],"potty")
+
+class IdeaRunNowTests(unittest.TestCase):
+    def pacifier_env(self):
+        return {
+            "KESHER_IDEA_ID": "pacifier-weaning-20261018-v1",
+            "KESHER_IDEA_TOPIC_BRIEF": "כתוב מאמר עברי מעשי להורים בנושא גמילה ממוצץ, כולל עיתוי, הכנה, גבולות, לילות ונסיגה.",
+            "KESHER_IDEA_REQUIRED_PRIMARY_KEYWORD": "גמילה ממוצץ",
+            "KESHER_IDEA_RUN_NOW": "true",
+        }
+
+    def complete_state(self):
+        stage={"attempt_count":0,"status":"complete","last_error":None,"next_retry_at":None,"run_id":None,"processed_run_id":None,"provider_id":None,"failure_fingerprint":None,"same_failure_streak":0,"failure_count_by_type":{}}
+        return {
+            "schema_version":5,"cycle":"2026-10-18","status":"complete","last_error":None,"history":[],"backlog":[],
+            "article":{**stage,"attempts":0,"deploy_attempts":0,"slug":"today","url":"https://kesher.saharoni.com/blog/today","live":True},
+            "image":copy.deepcopy(stage),
+            "long_video":{**copy.deepcopy(stage),"youtube_url":"https://youtu.be/long-old"},
+            "short":{**copy.deepcopy(stage),"youtube_url":"https://youtu.be/short-old"},
+            "idea_queue":[{"idea_id":"potty","fingerprint":"old","topic_brief":"מאמר גמילה מטיטול","required_primary_keyword":"גמילה מטיטול","status":"queued"}],
+            "idea_history":[],"active_idea":None,
+        }
+
+    def test_run_now_ingest_is_priority_and_does_not_drop_existing_queue(self):
+        st=self.complete_state()
+        result=ideas.ingest_from_env(st,self.pacifier_env(),now_iso="now")
+        self.assertEqual(result,"run_now_queued")
+        self.assertEqual([row["idea_id"] for row in st["idea_queue"]],["pacifier-weaning-20261018-v1","potty"])
+        self.assertTrue(st["idea_queue"][0]["run_now"])
+
+    def test_run_now_tick_dispatches_article_immediately_to_next_free_publication_slot(self):
+        st=self.complete_state()
+        posts=[{"id":"today","date":"2026-10-18","title":"היום","content":"<p>x</p>","category":"הדרכת הורים","excerpt":"x"}]
+        gh=FakeGitHub(st,posts)
+        ctrl=stabilized.StabilizedRuntimeV5Controller(gh,FakeSite(),now=datetime(2026,10,18,15,0,tzinfo=TZ))
+        with mock.patch.dict(os.environ,self.pacifier_env(),clear=False):
+            state,action=ctrl.tick()
+        self.assertEqual(action.kind,"dispatch_article")
+        article_dispatches=[row for row in gh.dispatches if row[0]==core.ARTICLE_WORKFLOW]
+        self.assertEqual(len(article_dispatches),1)
+        self.assertEqual(article_dispatches[0][1]["slot"],"2026-10-19")
+        self.assertIn("Required Primary Keyword: גמילה ממוצץ",article_dispatches[0][1]["topic_brief"])
+        self.assertEqual(state["active_idea"]["idea_id"],"pacifier-weaning-20261018-v1")
+        self.assertEqual(state["active_idea"]["publication_slot"],"2026-10-19")
+        self.assertEqual([row["idea_id"] for row in state["idea_queue"]],["potty"])
+        self.assertEqual(state["status"],"article_generating")
+
+    def test_run_now_active_cycle_survives_midnight_rollover(self):
+        st=self.complete_state()
+        st["status"]="article_generating"
+        st["active_idea"]={"idea_id":"pacifier","topic_brief":"מוצץ","required_primary_keyword":"גמילה ממוצץ","run_now":True,"publication_slot":"2026-10-19","status":"claimed"}
+        st["article"]={"attempt_count":1,"attempts":1,"status":"running","run_id":99}
+        gh=FakeGitHub(st,[])
+        ctrl=stabilized.StabilizedRuntimeV5Controller(gh,FakeSite(),now=datetime(2026,10,19,0,10,tzinfo=TZ))
+        state=ctrl.state()
+        self.assertEqual(state["cycle"],"2026-10-18")
+        self.assertEqual(state["active_idea"]["publication_slot"],"2026-10-19")
+        self.assertEqual(state["article"]["run_id"],99)
+
+    def test_run_now_child_slot_is_accepted_as_authoritative(self):
+        st=self.complete_state()
+        st["active_idea"]={"idea_id":"pacifier","topic_brief":"מוצץ","required_primary_keyword":"גמילה ממוצץ","run_now":True,"publication_slot":"2026-10-19","status":"claimed"}
+        gh=FakeGitHub(st,[])
+        gh.runs[123]={"id":123,"event":"workflow_dispatch","path":".github/workflows/kesher-article-generation.yml","conclusion":"success","run_attempt":1}
+        ctrl=stabilized.StabilizedRuntimeV5Controller(gh,FakeSite(),now=datetime(2026,10,18,15,0,tzinfo=TZ))
+        ctrl._active_state_ref=st
+        with mock.patch.dict(os.environ,{"KESHER_TRIGGER_EVENT":"workflow_dispatch","KESHER_CHILD_WORKFLOW":"Kesher Article Generation","KESHER_CHILD_RUN_ID":"123","KESHER_CHILD_CONCLUSION":"success","KESHER_CHILD_SLOT":"2026-10-19"},clear=False):
+            valid,reason=ctrl._validate_child_notification(st)
+        self.assertTrue(valid,reason)
+
+    def test_run_now_article_selection_uses_publication_slot_not_today(self):
+        st=self.complete_state()
+        st["active_idea"]={"idea_id":"pacifier","topic_brief":"מוצץ","required_primary_keyword":"גמילה ממוצץ","run_now":True,"publication_slot":"2026-10-19","status":"claimed"}
+        posts=[
+            {"id":"today","date":"2026-10-18","title":"היום","content":"<p>x</p>","category":"הדרכת הורים","excerpt":"x"},
+            {"id":"pacifier-weaning","date":"2026-10-19","title":"גמילה ממוצץ","content":"<p>x</p>","category":"הדרכת הורים","excerpt":"x"},
+        ]
+        gh=FakeGitHub(st,posts)
+        ctrl=stabilized.StabilizedRuntimeV5Controller(gh,FakeSite(),now=datetime(2026,10,18,15,0,tzinfo=TZ))
+        ctrl._active_state_ref=st
+        picked=ctrl._selected_article(posts,state=st)
+        self.assertEqual(core.canonical_slug(picked),"pacifier-weaning")
+
+    def test_workflow_exposes_run_now_input(self):
+        workflow=(Path(__file__).resolve().parents[1]/".github/workflows/kesher-content-controller.yml").read_text(encoding="utf-8")
+        self.assertIn("run_now:",workflow)
+        self.assertIn("KESHER_IDEA_RUN_NOW",workflow)
