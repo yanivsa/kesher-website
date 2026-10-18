@@ -9,10 +9,19 @@ const readList = (file) => {
   return value;
 };
 
+const readCatalogDirectory = (dir) => {
+  if (!fs.existsSync(dir)) return [];
+  return fs.readdirSync(dir)
+    .filter((name) => name.endsWith('.json'))
+    .sort()
+    .flatMap((name) => readList(path.join(dir, name)));
+};
+
 const loadPosts = () => {
   const historical = readList(path.join(ROOT, 'src', 'data', 'posts.json'));
   const recent = readList(path.join(ROOT, 'src', 'data', 'postsRecent.json'));
-  const combined = [...recent, ...historical];
+  const p1 = readCatalogDirectory(path.join(ROOT, 'src', 'data', 'p1'));
+  const combined = [...recent, ...p1, ...historical];
   const seen = new Set();
   for (const post of combined) {
     const id = String(post?.id || '').trim();
