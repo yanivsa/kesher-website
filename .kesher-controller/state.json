@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "long_video_watchdog_recovery",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1429,15 +1429,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-17T21:36:03.178473+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
       "at": "2026-10-17T21:44:11.068523+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2328,9 +2319,19 @@
         "slug": "why-is-it-so-hard-to-find-a-relationship",
         "content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008"
       }
+    },
+    {
+      "at": "2026-10-18T05:20:54.905471+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261018-074945-b7925c4cbe",
+        "task_id": "d71791d3-381b-4947-b59f-b3f45afec3b5"
+      }
     }
   ],
-  "updated_at": "2026-10-18T05:16:20.601804+00:00",
+  "updated_at": "2026-10-18T05:20:54.905481+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2349,7 +2350,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-10-18T04:58:14.911720+00:00",
     "run_id": 39099980995,
