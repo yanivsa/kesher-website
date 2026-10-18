@@ -1388,12 +1388,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T10:16:25.070931+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-10-18T10:21:20.354318+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2015,9 +2009,18 @@
       "details": {
         "publication_slot": "2026-10-19"
       }
+    },
+    {
+      "at": "2026-10-18T13:25:45.818658+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "owner run-now article workflow already active",
+      "details": {
+        "publication_slot": "2026-10-19"
+      }
     }
   ],
-  "updated_at": "2026-10-18T13:20:49.720328+00:00",
+  "updated_at": "2026-10-18T13:25:45.818677+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
