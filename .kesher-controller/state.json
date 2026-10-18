@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -49,14 +49,14 @@
     "quality_content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-18T08:35:46.972364+00:00",
+    "quality_checked_at": "2026-10-18T08:40:54.587134+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-17T23:09:07.361763+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39097912612,
     "deploy_status": "exhausted",
-    "live_verified_at": "2026-10-18T08:35:48.578730+00:00"
+    "live_verified_at": "2026-10-18T08:40:56.056677+00:00"
   },
   "backlog": [
     {
@@ -1426,22 +1426,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "SHORT_ATTEMPTS_EXHAUSTED",
-    "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts",
-    "at": "2026-10-18T08:36:15.968950+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-18T02:55:51.625556+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
     {
       "at": "2026-10-18T03:00:56.984566+00:00",
       "from": "article_needed",
@@ -2248,9 +2234,15 @@
       "details": {
         "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-10-18T08:40:56.056704+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-18T08:36:15.968972+00:00",
+  "updated_at": "2026-10-18T08:40:56.056710+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
