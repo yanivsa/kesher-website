@@ -49,14 +49,14 @@
     "quality_content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-18T05:25:46.693570+00:00",
+    "quality_checked_at": "2026-10-18T05:28:54.991864+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-17T23:09:07.361763+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39097912612,
     "deploy_status": "exhausted",
-    "live_verified_at": "2026-10-18T05:26:12.798623+00:00"
+    "live_verified_at": "2026-10-18T05:28:55.720218+00:00"
   },
   "backlog": [
     {
@@ -2344,7 +2344,7 @@
     "attempt_count": 2,
     "status": "rejected",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-18T05:33:53.006400+00:00",
     "run_id": 39100391697,
     "processed_run_id": 39099980995,
     "provider_id": "d71791d3-381b-4947-b59f-b3f45afec3b5",
@@ -2411,26 +2411,11 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-17T21:35:44.239366+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-18",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "why-is-it-so-hard-to-find-a-relationship",
-        "target_content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
-        "target_item_id": "video-20261018-074945-b7925c4cbe"
-      },
-      "intent_at": "2026-10-18T05:23:08.349110+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39099980995,
-      "observed_active_run_id": 39100391697,
-      "dispatched_at": "2026-10-18T05:23:08.349110+00:00"
     }
   },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 39099980995,
+    "run_id": 39100391697,
     "conclusion": "success",
     "source_slug": "why-is-it-so-hard-to-find-a-relationship",
     "slot": "2026-10-18"
