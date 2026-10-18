@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "blocked",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -49,7 +49,7 @@
     "quality_content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-18T00:00:49.393898+00:00",
+    "quality_checked_at": "2026-10-18T00:05:45.712166+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-10-17T23:09:07.361763+00:00",
@@ -1425,12 +1425,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "DEPLOY_ATTEMPTS_EXHAUSTED",
-    "message": "Article deployment exhausted maximum allowed attempts (5)",
-    "at": "2026-10-18T00:00:52.356400+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-17T19:11:13.730167+00:00",
@@ -2198,17 +2193,6 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-17T21:35:44.239366+00:00"
-    },
-    "deploy.yml": {
-      "workflow": "deploy.yml",
-      "cycle": "2026-10-18",
-      "inputs": {},
-      "intent_at": "2026-10-17T23:08:58.305570+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39076716747,
-      "observed_active_run_id": 39077891986,
-      "dispatch_head_sha": "a05990f3152f3b579712510114f5ab907dfe0fcd",
-      "dispatched_at": "2026-10-17T23:08:58.305570+00:00"
     }
   },
   "last_child_notification": {
@@ -2222,5 +2206,16 @@
     "Kesher Normalize Article PR:39074372992",
     "Kesher Trusted Article Image:39074482466",
     "Auto-merge Kesher article PRs:39074603621"
+  ],
+  "deploy_history": [
+    {
+      "workflow": "deploy.yml",
+      "superseded_sha": "a05990f3152f3b579712510114f5ab907dfe0fcd",
+      "current_sha": "ec57c444f33fd9a15d9d228cdb083e93b745f03d",
+      "superseded_at": "2026-10-18T00:05:47.724834+00:00",
+      "superseded_status": "dispatched",
+      "superseded_run_id": 39077891986,
+      "reason": "deploy for SHA a05990f3152f3b579712510114f5ab907dfe0fcd superseded by newer main SHA ec57c444f33fd9a15d9d228cdb083e93b745f03d"
+    }
   ]
 }
