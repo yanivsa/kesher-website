@@ -2389,7 +2389,15 @@
     "last_dispatch_at": "2026-10-18T06:41:38.079543+00:00",
     "artifact_id": "7f8f596c-4dd9-4092-9859-3b5c838eed38",
     "source_id": "7765372e-f3ef-4927-88be-dd3385e810e9",
-    "adopted_from_long_item_id": "video-20261018-082526-b7925c4cbe-a2"
+    "adopted_from_long_item_id": "video-20261018-082526-b7925c4cbe-a2",
+    "watchdog": {
+      "identity": "short:why-is-it-so-hard-to-find-a-relationship:b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008:video-20261018-094315-b7925c4cbe",
+      "hard_started_at": "2026-10-18T06:43:22.840494+00:00",
+      "last_progress_at": "2026-10-18T06:45:57.831704+00:00",
+      "last_fingerprint": "859e01aa3acaa52bd6d8b8560604f00873a832af20b9d94ce132f107b800264c",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
