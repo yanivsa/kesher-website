@@ -9,6 +9,7 @@ import os
 import re
 import sys
 import urllib.parse
+from datetime import date, timedelta
 from pathlib import Path
 
 if __package__:
@@ -78,6 +79,140 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._in_memory_verified_articles: set[str] = set()
+
+    @staticmethod
+    def _run_now_active(state: dict | None) -> bool:
+        active = (state or {}).get("active_idea") if isinstance(state, dict) else None
+        return bool(isinstance(active, dict) and active.get("run_now") is True and str(active.get("status") or "") != "complete")
+
+    @staticmethod
+    def _run_now_slot(state: dict | None) -> str:
+        active = (state or {}).get("active_idea") if isinstance(state, dict) else None
+        if not isinstance(active, dict) or active.get("run_now") is not True:
+            return ""
+        value = str(active.get("publication_slot") or "").strip()
+        try:
+            date.fromisoformat(value)
+        except ValueError:
+            return ""
+        return value
+
+    def _first_free_publication_slot(self, posts: list[dict]) -> str:
+        occupied = {
+            str(row.get("date") or "").strip()
+            for row in posts
+            if isinstance(row, dict) and str(row.get("date") or "").strip()
+        }
+        candidate = self.now.date()
+        for _ in range(31):
+            slot = candidate.isoformat()
+            if slot not in occupied:
+                try:
+                    if not self.github.open_article_prs(slot):
+                        return slot
+                except Exception:
+                    raise v5.core.ControllerError("IDEA_RUN_NOW_SLOT_LOOKUP_FAILED")
+            candidate += timedelta(days=1)
+        raise v5.core.ControllerError("IDEA_RUN_NOW_NO_FREE_SLOT")
+
+    def _reset_for_run_now(self, state: dict, publication_slot: str) -> None:
+        active = state.get("active_idea")
+        if not isinstance(active, dict):
+            raise v5.core.ControllerError("IDEA_RUN_NOW_ACTIVE_MISSING")
+        archive = state.setdefault("owner_cycle_archive", [])
+        archive.append({
+            "cycle": state.get("cycle"),
+            "status": state.get("status"),
+            "article": copy.deepcopy(state.get("article") or {}),
+            "long_video": copy.deepcopy(state.get("long_video") or {}),
+            "short": copy.deepcopy(state.get("short") or {}),
+            "archived_at": v5.core.utc_now(),
+            "reason": "owner_run_now_cycle_started",
+        })
+        state["owner_cycle_archive"] = archive[-20:]
+        active.update({"status": "claimed", "publication_slot": publication_slot, "claimed_at": v5.core.utc_now()})
+        stage = v5.v3._stage_template
+        state["article"] = stage()
+        state["article"].update({"attempts": 0, "deploy_attempts": 0})
+        state["image"] = stage()
+        state["long_video"] = stage()
+        state["short"] = stage()
+        state.pop("video", None)
+        state["status"] = "article_needed"
+        state["last_error"] = None
+        state["pending_dispatches"] = {}
+        state["processed_child_notifications"] = []
+        state.setdefault("history", []).append({
+            "at": v5.core.utc_now(),
+            "from": "complete",
+            "to": "article_needed",
+            "reason": "owner_run_now_cycle_started",
+            "details": {"idea_id": active.get("idea_id"), "publication_slot": publication_slot},
+        })
+        state["history"] = state["history"][-100:]
+
+    def _begin_run_now_cycle(self, state: dict) -> bool:
+        if self._run_now_active(state):
+            return True
+        if str(state.get("status") or "") != "complete":
+            return False
+        queue = state.get("idea_queue") if isinstance(state.get("idea_queue"), list) else []
+        idx = next((i for i, row in enumerate(queue) if isinstance(row, dict) and row.get("run_now") is True), None)
+        if idx is None:
+            return False
+        row = copy.deepcopy(queue.pop(idx))
+        state["idea_queue"] = queue
+        state["active_idea"] = row
+        posts = self.posts_on_main("main")
+        if not isinstance(posts, list):
+            raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
+        slot = self._first_free_publication_slot(posts)
+        self._reset_for_run_now(state, slot)
+        return True
+
+    def _run_now_article_phase(self, state: dict):
+        if not self._run_now_active(state):
+            return None
+        slot = self._run_now_slot(state)
+        if not slot:
+            raise v5.core.ControllerError("IDEA_RUN_NOW_SLOT_INVALID")
+        posts = self.posts_on_main("main")
+        targets = self._reconcile_existing_current_day_article(state, posts)
+        if len(targets) > 1:
+            v5.core.block(state, "article", "DUPLICATE_ARTICLE_DATE", f"{len(targets)} articles share owner publication slot {slot}")
+            return v5.core.Action("blocked", "duplicate owner publication-slot articles")
+        if targets:
+            return None
+        open_prs = self.github.open_article_prs(slot)
+        if len(open_prs) > 1:
+            v5.core.block(state, "article", "DUPLICATE_ARTICLE_PRS", f"{len(open_prs)} open article PRs share owner publication slot {slot}")
+            return v5.core.Action("blocked", "duplicate owner article PRs")
+        if len(open_prs) == 1:
+            return self._handle_open_article_pr(state, open_prs[0])
+        active_run = self.github.active_workflow_run(v5.core.ARTICLE_WORKFLOW)
+        if active_run:
+            state["article"]["run_id"] = active_run.get("id")
+            v5.core.transition(state, "article_generating", "owner run-now article workflow already active", publication_slot=slot)
+            return v5.core.Action("wait", "owner run-now article workflow active")
+        reconciled = self._reconcile_completed_article_run(state)
+        if reconciled is not None:
+            return reconciled
+        if not v5.core.retry_ready(state["article"], self.now):
+            retry_at = state["article"].get("next_retry_at")
+            v5.core.transition(state, "article_retry_wait", "owner run-now article retry backoff is active", retry_at=retry_at)
+            return v5.core.Action("wait", f"article retry scheduled for {retry_at}")
+        payload = idea_queue.article_dispatch_inputs(state, {"slot": slot})
+        self.github.dispatch(v5.core.ARTICLE_WORKFLOW, payload)
+        attempts = int(state["article"].get("attempts") or 0) + 1
+        state["article"].update({
+            "attempts": attempts,
+            "attempt_count": attempts,
+            "last_dispatch_at": v5.core.utc_now(),
+            "next_retry_at": None,
+            "status": "running",
+        })
+        v5.core.transition(state, "article_generating", "owner run-now article dispatched immediately", attempt=attempts, publication_slot=slot)
+        return v5.core.Action("dispatch_article", "owner run-now idea started immediately", payload)
 
     def _safe_newest_video_state(self) -> dict:
         getter = getattr(self.github, "newest_video_state", None)
@@ -394,9 +529,29 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         state["updated_at"] = v5.core.utc_now()
         return state
 
+    def _reconcile_existing_current_day_article(self, state: dict, posts=None):
+        slot = self._run_now_slot(state)
+        if not slot:
+            return super()._reconcile_existing_current_day_article(state, posts)
+        target = date.fromisoformat(slot)
+        original_now = self.now
+        try:
+            self.now = original_now.replace(year=target.year, month=target.month, day=target.day)
+            return super()._reconcile_existing_current_day_article(state, posts)
+        finally:
+            self.now = original_now
+
     def state(self):
         previous = self.github.load_controller_state() if getattr(self, "github", None) is not None else None
-        state = super().state()
+        if self._run_now_active(previous) and isinstance(previous, dict) and previous.get("schema_version") == v5.STATE_SCHEMA_VERSION:
+            state = copy.deepcopy(previous)
+            for stage_name in ("article", "image", "long_video", "short"):
+                current = state.setdefault(stage_name, {})
+                for key, value in v5.v3._stage_template().items():
+                    current.setdefault(key, copy.deepcopy(value))
+            state.pop("video", None)
+        else:
+            state = super().state()
         idea_queue.carry_forward(state, previous)
         if isinstance(state, dict) and isinstance(state.get("article"), dict):
             state["article"].pop("_tick_live_verified", None)
@@ -1039,8 +1194,13 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if not conclusion or conclusion not in VALID_CHILD_CONCLUSIONS:
             return False, f"missing or invalid child conclusion: {conclusion or 'missing'}"
 
-        if info["slot"] and state.get("cycle") and info["slot"] != str(state.get("cycle")):
-            return False, f"stale child completion slot ignored: {info['slot']}"
+        if info["slot"] and state.get("cycle"):
+            allowed_slots = {str(state.get("cycle"))}
+            run_now_slot = self._run_now_slot(state)
+            if run_now_slot:
+                allowed_slots.add(run_now_slot)
+            if info["slot"] not in allowed_slots:
+                return False, f"stale child completion slot ignored: {info['slot']}"
 
         parsed_id = int(raw_id)
         stage_dict = state.get(stage_name) if isinstance(state.get(stage_name), dict) else {}
@@ -1854,7 +2014,18 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             v5.core.block(state, "controller", str(exc), str(exc))
             self._safe_save_controller_state(state)
             return state, v5.core.Action("blocked", str(exc))
-        if idea_result in {"queued", "duplicate"}:
+        if idea_result == "run_now_queued":
+            try:
+                started = self._begin_run_now_cycle(state)
+            except v5.core.ControllerError as exc:
+                v5.core.block(state, "controller", str(exc), str(exc))
+                self._safe_save_controller_state(state)
+                return state, v5.core.Action("blocked", str(exc))
+            if not started:
+                self._safe_save_controller_state(state)
+                return state, v5.core.Action("idea_queued", "owner run-now idea queued behind the active content cycle")
+            self._safe_save_controller_state(state)
+        elif idea_result in {"queued", "duplicate"}:
             self._safe_save_controller_state(state)
             return state, v5.core.Action(
                 "idea_queued",
@@ -1949,6 +2120,11 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         v5.core.GitHubClient.dispatch = guarded_core_dispatch  # type: ignore[method-assign]
 
         try:
+            run_now_action = self._run_now_article_phase(state)
+            if run_now_action is not None:
+                self._safe_save_controller_state(state)
+                return state, run_now_action
+
             blocker = self._quality_preflight(state)
             if blocker is not None:
                 return state, blocker

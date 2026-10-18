@@ -66,6 +66,11 @@ on:
         required: false
         default: ""
         type: string
+      run_now:
+        description: Start this owner idea immediately using the next free publication slot
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -120,4 +125,5 @@ jobs:
           KESHER_IDEA_ID: ${{ inputs.idea_id || '' }}
           KESHER_IDEA_TOPIC_BRIEF: ${{ inputs.topic_brief || '' }}
           KESHER_IDEA_REQUIRED_PRIMARY_KEYWORD: ${{ inputs.required_primary_keyword || '' }}
+          KESHER_IDEA_RUN_NOW: ${{ inputs.run_now || false }}
         run: PYTHONPATH=. python3 -u scripts/kesher_content_controller_stabilized.py --report-json

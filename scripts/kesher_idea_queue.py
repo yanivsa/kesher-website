@@ -23,6 +23,10 @@ def _clean(value: Any) -> str:
     return "\n".join(line.rstrip() for line in str(value or "").strip().splitlines()).strip()
 
 
+def _truthy(value: Any) -> bool:
+    return str(value or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 def _fingerprint(idea_id: str, topic_brief: str, keyword: str) -> str:
     raw = json.dumps(
         {"idea_id": idea_id, "topic_brief": topic_brief, "required_primary_keyword": keyword},
@@ -77,6 +81,7 @@ def ingest_from_env(
     idea_id = _clean(env.get("KESHER_IDEA_ID"))
     topic_brief = _clean(env.get("KESHER_IDEA_TOPIC_BRIEF"))
     keyword = _clean(env.get("KESHER_IDEA_REQUIRED_PRIMARY_KEYWORD"))
+    run_now = _truthy(env.get("KESHER_IDEA_RUN_NOW"))
     if not idea_id and not topic_brief and not keyword:
         ensure_fields(state)
         return None
@@ -96,14 +101,19 @@ def ingest_from_env(
         raise IdeaQueueError("IDEA_ID_CONFLICT")
     if len(state["idea_queue"]) >= MAX_QUEUE:
         raise IdeaQueueError("IDEA_QUEUE_FULL")
-    state["idea_queue"].append({
+    record = {
         "idea_id": idea_id,
         "fingerprint": fp,
         "topic_brief": topic_brief,
         "required_primary_keyword": keyword,
+        "run_now": run_now,
         "status": "queued",
         "requested_at": now_iso,
-    })
+    }
+    if run_now:
+        state["idea_queue"].insert(0, record)
+        return "run_now_queued"
+    state["idea_queue"].append(record)
     return "queued"
 
 
