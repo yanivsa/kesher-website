@@ -2113,7 +2113,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-18T13:59:14.089596+00:00",
     "artifact_sha256": "3544cc3ed211ba3ca7c2c5772cd34abb1eb12ec3f97f793fa0da85fd623b61c1",
-    "source_id": "local://public/images/fallback/parenting/parenting_emotional_support_reading.jpg"
+    "source_id": "local://public/images/fallback/parenting/parenting_emotional_support_reading.jpg",
+    "run_id": 39133949030
   },
   "long_video": {
     "attempt_count": 0,
