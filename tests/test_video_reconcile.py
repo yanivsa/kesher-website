@@ -722,6 +722,51 @@ class VideoReconcileTests(unittest.TestCase):
         saved = pipeline.load_state()["items"]
         self.assertTrue(all("advisory_review_status_before_upload" not in item for item in saved))
 
+    def test_bind_short_overview_identity_from_exact_public_long_state(self) -> None:
+        from tests.test_media_provenance_contract import bound_short
+
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        short = {**bound_short(45.0), "id": "short-1", "source": {"slug": source["slug"], "content_sha256": source["content_sha256"]}}
+        short.pop("overview_provider_identity", None)
+        short["status"] = "pending_review"
+        short["technical_verified"] = True
+        pipeline.save_state({"version": 1, "items": [short], "updated_at": pipeline.utc_now()})
+
+        long = {
+            "id": "long-1", "type": "video_overview", "source": {"slug": source["slug"], "content_sha256": source["content_sha256"]},
+            "notebook_id": "overview-notebook", "source_id": "overview-source", "task_id": "overview-task",
+            "artifact_id": "overview-artifact", "raw_sha256": "9" * 64, "technical_verified": True,
+            "uploaded": True, "status": "uploaded", "youtube_id": "lCGmwwMGJt8",
+            "youtube_verification": {"channel_id": pipeline.YOUTUBE_CHANNEL_ID, "privacy_status": "public", "processing_status": "succeeded"},
+        }
+        long_path = self.root / "long-state.json"
+        long_path.write_text(json.dumps({"version": 1, "items": [long]}), encoding="utf-8")
+
+        self.assertEqual(reconcile.bind_short_overview_identity(str(long_path), "today", source["content_sha256"], "long-1", "short-1"), 0)
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["overview_provider_identity"]["task_id"], "overview-task")
+        self.assertTrue(reconcile.delivery_guard._short_origin_verified(saved))
+
+    def test_bind_short_overview_identity_fails_closed_on_nonexact_long(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        short = pipeline.new_item(source)
+        short.update({"id": "short-1", "type": "article_short", "status": "pending_review"})
+        pipeline.save_state({"version": 1, "items": [short], "updated_at": pipeline.utc_now()})
+        long_path = self.root / "long-state.json"
+        long_path.write_text(json.dumps({"version": 1, "items": []}), encoding="utf-8")
+        with self.assertRaisesRegex(pipeline.PipelineError, "Exact authoritative Overview item"):
+            reconcile.bind_short_overview_identity(str(long_path), "today", source["content_sha256"], "long-missing", "short-1")
+
+    def test_short_workflow_binds_overview_identity_before_prepare_upload(self) -> None:
+        workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/kesher-short-v4.yml").read_text(encoding="utf-8")
+        self.assertIn("Bind exact Short to authoritative Overview identity", workflow)
+        self.assertIn("--bind-short-overview-identity", workflow)
+        self.assertIn("DERIVE_LONG_ITEM_ID", workflow)
+
     def test_prepare_upload_exact_identity_lock_rejects_partial_identity(self) -> None:
         current = post("current", "2026-08-19")
         self.write_posts([current])
@@ -810,6 +855,64 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertEqual(len(items), 1)
         self.assertEqual(items[0]["id"], "uploaded-1")
 
+    def test_recover_persisted_youtube_id_repairs_metadata_drift(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        item = pipeline.new_item(source)
+        item.update({
+            "id": "recover-1",
+            "type": "video_overview",
+            "status": "uploading",
+            "uploaded": False,
+            "youtube_id": "persisted-yt-id",
+        })
+        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        pipeline.save_state(state)
+
+        mock_repair = mock.Mock()
+        mock_verification = {
+            "channel_id": pipeline.YOUTUBE_CHANNEL_ID,
+            "privacy_status": "public",
+            "processing_status": "succeeded",
+        }
+        with mock.patch.object(pipeline, "youtube_access_token", return_value="token"), \
+             mock.patch.object(pipeline, "verify_authenticated_channel"), \
+             mock.patch.object(pipeline, "verify_public_upload", side_effect=[
+                 pipeline.PipelineError("PUBLIC_METADATA_INVALID: remote tags differ from source-derived tags"),
+                 mock_verification,
+             ]), \
+             mock.patch.object(pipeline, "repair_persisted_youtube_metadata", mock_repair):
+            recovered = reconcile.recover_persisted_youtube_id(state, item)
+
+        self.assertTrue(recovered)
+        self.assertTrue(item["uploaded"])
+        self.assertEqual(item["status"], "uploaded")
+        self.assertEqual(item["youtube_verification"], mock_verification)
+        mock_repair.assert_called_once_with(item, "token")
+
+    def test_export_target_propagates_target_slug_to_github_env_even_when_step_env_set(self) -> None:
+        import tempfile
+        item = {
+            "id": "target-item-42",
+            "source": {
+                "slug": "relationship-quiescence-test",
+                "content_sha256": "a" * 64,
+            },
+            "fresh_generation_attempt": 2,
+        }
+        with tempfile.NamedTemporaryFile("w+", encoding="utf-8") as env_file:
+            with mock.patch.dict(os.environ, {"GITHUB_ENV": env_file.name, "TARGET_SLUG": "relationship-quiescence-test"}):
+                reconcile.export_target(item)
+            env_file.seek(0)
+            content = env_file.read()
+
+        self.assertIn("TARGET_ITEM_ID=target-item-42\n", content)
+        self.assertIn(f"TARGET_CONTENT_SHA256={'a' * 64}\n", content)
+        self.assertIn("TARGET_GENERATION_ATTEMPT=2\n", content)
+        self.assertIn("TARGET_SLUG=relationship-quiescence-test\n", content)
+
 
 if __name__ == "__main__":
     unittest.main()
+

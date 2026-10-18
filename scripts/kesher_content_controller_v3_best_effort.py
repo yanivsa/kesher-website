@@ -180,6 +180,61 @@ class BestEffortController(v3.V3Controller):
             return v3.core.Action("wait", "article PR image ready; waiting for gate/merge")
 
         image = state["image"]
+        head_sha = str((pr.get("head") or {}).get("sha") or "").strip()
+        rebind_checker = getattr(self.github, "article_pr_image_rebindable", None)
+        rebind_ready = False
+        if callable(rebind_checker) and head_sha:
+            rebind_ready, _rebind_evidence = rebind_checker(pr)
+
+        if rebind_ready:
+            active = self.github.active_image_run(number)
+            if active:
+                return super()._handle_open_article_pr(state, pr)
+
+            # A main-merge can advance the PR head while leaving the exact same
+            # article and verified image bytes intact. The image worker already
+            # knows how to repair only Image Evidence Head in that case. This
+            # is proof recovery, not another image-generation attempt, so it
+            # must not spend or reset the bounded generation budget.
+            if str(image.get("evidence_rebind_head_sha") or "") != head_sha:
+                self.github.dispatch(v3.IMAGE_WORKFLOW, {"pr_number": str(number)})
+                image["evidence_rebind_head_sha"] = head_sha
+                image["evidence_rebind_dispatches"] = int(image.get("evidence_rebind_dispatches") or 0) + 1
+                image["last_dispatch_at"] = v3.core.utc_now()
+                image["run_id"] = None
+                image["processed_run_id"] = None
+                image["status"] = "running"
+                image["next_retry_at"] = None
+                v3.core.transition(
+                    state,
+                    "article_image_running",
+                    "trusted image evidence head recovery dispatched",
+                    pr_number=number,
+                    head_sha=head_sha,
+                )
+                return v3.core.Action(
+                    "dispatch_image",
+                    "trusted image evidence head requires rebind",
+                    {"pr_number": str(number)},
+                )
+
+            # Never spin a recovery loop on the same immutable PR head. A later
+            # tick can still adopt an active/completed worker or a new head.
+            image["status"] = "deferred"
+            image["next_retry_at"] = None
+            image["deferred_reason"] = "evidence_rebind_already_dispatched_for_head"
+            v3.core.transition(
+                state,
+                "article_pr_open",
+                "trusted image evidence head recovery already dispatched for this head",
+                pr_number=number,
+                head_sha=head_sha,
+            )
+            return v3.core.Action(
+                "wait",
+                "image evidence rebind already dispatched for current head",
+            )
+
         if int(image.get("attempt_count") or 0) >= v3.MAX_STAGE_ATTEMPTS:
             image["status"] = "deferred"
             image["next_retry_at"] = None

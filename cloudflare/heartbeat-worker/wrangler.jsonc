@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kesher-heartbeat",
+  "account_id": "95ba6a62314a0682d0711050ba9c3445",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  "triggers": {
+    "crons": ["*/5 * * * *"]
+  },
+  "vars": {
+    "SITE_URL": "https://kesher.saharoni.com",
+    "GITHUB_REPO": "yanivsa/kesher-website",
+    "WORKFLOW_FILE": "kesher-content-controller.yml",
+    "LIVENESS_WORKFLOW_FILE": "kesher-controller-liveness.yml",
+    "TARGET_REF": "main"
+  }
+}

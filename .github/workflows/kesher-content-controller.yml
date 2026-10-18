@@ -46,6 +46,31 @@ on:
         required: false
         default: ""
         type: string
+      source_sha:
+        description: Optional authoritative article source content SHA256 from child run
+        required: false
+        default: ""
+        type: string
+      idea_id:
+        description: Optional stable owner idea ID to enqueue (lowercase slug-like token)
+        required: false
+        default: ""
+        type: string
+      topic_brief:
+        description: Owner-authored topic brief for the queued idea
+        required: false
+        default: ""
+        type: string
+      required_primary_keyword:
+        description: Exact Hebrew Primary Keyword required for the queued article
+        required: false
+        default: ""
+        type: string
+      run_now:
+        description: Start this owner idea immediately using the next free publication slot
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -95,5 +120,10 @@ jobs:
           KESHER_CHILD_RUN_ID: ${{ github.event.workflow_run.id || inputs.child_run_id || '' }}
           KESHER_CHILD_CONCLUSION: ${{ github.event.workflow_run.conclusion || inputs.child_conclusion || '' }}
           KESHER_CHILD_SOURCE_SLUG: ${{ inputs.source_slug || '' }}
+          KESHER_CHILD_SOURCE_SHA: ${{ inputs.source_sha || '' }}
           KESHER_CHILD_SLOT: ${{ inputs.slot || '' }}
+          KESHER_IDEA_ID: ${{ inputs.idea_id || '' }}
+          KESHER_IDEA_TOPIC_BRIEF: ${{ inputs.topic_brief || '' }}
+          KESHER_IDEA_REQUIRED_PRIMARY_KEYWORD: ${{ inputs.required_primary_keyword || '' }}
+          KESHER_IDEA_RUN_NOW: ${{ inputs.run_now || false }}
         run: PYTHONPATH=. python3 -u scripts/kesher_content_controller_stabilized.py --report-json

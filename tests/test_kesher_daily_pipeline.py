@@ -1485,5 +1485,119 @@ exec /usr/bin/python3 "$@"
             self.assertIn("Artifact 1 is missing or invalid; skipping", result.stdout)
             self.assertIn("Durable video-state artifacts exist but none is trustworthy", result.stderr)
 
+
+class YoutubeMetadataRecoveryTest(unittest.TestCase):
+    def _item(self) -> dict:
+        source = {
+            "date": "2026-10-15",
+            "slug": "returning-to-israel-relationship-struggles",
+            "content_sha256": "f" * 64,
+            "title": "חוזרים לארץ אחרי רילוקיישן?",
+            "excerpt": "חזרה לישראל יכולה לטלטל את הזוגיות.",
+            "canonical_url": "https://kesher.saharoni.com/blog/returning-to-israel-relationship-struggles",
+            "category": "זוגיות",
+            "subcategory": "זוגיות בעלייה ורילוקיישן",
+        }
+        expected = pipeline.publication_metadata(source, "short")
+        return {
+            "id": "video-20261015-short",
+            "type": "article_short",
+            "source": source,
+            "youtube_id": "OVWw2wu0LOo",
+            "youtube_metadata": expected,
+            "enhancement_assets_used": [],
+        }
+
+    def test_repairs_same_persisted_video_metadata_without_new_insert(self) -> None:
+        item = self._item()
+        expected = item["youtube_metadata"]
+        wrong = {
+            "id": item["youtube_id"],
+            "snippet": {
+                "channelId": pipeline.YOUTUBE_CHANNEL_ID,
+                "title": expected["title"],
+                "description": expected["description"],
+                "tags": ["שגוי"],
+                "categoryId": "22",
+                "defaultLanguage": "he",
+                "defaultAudioLanguage": "he",
+            },
+        }
+        corrected = {
+            "id": item["youtube_id"],
+            "snippet": {**wrong["snippet"], "tags": expected["tags"]},
+        }
+        response = mock.Mock(status_code=200)
+        with mock.patch.object(
+            pipeline, "youtube_get", side_effect=[{"items": [wrong]}, {"items": [corrected]}]
+        ), mock.patch.object(pipeline.requests, "put", return_value=response) as put:
+            row = pipeline.repair_persisted_youtube_metadata(item, "token")
+
+        self.assertEqual(row["id"], item["youtube_id"])
+        put.assert_called_once()
+        args, kwargs = put.call_args
+        self.assertEqual(args[0], "https://www.googleapis.com/youtube/v3/videos")
+        self.assertEqual(kwargs["params"], {"part": "snippet"})
+        self.assertEqual(kwargs["json"]["id"], item["youtube_id"])
+        self.assertEqual(kwargs["json"]["snippet"]["tags"], expected["tags"])
+        self.assertEqual(kwargs["json"]["snippet"]["title"], expected["title"])
+        self.assertEqual(kwargs["json"]["snippet"]["description"], expected["description"])
+
+    def test_refuses_metadata_repair_for_wrong_channel(self) -> None:
+        item = self._item()
+        wrong_channel = {
+            "id": item["youtube_id"],
+            "snippet": {
+                "channelId": "other-channel",
+                "title": item["youtube_metadata"]["title"],
+                "description": item["youtube_metadata"]["description"],
+                "tags": ["שגוי"],
+                "categoryId": "22",
+            },
+        }
+        with mock.patch.object(pipeline, "youtube_get", return_value={"items": [wrong_channel]}), mock.patch.object(
+            pipeline.requests, "put"
+        ) as put:
+            with self.assertRaisesRegex(pipeline.PipelineError, "wrong YouTube channel"):
+                pipeline.repair_persisted_youtube_metadata(item, "token")
+        put.assert_not_called()
+
+    def test_upload_only_repairs_metadata_drift_on_initial_upload(self) -> None:
+        item = self._item()
+        item["type"] = "video_overview"
+        item["youtube_metadata"] = pipeline.publication_metadata(item["source"], "overview")
+        item["youtube_id"] = None
+        item["status"] = "approved"
+        item["technical_verified"] = True
+        item["final_mp4"] = "video.mp4"
+        item["manifest_path"] = "manifest.json"
+        video_file = pipeline.STATE_DIR / "video.mp4"
+        manifest_file = pipeline.STATE_DIR / "manifest.json"
+        video_file.parent.mkdir(parents=True, exist_ok=True)
+        video_file.write_bytes(b"dummy mp4")
+        manifest_file.write_text("{}", encoding="utf-8")
+        state = {"version": 1, "items": [item]}
+
+        mock_repair = mock.Mock()
+        with mock.patch.object(pipeline, "load_state", return_value=state), \
+             mock.patch.object(pipeline, "save_state"), \
+             mock.patch.object(pipeline, "youtube_access_token", return_value="token"), \
+             mock.patch.object(pipeline, "verify_authenticated_channel"), \
+             mock.patch.object(pipeline, "start_resumable_upload", return_value="https://upload.session"), \
+             mock.patch.object(pipeline, "legacy_external_effect", return_value={"video_id": "new-yt-id"}), \
+             mock.patch.object(pipeline, "verify_public_upload", side_effect=[
+                 pipeline.PipelineError("PUBLIC_METADATA_INVALID: remote tags differ from source-derived tags"),
+                 {"channel_id": pipeline.YOUTUBE_CHANNEL_ID, "privacy_status": "public", "processing_status": "succeeded"},
+             ]), \
+             mock.patch.object(pipeline, "repair_persisted_youtube_metadata", mock_repair):
+            res = pipeline.upload_only(item_id=item["id"], state=state)
+
+        self.assertEqual(res, 0)
+        self.assertEqual(item["youtube_id"], "new-yt-id")
+        self.assertTrue(item["uploaded"])
+        self.assertEqual(item["status"], "uploaded")
+        mock_repair.assert_called_once_with(item, "token")
+
 if __name__ == "__main__":
     unittest.main()
+

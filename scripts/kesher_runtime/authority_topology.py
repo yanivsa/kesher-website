@@ -22,7 +22,7 @@ CAPABILITIES = {'read', 'artifact_write', 'branch_write', 'pr_write', 'merge', '
                 'youtube_metadata', 'cloudflare_write', 'image_provider_create', 'image_write', 'oci_write',
                 'exclusion_write'}
 ROLES = {'controller', 'worker', 'retired', 'diagnostic', 'separate_infrastructure', 'handover', 'emergency_bridge',
-         'retiring_dispatcher'}
+         'retiring_dispatcher', 'watchdog'}
 ACTIVE_RUN_STATUSES = ('queued', 'in_progress', 'waiting', 'pending', 'requested')
 WORKFLOW_STATES = {'active', 'disabled_manually', 'disabled_inactivity', 'disabled_fork'}
 REGISTERED_SYSTEM_PATHS = {'dynamic/dependabot/dependabot-updates',
@@ -103,6 +103,14 @@ def check_definitions(definitions, rules):
             )
             if not (canonical or pre_cutover):
                 raise StateInvalid('AUTHORITY_CONTROLLER_NOT_CANONICAL')
+        if role == 'watchdog':
+            valid_watchdog = (
+                path == '.github/workflows/kesher-controller-liveness.yml'
+                and 'scripts.kesher_runtime.controller_liveness' in text
+                and set(entry['review']['dispatches']) == {'.github/workflows/kesher-content-controller.yml'}
+            )
+            if not valid_watchdog:
+                raise StateInvalid('AUTHORITY_WATCHDOG_NOT_CANONICAL')
         # PyYAML's YAML 1.1 loader reads the GitHub `on` key as True.
         events = data.get('on', data.get(True))
         if role=='retiring_dispatcher':
@@ -238,6 +246,10 @@ def _dispatch_review(entry, rules):
         raise StateInvalid('AUTHORITY_UNCLASSIFIED_INDIRECT_DISPATCH')
     if targets and 'workflow_dispatch' not in entry['capabilities']:
         raise StateInvalid('AUTHORITY_FALSE_READONLY_DISPATCH')
+    if entry.get('role') == 'watchdog':
+        if targets != ['.github/workflows/kesher-content-controller.yml']:
+            raise StateInvalid('AUTHORITY_WATCHDOG_DISPATCH_UNAUTHORIZED')
+        return
     bindings = entry['review'].get('dispatch_bindings')
     if bindings is not None and (not isinstance(bindings, dict) or set(bindings) != set(targets)):
         raise StateInvalid('AUTHORITY_DISPATCH_BINDING_INVALID')

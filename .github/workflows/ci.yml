@@ -63,6 +63,16 @@ jobs:
             tests.test_master_supervisor_live \
             tests.test_master_supervisor_live_qa \
             tests.test_verify_production_article \
+            tests.test_controller_liveness \
+            tests.test_media_external_effect_crash_consistency \
+            tests.test_daily_rollover_delivery_completeness \
+            tests.test_deploy_sha_supersession_and_budget \
+            tests.test_exact_public_article_identity \
+            tests.test_article_pr_verify_check_ordering \
+            tests.test_article_normalization_head_tracking \
+            tests.test_article_image_fallback_pool_and_cascade \
+            tests.test_controller_child_failure_recovery \
+            tests.test_ci_regression_suite_coverage \
             -v
 
       - name: Test Schema-6 production cutover safety

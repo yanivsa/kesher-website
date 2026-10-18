@@ -14,6 +14,7 @@ on:
           - generate
           - upload
           - rebuild
+          - recovery
       rebuild_item_id:
         description: Exact visually rejected item to rebuild with Remotion
         required: false
@@ -64,6 +65,7 @@ jobs:
           persist-credentials: false
 
       - name: Refuse emergency bridge after cutover exclusion begins
+        id: bridge_admission
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 -m scripts.kesher_runtime.bridge_admission
@@ -168,7 +170,7 @@ jobs:
           fi
 
       - name: Seed an exact orphaned-task recovery state
-        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate') }}
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') }}
         env:
           KESHER_RECOVERY_STATE_JSON: ${{ secrets.KESHER_RECOVERY_STATE_JSON }}
         run: |
@@ -208,7 +210,7 @@ jobs:
           PY
 
       - name: Materialize NotebookLM credentials without exposing them
-        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild') }}
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' || inputs.operation == 'recovery') }}
         env:
           NOTEBOOKLM_STORAGE_STATE_SECRET: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
           NOTEBOOKLM_MASTER_TOKEN_SECRET: ${{ secrets.NOTEBOOKLM_MASTER_TOKEN_JSON }}
@@ -273,23 +275,27 @@ jobs:
         run: python -m unittest tests.kesher_daily_pipeline_suite tests.test_video_review_policy tests.test_video_review_schema tests.test_video_reconcile tests.test_production_contract_v3 tests.test_notebooklm_auth_precedence tests.test_kesher_free_stock_broll -v
 
       - name: NotebookLM read-only preflight
-        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate') }}
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') }}
         run: python -u scripts/kesher_daily_pipeline.py --preflight
 
       - name: Prepare exact daily Video Overview generation
         id: prepare_generation
-        if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' }}
+        if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery' }}
         env:
           TARGET_SLUG: ${{ inputs.target_slug }}
           TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}
           TARGET_ITEM_ID: ${{ inputs.target_item_id }}
+          OPERATION: ${{ inputs.operation }}
+          KESHER_RECOVERY_MODE: ${{ inputs.operation == 'recovery' && 'true' || 'false' }}
         run: python -u scripts/kesher_video_reconcile.py --prepare-generation
 
       - name: Generate or resume exact Video Overview
-        if: ${{ (inputs.operation == 'full' || inputs.operation == 'generate') && steps.prepare_generation.outputs.skip_generation != 'true' }}
+        if: ${{ (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') && steps.prepare_generation.outputs.skip_generation != 'true' }}
         env:
           TARGET_SLUG: ${{ inputs.target_slug }}
           TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}
+          OPERATION: ${{ inputs.operation }}
+          KESHER_RECOVERY_MODE: ${{ inputs.operation == 'recovery' && 'true' || 'false' }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
         run: python -u scripts/kesher_daily_pipeline.py --max-wait-seconds 150
@@ -308,7 +314,7 @@ jobs:
           python -u scripts/kesher_daily_pipeline.py --remotion-rebuild-item "${{ inputs.rebuild_item_id }}"
 
       - name: Detect pending advisory Jules review
-        if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' }}
+        if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' || inputs.operation == 'recovery' }}
         id: pending
         continue-on-error: true
         run: |
@@ -398,7 +404,7 @@ jobs:
 
       - name: Prepare technically verified upload
         id: prepare_upload
-        if: ${{ !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
+        if: ${{ !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'recovery') }}
         env:
           KESHER_REQUESTED_TARGET_SLUG: ${{ inputs.target_slug }}
           KESHER_REQUESTED_TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}
@@ -410,7 +416,7 @@ jobs:
         run: python -u scripts/kesher_video_reconcile.py --prepare-upload
 
       - name: Upload exact technically verified MP4
-        if: ${{ !cancelled() && steps.prepare_upload.outputs.ready == 'true' && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
+        if: ${{ !cancelled() && steps.prepare_upload.outputs.ready == 'true' && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'recovery') }}
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -449,7 +455,7 @@ jobs:
           python -u scripts/kesher_daily_pipeline.py --upload-only --slug "$TARGET_SLUG" --item-id "$TARGET_ITEM_ID"
 
       - name: Remove uploaded MP4 files after public verification
-        if: ${{ success() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
+        if: ${{ success() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'recovery') }}
         run: python -u scripts/kesher_daily_pipeline.py --prune-uploaded-media
 
       - name: Seal refreshed NotebookLM credentials into durable state
@@ -555,10 +561,12 @@ jobs:
           CHILD_RUN_ID: ${{ github.run_id }}
           CHILD_CONCLUSION: ${{ job.status }}
           SOURCE_SLUG: ${{ inputs.target_slug || '' }}
+          SOURCE_SHA: ${{ inputs.target_content_sha256 || '' }}
         run: |
           gh workflow run kesher-content-controller.yml \
             --ref main \
             -f child_workflow="$CHILD_WORKFLOW" \
             -f child_run_id="$CHILD_RUN_ID" \
             -f child_conclusion="$CHILD_CONCLUSION" \
-            -f source_slug="$SOURCE_SLUG" || echo "::warning::Controller wake-up notification failed; fallback schedule/workflow_run will reconcile."
+            -f source_slug="$SOURCE_SLUG" \
+            -f source_sha="$SOURCE_SHA" || echo "::warning::Controller wake-up notification failed; fallback schedule/workflow_run will reconcile."

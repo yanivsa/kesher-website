@@ -225,6 +225,20 @@ class V4Controller(legacy.BestEffortController):
 
     def _dispatch_auto_merge_v4(self, state: dict[str, Any]) -> None:
         article = state.get("article") if isinstance(state.get("article"), dict) else {}
+        norm_status = str(article.get("normalization_status") or "").lower()
+        norm_head = str(article.get("normalized_head_sha") or "").strip().lower()
+        curr_head = str(article.get("current_pr_head_sha") or "").strip().lower()
+        image_head = str(article.get("image_head_sha") or "").strip().lower()
+        merge_cand = str(article.get("merge_candidate_sha") or "").strip().lower()
+
+        if norm_status == "pending":
+            return
+        if norm_head and curr_head and norm_head != curr_head:
+            return
+        if image_head and curr_head and image_head != curr_head:
+            return
+        if merge_cand and curr_head and merge_cand != curr_head:
+            return
         dispatch_count = int(article.get("merge_dispatch_count") or 0)
         if dispatch_count >= 3:
             core.block(
@@ -252,7 +266,33 @@ class V4Controller(legacy.BestEffortController):
 
     def _handle_open_article_pr(self, state: dict[str, Any], pr: dict[str, Any]) -> core.Action:
         number = int(pr.get("number") or 0)
+        head_sha = str((pr.get("head") or {}).get("sha") or "").strip().lower()
         state["article"].update({"pr_number": number, "pr_url": pr.get("html_url")})
+        state["article"]["current_pr_head_sha"] = head_sha
+        if not state["article"].get("jules_head_sha"):
+            state["article"]["jules_head_sha"] = head_sha
+
+        normalized_head_sha = str(state["article"].get("normalized_head_sha") or "").strip().lower()
+        if normalized_head_sha and normalized_head_sha != head_sha:
+            drift_count = int(state["article"].get("normalization_drift_count") or 0) + 1
+            state["article"]["normalization_drift_count"] = drift_count
+            if drift_count > 3:
+                core.block(
+                    state,
+                    "article",
+                    "ARTICLE_JULES_UNSTABLE_MUTATION",
+                    f"Article PR head mutated repeatedly ({drift_count} times) after trusted stages; branch quiescence failed",
+                )
+                state["article"]["status"] = "blocked"
+                return core.Action("blocked", "Article PR head mutated repeatedly; branch quiescence failed")
+
+            state["article"]["normalization_status"] = "pending"
+            state["article"].pop("normalized_head_sha", None)
+            state["article"].pop("image_head_sha", None)
+            state["article"].pop("merge_candidate_sha", None)
+            if str((state.get("image") or {}).get("status") or "") in {"running", "complete"}:
+                state["image"]["status"] = "pending"
+                state["image"].pop("run_id", None)
 
         needs_normalization, slot = self.github.article_pr_normalization_required(pr)
         if needs_normalization:
@@ -289,6 +329,7 @@ class V4Controller(legacy.BestEffortController):
             )
 
         state["article"]["normalization_status"] = "complete"
+        state["article"]["normalized_head_sha"] = head_sha
         image_was_complete = str((state.get("image") or {}).get("status") or "") == "complete"
         ready, evidence = self.github.article_pr_image_ready(pr)
         if ready:
@@ -299,6 +340,8 @@ class V4Controller(legacy.BestEffortController):
                 "artifact_sha256": evidence.get("sha256"),
                 "source_id": evidence.get("source"),
             })
+            state["article"]["image_head_sha"] = head_sha
+            state["article"]["merge_candidate_sha"] = head_sha
             core.transition(
                 state,
                 "article_pr_open",

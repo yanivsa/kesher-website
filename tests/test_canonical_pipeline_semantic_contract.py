@@ -124,7 +124,7 @@ class CanonicalPipelineSemanticContractTests(unittest.TestCase):
         colliding_sha = hashlib.sha256(colliding_bytes).hexdigest()
 
         content_with_5_h3 = (
-            "<p>Intro</p>\n"
+            "<p>תקשורת זוגית היא הבסיס לכל מערכת יחסים בריאה ומאושרת. </p>\n"
             + "".join(f"<h3>Section {i}</h3>\n<p>" + "word " * 160 + "</p>\n" for i in range(1, 6))
         )
         base_post = {
@@ -134,22 +134,25 @@ class CanonicalPipelineSemanticContractTests(unittest.TestCase):
             "imageSha256": colliding_sha,
         }
         new_post = {
-            "id": "new-article-slug",
+            "id": "couples-communication",
+            "title": "תקשורת זוגית מעשית",
+            "primaryKeyword": "תקשורת זוגית",
             "content": content_with_5_h3,
-            "image": "/images/generated/blog/new-article-slug.jpg",
+            "image": "/images/generated/blog/couples-communication.jpg",
             "imageAlt": "A very detailed alt text description of the image content here",
         }
         pr = {
             "state": "open",
             "draft": False,
-            "title": "Publish Kesher article: New Article",
+            "title": "Publish Kesher article: couples-communication",
             "body": (
                 "<!-- image-evidence -->\n"
+                "- Primary Keyword: תקשורת זוגית\n"
                 "Image Pipeline Version: 2\n"
                 "Image Provider: Local\n"
                 "Image Generation Result: local_fallback\n"
                 "Image Attempt Chain: gemini-1/gemini-2/pexels/pixabay/local-curated\n"
-                "Image Source URL: local://public/images/generated/blog/new-article-slug.jpg\n"
+                "Image Source URL: local://public/images/generated/blog/couples-communication.jpg\n"
                 f"Image SHA-256: {colliding_sha}\n"
                 "Image Dimensions: 1200x675\n"
                 "Image Visual Match: A very detailed alt text description of the image content here\n"
@@ -162,7 +165,7 @@ class CanonicalPipelineSemanticContractTests(unittest.TestCase):
         }
         files_data = [
             {"filename": "src/data/posts.json"},
-            {"filename": "public/images/generated/blog/new-article-slug.jpg"},
+            {"filename": "public/images/generated/blog/couples-communication.jpg"},
         ]
 
         def mock_loader(entry):
@@ -172,7 +175,7 @@ class CanonicalPipelineSemanticContractTests(unittest.TestCase):
             pr,
             files_data,
             [base_post],
-            [new_post],
+            [base_post, new_post],
             image_loader=mock_loader,
         )
         self.assertTrue(
@@ -756,6 +759,275 @@ class CanonicalPipelineSemanticContractTests(unittest.TestCase):
         self.assertEqual(action.kind, "dispatch_deploy")
         self.assertEqual(new_state["long_video"]["status"], "pending")
         self.assertFalse(new_state["article"]["live"])
+
+    def test_20_pr_content_structure_preflight_failures(self):
+        """Preflight detects catalog unreadable, invalid format, zero, or multiple new posts and blocks fail-closed."""
+        mock_github = MagicMock()
+        mock_site = MagicMock()
+        ctrl = stabilized_mod.StabilizedRuntimeV5Controller(mock_github, mock_site)
+        ctrl.now = datetime(2026, 10, 14, 12, 0, tzinfo=timezone.utc)
+        mock_github.article_pr_normalization_required.return_value = (False, "")
+        mock_github.request.return_value = []
+        pr = {"number": 1113, "head": {"sha": "head1113"}, "base": {"sha": "base1113"}}
+
+        # 1. Catalog unreadable
+        mock_github.contents_json.side_effect = Exception("network timeout")
+        state1 = {"cycle": "2026-10-14", "status": "article_pr_open", "article": {}}
+        action1 = ctrl._handle_open_article_pr(state1, pr)
+        self.assertEqual(action1.kind, "blocked")
+        self.assertIn("CONTENT_PREFLIGHT_CATALOG_UNREADABLE", action1.reason)
+        self.assertEqual(state1["status"], "blocked")
+
+        # 2. Catalog invalid (non-list)
+        mock_github.contents_json.side_effect = None
+        mock_github.contents_json.return_value = {"not": "a list"}
+        state2 = {"cycle": "2026-10-14", "status": "article_pr_open", "article": {}}
+        action2 = ctrl._handle_open_article_pr(state2, pr)
+        self.assertEqual(action2.kind, "blocked")
+        self.assertIn("CONTENT_PREFLIGHT_CATALOG_INVALID", action2.reason)
+        self.assertEqual(state2["status"], "blocked")
+
+        # 3. Zero new posts
+        base_posts = [{"id": "post-1", "slug": "post-1"}]
+        mock_github.contents_json.side_effect = lambda path, ref: list(base_posts)
+        state3 = {"cycle": "2026-10-14", "status": "article_pr_open", "article": {}}
+        action3 = ctrl._handle_open_article_pr(state3, pr)
+        self.assertEqual(action3.kind, "blocked")
+        self.assertIn("CONTENT_PREFLIGHT_ZERO_NEW_POSTS", action3.reason)
+        self.assertEqual(state3["status"], "blocked")
+
+        # 4. Multiple new posts
+        mock_github.contents_json.side_effect = lambda path, ref: (
+            [{"id": "post-1"}, {"id": "post-2"}, {"id": "post-3"}] if ref == "head1113" else [{"id": "post-1"}]
+        )
+        state4 = {"cycle": "2026-10-14", "status": "article_pr_open", "article": {}}
+        action4 = ctrl._handle_open_article_pr(state4, pr)
+        self.assertEqual(action4.kind, "blocked")
+        self.assertIn("CONTENT_PREFLIGHT_MULTIPLE_NEW_POSTS", action4.reason)
+        self.assertEqual(state4["status"], "blocked")
+
+    def test_21_pr_repair_status_pagination_and_unreadable_comments(self):
+        """PR repair history paginates through all pages, extracts markers, and fails closed if unreadable."""
+        mock_github = MagicMock()
+        mock_github.api = "https://api.github.com/repos/yanivsa/kesher-website"
+        mock_site = MagicMock()
+        ctrl = stabilized_mod.StabilizedRuntimeV5Controller(mock_github, mock_site)
+        pr = {"number": 1113, "head": {"sha": "aabbccdd11223344556677889900aabbccddeeff"}}
+
+        # Page 1: 100 empty comments, Page 2: comment with repair marker
+        page1 = [{"body": f"comment {i}"} for i in range(100)]
+        page2 = [{"body": "<!-- kesher-article-repair attempt=1 head=aabbccdd11223344556677889900aabbccddeeff -->"}]
+        mock_github.request.side_effect = [page1, page2]
+
+        max_att, repaired = ctrl._pr_repair_status(pr)
+        self.assertEqual(max_att, 1)
+        self.assertIn("aabbccdd11223344556677889900aabbccddeeff", repaired)
+        self.assertEqual(mock_github.request.call_count, 2)
+
+        # Unreadable comments raises PR_REPAIR_HISTORY_UNREADABLE
+        mock_github.request.side_effect = Exception("HTTP 500 Internal Error")
+        with self.assertRaises(stabilized_mod.v5.core.ControllerError) as ctx:
+            ctrl._pr_repair_status(pr)
+        self.assertIn("PR_REPAIR_HISTORY_UNREADABLE", str(ctx.exception))
+
+    def test_22_image_duplicate_check_against_posts_and_posts_recent(self):
+        """Hero image collision against src/data/postsRecent.json is rejected."""
+        client = V3GitHubClient("token", "repo")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            pub_dir = Path(tmpdir) / "public" / "images" / "generated" / "blog"
+            pub_dir.mkdir(parents=True)
+            img_data = b"\x89PNG\r\n\x1a\n" + b"\x00" * 200
+            img_sha = hashlib.sha256(img_data).hexdigest()
+            (pub_dir / "recent.png").write_bytes(img_data)
+
+            with patch("scripts.kesher_content_controller_v3_entry.Path") as mock_path:
+                mock_path.return_value.resolve.return_value.parents.__getitem__.return_value = Path(tmpdir)
+                pr = {
+                    "number": 123,
+                    "head": {"sha": "headsha"},
+                    "base": {"sha": "basesha"},
+                    "body": f"Image Provider: Local\nImage SHA-256: {img_sha}\nImage Source URL: local://public/images/generated/blog/recent.png\nImage Evidence Head: headsha",
+                }
+                def mock_contents(path, ref):
+                    if path == "src/data/posts.json":
+                        if ref == "headsha":
+                            return [{"id": "new-post", "image": "/images/generated/blog/recent.png", "imageAlt": "Valid descriptive image alt text for article"}]
+                        return []
+                    if path == "src/data/postsRecent.json":
+                        return [{"id": "recent-post", "image": "/images/generated/blog/recent.png", "imageSha256": img_sha}]
+                    return []
+
+                client.contents_json = MagicMock(side_effect=mock_contents)
+                client.request = MagicMock(return_value={"encoding": "base64", "content": base64.b64encode(img_data).decode("ascii")})
+                ready, _ = client.article_pr_image_ready(pr)
+                self.assertFalse(ready, "Hero image matching an asset in postsRecent.json must be rejected")
+
+    def test_23_media_child_notification_identity_correlation(self):
+        """Media child notifications without authoritative source identity cannot bind or mutate state."""
+        mock_github = MagicMock()
+        mock_site = MagicMock()
+        ctrl = stabilized_mod.StabilizedRuntimeV5Controller(mock_github, mock_site)
+
+        state = {
+            "cycle": "2026-10-14",
+            "status": "long_video_running",
+            "article": {
+                "slug": "correct-article-slug",
+                "quality_content_sha256": "1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff",
+            },
+            "long_video": {
+                "status": "running",
+                "run_id": 100,
+                "attempt_count": 1,
+            },
+            "short": {
+                "status": "pending",
+                "run_id": None,
+                "attempt_count": 0,
+            },
+        }
+
+        # 1. Missing source_slug for long_video is rejected as untrusted
+        env_no_slug = {
+            "KESHER_TRIGGER_EVENT": "workflow_dispatch",
+            "KESHER_CHILD_WORKFLOW": "Kesher Daily NotebookLM Video Overview",
+            "KESHER_CHILD_RUN_ID": "200",
+            "KESHER_CHILD_CONCLUSION": "success",
+            "KESHER_CHILD_SOURCE_SLUG": "",
+            "KESHER_CHILD_SLOT": "2026-10-14",
+        }
+        with patch.dict(os.environ, env_no_slug):
+            valid, msg = ctrl._validate_child_notification(state)
+        self.assertFalse(valid)
+        self.assertIn("missing mandatory source_slug", msg)
+
+        # 2. Mismatched source_slug for short is rejected
+        env_wrong_slug = {
+            "KESHER_TRIGGER_EVENT": "workflow_dispatch",
+            "KESHER_CHILD_WORKFLOW": "Kesher Daily Article Short V4",
+            "KESHER_CHILD_RUN_ID": "300",
+            "KESHER_CHILD_CONCLUSION": "success",
+            "KESHER_CHILD_SOURCE_SLUG": "different-slug",
+            "KESHER_CHILD_SLOT": "2026-10-14",
+        }
+        with patch.dict(os.environ, env_wrong_slug):
+            valid, msg = ctrl._validate_child_notification(state)
+        self.assertFalse(valid)
+        self.assertIn("mismatch", msg)
+
+        # 3. Matching source_slug but missing source_sha when current_sha is known is rejected
+        env_no_sha = {
+            "KESHER_TRIGGER_EVENT": "workflow_dispatch",
+            "KESHER_CHILD_WORKFLOW": "Kesher Daily NotebookLM Video Overview",
+            "KESHER_CHILD_RUN_ID": "200",
+            "KESHER_CHILD_CONCLUSION": "success",
+            "KESHER_CHILD_SOURCE_SLUG": "correct-article-slug",
+            "KESHER_CHILD_SOURCE_SHA": "",
+            "KESHER_CHILD_SLOT": "2026-10-14",
+        }
+        with patch.dict(os.environ, env_no_sha):
+            valid, msg = ctrl._validate_child_notification(state)
+        self.assertFalse(valid)
+        self.assertIn("missing mandatory source_sha", msg)
+
+        # 4. Matching source_slug but mismatched source_sha is rejected
+        env_wrong_sha = {
+            "KESHER_TRIGGER_EVENT": "workflow_dispatch",
+            "KESHER_CHILD_WORKFLOW": "Kesher Daily NotebookLM Video Overview",
+            "KESHER_CHILD_RUN_ID": "200",
+            "KESHER_CHILD_CONCLUSION": "success",
+            "KESHER_CHILD_SOURCE_SLUG": "correct-article-slug",
+            "KESHER_CHILD_SOURCE_SHA": "9999222233334444555566667777888899990000aaaabbbbccccddddeeeeffff",
+            "KESHER_CHILD_SLOT": "2026-10-14",
+        }
+        with patch.dict(os.environ, env_wrong_sha):
+            valid, msg = ctrl._validate_child_notification(state)
+        self.assertFalse(valid)
+        self.assertIn("source_sha mismatch", msg)
+
+        # 5. Matching source_slug and source_sha is valid
+        mock_github.workflow_run_by_id.return_value = {
+            "id": 200,
+            "name": "Kesher Daily NotebookLM Video Overview",
+            "conclusion": "success",
+            "event": "workflow_dispatch",
+        }
+        env_correct = {
+            "KESHER_TRIGGER_EVENT": "workflow_dispatch",
+            "KESHER_CHILD_WORKFLOW": "Kesher Daily NotebookLM Video Overview",
+            "KESHER_CHILD_RUN_ID": "200",
+            "KESHER_CHILD_CONCLUSION": "success",
+            "KESHER_CHILD_SOURCE_SLUG": "correct-article-slug",
+            "KESHER_CHILD_SOURCE_SHA": "1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff",
+            "KESHER_CHILD_SLOT": "2026-10-14",
+        }
+        with patch.dict(os.environ, env_correct):
+            valid, msg = ctrl._validate_child_notification(state)
+        self.assertTrue(valid)
+
+    def test_24_public_verification_restart_safety_in_memory_only(self):
+        """Live verification is tracked in-memory only and requires fresh HTTP verification after controller restart."""
+        mock_github = MagicMock()
+        mock_github.active_workflow_run.return_value = None
+        mock_site = MagicMock()
+        ctrl1 = stabilized_mod.StabilizedRuntimeV5Controller(mock_github, mock_site)
+        ctrl1.now = datetime(2026, 10, 14, 12, 0, tzinfo=timezone.utc)
+
+        post = {
+            "id": "restart-safety-post",
+            "slug": "restart-safety-post",
+            "title": "Restart Safety Title",
+            "date": "2026-10-14",
+            "content": "<p>Content</p>",
+            "category": "זוגיות",
+            "excerpt": "Valid excerpt of reasonable length for adoptable post",
+            "image": "/images/generated/blog/restart-safety-post.jpg",
+        }
+        post_sha = "38f72e7c650c43ccc76291076fdba0123699af908345a3f19175c418d86a4c68"
+        state = {
+            "cycle": "2026-10-14",
+            "status": "article_deploying",
+            "article": {
+                "slug": "restart-safety-post",
+                "quality_content_sha256": post_sha,
+            },
+            "image": {"status": "complete"},
+            "long_video": {"status": "pending"},
+            "short": {"status": "pending"},
+            "history": [],
+        }
+        mock_github.posts_on_main.return_value = [post]
+        html_page = (
+            "<html><head><title>Restart Safety Title</title>"
+            "<meta property='article:published_time' content='2026-10-14'>"
+            "<link rel='canonical' href='https://kesher.saharoni.com/blog/restart-safety-post'>"
+            f"<meta name='kesher:content-sha256' content='{post_sha}'>"
+            "<meta property='og:image' content='https://kesher.saharoni.com/images/generated/blog/restart-safety-post.jpg'>"
+            "</head><body><h1>Restart Safety Title</h1></body></html>"
+        )
+        mock_site.get.return_value = (200, html_page)
+
+        # Tick on ctrl1: verifies publicly and saves state
+        is_pub, _ = ctrl1._ensure_article_public_and_deployed(state)
+        self.assertTrue(is_pub)
+        self.assertIn("restart-safety-post", ctrl1._in_memory_verified_articles)
+        self.assertNotIn("_tick_live_verified", state.get("article", {}))
+
+        # Second check on ctrl1: uses in-memory session tracking, no second HTTP call
+        mock_site.get.reset_mock()
+        is_pub2, _ = ctrl1._ensure_article_public_and_deployed(state)
+        self.assertTrue(is_pub2)
+        mock_site.get.assert_not_called()
+
+        # Simulate controller restart: new controller instance
+        ctrl2 = stabilized_mod.StabilizedRuntimeV5Controller(mock_github, mock_site)
+        ctrl2.now = datetime(2026, 10, 14, 12, 10, tzinfo=timezone.utc)
+        self.assertNotIn("restart-safety-post", ctrl2._in_memory_verified_articles)
+
+        # Check on ctrl2: MUST issue fresh HTTP call to verify
+        is_pub3, _ = ctrl2._ensure_article_public_and_deployed(state)
+        self.assertTrue(is_pub3)
+        mock_site.get.assert_called_once()
 
 
 if __name__ == "__main__":

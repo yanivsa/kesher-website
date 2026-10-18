@@ -34,7 +34,7 @@ on:
         required: false
         type: string
       derive_long_item_id:
-        description: Deprecated compatibility input; long-form provider identity is never reused for a Short
+        description: Exact authoritative Overview item used only to bind independent Short provenance
         required: false
         type: string
       historical_commit:
@@ -92,6 +92,7 @@ jobs:
           persist-credentials: false
 
       - name: Refuse emergency bridge after cutover exclusion begins
+        id: bridge_admission
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 -m scripts.kesher_runtime.bridge_admission
@@ -327,6 +328,59 @@ jobs:
               out.write(f"content_sha256={sha}\n")
           PY
 
+      - name: Bind exact Short to authoritative Overview identity
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'derive') && inputs.derive_long_item_id != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DERIVE_SLUG: ${{ inputs.derive_slug }}
+          DERIVE_CONTENT_SHA256: ${{ inputs.derive_content_sha256 }}
+          DERIVE_LONG_ITEM_ID: ${{ inputs.derive_long_item_id }}
+        run: |
+          set -euo pipefail
+          test -n "$DERIVE_SLUG"
+          test -n "$DERIVE_CONTENT_SHA256"
+          test -n "$DERIVE_LONG_ITEM_ID"
+          found="false"
+          while read -r artifact_id; do
+            [ -n "$artifact_id" ] || continue
+            archive="$(mktemp /tmp/kesher-video-controller.XXXXXX.zip)"
+            extract="$(mktemp -d)"
+            if ! gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive" 2>/dev/null; then
+              rm -f "$archive"; rm -rf "$extract"; continue
+            fi
+            if ! unzip -oq "$archive" -d "$extract" 2>/dev/null || [ ! -s "$extract/state.json" ]; then
+              rm -f "$archive"; rm -rf "$extract"; continue
+            fi
+            if python - "$extract/state.json" "$DERIVE_LONG_ITEM_ID" "$DERIVE_SLUG" "$DERIVE_CONTENT_SHA256" <<'PY'
+          import json, sys
+          state = json.load(open(sys.argv[1], encoding='utf-8'))
+          item_id, slug, sha = sys.argv[2:5]
+          matches = [row for row in state.get('items', []) if isinstance(row, dict)
+                     and str(row.get('id') or '') == item_id
+                     and row.get('type') == 'video_overview'
+                     and str((row.get('source') or {}).get('slug') or (row.get('source') or {}).get('id') or '') == slug
+                     and str((row.get('source') or {}).get('content_sha256') or '') == sha]
+          raise SystemExit(0 if len(matches) == 1 else 1)
+          PY
+            then
+              python -u scripts/kesher_video_reconcile.py \
+                --bind-short-overview-identity "$extract/state.json" \
+                --slug "$DERIVE_SLUG" \
+                --content-sha256 "$DERIVE_CONTENT_SHA256" \
+                --long-item-id "$DERIVE_LONG_ITEM_ID" \
+                ${TARGET_ITEM_ID:+--item-id "$TARGET_ITEM_ID"}
+              found="true"
+              rm -f "$archive"; rm -rf "$extract"
+              break
+            fi
+            rm -f "$archive"; rm -rf "$extract"
+          done < <(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-controller-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[].id')
+          if [ "$found" != "true" ]; then
+            echo "Exact authoritative Overview artifact was not found for $DERIVE_LONG_ITEM_ID" >&2
+            exit 1
+          fi
+
       - name: Prepare exact technically verified Short upload
         id: prepare_upload
         if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
@@ -465,10 +519,12 @@ jobs:
           CHILD_RUN_ID: ${{ github.run_id }}
           CHILD_CONCLUSION: ${{ job.status }}
           SOURCE_SLUG: ${{ inputs.derive_slug || inputs.release_slug || '' }}
+          SOURCE_SHA: ${{ inputs.derive_content_sha256 || '' }}
         run: |
           gh workflow run kesher-content-controller.yml \
             --ref main \
             -f child_workflow="$CHILD_WORKFLOW" \
             -f child_run_id="$CHILD_RUN_ID" \
             -f child_conclusion="$CHILD_CONCLUSION" \
-            -f source_slug="$SOURCE_SLUG" || echo "::warning::Controller wake-up notification failed; fallback schedule/workflow_run will reconcile."
+            -f source_slug="$SOURCE_SLUG" \
+            -f source_sha="$SOURCE_SHA" || echo "::warning::Controller wake-up notification failed; fallback schedule/workflow_run will reconcile."

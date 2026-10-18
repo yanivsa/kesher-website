@@ -111,11 +111,15 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
                 if "post-b" in url:
                     return 200, (
                         "<html><head>"
+                        '<link rel="canonical" href="https://kesher.saharoni.com/blog/post-b">'
+                        '<meta property="og:url" content="https://kesher.saharoni.com/blog/post-b">'
                         f'<meta name="kesher:content-sha256" content="{source_b["content_sha256"]}">'
                         "</head><h1>פוסט נוסף באותו תאריך</h1></html>"
                     )
                 return 200, (
                     "<html><head>"
+                    '<link rel="canonical" href="https://kesher.saharoni.com/blog/post-a">'
+                    '<meta property="og:url" content="https://kesher.saharoni.com/blog/post-a">'
                     f'<meta name="kesher:content-sha256" content="{source_a["content_sha256"]}">'
                     "</head><h1>התמודדות עם תחושת החמצה ברווקות מאוחרת</h1></html>"
                 )

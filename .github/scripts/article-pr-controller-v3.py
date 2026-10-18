@@ -98,6 +98,10 @@ def controller_image_stage_terminal(
 
     image_status = str(image.get("status") or "")
     if image_status == "complete":
+        normalized_head_sha = str(article.get("normalized_head_sha") or "").strip().lower()
+        current_head = str((pr.get("head") or {}).get("sha") or "").strip().lower()
+        if normalized_head_sha and current_head and normalized_head_sha != current_head:
+            return False
         return bool(
             image.get("provider_id")
             and image.get("source_id")

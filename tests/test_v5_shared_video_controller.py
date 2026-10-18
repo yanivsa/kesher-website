@@ -147,10 +147,16 @@ class FakeSite:
     def get(self, url):
         post = article()
         source = v5.article_source_identity(post)
+        slug = source["slug"]
+        canonical_url = f"{core.SITE_URL}/blog/{slug}"
+        image = post.get("image") or f"/images/generated/blog/{slug}.jpg"
         return (
             200,
-            f'<html><head><meta name="kesher:content-sha256" content="{source["content_sha256"]}"></head>'
-            f'<body><h1>{post["title"]}</h1>{post["content"]}</body></html>',
+            f'<html><head><meta name="kesher:content-sha256" content="{source["content_sha256"]}">'
+            f'<link rel="canonical" href="{canonical_url}">'
+            f'<meta property="og:url" content="{canonical_url}">'
+            f'<meta property="og:image" content="https://kesher.saharoni.com{image}">'
+            f'</head><body><h1>{post["title"]}</h1>{post["content"]}</body></html>',
         )
 
 

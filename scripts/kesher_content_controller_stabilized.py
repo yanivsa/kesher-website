@@ -9,16 +9,19 @@ import os
 import re
 import sys
 import urllib.parse
+from datetime import date, timedelta
 from pathlib import Path
 
 if __package__:
     from . import article_claim_quality as quality
     from . import kesher_content_controller_v5 as v5
     from . import kesher_content_controller_v5_runtime as runtime
+    from . import kesher_idea_queue as idea_queue
 else:
     import article_claim_quality as quality
     import kesher_content_controller_v5 as v5
     import kesher_content_controller_v5_runtime as runtime
+    import kesher_idea_queue as idea_queue
 
 
 _ORIGINAL_PUBLIC_SITE_GET = v5.core.PublicSiteClient.get
@@ -72,6 +75,144 @@ class _DuplicateDispatchSuppressed(Exception):
 
 class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
     """Prevent advancement/completion unless article and canonical media evidence are durable."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._in_memory_verified_articles: set[str] = set()
+
+    @staticmethod
+    def _run_now_active(state: dict | None) -> bool:
+        active = (state or {}).get("active_idea") if isinstance(state, dict) else None
+        return bool(isinstance(active, dict) and active.get("run_now") is True and str(active.get("status") or "") != "complete")
+
+    @staticmethod
+    def _run_now_slot(state: dict | None) -> str:
+        active = (state or {}).get("active_idea") if isinstance(state, dict) else None
+        if not isinstance(active, dict) or active.get("run_now") is not True:
+            return ""
+        value = str(active.get("publication_slot") or "").strip()
+        try:
+            date.fromisoformat(value)
+        except ValueError:
+            return ""
+        return value
+
+    def _first_free_publication_slot(self, posts: list[dict]) -> str:
+        occupied = {
+            str(row.get("date") or "").strip()
+            for row in posts
+            if isinstance(row, dict) and str(row.get("date") or "").strip()
+        }
+        candidate = self.now.date()
+        for _ in range(31):
+            slot = candidate.isoformat()
+            if slot not in occupied:
+                try:
+                    if not self.github.open_article_prs(slot):
+                        return slot
+                except Exception:
+                    raise v5.core.ControllerError("IDEA_RUN_NOW_SLOT_LOOKUP_FAILED")
+            candidate += timedelta(days=1)
+        raise v5.core.ControllerError("IDEA_RUN_NOW_NO_FREE_SLOT")
+
+    def _reset_for_run_now(self, state: dict, publication_slot: str) -> None:
+        active = state.get("active_idea")
+        if not isinstance(active, dict):
+            raise v5.core.ControllerError("IDEA_RUN_NOW_ACTIVE_MISSING")
+        archive = state.setdefault("owner_cycle_archive", [])
+        archive.append({
+            "cycle": state.get("cycle"),
+            "status": state.get("status"),
+            "article": copy.deepcopy(state.get("article") or {}),
+            "long_video": copy.deepcopy(state.get("long_video") or {}),
+            "short": copy.deepcopy(state.get("short") or {}),
+            "archived_at": v5.core.utc_now(),
+            "reason": "owner_run_now_cycle_started",
+        })
+        state["owner_cycle_archive"] = archive[-20:]
+        active.update({"status": "claimed", "publication_slot": publication_slot, "claimed_at": v5.core.utc_now()})
+        stage = v5.v3._stage_template
+        state["article"] = stage()
+        state["article"].update({"attempts": 0, "deploy_attempts": 0})
+        state["image"] = stage()
+        state["long_video"] = stage()
+        state["short"] = stage()
+        state.pop("video", None)
+        state["status"] = "article_needed"
+        state["last_error"] = None
+        state["pending_dispatches"] = {}
+        state["processed_child_notifications"] = []
+        state.setdefault("history", []).append({
+            "at": v5.core.utc_now(),
+            "from": "complete",
+            "to": "article_needed",
+            "reason": "owner_run_now_cycle_started",
+            "details": {"idea_id": active.get("idea_id"), "publication_slot": publication_slot},
+        })
+        state["history"] = state["history"][-100:]
+
+    def _begin_run_now_cycle(self, state: dict) -> bool:
+        if self._run_now_active(state):
+            return True
+        if str(state.get("status") or "") != "complete":
+            return False
+        queue = state.get("idea_queue") if isinstance(state.get("idea_queue"), list) else []
+        idx = next((i for i, row in enumerate(queue) if isinstance(row, dict) and row.get("run_now") is True), None)
+        if idx is None:
+            return False
+        row = copy.deepcopy(queue.pop(idx))
+        state["idea_queue"] = queue
+        state["active_idea"] = row
+        posts = self.posts_on_main("main")
+        if not isinstance(posts, list):
+            raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
+        slot = self._first_free_publication_slot(posts)
+        self._reset_for_run_now(state, slot)
+        return True
+
+    def _run_now_article_phase(self, state: dict):
+        if not self._run_now_active(state):
+            return None
+        slot = self._run_now_slot(state)
+        if not slot:
+            raise v5.core.ControllerError("IDEA_RUN_NOW_SLOT_INVALID")
+        posts = self.posts_on_main("main")
+        targets = self._reconcile_existing_current_day_article(state, posts)
+        if len(targets) > 1:
+            v5.core.block(state, "article", "DUPLICATE_ARTICLE_DATE", f"{len(targets)} articles share owner publication slot {slot}")
+            return v5.core.Action("blocked", "duplicate owner publication-slot articles")
+        if targets:
+            return None
+        open_prs = self.github.open_article_prs(slot)
+        if len(open_prs) > 1:
+            v5.core.block(state, "article", "DUPLICATE_ARTICLE_PRS", f"{len(open_prs)} open article PRs share owner publication slot {slot}")
+            return v5.core.Action("blocked", "duplicate owner article PRs")
+        if len(open_prs) == 1:
+            return self._handle_open_article_pr(state, open_prs[0])
+        active_run = self.github.active_workflow_run(v5.core.ARTICLE_WORKFLOW)
+        if active_run:
+            state["article"]["run_id"] = active_run.get("id")
+            v5.core.transition(state, "article_generating", "owner run-now article workflow already active", publication_slot=slot)
+            return v5.core.Action("wait", "owner run-now article workflow active")
+        reconciled = self._reconcile_completed_article_run(state)
+        if reconciled is not None:
+            return reconciled
+        if not v5.core.retry_ready(state["article"], self.now):
+            retry_at = state["article"].get("next_retry_at")
+            v5.core.transition(state, "article_retry_wait", "owner run-now article retry backoff is active", retry_at=retry_at)
+            return v5.core.Action("wait", f"article retry scheduled for {retry_at}")
+        payload = idea_queue.article_dispatch_inputs(state, {"slot": slot})
+        self.github.dispatch(v5.core.ARTICLE_WORKFLOW, payload)
+        attempts = int(state["article"].get("attempts") or 0) + 1
+        state["article"].update({
+            "attempts": attempts,
+            "attempt_count": attempts,
+            "last_dispatch_at": v5.core.utc_now(),
+            "next_retry_at": None,
+            "status": "running",
+        })
+        v5.core.transition(state, "article_generating", "owner run-now article dispatched immediately", attempt=attempts, publication_slot=slot)
+        return v5.core.Action("dispatch_article", "owner run-now idea started immediately", payload)
 
     def _safe_newest_video_state(self) -> dict:
         getter = getattr(self.github, "newest_video_state", None)
@@ -388,8 +529,32 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         state["updated_at"] = v5.core.utc_now()
         return state
 
+    def _reconcile_existing_current_day_article(self, state: dict, posts=None):
+        slot = self._run_now_slot(state)
+        if not slot:
+            return super()._reconcile_existing_current_day_article(state, posts)
+        target = date.fromisoformat(slot)
+        original_now = self.now
+        try:
+            self.now = original_now.replace(year=target.year, month=target.month, day=target.day)
+            return super()._reconcile_existing_current_day_article(state, posts)
+        finally:
+            self.now = original_now
+
     def state(self):
-        state = super().state()
+        previous = self.github.load_controller_state() if getattr(self, "github", None) is not None else None
+        if self._run_now_active(previous) and isinstance(previous, dict) and previous.get("schema_version") == v5.STATE_SCHEMA_VERSION:
+            state = copy.deepcopy(previous)
+            for stage_name in ("article", "image", "long_video", "short"):
+                current = state.setdefault(stage_name, {})
+                for key, value in v5.v3._stage_template().items():
+                    current.setdefault(key, copy.deepcopy(value))
+            state.pop("video", None)
+        else:
+            state = super().state()
+        idea_queue.carry_forward(state, previous)
+        if isinstance(state, dict) and isinstance(state.get("article"), dict):
+            state["article"].pop("_tick_live_verified", None)
         try:
             self._reconcile_existing_current_day_article(state)
         except v5.core.ControllerError:
@@ -980,6 +1145,11 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             "run_attempt": str(os.environ.get("KESHER_CHILD_RUN_ATTEMPT") or "").strip(),
             "conclusion": str(os.environ.get("KESHER_CHILD_CONCLUSION") or "").strip().lower(),
             "source_slug": str(os.environ.get("KESHER_CHILD_SOURCE_SLUG") or "").strip(),
+            "source_sha": str(
+                os.environ.get("KESHER_CHILD_SOURCE_SHA")
+                or os.environ.get("KESHER_CHILD_SOURCE_CONTENT_SHA256")
+                or ""
+            ).strip(),
             "slot": str(os.environ.get("KESHER_CHILD_SLOT") or "").strip(),
         }
 
@@ -1007,7 +1177,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         raw_id = info["run_id"]
         conclusion = info["conclusion"]
 
-        if not workflow and not raw_id and not conclusion and not info["source_slug"] and not info["slot"]:
+        if not workflow and not raw_id and not conclusion and not info["source_slug"] and not info["slot"] and not info["source_sha"]:
             return True, ""
 
         if not workflow or workflow not in v5.v3.entry.ADMITTED_CHILD_WORKFLOW_NAMES:
@@ -1024,15 +1194,60 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if not conclusion or conclusion not in VALID_CHILD_CONCLUSIONS:
             return False, f"missing or invalid child conclusion: {conclusion or 'missing'}"
 
-        if info["slot"] and state.get("cycle") and info["slot"] != str(state.get("cycle")):
-            return False, f"stale child completion slot ignored: {info['slot']}"
+        if info["slot"] and state.get("cycle"):
+            allowed_slots = {str(state.get("cycle"))}
+            run_now_slot = self._run_now_slot(state)
+            if run_now_slot:
+                allowed_slots.add(run_now_slot)
+            if info["slot"] not in allowed_slots:
+                return False, f"stale child completion slot ignored: {info['slot']}"
 
         parsed_id = int(raw_id)
         stage_dict = state.get(stage_name) if isinstance(state.get(stage_name), dict) else {}
         if stage_dict.get("processed_run_id") is not None and v5.v3.entry._same_id(stage_dict.get("processed_run_id"), parsed_id):
             return False, f"stale child run_id already processed: {parsed_id}"
 
-        if info["source_slug"]:
+        # Media workflows strictly require authoritative exact source identity
+        if stage_name in {"long_video", "short"}:
+            if not info["source_slug"]:
+                return False, f"untrusted media notification: missing mandatory source_slug for {stage_name}"
+            current_slug = str((state.get("article") or {}).get("slug") or "").strip()
+            if not current_slug:
+                src = self._article_source(state)
+                if src and src.get("slug"):
+                    current_slug = str(src.get("slug")).strip()
+            backlog_sha = ""
+            if current_slug and info["source_slug"] != current_slug:
+                backlog_matches = [
+                    row for row in (state.get("backlog") or [])
+                    if isinstance(row, dict) and (str(row.get("slug") or "") == info["source_slug"] or str(row.get("exact_slug") or "") == info["source_slug"])
+                ]
+                if not backlog_matches:
+                    return False, f"child notification source_slug mismatch: {info['source_slug']} != {current_slug}"
+                b_row = backlog_matches[0]
+                backlog_sha = str(
+                    b_row.get("content_sha256")
+                    or (b_row.get("article") or {}).get("quality_content_sha256")
+                    or (b_row.get("article") or {}).get("content_sha256")
+                    or ""
+                ).strip()
+
+            current_sha = backlog_sha
+            if not current_sha:
+                current_sha = str((state.get("article") or {}).get("quality_content_sha256") or "").strip()
+            if not current_sha:
+                current_sha = str((state.get("article") or {}).get("content_sha256") or "").strip()
+            if not current_sha:
+                src = self._article_source(state)
+                if src and src.get("content_sha256"):
+                    current_sha = str(src.get("content_sha256")).strip()
+
+            if current_sha:
+                if not info.get("source_sha"):
+                    return False, f"untrusted media notification: missing mandatory source_sha for {stage_name}"
+                if info["source_sha"] != current_sha:
+                    return False, f"child notification source_sha mismatch: {info['source_sha']} != {current_sha}"
+        elif info["source_slug"]:
             current_slug = str((state.get("article") or {}).get("slug") or "").strip()
             if not current_slug:
                 src = self._article_source(state)
@@ -1125,6 +1340,8 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         }
 
     def _safe_save_controller_state(self, state: dict) -> None:
+        if isinstance(state, dict) and isinstance(state.get("article"), dict):
+            state["article"].pop("_tick_live_verified", None)
         if hasattr(self, "github") and self.github is not None and hasattr(self.github, "save_controller_state"):
             self.github.save_controller_state(state)
 
@@ -1157,7 +1374,8 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     )
         elif workflow == v5.LONG_VIDEO_WORKFLOW:
             op = (inputs or {}).get("operation")
-            if op == "full":
+            target_item_id = str((inputs or {}).get("target_item_id") or "").strip()
+            if op == "full" and not target_item_id:
                 long_state = active_state.get("long_video") if isinstance(active_state.get("long_video"), dict) else {}
                 count = int(long_state.get("attempt_count") or 0)
                 if count >= v5.v3.MAX_STAGE_ATTEMPTS:
@@ -1165,6 +1383,15 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                         f"VIDEO_ATTEMPTS_EXHAUSTED: Long Video exhausted {v5.v3.MAX_STAGE_ATTEMPTS} fresh generation attempts"
                     )
         elif workflow == v5.core.ARTICLE_WORKFLOW:
+            try:
+                if not isinstance(active_state.get("active_idea"), dict) and active_state.get("idea_queue"):
+                    idea_queue.claim_next(
+                        active_state, str((inputs or {}).get("slot") or active_state.get("cycle") or "").strip(),
+                        now_iso=v5.core.utc_now(),
+                    )
+                inputs = idea_queue.article_dispatch_inputs(active_state, inputs)
+            except idea_queue.IdeaQueueError as exc:
+                raise v5.core.ControllerError(str(exc)) from exc
             art_state = active_state.get("article") if isinstance(active_state.get("article"), dict) else {}
             count = int(art_state.get("attempts") or 0)
             if count >= v5.v3.MAX_STAGE_ATTEMPTS:
@@ -1205,6 +1432,13 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             and (inputs or {}) == (pending.get("inputs") or {})
         ):
             dispatch_sha = str(pending.get("dispatch_head_sha") or "").strip()
+            current_main_sha = ""
+            if hasattr(self.github, "main_sha"):
+                try:
+                    current_main_sha = str(self.github.main_sha() or "").strip()
+                except Exception:
+                    current_main_sha = ""
+
             exact_runs: list[dict] = []
             if dispatch_sha and hasattr(self.github, "workflow_runs"):
                 try:
@@ -1224,7 +1458,35 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 except Exception:
                     exact_runs = []
 
-            if len(exact_runs) > 1:
+            if len(exact_runs) == 1:
+                exact_run = exact_runs[0]
+                run_id = exact_run.get("id")
+                if run_id:
+                    pending["observed_active_run_id"] = run_id
+                run_status = str(exact_run.get("status") or "")
+                if run_status == "completed":
+                    conclusion = str(exact_run.get("conclusion") or "").lower()
+                    pending["conclusion"] = conclusion or "success"
+                    pending["status"] = "completed_failed" if conclusion and conclusion != "success" else "completed_success"
+                else:
+                    pending["status"] = "active"
+
+            if current_main_sha and dispatch_sha and current_main_sha != dispatch_sha:
+                active_state.setdefault("deploy_history", []).append({
+                    "workflow": workflow,
+                    "superseded_sha": dispatch_sha,
+                    "current_sha": current_main_sha,
+                    "superseded_at": v5.core.utc_now(),
+                    "superseded_status": pending.get("status"),
+                    "superseded_run_id": pending.get("observed_active_run_id") or active_state.get("article", {}).get("deploy_run_id"),
+                    "superseded_conclusion": pending.get("conclusion"),
+                    "reason": f"deploy for SHA {dispatch_sha} superseded by newer main SHA {current_main_sha}",
+                })
+                pending_map.pop(workflow, None)
+                self._safe_save_controller_state(active_state)
+                pending = None
+
+            if pending is not None and len(exact_runs) > 1:
                 pending["matching_run_ids"] = [run.get("id") for run in exact_runs if run.get("id")]
                 self._safe_save_controller_state(active_state)
                 raise _DuplicateDispatchSuppressed(
@@ -1232,7 +1494,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     f"{workflow} has multiple exact runs for dispatch SHA {dispatch_sha}; refusing blind retry",
                 )
 
-            if len(exact_runs) == 1:
+            if pending is not None and len(exact_runs) == 1:
                 exact_run = exact_runs[0]
                 run_id = exact_run.get("id")
                 if run_id:
@@ -1394,21 +1656,37 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         number = int(pr.get("number") or 0)
         api = getattr(self.github, "api", "")
         req = getattr(self.github, "request", None)
-        if not number or not api or not callable(req):
+        if not number:
+            raise v5.core.ControllerError("PR_REPAIR_HISTORY_UNREADABLE: missing or invalid PR number")
+        if not api or not callable(req):
             return 0, set()
-        try:
-            comments = req("GET", f"{api}/issues/{number}/comments?per_page=100", allow_404=True)
-        except Exception:
-            return 0, set()
-        if not isinstance(comments, list):
-            return 0, set()
+
         repair_marker = re.compile(r"<!-- kesher-article-repair attempt=(\d+) head=([a-f0-9]{40}) -->")
         max_attempt = 0
         repaired_heads: set[str] = set()
-        for comment in comments:
-            for match in repair_marker.finditer(str(comment.get("body") or "")):
-                max_attempt = max(max_attempt, int(match.group(1)))
-                repaired_heads.add(match.group(2).lower())
+
+        page = 1
+        while True:
+            try:
+                comments = req("GET", f"{api}/issues/{number}/comments?per_page=100&page={page}", allow_404=False)
+            except Exception as exc:
+                raise v5.core.ControllerError(
+                    f"PR_REPAIR_HISTORY_UNREADABLE: failed to fetch comments page {page} for PR #{number}: {exc}"
+                ) from exc
+            if not isinstance(comments, list):
+                raise v5.core.ControllerError(
+                    f"PR_REPAIR_HISTORY_UNREADABLE: comments page {page} for PR #{number} returned non-list"
+                )
+            for comment in comments:
+                if not isinstance(comment, dict):
+                    continue
+                for match in repair_marker.finditer(str(comment.get("body") or "")):
+                    max_attempt = max(max_attempt, int(match.group(1)))
+                    repaired_heads.add(match.group(2).lower())
+            if len(comments) < 100:
+                break
+            page += 1
+
         return max_attempt, repaired_heads
 
     def _pr_content_structure_errors(self, pr: dict[str, Any]) -> list[str]:
@@ -1417,14 +1695,24 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         try:
             head_posts = self.github.contents_json("src/data/posts.json", head_sha)
             base_posts = self.github.contents_json("src/data/posts.json", base_sha)
-        except Exception:
-            return []
+        except Exception as exc:
+            raise v5.core.ControllerError(
+                f"CONTENT_PREFLIGHT_CATALOG_UNREADABLE: failed to load src/data/posts.json for PR: {exc}"
+            ) from exc
         if not isinstance(head_posts, list) or not isinstance(base_posts, list):
-            return []
+            raise v5.core.ControllerError(
+                "CONTENT_PREFLIGHT_CATALOG_INVALID: head or base src/data/posts.json is not a list"
+            )
         base_ids = {v5.core.canonical_slug(row) for row in base_posts if isinstance(row, dict)}
         new_posts = [row for row in head_posts if isinstance(row, dict) and v5.core.canonical_slug(row) not in base_ids]
-        if len(new_posts) != 1:
-            return []
+        if len(new_posts) == 0:
+            raise v5.core.ControllerError(
+                f"CONTENT_PREFLIGHT_ZERO_NEW_POSTS: zero new article posts found in PR head compared to base"
+            )
+        if len(new_posts) > 1:
+            raise v5.core.ControllerError(
+                f"CONTENT_PREFLIGHT_MULTIPLE_NEW_POSTS: expected exactly 1 new post, found {len(new_posts)}"
+            )
         post = new_posts[0]
         raw_content = str(post.get("content") or "")
         errors = []
@@ -1442,7 +1730,32 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         number = int(pr.get("number") or 0)
         state.setdefault("article", {})["pr_number"] = number
         state["article"]["pr_url"] = pr.get("html_url")
-        head_sha = str((pr.get("head") or {}).get("sha") or "").lower()
+        head_sha = str((pr.get("head") or {}).get("sha") or "").strip().lower()
+        state["article"]["current_pr_head_sha"] = head_sha
+        if not state["article"].get("jules_head_sha"):
+            state["article"]["jules_head_sha"] = head_sha
+
+        normalized_head_sha = str(state["article"].get("normalized_head_sha") or "").strip().lower()
+        if normalized_head_sha and normalized_head_sha != head_sha:
+            drift_count = int(state["article"].get("normalization_drift_count") or 0) + 1
+            state["article"]["normalization_drift_count"] = drift_count
+            if drift_count > 3:
+                v5.core.block(
+                    state,
+                    "article",
+                    "ARTICLE_JULES_UNSTABLE_MUTATION",
+                    f"Article PR head mutated repeatedly ({drift_count} times) after trusted stages; branch quiescence failed",
+                )
+                state["article"]["status"] = "blocked"
+                return v5.core.Action("blocked", "Article PR head mutated repeatedly; branch quiescence failed")
+
+            state["article"]["normalization_status"] = "pending"
+            state["article"].pop("normalized_head_sha", None)
+            state["article"].pop("image_head_sha", None)
+            state["article"].pop("merge_candidate_sha", None)
+            if str((state.get("image") or {}).get("status") or "") in {"running", "complete"}:
+                state["image"]["status"] = "pending"
+                state["image"].pop("run_id", None)
 
         # 1. Cap auto-merge dispatches to budget (max 3 dispatches)
         merge_dispatches = int(state["article"].get("merge_dispatch_count") or 0)
@@ -1457,7 +1770,13 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return v5.core.Action("blocked", f"auto-merge dispatch budget exhausted for PR #{number}")
 
         # 2. Check if autonomous repairs on this PR are exhausted
-        max_attempt, repaired_heads = self._pr_repair_status(pr)
+        try:
+            max_attempt, repaired_heads = self._pr_repair_status(pr)
+        except v5.core.ControllerError as exc:
+            code = str(exc).split(":", 1)[0]
+            v5.core.block(state, "article", code, str(exc))
+            return v5.core.Action("blocked", str(exc))
+
         if max_attempt >= 2 and head_sha in repaired_heads:
             v5.core.block(
                 state,
@@ -1473,21 +1792,59 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return v5.core.Action("wait", f"Jules text repair attempt {max_attempt} in flight for PR #{number}")
 
         # 4. Normalization check
-        if self._child_notification_env()["workflow"] == "Kesher Normalize Article PR":
-            needs_normalization, _ = self.github.article_pr_normalization_required(pr)
-            if needs_normalization:
+        needs_normalization, slot = self.github.article_pr_normalization_required(pr)
+        if needs_normalization:
+            if (
+                self._child_notification_env()["workflow"] == "Kesher Normalize Article PR"
+                and str(self._child_notification_env().get("conclusion") or "").lower() != "success"
+            ):
                 v5.core.transition(
                     state,
                     "article_normalizing",
-                    "normalize child completed while PR still requires normalization; deferred to recovery heartbeat",
+                    "normalize child completed without success while PR still requires normalization; retrying normalization",
                 )
-                return v5.core.Action(
-                    "wait",
-                    "normalize child completed without clearing normalization; deferred to heartbeat",
-                )
+            active = self.github.active_normalizer_run(number)
+            if active:
+                state["article"].update({
+                    "normalization_status": "running",
+                    "normalization_run_id": active.get("id"),
+                    "normalization_slot": slot,
+                })
+                v5.core.transition(state, "article_normalizing", "trusted article normalization already active")
+                return v5.core.Action("wait", "article normalization active")
+            self.github.dispatch(
+                "normalize-article-pr.yml",
+                {"pr_number": str(number), "slot": slot},
+            )
+            state["article"].update({
+                "normalization_status": "running",
+                "normalization_slot": slot,
+                "normalization_dispatched_at": v5.core.utc_now(),
+            })
+            v5.core.transition(
+                state,
+                "article_normalizing",
+                "dirty or stale article PR dispatched to trusted normalizer",
+                pr_number=number,
+                slot=slot,
+            )
+            return v5.core.Action(
+                "dispatch_normalize",
+                "article PR must be normalized before image or Jules repair",
+                {"pr_number": str(number), "slot": slot},
+            )
+
+        state["article"]["normalization_status"] = "complete"
+        state["article"]["normalized_head_sha"] = head_sha
 
         # 5. Check content structure gates BEFORE consuming image attempts
-        content_errors = self._pr_content_structure_errors(pr)
+        try:
+            content_errors = self._pr_content_structure_errors(pr)
+        except v5.core.ControllerError as exc:
+            code = str(exc).split(":", 1)[0]
+            v5.core.block(state, "article", code, str(exc))
+            return v5.core.Action("blocked", str(exc))
+
         if content_errors:
             self._dispatch_auto_merge_v4(state)
             return v5.core.Action(
@@ -1497,9 +1854,184 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
         return super()._handle_open_article_pr(state, pr)
 
+    def _ensure_article_public_and_deployed(self, state: dict) -> tuple[bool, v5.core.Action | None]:
+        if isinstance(state, dict) and isinstance(state.get("article"), dict):
+            state["article"].pop("_tick_live_verified", None)
+
+        if getattr(self, "github", None) is None or getattr(self, "site", None) is None:
+            return True, None
+        posts = self.posts_on_main("main")
+        todays = self._reconcile_existing_current_day_article(state, posts)
+        if len(todays) > 1:
+            v5.core.block(state, "article", "DUPLICATE_ARTICLE_DATE",
+                          f"{len(todays)} articles share Israel date {self.now.date()}")
+            return False, v5.core.Action("blocked", "duplicate published articles")
+        if not todays:
+            return True, None
+
+        article = todays[0]
+        slug = v5.core.canonical_slug(article)
+        title = str(article.get("title") or "").strip()
+        url = f"{v5.core.SITE_URL}/blog/{slug}"
+        content_sha = str(state.get("article", {}).get("quality_content_sha256") or "").strip()
+        hero_path = str(article.get("image") or article.get("hero_image") or "").strip()
+        expected_hero_sha = str(
+            article.get("image_sha256")
+            or article.get("hero_image_sha256")
+            or (state.get("image", {}) or {}).get("image_sha256")
+            or (state.get("article", {}) or {}).get("image_sha256")
+            or ""
+        ).strip()
+        if not expected_hero_sha and hero_path:
+            local_hero = Path("public") / hero_path.lstrip("/")
+            if local_hero.is_file():
+                try:
+                    expected_hero_sha = hashlib.sha256(local_hero.read_bytes()).hexdigest()
+                except Exception:
+                    pass
+            elif hasattr(self.github, "file_content"):
+                try:
+                    content = self.github.file_content("main", f"public/{hero_path.lstrip('/')}")
+                    if isinstance(content, (bytes, str)):
+                        raw_b = content.encode("utf-8") if isinstance(content, str) else content
+                        expected_hero_sha = hashlib.sha256(raw_b).hexdigest()
+                except Exception:
+                    pass
+
+        # In-memory session tracking only: guaranteed fresh HTTP check on controller restart
+        if slug in self._in_memory_verified_articles:
+            return True, None
+
+        status, page = self.site.get(url)
+        is_pub = (
+            status == 200
+            and v5.core.article_is_public(
+                page,
+                title,
+                expected_slug=slug,
+                expected_content_sha256=content_sha,
+                expected_hero_path=hero_path or None,
+                expected_hero_sha256=expected_hero_sha or None,
+                hero_fetcher=self.site,
+            )
+        )
+        if is_pub:
+            self._in_memory_verified_articles.add(slug)
+            state.setdefault("article", {}).update({
+                "live": True,
+                "live_verified_at": v5.core.utc_now(),
+                "next_deploy_retry_at": None,
+            })
+            state.get("article", {}).pop("_tick_live_verified", None)
+            is_media_blocked = (
+                (state.get("last_error") or {}).get("stage") in {"long_video", "short", "image", "video", "media"}
+                or (state.get("long_video") or {}).get("status") in {"blocked", "exhausted"}
+                or (state.get("short") or {}).get("status") in {"blocked", "exhausted"}
+            )
+            if not is_media_blocked and state.get("status") in {"blocked", "article_deploying", "article_deploy_wait", "article_generating", "article_retry_wait"}:
+                v5.core.transition(state, "article_live", "HTTP 200 and expected title verified")
+            return True, None
+
+        state.setdefault("article", {})["live"] = False
+        if self.github.active_workflow_run(v5.core.DEPLOY_WORKFLOW):
+            v5.core.transition(state, "article_deploying", "deployment already active")
+            return False, v5.core.Action("wait", "deployment active")
+
+        current_main_sha = ""
+        if hasattr(self.github, "main_sha"):
+            try:
+                current_main_sha = str(self.github.main_sha() or "").strip()
+            except Exception:
+                current_main_sha = ""
+
+        pending_deploy = (state.get("pending_dispatches") or {}).get(v5.core.DEPLOY_WORKFLOW)
+        if isinstance(pending_deploy, dict) and pending_deploy.get("cycle") == state.get("cycle"):
+            dispatch_sha = str(pending_deploy.get("dispatch_head_sha") or "").strip()
+            if current_main_sha and dispatch_sha and current_main_sha != dispatch_sha:
+                state.setdefault("deploy_history", []).append({
+                    "workflow": v5.core.DEPLOY_WORKFLOW,
+                    "superseded_sha": dispatch_sha,
+                    "current_sha": current_main_sha,
+                    "superseded_at": v5.core.utc_now(),
+                    "superseded_status": pending_deploy.get("status"),
+                    "superseded_run_id": pending_deploy.get("observed_active_run_id") or state.get("article", {}).get("deploy_run_id"),
+                    "reason": f"deploy for SHA {dispatch_sha} superseded by newer main SHA {current_main_sha}",
+                })
+                state["pending_dispatches"].pop(v5.core.DEPLOY_WORKFLOW, None)
+                self._safe_save_controller_state(state)
+                pending_deploy = None
+            elif pending_deploy.get("status") in {"intent", "uncertain"}:
+                v5.core.transition(state, "article_deploying", "deployment dispatch intent pending")
+                return False, v5.core.Action("wait", "deployment dispatch pending reconciliation")
+            elif pending_deploy.get("status") == "dispatched":
+                intent_dt = v5.core.parse_timestamp(pending_deploy.get("dispatched_at") or pending_deploy.get("intent_at"))
+                if intent_dt is not None:
+                    elapsed = (self.now.astimezone(v5.core.timezone.utc) - intent_dt).total_seconds()
+                    if 0 <= elapsed < 180:
+                        v5.core.transition(state, "article_deploying", "deployment dispatched; waiting for run visibility")
+                        return False, v5.core.Action("wait", f"deployment dispatched {int(elapsed)}s ago; waiting for run visibility")
+
+        next_deploy = v5.core.parse_timestamp(state["article"].get("next_deploy_retry_at"))
+        if next_deploy and self.now.astimezone(v5.core.timezone.utc) < next_deploy:
+            v5.core.transition(state, "article_deploy_wait", "deploy retry backoff is active",
+                               retry_at=next_deploy.isoformat())
+            return False, v5.core.Action("wait", f"deploy retry scheduled for {next_deploy.isoformat()}")
+
+        current_attempts = int(state["article"].get("deploy_attempts") or 0)
+        if current_attempts >= v5.core.MAX_DEPLOY_ATTEMPTS or state["article"].get("deploy_status") == "exhausted":
+            state["article"]["deploy_status"] = "exhausted"
+            if state.get("status") != "blocked":
+                v5.core.block(state, "article", "DEPLOY_ATTEMPTS_EXHAUSTED",
+                              f"Article deployment exhausted maximum allowed attempts ({v5.core.MAX_DEPLOY_ATTEMPTS})")
+            return False, v5.core.Action("block", f"deploy attempts exhausted ({v5.core.MAX_DEPLOY_ATTEMPTS})")
+
+        attempts = current_attempts + 1
+        self.github.dispatch(v5.core.DEPLOY_WORKFLOW)
+        delay_index = max(1, attempts - v5.core.MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF + 1)
+        delay = 5 if attempts <= v5.core.MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF else v5.core.article_retry_backoff_minutes(delay_index)
+        state["article"].update({
+            "deploy_attempts": attempts,
+            "last_deploy_dispatch_at": v5.core.utc_now(),
+            "next_deploy_retry_at": (self.now.astimezone(v5.core.timezone.utc) + v5.core.timedelta(minutes=delay)).isoformat(),
+        })
+        v5.core.transition(
+            state,
+            "article_deploying",
+            "public article check failed; recovery deploy dispatched",
+            http_status=status,
+            attempt=attempts,
+        )
+        return False, v5.core.Action("dispatch_deploy", "article not public yet")
+
     def tick(self):
         state = self.state()
         self._active_state_ref = state
+        if idea_queue.finalize_if_complete(state, now_iso=v5.core.utc_now()):
+            self._safe_save_controller_state(state)
+        try:
+            idea_result = idea_queue.ingest_from_env(state, os.environ, now_iso=v5.core.utc_now())
+        except idea_queue.IdeaQueueError as exc:
+            v5.core.block(state, "controller", str(exc), str(exc))
+            self._safe_save_controller_state(state)
+            return state, v5.core.Action("blocked", str(exc))
+        if idea_result == "run_now_queued":
+            try:
+                started = self._begin_run_now_cycle(state)
+            except v5.core.ControllerError as exc:
+                v5.core.block(state, "controller", str(exc), str(exc))
+                self._safe_save_controller_state(state)
+                return state, v5.core.Action("blocked", str(exc))
+            if not started:
+                self._safe_save_controller_state(state)
+                return state, v5.core.Action("idea_queued", "owner run-now idea queued behind the active content cycle")
+            self._safe_save_controller_state(state)
+        elif idea_result in {"queued", "duplicate"}:
+            self._safe_save_controller_state(state)
+            return state, v5.core.Action(
+                "idea_queued",
+                "owner idea queued for the next controller-authorized article slot"
+                if idea_result == "queued" else "owner idea already exists; duplicate submission ignored",
+            )
         if v5.v3.entry.irrelevant_child_workflow_run():
             return state, v5.core.Action(
                 "wait",
@@ -1523,14 +2055,50 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     "wait",
                     f"duplicate child completion notification ignored: {notification_key}",
                 )
-            if v5.v3.entry.failed_child_waits_for_heartbeat():
+            env_for_heartbeat = {
+                "KESHER_TRIGGER_EVENT": info["trigger"],
+                "KESHER_CHILD_WORKFLOW": info["workflow"],
+                "KESHER_CHILD_CONCLUSION": info["conclusion"],
+            }
+            if v5.v3.entry.failed_child_waits_for_heartbeat(env_for_heartbeat):
                 if notification_key:
                     processed.append(notification_key)
                     state["processed_child_notifications"] = processed[-100:]
+                stage_mapping = self._workflow_stage_and_file(info["workflow"])
+                stage_name = stage_mapping[0] if stage_mapping else None
+                if stage_name and stage_name in state and isinstance(state[stage_name], dict):
+                    state[stage_name]["last_run_conclusion"] = info.get("conclusion")
+                    v5.v3.record_stage_failure(
+                        state,
+                        stage_name,
+                        f"{stage_name.upper()}_WORKFLOW_FAILED",
+                        f"child workflow {info['workflow']} completed with {info.get('conclusion')}",
+                        run_id=info.get("run_id"),
+                    )
+                stage_budget_exhausted = False
+                attempts = 0
+                if stage_name:
+                    stage_data = state.get(stage_name) or {}
+                    attempts = int(stage_data.get("attempt_count") or stage_data.get("attempts") or 0)
+                    if attempts >= v5.v3.MAX_STAGE_ATTEMPTS:
+                        stage_budget_exhausted = True
+                if stage_budget_exhausted:
+                    v5.core.block(
+                        state,
+                        stage_name or "controller",
+                        f"{stage_name.upper() if stage_name else 'CHILD'}_STAGE_BUDGET_EXHAUSTED",
+                        f"failed child {info['workflow']} exhausted stage budget ({attempts}/{v5.v3.MAX_STAGE_ATTEMPTS})",
+                    )
+                    self._safe_save_controller_state(state)
+                    return state, v5.core.Action(
+                        "blocked",
+                        f"failed child {info['workflow']} exhausted stage budget",
+                    )
                 self._safe_save_controller_state(state)
+                retry_at = (state.get(stage_name) or {}).get("next_retry_at") if stage_name else None
                 return state, v5.core.Action(
                     "wait",
-                    f"failed child {info['workflow']} deferred to recovery heartbeat",
+                    f"failed child {info['workflow']} reconciled; retry scheduled for {retry_at or 'next tick'}; deferred to recovery heartbeat",
                 )
 
         has_gh = hasattr(self, "github") and self.github is not None
@@ -1552,6 +2120,11 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         v5.core.GitHubClient.dispatch = guarded_core_dispatch  # type: ignore[method-assign]
 
         try:
+            run_now_action = self._run_now_article_phase(state)
+            if run_now_action is not None:
+                self._safe_save_controller_state(state)
+                return state, run_now_action
+
             blocker = self._quality_preflight(state)
             if blocker is not None:
                 return state, blocker
@@ -1577,6 +2150,8 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             self._safe_save_controller_state(state)
             state, action = super().tick()
             self._active_state_ref = state
+            if idea_queue.finalize_if_complete(state, now_iso=v5.core.utc_now()):
+                self._safe_save_controller_state(state)
             if info["workflow"] and notification_key:
                 processed = state.get("processed_child_notifications")
                 if not isinstance(processed, list):

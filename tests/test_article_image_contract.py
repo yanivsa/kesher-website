@@ -50,19 +50,20 @@ class ArticleImageContractTests(unittest.TestCase):
         self.cleanup = load('article-pr-controller')
         self.image = png()
         self.post = {
-            'id': 'new-article', 'title': 'שיחה משפחתית תומכת',
-            'content': '<p>' + 'מילה ' * 700 + '</p>' + '<h3>שאלה</h3>' * 5,
-            'image': '/images/generated/blog/new-article.png', 'imageAlt': VISUAL,
+            'id': 'couples-communication', 'title': 'תקשורת זוגית מעשית',
+            'content': '<p>תקשורת זוגית היא הבסיס לכל מערכת יחסים בריאה ומאושרת. ' + 'מילה ' * 700 + '</p>' + '<h3>שאלה</h3>' * 5,
+            'image': '/images/generated/blog/couples-communication.png', 'imageAlt': VISUAL,
+            'primaryKeyword': 'תקשורת זוגית',
         }
         self.base = [{'id': 'old-article'}]
         self.pr = {
-            'number': 1, 'state': 'open', 'draft': False, 'title': 'Publish Kesher article: new-article',
+            'number': 1, 'state': 'open', 'draft': False, 'title': 'Publish Kesher article: couples-communication',
             'base': {'sha': 'c' * 40, 'ref': 'main', 'repo': {'full_name': 'test/repo'}},
             'head': {'sha': HEAD, 'ref': 'article/new', 'repo': {'full_name': 'test/repo'}},
             'body': self.proof(),
         }
         self.files = [{'filename': p} for p in (
-            'src/data/posts.json', 'public/rss.xml', 'public/images/generated/blog/new-article.png')]
+            'src/data/posts.json', 'public/rss.xml', 'public/images/generated/blog/couples-communication.png')]
 
     def proof(self, provider='Local', head=HEAD, **overrides):
         result, chain, source = {
@@ -72,6 +73,7 @@ class ArticleImageContractTests(unittest.TestCase):
                         'Pexels': ('stock', 'gemini-1/gemini-2/pexels', 'https://pexels.com/photo/example'),
         }[provider]
         fields = {
+            'Primary Keyword': 'תקשורת זוגית',
             'Image Pipeline Version': '2', 'Image Provider': provider, 'Image Attempt Chain': chain,
             'Image Generation Result': result, 'Image Source URL': source,
             'Image SHA-256': hashlib.sha256(self.image).hexdigest(), 'Image Dimensions': '1200x675',
@@ -348,7 +350,7 @@ class ArticleImageContractTests(unittest.TestCase):
              patch.object(self.worker.v3, 'commit_files', return_value=NEXT_HEAD):
             self.assertTrue(self.worker.ensure_image('test/repo', self.pr, 'unused'))
         self.assertIn('Image Generation Result: local_fallback', bodies[-1])
-        self.assertIn('Image Article ID: new-article', bodies[-1])
+        self.assertIn('Image Article ID: ' + self.post['id'], bodies[-1])
         self.assertIn('Image Article SHA-256: ' + article_digest(head_posts[-1]), bodies[-1])
         self.post = head_posts[-1]
         self.assertIn('Image Evidence Head: ' + NEXT_HEAD, bodies[-1])

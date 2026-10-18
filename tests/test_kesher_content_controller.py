@@ -29,9 +29,13 @@ def article(slug: str = "today-article", title: str = "כותרת מאמר") -> 
 
 def public_html(post: dict) -> str:
     sha = controller._post_source_sha256(post)
+    slug = post.get("slug") or post.get("id") or "post"
     return (
-        f'<html><head><meta name="kesher:content-sha256" content="{sha}"></head>'
-        f'<body><h1>{post["title"]}</h1>{post.get("content") or ""}</body></html>'
+        f'<html><head><meta name="kesher:content-sha256" content="{sha}">'
+        f'<link rel="canonical" href="https://kesher.saharoni.com/blog/{slug}">'
+        f'<meta property="og:url" content="https://kesher.saharoni.com/blog/{slug}">'
+        f'<meta property="og:image" content="https://kesher.saharoni.com/images/generated/blog/{slug}.jpg">'
+        f'</head><body><h1>{post["title"]}</h1>{post.get("content") or ""}</body></html>'
     )
 
 

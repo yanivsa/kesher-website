@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "category": "couples",
+      "path": "public/images/fallback/couples/couples_communication_conversation.jpg",
+      "description": "צילום מציאותי של זוג בשיחה טבעית המדגישה תקשורת, קרבה והקשבה"
+    },
+    {
+      "category": "dating",
+      "path": "public/images/fallback/dating/dating_relationship_conversation.jpg",
+      "description": "צילום מציאותי של שיחה נינוחה בבית קפה המתאימה להיכרות ולבניית קשר"
+    },
+    {
+      "category": "singles",
+      "path": "public/images/fallback/singles/adulthood_singleness_reflection.jpg",
+      "description": "צילום מציאותי של אדם בהתבוננות שקטה בביתו המתאים לנושא רווקות ובחירות חיים"
+    },
+    {
+      "category": "premarital",
+      "path": "public/images/fallback/premarital/premarital_preparation_planning.jpg",
+      "description": "צילום מציאותי של זוג צעיר בשיחה ותכנון משותף לקראת חיים זוגיים"
+    },
+    {
+      "category": "relocation",
+      "path": "public/images/fallback/relocation/family_relocation_transition.jpg",
+      "description": "צילום מציאותי של זוג בבית חדש בתקופת מעבר, הסתגלות ורילוקיישן"
+    },
+    {
+      "category": "adhd",
+      "path": "public/images/fallback/adhd/adhd_morning_routine_support.jpg",
+      "description": "צילום מציאותי של הורה וילד סביב שגרת בוקר, קשב והתארגנות"
+    },
+    {
+      "category": "parenting",
+      "path": "public/images/fallback/parenting/parenting_emotional_support_reading.jpg",
+      "description": "צילום מציאותי של הורה וילד באינטראקציה ביתית רגועה ותומכת"
+    },
+    {
+      "category": "gifted",
+      "path": "public/images/fallback/gifted/gifted_child_learning_focus.jpg",
+      "description": "צילום מציאותי של ילד בסביבה לימודית יוצרת עם תמיכה רגישה של מבוגר"
+    },
+    {
+      "category": "dating",
+      "path": "public/images/fallback/dating/dating_relationship_park_walk.jpg",
+      "description": "צילום מציאותי של זוג בהליכה נינוחה בפארק בשעות אחר הצהריים"
+    },
+    {
+      "category": "singles",
+      "path": "public/images/fallback/singles/adulthood_morning_coffee.jpg",
+      "description": "צילום מציאותי של הכנת קפה בבוקר במטבח מואר המתאים לנושא שגרה ורווקות"
+    }
+  ]
+}
