@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1449,12 +1449,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T11:06:28.918083+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-18T11:06:30.150957+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2160,9 +2154,19 @@
       "from": "long_video_watchdog_wait",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-18T22:39:17.913118+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 2
+      }
     }
   ],
-  "updated_at": "2026-10-18T22:39:12.243131+00:00",
+  "updated_at": "2026-10-18T22:39:17.913128+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2180,8 +2184,8 @@
     "image_path": "/images/generated/blog/pacifier-weaning.jpg"
   },
   "long_video": {
-    "attempt_count": 2,
-    "status": "rejected",
+    "attempt_count": 3,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39172631354,
@@ -2191,7 +2195,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-18T22:26:19.109870+00:00",
+    "last_dispatch_at": "2026-10-18T22:39:17.913105+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
     "item_id": "video-20261019-012752-ecf4f1b219-a2",
@@ -2211,7 +2215,7 @@
       "recovery_count": 0,
       "last_recovery_at": null
     },
-    "resume_dispatches": 1
+    "resume_dispatches": 2
   },
   "short": {
     "attempt_count": 0,
@@ -2248,9 +2252,10 @@
         "target_item_id": "video-20261019-012752-ecf4f1b219-a2"
       },
       "intent_at": "2026-10-18T22:38:47.325442+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39172631354,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39173173727,
+      "dispatched_at": "2026-10-18T22:38:47.325442+00:00"
     }
   },
   "last_child_notification": {
@@ -2595,39 +2600,5 @@
       "archived_at": "2026-10-18T12:46:49.402408+00:00",
       "reason": "owner_run_now_cycle_started"
     }
-  ],
-  "video": {
-    "attempt_count": 2,
-    "status": "rejected",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": 39172631354,
-    "processed_run_id": 39172631354,
-    "provider_id": "44341586-b6fa-4c04-9c5c-11c687cc60ed",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-18T22:26:19.109870+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261019-012752-ecf4f1b219-a2",
-    "source_slug": "pacifier-weaning",
-    "source_content_sha256": "ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a",
-    "content_sha256": "ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a",
-    "source_id": "8c6dd34f-b900-4bf8-af0b-42f81c8c797c",
-    "task_id": "44341586-b6fa-4c04-9c5c-11c687cc60ed",
-    "artifact_id": "44341586-b6fa-4c04-9c5c-11c687cc60ed",
-    "provider_status": "pending",
-    "verified": false,
-    "watchdog": {
-      "identity": "long_video:pacifier-weaning:ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a:video-20261019-012752-ecf4f1b219-a2",
-      "hard_started_at": "2026-10-18T22:28:00.998788+00:00",
-      "last_progress_at": "2026-10-18T22:30:45.148287+00:00",
-      "last_fingerprint": "fe79b93085225273efcfd0bdefbf181315a015123eb74105bafc88454f52a0d7",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    },
-    "resume_dispatches": 1
-  }
+  ]
 }
