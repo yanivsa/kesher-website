@@ -2398,7 +2398,8 @@
   "processed_child_notifications": [
     "Kesher Normalize Article PR:39074372992",
     "Kesher Trusted Article Image:39074482466",
-    "Auto-merge Kesher article PRs:39074603621"
+    "Auto-merge Kesher article PRs:39074603621",
+    "Deploy to Cloudflare Pages:39097912612"
   ],
   "deploy_history": [
     {
