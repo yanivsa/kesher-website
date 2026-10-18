@@ -1,7 +1,8 @@
 import posts from './posts.json';
 import recentPosts from './postsRecent.json';
+import p1Posts from './p1Posts';
 
-const allPosts = [...recentPosts, ...posts] as typeof posts;
+const allPosts = [...p1Posts, ...recentPosts, ...posts] as typeof posts;
 
 const wordCount = (html: string) =>
   html.replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length;
