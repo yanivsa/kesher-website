@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1429,12 +1429,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-17T20:51:05.250838+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-17T20:51:05.972313+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2298,9 +2292,19 @@
       "from": "article_deploying",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-18T04:47:47.258194+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-18T04:47:39.458292+00:00",
+  "updated_at": "2026-10-18T04:47:47.258201+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2318,8 +2322,8 @@
     "image_path": "/images/generated/blog/why-is-it-so-hard-to-find-a-relationship.jpg"
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2328,7 +2332,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-10-18T04:47:47.258182+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
@@ -2376,9 +2382,10 @@
         "target_content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008"
       },
       "intent_at": "2026-10-18T04:47:01.807375+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39098327293,
+      "dispatched_at": "2026-10-18T04:47:01.807375+00:00"
     }
   },
   "last_child_notification": {
@@ -2403,18 +2410,5 @@
       "superseded_run_id": 39077891986,
       "reason": "deploy for SHA a05990f3152f3b579712510114f5ab907dfe0fcd superseded by newer main SHA ec57c444f33fd9a15d9d228cdb083e93b745f03d"
     }
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true
-  }
+  ]
 }
