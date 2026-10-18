@@ -2414,6 +2414,20 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-17T21:35:44.239366+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-18",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "why-is-it-so-hard-to-find-a-relationship",
+        "target_content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
+        "target_item_id": "video-20261018-082526-b7925c4cbe-a2"
+      },
+      "intent_at": "2026-10-18T06:00:44.268632+00:00",
+      "status": "intent",
+      "previous_run_id": 39100391697,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2449,13 +2463,13 @@
       "slug": "why-is-it-so-hard-to-find-a-relationship",
       "content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
       "stage": "long_video",
-      "strike_count": 0,
-      "last_check_token": "2026-10-18T08",
+      "strike_count": 1,
+      "last_check_token": "2026-10-18T09",
       "last_fingerprint": "8488319d6b6d19f1583c412c07ab2dcda6211f50062b0e7039626f2e9a488ae8",
       "last_controller_action_token": null,
       "controller_action_observed": false,
-      "last_observed_at": "2026-10-18T05:28:53.006400+00:00",
-      "last_action": "progress_reset",
+      "last_observed_at": "2026-10-18T06:00:44.268632+00:00",
+      "last_action": "observe_controller",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-10-18T05:15:47.762716+00:00"
     }
