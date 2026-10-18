@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1429,16 +1429,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-17T22:17:48.349045+00:00",
-      "from": "article_normalizing",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 1137
-      }
-    },
-    {
       "at": "2026-10-17T22:19:32.549349+00:00",
       "from": "article_image_running",
       "to": "article_pr_open",
@@ -2324,9 +2314,21 @@
         "item_id": "video-20261018-082526-b7925c4cbe-a2",
         "task_id": "7f8f596c-4dd9-4092-9859-3b5c838eed38"
       }
+    },
+    {
+      "at": "2026-10-18T06:01:07.054811+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_recovery",
+      "reason": "long-form provider stalled; resumed the same durable provider identity",
+      "details": {
+        "item_id": "video-20261018-082526-b7925c4cbe-a2",
+        "task_id": "7f8f596c-4dd9-4092-9859-3b5c838eed38",
+        "slug": "why-is-it-so-hard-to-find-a-relationship",
+        "content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008"
+      }
     }
   ],
-  "updated_at": "2026-10-18T05:46:13.883272+00:00",
+  "updated_at": "2026-10-18T06:01:07.054818+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2345,7 +2347,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "generating",
+    "status": "running",
     "last_error": null,
     "next_retry_at": "2026-10-18T05:33:53.006400+00:00",
     "run_id": 39100391697,
@@ -2355,7 +2357,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-18T05:23:41.849067+00:00",
+    "last_dispatch_at": "2026-10-18T06:01:07.054793+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
     "item_id": "video-20261018-082526-b7925c4cbe-a2",
@@ -2372,11 +2374,11 @@
       "hard_started_at": "2026-10-18T05:25:34.030531+00:00",
       "last_progress_at": "2026-10-18T05:28:53.006400+00:00",
       "last_fingerprint": "76c3fac6ae136c6662e4bad3f337037d10b82686456e225a2689edee7f515be1",
-      "recovery_count": 0,
-      "last_recovery_at": null
+      "recovery_count": 1,
+      "last_recovery_at": "2026-10-18T06:00:44.268632+00:00"
     },
     "pending_resume_ready": false,
-    "resume_dispatches": 2
+    "resume_dispatches": 3
   },
   "short": {
     "attempt_count": 0,
@@ -2425,9 +2427,10 @@
         "target_item_id": "video-20261018-082526-b7925c4cbe-a2"
       },
       "intent_at": "2026-10-18T06:00:44.268632+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39100391697,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39102541481,
+      "dispatched_at": "2026-10-18T06:00:44.268632+00:00"
     }
   },
   "last_child_notification": {
@@ -2466,12 +2469,12 @@
       "strike_count": 1,
       "last_check_token": "2026-10-18T09",
       "last_fingerprint": "8488319d6b6d19f1583c412c07ab2dcda6211f50062b0e7039626f2e9a488ae8",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
+      "last_controller_action_token": "recovery:1:2026-10-18T06:00:44.268632+00:00",
+      "controller_action_observed": true,
       "last_observed_at": "2026-10-18T06:00:44.268632+00:00",
-      "last_action": "observe_controller",
+      "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-18T05:15:47.762716+00:00"
+      "last_controller_action_at": "2026-10-18T06:00:44.268632+00:00"
     }
   }
 }
