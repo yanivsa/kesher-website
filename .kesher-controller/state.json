@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "article_normalizing",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1396,12 +1396,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T14:31:42.185058+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-19T14:31:43.447573+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2030,12 +2024,22 @@
         "pr_number": 1156,
         "slot": "2026-10-19"
       }
+    },
+    {
+      "at": "2026-10-19T18:34:39.676846+00:00",
+      "from": "article_normalizing",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 1,
+        "pr_number": 1156
+      }
     }
   ],
-  "updated_at": "2026-10-19T18:32:56.818512+00:00",
+  "updated_at": "2026-10-19T18:34:39.676854+00:00",
   "image": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2043,7 +2047,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-10-19T18:34:39.676820+00:00"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2089,9 +2094,10 @@
         "pr_number": "1156"
       },
       "intent_at": "2026-10-19T18:34:11.887383+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39303644748,
+      "dispatched_at": "2026-10-19T18:34:11.887383+00:00"
     }
   },
   "last_child_notification": {
