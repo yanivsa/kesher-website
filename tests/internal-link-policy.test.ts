@@ -38,6 +38,41 @@ describe('internal-link policy', () => {
     expect(errors.some((value: string) => value.includes('duplicate target'))).toBe(true);
   });
 
+  it('requires one placement instruction with a natural anchor and contextual cue for every target', () => {
+    const posts = [{ id: 'alpha' }, { id: 'beta' }, { id: 'gamma' }];
+    const plan = [
+      {
+        source: 'alpha',
+        targets: ['beta', 'gamma'],
+        placements: [
+          {
+            target: 'beta',
+            anchor: 'קישור טבעי',
+            placementCue: 'בפסקה שמסבירה את הנקודה שאליה הקישור מרחיב',
+          },
+          {
+            target: 'beta',
+            anchor: 'כפילות',
+            placementCue: 'הוראה כפולה שנועדה להיבדק על ידי הוולידציה',
+          },
+          {
+            target: 'not-planned',
+            anchor: '',
+            placementCue: 'קצר',
+          },
+        ],
+      },
+    ];
+
+    const errors = validateInternalLinkPlan(posts, plan);
+
+    expect(errors.some((value: string) => value.includes('duplicate placement metadata'))).toBe(true);
+    expect(errors.some((value: string) => value.includes('placement target is not planned'))).toBe(true);
+    expect(errors.some((value: string) => value.includes('placement missing anchor'))).toBe(true);
+    expect(errors.some((value: string) => value.includes('placement missing cue'))).toBe(true);
+    expect(errors.some((value: string) => value.includes('missing placement metadata') && value.includes('gamma'))).toBe(true);
+  });
+
   it('reports present and missing planned links without treating missing coverage as invalid', () => {
     const posts = [
       { id: 'alpha', content: '<p>See <a href="/blog/beta">beta</a></p>' },
