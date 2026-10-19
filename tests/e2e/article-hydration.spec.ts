@@ -1,8 +1,11 @@
 import { expect, test } from '@playwright/test';
-import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 
-const posts = JSON.parse(readFileSync(new URL('../../src/data/posts.json', import.meta.url), 'utf8')) as
-  Array<{ id: string; title: string; excerpt: string; content: string }>;
+const require = createRequire(import.meta.url);
+const { loadPosts } = require('../../scripts/load-posts.cjs') as {
+  loadPosts: () => Array<{ id: string; title: string; excerpt: string; content: string }>;
+};
+const publishedPosts = loadPosts();
 
 test('prerendered articles load exact content without React recovery errors', async ({ page }) => {
   const errors: string[] = [];
@@ -11,7 +14,7 @@ test('prerendered articles load exact content without React recovery errors', as
   await page.route('https://assets.calendly.com/**', (route) => route.fulfill({ status: 200, body: '' }));
 
   for (const id of ['sleep-needs-10-year-old', 'child-after-school-restraint-collapse']) {
-    const post = posts.find((candidate) => candidate.id === id)!;
+    const post = publishedPosts.find((candidate) => candidate.id === id)!;
     await page.goto(`/blog/${id}`, { waitUntil: 'networkidle' });
     await expect(page.locator('h1')).toHaveText(post.title);
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', post.excerpt);
