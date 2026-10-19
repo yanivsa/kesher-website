@@ -19,7 +19,7 @@
     "deploy_attempts": 1,
     "last_dispatch_at": "2026-10-19T10:46:01.827546+00:00",
     "deploy_run_id": 39244178797,
-    "next_deploy_retry_at": null,
+    "next_deploy_retry_at": "2026-10-19T11:33:49.931463+00:00",
     "last_run_conclusion": "failure",
     "last_worker_result": {
       "schema_version": 1,
