@@ -72,11 +72,11 @@
     "quality_content_sha256": "6aebd5cab87293be2b78cc848c4c9a8a4d3aab4ae5248f38e893183215451bab",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-19T11:40:49.507380+00:00",
+    "quality_checked_at": "2026-10-19T11:42:19.816368+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-19T11:22:35.545680+00:00",
-    "live_verified_at": "2026-10-19T11:41:17.640043+00:00"
+    "live_verified_at": "2026-10-19T11:42:21.011932+00:00"
   },
   "backlog": [
     {
@@ -2267,7 +2267,7 @@
     "attempt_count": 1,
     "status": "rejected",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-19T11:47:15.275297+00:00",
     "run_id": 39245026817,
     "processed_run_id": null,
     "provider_id": null,
@@ -2303,27 +2303,12 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-19",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "toddler-bed-transition",
-        "target_content_sha256": "6aebd5cab87293be2b78cc848c4c9a8a4d3aab4ae5248f38e893183215451bab"
-      },
-      "intent_at": "2026-10-19T11:28:49.931463+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 39245026817,
-      "dispatched_at": "2026-10-19T11:28:49.931463+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 39244178797,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 39245026817,
     "conclusion": "success",
-    "source_slug": null,
+    "source_slug": "toddler-bed-transition",
     "slot": "2026-10-19"
   },
   "processed_child_notifications": [
