@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39132616244,
@@ -76,7 +76,7 @@
     "last_deploy_dispatch_at": "2026-10-18T21:58:48.072711+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39170192374,
-    "live_verified_at": "2026-10-19T01:52:04.194949+00:00"
+    "live_verified_at": "2026-10-19T01:52:20.903471+00:00"
   },
   "backlog": [
     {
@@ -1449,24 +1449,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T11:31:12.046593+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-18T11:35:57.257535+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-18T11:35:57.768381+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-18T11:35:58.416811+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2192,9 +2174,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-10-19T01:52:20.903514+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-19T01:52:21.480017+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-19T01:52:22.006266+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-19T01:31:08.098064+00:00",
+  "updated_at": "2026-10-19T01:52:22.006283+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2268,19 +2268,19 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39186679163,
     "processed_run_id": null,
-    "provider_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0",
+    "provider_id": "28485644-9985-4606-8559-4c1d6d935431",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-19T01:26:06.490570+00:00",
-    "artifact_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0",
-    "source_id": "da9bbdbe-8255-4c02-ab5b-b8a584da2c9e",
-    "adopted_from_long_item_id": "video-20261019-014058-ecf4f1b219-a3",
+    "artifact_id": "28485644-9985-4606-8559-4c1d6d935431",
+    "source_id": "8776a6c4-8937-423e-a1eb-9e24be5b19a5",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:pacifier-weaning:ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a:video-20261019-042837-ecf4f1b219",
       "hard_started_at": "2026-10-19T01:28:53.098613+00:00",
@@ -2288,7 +2288,123 @@
       "last_fingerprint": "0dfaa138b8de3dc86d86e94f1aa006ee8d3afc665f6954990d497189dd1a7047",
       "recovery_count": 0,
       "last_recovery_at": null
-    }
+    },
+    "source": {
+      "id": "pacifier-weaning",
+      "slug": "pacifier-weaning",
+      "title": "גמילה ממוצץ בגיל שנתיים או שלוש: איך נפרדים בלי מאבקים מיותרים",
+      "date": "2026-10-19",
+      "category": "הדרכת הורים",
+      "subcategory": "",
+      "excerpt": "תהליך גמילה ממוצץ מלווה לעיתים קרובות בחששות מצד הורים, שדואגים מההשפעה על שנת הלילה ומיכולת ההרגעה של הילד. מתי נכון להתחיל, מה ההבדל בין פרידה ביום ללילה, ואיך אפשר לעשות את זה בהדרגה, מתוך הבנה אמיתית ונוכחות יציבה?",
+      "canonical_url": "https://kesher.saharoni.com/blog/pacifier-weaning",
+      "content_sha256": "ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a",
+      "video_title": "גמילה ממוצץ בגיל שנתיים או שלוש: איך נפרדים בלי מאבקים מיותרים",
+      "short_title": "גמילה ממוצץ בגיל שנתיים או שלוש: איך נפרדים בלי מאבקים מיותרים",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "גמילה ממוצץ בגיל שנתיים או שלוש: איך נפרדים בלי מאבקים מיותרים",
+        "description": "תהליך גמילה ממוצץ מלווה לעיתים קרובות בחששות מצד הורים, שדואגים מההשפעה על שנת הלילה ומיכולת ההרגעה של הילד. מתי נכון להתחיל, מה ההבדל בין פרידה ביום ללילה, ואיך אפשר לעשות את זה בהדרגה, מתוך הבנה אמיתית ונוכחות יציבה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/pacifier-weaning\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: גמילה ממוצץ בגיל שנתיים או שלוש: איך נפרדים בלי מאבקים מיותרים",
+        "description": "תהליך גמילה ממוצץ מלווה לעיתים קרובות בחששות מצד הורים, שדואגים מההשפעה על שנת הלילה ומיכולת ההרגעה של הילד. מתי נכון להתחיל, מה ההבדל בין פרידה ביום ללילה, ואיך אפשר לעשות את זה בהדרגה, מתוך הבנה אמיתית ונוכחות יציבה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/pacifier-weaning\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "28485644-9985-4606-8559-4c1d6d935431",
+    "raw_sha256": "b9b37e5820043fbfc5e6435bf69a53abce5600daa2d92a0058003cf036a3b9e1",
+    "final_sha256": "ecef0c7b17aa1a0ab15a94565da7adb6bdd56a1b470437dc83a029207a153bd3",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 75.8,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 75.8,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "da9bbdbe-8255-4c02-ab5b-b8a584da2c9e",
+      "task_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0",
+      "artifact_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0",
+      "raw_sha256": "2c00ab4b345f0233feea3a8a214cf30da952669797dec6d0ca23ea1b4465ffc4"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 75.8,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "b9b37e5820043fbfc5e6435bf69a53abce5600daa2d92a0058003cf036a3b9e1",
+      "final_sha256": "ecef0c7b17aa1a0ab15a94565da7adb6bdd56a1b470437dc83a029207a153bd3",
+      "raw_audio_sha256": "cafb7455e863903031c64b10091f507d5e298b40da0171f2bcf561a59dc59f2c",
+      "final_audio_sha256": "cafb7455e863903031c64b10091f507d5e298b40da0171f2bcf561a59dc59f2c",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 75.859592
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 75.859592
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "ecef0c7b17aa1a0ab15a94565da7adb6bdd56a1b470437dc83a029207a153bd3",
+      "raw_sha256": "b9b37e5820043fbfc5e6435bf69a53abce5600daa2d92a0058003cf036a3b9e1",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "e9dae1a51dc0c94eabdd5ac42f96a38ab87c4e1caf9971e0a62369be4b77f80a",
+      "source_duration_seconds": 75.8,
+      "final_duration_seconds": 75.8,
+      "start_seconds": 72.8,
+      "end_seconds": 75.8,
+      "audio_source_sha256": "b9b37e5820043fbfc5e6435bf69a53abce5600daa2d92a0058003cf036a3b9e1"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261019-042837-ecf4f1b219",
+    "type": "article_short",
+    "youtube_id": "AuPHjN8hZSw",
+    "youtube_url": "https://youtu.be/AuPHjN8hZSw",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "e9dae1a51dc0c94eabdd5ac42f96a38ab87c4e1caf9971e0a62369be4b77f80a",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
