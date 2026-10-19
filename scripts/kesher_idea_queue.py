@@ -114,8 +114,16 @@ def ingest_from_env(
         if str(row.get("fingerprint") or "") == fp:
             return "duplicate"
         raise IdeaQueueError("IDEA_ID_CONFLICT")
-    if not run_now and len(state["idea_queue"]) >= MAX_QUEUE:
+
+    queue_full = len(state["idea_queue"]) >= MAX_QUEUE
+    idle_run_now = (
+        run_now
+        and str(state.get("status") or "") == "complete"
+        and not isinstance(state.get("active_idea"), dict)
+    )
+    if queue_full and not idle_run_now:
         raise IdeaQueueError("IDEA_QUEUE_FULL")
+
     record = {
         "idea_id": idea_id,
         "fingerprint": fp,
