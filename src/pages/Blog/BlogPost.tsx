@@ -123,6 +123,20 @@ const BlogPost: React.FC = () => {
   const ctaCopy = articleCtaCopy(post);
   const landingTarget = getLandingTargetForPost(post);
   const displayCategory = post.category === 'הנחיית הורים' ? 'הדרכת הורים' : post.category;
+  const postSubcategory = 'subcategory' in post && typeof post.subcategory === 'string' ? post.subcategory : '';
+  const giftedPillarId = 'how-to-identify-a-gifted-child-parents-guide';
+  const isGiftedArticle = /מחונ/.test(`${post.title} ${postSubcategory}`);
+  const configuredRelatedPostIds = 'relatedPostIds' in post && Array.isArray(post.relatedPostIds)
+    ? post.relatedPostIds.filter((relatedId): relatedId is string => typeof relatedId === 'string')
+    : [];
+  const relatedPostIds = Array.from(new Set([
+    ...configuredRelatedPostIds,
+    ...(isGiftedArticle && post.id !== giftedPillarId ? [giftedPillarId] : []),
+  ])).filter((relatedId) => relatedId !== post.id);
+  const relatedPosts = relatedPostIds.flatMap((relatedId) => {
+    const relatedPost = posts.find((candidate) => candidate.id === relatedId);
+    return relatedPost ? [relatedPost] : [];
+  });
   const imageMeta = post as typeof post & {
     imageProvider?: string;
     imageSourceUrl?: string;
@@ -196,6 +210,20 @@ const BlogPost: React.FC = () => {
             </>
           )}
           <div className={styles.content} data-kesher-article-body dangerouslySetInnerHTML={{ __html: safeContent }} />
+          {relatedPosts.length > 0 && (
+            <section className={styles.evidenceSection} aria-label="מאמרים נוספים בנושא">
+              <h3 className={styles.evidenceHeading}>להעמקה בנושא</h3>
+              <ul className={styles.evidenceList}>
+                {relatedPosts.map((relatedPost) => (
+                  <li key={relatedPost.id} className={styles.evidenceItem}>
+                    <Link to={`/blog/${relatedPost.id}`} className={styles.evidenceLink}>
+                      {relatedPost.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
           {'expertInsight' in post && typeof post.expertInsight === 'string' && post.expertInsight.trim() && (
             <aside className={styles.expertInsight} aria-label="תובנת מומחה מאת שירה סהרוני">
               <div className={styles.expertInsightHeader}>תובנת מומחה — שירה סהרוני</div>
