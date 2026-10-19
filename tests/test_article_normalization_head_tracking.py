@@ -134,6 +134,74 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
         self.assertNotIn("run_id", state["image"])
         self.assertEqual(state["status"], "article_normalizing")
 
+    def test_stabilized_controller_counts_distinct_drift_heads_not_polls(self) -> None:
+        github = mock.MagicMock()
+        site = mock.MagicMock()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            now=datetime(2026, 10, 20, 2, 0, tzinfo=ISRAEL_TZ),
+            github=github,
+            site=site,
+        )
+        stable_head = "2" * 40
+        state = {
+            "cycle": "2026-10-19",
+            "status": "blocked",
+            "schema_version": 5,
+            "article": {
+                "pr_number": 1156,
+                "status": "blocked",
+                "current_pr_head_sha": stable_head,
+                "normalized_head_sha": "1" * 40,
+                "normalization_status": "complete",
+                "normalization_drift_count": 62,
+            },
+            "image": {"status": "running"},
+            "last_error": {"code": "ARTICLE_JULES_UNSTABLE_MUTATION"},
+        }
+        pr = {"number": 1156, "html_url": "https://github.com/yanivsa/kesher-website/pull/1156", "head": {"sha": stable_head}}
+        github.request.side_effect = lambda method, url, **kwargs: [] if "/issues/1156/comments" in url else {"parents": [{"sha": "3" * 40}]}
+        github.article_pr_normalization_required.return_value = (True, "2026-10-19")
+        github.active_normalizer_run.return_value = None
+
+        action = controller._handle_open_article_pr(state, pr)
+
+        self.assertEqual(action.kind, "dispatch_normalize")
+        self.assertEqual(state["article"]["normalization_drift_count"], 1)
+        self.assertEqual(state["article"]["last_normalization_drift_head_sha"], stable_head)
+        self.assertEqual(state["status"], "article_normalizing")
+        self.assertIsNone(state.get("last_error"))
+
+    def test_stabilized_controller_blocks_after_four_distinct_drift_heads(self) -> None:
+        github = mock.MagicMock()
+        site = mock.MagicMock()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            now=datetime(2026, 10, 20, 2, 0, tzinfo=ISRAEL_TZ),
+            github=github,
+            site=site,
+        )
+        state = {
+            "cycle": "2026-10-19",
+            "status": "article_pr_open",
+            "schema_version": 5,
+            "article": {
+                "pr_number": 1156,
+                "current_pr_head_sha": "3" * 40,
+                "normalized_head_sha": "1" * 40,
+                "normalization_status": "complete",
+                "normalization_drift_count": 3,
+                "last_normalization_drift_head_sha": "3" * 40,
+            },
+            "image": {"status": "pending"},
+        }
+        pr = {"number": 1156, "html_url": "https://github.com/yanivsa/kesher-website/pull/1156", "head": {"sha": "4" * 40}}
+        github.request.return_value = {"parents": [{"sha": "5" * 40}]}
+
+        action = controller._handle_open_article_pr(state, pr)
+
+        self.assertEqual(action.kind, "blocked")
+        self.assertEqual(state["article"]["normalization_drift_count"], 4)
+        self.assertEqual(state["article"]["status"], "blocked")
+
     def test_repeated_pr_head_drift_blocks_fail_closed_to_prevent_infinite_loop(self) -> None:
         github = mock.MagicMock()
         site = mock.MagicMock()
