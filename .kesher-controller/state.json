@@ -2053,7 +2053,7 @@
   "updated_at": "2026-10-19T18:40:28.608925+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "retry_wait",
+    "status": "complete",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 39303644748 completed with conclusion=success but no validated image is present",
@@ -2112,7 +2112,19 @@
     "short_signature_verified": true,
     "short_origin_verified": true
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "pr_number": "1156"
+      },
+      "intent_at": "2026-10-19T18:45:44.735618+00:00",
+      "status": "intent",
+      "previous_run_id": 39303644748,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Normalize Article PR",
     "run_id": 39304215670,
