@@ -30,7 +30,11 @@
       "owner_required_primary_keyword": "גמילה מטיטול",
       "owner_topic_brief_sha256": "45ab9d97b78e171b1d26ecf7013c7b0f648a3242f95a29f86bf0db9baf3a2062"
     },
-    "reconcile_already_published": true
+    "reconcile_already_published": true,
+    "pr_number": 1147,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1147",
+    "current_pr_head_sha": "67ceb25908ec8fc03f119a4a9f97b4d6f86a73ce",
+    "jules_head_sha": "67ceb25908ec8fc03f119a4a9f97b4d6f86a73ce"
   },
   "backlog": [
     {
@@ -2254,6 +2258,18 @@
       "previous_run_id": 39189537931,
       "observed_active_run_id": 39189808363,
       "dispatched_at": "2026-10-19T02:24:15.370242+00:00"
+    },
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "pr_number": "1147",
+        "slot": "2026-10-19"
+      },
+      "intent_at": "2026-10-19T03:10:23.985492+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
