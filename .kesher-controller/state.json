@@ -72,11 +72,11 @@
     "quality_content_sha256": "6aebd5cab87293be2b78cc848c4c9a8a4d3aab4ae5248f38e893183215451bab",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-19T12:30:51.639399+00:00",
+    "quality_checked_at": "2026-10-19T12:35:25.943801+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-19T11:22:35.545680+00:00",
-    "live_verified_at": "2026-10-19T12:31:07.601360+00:00"
+    "live_verified_at": "2026-10-19T12:35:27.836121+00:00"
   },
   "backlog": [
     {
@@ -2273,26 +2273,10 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-10-19",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "toddler-bed-transition",
-        "derive_content_sha256": "6aebd5cab87293be2b78cc848c4c9a8a4d3aab4ae5248f38e893183215451bab",
-        "derive_long_item_id": "video-20261019-145912-6aebd5cab8-a3"
-      },
-      "intent_at": "2026-10-19T12:24:22.326130+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 39251911125,
-      "dispatched_at": "2026-10-19T12:24:22.326130+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
-    "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 39248150426,
+    "workflow": "Kesher Daily Article Short V4",
+    "run_id": 39251911125,
     "conclusion": "success",
     "source_slug": "toddler-bed-transition",
     "slot": "2026-10-19"
