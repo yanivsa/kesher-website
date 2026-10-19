@@ -44,7 +44,7 @@
     "last_deploy_dispatch_at": "2026-10-19T07:26:38.361092+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39216012389,
-    "live_verified_at": "2026-10-19T09:40:50.661005+00:00"
+    "live_verified_at": "2026-10-19T09:41:06.019769+00:00"
   },
   "backlog": [
     {
@@ -1416,34 +1416,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T03:52:33.544310+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_recovery",
-      "reason": "long-form provider stalled; resumed the same durable provider identity",
-      "details": {
-        "item_id": "video-20261019-062800-08f52aa15d",
-        "task_id": "1e74a1f9-8f8f-4138-b47a-d1a36580e172",
-        "slug": "potty-training-toddlers",
-        "content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210"
-      }
-    },
-    {
-      "at": "2026-10-19T03:56:01.860702+00:00",
-      "from": "long_video_watchdog_recovery",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261019-062800-08f52aa15d",
-        "task_id": "1e74a1f9-8f8f-4138-b47a-d1a36580e172"
-      }
-    },
-    {
-      "at": "2026-10-19T03:59:53.227357+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-19T03:59:57.716943+00:00",
       "from": "article_live",
       "to": "video_running",
@@ -2222,9 +2194,30 @@
       "details": {
         "retry_at": "2026-10-19T09:41:35.644822+00:00"
       }
+    },
+    {
+      "at": "2026-10-19T09:41:06.019797+00:00",
+      "from": "short_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-19T09:41:06.559233+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-19T09:41:08.965092+00:00",
+      "from": "long_video_complete",
+      "to": "short_retry_wait",
+      "reason": "Short retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-19T09:41:35.644822+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-19T09:36:35.644895+00:00",
+  "updated_at": "2026-10-19T09:41:08.965109+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
