@@ -1832,25 +1832,58 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
         normalized_head_sha = str(state["article"].get("normalized_head_sha") or "").strip().lower()
         if normalized_head_sha and normalized_head_sha != head_sha:
-            drift_count = int(state["article"].get("normalization_drift_count") or 0) + 1
-            state["article"]["normalization_drift_count"] = drift_count
-            if drift_count > 3:
-                v5.core.block(
-                    state,
-                    "article",
-                    "ARTICLE_JULES_UNSTABLE_MUTATION",
-                    f"Article PR head mutated repeatedly ({drift_count} times) after trusted stages; branch quiescence failed",
+            is_auto_sync_merge = False
+            try:
+                commit_payload = self.github.request(
+                    "GET",
+                    f"https://api.github.com/repos/{self.repo}/commits/{head_sha}",
                 )
-                state["article"]["status"] = "blocked"
-                return v5.core.Action("blocked", "Article PR head mutated repeatedly; branch quiescence failed")
+                parents = [
+                    str(p.get("sha") or "").strip().lower()
+                    for p in (commit_payload.get("parents") or [])
+                    if isinstance(p, dict)
+                ]
+                if len(parents) >= 2 and parents[0] == normalized_head_sha:
+                    is_auto_sync_merge = True
+            except Exception:
+                is_auto_sync_merge = False
 
-            state["article"]["normalization_status"] = "pending"
-            state["article"].pop("normalized_head_sha", None)
-            state["article"].pop("image_head_sha", None)
-            state["article"].pop("merge_candidate_sha", None)
-            if str((state.get("image") or {}).get("status") or "") in {"running", "complete"}:
-                state["image"]["status"] = "pending"
-                state["image"].pop("run_id", None)
+            if is_auto_sync_merge:
+                state["article"]["normalized_head_sha"] = head_sha
+                state["article"]["image_head_sha"] = head_sha
+                state["article"]["merge_candidate_sha"] = head_sha
+                state["article"]["merge_dispatch_count"] = 0
+                state["article"]["merge_dispatch_at"] = None
+                if state.get("status") == "blocked" and state.get("article", {}).get("status") in {"blocked", "exhausted"}:
+                    state["status"] = "article_pr_open"
+                    state["article"]["status"] = "running"
+                    state["article"].pop("last_error", None)
+            else:
+                drift_count = int(state["article"].get("normalization_drift_count") or 0) + 1
+                state["article"]["normalization_drift_count"] = drift_count
+                if drift_count > 3:
+                    v5.core.block(
+                        state,
+                        "article",
+                        "ARTICLE_JULES_UNSTABLE_MUTATION",
+                        f"Article PR head mutated repeatedly ({drift_count} times) after trusted stages; branch quiescence failed",
+                    )
+                    state["article"]["status"] = "blocked"
+                    return v5.core.Action("blocked", "Article PR head mutated repeatedly; branch quiescence failed")
+
+                state["article"]["normalization_status"] = "pending"
+                state["article"].pop("normalized_head_sha", None)
+                state["article"].pop("image_head_sha", None)
+                state["article"].pop("merge_candidate_sha", None)
+                state["article"]["merge_dispatch_count"] = 0
+                state["article"]["merge_dispatch_at"] = None
+                if state.get("status") == "blocked" and state.get("article", {}).get("status") in {"blocked", "exhausted"}:
+                    state["status"] = "article_pr_open"
+                    state["article"]["status"] = "running"
+                    state["article"].pop("last_error", None)
+                if str((state.get("image") or {}).get("status") or "") in {"running", "complete"}:
+                    state["image"]["status"] = "pending"
+                    state["image"].pop("run_id", None)
 
         # 1. Cap auto-merge dispatches to budget (max 3 dispatches)
         merge_dispatches = int(state["article"].get("merge_dispatch_count") or 0)
