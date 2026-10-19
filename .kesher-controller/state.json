@@ -2535,19 +2535,27 @@
         "long_url": "https://youtu.be/DJlIBnygorA",
         "short_url": "https://youtu.be/chwf7Hf25nI"
       }
+    },
+    {
+      "idea_id": "caregiver-to-daycare-20261019-v1",
+      "fingerprint": "861d1c660c136f4a4add472819674f6acfdc9863632225a9dd16f0387e3784b6",
+      "topic_brief": "כתוב מאמר עברי מקצועי, מעשי ורגיש להורים בנושא מעבר ממטפלת למעון או לפעוטון. התייחס להבדלים בין טיפול של אחד על אחד למסגרת קבוצתית, הכנה הדרגתית של הפעוט, התמודדות עם בכי ופרידות בבוקר, בניית שיתוף פעולה ואמון עם צוות המעון, סימני קושי נורמטיביים לעומת סימנים שמצריכים בירור, ואיך לשמור על עוגן רגוע ובטוח בבית. שמור על טון מבוסס, תומך, פרקטי ולא שיפוטי.",
+      "required_primary_keyword": "מעבר ממטפלת למעון",
+      "run_now": true,
+      "status": "complete",
+      "requested_at": "2026-10-19T05:42:05.996677+00:00",
+      "publication_slot": "2026-10-19",
+      "claimed_at": "2026-10-19T05:42:07.005999+00:00",
+      "completed_at": "2026-10-19T09:59:41.134516+00:00",
+      "outputs": {
+        "slug": "transition-from-caregiver-to-daycare",
+        "article_url": "https://kesher.saharoni.com/blog/transition-from-caregiver-to-daycare",
+        "long_url": "https://youtu.be/qr0bRAQZh_A",
+        "short_url": "https://youtu.be/iJEdt-zkcKU"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "caregiver-to-daycare-20261019-v1",
-    "fingerprint": "861d1c660c136f4a4add472819674f6acfdc9863632225a9dd16f0387e3784b6",
-    "topic_brief": "כתוב מאמר עברי מקצועי, מעשי ורגיש להורים בנושא מעבר ממטפלת למעון או לפעוטון. התייחס להבדלים בין טיפול של אחד על אחד למסגרת קבוצתית, הכנה הדרגתית של הפעוט, התמודדות עם בכי ופרידות בבוקר, בניית שיתוף פעולה ואמון עם צוות המעון, סימני קושי נורמטיביים לעומת סימנים שמצריכים בירור, ואיך לשמור על עוגן רגוע ובטוח בבית. שמור על טון מבוסס, תומך, פרקטי ולא שיפוטי.",
-    "required_primary_keyword": "מעבר ממטפלת למעון",
-    "run_now": true,
-    "status": "claimed",
-    "requested_at": "2026-10-19T05:42:05.996677+00:00",
-    "publication_slot": "2026-10-19",
-    "claimed_at": "2026-10-19T05:42:07.005999+00:00"
-  },
+  "active_idea": null,
   "owner_cycle_archive": [
     {
       "cycle": "2026-10-18",
