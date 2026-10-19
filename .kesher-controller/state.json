@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1416,12 +1416,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T02:06:28.906265+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-19T02:06:30.100880+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2245,9 +2239,21 @@
         "item_id": "video-20261019-103550-5e9153b529",
         "task_id": "5c435a9c-8917-4b0a-b959-b3d1a48784dd"
       }
+    },
+    {
+      "at": "2026-10-19T08:06:24.033407+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_recovery",
+      "reason": "long-form provider stalled; resumed the same durable provider identity",
+      "details": {
+        "item_id": "video-20261019-103550-5e9153b529",
+        "task_id": "5c435a9c-8917-4b0a-b959-b3d1a48784dd",
+        "slug": "transition-from-caregiver-to-daycare",
+        "content_sha256": "5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659"
+      }
     }
   ],
-  "updated_at": "2026-10-19T08:01:14.987923+00:00",
+  "updated_at": "2026-10-19T08:06:24.033413+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2266,7 +2272,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "generating",
+    "status": "running",
     "last_error": null,
     "next_retry_at": "2026-10-19T07:48:09.062005+00:00",
     "run_id": 39216711060,
@@ -2276,7 +2282,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-19T07:33:07.203064+00:00",
+    "last_dispatch_at": "2026-10-19T08:06:24.033388+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
     "item_id": "video-20261019-103550-5e9153b529",
@@ -2293,9 +2299,11 @@
       "hard_started_at": "2026-10-19T07:35:57.045887+00:00",
       "last_progress_at": "2026-10-19T07:43:09.062005+00:00",
       "last_fingerprint": "3a9d19844a1d9d3d3d9d6b82781893f26478b3a2e153d3477ac085cc47552606",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    }
+      "recovery_count": 1,
+      "last_recovery_at": "2026-10-19T08:05:48.899205+00:00"
+    },
+    "pending_resume_ready": false,
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
@@ -2332,9 +2340,10 @@
         "target_item_id": "video-20261019-103550-5e9153b529"
       },
       "intent_at": "2026-10-19T08:05:48.899205+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39216711060,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39220399967,
+      "dispatched_at": "2026-10-19T08:05:48.899205+00:00"
     }
   },
   "last_child_notification": {
@@ -2427,11 +2436,12 @@
       "strike_count": 1,
       "last_check_token": "2026-10-19T11",
       "last_fingerprint": "6fd92a8da6f72d0fdacf6b8588d1acc56ce34d3fe8bb28ad5a0a9dbcf1083813",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
+      "last_controller_action_token": "recovery:1:2026-10-19T08:05:48.899205+00:00",
+      "controller_action_observed": true,
       "last_observed_at": "2026-10-19T08:05:48.899205+00:00",
-      "last_action": "observe_controller",
-      "direct_takeover_required": false
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-10-19T08:05:48.899205+00:00"
     }
   },
   "idea_queue": [],
