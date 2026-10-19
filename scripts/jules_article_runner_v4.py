@@ -98,8 +98,9 @@ while still matching language people actually search for.
 SEO_GAP_TOPIC_DISCOVERY_CONTRACT = r"""
 
 --- SEO GAP TOPIC DISCOVERY CONTRACT ---
-Run this stage ONLY when no repository-owner topic brief was supplied and the
-deterministic autonomous discovery mix selected `seo-gap` for this slot.
+Run this stage ONLY when no repository-owner topic brief was supplied and either
+the deterministic autonomous discovery mix selected `seo-gap` for this slot OR
+the preceding VIRAL TOPIC DISCOVERY CONTRACT explicitly fell back to this stage.
 
 Goal: select one high-value Kesher topic because there is evidence of real search
 demand and a meaningful reader problem, not merely because the topic is editorially
@@ -190,7 +191,7 @@ and evidence workflow. This is a topic-selection stage, not a trend-report stage
    after this contract. Apply its search-demand, reader-pain and cannibalization
    ranking rules, then continue with the existing SEARCH-INTENT-FIRST TITLE CONTRACT
    and ARTICLE EVIDENCE CONTRACT.
-10. Whether the topic came from viral discovery or the legacy fallback, create
+10. Whether the topic came from viral discovery or the SEO-gap fallback, create
     EXACTLY ONE article and one PR for the slot.
 11. When viral discovery succeeds, include this compact audit block in the PR body:
     `Topic Discovery Source: ...`
