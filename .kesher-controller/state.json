@@ -2219,7 +2219,20 @@
     "short_signature_verified": true,
     "short_origin_verified": true
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-article-generation.yml": {
+      "workflow": "kesher-article-generation.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "slot": "2026-10-19",
+        "topic_brief": "כתוב מאמר עברי מקצועי, ברור ומעשי להורים לפעוטות בנושא גמילה מטיטול. התייחס לסימני מוכנות, מתי נכון להתחיל, טעויות נפוצות, התמודדות עם התנגדות ופספוסים, ומתי כדאי לעצור ולנסות שוב. שמור על טון רגוע, לא שיפוטי, מבוסס ומעשי, בלי הבטחות מוחלטות. המאמר חייב להישאר ממוקד בכוונת החיפוש של גמילה מטיטול.\n\nIdea Request ID: potty-training-20261018-v1\nRequired Primary Keyword: גמילה מטיטול"
+      },
+      "intent_at": "2026-10-19T02:24:15.370242+00:00",
+      "status": "intent",
+      "previous_run_id": 39189537931,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Article Generation",
     "run_id": 39189537931,
