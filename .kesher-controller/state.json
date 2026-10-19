@@ -42,7 +42,9 @@
     "normalization_drift_count": 1,
     "normalized_head_sha": "25a4c8d1f17c8050e5d622d12b1c768014231e1c",
     "image_head_sha": "25a4c8d1f17c8050e5d622d12b1c768014231e1c",
-    "merge_candidate_sha": "25a4c8d1f17c8050e5d622d12b1c768014231e1c"
+    "merge_candidate_sha": "25a4c8d1f17c8050e5d622d12b1c768014231e1c",
+    "merge_dispatch_at": "2026-10-19T03:13:43.483433+00:00",
+    "merge_dispatch_count": 1
   },
   "backlog": [
     {
@@ -2285,9 +2287,10 @@
         "slot": "2026-10-19"
       },
       "intent_at": "2026-10-19T03:13:27.432277+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39193680021,
+      "dispatched_at": "2026-10-19T03:13:27.432277+00:00"
     }
   },
   "last_child_notification": {
