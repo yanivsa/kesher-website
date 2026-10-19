@@ -132,7 +132,12 @@
     "serviceLabel": "הדרכת הורים",
     "directAnswer": "כדי לעבור לחדר נפרד בצורה חלקה, מומלץ לבצע את התהליך בהדרגה: לבלות זמן בחדר במהלך היום, להעביר את טקס השינה לשם, ולהרגיע את הילד בחדרו כשהוא מתעורר בלילה במקום להחזיר אותו מיד למיטתכם.",
     "evidence": [],
-    "controllerManaged": true
+    "controllerManaged": true,
+    "image": "/images/generated/blog/transition-to-separate-room.jpg",
+    "imageAlt": "צילום מציאותי של זוג צעיר בשיחה ותכנון משותף לקראת חיים זוגיים",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/fallback/premarital/premarital_preparation_planning.jpg",
+    "imageIsFallback": true
   },
   {
     "id": "why-is-it-so-hard-to-find-a-relationship",
