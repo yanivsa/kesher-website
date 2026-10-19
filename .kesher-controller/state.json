@@ -2454,13 +2454,13 @@
       "slug": "potty-training-toddlers",
       "content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210",
       "stage": "long_video",
-      "strike_count": 0,
-      "last_check_token": "2026-10-19T07",
+      "strike_count": 1,
+      "last_check_token": "2026-10-19T08",
       "last_fingerprint": "644c865f3db35214247bed23d3152ccc26777743620165446caf3a3eeaf8dc08",
       "last_controller_action_token": "recovery:1:2026-10-19T04:51:53.953882+00:00",
       "controller_action_observed": true,
-      "last_observed_at": "2026-10-19T04:05:45.405459+00:00",
-      "last_action": "wait_after_controller_action",
+      "last_observed_at": "2026-10-19T05:15:47.315126+00:00",
+      "last_action": "observe_controller",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-10-19T04:51:53.953882+00:00"
     }
