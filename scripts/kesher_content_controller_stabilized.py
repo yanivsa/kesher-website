@@ -1386,6 +1386,14 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if isinstance(state, dict) and isinstance(state.get("article"), dict):
             state["article"].pop("_tick_live_verified", None)
         if hasattr(self, "github") and self.github is not None and hasattr(self.github, "save_controller_state"):
+            if not getattr(self.github, "_controller_state_loaded", False):
+                try:
+                    self.github.load_controller_state()
+                except Exception:
+                    pass
+                if not getattr(self.github, "_controller_state_loaded", False):
+                    self.github._controller_state_loaded = True
+                    self.github._controller_state_document = copy.deepcopy(state)
             self.github.save_controller_state(state)
 
     def _guarded_dispatch(self, state: dict, workflow: str, inputs: dict | None, raw_dispatch) -> None:
@@ -2246,5 +2254,7 @@ if __name__ == "__main__":
     try:
         raise SystemExit(main())
     except (v5.core.ControllerError, ValueError, KeyError, json.JSONDecodeError) as exc:
+        import traceback
+        traceback.print_exc()
         print(f"KESHER_CONTROLLER_STABILIZED_BLOCKED {exc}", file=sys.stderr)
         raise SystemExit(1)

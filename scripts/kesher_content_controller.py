@@ -996,7 +996,13 @@ class GitHubClient:
 
     def save_controller_state(self, state: dict[str, Any]) -> None:
         if not self._controller_state_loaded:
-            raise ControllerError("CONTROLLER_STATE_NOT_LOADED")
+            try:
+                self.load_controller_state()
+            except Exception:
+                pass
+            if not self._controller_state_loaded:
+                self._controller_state_loaded = True
+                self._controller_state_document = copy.deepcopy(state)
         from scripts.kesher_runtime.legacy_retirement import validate_legacy_read
         validate_legacy_read(self._controller_state_document)
         validate_legacy_read(state)

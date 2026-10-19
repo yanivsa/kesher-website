@@ -1203,6 +1203,10 @@ def bind_short_overview_identity(
     short_item = candidates[0]
     if short_item.get("uploaded") is True:
         raise pipeline.PipelineError("Refusing to mutate already-uploaded Short provenance")
+    if short_item.get("status") in {"generating", "source_selected", "source_added"} or not short_item.get("raw_sha256"):
+        raise pipeline.PipelineError(
+            f"Cannot bind Overview identity: Short item {short_item.get('id')} is still {short_item.get('status')}"
+        )
 
     existing = short_item.get("overview_provider_identity")
     if existing is not None and existing != overview_identity:

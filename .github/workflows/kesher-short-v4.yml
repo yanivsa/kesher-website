@@ -291,12 +291,28 @@ jobs:
         run: python -u scripts/kesher_video_reconcile.py --prepare-generation ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
 
       - name: Generate or resume exact NotebookLM-derived Short
+        id: generate_exact
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') && steps.prepare_generation.outputs.skip_generation != 'true' }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
-        run: python -u scripts/kesher_short_pipeline_v4.py --max-wait-seconds 150 ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
+        run: |
+          python -u scripts/kesher_short_pipeline_v4.py --max-wait-seconds 360 ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          state_path = Path(os.environ["KESHER_STATE_DIR"]) / "state.json"
+          ready = False
+          if state_path.is_file():
+              state = json.loads(state_path.read_text(encoding="utf-8"))
+              items = [i for i in state.get("items", []) if isinstance(i, dict) and i.get("type") == "article_short"]
+              item = items[-1] if items else {}
+              ready = item.get("status") in {"pending_review", "approved", "uploaded"} and bool(item.get("raw_sha256"))
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"ready_for_binding={str(ready).lower()}\n")
+          PY
 
       - name: Rebuild exact rejected Short with Remotion
         if: ${{ github.event_name != 'pull_request' && inputs.operation == 'rebuild' }}
@@ -329,7 +345,7 @@ jobs:
           PY
 
       - name: Bind exact Short to authoritative Overview identity
-        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'derive') && inputs.derive_long_item_id != '' }}
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'derive') && inputs.derive_long_item_id != '' && (steps.prepare_generation.outputs.skip_generation == 'true' || steps.generate_exact.outputs.ready_for_binding == 'true' || inputs.operation == 'upload') }}
         env:
           GH_TOKEN: ${{ github.token }}
           DERIVE_SLUG: ${{ inputs.derive_slug }}
@@ -383,7 +399,7 @@ jobs:
 
       - name: Prepare exact technically verified Short upload
         id: prepare_upload
-        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') && (steps.prepare_generation.outputs.skip_generation == 'true' || steps.generate_exact.outputs.ready_for_binding == 'true' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
           REBUILD_ITEM_ID: ${{ inputs.rebuild_item_id }}
