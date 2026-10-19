@@ -75,7 +75,12 @@
     "serviceUrl": "/services/parenting",
     "serviceLabel": "הדרכת הורים",
     "directAnswer": "מעבר ממטפלת יחידנית למעון קבוצתי דורש מהפעוט יכולות ויסות והסתגלות רבות. בניית פרידות קצרות ועקביות, שיתוף פעולה הדוק עם צוות המעון, ושמירה על סביבה ביתית רגועה יכולים להקל משמעותית על ימי ההסתגלות.",
-    "evidence": []
+    "evidence": [],
+    "image": "/images/generated/blog/transition-from-caregiver-to-daycare.jpg",
+    "imageAlt": "צילום מציאותי של ילד בסביבה לימודית יוצרת עם תמיכה רגישה של מבוגר",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/fallback/gifted/gifted_child_learning_focus.jpg",
+    "imageIsFallback": true
   },
   {
     "id": "why-is-it-so-hard-to-find-a-relationship",
