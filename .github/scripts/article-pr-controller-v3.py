@@ -102,21 +102,27 @@ def controller_image_stage_terminal(
         current_head = str((pr.get("head") or {}).get("sha") or "").strip().lower()
         if normalized_head_sha and current_head and normalized_head_sha != current_head:
             is_valid_merge = False
-            try:
-                commit_payload = core.request_json(
-                    "GET",
-                    f"https://api.github.com/repos/{repo}/commits/{current_head}",
-                    github_token,
-                )
-                parents = [
-                    str(p.get("sha") or "").strip().lower()
-                    for p in (commit_payload.get("parents") or [])
-                    if isinstance(p, dict)
-                ]
-                if len(parents) >= 2 and parents[0] == normalized_head_sha:
-                    is_valid_merge = True
-            except Exception:
-                is_valid_merge = False
+            curr = current_head
+            for _ in range(6):
+                try:
+                    commit_payload = core.request_json(
+                        "GET",
+                        f"https://api.github.com/repos/{repo}/commits/{curr}",
+                        github_token,
+                    )
+                    parents = [
+                        str(p.get("sha") or "").strip().lower()
+                        for p in (commit_payload.get("parents") or [])
+                        if isinstance(p, dict)
+                    ]
+                    if len(parents) < 2:
+                        break
+                    curr = parents[0]
+                    if curr == normalized_head_sha:
+                        is_valid_merge = True
+                        break
+                except Exception:
+                    break
             if not is_valid_merge:
                 return False
         return bool(

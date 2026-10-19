@@ -1841,22 +1841,29 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
         if normalized_head_sha and normalized_head_sha != head_sha:
             is_auto_sync_merge = False
-            try:
-                commit_payload = self.github.request(
-                    "GET",
-                    f"https://api.github.com/repos/{self.repo}/commits/{head_sha}",
-                )
-                parents = [
-                    str(p.get("sha") or "").strip().lower()
-                    for p in (commit_payload.get("parents") or [])
-                    if isinstance(p, dict)
-                ]
-                if len(parents) >= 2 and parents[0] == normalized_head_sha:
-                    is_auto_sync_merge = True
-            except Exception:
-                is_auto_sync_merge = False
+            curr = head_sha
+            for _ in range(6):
+                try:
+                    commit_payload = self.github.request(
+                        "GET",
+                        f"https://api.github.com/repos/{self.repo}/commits/{curr}",
+                    )
+                    parents = [
+                        str(p.get("sha") or "").strip().lower()
+                        for p in (commit_payload.get("parents") or [])
+                        if isinstance(p, dict)
+                    ]
+                    if len(parents) < 2:
+                        break
+                    curr = parents[0]
+                    if curr == normalized_head_sha:
+                        is_auto_sync_merge = True
+                        break
+                except Exception:
+                    break
 
             if is_auto_sync_merge:
+                state["article"]["normalization_drift_count"] = 0
                 state["article"]["normalized_head_sha"] = head_sha
                 state["article"]["image_head_sha"] = head_sha
                 state["article"]["merge_candidate_sha"] = head_sha
@@ -1871,9 +1878,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     state["image"]["provider_id"] = img_provider
                     state["image"]["artifact_sha256"] = img_sha
                     state["image"]["source_id"] = img_source
-                if state.get("status") == "blocked" and state.get("article", {}).get("status") in {"blocked", "exhausted"}:
+                if state.get("status") == "blocked":
                     state["status"] = "article_pr_open"
                     state["article"]["status"] = "running"
+                    state.pop("last_error", None)
                     state["article"].pop("last_error", None)
             else:
                 drift_count = int(state["article"].get("normalization_drift_count") or 0) + 1
