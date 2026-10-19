@@ -38,13 +38,13 @@
     "quality_content_sha256": "5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-19T09:55:49.355783+00:00",
+    "quality_checked_at": "2026-10-19T09:59:06.922518+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-19T07:26:38.361092+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39216012389,
-    "live_verified_at": "2026-10-19T09:56:05.561996+00:00"
+    "live_verified_at": "2026-10-19T09:59:08.135864+00:00"
   },
   "backlog": [
     {
@@ -2290,26 +2290,10 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-10-19",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "transition-from-caregiver-to-daycare",
-        "derive_content_sha256": "5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659",
-        "derive_long_item_id": "video-20261019-113455-5e9153b529-a3"
-      },
-      "intent_at": "2026-10-19T09:45:55.703091+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39230235420,
-      "observed_active_run_id": 39232592323,
-      "dispatched_at": "2026-10-19T09:45:55.703091+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
-    "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 39227566328,
+    "workflow": "Kesher Daily Article Short V4",
+    "run_id": 39232592323,
     "conclusion": "success",
     "source_slug": "transition-from-caregiver-to-daycare",
     "slot": "2026-10-19"
