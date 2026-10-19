@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -70,13 +70,13 @@
     "published_date": "2026-10-19",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-19T01:16:05.963428+00:00",
+    "quality_checked_at": "2026-10-19T01:20:49.486064+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-18T21:58:48.072711+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39170192374,
-    "live_verified_at": "2026-10-19T01:16:07.814068+00:00"
+    "live_verified_at": "2026-10-19T01:20:50.353327+00:00"
   },
   "backlog": [
     {
@@ -1446,12 +1446,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-18T23:11:08.487600+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-18T11:21:12.696453+00:00",
@@ -2192,6 +2187,17 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-19T01:20:48.132587+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "verified_overview_exhaustion_recovery",
+      "details": {
+        "slug": "pacifier-weaning",
+        "item_id": "video-20261019-014058-ecf4f1b219-a3",
+        "youtube_url": "https://youtu.be/MPjgzNBkp4M"
+      }
     }
   ],
   "updated_at": "2026-10-18T23:11:08.487626+00:00",
@@ -2212,20 +2218,20 @@
     "image_path": "/images/generated/blog/pacifier-weaning.jpg"
   },
   "long_video": {
-    "attempt_count": 3,
-    "status": "exhausted",
+    "attempt_count": 0,
+    "status": "complete",
     "last_error": null,
-    "next_retry_at": "2026-10-18T22:49:23.070284+00:00",
-    "run_id": 39173173727,
-    "processed_run_id": 39173173727,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-18T22:39:17.913105+00:00",
+    "last_dispatch_at": null,
     "attempts": 1,
-    "last_run_conclusion": "success",
+    "last_run_conclusion": null,
     "item_id": "video-20261019-014058-ecf4f1b219-a3",
     "source_slug": "pacifier-weaning",
     "source_content_sha256": "ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a",
@@ -2234,16 +2240,37 @@
     "task_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0",
     "artifact_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0",
     "provider_status": "pending",
-    "verified": false,
-    "watchdog": {
-      "identity": "long_video:pacifier-weaning:ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a:video-20261019-014058-ecf4f1b219-a3",
-      "hard_started_at": "2026-10-18T22:41:04.987004+00:00",
-      "last_progress_at": "2026-10-18T22:44:23.070284+00:00",
-      "last_fingerprint": "dd00f58331b5864a2e922c4bff27f87fc52d8f942c9024904ecfdef16b302ab5",
-      "recovery_count": 0,
-      "last_recovery_at": null
+    "verified": true,
+    "resume_dispatches": 0,
+    "source_binding_exhaustion_recovery_applied": true,
+    "source_binding_recovery_previous": {
+      "attempt_count": 3,
+      "item_id": "video-20261019-014058-ecf4f1b219-a3",
+      "provider_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0",
+      "artifact_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0",
+      "source_id": "da9bbdbe-8255-4c02-ab5b-b8a584da2c9e",
+      "watchdog": {
+        "identity": "long_video:pacifier-weaning:ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a:video-20261019-014058-ecf4f1b219-a3",
+        "hard_started_at": "2026-10-18T22:41:04.987004+00:00",
+        "last_progress_at": "2026-10-18T22:44:23.070284+00:00",
+        "last_fingerprint": "dd00f58331b5864a2e922c4bff27f87fc52d8f942c9024904ecfdef16b302ab5",
+        "recovery_count": 0,
+        "last_recovery_at": null
+      }
     },
-    "resume_dispatches": 2
+    "youtube_id": "MPjgzNBkp4M",
+    "youtube_url": "https://youtu.be/MPjgzNBkp4M",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 106.833,
+    "content_duration_seconds": 106.833,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
