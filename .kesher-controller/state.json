@@ -15,7 +15,11 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-10-19T05:42:15.034460+00:00"
+    "last_dispatch_at": "2026-10-19T05:42:15.034460+00:00",
+    "pr_number": 1148,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1148",
+    "current_pr_head_sha": "260ae86910d5829272b8119ab35e64f68d99ef7d",
+    "jules_head_sha": "260ae86910d5829272b8119ab35e64f68d99ef7d"
   },
   "backlog": [
     {
@@ -2225,25 +2229,24 @@
     "short_origin_verified": true
   },
   "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
       "cycle": "2026-10-19",
       "inputs": {
-        "slot": "2026-10-19",
-        "topic_brief": "כתוב מאמר עברי מקצועי, מעשי ורגיש להורים בנושא מעבר ממטפלת למעון או לפעוטון. התייחס להבדלים בין טיפול של אחד על אחד למסגרת קבוצתית, הכנה הדרגתית של הפעוט, התמודדות עם בכי ופרידות בבוקר, בניית שיתוף פעולה ואמון עם צוות המעון, סימני קושי נורמטיביים לעומת סימנים שמצריכים בירור, ואיך לשמור על עוגן רגוע ובטוח בבית. שמור על טון מבוסס, תומך, פרקטי ולא שיפוטי.\n\nIdea Request ID: caregiver-to-daycare-20261019-v1\nRequired Primary Keyword: מעבר ממטפלת למעון"
+        "pr_number": "1148",
+        "slot": "2026-10-19"
       },
-      "intent_at": "2026-10-19T05:42:04.037774+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-19T06:08:01.592182+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-19T05:42:04.037774+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 39203835251,
+    "workflow": "Kesher Article Generation",
+    "run_id": 39205913159,
     "conclusion": "success",
-    "source_slug": "potty-training-toddlers",
+    "source_slug": null,
     "slot": "2026-10-19"
   },
   "processed_child_notifications": [],
