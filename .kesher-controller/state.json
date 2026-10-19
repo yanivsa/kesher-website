@@ -2042,7 +2042,20 @@
     "short_signature_verified": true,
     "short_origin_verified": true
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-article-generation.yml": {
+      "workflow": "kesher-article-generation.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "slot": "2026-10-19",
+        "topic_brief": "כתוב מאמר עברי מקצועי ומעשי להורים בנושא מעבר לחדר נפרד: מתי הזמן המתאים להעביר תינוק או פעוט מחדר ההורים לחדר משלו, הנחיות בטיחות ומוכנות רגשית, איך לבנות שגרת מעבר הדרגתית ונעימה, התמודדות עם פחדי לילה ויקיצות מרובות, ואיך להרגיע בלי להפוך את הלילה למאבק מתמשך.\n\nIdea Request ID: separate-room-transition-20261019-v1\nRequired Primary Keyword: מעבר לחדר נפרד"
+      },
+      "intent_at": "2026-10-19T17:58:48.938099+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
     "run_id": 39255955511,
