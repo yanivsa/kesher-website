@@ -2280,7 +2280,15 @@
     "last_dispatch_at": "2026-10-19T01:26:06.490570+00:00",
     "artifact_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0",
     "source_id": "da9bbdbe-8255-4c02-ab5b-b8a584da2c9e",
-    "adopted_from_long_item_id": "video-20261019-014058-ecf4f1b219-a3"
+    "adopted_from_long_item_id": "video-20261019-014058-ecf4f1b219-a3",
+    "watchdog": {
+      "identity": "short:pacifier-weaning:ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a:video-20261019-042837-ecf4f1b219",
+      "hard_started_at": "2026-10-19T01:28:53.098613+00:00",
+      "last_progress_at": "2026-10-19T01:35:57.442364+00:00",
+      "last_fingerprint": "0dfaa138b8de3dc86d86e94f1aa006ee8d3afc665f6954990d497189dd1a7047",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
