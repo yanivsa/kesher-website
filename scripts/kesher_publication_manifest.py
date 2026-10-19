@@ -74,6 +74,62 @@ def generate(dist: Path, posts: list[dict], sha: str, *, exclusions: list[dict] 
     return manifest
 
 
+def _apply_backfill(posts: list[dict], root: Path) -> list[dict]:
+    backfill_path = root / 'src' / 'data' / 'internalLinkBackfill.json'
+    if not backfill_path.is_file():
+        return posts
+    try:
+        rules = json.loads(backfill_path.read_text(encoding='utf-8'))
+    except Exception:
+        return posts
+    rule_map = {r['source']: r for r in rules if isinstance(r, dict) and 'source' in r}
+    if not rule_map:
+        return posts
+
+    def escape_text(val: str) -> str:
+        return val.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+    def decode_heading_text(h: str) -> str:
+        h = re.sub(r'<[^>]+>', ' ', h)
+        h = h.replace('&quot;', '"').replace('&#39;', "'").replace('&amp;', '&').replace('&nbsp;', ' ')
+        return re.sub(r'\s+', ' ', h).strip()
+
+    def has_internal_target(content: str, target: str) -> bool:
+        pattern = rf'href=[\"\x27](?:https:\/\/kesher\.saharoni\.com)?\/blog\/{re.escape(target)}(?:[?#][^\"\x27]*)?[\"\x27]'
+        return bool(re.search(pattern, content, re.I))
+
+    applied = []
+    for post in posts:
+        rule = rule_map.get(post.get('id'))
+        if not rule or not isinstance(post.get('content'), str):
+            applied.append(post)
+            continue
+        content = post['content']
+        missing = [it for it in rule.get('items', []) if not has_internal_target(content, it.get('target', ''))]
+        if not missing:
+            applied.append(post)
+            continue
+        needle = str(rule.get('afterHeadingIncludes') or '').strip()
+        offset = None
+        for m in re.finditer(r'<h3\b[^>]*>([\s\S]*?)<\/h3>', content, re.I):
+            if needle in decode_heading_text(m.group(1)):
+                offset = m.end()
+                break
+        if offset is None:
+            applied.append(post)
+            continue
+        rendered_items = [
+            f"{escape_text(it.get('before', ''))}<a href=\"/blog/{it.get('target', '')}\">{escape_text(it.get('anchor', ''))}</a>{escape_text(it.get('after', ''))}"
+            for it in missing
+        ]
+        post_id = post["id"]
+        paragraph = f'<p data-kesher-internal-link-backfill="{post_id}">' + " ".join(rendered_items) + '</p>'
+        p_copy = dict(post)
+        p_copy['content'] = content[:offset] + paragraph + content[offset:]
+        applied.append(p_copy)
+    return applied
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dist', type=Path, default=Path('dist'))
@@ -96,6 +152,7 @@ def main():
         input=json.dumps(posts), capture_output=True, text=True, check=True, timeout=30)
     ids = set(json.loads(selected.stdout))
     eligible = [post for post in posts if post['id'] in ids]
+    eligible = _apply_backfill(eligible, root)
     excluded = [{'id': post['id'], 'reason': 'not_publishable_by_site_contract'} for post in posts if post['id'] not in ids]
     heroes = {post['image']: committed('public' + post['image']) for post in eligible
               if str(post.get('image') or '').startswith('/images/generated/blog/')
