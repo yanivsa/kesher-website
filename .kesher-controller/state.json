@@ -43,8 +43,8 @@
     "normalized_head_sha": "25a4c8d1f17c8050e5d622d12b1c768014231e1c",
     "image_head_sha": "25a4c8d1f17c8050e5d622d12b1c768014231e1c",
     "merge_candidate_sha": "25a4c8d1f17c8050e5d622d12b1c768014231e1c",
-    "merge_dispatch_at": "2026-10-19T03:13:43.483433+00:00",
-    "merge_dispatch_count": 1,
+    "merge_dispatch_at": "2026-10-19T03:17:12.875254+00:00",
+    "merge_dispatch_count": 2,
     "merge_run_id": 39193680021
   },
   "backlog": [
@@ -2289,9 +2289,10 @@
         "slot": "2026-10-19"
       },
       "intent_at": "2026-10-19T03:16:46.786410+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39193680021,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39193965302,
+      "dispatched_at": "2026-10-19T03:16:46.786410+00:00"
     }
   },
   "last_child_notification": {
