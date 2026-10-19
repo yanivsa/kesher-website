@@ -2348,6 +2348,20 @@
       "previous_run_id": 39189537931,
       "observed_active_run_id": 39189808363,
       "dispatched_at": "2026-10-19T02:24:15.370242+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "potty-training-toddlers",
+        "target_content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210",
+        "target_item_id": "video-20261019-062800-08f52aa15d"
+      },
+      "intent_at": "2026-10-19T03:52:06.832967+00:00",
+      "status": "intent",
+      "previous_run_id": 39194600422,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2414,6 +2428,20 @@
       "last_controller_action_token": null,
       "controller_action_observed": false,
       "last_observed_at": "2026-10-18T23:05:53.301589+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    },
+    "v5|potty-training-toddlers|08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210|long_video": {
+      "pipeline_id": "v5",
+      "slug": "potty-training-toddlers",
+      "content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-10-19T06",
+      "last_fingerprint": "249c6368812b93e7b00dea2f76a54ba7faa043401bea0205548a98341fb6f353",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-19T03:52:06.832967+00:00",
       "last_action": "observe_controller",
       "direct_takeover_required": false
     }
