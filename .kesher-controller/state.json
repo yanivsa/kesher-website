@@ -2737,19 +2737,27 @@
         "long_url": "https://youtu.be/qr0bRAQZh_A",
         "short_url": "https://youtu.be/iJEdt-zkcKU"
       }
+    },
+    {
+      "idea_id": "toddler-bed-transition-20261019-v1",
+      "fingerprint": "5bd74fe0f411f98fc00008a8e0e480879f8d4fc0f3dd229a5345e4789e1f5d1e",
+      "topic_brief": "כתוב מאמר עברי מקצועי ומעשי להורים בנושא מעבר למיטת מעבר: מתי הזמן הנכון להעביר פעוט ממיטת תינוק למיטת מעבר, סימני מוכנות, הכנת החדר והילד לשינוי, התמודדות עם קימה בלילה וירידה מהמיטה, ואיך לבסס שגרת שינה בטוחה ורגועה ללא מאבקים.",
+      "required_primary_keyword": "מעבר למיטת מעבר",
+      "run_now": true,
+      "status": "complete",
+      "requested_at": "2026-10-19T10:08:28.016047+00:00",
+      "publication_slot": "2026-10-19",
+      "claimed_at": "2026-10-19T10:08:28.708760+00:00",
+      "completed_at": "2026-10-19T13:05:44.882157+00:00",
+      "outputs": {
+        "slug": "toddler-bed-transition",
+        "article_url": "https://kesher.saharoni.com/blog/toddler-bed-transition",
+        "long_url": "https://youtu.be/acr4P2AvQWQ",
+        "short_url": "https://youtu.be/2rXJNYGIqRA"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "toddler-bed-transition-20261019-v1",
-    "fingerprint": "5bd74fe0f411f98fc00008a8e0e480879f8d4fc0f3dd229a5345e4789e1f5d1e",
-    "topic_brief": "כתוב מאמר עברי מקצועי ומעשי להורים בנושא מעבר למיטת מעבר: מתי הזמן הנכון להעביר פעוט ממיטת תינוק למיטת מעבר, סימני מוכנות, הכנת החדר והילד לשינוי, התמודדות עם קימה בלילה וירידה מהמיטה, ואיך לבסס שגרת שינה בטוחה ורגועה ללא מאבקים.",
-    "required_primary_keyword": "מעבר למיטת מעבר",
-    "run_now": true,
-    "status": "claimed",
-    "requested_at": "2026-10-19T10:08:28.016047+00:00",
-    "publication_slot": "2026-10-19",
-    "claimed_at": "2026-10-19T10:08:28.708760+00:00"
-  },
+  "active_idea": null,
   "owner_cycle_archive": [
     {
       "cycle": "2026-10-18",
