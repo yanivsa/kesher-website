@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39239793083,
@@ -76,7 +76,7 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-19T11:22:35.545680+00:00",
-    "live_verified_at": "2026-10-19T13:05:09.650930+00:00"
+    "live_verified_at": "2026-10-19T13:05:37.154601+00:00"
   },
   "backlog": [
     {
@@ -1448,38 +1448,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T07:56:07.754550+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261019-103550-5e9153b529",
-        "task_id": "5c435a9c-8917-4b0a-b959-b3d1a48784dd"
-      }
-    },
-    {
-      "at": "2026-10-19T08:01:14.987914+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261019-103550-5e9153b529",
-        "task_id": "5c435a9c-8917-4b0a-b959-b3d1a48784dd"
-      }
-    },
-    {
-      "at": "2026-10-19T08:06:24.033407+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_recovery",
-      "reason": "long-form provider stalled; resumed the same durable provider identity",
-      "details": {
-        "item_id": "video-20261019-103550-5e9153b529",
-        "task_id": "5c435a9c-8917-4b0a-b959-b3d1a48784dd",
-        "slug": "transition-from-caregiver-to-daycare",
-        "content_sha256": "5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659"
-      }
-    },
-    {
       "at": "2026-10-19T08:11:24.426695+00:00",
       "from": "long_video_watchdog_recovery",
       "to": "long_video_watchdog_wait",
@@ -2192,9 +2160,27 @@
         "item_id": "video-20261019-152740-6aebd5cab8",
         "long_item_id": "video-20261019-145912-6aebd5cab8-a3"
       }
+    },
+    {
+      "at": "2026-10-19T13:05:37.154626+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-19T13:05:38.125865+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-19T13:05:39.122713+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-19T12:56:13.750226+00:00",
+  "updated_at": "2026-10-19T13:05:39.122752+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2247,19 +2233,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39255955511,
     "processed_run_id": null,
-    "provider_id": "7b272be9-f48e-44e8-a6db-db13d57d38d1",
+    "provider_id": "e5a9c041-2e96-4266-a291-ef52dd78a9ed",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-19T12:56:13.750194+00:00",
-    "artifact_id": "7b272be9-f48e-44e8-a6db-db13d57d38d1",
-    "source_id": "fd8701cf-d5f5-44ce-8a86-f8e7766833e4",
-    "adopted_from_long_item_id": "video-20261019-145912-6aebd5cab8-a3",
+    "artifact_id": "e5a9c041-2e96-4266-a291-ef52dd78a9ed",
+    "source_id": "e6357627-65b3-4cb5-b2ae-ed02f5d1efd4",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:toddler-bed-transition:6aebd5cab87293be2b78cc848c4c9a8a4d3aab4ae5248f38e893183215451bab:video-20261019-152740-6aebd5cab8",
       "hard_started_at": "2026-10-19T12:27:55.434470+00:00",
@@ -2267,7 +2253,125 @@
       "last_fingerprint": "9aba4f5cb2a5fc4a267cda9f9eee08be2a4d7688f6be9a801202ceb9b736a5ea",
       "recovery_count": 1,
       "last_recovery_at": "2026-10-19T12:55:48.188155+00:00"
-    }
+    },
+    "source": {
+      "id": "toddler-bed-transition",
+      "slug": "toddler-bed-transition",
+      "title": "מעבר למיטת מעבר: למה הוא כל כך מאתגר – ומה עושים כשהילד מסרב להישאר במיטה",
+      "date": "2026-10-19",
+      "category": "הדרכת הורים",
+      "subcategory": "שגרת שינה",
+      "excerpt": "מעבר למיטת מעבר ממיטת תינוק או מלול הוא אחד השינויים המשמעותיים ביותר בחיי הפעוט והוריו. איך יודעים שהגיע הזמן הנכון, למה הלילות הופכים פתאום למאבק מתמשך, ומה אפשר לעשות כדי לייצר שגרת שינה נינוחה ובטוחה עבור כל המשפחה?",
+      "canonical_url": "https://kesher.saharoni.com/blog/toddler-bed-transition",
+      "content_sha256": "6aebd5cab87293be2b78cc848c4c9a8a4d3aab4ae5248f38e893183215451bab",
+      "video_title": "מעבר למיטת מעבר: למה הוא כל כך מאתגר – ומה עושים כשהילד מסרב להישאר במיטה",
+      "short_title": "מעבר למיטת מעבר: למה הוא כל כך מאתגר – ומה עושים כשהילד מסרב להישאר במיטה",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "מעבר למיטת מעבר: למה הוא כל כך מאתגר – ומה עושים כשהילד מסרב להישאר במיטה",
+        "description": "מעבר למיטת מעבר ממיטת תינוק או מלול הוא אחד השינויים המשמעותיים ביותר בחיי הפעוט והוריו. איך יודעים שהגיע הזמן הנכון, למה הלילות הופכים פתאום למאבק מתמשך, ומה אפשר לעשות כדי לייצר שגרת שינה נינוחה ובטוחה עבור כל המשפחה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/toddler-bed-transition\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "שגרת שינה"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: מעבר למיטת מעבר: למה הוא כל כך מאתגר – ומה עושים כשהילד מסרב להישאר במיטה",
+        "description": "מעבר למיטת מעבר ממיטת תינוק או מלול הוא אחד השינויים המשמעותיים ביותר בחיי הפעוט והוריו. איך יודעים שהגיע הזמן הנכון, למה הלילות הופכים פתאום למאבק מתמשך, ומה אפשר לעשות כדי לייצר שגרת שינה נינוחה ובטוחה עבור כל המשפחה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/toddler-bed-transition\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "שגרת שינה"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "e5a9c041-2e96-4266-a291-ef52dd78a9ed",
+    "raw_sha256": "fa1fe985e512deeca6d816bd12789f63ce967ba1d25ae9f69195174b7af90d38",
+    "final_sha256": "7bed1dea97d31ff86a26717d4c6819df720f940d097303f450239dfb93b39fca",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 72.567,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 72.567,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "fd8701cf-d5f5-44ce-8a86-f8e7766833e4",
+      "task_id": "7b272be9-f48e-44e8-a6db-db13d57d38d1",
+      "artifact_id": "7b272be9-f48e-44e8-a6db-db13d57d38d1",
+      "raw_sha256": "f3362b964519a6b3fcdd2cbde2967a34182a3b769436eb64a63c06914e17b779"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 72.567,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "fa1fe985e512deeca6d816bd12789f63ce967ba1d25ae9f69195174b7af90d38",
+      "final_sha256": "7bed1dea97d31ff86a26717d4c6819df720f940d097303f450239dfb93b39fca",
+      "raw_audio_sha256": "ef78aae6633d93e4329180f8ca01d471cf5271b80643b6133ae12efc6f8313d9",
+      "final_audio_sha256": "ef78aae6633d93e4329180f8ca01d471cf5271b80643b6133ae12efc6f8313d9",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 72.632018
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 72.632018
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "7bed1dea97d31ff86a26717d4c6819df720f940d097303f450239dfb93b39fca",
+      "raw_sha256": "fa1fe985e512deeca6d816bd12789f63ce967ba1d25ae9f69195174b7af90d38",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "0b396787e531756865b2268ac5a3376cc0b364d89dc9cc8ef9fe9bbf007e7b10",
+      "source_duration_seconds": 72.567,
+      "final_duration_seconds": 72.567,
+      "start_seconds": 69.567,
+      "end_seconds": 72.567,
+      "audio_source_sha256": "fa1fe985e512deeca6d816bd12789f63ce967ba1d25ae9f69195174b7af90d38"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261019-152740-6aebd5cab8",
+    "type": "article_short",
+    "youtube_id": "2rXJNYGIqRA",
+    "youtube_url": "https://youtu.be/2rXJNYGIqRA",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "0b396787e531756865b2268ac5a3376cc0b364d89dc9cc8ef9fe9bbf007e7b10",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
