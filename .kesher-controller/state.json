@@ -59,7 +59,7 @@
     "last_deploy_dispatch_at": "2026-10-19T03:18:30.223738+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39194069093,
-    "live_verified_at": "2026-10-19T04:00:51.448034+00:00"
+    "live_verified_at": "2026-10-19T04:01:15.985005+00:00"
   },
   "backlog": [
     {
@@ -1432,26 +1432,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T12:46:49.402443+00:00",
-      "from": "complete",
-      "to": "article_needed",
-      "reason": "owner_run_now_cycle_started",
-      "details": {
-        "idea_id": "pacifier-weaning-20261018-v1",
-        "publication_slot": "2026-10-19"
-      }
-    },
-    {
-      "at": "2026-10-18T12:46:58.537354+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "owner run-now article dispatched immediately",
-      "details": {
-        "attempt": 1,
-        "publication_slot": "2026-10-19"
-      }
-    },
-    {
       "at": "2026-10-18T12:50:50.242262+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2273,9 +2253,21 @@
         "operation": "full",
         "resume": 2
       }
+    },
+    {
+      "at": "2026-10-19T04:01:15.985029+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-19T04:01:17.693064+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-10-19T03:59:57.716951+00:00",
+  "updated_at": "2026-10-19T04:01:17.693089+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2294,7 +2286,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "rejected",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39197298571,
