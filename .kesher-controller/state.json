@@ -18,11 +18,13 @@
     "last_dispatch_at": "2026-10-19T05:42:15.034460+00:00",
     "pr_number": 1148,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1148",
-    "current_pr_head_sha": "260ae86910d5829272b8119ab35e64f68d99ef7d",
+    "current_pr_head_sha": "74e8547a1bde42303497ba6c00838efe7c2c53ec",
     "jules_head_sha": "260ae86910d5829272b8119ab35e64f68d99ef7d",
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "normalization_slot": "2026-10-19",
-    "normalization_dispatched_at": "2026-10-19T06:08:16.936709+00:00"
+    "normalization_dispatched_at": "2026-10-19T06:08:16.936709+00:00",
+    "normalization_run_id": 39208178702,
+    "normalized_head_sha": "74e8547a1bde42303497ba6c00838efe7c2c53ec"
   },
   "backlog": [
     {
@@ -2236,23 +2238,21 @@
     "short_origin_verified": true
   },
   "pending_dispatches": {
-    "normalize-article-pr.yml": {
-      "workflow": "normalize-article-pr.yml",
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
       "cycle": "2026-10-19",
       "inputs": {
-        "pr_number": "1148",
-        "slot": "2026-10-19"
+        "pr_number": "1148"
       },
-      "intent_at": "2026-10-19T06:08:01.592182+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-19T06:09:58.797836+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": 39208178702,
-      "dispatched_at": "2026-10-19T06:08:01.592182+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Article Generation",
-    "run_id": 39205913159,
+    "workflow": "Kesher Normalize Article PR",
+    "run_id": 39208178702,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-19"
