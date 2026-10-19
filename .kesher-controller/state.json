@@ -44,7 +44,7 @@
     "last_deploy_dispatch_at": "2026-10-19T07:26:38.361092+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39216012389,
-    "live_verified_at": "2026-10-19T08:39:32.513563+00:00"
+    "live_verified_at": "2026-10-19T08:40:09.254560+00:00"
   },
   "backlog": [
     {
@@ -1416,27 +1416,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T02:22:06.146567+00:00",
-      "from": "article_generating",
-      "to": "article_result_wait",
-      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
-      "details": {
-        "run_id": 39189537931,
-        "outcome": "ARTICLE_ALREADY_PUBLISHED",
-        "pr_url": ""
-      }
-    },
-    {
-      "at": "2026-10-19T02:24:26.909560+00:00",
-      "from": "article_result_wait",
-      "to": "article_generating",
-      "reason": "owner run-now article dispatched immediately",
-      "details": {
-        "attempt": 1,
-        "publication_slot": "2026-10-19"
-      }
-    },
-    {
       "at": "2026-10-19T02:25:51.611085+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2246,9 +2225,21 @@
         "operation": "full",
         "resume": 3
       }
+    },
+    {
+      "at": "2026-10-19T08:40:09.254589+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-19T08:40:11.771191+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-10-19T08:31:55.100053+00:00",
+  "updated_at": "2026-10-19T08:40:11.771214+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2267,7 +2258,7 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "rejected",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39223419980,
