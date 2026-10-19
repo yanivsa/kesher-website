@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "article_generating",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -34,7 +34,10 @@
     "pr_number": 1147,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1147",
     "current_pr_head_sha": "67ceb25908ec8fc03f119a4a9f97b4d6f86a73ce",
-    "jules_head_sha": "67ceb25908ec8fc03f119a4a9f97b4d6f86a73ce"
+    "jules_head_sha": "67ceb25908ec8fc03f119a4a9f97b4d6f86a73ce",
+    "normalization_status": "running",
+    "normalization_slot": "2026-10-19",
+    "normalization_dispatched_at": "2026-10-19T03:10:38.732228+00:00"
   },
   "backlog": [
     {
@@ -1407,12 +1410,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T12:21:31.871909+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-10-18T12:26:21.447942+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2194,9 +2191,19 @@
       "details": {
         "publication_slot": "2026-10-19"
       }
+    },
+    {
+      "at": "2026-10-19T03:10:38.732261+00:00",
+      "from": "article_generating",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1147,
+        "slot": "2026-10-19"
+      }
     }
   ],
-  "updated_at": "2026-10-19T02:50:56.654613+00:00",
+  "updated_at": "2026-10-19T03:10:38.732267+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2267,9 +2274,10 @@
         "slot": "2026-10-19"
       },
       "intent_at": "2026-10-19T03:10:23.985492+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39193430343,
+      "dispatched_at": "2026-10-19T03:10:23.985492+00:00"
     }
   },
   "last_child_notification": {
