@@ -147,7 +147,7 @@ class TestPrimaryKeywordContract(unittest.TestCase):
 
     def test_09_dedicated_fixture_for_potty_training_not_in_posts(self):
         """Contract test fixture for 'גמילה מטיטול' passes contract and is NOT published to posts.json."""
-        fixture_slug = "potty-training-toddlers"
+        fixture_slug = "potty-training-toddlers-test-fixture"
         fixture_post = {
             "id": fixture_slug,
             "slug": fixture_slug,
