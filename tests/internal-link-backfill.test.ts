@@ -2,9 +2,13 @@ import { describe, expect, it } from 'vitest';
 import publishedPosts from '../src/data/publishedPosts';
 import internalLinkPlan from '../scripts/internal-link-plan.json';
 
-const countHref = (html: string, href: string) => {
-  const escaped = href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return (html.match(new RegExp(`href=["']${escaped}["']`, 'g')) || []).length;
+const countTargetHref = (html: string, target: string) => {
+  const escapedTarget = target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const pattern = new RegExp(
+    `href=["'](?:https:\\/\\/kesher\\.saharoni\\.com)?\\/blog\\/${escapedTarget}(?:[?#][^"']*)?["']`,
+    'g',
+  );
+  return (html.match(pattern) || []).length;
 };
 
 describe('priority-1 internal-link backfill', () => {
@@ -14,10 +18,9 @@ describe('priority-1 internal-link backfill', () => {
       expect(post, `missing published source: ${entry.source}`).toBeDefined();
 
       for (const target of entry.targets) {
-        const href = `/blog/${target}`;
         expect(
-          countHref(post!.content, href),
-          `${entry.source} should contain exactly one ${href}`,
+          countTargetHref(post!.content, target),
+          `${entry.source} should contain exactly one /blog/${target}`,
         ).toBe(1);
       }
     }
