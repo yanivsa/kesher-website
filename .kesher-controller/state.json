@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -18,13 +18,18 @@
     "last_dispatch_at": "2026-10-19T17:58:58.253410+00:00",
     "pr_number": 1156,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1156",
-    "current_pr_head_sha": "eee3bd2b000cbc0d76685c6e3a15d63c857936fd",
+    "current_pr_head_sha": "75f9d0f9929af468eb997e8811763d818e4d9fd6",
     "jules_head_sha": "2e46ace492f078bc6e2c11235b6581bed196b659",
     "normalization_status": "complete",
     "normalization_slot": "2026-10-19",
     "normalization_dispatched_at": "2026-10-19T18:32:56.818479+00:00",
     "normalization_run_id": 39303406149,
-    "normalized_head_sha": "eee3bd2b000cbc0d76685c6e3a15d63c857936fd"
+    "normalization_drift_count": 1,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
+    "normalized_head_sha": "75f9d0f9929af468eb997e8811763d818e4d9fd6",
+    "image_head_sha": "75f9d0f9929af468eb997e8811763d818e4d9fd6",
+    "merge_candidate_sha": "75f9d0f9929af468eb997e8811763d818e4d9fd6"
   },
   "backlog": [
     {
@@ -1396,12 +1401,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T14:31:43.447573+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-10-19T14:37:13.217777+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2034,21 +2033,28 @@
         "attempt": 1,
         "pr_number": 1156
       }
+    },
+    {
+      "at": "2026-10-19T18:36:22.096546+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-19T18:34:39.676854+00:00",
+  "updated_at": "2026-10-19T18:36:22.096563+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 39303644748,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "Local",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-19T18:34:39.676820+00:00"
+    "last_dispatch_at": "2026-10-19T18:34:39.676820+00:00",
+    "artifact_sha256": "f5f395d4c77a2b71dfa293960a206c5a50187e0091f98b1ab1c2c6de1bdb50a1",
+    "source_id": "local://public/images/fallback/premarital/premarital_preparation_planning.jpg"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2098,6 +2104,18 @@
       "previous_run_id": null,
       "observed_active_run_id": 39303644748,
       "dispatched_at": "2026-10-19T18:34:11.887383+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "pr_number": "1156",
+        "slot": "2026-10-19"
+      },
+      "intent_at": "2026-10-19T18:35:55.188938+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
