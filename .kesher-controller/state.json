@@ -53,13 +53,13 @@
     "quality_content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-19T05:15:53.496917+00:00",
+    "quality_checked_at": "2026-10-19T05:17:53.173587+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-19T03:18:30.223738+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39194069093,
-    "live_verified_at": "2026-10-19T05:15:55.486545+00:00"
+    "live_verified_at": "2026-10-19T05:17:53.976692+00:00"
   },
   "backlog": [
     {
@@ -2313,7 +2313,7 @@
     "task_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff",
     "artifact_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff",
     "provider_status": "pending",
-    "verified": false,
+    "verified": true,
     "watchdog": {
       "identity": "long_video:potty-training-toddlers:08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210:video-20261019-070254-08f52aa15d-a2",
       "hard_started_at": "2026-10-19T04:03:08.186022+00:00",
@@ -2324,7 +2324,20 @@
     },
     "last_run_conclusion": "success",
     "pending_resume_ready": false,
-    "resume_dispatches": 3
+    "resume_dispatches": 3,
+    "youtube_id": "DJlIBnygorA",
+    "youtube_url": "https://youtu.be/DJlIBnygorA",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 112.367,
+    "content_duration_seconds": 112.375,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
@@ -2363,26 +2376,11 @@
       "previous_run_id": 39189537931,
       "observed_active_run_id": 39189808363,
       "dispatched_at": "2026-10-19T02:24:15.370242+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-19",
-      "inputs": {
-        "operation": "recovery",
-        "target_slug": "potty-training-toddlers",
-        "target_content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210",
-        "target_item_id": "video-20261019-070254-08f52aa15d-a2"
-      },
-      "intent_at": "2026-10-19T04:51:53.953882+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39197298571,
-      "observed_active_run_id": 39201627006,
-      "dispatched_at": "2026-10-19T04:51:53.953882+00:00"
     }
   },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 39197298571,
+    "run_id": 39201627006,
     "conclusion": "success",
     "source_slug": "potty-training-toddlers",
     "slot": "2026-10-19"
