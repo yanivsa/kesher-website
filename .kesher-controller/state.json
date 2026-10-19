@@ -59,7 +59,7 @@
     "last_deploy_dispatch_at": "2026-10-19T03:18:30.223738+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39194069093,
-    "live_verified_at": "2026-10-19T05:20:54.876238+00:00"
+    "live_verified_at": "2026-10-19T05:21:16.397986+00:00"
   },
   "backlog": [
     {
@@ -1432,33 +1432,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T13:45:45.952105+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-19"
-      }
-    },
-    {
-      "at": "2026-10-18T13:50:59.676046+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-19"
-      }
-    },
-    {
-      "at": "2026-10-18T13:55:42.151395+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-19"
-      }
-    },
-    {
       "at": "2026-10-18T13:57:53.572869+00:00",
       "from": "article_generating",
       "to": "article_normalizing",
@@ -2262,9 +2235,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-10-19T05:21:16.398010+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-19T05:21:17.265759+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-19T05:21:20.297083+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-10-19T05:18:12.713441+00:00",
+  "updated_at": "2026-10-19T05:21:20.297103+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
