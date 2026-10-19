@@ -1401,19 +1401,9 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1148 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-19T06:40:57.800913+00:00"
+    "at": "2026-10-19T06:45:48.277808+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-18T22:56:06.335677+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261019-014058-ecf4f1b219-a3",
-        "task_id": "d22e56ec-3322-4ff8-bdab-7431e5d6b2d0"
-      }
-    },
     {
       "at": "2026-10-18T23:00:57.334304+00:00",
       "from": "long_video_watchdog_wait",
@@ -2192,9 +2182,18 @@
       "details": {
         "message": "PR #1148 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-10-19T06:45:48.277824+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1148 exceeded maximum auto-merge dispatch budget (3 dispatches)"
+      }
     }
   ],
-  "updated_at": "2026-10-19T06:40:57.800938+00:00",
+  "updated_at": "2026-10-19T06:45:48.277831+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
