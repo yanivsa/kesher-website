@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-19T10:40:55.047742+00:00",
+    "next_retry_at": null,
     "run_id": 39235290942,
     "processed_run_id": 39235290942,
     "provider_id": null,
@@ -15,9 +15,9 @@
     "failure_count_by_type": {
       "COMPLETED_WITHOUT_PR": 1
     },
-    "attempts": 1,
+    "attempts": 2,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-10-19T10:08:36.114258+00:00",
+    "last_dispatch_at": "2026-10-19T10:46:01.827546+00:00",
     "deploy_run_id": 39237192714,
     "next_deploy_retry_at": "2026-10-19T10:35:14.261239+00:00",
     "last_run_conclusion": "failure",
@@ -1421,12 +1421,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T05:31:02.570017+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-10-19T05:32:18.377537+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2208,9 +2202,19 @@
       "details": {
         "retry_at": "2026-10-19T10:40:55.047742+00:00"
       }
+    },
+    {
+      "at": "2026-10-19T10:46:01.827576+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 2,
+        "publication_slot": "2026-10-19"
+      }
     }
   ],
-  "updated_at": "2026-10-19T10:40:50.822375+00:00",
+  "updated_at": "2026-10-19T10:46:01.827582+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2268,9 +2272,10 @@
         "topic_brief": "כתוב מאמר עברי מקצועי ומעשי להורים בנושא מעבר למיטת מעבר: מתי הזמן הנכון להעביר פעוט ממיטת תינוק למיטת מעבר, סימני מוכנות, הכנת החדר והילד לשינוי, התמודדות עם קימה בלילה וירידה מהמיטה, ואיך לבסס שגרת שינה בטוחה ורגועה ללא מאבקים.\n\nIdea Request ID: toddler-bed-transition-20261019-v1\nRequired Primary Keyword: מעבר למיטת מעבר"
       },
       "intent_at": "2026-10-19T10:45:50.776400+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39235290942,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-19T10:45:50.776400+00:00"
     }
   },
   "last_child_notification": {
