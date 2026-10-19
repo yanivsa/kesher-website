@@ -25,6 +25,16 @@ SEMANTIC_KEYWORD_DICTIONARY: dict[str, set[str]] = {
     # Separation anxiety
     "חרדת נטישה": {"separation", "anxiety"},
     "חרדת פרידה": {"separation", "anxiety"},
+    # Daycare, Nursery & Early Childhood Transitions
+    "מעבר ממטפלת למעון": {"caregiver", "daycare", "nursery", "transition"},
+    "מעבר למעון": {"daycare", "nursery", "transition"},
+    "מעבר לפעוטון": {"toddler", "daycare", "nursery", "transition"},
+    "הסתגלות למעון": {"daycare", "nursery", "adaptation", "transition"},
+    "הסתגלות לפעוטון": {"toddler", "daycare", "nursery", "adaptation", "transition"},
+    "מעבר לגן": {"kindergarten", "preschool", "daycare", "transition"},
+    "הסתגלות לגן": {"kindergarten", "preschool", "adaptation", "transition"},
+    "מעבר למיטת מעבר": {"toddler", "bed", "crib", "transition"},
+    "מעבר לחדר נפרד": {"separate", "room", "baby", "transition"},
     # Gifted children / Education
     "ילד מחונן": {"gifted", "child", "giftedness"},
     "ילדים מחוננים": {"gifted", "children", "giftedness"},
