@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "long_video_watchdog_wait",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -59,7 +59,7 @@
     "last_deploy_dispatch_at": "2026-10-19T03:18:30.223738+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39194069093,
-    "live_verified_at": "2026-10-19T03:59:39.734867+00:00"
+    "live_verified_at": "2026-10-19T03:59:53.227330+00:00"
   },
   "backlog": [
     {
@@ -1432,12 +1432,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T12:46:10.666191+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-18T12:46:11.528472+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2269,9 +2263,15 @@
         "item_id": "video-20261019-062800-08f52aa15d",
         "task_id": "1e74a1f9-8f8f-4138-b47a-d1a36580e172"
       }
+    },
+    {
+      "at": "2026-10-19T03:59:53.227357+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-19T03:56:01.860710+00:00",
+  "updated_at": "2026-10-19T03:59:53.227365+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2290,11 +2290,11 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "generating",
+    "status": "rejected",
     "last_error": null,
-    "next_retry_at": "2026-10-19T03:36:48.300451+00:00",
+    "next_retry_at": null,
     "run_id": 39196732418,
-    "processed_run_id": 39194600422,
+    "processed_run_id": 39196732418,
     "provider_id": "1e74a1f9-8f8f-4138-b47a-d1a36580e172",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
@@ -2360,6 +2360,20 @@
       "previous_run_id": 39189537931,
       "observed_active_run_id": 39189808363,
       "dispatched_at": "2026-10-19T02:24:15.370242+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "potty-training-toddlers",
+        "target_content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210",
+        "target_item_id": "video-20261019-062800-08f52aa15d"
+      },
+      "intent_at": "2026-10-19T03:59:36.308685+00:00",
+      "status": "intent",
+      "previous_run_id": 39196732418,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3019,5 +3033,40 @@
       "archived_at": "2026-10-19T02:14:18.702731+00:00",
       "reason": "owner_run_now_cycle_started"
     }
-  ]
+  ],
+  "video": {
+    "attempt_count": 1,
+    "status": "rejected",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": 39196732418,
+    "processed_run_id": 39196732418,
+    "provider_id": "1e74a1f9-8f8f-4138-b47a-d1a36580e172",
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-10-19T03:52:33.544291+00:00",
+    "attempts": 1,
+    "item_id": "video-20261019-062800-08f52aa15d",
+    "source_slug": "potty-training-toddlers",
+    "source_content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210",
+    "content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210",
+    "source_id": "7ed36775-9ce2-4f19-9979-412127868d24",
+    "task_id": "1e74a1f9-8f8f-4138-b47a-d1a36580e172",
+    "artifact_id": "1e74a1f9-8f8f-4138-b47a-d1a36580e172",
+    "provider_status": "pending",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:potty-training-toddlers:08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210:video-20261019-062800-08f52aa15d",
+      "hard_started_at": "2026-10-19T03:28:06.942240+00:00",
+      "last_progress_at": "2026-10-19T03:30:45.559496+00:00",
+      "last_fingerprint": "8c3654fa139a8eb393f7054047d780533e753bbff2254fefebf43f711d25394e",
+      "recovery_count": 1,
+      "last_recovery_at": "2026-10-19T03:52:06.832967+00:00"
+    },
+    "last_run_conclusion": "success",
+    "pending_resume_ready": false,
+    "resume_dispatches": 1
+  }
 }
