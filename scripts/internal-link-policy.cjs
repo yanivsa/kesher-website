@@ -52,6 +52,34 @@ function validateInternalLinkPlan(posts, plan) {
       if (target === entry.source) errors.push(`Plan has self-link: ${entry.source}`);
       if (!ids.has(target)) errors.push(`Plan has missing target for ${entry.source}: ${target}`);
     }
+
+    const placements = Array.isArray(entry.placements) ? entry.placements : [];
+    const seenPlacements = new Set();
+    for (const placement of placements) {
+      const target = placement && typeof placement.target === 'string' ? placement.target : '';
+      if (!target) {
+        errors.push(`Plan has invalid placement target for ${entry.source}`);
+        continue;
+      }
+      if (seenPlacements.has(target)) {
+        errors.push(`Plan has duplicate placement metadata for ${entry.source}: ${target}`);
+      }
+      seenPlacements.add(target);
+      if (!seenTargets.has(target)) {
+        errors.push(`Plan placement target is not planned for ${entry.source}: ${target}`);
+      }
+      if (typeof placement.anchor !== 'string' || placement.anchor.trim().length < 4) {
+        errors.push(`Plan placement missing anchor for ${entry.source}: ${target}`);
+      }
+      if (typeof placement.placementCue !== 'string' || placement.placementCue.trim().length < 12) {
+        errors.push(`Plan placement missing cue for ${entry.source}: ${target}`);
+      }
+    }
+    for (const target of seenTargets) {
+      if (!seenPlacements.has(target)) {
+        errors.push(`Plan missing placement metadata for ${entry.source}: ${target}`);
+      }
+    }
   }
   return errors;
 }
