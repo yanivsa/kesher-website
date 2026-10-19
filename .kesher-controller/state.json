@@ -24,7 +24,7 @@
     "normalization_slot": "2026-10-19",
     "normalization_dispatched_at": "2026-10-19T18:38:39.799660+00:00",
     "normalization_run_id": 39304215670,
-    "normalization_drift_count": 62,
+    "normalization_drift_count": 63,
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 39303902186,
@@ -1402,12 +1402,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T17:16:06.927796+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-10-19T17:17:43.006261+00:00",
       "from": "complete",
       "to": "blocked",
@@ -2231,9 +2225,18 @@
       "details": {
         "message": "Article PR head mutated repeatedly (62 times) after trusted stages; branch quiescence failed"
       }
+    },
+    {
+      "at": "2026-10-19T23:30:50.960503+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
+      "details": {
+        "message": "Article PR head mutated repeatedly (63 times) after trusted stages; branch quiescence failed"
+      }
     }
   ],
-  "updated_at": "2026-10-19T23:25:56.978408+00:00",
+  "updated_at": "2026-10-19T23:30:50.960508+00:00",
   "image": {
     "attempt_count": 2,
     "status": "running",
@@ -3966,7 +3969,7 @@
   "last_error": {
     "stage": "article",
     "code": "ARTICLE_JULES_UNSTABLE_MUTATION",
-    "message": "Article PR head mutated repeatedly (62 times) after trusted stages; branch quiescence failed",
-    "at": "2026-10-19T23:25:56.978381+00:00"
+    "message": "Article PR head mutated repeatedly (63 times) after trusted stages; branch quiescence failed",
+    "at": "2026-10-19T23:30:50.960483+00:00"
   }
 }
