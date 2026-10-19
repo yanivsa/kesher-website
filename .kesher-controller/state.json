@@ -2208,7 +2208,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-19T06:10:32.077273+00:00",
     "artifact_sha256": "dc454a9ce645ebb23cd5bd43953f46dce127971179cf2e5a8e61b03ca3ee6fee",
-    "source_id": "local://public/images/fallback/gifted/gifted_child_learning_focus.jpg"
+    "source_id": "local://public/images/fallback/gifted/gifted_child_learning_focus.jpg",
+    "run_id": 39208394334
   },
   "long_video": {
     "attempt_count": 0,
