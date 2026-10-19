@@ -144,7 +144,21 @@ class V3GitHubClient(core.GitHubClient):
         post = new_posts[0]
         head_sha = str((pr.get("head") or {}).get("sha") or "")
         body = str(pr.get("body") or "")
-        if article_contract.image_proof_errors(post, body, head_sha, require_head=require_head):
+        evidence_head = str(article_contract.exact_field(body, "Image Evidence Head") or "").strip().lower()
+        effective_head = head_sha
+        if require_head and evidence_head and head_sha.lower() != evidence_head:
+            try:
+                commit_payload = self.request("GET", f"{self.api}/commits/{head_sha}", allow_404=True)
+                parents = [
+                    str(p.get("sha") or "").strip().lower()
+                    for p in (commit_payload.get("parents") or [])
+                    if isinstance(p, dict)
+                ]
+                if len(parents) >= 2 and parents[0] == evidence_head:
+                    effective_head = evidence_head
+            except Exception:
+                pass
+        if article_contract.image_proof_errors(post, body, effective_head, require_head=require_head):
             return False, {}
         quoted = urllib_quote("public" + post["image"])
         try:
@@ -165,7 +179,7 @@ class V3GitHubClient(core.GitHubClient):
         if article_contract.image_proof_errors(
             post,
             body,
-            head_sha,
+            effective_head,
             data,
             require_head=require_head,
         ):
