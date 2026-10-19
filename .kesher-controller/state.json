@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "article_live",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -76,7 +76,7 @@
     "last_deploy_dispatch_at": "2026-10-18T21:58:48.072711+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39170192374,
-    "live_verified_at": "2026-10-19T01:25:47.719147+00:00"
+    "live_verified_at": "2026-10-19T01:26:00.789863+00:00"
   },
   "backlog": [
     {
@@ -1449,18 +1449,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T11:21:12.696453+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-18T11:26:20.615412+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-18T11:26:21.738448+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2198,9 +2186,15 @@
         "item_id": "video-20261019-014058-ecf4f1b219-a3",
         "youtube_url": "https://youtu.be/MPjgzNBkp4M"
       }
+    },
+    {
+      "at": "2026-10-19T01:26:01.429103+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-10-18T23:11:08.487626+00:00",
+  "updated_at": "2026-10-19T01:26:01.429119+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2296,7 +2290,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "pacifier-weaning",
+        "derive_content_sha256": "ecf4f1b219ba5812e3415dc818f951ef91761b9ed926eaaefe56e68418dd2a5a",
+        "derive_long_item_id": "video-20261019-014058-ecf4f1b219-a3"
+      },
+      "intent_at": "2026-10-19T01:25:44.568894+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
     "run_id": 39173173727,
