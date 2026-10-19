@@ -72,11 +72,11 @@
     "quality_content_sha256": "6aebd5cab87293be2b78cc848c4c9a8a4d3aab4ae5248f38e893183215451bab",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-19T11:54:51.987220+00:00",
+    "quality_checked_at": "2026-10-19T12:01:03.925659+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-19T11:22:35.545680+00:00",
-    "live_verified_at": "2026-10-19T11:55:18.691415+00:00"
+    "live_verified_at": "2026-10-19T12:01:04.720459+00:00"
   },
   "backlog": [
     {
