@@ -102,6 +102,49 @@ class JulesArticleRunnerV4Tests(unittest.TestCase):
         self.assertIn("Headline Frame: ...", contract)
         self.assertIn("may not be misleading", contract)
 
+    def test_preflight_allows_different_topic_on_same_date_when_owner_brief_present(self):
+        posts = [
+            {"id": "pacifier-weaning", "date": "2026-10-19", "primaryKeyword": "גמילה ממוצץ", "title": "גמילה ממוצץ"},
+        ]
+        brief = "נושא גמילה מטיטול\n\nRequired Primary Keyword: גמילה מטיטול"
+        with mock.patch.dict(
+            "os.environ",
+            {"KESHER_ARTICLE_TOPIC_BRIEF": brief, "KESHER_ARTICLE_TOPIC_BRIEF_FILE": "", "KESHER_TEST_MODE": ""},
+            clear=False,
+        ), mock.patch.object(
+            runner.v3, "_load_local_posts", return_value=posts
+        ), mock.patch.object(
+            runner.v3, "open_article_prs_for_slot", return_value=[]
+        ):
+            res = runner.preflight("2026-10-19", "token")
+        self.assertEqual(res, "READY")
+
+    def test_preflight_blocks_when_same_required_keyword_already_published(self):
+        posts = [
+            {"id": "potty-training", "date": "2026-10-19", "primaryKeyword": "גמילה מטיטול", "title": "גמילה מטיטול"},
+        ]
+        brief = "נושא גמילה מטיטול\n\nRequired Primary Keyword: גמילה מטיטול"
+        with mock.patch.dict(
+            "os.environ",
+            {"KESHER_ARTICLE_TOPIC_BRIEF": brief, "KESHER_ARTICLE_TOPIC_BRIEF_FILE": "", "KESHER_TEST_MODE": ""},
+            clear=False,
+        ), mock.patch.object(
+            runner.v3, "_load_local_posts", return_value=posts
+        ):
+            res = runner.preflight("2026-10-19", "token")
+        self.assertEqual(res, "ARTICLE_ALREADY_PUBLISHED")
+
+    def test_build_prompt_scopes_stop_condition_to_required_keyword(self):
+        brief = "מאמר על טיטולים\n\nRequired Primary Keyword: גמילה מטיטול"
+        with mock.patch.dict(
+            "os.environ",
+            {"KESHER_ARTICLE_TOPIC_BRIEF": brief, "KESHER_ARTICLE_TOPIC_BRIEF_FILE": ""},
+            clear=False,
+        ):
+            prompt = runner.build_prompt("2026-10-19", "POLICY")
+        self.assertIn("Primary Keyword == 'גמילה מטיטול'", prompt)
+        self.assertNotIn("date == 2026-10-19", prompt)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -261,9 +261,73 @@ This requirement is mandatory even when every other content/style check passes.
 """
 
 
+def preflight(slot: str, token: str) -> str:
+    posts = v3._load_local_posts()
+    if v3.test_mode_enabled():
+        print(f"KESHER_TEST_MODE_BYPASS slot={slot} duplicate_guard=bypassed", flush=True)
+        return "READY"
+
+    brief = load_owner_topic_brief()
+    required = parse_owner_required_keyword(brief) if brief else None
+
+    if required:
+        if any(
+            isinstance(post, dict) and str(post.get("primaryKeyword") or "").strip() == required
+            for post in posts
+        ):
+            return "ARTICLE_ALREADY_PUBLISHED"
+    else:
+        if v3.core.article_exists_for_slot(posts, slot):
+            return "ARTICLE_ALREADY_PUBLISHED"
+
+    prs = v3.open_article_prs_for_slot(token, slot)
+    if required:
+        prs = [
+            pr for pr in prs
+            if required in str(pr.get("title") or "")
+            or required in str(pr.get("body") or "")
+        ]
+
+    if len(prs) > 1:
+        raise v3.core.ArticleRunnerError(
+            "DUPLICATE_ARTICLE_PRS",
+            f"duplicate open article PRs detected for slot {slot}: {len(prs)}",
+        )
+    if len(prs) == 1:
+        return f"ARTICLE_ALREADY_IN_PROGRESS pr={prs[0].get('number')}"
+    return "READY"
+
+
+def configure_session_identity(slot: str) -> None:
+    if v3.test_mode_enabled():
+        v3.configure_test_session_identity(slot)
+        return
+    brief = load_owner_topic_brief()
+    required = parse_owner_required_keyword(brief) if brief else None
+    if required:
+        kw_hash = hashlib.sha256(required.encode("utf-8")).hexdigest()[:10]
+
+        def _owner_title(candidate_slot: str) -> str:
+            return f"Kesher article {candidate_slot} kw-{kw_hash}"
+
+        v3.core.slot_session_title = _owner_title
+    else:
+        v3.core.slot_session_title = v3._legacy_slot_session_title
+
+
 def build_prompt(slot: str, policy: str) -> str:
     topic_brief = load_owner_topic_brief()
     prompt = _v3_build_prompt(slot, policy)
+    required = parse_owner_required_keyword(topic_brief) if topic_brief else None
+    if required:
+        prompt = prompt.replace(
+            f"If current `main` already contains an article with `date == {slot}`",
+            f"If current `main` already contains an article with Primary Keyword == '{required}'",
+        )
+        prompt = prompt.replace(
+            f"or a currently open `Publish Kesher article:` PR already contains an article with `date == {slot}`",
+            f"or a currently open `Publish Kesher article:` PR already targets the Primary Keyword '{required}'",
+        )
     if not topic_brief:
         prompt += VIRAL_TOPIC_DISCOVERY_CONTRACT
     prompt += SEARCH_FIRST_CONTRACT + PRIMARY_KEYWORD_CONTRACT + EVIDENCE_CONTRACT
@@ -293,9 +357,8 @@ def persist_owner_keyword_result_metadata() -> None:
 
 
 def main() -> int:
-    # V3 remains the implementation owner for slot-scoped identity, test mode,
-    # safe Jules session reuse and terminal PR settling. Only the prompt contract
-    # changes here.
+    v3.configure_test_session_identity = configure_session_identity
+    v3.preflight = preflight
     v3.build_prompt = build_prompt
     code = v3.main()
     if code == 0:
