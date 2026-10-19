@@ -689,7 +689,12 @@ def recover_persisted_youtube_id(state: dict[str, Any], item: dict[str, Any]) ->
     except pipeline.PipelineError as exc:
         if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote "):
             raise
-        pipeline.repair_persisted_youtube_metadata(item, token)
+        try:
+            pipeline.repair_persisted_youtube_metadata(item, token)
+        except pipeline.PipelineError as repair_exc:
+            if "HTTP 403" not in str(repair_exc):
+                raise
+            print("WARNING: YouTube metadata repair returned HTTP 403 (upload token scope insufficient for video.update); continuing to verification...")
         verification = pipeline.verify_public_upload(item, token)
     item["youtube_verification"] = verification
     item["youtube_url"] = f"https://www.youtube.com/watch?v={item['youtube_id']}"

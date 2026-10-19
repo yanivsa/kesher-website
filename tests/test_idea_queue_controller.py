@@ -98,7 +98,7 @@ class IdeaRunNowTests(unittest.TestCase):
         self.assertEqual([row["idea_id"] for row in st["idea_queue"]],["pacifier-weaning-20261018-v1","potty"])
         self.assertTrue(st["idea_queue"][0]["run_now"])
 
-    def test_run_now_tick_dispatches_article_immediately_to_next_free_publication_slot(self):
+    def test_run_now_tick_dispatches_article_for_current_israel_day(self):
         st=self.complete_state()
         posts=[{"id":"today","date":"2026-10-18","title":"היום","content":"<p>x</p>","category":"הדרכת הורים","excerpt":"x"}]
         gh=FakeGitHub(st,posts)
@@ -108,12 +108,73 @@ class IdeaRunNowTests(unittest.TestCase):
         self.assertEqual(action.kind,"dispatch_article")
         article_dispatches=[row for row in gh.dispatches if row[0]==core.ARTICLE_WORKFLOW]
         self.assertEqual(len(article_dispatches),1)
-        self.assertEqual(article_dispatches[0][1]["slot"],"2026-10-19")
+        self.assertEqual(article_dispatches[0][1]["slot"],"2026-10-18")
         self.assertIn("Required Primary Keyword: גמילה ממוצץ",article_dispatches[0][1]["topic_brief"])
         self.assertEqual(state["active_idea"]["idea_id"],"pacifier-weaning-20261018-v1")
-        self.assertEqual(state["active_idea"]["publication_slot"],"2026-10-19")
+        self.assertEqual(state["active_idea"]["publication_slot"],"2026-10-18")
         self.assertEqual([row["idea_id"] for row in state["idea_queue"]],["potty"])
         self.assertEqual(state["status"],"article_generating")
+
+    def test_run_now_when_utc_and_israel_dates_differ(self):
+        st=self.complete_state()
+        st["cycle"]="2026-10-19"
+        posts=[{"id":"today","date":"2026-10-19","title":"היום","content":"<p>x</p>","category":"הדרכת הורים","excerpt":"x"}]
+        gh=FakeGitHub(st,posts)
+        # 22:30 UTC on 2026-10-18 is 01:30 IDT on 2026-10-19 in Israel
+        ctrl=stabilized.StabilizedRuntimeV5Controller(gh,FakeSite(),now=datetime(2026,10,19,1,30,tzinfo=TZ))
+        with mock.patch.dict(os.environ,self.pacifier_env(),clear=False):
+            state,action=ctrl.tick()
+        self.assertEqual(action.kind,"dispatch_article")
+        article_dispatches=[row for row in gh.dispatches if row[0]==core.ARTICLE_WORKFLOW]
+        self.assertEqual(len(article_dispatches),1)
+        self.assertEqual(article_dispatches[0][1]["slot"],"2026-10-19")
+        self.assertEqual(state["active_idea"]["publication_slot"],"2026-10-19")
+
+    def test_run_now_near_midnight(self):
+        st_before=self.complete_state()
+        gh_before=FakeGitHub(st_before,[])
+        ctrl_before=stabilized.StabilizedRuntimeV5Controller(gh_before,FakeSite(),now=datetime(2026,10,18,23,55,tzinfo=TZ))
+        with mock.patch.dict(os.environ,self.pacifier_env(),clear=False):
+            state_before,action_before=ctrl_before.tick()
+        self.assertEqual(state_before["active_idea"]["publication_slot"],"2026-10-18")
+
+        st_after=self.complete_state()
+        st_after["cycle"]="2026-10-19"
+        gh_after=FakeGitHub(st_after,[])
+        ctrl_after=stabilized.StabilizedRuntimeV5Controller(gh_after,FakeSite(),now=datetime(2026,10,19,0,5,tzinfo=TZ))
+        with mock.patch.dict(os.environ,self.pacifier_env(),clear=False):
+            state_after,action_after=ctrl_after.tick()
+        self.assertEqual(state_after["active_idea"]["publication_slot"],"2026-10-19")
+
+    def test_run_now_reconciles_multiple_articles_same_day_without_duplicates(self):
+        st=self.complete_state()
+        st["active_idea"]={"idea_id":"pacifier","topic_brief":"מוצץ","required_primary_keyword":"גמילה ממוצץ","run_now":True,"publication_slot":"2026-10-18","status":"claimed"}
+        st["article"]={"attempt_count":1,"attempts":1,"status":"running","slug":"pacifier-weaning"}
+        st["owner_cycle_archive"]=[{"article":{"slug":"today"}}]
+        posts=[
+            {"id":"today","date":"2026-10-18","title":"היום","content":"<p>x</p>","category":"הדרכת הורים","excerpt":"x"},
+            {"id":"pacifier-weaning","date":"2026-10-18","title":"גמילה ממוצץ","content":"<p>x</p>","category":"הדרכת הורים","excerpt":"x"},
+        ]
+        gh=FakeGitHub(st,posts)
+        ctrl=stabilized.StabilizedRuntimeV5Controller(gh,FakeSite(),now=datetime(2026,10,18,15,0,tzinfo=TZ))
+        ctrl._active_state_ref=st
+        reconciled=ctrl._reconcile_existing_current_day_article(st,posts)
+        self.assertEqual(len(reconciled),1)
+        self.assertEqual(core.canonical_slug(reconciled[0]),"pacifier-weaning")
+
+    def test_run_now_ignores_archived_articles_before_new_article_is_merged(self):
+        st=self.complete_state()
+        st["active_idea"]={"idea_id":"pacifier","topic_brief":"מוצץ","required_primary_keyword":"גמילה ממוצץ","run_now":True,"publication_slot":"2026-10-18","status":"claimed"}
+        st["article"]={"attempts":0}
+        st["owner_cycle_archive"]=[{"article":{"slug":"today"}}]
+        posts=[
+            {"id":"today","date":"2026-10-18","title":"היום","content":"<p>x</p>","category":"הדרכת הורים","excerpt":"x"},
+        ]
+        gh=FakeGitHub(st,posts)
+        ctrl=stabilized.StabilizedRuntimeV5Controller(gh,FakeSite(),now=datetime(2026,10,18,15,0,tzinfo=TZ))
+        ctrl._active_state_ref=st
+        reconciled=ctrl._reconcile_existing_current_day_article(st,posts)
+        self.assertEqual(len(reconciled),0)
 
     def test_run_now_active_cycle_survives_midnight_rollover(self):
         st=self.complete_state()

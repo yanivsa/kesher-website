@@ -1598,6 +1598,111 @@ class YoutubeMetadataRecoveryTest(unittest.TestCase):
         self.assertEqual(item["status"], "uploaded")
         mock_repair.assert_called_once_with(item, "token")
 
+    def test_verify_public_upload_retries_transient_remote_metadata_mismatch_until_match(self) -> None:
+        item = self._item()
+        expected = item["youtube_metadata"]
+        transient_row = {
+            "id": item["youtube_id"],
+            "snippet": {
+                "channelId": pipeline.YOUTUBE_CHANNEL_ID,
+                "title": expected["title"],
+                "description": expected["description"],
+                "tags": [],
+                "categoryId": "22",
+                "defaultLanguage": "he",
+                "defaultAudioLanguage": "he",
+            },
+            "status": {"privacyStatus": "public"},
+            "processingDetails": {"processingStatus": "processing"},
+        }
+        settled_row = {
+            "id": item["youtube_id"],
+            "snippet": {
+                **transient_row["snippet"],
+                "tags": expected["tags"],
+            },
+            "status": {"privacyStatus": "public"},
+            "processingDetails": {"processingStatus": "succeeded"},
+        }
+        with mock.patch.object(
+            pipeline, "youtube_get", side_effect=[{"items": [transient_row]}, {"items": [settled_row]}]
+        ), mock.patch.object(pipeline.time, "sleep"):
+            proof = pipeline.verify_public_upload(item, "token", timeout_seconds=60)
+        self.assertEqual(proof["video_id"], item["youtube_id"])
+        self.assertEqual(proof["processing_status"], "succeeded")
+
+    def test_verify_public_upload_raises_when_deadline_exceeded_with_metadata_mismatch(self) -> None:
+        item = self._item()
+        expected = item["youtube_metadata"]
+        wrong_row = {
+            "id": item["youtube_id"],
+            "snippet": {
+                "channelId": pipeline.YOUTUBE_CHANNEL_ID,
+                "title": expected["title"],
+                "description": expected["description"],
+                "tags": ["wrong"],
+                "categoryId": "22",
+                "defaultLanguage": "he",
+                "defaultAudioLanguage": "he",
+            },
+            "status": {"privacyStatus": "public"},
+            "processingDetails": {"processingStatus": "succeeded"},
+        }
+        with mock.patch.object(pipeline, "youtube_get", return_value={"items": [wrong_row]}):
+            with self.assertRaisesRegex(pipeline.PipelineError, "PUBLIC_METADATA_INVALID: remote tags differ"):
+                pipeline.verify_public_upload(item, "token", timeout_seconds=0)
+
+    def test_repair_persisted_youtube_metadata_handles_403_and_rechecks(self) -> None:
+        item = self._item()
+        expected = item["youtube_metadata"]
+        wrong = {
+            "id": item["youtube_id"],
+            "snippet": {
+                "channelId": pipeline.YOUTUBE_CHANNEL_ID,
+                "title": expected["title"],
+                "description": expected["description"],
+                "tags": ["שגוי"],
+                "categoryId": "22",
+                "defaultLanguage": "he",
+                "defaultAudioLanguage": "he",
+            },
+        }
+        settled = {
+            "id": item["youtube_id"],
+            "snippet": {**wrong["snippet"], "tags": expected["tags"]},
+        }
+        response_403 = mock.Mock(status_code=403)
+        with mock.patch.object(
+            pipeline, "youtube_get", side_effect=[{"items": [wrong]}, {"items": [settled]}]
+        ), mock.patch.object(pipeline.requests, "put", return_value=response_403):
+            row = pipeline.repair_persisted_youtube_metadata(item, "token")
+        self.assertEqual(row["id"], item["youtube_id"])
+
+    def test_upload_only_handles_403_repair_when_public_verification_succeeds(self) -> None:
+        item = self._item()
+        item["type"] = "video_overview"
+        item["youtube_metadata"] = pipeline.publication_metadata(item["source"], "overview")
+        item["youtube_id"] = "existing-id"
+        item["status"] = "uploading"
+        item["technical_verified"] = True
+        state = {"version": 1, "items": [item]}
+
+        with mock.patch.object(pipeline, "load_state", return_value=state), \
+             mock.patch.object(pipeline, "save_state"), \
+             mock.patch.object(pipeline, "youtube_access_token", return_value="token"), \
+             mock.patch.object(pipeline, "verify_authenticated_channel"), \
+             mock.patch.object(pipeline, "verify_public_upload", side_effect=[
+                 pipeline.PipelineError("PUBLIC_METADATA_INVALID: remote tags differ from source-derived tags"),
+                 {"channel_id": pipeline.YOUTUBE_CHANNEL_ID, "privacy_status": "public", "processing_status": "succeeded"},
+             ]), \
+             mock.patch.object(pipeline, "repair_persisted_youtube_metadata", side_effect=pipeline.PipelineError("YouTube metadata repair failed with HTTP 403")):
+            res = pipeline.upload_only(item_id=item["id"], state=state)
+
+        self.assertEqual(res, 0)
+        self.assertTrue(item["uploaded"])
+        self.assertEqual(item["status"], "uploaded")
+
+
 if __name__ == "__main__":
     unittest.main()
 

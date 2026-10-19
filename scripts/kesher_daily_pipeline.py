@@ -2038,7 +2038,9 @@ def repair_persisted_youtube_metadata(item: dict[str, Any], token: str) -> dict[
         json=body,
         timeout=60,
     )
-    if response.status_code != 200:
+    if response.status_code == 403:
+        print(f"WARNING: YouTube metadata repair PUT returned HTTP 403 (upload-only scope)")
+    elif response.status_code != 200:
         raise PipelineError(f"YouTube metadata repair failed with HTTP {response.status_code}")
 
     refreshed = youtube_get(
@@ -2058,6 +2060,7 @@ def repair_persisted_youtube_metadata(item: dict[str, Any], token: str) -> dict[
 
 def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int = 900) -> dict[str, Any]:
     deadline = time.monotonic() + timeout_seconds
+    last_metadata_error = None
     while True:
         payload = youtube_get(
             "videos", token,
@@ -2072,14 +2075,19 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
         processing = row.get("processingDetails") or {}
         try:
             metadata_evidence = match_youtube_metadata(item, row)
+            last_metadata_error = None
         except VerificationError as exc:
-            raise PipelineError(str(exc)) from exc
-        uploaded_description = str(snippet.get("description", ""))
-        validate_youtube_description_links(uploaded_description, str((item.get("source") or {}).get("canonical_url") or ""))
-        require_hebrew(str(snippet.get("title", "")), "uploaded title")
-        require_hebrew(uploaded_description, "uploaded description", allow_url=True)
+            if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote "):
+                raise PipelineError(str(exc)) from exc
+            last_metadata_error = exc
+            metadata_evidence = None
+
         process_status = processing.get("processingStatus")
-        if status.get("privacyStatus") == "public" and process_status == "succeeded":
+        if status.get("privacyStatus") == "public" and process_status == "succeeded" and metadata_evidence is not None:
+            uploaded_description = str(snippet.get("description", ""))
+            validate_youtube_description_links(uploaded_description, str((item.get("source") or {}).get("canonical_url") or ""))
+            require_hebrew(str(snippet.get("title", "")), "uploaded title")
+            require_hebrew(uploaded_description, "uploaded description", allow_url=True)
             return {
                 **metadata_evidence,
                 "video_id": item["youtube_id"],
@@ -2093,8 +2101,10 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
         if process_status in {"failed", "terminated"}:
             raise PipelineError(f"YouTube processing ended with {process_status}")
         if time.monotonic() >= deadline:
+            if last_metadata_error is not None:
+                raise PipelineError(str(last_metadata_error)) from last_metadata_error
             raise PipelineError("YouTube processing did not become public and complete in time")
-        time.sleep(20)
+        time.sleep(min(20, max(1, int(deadline - time.monotonic()))))
 
 
 def can_long_item_proceed_toward_publication(item: dict[str, Any] | None) -> bool:
@@ -2475,7 +2485,12 @@ def _verify_and_record_upload(state: dict[str, Any], item: dict[str, Any], token
     except PipelineError as exc:
         if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote "):
             raise
-        repair_persisted_youtube_metadata(item, token)
+        try:
+            repair_persisted_youtube_metadata(item, token)
+        except PipelineError as repair_exc:
+            if "HTTP 403" not in str(repair_exc):
+                raise
+            print("WARNING: YouTube metadata repair returned HTTP 403 (upload token scope insufficient for video.update); continuing to verification...")
         verification = verify_public_upload(item, token)
     item["youtube_verification"] = verification
     item["uploaded"] = True

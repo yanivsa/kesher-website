@@ -98,22 +98,14 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         return value
 
     def _first_free_publication_slot(self, posts: list[dict]) -> str:
-        occupied = {
-            str(row.get("date") or "").strip()
-            for row in posts
-            if isinstance(row, dict) and str(row.get("date") or "").strip()
-        }
-        candidate = self.now.date()
-        for _ in range(31):
-            slot = candidate.isoformat()
-            if slot not in occupied:
-                try:
-                    if not self.github.open_article_prs(slot):
-                        return slot
-                except Exception:
-                    raise v5.core.ControllerError("IDEA_RUN_NOW_SLOT_LOOKUP_FAILED")
-            candidate += timedelta(days=1)
-        raise v5.core.ControllerError("IDEA_RUN_NOW_NO_FREE_SLOT")
+        """Assign the authoritative publication slot for a run_now cycle.
+
+        For run_now, the publication date must be the current business calendar date
+        in Israel (self.now.date()). It must never bump forward into future dates
+        just because existing posts or archived cycles share today's date, because
+        that would violate future-date validation (updatedAt > today in Asia/Jerusalem).
+        """
+        return self.now.date().isoformat()
 
     def _reset_for_run_now(self, state: dict, publication_slot: str) -> None:
         active = state.get("active_idea")
@@ -530,16 +522,67 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         return state
 
     def _reconcile_existing_current_day_article(self, state: dict, posts=None):
+        if posts is None:
+            posts = self.posts_on_main("main")
+        if not isinstance(posts, list):
+            return []
+
         slot = self._run_now_slot(state)
-        if not slot:
-            return super()._reconcile_existing_current_day_article(state, posts)
-        target = date.fromisoformat(slot)
-        original_now = self.now
-        try:
-            self.now = original_now.replace(year=target.year, month=target.month, day=target.day)
-            return super()._reconcile_existing_current_day_article(state, posts)
-        finally:
-            self.now = original_now
+        target_day = date.fromisoformat(slot) if slot else self.now.date()
+        expected_date = target_day.isoformat()
+
+        article_state = state.setdefault("article", {})
+        state_slug = str(article_state.get("slug") or "").strip()
+        state_sha = str(article_state.get("quality_content_sha256") or "").strip()
+
+        # Collect slugs from prior cycles to prevent false-positive adoption
+        # of already-completed or archived articles on the same calendar date.
+        archived_slugs: set[str] = set()
+        for archived in state.get("owner_cycle_archive") or []:
+            if isinstance(archived, dict):
+                arch_art = archived.get("article")
+                if isinstance(arch_art, dict):
+                    s = str(arch_art.get("slug") or "").strip()
+                    if s:
+                        archived_slugs.add(s)
+        for hist in state.get("idea_history") or []:
+            if isinstance(hist, dict):
+                art_slug = str((hist.get("outputs") or {}).get("slug") or "").strip()
+                if art_slug:
+                    archived_slugs.add(art_slug)
+
+        candidates = [
+            post for post in posts
+            if isinstance(post, dict)
+            and str(post.get("date") or "").strip() == expected_date
+            and v5.core.is_controller_adoptable_post(
+                post,
+                state_slug=state_slug,
+                state_content_sha256=state_sha,
+            )
+        ]
+
+        if state_slug:
+            matching = [p for p in candidates if v5.core.canonical_slug(p) == state_slug]
+            if state_sha:
+                matching_sha = [p for p in matching if v5.core._post_source_sha256(p) == state_sha]
+                if matching_sha:
+                    matching = matching_sha
+            if matching:
+                candidates = matching
+
+        if not state_slug and candidates:
+            candidates = [p for p in candidates if v5.core.canonical_slug(p) not in archived_slugs]
+
+        if len(candidates) == 1:
+            original_now = self.now
+            try:
+                self.now = original_now.replace(year=target_day.year, month=target_day.month, day=target_day.day)
+                return super()._reconcile_existing_current_day_article(state, candidates)
+            finally:
+                self.now = original_now
+
+        return candidates
 
     def state(self):
         previous = self.github.load_controller_state() if getattr(self, "github", None) is not None else None
