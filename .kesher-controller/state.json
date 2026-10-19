@@ -2360,6 +2360,20 @@
       "previous_run_id": 39189537931,
       "observed_active_run_id": 39189808363,
       "dispatched_at": "2026-10-19T02:24:15.370242+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "potty-training-toddlers",
+        "target_content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210",
+        "target_item_id": "video-20261019-070254-08f52aa15d-a2"
+      },
+      "intent_at": "2026-10-19T04:51:53.953882+00:00",
+      "status": "intent",
+      "previous_run_id": 39197298571,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
