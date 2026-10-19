@@ -2319,7 +2319,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "transition-from-caregiver-to-daycare",
+        "target_content_sha256": "5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659",
+        "target_item_id": "video-20261019-113455-5e9153b529-a3"
+      },
+      "intent_at": "2026-10-19T09:05:55.629358+00:00",
+      "status": "intent",
+      "previous_run_id": 39223419980,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
     "run_id": 39223419980,
@@ -2410,13 +2425,13 @@
       "slug": "transition-from-caregiver-to-daycare",
       "content_sha256": "5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659",
       "stage": "long_video",
-      "strike_count": 0,
-      "last_check_token": "2026-10-19T11",
+      "strike_count": 1,
+      "last_check_token": "2026-10-19T12",
       "last_fingerprint": "44e3ef5325fad8e01234cf52f304cc53c8a3773f38b8ef735585e76bc826ea59",
       "last_controller_action_token": null,
       "controller_action_observed": false,
-      "last_observed_at": "2026-10-19T08:42:31.787115+00:00",
-      "last_action": "progress_reset",
+      "last_observed_at": "2026-10-19T09:05:55.629358+00:00",
+      "last_action": "observe_controller",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-10-19T08:05:48.899205+00:00"
     }
