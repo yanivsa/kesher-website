@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import copy
-from datetime import date
+from datetime import date, datetime
+import os
 from typing import Any
 
 try:
@@ -12,6 +13,20 @@ except ImportError:
 
 class ArticleNormalizationError(RuntimeError):
     pass
+
+
+def _today_israel() -> date:
+    env_today = os.environ.get("KESHER_TODAY_ISO", "").strip()
+    if env_today:
+        try:
+            return date.fromisoformat(env_today)
+        except ValueError:
+            pass
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.now(ZoneInfo("Asia/Jerusalem")).date()
+    except Exception:
+        return date.today()
 
 
 def _post_id(post: dict[str, Any]) -> str:
@@ -100,9 +115,10 @@ def normalized_posts(
                 f"target article identity already exists in main: {article_id}"
             )
         if _post_date(post) == article_date and is_controller_adoptable_post(post):
-            raise ArticleNormalizationError(
-                f"publication slot already exists in main: {article_date.isoformat()}"
-            )
+            if article_date < _today_israel():
+                raise ArticleNormalizationError(
+                    f"publication slot already exists in main: {article_date.isoformat()}"
+                )
 
     result: list[dict[str, Any]] = []
     inserted = False

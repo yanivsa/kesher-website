@@ -54,6 +54,40 @@ class ArticleNormalizerTests(unittest.TestCase):
         with self.assertRaises(ArticleNormalizationError):
             normalized_posts(base, self.target)
 
+    def test_allows_distinct_articles_on_current_active_date(self):
+        import os
+        old_env = os.environ.get("KESHER_TODAY_ISO")
+        try:
+            os.environ["KESHER_TODAY_ISO"] = "2026-10-19"
+            base = [
+                {"id": "pacifier-weaning", "date": "2026-10-19", "controllerManaged": True},
+                {"id": "older-post", "date": "2026-10-15"},
+            ]
+            new_target = {
+                "id": "potty-training-toddlers",
+                "date": "2026-10-19",
+                "controllerManaged": True,
+            }
+            res = normalized_posts(base, new_target)
+            ids = [p["id"] for p in res]
+            self.assertIn("pacifier-weaning", ids)
+            self.assertIn("potty-training-toddlers", ids)
+            self.assertEqual(len(res), 3)
+
+            # But duplicate slug fails
+            dup_slug = {
+                "id": "pacifier-weaning",
+                "date": "2026-10-19",
+                "controllerManaged": True,
+            }
+            with self.assertRaises(ArticleNormalizationError):
+                normalized_posts(base, dup_slug)
+        finally:
+            if old_env is None:
+                os.environ.pop("KESHER_TODAY_ISO", None)
+            else:
+                os.environ["KESHER_TODAY_ISO"] = old_env
+
     def test_rejects_missing_target_article(self):
         with self.assertRaises(ArticleNormalizationError):
             extract_target_article(self.main_posts, self.main_posts, "2026-08-27")
