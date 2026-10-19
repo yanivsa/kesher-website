@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1432,15 +1432,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T13:10:47.204713+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-19"
-      }
-    },
-    {
       "at": "2026-10-18T13:15:49.863534+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2269,9 +2260,21 @@
         "item_id": "video-20261019-070254-08f52aa15d-a2",
         "task_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff"
       }
+    },
+    {
+      "at": "2026-10-19T04:52:09.966611+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_recovery",
+      "reason": "long-form provider stalled; resumed the same durable provider identity",
+      "details": {
+        "item_id": "video-20261019-070254-08f52aa15d-a2",
+        "task_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff",
+        "slug": "potty-training-toddlers",
+        "content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210"
+      }
     }
   ],
-  "updated_at": "2026-10-19T04:20:57.513507+00:00",
+  "updated_at": "2026-10-19T04:52:09.966618+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2290,7 +2293,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "generating",
+    "status": "running",
     "last_error": null,
     "next_retry_at": "2026-10-19T04:11:57.210318+00:00",
     "run_id": 39197298571,
@@ -2300,7 +2303,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-19T03:59:57.716930+00:00",
+    "last_dispatch_at": "2026-10-19T04:52:09.966591+00:00",
     "attempts": 1,
     "item_id": "video-20261019-070254-08f52aa15d-a2",
     "source_slug": "potty-training-toddlers",
@@ -2316,12 +2319,12 @@
       "hard_started_at": "2026-10-19T04:03:08.186022+00:00",
       "last_progress_at": "2026-10-19T04:05:45.405459+00:00",
       "last_fingerprint": "97efc1f381ccd90c9b98e066c3eb132efb691dc929c32025f102f45d55973d3f",
-      "recovery_count": 0,
-      "last_recovery_at": null
+      "recovery_count": 1,
+      "last_recovery_at": "2026-10-19T04:51:53.953882+00:00"
     },
     "last_run_conclusion": "success",
     "pending_resume_ready": false,
-    "resume_dispatches": 2
+    "resume_dispatches": 3
   },
   "short": {
     "attempt_count": 0,
@@ -2371,9 +2374,10 @@
         "target_item_id": "video-20261019-070254-08f52aa15d-a2"
       },
       "intent_at": "2026-10-19T04:51:53.953882+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39197298571,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39201627006,
+      "dispatched_at": "2026-10-19T04:51:53.953882+00:00"
     }
   },
   "last_child_notification": {
@@ -2453,12 +2457,12 @@
       "strike_count": 0,
       "last_check_token": "2026-10-19T07",
       "last_fingerprint": "644c865f3db35214247bed23d3152ccc26777743620165446caf3a3eeaf8dc08",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
+      "last_controller_action_token": "recovery:1:2026-10-19T04:51:53.953882+00:00",
+      "controller_action_observed": true,
       "last_observed_at": "2026-10-19T04:05:45.405459+00:00",
-      "last_action": "progress_reset",
+      "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-19T03:52:06.832967+00:00"
+      "last_controller_action_at": "2026-10-19T04:51:53.953882+00:00"
     }
   },
   "idea_queue": [],
