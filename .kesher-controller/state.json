@@ -76,7 +76,7 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-19T11:22:35.545680+00:00",
-    "live_verified_at": "2026-10-19T13:36:14.178844+00:00"
+    "live_verified_at": "2026-10-19T13:36:47.512977+00:00"
   },
   "backlog": [
     {
@@ -1448,38 +1448,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T09:06:27.392922+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_recovery",
-      "reason": "long-form provider stalled; resumed the same durable provider identity",
-      "details": {
-        "item_id": "video-20261019-113455-5e9153b529-a3",
-        "task_id": "0cf36667-a973-42d1-9b35-6164923fe4bf",
-        "slug": "transition-from-caregiver-to-daycare",
-        "content_sha256": "5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659"
-      }
-    },
-    {
-      "at": "2026-10-19T09:11:13.583756+00:00",
-      "from": "long_video_watchdog_recovery",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261019-113455-5e9153b529-a3",
-        "task_id": "0cf36667-a973-42d1-9b35-6164923fe4bf"
-      }
-    },
-    {
-      "at": "2026-10-19T09:16:20.698704+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261019-113455-5e9153b529-a3",
-        "task_id": "0cf36667-a973-42d1-9b35-6164923fe4bf"
-      }
-    },
-    {
       "at": "2026-10-19T09:21:10.591818+00:00",
       "from": "long_video_watchdog_wait",
       "to": "long_video_watchdog_wait",
@@ -2150,9 +2118,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-19T13:36:47.513016+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-19T13:36:48.928954+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-19T13:36:50.488460+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-19T13:31:16.292215+00:00",
+  "updated_at": "2026-10-19T13:36:50.488497+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
