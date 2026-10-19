@@ -70,13 +70,13 @@
     "published_date": "2026-10-19",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-19T01:05:49.459886+00:00",
+    "quality_checked_at": "2026-10-19T01:11:04.162107+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-18T21:58:48.072711+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39170192374,
-    "live_verified_at": "2026-10-19T01:05:50.327319+00:00"
+    "live_verified_at": "2026-10-19T01:11:04.996594+00:00"
   },
   "backlog": [
     {
