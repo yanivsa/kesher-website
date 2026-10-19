@@ -2259,7 +2259,15 @@
     "last_dispatch_at": "2026-10-19T12:25:15.766297+00:00",
     "artifact_id": "7b272be9-f48e-44e8-a6db-db13d57d38d1",
     "source_id": "fd8701cf-d5f5-44ce-8a86-f8e7766833e4",
-    "adopted_from_long_item_id": "video-20261019-145912-6aebd5cab8-a3"
+    "adopted_from_long_item_id": "video-20261019-145912-6aebd5cab8-a3",
+    "watchdog": {
+      "identity": "short:toddler-bed-transition:6aebd5cab87293be2b78cc848c4c9a8a4d3aab4ae5248f38e893183215451bab:video-20261019-152740-6aebd5cab8",
+      "hard_started_at": "2026-10-19T12:27:55.434470+00:00",
+      "last_progress_at": "2026-10-19T12:35:18.844069+00:00",
+      "last_fingerprint": "9aba4f5cb2a5fc4a267cda9f9eee08be2a4d7688f6be9a801202ceb9b736a5ea",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
