@@ -2227,7 +2227,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-19T03:12:20.894832+00:00",
     "artifact_sha256": "8a64bc30d023676d7ee40d8dff2fd94899a1a635a5ecb959a9ba9b836dfa8af0",
-    "source_id": "local://public/images/fallback/adhd/adhd_morning_routine_support.jpg"
+    "source_id": "local://public/images/fallback/adhd/adhd_morning_routine_support.jpg",
+    "run_id": 39193569021
   },
   "long_video": {
     "attempt_count": 0,
