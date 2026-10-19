@@ -2321,7 +2321,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "transition-from-caregiver-to-daycare",
+        "target_content_sha256": "5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659",
+        "target_item_id": "video-20261019-103550-5e9153b529"
+      },
+      "intent_at": "2026-10-19T08:05:48.899205+00:00",
+      "status": "intent",
+      "previous_run_id": 39216711060,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
     "run_id": 39216711060,
@@ -2403,6 +2418,20 @@
       "last_action": "observe_controller",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-10-19T04:51:53.953882+00:00"
+    },
+    "v5|transition-from-caregiver-to-daycare|5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659|long_video": {
+      "pipeline_id": "v5",
+      "slug": "transition-from-caregiver-to-daycare",
+      "content_sha256": "5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-10-19T11",
+      "last_fingerprint": "6fd92a8da6f72d0fdacf6b8588d1acc56ce34d3fe8bb28ad5a0a9dbcf1083813",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-19T08:05:48.899205+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   },
   "idea_queue": [],
