@@ -9,7 +9,7 @@ import os
 import re
 import sys
 import urllib.parse
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 if __package__:
@@ -1744,6 +1744,46 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
         return max_attempt, repaired_heads
 
+    def _is_repair_in_flight(self, pr: dict[str, Any], head_sha: str) -> bool:
+        number = int(pr.get("number") or 0)
+        api = getattr(self.github, "api", "")
+        req = getattr(self.github, "request", None)
+        if not number or not api or not callable(req):
+            return False
+
+        repair_marker = re.compile(rf"<!--\s*kesher-article-repair\s+attempt=\d+\s+head={re.escape(head_sha)}\s*-->", re.I)
+        now = self.now if getattr(self, "now", None) else datetime.now(timezone.utc)
+        timeout = timedelta(minutes=10)
+
+        page = 1
+        while True:
+            try:
+                comments = req("GET", f"{api}/issues/{number}/comments?per_page=100&page={page}", allow_404=False)
+            except Exception:
+                return True
+            if not isinstance(comments, list):
+                return True
+            for comment in comments:
+                if not isinstance(comment, dict):
+                    continue
+                if repair_marker.search(str(comment.get("body") or "")):
+                    created_at_raw = comment.get("created_at")
+                    if created_at_raw:
+                        try:
+                            created_at = datetime.fromisoformat(str(created_at_raw).replace("Z", "+00:00"))
+                            if created_at.tzinfo is None:
+                                created_at = created_at.replace(tzinfo=timezone.utc)
+                            if (now - created_at) >= timeout:
+                                return False
+                        except Exception:
+                            pass
+                    return True
+            if len(comments) < 100:
+                break
+            page += 1
+
+        return False
+
     def _pr_content_structure_errors(self, pr: dict[str, Any]) -> list[str]:
         head_sha = str((pr.get("head") or {}).get("sha") or "")
         base_sha = str((pr.get("base") or {}).get("sha") or "main")
@@ -1843,7 +1883,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return v5.core.Action("blocked", f"article content attempts exhausted for PR #{number}")
 
         # 3. Check if repair is actively in flight for current head
-        if head_sha in repaired_heads:
+        if head_sha in repaired_heads and self._is_repair_in_flight(pr, head_sha):
             return v5.core.Action("wait", f"Jules text repair attempt {max_attempt} in flight for PR #{number}")
 
         # 4. Normalization check
