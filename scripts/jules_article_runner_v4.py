@@ -100,7 +100,7 @@ SEO_GAP_TOPIC_DISCOVERY_CONTRACT = r"""
 --- SEO GAP TOPIC DISCOVERY CONTRACT ---
 Run this stage ONLY when no repository-owner topic brief was supplied and either
 the deterministic autonomous discovery mix selected `seo-gap` for this slot OR
-the preceding VIRAL TOPIC DISCOVERY CONTRACT explicitly fell back to this stage.
+the preceding trend-discovery contract explicitly fell back to this stage.
 
 Goal: select one high-value Kesher topic because there is evidence of real search
 demand and a meaningful reader problem, not merely because the topic is editorially
