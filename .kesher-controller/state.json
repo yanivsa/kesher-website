@@ -49,7 +49,11 @@
       }
     },
     "last_jules_session_id": "sessions/13963399953665642447",
-    "last_failed_run_id": 39235290942
+    "last_failed_run_id": 39235290942,
+    "pr_number": 1152,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1152",
+    "current_pr_head_sha": "352652450ffe2be45eb9e662da65f4e026f1e2cf",
+    "jules_head_sha": "352652450ffe2be45eb9e662da65f4e026f1e2cf"
   },
   "backlog": [
     {
@@ -2276,23 +2280,22 @@
     "short_origin_verified": true
   },
   "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
       "cycle": "2026-10-19",
       "inputs": {
-        "slot": "2026-10-19",
-        "topic_brief": "כתוב מאמר עברי מקצועי ומעשי להורים בנושא מעבר למיטת מעבר: מתי הזמן הנכון להעביר פעוט ממיטת תינוק למיטת מעבר, סימני מוכנות, הכנת החדר והילד לשינוי, התמודדות עם קימה בלילה וירידה מהמיטה, ואיך לבסס שגרת שינה בטוחה ורגועה ללא מאבקים.\n\nIdea Request ID: toddler-bed-transition-20261019-v1\nRequired Primary Keyword: מעבר למיטת מעבר"
+        "pr_number": "1152",
+        "slot": "2026-10-19"
       },
-      "intent_at": "2026-10-19T10:45:50.776400+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39235290942,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-19T10:45:50.776400+00:00"
+      "intent_at": "2026-10-19T11:07:54.375422+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 39237192714,
+    "workflow": "Kesher Article Generation",
+    "run_id": 39239793083,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-19"
