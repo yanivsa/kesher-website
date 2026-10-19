@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import sys
+from datetime import date
 from pathlib import Path
 
 if __package__:
@@ -93,6 +94,55 @@ while still matching language people actually search for.
 --- END CLICKABLE SEARCH-INTENT TITLE CONTRACT ---
 """
 
+
+SEO_GAP_TOPIC_DISCOVERY_CONTRACT = r"""
+
+--- SEO GAP TOPIC DISCOVERY CONTRACT ---
+Run this stage ONLY when no repository-owner topic brief was supplied and the
+deterministic autonomous discovery mix selected `seo-gap` for this slot.
+
+Goal: select one high-value Kesher topic because there is evidence of real search
+demand and a meaningful reader problem, not merely because the topic is editorially
+interesting.
+
+1. Inspect current Kesher articles and the most recent 30 posts before proposing a
+   new topic. Reject close-intent candidates that would compete with an existing
+   canonical URL; this new-article worker must not create a second page for the same
+   search intent.
+2. Research the problem landscape in ENGLISH FIRST to identify established user
+   problems, terminology and authoritative evidence, then research HEBREW search
+   language to discover how Israeli users actually phrase the need.
+3. Internally generate 5-10 candidate gaps and rank them qualitatively by all four:
+   - observed search signal / demand evidence;
+   - intensity and specificity of the real parent/couple pain;
+   - fit with Shira Saharoni's parenting-guidance or couples-counseling services;
+   - low cannibalization risk against existing Kesher pages.
+4. Evidence hierarchy for demand: genuine first-party Keyword Planner or Search
+   Console data when it is actually available to the run; then Google Trends;
+   then Google autocomplete/search suggestions, related searches, People Also Ask
+   or equivalent query suggestions; then consistent SERP/community signals as a
+   proxy. Never invent volume, CPC, impressions, trend scores or query suggestions.
+5. Select EXACTLY ONE natural Hebrew Primary Search Query and one article topic.
+   A candidate with high theoretical volume but weak reader pain/business fit may
+   lose to a narrower candidate with clear intent and a real problem.
+6. Prefer problem-led queries such as what parents/couples type when something is
+   stuck, frightening, repetitive or disruptive. Avoid generic category pages,
+   vague awareness topics and thin keyword variants.
+7. Verify material health, development, education or relationship claims with
+   primary/authoritative sources. Search-demand evidence is not factual evidence.
+8. If no candidate has adequate search evidence plus a distinct intent, use the
+   durable approved topic pool in the underlying policy to generate fresh candidates,
+   but still validate the final Hebrew query before drafting. Never choose randomly.
+9. Create EXACTLY ONE article and one PR for the slot.
+10. In the PR body include this compact audit block:
+    `Topic Discovery Source: seo-gap`
+    `Why Selected: ...`
+    `Search Demand Evidence: ...`
+    `Reader Pain: ...`
+    `Cannibalization Check: passed`
+--- END SEO GAP TOPIC DISCOVERY CONTRACT ---
+"""
+
 VIRAL_TOPIC_DISCOVERY_CONTRACT = r"""
 
 --- VIRAL TOPIC DISCOVERY CONTRACT ---
@@ -136,10 +186,10 @@ and evidence workflow. This is a topic-selection stage, not a trend-report stage
 9. FALLBACK — if, after a bounded reasonable search, no candidate has enough
    observable engagement, Kesher relevance, verifiable support, or dedup safety to
    justify selection, DO NOT block the article run and DO NOT force a weak "viral"
-   topic. Fall back to the pre-existing V3/base article topic-selection mechanism
-   already present in the underlying prompt. That legacy mechanism remains the
-   authoritative fallback. After it selects one topic, continue with the existing
-   SEARCH-INTENT-FIRST TITLE CONTRACT and ARTICLE EVIDENCE CONTRACT.
+   topic. Fall back to the SEO GAP TOPIC DISCOVERY CONTRACT included immediately
+   after this contract. Apply its search-demand, reader-pain and cannibalization
+   ranking rules, then continue with the existing SEARCH-INTENT-FIRST TITLE CONTRACT
+   and ARTICLE EVIDENCE CONTRACT.
 10. Whether the topic came from viral discovery or the legacy fallback, create
     EXACTLY ONE article and one PR for the slot.
 11. When viral discovery succeeds, include this compact audit block in the PR body:
@@ -148,13 +198,14 @@ and evidence workflow. This is a topic-selection stage, not a trend-report stage
     `Viral/Discussion Evidence: ...`
     `Primary Supporting Source: ...`
     `Duplicate Check: passed`
-12. When the legacy fallback is used instead, do not fabricate viral evidence.
+12. When the SEO-gap fallback is used instead, do not fabricate viral evidence.
     Include:
-    `Topic Discovery Source: fallback-to-legacy-selection`
+    `Topic Discovery Source: fallback-to-seo-gap`
     `Why Selected: no sufficiently strong current viral candidate`
     `Viral/Discussion Evidence: insufficient for selection`
-    `Primary Supporting Source: ...`
-    `Duplicate Check: passed`
+    `Search Demand Evidence: ...`
+    `Reader Pain: ...`
+    `Cannibalization Check: passed`
 --- END VIRAL TOPIC DISCOVERY CONTRACT ---
 """
 
@@ -186,6 +237,24 @@ Owner topic brief:
 {topic_brief}
 --- END OWNER-SUPPLIED TOPIC BRIEF CONTRACT ---
 """
+
+
+def autonomous_discovery_mode(slot: str) -> str:
+    """Return the deterministic ownerless discovery mode for a publication slot.
+
+    Every ten consecutive calendar dates contain exactly seven SEO-gap slots and
+    three trend slots. Owner-supplied topic briefs bypass this selector entirely.
+    """
+    residue = date.fromisoformat(slot).toordinal() % 10
+    return "trend" if residue in {7, 8, 9} else "seo-gap"
+
+
+def autonomous_discovery_contract(slot: str) -> str:
+    mode = autonomous_discovery_mode(slot)
+    audit = f"\n\n--- AUTONOMOUS DISCOVERY MIX ---\nDiscovery Mix: {mode}\n--- END AUTONOMOUS DISCOVERY MIX ---\n"
+    if mode == "trend":
+        return audit + VIRAL_TOPIC_DISCOVERY_CONTRACT + SEO_GAP_TOPIC_DISCOVERY_CONTRACT
+    return audit + SEO_GAP_TOPIC_DISCOVERY_CONTRACT
 
 
 def load_owner_topic_brief() -> str:
@@ -329,7 +398,7 @@ def build_prompt(slot: str, policy: str) -> str:
             f"or a currently open `Publish Kesher article:` PR already targets the Primary Keyword '{required}'",
         )
     if not topic_brief:
-        prompt += VIRAL_TOPIC_DISCOVERY_CONTRACT
+        prompt += autonomous_discovery_contract(slot)
     prompt += SEARCH_FIRST_CONTRACT + PRIMARY_KEYWORD_CONTRACT + EVIDENCE_CONTRACT
     if topic_brief:
         prompt += CUSTOM_TOPIC_CONTRACT.format(topic_brief=topic_brief)

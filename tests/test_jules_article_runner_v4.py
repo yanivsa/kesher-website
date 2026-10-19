@@ -80,7 +80,11 @@ class JulesArticleRunnerV4Tests(unittest.TestCase):
             prompt = runner.build_prompt("2026-09-28", "POLICY")
 
         self.assertIn("VIRAL TOPIC DISCOVERY CONTRACT", prompt)
-        self.assertNotIn("SEO GAP TOPIC DISCOVERY CONTRACT", prompt)
+        self.assertIn("--- SEO GAP TOPIC DISCOVERY CONTRACT ---", prompt)
+        self.assertLess(
+            prompt.index("VIRAL TOPIC DISCOVERY CONTRACT"),
+            prompt.index("--- SEO GAP TOPIC DISCOVERY CONTRACT ---"),
+        )
         self.assertIn("Discovery Mix: trend", prompt)
         self.assertIn("CLICKABLE SEARCH-INTENT TITLE CONTRACT", prompt)
         self.assertNotIn("OWNER-SUPPLIED TOPIC BRIEF CONTRACT", prompt)
