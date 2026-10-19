@@ -38,13 +38,13 @@
     "quality_content_sha256": "5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-19T07:40:58.685917+00:00",
+    "quality_checked_at": "2026-10-19T07:43:12.554625+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-19T07:26:38.361092+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39216012389,
-    "live_verified_at": "2026-10-19T07:41:28.210214+00:00"
+    "live_verified_at": "2026-10-19T07:43:13.585192+00:00"
   },
   "backlog": [
     {
@@ -2248,7 +2248,7 @@
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-19T07:48:09.062005+00:00",
     "run_id": 39216711060,
     "processed_run_id": null,
     "provider_id": null,
@@ -2283,27 +2283,12 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-19",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "transition-from-caregiver-to-daycare",
-        "target_content_sha256": "5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659"
-      },
-      "intent_at": "2026-10-19T07:32:44.490654+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 39216711060,
-      "dispatched_at": "2026-10-19T07:32:44.490654+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 39216012389,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 39216711060,
     "conclusion": "success",
-    "source_slug": null,
+    "source_slug": "transition-from-caregiver-to-daycare",
     "slot": "2026-10-19"
   },
   "processed_child_notifications": [
