@@ -93,6 +93,21 @@ def ingest_from_env(
         raise IdeaQueueError("IDEA_PRIMARY_KEYWORD_INVALID")
 
     fp = _fingerprint(idea_id, topic_brief, keyword)
+    for idx, row in enumerate(state.get("idea_queue") or []):
+        if not isinstance(row, dict):
+            continue
+        if str(row.get("idea_id") or "") != idea_id:
+            continue
+        if str(row.get("fingerprint") or "") == fp:
+            if run_now and str(row.get("status") or "") == "queued":
+                row["run_now"] = True
+                if idx > 0:
+                    state["idea_queue"].pop(idx)
+                    state["idea_queue"].insert(0, row)
+                return "run_now_queued"
+            return "duplicate"
+        raise IdeaQueueError("IDEA_ID_CONFLICT")
+
     for row in _all_records(state):
         if str(row.get("idea_id") or "") != idea_id:
             continue
@@ -153,12 +168,17 @@ def finalize_if_complete(state: dict[str, Any], *, now_iso: str) -> bool:
     active = state.get("active_idea")
     if state.get("status") != "complete" or not isinstance(active, dict):
         return False
+    slug = str((state.get("article") or {}).get("slug") or "").strip()
+    article_url = str((state.get("article") or {}).get("url") or "").strip()
+    if not slug and article_url:
+        slug = article_url.rstrip("/").split("/")[-1].strip()
     outputs = {
-        "article_url": str((state.get("article") or {}).get("url") or "").strip(),
+        "slug": slug,
+        "article_url": article_url,
         "long_url": str((state.get("long_video") or {}).get("youtube_url") or "").strip(),
         "short_url": str((state.get("short") or {}).get("youtube_url") or "").strip(),
     }
-    if not all(outputs.values()):
+    if not (outputs["article_url"] and outputs["long_url"] and outputs["short_url"]):
         return False
     done = copy.deepcopy(active)
     done.update({"status": "complete", "completed_at": now_iso, "outputs": outputs})

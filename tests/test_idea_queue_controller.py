@@ -216,3 +216,51 @@ class IdeaRunNowTests(unittest.TestCase):
         workflow=(Path(__file__).resolve().parents[1]/".github/workflows/kesher-content-controller.yml").read_text(encoding="utf-8")
         self.assertIn("run_now:",workflow)
         self.assertIn("KESHER_IDEA_RUN_NOW",workflow)
+
+    def test_queued_idea_promoted_to_run_now_when_dispatched_with_run_now_flag(self):
+        st = {"cycle": "2026-10-18", "status": "complete", "idea_queue": [], "idea_history": [], "active_idea": None}
+        env = {
+            "KESHER_IDEA_ID": "potty",
+            "KESHER_IDEA_TOPIC_BRIEF": "מאמר גמילה מטיטול",
+            "KESHER_IDEA_REQUIRED_PRIMARY_KEYWORD": "גמילה מטיטול",
+        }
+        res1 = ideas.ingest_from_env(st, env, now_iso="t1")
+        self.assertEqual(res1, "queued")
+        self.assertEqual(len(st["idea_queue"]), 1)
+        self.assertFalse(st["idea_queue"][0].get("run_now"))
+
+        env_run_now = dict(env, KESHER_IDEA_RUN_NOW="true")
+        res2 = ideas.ingest_from_env(st, env_run_now, now_iso="t2")
+        self.assertEqual(res2, "run_now_queued")
+        self.assertTrue(st["idea_queue"][0].get("run_now"))
+        self.assertEqual(st["idea_queue"][0]["idea_id"], "potty")
+
+    def test_finalize_records_slug_and_urls(self):
+        st = {
+            "status": "complete",
+            "active_idea": {"idea_id": "potty", "status": "claimed"},
+            "article": {"slug": "potty-training", "url": "https://kesher.saharoni.com/blog/potty-training"},
+            "long_video": {"youtube_url": "https://youtu.be/long"},
+            "short": {"youtube_url": "https://youtu.be/short"},
+        }
+        self.assertTrue(ideas.finalize_if_complete(st, now_iso="now"))
+        self.assertIsNone(st["active_idea"])
+        out = st["idea_history"][-1]["outputs"]
+        self.assertEqual(out["slug"], "potty-training")
+        self.assertEqual(out["article_url"], "https://kesher.saharoni.com/blog/potty-training")
+
+    def test_reconcile_existing_current_day_article_excludes_prior_same_date_cycle(self):
+        st = self.complete_state()
+        st["cycle"] = "2026-10-19"
+        st["idea_history"] = [{
+            "idea_id": "pacifier",
+            "outputs": {"slug": "pacifier-weaning", "article_url": "https://kesher.saharoni.com/blog/pacifier-weaning"},
+        }]
+        st["article"] = {}
+        posts = [
+            {"id": "pacifier-weaning", "date": "2026-10-19", "title": "מוצץ", "content": "<p>x</p>", "category": "הדרכת הורים", "excerpt": "x"},
+        ]
+        ctrl = stabilized.StabilizedRuntimeV5Controller(FakeGitHub(st, posts), FakeSite(), now=datetime(2026, 10, 19, 10, 0, tzinfo=TZ))
+        candidates = ctrl._reconcile_existing_current_day_article(st, posts)
+        # Should NOT adopt pacifier-weaning for a new uninitialized article cycle on the same day
+        self.assertEqual(candidates, [])

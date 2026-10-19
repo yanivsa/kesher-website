@@ -123,6 +123,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         })
         state["owner_cycle_archive"] = archive[-20:]
         active.update({"status": "claimed", "publication_slot": publication_slot, "claimed_at": v5.core.utc_now()})
+        state["cycle"] = publication_slot
         stage = v5.v3._stage_template
         state["article"] = stage()
         state["article"].update({"attempts": 0, "deploy_attempts": 0})
@@ -547,7 +548,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                         archived_slugs.add(s)
         for hist in state.get("idea_history") or []:
             if isinstance(hist, dict):
-                art_slug = str((hist.get("outputs") or {}).get("slug") or "").strip()
+                outputs = hist.get("outputs") or {}
+                art_slug = str(outputs.get("slug") or "").strip()
+                if not art_slug and outputs.get("article_url"):
+                    art_slug = str(outputs["article_url"]).rstrip("/").split("/")[-1].strip()
                 if art_slug:
                     archived_slugs.add(art_slug)
 
