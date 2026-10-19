@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "article_pr_open",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -20,9 +20,9 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1156",
     "current_pr_head_sha": "32953dd1352e8d1b363fe9d736fa91aaa6b0a2d8",
     "jules_head_sha": "2e46ace492f078bc6e2c11235b6581bed196b659",
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "normalization_slot": "2026-10-19",
-    "normalization_dispatched_at": "2026-10-19T18:32:56.818479+00:00",
+    "normalization_dispatched_at": "2026-10-19T18:38:39.799660+00:00",
     "normalization_run_id": 39303406149,
     "normalization_drift_count": 2,
     "merge_dispatch_count": 0,
@@ -1399,12 +1399,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T14:37:13.217777+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-19T14:37:14.156647+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2037,9 +2031,19 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-19T18:38:39.799689+00:00",
+      "from": "article_pr_open",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1156,
+        "slot": "2026-10-19"
+      }
     }
   ],
-  "updated_at": "2026-10-19T18:37:32.410290+00:00",
+  "updated_at": "2026-10-19T18:38:39.799697+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
@@ -2099,9 +2103,10 @@
         "slot": "2026-10-19"
       },
       "intent_at": "2026-10-19T18:38:19.734456+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39303406149,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39304215670,
+      "dispatched_at": "2026-10-19T18:38:19.734456+00:00"
     }
   },
   "last_child_notification": {
