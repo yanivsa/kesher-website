@@ -42,7 +42,7 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-19T07:26:38.361092+00:00",
-    "next_deploy_retry_at": null,
+    "next_deploy_retry_at": "2026-10-19T07:37:44.490654+00:00",
     "deploy_run_id": 39216012389,
     "live_verified_at": "2026-10-19T07:32:48.080298+00:00"
   },
