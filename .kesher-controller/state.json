@@ -1,11 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
-    "status": "exhausted",
-    "last_error": null,
+    "status": "running",
     "next_retry_at": null,
     "run_id": 39205913159,
     "processed_run_id": null,
@@ -20,14 +19,17 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1148",
     "current_pr_head_sha": "693a4767cac4b5d301ab07d233d63a590737d7b4",
     "jules_head_sha": "260ae86910d5829272b8119ab35e64f68d99ef7d",
-    "normalization_status": "pending",
+    "normalization_status": "complete",
     "normalization_slot": "2026-10-19",
     "normalization_dispatched_at": "2026-10-19T06:08:16.936709+00:00",
     "normalization_run_id": 39208178702,
-    "normalization_drift_count": 2,
-    "merge_dispatch_at": "2026-10-19T06:30:44.496432+00:00",
-    "merge_dispatch_count": 3,
-    "merge_run_id": 39208945072
+    "normalization_drift_count": 3,
+    "merge_dispatch_at": null,
+    "merge_dispatch_count": 0,
+    "merge_run_id": 39208945072,
+    "normalized_head_sha": "693a4767cac4b5d301ab07d233d63a590737d7b4",
+    "image_head_sha": "693a4767cac4b5d301ab07d233d63a590737d7b4",
+    "merge_candidate_sha": "693a4767cac4b5d301ab07d233d63a590737d7b4"
   },
   "backlog": [
     {
@@ -1397,12 +1399,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "PR #1148 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-19T07:00:48.172393+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-19T01:20:48.132587+00:00",
@@ -2195,10 +2192,10 @@
       }
     }
   ],
-  "updated_at": "2026-10-19T07:00:48.172417+00:00",
+  "updated_at": "2026-10-19T07:04:56.116031+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2255,11 +2252,10 @@
         "pr_number": "1148",
         "slot": "2026-10-19"
       },
-      "intent_at": "2026-10-19T06:30:20.069939+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-19T07:04:42.898865+00:00",
+      "status": "intent",
       "previous_run_id": 39208945072,
-      "observed_active_run_id": 39210341878,
-      "dispatched_at": "2026-10-19T06:30:20.069939+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
