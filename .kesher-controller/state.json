@@ -2281,7 +2281,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "toddler-bed-transition",
+        "derive_content_sha256": "6aebd5cab87293be2b78cc848c4c9a8a4d3aab4ae5248f38e893183215451bab",
+        "derive_long_item_id": "video-20261019-145912-6aebd5cab8-a3"
+      },
+      "intent_at": "2026-10-19T12:55:48.188155+00:00",
+      "status": "intent",
+      "previous_run_id": 39251911125,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
     "run_id": 39251911125,
@@ -2381,6 +2396,20 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-10-19T09:05:55.629358+00:00"
+    },
+    "v5|toddler-bed-transition|6aebd5cab87293be2b78cc848c4c9a8a4d3aab4ae5248f38e893183215451bab|short": {
+      "pipeline_id": "v5",
+      "slug": "toddler-bed-transition",
+      "content_sha256": "6aebd5cab87293be2b78cc848c4c9a8a4d3aab4ae5248f38e893183215451bab",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-10-19T15",
+      "last_fingerprint": "5b6b053decb4feeb09acf64934b79e65120b90a9c3883733d00329b047404bd2",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-19T12:55:48.188155+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   },
   "idea_queue": [
