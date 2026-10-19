@@ -15,7 +15,11 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-10-19T17:58:58.253410+00:00"
+    "last_dispatch_at": "2026-10-19T17:58:58.253410+00:00",
+    "pr_number": 1156,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1156",
+    "current_pr_head_sha": "2e46ace492f078bc6e2c11235b6581bed196b659",
+    "jules_head_sha": "2e46ace492f078bc6e2c11235b6581bed196b659"
   },
   "backlog": [
     {
@@ -2069,25 +2073,24 @@
     "short_origin_verified": true
   },
   "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
       "cycle": "2026-10-19",
       "inputs": {
-        "slot": "2026-10-19",
-        "topic_brief": "כתוב מאמר עברי מקצועי ומעשי להורים בנושא מעבר לחדר נפרד: מתי הזמן המתאים להעביר תינוק או פעוט מחדר ההורים לחדר משלו, הנחיות בטיחות ומוכנות רגשית, איך לבנות שגרת מעבר הדרגתית ונעימה, התמודדות עם פחדי לילה ויקיצות מרובות, ואיך להרגיע בלי להפוך את הלילה למאבק מתמשך.\n\nIdea Request ID: separate-room-transition-20261019-v1\nRequired Primary Keyword: מעבר לחדר נפרד"
+        "pr_number": "1156",
+        "slot": "2026-10-19"
       },
-      "intent_at": "2026-10-19T17:58:48.938099+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-19T18:32:34.796025+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-19T17:58:48.938099+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 39255955511,
+    "workflow": "Kesher Article Generation",
+    "run_id": 39298721854,
     "conclusion": "success",
-    "source_slug": "toddler-bed-transition",
+    "source_slug": null,
     "slot": "2026-10-19"
   },
   "processed_child_notifications": [],
