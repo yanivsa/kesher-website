@@ -2443,11 +2443,11 @@
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/potty-training-toddlers",
     "overview_youtube_url": "https://youtu.be/DJlIBnygorA",
-    "short_youtube_url": null,
+    "short_youtube_url": "https://youtu.be/chwf7Hf25nI",
     "overview_edit_verified": true,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
+    "short_portrait_verified": true,
+    "short_signature_verified": true,
+    "short_origin_verified": true
   },
   "pending_dispatches": {
     "kesher-article-generation.yml": {
