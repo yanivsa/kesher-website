@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "next_retry_at": null,
     "run_id": 39205913159,
     "processed_run_id": null,
@@ -44,7 +44,7 @@
     "last_deploy_dispatch_at": "2026-10-19T07:26:38.361092+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39216012389,
-    "live_verified_at": "2026-10-19T09:59:08.135864+00:00"
+    "live_verified_at": "2026-10-19T09:59:33.246203+00:00"
   },
   "backlog": [
     {
@@ -1416,36 +1416,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T05:01:20.198421+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261019-070254-08f52aa15d-a2",
-        "task_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff"
-      }
-    },
-    {
-      "at": "2026-10-19T05:06:23.450357+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261019-070254-08f52aa15d-a2",
-        "task_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff"
-      }
-    },
-    {
-      "at": "2026-10-19T05:10:56.395220+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261019-070254-08f52aa15d-a2",
-        "task_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff"
-      }
-    },
-    {
       "at": "2026-10-19T05:18:07.154187+00:00",
       "from": "long_video_watchdog_wait",
       "to": "article_live",
@@ -2185,9 +2155,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-10-19T09:59:33.246232+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-19T09:59:34.437267+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-19T09:59:35.692240+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-19T09:56:08.236031+00:00",
+  "updated_at": "2026-10-19T09:59:35.692258+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2254,7 +2242,7 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": {
       "code": "SHORT_WORKFLOW_FAILED",
       "message": "Short derive run 39230235420 completed with conclusion=failure",
@@ -2265,18 +2253,136 @@
     "next_retry_at": null,
     "run_id": 39232592323,
     "processed_run_id": 39230235420,
-    "provider_id": "0cf36667-a973-42d1-9b35-6164923fe4bf",
+    "provider_id": "6841f048-34d2-45d8-b17e-7dafdfe67e17",
     "failure_fingerprint": "SHORT_WORKFLOW_FAILED",
     "same_failure_streak": 1,
     "failure_count_by_type": {
       "SHORT_WORKFLOW_FAILED": 1
     },
     "last_dispatch_at": "2026-10-19T09:46:37.172628+00:00",
-    "artifact_id": "0cf36667-a973-42d1-9b35-6164923fe4bf",
-    "source_id": "43f530cd-a27c-4809-8f69-9659e45d0b23",
-    "adopted_from_long_item_id": "video-20261019-113455-5e9153b529-a3",
+    "artifact_id": "6841f048-34d2-45d8-b17e-7dafdfe67e17",
+    "source_id": "fef49ddd-8cd5-4575-b944-30d8f29838cb",
+    "adopted_from_long_item_id": null,
     "last_run_conclusion": "failure",
-    "last_failed_run_id": 39230235420
+    "last_failed_run_id": 39230235420,
+    "source": {
+      "id": "transition-from-caregiver-to-daycare",
+      "slug": "transition-from-caregiver-to-daycare",
+      "title": "מעבר ממטפלת למעון: מה עושים עם הבכי ואיך צולחים ימי הסתגלות למעון",
+      "date": "2026-10-19",
+      "category": "הדרכת הורים",
+      "subcategory": "הגיל הרך",
+      "excerpt": "הצעד של מעבר ממסגרת יחידנית למסגרת קבוצתית מביא איתו אתגרים רגשיים ופיזיים עבור הילד וההורים. איך נערכים נכון, למה הילד בוכה בפרידה בבוקר, וכיצד אפשר לשמור על עוגן בטוח בבית בזמן שהפעוט לומד לסמוך על צוות חדש?",
+      "canonical_url": "https://kesher.saharoni.com/blog/transition-from-caregiver-to-daycare",
+      "content_sha256": "5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659",
+      "video_title": "מעבר ממטפלת למעון: מה עושים עם הבכי ואיך צולחים ימי הסתגלות למעון",
+      "short_title": "מעבר ממטפלת למעון: מה עושים עם הבכי ואיך צולחים ימי הסתגלות למעון",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "מעבר ממטפלת למעון: מה עושים עם הבכי ואיך צולחים ימי הסתגלות למעון",
+        "description": "הצעד של מעבר ממסגרת יחידנית למסגרת קבוצתית מביא איתו אתגרים רגשיים ופיזיים עבור הילד וההורים. איך נערכים נכון, למה הילד בוכה בפרידה בבוקר, וכיצד אפשר לשמור על עוגן בטוח בבית בזמן שהפעוט לומד לסמוך על צוות חדש?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/transition-from-caregiver-to-daycare\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "הגיל הרך"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: מעבר ממטפלת למעון: מה עושים עם הבכי ואיך צולחים ימי הסתגלות למעון",
+        "description": "הצעד של מעבר ממסגרת יחידנית למסגרת קבוצתית מביא איתו אתגרים רגשיים ופיזיים עבור הילד וההורים. איך נערכים נכון, למה הילד בוכה בפרידה בבוקר, וכיצד אפשר לשמור על עוגן בטוח בבית בזמן שהפעוט לומד לסמוך על צוות חדש?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/transition-from-caregiver-to-daycare\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "הגיל הרך"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "6841f048-34d2-45d8-b17e-7dafdfe67e17",
+    "raw_sha256": "5a490675d350008608fa8cd4d43cd6e477daf7f45105e42b858f78419bb12b31",
+    "final_sha256": "94ce19c621a45a44097b488d219c05e592aab31535a1ae37f2d8485088d22699",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 76.767,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 76.767,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 2,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "43f530cd-a27c-4809-8f69-9659e45d0b23",
+      "task_id": "0cf36667-a973-42d1-9b35-6164923fe4bf",
+      "artifact_id": "0cf36667-a973-42d1-9b35-6164923fe4bf",
+      "raw_sha256": "217f39f8efe48e8b8ba6621d99b4957c8957d4799cb34d097000205a84c24389"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 76.767,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "5a490675d350008608fa8cd4d43cd6e477daf7f45105e42b858f78419bb12b31",
+      "final_sha256": "94ce19c621a45a44097b488d219c05e592aab31535a1ae37f2d8485088d22699",
+      "raw_audio_sha256": "91564b41ed5ce49020a585ae6f4d69726109259d2fd78a2c9d755d4c46434483",
+      "final_audio_sha256": "91564b41ed5ce49020a585ae6f4d69726109259d2fd78a2c9d755d4c46434483",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 76.83483
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 76.83483
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "94ce19c621a45a44097b488d219c05e592aab31535a1ae37f2d8485088d22699",
+      "raw_sha256": "5a490675d350008608fa8cd4d43cd6e477daf7f45105e42b858f78419bb12b31",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "a45235ad9ee3d6577dda9c31abd67046d11e7dc38b5162b8721d255ae90202dd",
+      "source_duration_seconds": 76.767,
+      "final_duration_seconds": 76.767,
+      "start_seconds": 73.767,
+      "end_seconds": 76.767,
+      "audio_source_sha256": "5a490675d350008608fa8cd4d43cd6e477daf7f45105e42b858f78419bb12b31"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261019-124829-5e9153b529-a2",
+    "type": "article_short",
+    "youtube_id": "iJEdt-zkcKU",
+    "youtube_url": "https://youtu.be/iJEdt-zkcKU",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "a45235ad9ee3d6577dda9c31abd67046d11e7dc38b5162b8721d255ae90202dd",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
