@@ -2249,7 +2249,7 @@
       "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-19T11:13:45.692105+00:00",
+  "updated_at": "2026-10-19T11:16:12.130260+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2301,7 +2301,20 @@
     "short_signature_verified": true,
     "short_origin_verified": true
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "pr_number": "1152",
+        "slot": "2026-10-19"
+      },
+      "intent_at": "2026-10-19T11:15:49.691149+00:00",
+      "status": "intent",
+      "previous_run_id": 39242826810,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Auto-merge Kesher article PRs",
     "run_id": 39242826810,
