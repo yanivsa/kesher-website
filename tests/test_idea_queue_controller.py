@@ -11,6 +11,7 @@ TZ = ZoneInfo("Asia/Jerusalem")
 
 class FakeGitHub:
     def __init__(self, state=None, posts=None):
+        self.api = "https://api.github.com/repos/yanivsa/kesher-website"; self.ref = "main"
         self.saved_state=copy.deepcopy(state); self.posts=copy.deepcopy(posts or []); self.recent_posts=[]
         self.dispatches=[]; self.active={}; self.runs={}; self.video_state={"version":1,"items":[]}
     def load_controller_state(self): return copy.deepcopy(self.saved_state)
@@ -28,6 +29,7 @@ class FakeGitHub:
         payload=copy.deepcopy(inputs or {}); self.dispatches.append((workflow,payload))
         self.active[workflow]={"id":len(self.dispatches),"status":"in_progress","event":"workflow_dispatch"}
     def newest_video_state(self): return copy.deepcopy(self.video_state)
+    def request(self, *args, **kwargs): return {}
 
 class FakeSite:
     def get(self,url): return 404,""
@@ -264,3 +266,58 @@ class IdeaRunNowTests(unittest.TestCase):
         candidates = ctrl._reconcile_existing_current_day_article(st, posts)
         # Should NOT adopt pacifier-weaning for a new uninitialized article cycle on the same day
         self.assertEqual(candidates, [])
+
+    def test_run_now_allowed_when_queue_at_capacity(self):
+        st = {"cycle": "2026-10-19", "status": "complete", "idea_queue": [], "idea_history": [], "active_idea": None}
+        for i in range(ideas.MAX_QUEUE):
+            st["idea_queue"].append({
+                "idea_id": f"idea-{i}",
+                "fingerprint": f"fp-{i}",
+                "topic_brief": f"brief-{i}",
+                "required_primary_keyword": f"kw-{i}",
+                "run_now": False,
+                "status": "queued",
+            })
+        self.assertEqual(len(st["idea_queue"]), ideas.MAX_QUEUE)
+        # Regular ingest raises IDEA_QUEUE_FULL
+        regular_env = {
+            "KESHER_IDEA_ID": "new-idea",
+            "KESHER_IDEA_TOPIC_BRIEF": "חדש",
+            "KESHER_IDEA_REQUIRED_PRIMARY_KEYWORD": "גמילה ממוצץ",
+        }
+        with self.assertRaisesRegex(ideas.IdeaQueueError, "IDEA_QUEUE_FULL"):
+            ideas.ingest_from_env(st, regular_env, now_iso="now")
+        # run_now ingest succeeds and places item at front
+        run_now_env = dict(regular_env, KESHER_IDEA_RUN_NOW="true")
+        result = ideas.ingest_from_env(st, run_now_env, now_iso="now")
+        self.assertEqual(result, "run_now_queued")
+        self.assertEqual(st["idea_queue"][0]["idea_id"], "new-idea")
+
+    def test_controller_recovers_from_idea_queue_full_block(self):
+        st = self.complete_state()
+        st["cycle"] = "2026-10-19"
+        st["status"] = "blocked"
+        st["last_error"] = {"stage": "controller", "code": "IDEA_QUEUE_FULL", "message": "IDEA_QUEUE_FULL"}
+        gh = FakeGitHub(st, [])
+        ctrl = stabilized.StabilizedRuntimeV5Controller(gh, FakeSite(), now=datetime(2026, 10, 19, 10, 0, tzinfo=TZ))
+        with mock.patch.dict(os.environ, {}, clear=True):
+            state, action = ctrl.tick()
+        reasons = [h.get("reason") for h in state.get("history", [])]
+        self.assertIn("idea_queue_full_recovery", reasons)
+
+    def test_invalid_idea_dispatch_does_not_block_complete_state(self):
+        st = self.complete_state()
+        st["cycle"] = "2026-10-19"
+        gh = FakeGitHub(st, [])
+        ctrl = stabilized.StabilizedRuntimeV5Controller(gh, FakeSite(), now=datetime(2026, 10, 19, 10, 0, tzinfo=TZ))
+        bad_env = {
+            "KESHER_IDEA_ID": "INVALID IDEA ID WITH SPACES",
+            "KESHER_IDEA_TOPIC_BRIEF": "מאמר",
+            "KESHER_IDEA_REQUIRED_PRIMARY_KEYWORD": "גמילה ממוצץ",
+        }
+        with mock.patch.dict(os.environ, bad_env, clear=True):
+            state, action = ctrl.tick()
+        self.assertEqual(action.kind, "rejected")
+        self.assertNotEqual(state["status"], "blocked")
+        self.assertEqual(state["last_error"]["code"], "IDEA_ID_INVALID")
+

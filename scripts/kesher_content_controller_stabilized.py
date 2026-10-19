@@ -2179,14 +2179,34 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
     def tick(self):
         state = self.state()
         self._active_state_ref = state
+        if (
+            state.get("status") == "blocked"
+            and isinstance(state.get("last_error"), dict)
+            and state["last_error"].get("code") == "IDEA_QUEUE_FULL"
+        ):
+            state["status"] = "complete"
+            state["last_error"] = None
+            state.setdefault("history", []).append({
+                "at": v5.core.utc_now(),
+                "from": "blocked",
+                "to": "complete",
+                "reason": "idea_queue_full_recovery",
+            })
+            state["history"] = state["history"][-100:]
+            self._safe_save_controller_state(state)
         if idea_queue.finalize_if_complete(state, now_iso=v5.core.utc_now()):
             self._safe_save_controller_state(state)
         try:
             idea_result = idea_queue.ingest_from_env(state, os.environ, now_iso=v5.core.utc_now())
         except idea_queue.IdeaQueueError as exc:
-            v5.core.block(state, "controller", str(exc), str(exc))
+            state["last_error"] = {
+                "stage": "controller",
+                "code": str(exc),
+                "message": str(exc),
+                "at": v5.core.utc_now(),
+            }
             self._safe_save_controller_state(state)
-            return state, v5.core.Action("blocked", str(exc))
+            return state, v5.core.Action("rejected", str(exc))
         if idea_result == "run_now_queued":
             try:
                 started = self._begin_run_now_cycle(state)

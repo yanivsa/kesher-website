@@ -8,7 +8,7 @@ import json
 import re
 from typing import Any, Mapping
 
-MAX_QUEUE = 20
+MAX_QUEUE = 100
 MAX_HISTORY = 50
 MAX_TOPIC_BRIEF = 15500
 MAX_KEYWORD = 200
@@ -114,7 +114,7 @@ def ingest_from_env(
         if str(row.get("fingerprint") or "") == fp:
             return "duplicate"
         raise IdeaQueueError("IDEA_ID_CONFLICT")
-    if len(state["idea_queue"]) >= MAX_QUEUE:
+    if not run_now and len(state["idea_queue"]) >= MAX_QUEUE:
         raise IdeaQueueError("IDEA_QUEUE_FULL")
     record = {
         "idea_id": idea_id,
