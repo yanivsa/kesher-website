@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "article_needed",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,8 +13,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
-    "deploy_attempts": 0
+    "attempts": 1,
+    "deploy_attempts": 0,
+    "last_dispatch_at": "2026-10-19T10:08:36.114258+00:00"
   },
   "backlog": [
     {
@@ -1386,12 +1387,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T05:21:17.265759+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-19T05:21:20.297083+00:00",
       "from": "long_video_complete",
       "to": "short_running",
@@ -2147,9 +2142,19 @@
         "idea_id": "toddler-bed-transition-20261019-v1",
         "publication_slot": "2026-10-19"
       }
+    },
+    {
+      "at": "2026-10-19T10:08:36.114286+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 1,
+        "publication_slot": "2026-10-19"
+      }
     }
   ],
-  "updated_at": "2026-10-19T10:01:26.452061+00:00",
+  "updated_at": "2026-10-19T10:08:36.114295+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2207,9 +2212,10 @@
         "topic_brief": "כתוב מאמר עברי מקצועי ומעשי להורים בנושא מעבר למיטת מעבר: מתי הזמן הנכון להעביר פעוט ממיטת תינוק למיטת מעבר, סימני מוכנות, הכנת החדר והילד לשינוי, התמודדות עם קימה בלילה וירידה מהמיטה, ואיך לבסס שגרת שינה בטוחה ורגועה ללא מאבקים.\n\nIdea Request ID: toddler-bed-transition-20261019-v1\nRequired Primary Keyword: מעבר למיטת מעבר"
       },
       "intent_at": "2026-10-19T10:08:26.514859+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-19T10:08:26.514859+00:00"
     }
   },
   "last_child_notification": {
