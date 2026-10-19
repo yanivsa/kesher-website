@@ -7,6 +7,8 @@ const {
   validateInternalLinkPlan,
   auditInternalLinkCoverage,
 } = require('../scripts/internal-link-policy.cjs');
+const { loadPosts } = require('../scripts/load-posts.cjs');
+const priorityOnePlan = require('../scripts/internal-link-plan.json');
 
 describe('internal-link policy', () => {
   it('normalizes relative and same-domain blog links', () => {
@@ -53,5 +55,9 @@ describe('internal-link policy', () => {
         { source: 'alpha', target: 'gamma', present: false },
       ],
     });
+  });
+
+  it('keeps every priority-1 source and target bound to a real article in the combined catalog', () => {
+    expect(validateInternalLinkPlan(loadPosts(), priorityOnePlan)).toEqual([]);
   });
 });
