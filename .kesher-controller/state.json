@@ -3,8 +3,8 @@
   "cycle": "2026-10-19",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39189808363,
@@ -13,7 +13,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
     "last_dispatch_at": "2026-10-19T02:24:26.909533+00:00",
     "last_run_conclusion": "success",
@@ -45,7 +45,17 @@
     "merge_candidate_sha": "25a4c8d1f17c8050e5d622d12b1c768014231e1c",
     "merge_dispatch_at": "2026-10-19T03:17:12.875254+00:00",
     "merge_dispatch_count": 2,
-    "merge_run_id": 39193680021
+    "merge_run_id": 39193965302,
+    "slug": "potty-training-toddlers",
+    "title": "גמילה מטיטול: איך נדע שהגיע הזמן ואיך לצלוח את המעבר",
+    "url": "https://kesher.saharoni.com/blog/potty-training-toddlers",
+    "published_date": "2026-10-19",
+    "quality_content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-10-19T03:18:24.945602+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2229,7 +2239,8 @@
     "last_dispatch_at": "2026-10-19T03:12:20.894832+00:00",
     "artifact_sha256": "8a64bc30d023676d7ee40d8dff2fd94899a1a635a5ecb959a9ba9b836dfa8af0",
     "source_id": "local://public/images/fallback/adhd/adhd_morning_routine_support.jpg",
-    "run_id": 39193569021
+    "run_id": 39193569021,
+    "image_path": "/images/generated/blog/potty-training-toddlers.jpg"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2281,23 +2292,20 @@
       "observed_active_run_id": 39189808363,
       "dispatched_at": "2026-10-19T02:24:15.370242+00:00"
     },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "deploy.yml": {
+      "workflow": "deploy.yml",
       "cycle": "2026-10-19",
-      "inputs": {
-        "pr_number": "1147",
-        "slot": "2026-10-19"
-      },
-      "intent_at": "2026-10-19T03:16:46.786410+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39193680021,
-      "observed_active_run_id": 39193965302,
-      "dispatched_at": "2026-10-19T03:16:46.786410+00:00"
+      "inputs": {},
+      "intent_at": "2026-10-19T03:18:22.283985+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "245a504955877b448ce0bd2a7a9d120106c44255"
     }
   },
   "last_child_notification": {
     "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 39193680021,
+    "run_id": 39193965302,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-19"
