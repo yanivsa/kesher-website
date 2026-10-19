@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "article_generating",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -19,7 +19,10 @@
     "pr_number": 1148,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1148",
     "current_pr_head_sha": "260ae86910d5829272b8119ab35e64f68d99ef7d",
-    "jules_head_sha": "260ae86910d5829272b8119ab35e64f68d99ef7d"
+    "jules_head_sha": "260ae86910d5829272b8119ab35e64f68d99ef7d",
+    "normalization_status": "running",
+    "normalization_slot": "2026-10-19",
+    "normalization_dispatched_at": "2026-10-19T06:08:16.936709+00:00"
   },
   "backlog": [
     {
@@ -1392,12 +1395,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T22:41:00.325069+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-18T22:41:01.444198+00:00",
       "from": "article_live",
       "to": "video_running",
@@ -2177,9 +2174,19 @@
       "details": {
         "publication_slot": "2026-10-19"
       }
+    },
+    {
+      "at": "2026-10-19T06:08:16.936737+00:00",
+      "from": "article_generating",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1148,
+        "slot": "2026-10-19"
+      }
     }
   ],
-  "updated_at": "2026-10-19T06:05:53.698799+00:00",
+  "updated_at": "2026-10-19T06:08:16.936744+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2237,9 +2244,10 @@
         "slot": "2026-10-19"
       },
       "intent_at": "2026-10-19T06:08:01.592182+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39208178702,
+      "dispatched_at": "2026-10-19T06:08:01.592182+00:00"
     }
   },
   "last_child_notification": {
