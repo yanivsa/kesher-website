@@ -1,0 +1,122 @@
+[
+  {
+    "cluster": "couples-conflict",
+    "priority": 1,
+    "source": "how-to-stop-repeating-arguments",
+    "targets": ["gottman-perpetual-problems-69-percent", "how-to-repair-after-couple-fight", "money-fights-communication"]
+  },
+  {
+    "cluster": "couples-conflict",
+    "priority": 1,
+    "source": "gottman-perpetual-problems-69-percent",
+    "targets": ["how-to-stop-repeating-arguments", "money-fights-communication"]
+  },
+  {
+    "cluster": "couples-conflict",
+    "priority": 1,
+    "source": "how-to-repair-after-couple-fight",
+    "targets": ["how-to-stop-repeating-arguments", "why-couples-fight-at-night-fatigue"]
+  },
+  {
+    "cluster": "couples-conflict",
+    "priority": 1,
+    "source": "why-couples-fight-at-night-fatigue",
+    "targets": ["how-to-repair-after-couple-fight", "how-to-stop-repeating-arguments"]
+  },
+  {
+    "cluster": "couples-conflict",
+    "priority": 1,
+    "source": "money-fights-communication",
+    "targets": ["marriage-prep-financial-expectations-2026-08-24", "how-to-stop-repeating-arguments"]
+  },
+  {
+    "cluster": "dating",
+    "priority": 1,
+    "source": "dating-apps-burnout-finding-a-partner",
+    "targets": ["dating-fatigue-resilience", "dating-emotional-needs-vs-checklists", "dating-second-chance-criteria"]
+  },
+  {
+    "cluster": "dating",
+    "priority": 1,
+    "source": "dating-apps-exhaustion",
+    "targets": ["dating-fatigue-resilience", "dating-communication-early-stages"]
+  },
+  {
+    "cluster": "dating",
+    "priority": 1,
+    "source": "dating-transition-to-relationship-boundaries",
+    "targets": ["dating-fatigue-resilience", "dating-exclusivity-conversation", "navigating-new-relationships-dating-balance"]
+  },
+  {
+    "cluster": "dating",
+    "priority": 1,
+    "source": "dating-second-chance-criteria",
+    "targets": ["dating-emotional-needs-vs-checklists", "dating-communication-early-stages"]
+  },
+  {
+    "cluster": "dating",
+    "priority": 1,
+    "source": "dating-exclusivity-conversation",
+    "targets": ["dating-transition-to-relationship-boundaries", "navigating-new-relationships-dating-balance"]
+  },
+  {
+    "cluster": "gifted",
+    "priority": 1,
+    "source": "how-to-identify-a-gifted-child-parents-guide",
+    "targets": ["gifted-children-social-difficulties", "gifted-children-perfectionism-tears", "gifted-adhd-executive-functions-struggle"]
+  },
+  {
+    "cluster": "gifted",
+    "priority": 1,
+    "source": "gifted-children-social-difficulties",
+    "targets": ["how-to-identify-a-gifted-child-parents-guide", "gifted-children-first-days-adjustment"]
+  },
+  {
+    "cluster": "gifted",
+    "priority": 1,
+    "source": "gifted-children-framework-preparation",
+    "targets": ["gifted-children-first-days-adjustment", "gifted-adhd-executive-functions-struggle"]
+  },
+  {
+    "cluster": "gifted",
+    "priority": 1,
+    "source": "gifted-children-perfectionism-tears",
+    "targets": ["gifted-children-social-difficulties", "gifted-adhd-executive-functions-struggle"]
+  },
+  {
+    "cluster": "gifted",
+    "priority": 1,
+    "source": "gifted-adhd-executive-functions-struggle",
+    "targets": ["gifted-children-framework-preparation", "gifted-children-first-days-adjustment"]
+  },
+  {
+    "cluster": "mornings-first-grade",
+    "priority": 1,
+    "source": "adhd-morning-conflict-dopamine-myth",
+    "targets": ["early-habits-building-calm-mornings-children", "adhd-morning-routine", "first-grade-preparation-morning-routine"]
+  },
+  {
+    "cluster": "mornings-first-grade",
+    "priority": 1,
+    "source": "early-habits-building-calm-mornings-children",
+    "targets": ["adhd-morning-conflict-dopamine-myth", "first-grade-preparation-morning-routine", "separation-anxiety-morning-dropoff"]
+  },
+  {
+    "cluster": "mornings-first-grade",
+    "priority": 1,
+    "source": "first-grade-preparation-morning-routine",
+    "targets": ["early-habits-building-calm-mornings-children", "adhd-first-grade-preparation"]
+  },
+  {
+    "cluster": "mornings-first-grade",
+    "priority": 1,
+    "source": "adhd-first-grade-preparation",
+    "targets": ["school-entry-readiness-emotional-regulation-skills", "first-grade-preparation-morning-routine"]
+  },
+  {
+    "cluster": "mornings-first-grade",
+    "priority": 1,
+    "source": "toddler-independence-morning-struggles",
+    "targets": ["early-habits-building-calm-mornings-children", "separation-anxiety-morning-dropoff"]
+  }
+]
