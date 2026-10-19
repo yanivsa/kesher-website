@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -59,7 +59,7 @@
     "last_deploy_dispatch_at": "2026-10-19T03:18:30.223738+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39194069093,
-    "live_verified_at": "2026-10-19T05:17:53.976692+00:00"
+    "live_verified_at": "2026-10-19T05:18:07.154161+00:00"
   },
   "backlog": [
     {
@@ -1432,24 +1432,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T13:31:03.515923+00:00",
-      "from": "article_retry_wait",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-18T13:35:47.028425+00:00",
-      "from": "blocked",
-      "to": "article_retry_wait",
-      "reason": "owner run-now article retry backoff is active",
-      "details": {
-        "retry_at": "2026-10-18T13:36:03.515861+00:00"
-      }
-    },
-    {
       "at": "2026-10-18T13:41:00.958955+00:00",
       "from": "article_retry_wait",
       "to": "article_generating",
@@ -2272,9 +2254,21 @@
         "item_id": "video-20261019-070254-08f52aa15d-a2",
         "task_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff"
       }
+    },
+    {
+      "at": "2026-10-19T05:18:07.154187+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-19T05:18:07.612785+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-10-19T05:10:56.395229+00:00",
+  "updated_at": "2026-10-19T05:18:07.612802+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2293,9 +2287,9 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "generating",
+    "status": "complete",
     "last_error": null,
-    "next_retry_at": "2026-10-19T04:11:57.210318+00:00",
+    "next_retry_at": null,
     "run_id": 39201627006,
     "processed_run_id": 39197298571,
     "provider_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff",
@@ -2376,6 +2370,20 @@
       "previous_run_id": 39189537931,
       "observed_active_run_id": 39189808363,
       "dispatched_at": "2026-10-19T02:24:15.370242+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "potty-training-toddlers",
+        "derive_content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210",
+        "derive_long_item_id": "video-20261019-070254-08f52aa15d-a2"
+      },
+      "intent_at": "2026-10-19T05:17:50.321627+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
