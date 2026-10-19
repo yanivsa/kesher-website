@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "long_video_watchdog_recovery",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1416,15 +1416,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T02:50:56.654589+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-19"
-      }
-    },
-    {
       "at": "2026-10-19T03:10:38.732261+00:00",
       "from": "article_generating",
       "to": "article_normalizing",
@@ -2244,9 +2235,19 @@
         "slug": "transition-from-caregiver-to-daycare",
         "content_sha256": "5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659"
       }
+    },
+    {
+      "at": "2026-10-19T09:11:13.583756+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261019-113455-5e9153b529-a3",
+        "task_id": "0cf36667-a973-42d1-9b35-6164923fe4bf"
+      }
     }
   ],
-  "updated_at": "2026-10-19T09:06:27.392930+00:00",
+  "updated_at": "2026-10-19T09:11:13.583765+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2265,7 +2266,7 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-10-19T08:47:31.787115+00:00",
     "run_id": 39227566328,
