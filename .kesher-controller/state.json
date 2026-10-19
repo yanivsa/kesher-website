@@ -2220,7 +2220,20 @@
     "short_signature_verified": true,
     "short_origin_verified": true
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-article-generation.yml": {
+      "workflow": "kesher-article-generation.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "slot": "2026-10-19",
+        "topic_brief": "כתוב מאמר עברי מקצועי, מעשי ורגיש להורים בנושא מעבר ממטפלת למעון או לפעוטון. התייחס להבדלים בין טיפול של אחד על אחד למסגרת קבוצתית, הכנה הדרגתית של הפעוט, התמודדות עם בכי ופרידות בבוקר, בניית שיתוף פעולה ואמון עם צוות המעון, סימני קושי נורמטיביים לעומת סימנים שמצריכים בירור, ואיך לשמור על עוגן רגוע ובטוח בבית. שמור על טון מבוסס, תומך, פרקטי ולא שיפוטי.\n\nIdea Request ID: caregiver-to-daycare-20261019-v1\nRequired Primary Keyword: מעבר ממטפלת למעון"
+      },
+      "intent_at": "2026-10-19T05:42:04.037774+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
     "run_id": 39203835251,
