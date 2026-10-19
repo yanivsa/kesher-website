@@ -53,13 +53,13 @@
     "quality_content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-19T04:05:49.610713+00:00",
+    "quality_checked_at": "2026-10-19T04:07:04.023567+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-19T03:18:30.223738+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39194069093,
-    "live_verified_at": "2026-10-19T04:05:51.251837+00:00"
+    "live_verified_at": "2026-10-19T04:07:06.073325+00:00"
   },
   "backlog": [
     {
@@ -2288,7 +2288,7 @@
     "attempt_count": 2,
     "status": "rejected",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-19T04:11:57.210318+00:00",
     "run_id": 39197298571,
     "processed_run_id": 39196732418,
     "provider_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff",
@@ -2356,26 +2356,11 @@
       "previous_run_id": 39189537931,
       "observed_active_run_id": 39189808363,
       "dispatched_at": "2026-10-19T02:24:15.370242+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-19",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "potty-training-toddlers",
-        "target_content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210",
-        "target_item_id": "video-20261019-062800-08f52aa15d"
-      },
-      "intent_at": "2026-10-19T03:59:36.308685+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39196732418,
-      "observed_active_run_id": 39197298571,
-      "dispatched_at": "2026-10-19T03:59:36.308685+00:00"
     }
   },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 39196732418,
+    "run_id": 39197298571,
     "conclusion": "success",
     "source_slug": "potty-training-toddlers",
     "slot": "2026-10-19"
