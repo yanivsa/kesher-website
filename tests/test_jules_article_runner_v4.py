@@ -107,7 +107,7 @@ class JulesArticleRunnerV4Tests(unittest.TestCase):
             prompt = runner.build_prompt("2026-09-29", "POLICY")
 
         self.assertTrue(prompt.startswith("LEGACY_BASE_PROMPT"))
-        self.assertIn("fall back to the SEO GAP TOPIC DISCOVERY CONTRACT", prompt)
+        self.assertIn("Fall back to the SEO GAP TOPIC DISCOVERY CONTRACT", prompt)
         self.assertIn("fallback-to-seo-gap", prompt)
         self.assertIn("EXACTLY ONE article and one PR", prompt)
 
