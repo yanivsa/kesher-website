@@ -76,7 +76,7 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-19T11:22:35.545680+00:00",
-    "live_verified_at": "2026-10-19T12:11:15.413310+00:00"
+    "live_verified_at": "2026-10-19T12:11:44.519761+00:00"
   },
   "backlog": [
     {
@@ -1448,24 +1448,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T07:16:02.050162+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
-      "details": {
-        "message": "Article PR head mutated repeatedly (7 times) after trusted stages; branch quiescence failed"
-      }
-    },
-    {
-      "at": "2026-10-19T07:19:37.273073+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
-      "details": {
-        "message": "Article PR head mutated repeatedly (8 times) after trusted stages; branch quiescence failed"
-      }
-    },
-    {
       "at": "2026-10-19T07:20:51.886646+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2217,9 +2199,21 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-10-19T12:11:44.519789+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-19T12:11:46.652802+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-10-19T12:06:11.253015+00:00",
+  "updated_at": "2026-10-19T12:11:46.652824+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
