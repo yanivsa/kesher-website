@@ -1844,9 +1844,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             curr = head_sha
             for _ in range(6):
                 try:
+                    api = getattr(self.github, "api", "") or f"https://api.github.com/repos/{getattr(self.github, 'repo', 'yanivsa/kesher-website')}"
                     commit_payload = self.github.request(
                         "GET",
-                        f"https://api.github.com/repos/{self.repo}/commits/{curr}",
+                        f"{api}/commits/{curr}",
                     )
                     parents = [
                         str(p.get("sha") or "").strip().lower()
