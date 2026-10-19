@@ -457,7 +457,11 @@ class ThreeStrikeMediaInterventionMixin:
                 self.github.save_controller_state(state)
                 return v5.core.Action("wait", f"{stage_name} strike {decision.strike}; targeted Controller action already observed")
 
-            if decision.action in {intervention.OBSERVE_CONTROLLER, intervention.FORCE_CONTROLLER_RECOVERY}:
+            if decision.action in {
+                intervention.OBSERVE_CONTROLLER,
+                intervention.FORCE_CONTROLLER_RECOVERY,
+                intervention.PROGRESS_RESET,
+            }:
                 action_item = item
                 if stage_name == "long_video":
                     # If Attempt 3 is completed, prefer Attempt 3

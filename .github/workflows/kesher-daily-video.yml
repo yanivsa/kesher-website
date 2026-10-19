@@ -298,7 +298,7 @@ jobs:
           KESHER_RECOVERY_MODE: ${{ inputs.operation == 'recovery' && 'true' || 'false' }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
-        run: python -u scripts/kesher_daily_pipeline.py --max-wait-seconds 150
+        run: python -u scripts/kesher_daily_pipeline.py --max-wait-seconds 360
 
       - name: Rebuild exact visually rejected item with Remotion
         if: ${{ inputs.operation == 'rebuild' }}
