@@ -2056,7 +2056,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-19T18:34:39.676820+00:00",
     "artifact_sha256": "f5f395d4c77a2b71dfa293960a206c5a50187e0091f98b1ab1c2c6de1bdb50a1",
-    "source_id": "local://public/images/fallback/premarital/premarital_preparation_planning.jpg"
+    "source_id": "local://public/images/fallback/premarital/premarital_preparation_planning.jpg",
+    "run_id": 39303644748
   },
   "long_video": {
     "attempt_count": 0,
