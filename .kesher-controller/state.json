@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -52,13 +52,18 @@
     "last_failed_run_id": 39235290942,
     "pr_number": 1152,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1152",
-    "current_pr_head_sha": "a3157fd83719010e2848036fef83db81bfb0f9bb",
+    "current_pr_head_sha": "1a32587257497196ebaec58fd51d0cc31f6a2a23",
     "jules_head_sha": "352652450ffe2be45eb9e662da65f4e026f1e2cf",
     "normalization_status": "complete",
     "normalization_slot": "2026-10-19",
     "normalization_dispatched_at": "2026-10-19T11:08:05.258243+00:00",
     "normalization_run_id": 39242417464,
-    "normalized_head_sha": "a3157fd83719010e2848036fef83db81bfb0f9bb"
+    "normalization_drift_count": 1,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
+    "normalized_head_sha": "1a32587257497196ebaec58fd51d0cc31f6a2a23",
+    "image_head_sha": "1a32587257497196ebaec58fd51d0cc31f6a2a23",
+    "merge_candidate_sha": "1a32587257497196ebaec58fd51d0cc31f6a2a23"
   },
   "backlog": [
     {
@@ -1430,12 +1435,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T05:41:26.038295+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-19T05:41:27.243194+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2241,21 +2240,28 @@
         "attempt": 1,
         "pr_number": 1152
       }
+    },
+    {
+      "at": "2026-10-19T11:11:20.678198+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-19T11:09:55.918711+00:00",
+  "updated_at": "2026-10-19T11:11:20.678217+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 39242640815,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "Local",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-19T11:09:55.918674+00:00"
+    "last_dispatch_at": "2026-10-19T11:09:55.918674+00:00",
+    "artifact_sha256": "9bc58491f270ed0b2631ec512cefcb5cbe54777ff6ef735d945d0422aced37fb",
+    "source_id": "local://public/images/fallback/couples/couples_communication_conversation.jpg"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2305,6 +2311,18 @@
       "previous_run_id": null,
       "observed_active_run_id": 39242640815,
       "dispatched_at": "2026-10-19T11:09:34.122664+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-19",
+      "inputs": {
+        "pr_number": "1152",
+        "slot": "2026-10-19"
+      },
+      "intent_at": "2026-10-19T11:10:52.957200+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
