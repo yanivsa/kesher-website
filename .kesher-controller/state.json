@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "article_needed",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,8 +13,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
-    "deploy_attempts": 0
+    "attempts": 1,
+    "deploy_attempts": 0,
+    "last_dispatch_at": "2026-10-19T05:42:15.034460+00:00"
   },
   "backlog": [
     {
@@ -1387,12 +1388,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T22:26:12.790582+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-18T22:26:19.109883+00:00",
       "from": "article_live",
       "to": "video_running",
@@ -2169,9 +2164,19 @@
         "idea_id": "caregiver-to-daycare-20261019-v1",
         "publication_slot": "2026-10-19"
       }
+    },
+    {
+      "at": "2026-10-19T05:42:15.034477+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 1,
+        "publication_slot": "2026-10-19"
+      }
     }
   ],
-  "updated_at": "2026-10-19T05:41:28.420933+00:00",
+  "updated_at": "2026-10-19T05:42:15.034484+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2229,9 +2234,10 @@
         "topic_brief": "כתוב מאמר עברי מקצועי, מעשי ורגיש להורים בנושא מעבר ממטפלת למעון או לפעוטון. התייחס להבדלים בין טיפול של אחד על אחד למסגרת קבוצתית, הכנה הדרגתית של הפעוט, התמודדות עם בכי ופרידות בבוקר, בניית שיתוף פעולה ואמון עם צוות המעון, סימני קושי נורמטיביים לעומת סימנים שמצריכים בירור, ואיך לשמור על עוגן רגוע ובטוח בבית. שמור על טון מבוסס, תומך, פרקטי ולא שיפוטי.\n\nIdea Request ID: caregiver-to-daycare-20261019-v1\nRequired Primary Keyword: מעבר ממטפלת למעון"
       },
       "intent_at": "2026-10-19T05:42:04.037774+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-19T05:42:04.037774+00:00"
     }
   },
   "last_child_notification": {
