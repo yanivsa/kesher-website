@@ -38,13 +38,13 @@
     "quality_content_sha256": "5e9153b529fb28a166513267bf932b1bec3feb4fc120c3f290132c722b6b7659",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-19T09:05:59.411352+00:00",
+    "quality_checked_at": "2026-10-19T09:10:54.039143+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-19T07:26:38.361092+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39216012389,
-    "live_verified_at": "2026-10-19T09:06:00.969186+00:00"
+    "live_verified_at": "2026-10-19T09:10:55.589132+00:00"
   },
   "backlog": [
     {
