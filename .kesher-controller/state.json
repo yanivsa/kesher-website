@@ -2267,11 +2267,10 @@
         "slot": "2026-10-19",
         "topic_brief": "כתוב מאמר עברי מקצועי ומעשי להורים בנושא מעבר למיטת מעבר: מתי הזמן הנכון להעביר פעוט ממיטת תינוק למיטת מעבר, סימני מוכנות, הכנת החדר והילד לשינוי, התמודדות עם קימה בלילה וירידה מהמיטה, ואיך לבסס שגרת שינה בטוחה ורגועה ללא מאבקים.\n\nIdea Request ID: toddler-bed-transition-20261019-v1\nRequired Primary Keyword: מעבר למיטת מעבר"
       },
-      "intent_at": "2026-10-19T10:08:26.514859+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-19T10:08:26.514859+00:00"
+      "intent_at": "2026-10-19T10:45:50.776400+00:00",
+      "status": "intent",
+      "previous_run_id": 39235290942,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
