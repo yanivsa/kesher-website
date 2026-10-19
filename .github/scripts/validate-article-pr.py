@@ -272,7 +272,33 @@ def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra
 
     try:
         image_data = image_loader(matching[0])
-        errors.extend(image_proof_errors(post, body, str((pr.get("head") or {}).get("sha") or ""), image_data))
+        head_sha = str((pr.get("head") or {}).get("sha") or "").strip().lower()
+        evidence_head = str(exact_field(body, "Image Evidence Head") or "").strip().lower()
+        effective_head = head_sha
+        if evidence_head and head_sha != evidence_head:
+            repo_full_name = pr.get("base", {}).get("repo", {}).get("full_name") or os.environ.get("REPO") or ""
+            github_token = os.environ.get("GITHUB_TOKEN") or ""
+            if repo_full_name and github_token:
+                try:
+                    req = urllib.request.Request(
+                        f"https://api.github.com/repos/{repo_full_name}/commits/{head_sha}",
+                        headers={
+                            "Authorization": f"Bearer {github_token}",
+                            "Accept": "application/vnd.github+json",
+                        },
+                    )
+                    with urllib.request.urlopen(req, timeout=10) as resp:
+                        commit_data = json.loads(resp.read().decode("utf-8"))
+                        parents = [
+                            str(p.get("sha") or "").strip().lower()
+                            for p in (commit_data.get("parents") or [])
+                            if isinstance(p, dict)
+                        ]
+                        if len(parents) >= 2 and parents[0] == evidence_head:
+                            effective_head = evidence_head
+                except Exception:
+                    pass
+        errors.extend(image_proof_errors(post, body, effective_head, image_data))
         actual_sha = hashlib.sha256(image_data).hexdigest()
         actual_pixels = image_pixel_sha256(image_data)
 

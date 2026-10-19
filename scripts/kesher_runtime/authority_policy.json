@@ -1332,7 +1332,7 @@
       ],
       "review": {
         "call_chain": {
-          ".github/scripts/validate-article-pr.py": "b65bca2126c3d03e46edf9e5e3e3a40cef11ef447c19d899c91236a322821749",
+          ".github/scripts/validate-article-pr.py": "86e79ae6f6d4e95093ceeaad816eeed12c799af9f2c45a090f6acfb86db42c8e",
           "scripts/kesher_article_contract.py": "92f8f6c9e0ca2340cbb3a27178521eb6c9eee80e2edc57017ccba81311b3feec",
           "scripts/kesher_article_normalizer.py": "9fbd3b8df960e1787bbb2f69ad7db06d690a767f316c26c7a9cd13cd89894885",
           "scripts/kesher_runtime/article_image_worker.py": "4175edd11be879ecd698802bbc9a119060a74afef3302e96f985ea1ae995a284",
@@ -1392,7 +1392,7 @@
       "review": {
         "call_chain": {
           ".github/scripts/validate-article-images.py": "b3e510c703049a56a1fc8d43d6f6ac5e79bbd524c255c621982c5a1309b39851",
-          ".github/scripts/validate-article-pr.py": "b65bca2126c3d03e46edf9e5e3e3a40cef11ef447c19d899c91236a322821749",
+          ".github/scripts/validate-article-pr.py": "86e79ae6f6d4e95093ceeaad816eeed12c799af9f2c45a090f6acfb86db42c8e",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
           "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
           "playwright.config.ts": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c",
@@ -1768,7 +1768,7 @@
       ],
       "review": {
         "call_chain": {
-          ".github/scripts/validate-article-pr.py": "b65bca2126c3d03e46edf9e5e3e3a40cef11ef447c19d899c91236a322821749",
+          ".github/scripts/validate-article-pr.py": "86e79ae6f6d4e95093ceeaad816eeed12c799af9f2c45a090f6acfb86db42c8e",
           "scripts/kesher_article_contract.py": "92f8f6c9e0ca2340cbb3a27178521eb6c9eee80e2edc57017ccba81311b3feec",
           "scripts/kesher_article_normalizer.py": "9fbd3b8df960e1787bbb2f69ad7db06d690a767f316c26c7a9cd13cd89894885",
           "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
@@ -3126,7 +3126,7 @@
       "resources": [],
       "review": {
         "call_chain": {
-          ".github/scripts/validate-article-pr.py": "b65bca2126c3d03e46edf9e5e3e3a40cef11ef447c19d899c91236a322821749",
+          ".github/scripts/validate-article-pr.py": "86e79ae6f6d4e95093ceeaad816eeed12c799af9f2c45a090f6acfb86db42c8e",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
           "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
