@@ -1,19 +1,19 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "article_generating",
+  "status": "article_result_wait",
   "article": {
-    "attempt_count": 1,
+    "attempt_count": 0,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-19T02:24:06.146539+00:00",
     "run_id": 39189537931,
-    "processed_run_id": 39189026133,
+    "processed_run_id": 39189537931,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
     "last_dispatch_at": "2026-10-19T02:20:57.377677+00:00",
     "last_run_conclusion": "success",
@@ -25,8 +25,8 @@
       "message": "Article already exists in main",
       "session_id": "",
       "pr_url": "",
-      "github_run_id": "39189026133",
-      "completed_at": "2026-10-19T02:15:00.840100+00:00",
+      "github_run_id": "39189537931",
+      "completed_at": "2026-10-19T02:21:21.125918+00:00",
       "owner_required_primary_keyword": "גמילה מטיטול",
       "owner_topic_brief_sha256": "45ab9d97b78e171b1d26ecf7013c7b0f648a3242f95a29f86bf0db9baf3a2062"
     },
@@ -1403,12 +1403,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T12:11:30.605465+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-18T12:11:31.731181+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2163,9 +2157,20 @@
         "attempt": 1,
         "publication_slot": "2026-10-19"
       }
+    },
+    {
+      "at": "2026-10-19T02:22:06.146567+00:00",
+      "from": "article_generating",
+      "to": "article_result_wait",
+      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
+      "details": {
+        "run_id": 39189537931,
+        "outcome": "ARTICLE_ALREADY_PUBLISHED",
+        "pr_url": ""
+      }
     }
   ],
-  "updated_at": "2026-10-19T02:20:57.377724+00:00",
+  "updated_at": "2026-10-19T02:22:06.146574+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2214,24 +2219,10 @@
     "short_signature_verified": true,
     "short_origin_verified": true
   },
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-10-19",
-      "inputs": {
-        "slot": "2026-10-19",
-        "topic_brief": "כתוב מאמר עברי מקצועי, ברור ומעשי להורים לפעוטות בנושא גמילה מטיטול. התייחס לסימני מוכנות, מתי נכון להתחיל, טעויות נפוצות, התמודדות עם התנגדות ופספוסים, ומתי כדאי לעצור ולנסות שוב. שמור על טון רגוע, לא שיפוטי, מבוסס ומעשי, בלי הבטחות מוחלטות. המאמר חייב להישאר ממוקד בכוונת החיפוש של גמילה מטיטול.\n\nIdea Request ID: potty-training-20261018-v1\nRequired Primary Keyword: גמילה מטיטול"
-      },
-      "intent_at": "2026-10-19T02:20:45.651446+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39189026133,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-19T02:20:45.651446+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
     "workflow": "Kesher Article Generation",
-    "run_id": 39189026133,
+    "run_id": 39189537931,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-19"
