@@ -2261,7 +2261,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-19T11:09:55.918674+00:00",
     "artifact_sha256": "9bc58491f270ed0b2631ec512cefcb5cbe54777ff6ef735d945d0422aced37fb",
-    "source_id": "local://public/images/fallback/couples/couples_communication_conversation.jpg"
+    "source_id": "local://public/images/fallback/couples/couples_communication_conversation.jpg",
+    "run_id": 39242640815
   },
   "long_video": {
     "attempt_count": 0,
