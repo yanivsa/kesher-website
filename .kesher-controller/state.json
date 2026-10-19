@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "article_image_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "blocked",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39298721854,
@@ -18,13 +18,13 @@
     "last_dispatch_at": "2026-10-19T17:58:58.253410+00:00",
     "pr_number": 1156,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1156",
-    "current_pr_head_sha": "827cf9aed79ef6f8bcf1e4eb979badd95e1ff57d",
+    "current_pr_head_sha": "bc32e8853d2e87eeb3051c2f2d485feec0c7a14e",
     "jules_head_sha": "2e46ace492f078bc6e2c11235b6581bed196b659",
     "normalization_status": "complete",
     "normalization_slot": "2026-10-19",
     "normalization_dispatched_at": "2026-10-19T18:38:39.799660+00:00",
     "normalization_run_id": 39304215670,
-    "normalization_drift_count": 3,
+    "normalization_drift_count": 4,
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 39303902186,
@@ -1400,12 +1400,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T14:39:00.820239+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-19T14:39:02.107993+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2052,9 +2046,18 @@
         "attempt": 2,
         "pr_number": 1156
       }
+    },
+    {
+      "at": "2026-10-19T18:47:34.335707+00:00",
+      "from": "article_image_running",
+      "to": "blocked",
+      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
+      "details": {
+        "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed"
+      }
     }
   ],
-  "updated_at": "2026-10-19T18:46:02.205645+00:00",
+  "updated_at": "2026-10-19T18:47:34.335712+00:00",
   "image": {
     "attempt_count": 2,
     "status": "running",
@@ -2116,23 +2119,10 @@
     "short_signature_verified": true,
     "short_origin_verified": true
   },
-  "pending_dispatches": {
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
-      "cycle": "2026-10-19",
-      "inputs": {
-        "pr_number": "1156"
-      },
-      "intent_at": "2026-10-19T18:45:44.735618+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39303644748,
-      "observed_active_run_id": 39305279215,
-      "dispatched_at": "2026-10-19T18:45:44.735618+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
-    "workflow": "Kesher Normalize Article PR",
-    "run_id": 39304215670,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 39305279215,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-19"
@@ -3797,5 +3787,10 @@
       "reason": "owner_run_now_cycle_started"
     }
   ],
-  "last_error": null
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_JULES_UNSTABLE_MUTATION",
+    "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed",
+    "at": "2026-10-19T18:47:34.335689+00:00"
+  }
 }
