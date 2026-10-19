@@ -76,7 +76,7 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-19T11:22:35.545680+00:00",
-    "live_verified_at": "2026-10-19T11:40:51.099576+00:00"
+    "live_verified_at": "2026-10-19T11:41:17.640043+00:00"
   },
   "backlog": [
     {
@@ -1448,24 +1448,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T06:00:57.646220+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-19"
-      }
-    },
-    {
-      "at": "2026-10-19T06:05:53.698776+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-19"
-      }
-    },
-    {
       "at": "2026-10-19T06:08:16.936737+00:00",
       "from": "article_generating",
       "to": "article_normalizing",
@@ -2250,9 +2232,21 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-10-19T11:41:17.640072+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-19T11:41:19.416356+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-10-19T11:36:28.017838+00:00",
+  "updated_at": "2026-10-19T11:41:19.416381+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2271,7 +2265,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "rejected",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39245026817,
@@ -2282,7 +2276,8 @@
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-10-19T11:29:43.586462+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "item_id": "video-20261019-143158-6aebd5cab8"
   },
   "short": {
     "attempt_count": 0,
