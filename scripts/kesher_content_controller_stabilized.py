@@ -14,11 +14,13 @@ from pathlib import Path
 
 if __package__:
     from . import article_claim_quality as quality
+    from . import kesher_article_contract as article_contract
     from . import kesher_content_controller_v5 as v5
     from . import kesher_content_controller_v5_runtime as runtime
     from . import kesher_idea_queue as idea_queue
 else:
     import article_claim_quality as quality
+    import kesher_article_contract as article_contract
     import kesher_content_controller_v5 as v5
     import kesher_content_controller_v5_runtime as runtime
     import kesher_idea_queue as idea_queue
@@ -1831,6 +1833,12 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             state["article"]["jules_head_sha"] = head_sha
 
         normalized_head_sha = str(state["article"].get("normalized_head_sha") or "").strip().lower()
+        evidence_head = str(
+            article_contract.exact_field(str(pr.get("body") or ""), "Image Evidence Head") or ""
+        ).strip().lower()
+        if not normalized_head_sha and evidence_head:
+            normalized_head_sha = evidence_head
+
         if normalized_head_sha and normalized_head_sha != head_sha:
             is_auto_sync_merge = False
             try:
@@ -1854,6 +1862,15 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 state["article"]["merge_candidate_sha"] = head_sha
                 state["article"]["merge_dispatch_count"] = 0
                 state["article"]["merge_dispatch_at"] = None
+                img_provider = str(article_contract.exact_field(str(pr.get("body") or ""), "Image Provider") or "").strip()
+                img_sha = str(article_contract.exact_field(str(pr.get("body") or ""), "Image SHA-256") or "").strip()
+                img_source = str(article_contract.exact_field(str(pr.get("body") or ""), "Image Source URL") or "").strip()
+                if img_provider and img_sha and img_source:
+                    state.setdefault("image", {})
+                    state["image"]["status"] = "complete"
+                    state["image"]["provider_id"] = img_provider
+                    state["image"]["artifact_sha256"] = img_sha
+                    state["image"]["source_id"] = img_source
                 if state.get("status") == "blocked" and state.get("article", {}).get("status") in {"blocked", "exhausted"}:
                     state["status"] = "article_pr_open"
                     state["article"]["status"] = "running"
@@ -1884,6 +1901,25 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 if str((state.get("image") or {}).get("status") or "") in {"running", "complete"}:
                     state["image"]["status"] = "pending"
                     state["image"].pop("run_id", None)
+        elif normalized_head_sha and normalized_head_sha == head_sha:
+            img_provider = str(article_contract.exact_field(str(pr.get("body") or ""), "Image Provider") or "").strip()
+            img_sha = str(article_contract.exact_field(str(pr.get("body") or ""), "Image SHA-256") or "").strip()
+            img_source = str(article_contract.exact_field(str(pr.get("body") or ""), "Image Source URL") or "").strip()
+            if img_provider and img_sha and img_source:
+                state.setdefault("image", {})
+                state["image"]["status"] = "complete"
+                state["image"]["provider_id"] = img_provider
+                state["image"]["artifact_sha256"] = img_sha
+                state["image"]["source_id"] = img_source
+
+        merge_candidate_sha = str(state["article"].get("merge_candidate_sha") or "").strip().lower()
+        if merge_candidate_sha and merge_candidate_sha != head_sha:
+            state["article"]["merge_dispatch_count"] = 0
+            state["article"]["merge_dispatch_at"] = None
+            if state.get("status") == "blocked" and state.get("article", {}).get("status") in {"blocked", "exhausted"}:
+                state["status"] = "article_pr_open"
+                state["article"]["status"] = "running"
+                state["article"].pop("last_error", None)
 
         # 1. Cap auto-merge dispatches to budget (max 3 dispatches)
         merge_dispatches = int(state["article"].get("merge_dispatch_count") or 0)
