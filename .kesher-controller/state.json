@@ -18,18 +18,16 @@
     "last_dispatch_at": "2026-10-19T17:58:58.253410+00:00",
     "pr_number": 1156,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1156",
-    "current_pr_head_sha": "75f9d0f9929af468eb997e8811763d818e4d9fd6",
+    "current_pr_head_sha": "32953dd1352e8d1b363fe9d736fa91aaa6b0a2d8",
     "jules_head_sha": "2e46ace492f078bc6e2c11235b6581bed196b659",
-    "normalization_status": "complete",
+    "normalization_status": "pending",
     "normalization_slot": "2026-10-19",
     "normalization_dispatched_at": "2026-10-19T18:32:56.818479+00:00",
     "normalization_run_id": 39303406149,
-    "normalization_drift_count": 1,
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-10-19T18:36:28.064997+00:00",
-    "normalized_head_sha": "75f9d0f9929af468eb997e8811763d818e4d9fd6",
-    "image_head_sha": "75f9d0f9929af468eb997e8811763d818e4d9fd6",
-    "merge_candidate_sha": "75f9d0f9929af468eb997e8811763d818e4d9fd6"
+    "normalization_drift_count": 2,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
+    "merge_run_id": 39303902186
   },
   "backlog": [
     {
@@ -2044,7 +2042,7 @@
   "updated_at": "2026-10-19T18:37:32.410290+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2054,8 +2052,7 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-19T18:34:39.676820+00:00",
     "artifact_sha256": "f5f395d4c77a2b71dfa293960a206c5a50187e0091f98b1ab1c2c6de1bdb50a1",
-    "source_id": "local://public/images/fallback/premarital/premarital_preparation_planning.jpg",
-    "run_id": 39303644748
+    "source_id": "local://public/images/fallback/premarital/premarital_preparation_planning.jpg"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2094,23 +2091,22 @@
     "short_origin_verified": true
   },
   "pending_dispatches": {
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
       "cycle": "2026-10-19",
       "inputs": {
         "pr_number": "1156",
         "slot": "2026-10-19"
       },
-      "intent_at": "2026-10-19T18:35:55.188938+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 39303902186,
-      "dispatched_at": "2026-10-19T18:35:55.188938+00:00"
+      "intent_at": "2026-10-19T18:38:19.734456+00:00",
+      "status": "intent",
+      "previous_run_id": 39303406149,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Trusted Article Image",
-    "run_id": 39303644748,
+    "workflow": "Auto-merge Kesher article PRs",
+    "run_id": 39303902186,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-19"
