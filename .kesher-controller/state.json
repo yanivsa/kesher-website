@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39189808363,
@@ -59,7 +59,7 @@
     "last_deploy_dispatch_at": "2026-10-19T03:18:30.223738+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39194069093,
-    "live_verified_at": "2026-10-19T05:30:48.275192+00:00"
+    "live_verified_at": "2026-10-19T05:31:01.617315+00:00"
   },
   "backlog": [
     {
@@ -1432,33 +1432,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T21:35:55.685608+00:00",
-      "from": "article_pr_open",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1144 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-18T21:40:56.072500+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1144 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-18T21:45:12.488755+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1144 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-18T21:45:47.382198+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2245,9 +2218,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-10-19T05:31:01.617345+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-19T05:31:02.106853+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-19T05:31:02.570017+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-19T05:26:14.354792+00:00",
+  "updated_at": "2026-10-19T05:31:02.570034+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2314,19 +2305,137 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39203835251,
     "processed_run_id": null,
-    "provider_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff",
+    "provider_id": "f95abdb2-5903-4901-b9fe-0343979d666e",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-19T05:18:12.713403+00:00",
-    "artifact_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff",
-    "source_id": "6f8d8c99-1fc1-439e-b029-9d7a7dbfe4d9",
-    "adopted_from_long_item_id": "video-20261019-070254-08f52aa15d-a2"
+    "artifact_id": "f95abdb2-5903-4901-b9fe-0343979d666e",
+    "source_id": "faf424fb-9368-4e27-98be-802d5f57c8c9",
+    "adopted_from_long_item_id": null,
+    "source": {
+      "id": "potty-training-toddlers",
+      "slug": "potty-training-toddlers",
+      "title": "גמילה מטיטול: איך נדע שהגיע הזמן ואיך לצלוח את המעבר",
+      "date": "2026-10-19",
+      "category": "הנחיית הורים",
+      "subcategory": "גיל הרך",
+      "excerpt": "גמילה מטיטול היא שלב משמעותי בהתפתחות הפעוט, אך היא עשויה לעורר לא מעט התלבטויות. איך מזהים סימני מוכנות, מתי כדאי להתחיל, מה לעשות כשיש פספוסים והתנגדות, ומתי נכון לעשות הפסקה?",
+      "canonical_url": "https://kesher.saharoni.com/blog/potty-training-toddlers",
+      "content_sha256": "08f52aa15dd0291d98a1756fb93e8ce1281e541086cd3179441bd2c45d1ff210",
+      "video_title": "גמילה מטיטול: איך נדע שהגיע הזמן ואיך לצלוח את המעבר",
+      "short_title": "גמילה מטיטול: איך נדע שהגיע הזמן ואיך לצלוח את המעבר",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "גמילה מטיטול: איך נדע שהגיע הזמן ואיך לצלוח את המעבר",
+        "description": "גמילה מטיטול היא שלב משמעותי בהתפתחות הפעוט, אך היא עשויה לעורר לא מעט התלבטויות. איך מזהים סימני מוכנות, מתי כדאי להתחיל, מה לעשות כשיש פספוסים והתנגדות, ומתי נכון לעשות הפסקה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/potty-training-toddlers\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הנחיית הורים",
+          "גיל הרך"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: גמילה מטיטול: איך נדע שהגיע הזמן ואיך לצלוח את המעבר",
+        "description": "גמילה מטיטול היא שלב משמעותי בהתפתחות הפעוט, אך היא עשויה לעורר לא מעט התלבטויות. איך מזהים סימני מוכנות, מתי כדאי להתחיל, מה לעשות כשיש פספוסים והתנגדות, ומתי נכון לעשות הפסקה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/potty-training-toddlers\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הנחיית הורים",
+          "גיל הרך"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "f95abdb2-5903-4901-b9fe-0343979d666e",
+    "raw_sha256": "5dfd1b9631c24ea08c8ef31c61ab060109a03f7381a6d2b77ea635cd58d99c63",
+    "final_sha256": "af9aef0e2fb2478353ce1afad80e98865bb335790813ba89bffc73dfd9714557",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 71.7,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 71.7,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "6f8d8c99-1fc1-439e-b029-9d7a7dbfe4d9",
+      "task_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff",
+      "artifact_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff",
+      "raw_sha256": "4c33a73225ff12017048435692341a6ae9256f86fc6c3826600ede8abc900329"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 71.7,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "5dfd1b9631c24ea08c8ef31c61ab060109a03f7381a6d2b77ea635cd58d99c63",
+      "final_sha256": "af9aef0e2fb2478353ce1afad80e98865bb335790813ba89bffc73dfd9714557",
+      "raw_audio_sha256": "d32611f5a358819ede6081c10ed9ff8966e8d4141675668e371c535871df4139",
+      "final_audio_sha256": "d32611f5a358819ede6081c10ed9ff8966e8d4141675668e371c535871df4139",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 71.74966
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 71.74966
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "af9aef0e2fb2478353ce1afad80e98865bb335790813ba89bffc73dfd9714557",
+      "raw_sha256": "5dfd1b9631c24ea08c8ef31c61ab060109a03f7381a6d2b77ea635cd58d99c63",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "5bee451da10c12e084ae1610b7a5485b2acb68bcb9f9a4dc2ad90db3b6731165",
+      "source_duration_seconds": 71.7,
+      "final_duration_seconds": 71.7,
+      "start_seconds": 68.7,
+      "end_seconds": 71.7,
+      "audio_source_sha256": "5dfd1b9631c24ea08c8ef31c61ab060109a03f7381a6d2b77ea635cd58d99c63"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261019-082033-08f52aa15d",
+    "type": "article_short",
+    "youtube_id": "chwf7Hf25nI",
+    "youtube_url": "https://youtu.be/chwf7Hf25nI",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "5bee451da10c12e084ae1610b7a5485b2acb68bcb9f9a4dc2ad90db3b6731165",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
