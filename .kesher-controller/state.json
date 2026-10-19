@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "article_needed",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,8 +13,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
-    "deploy_attempts": 0
+    "attempts": 1,
+    "deploy_attempts": 0,
+    "last_dispatch_at": "2026-10-19T17:58:58.253410+00:00"
   },
   "backlog": [
     {
@@ -1386,12 +1387,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T14:16:16.204153+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-19T14:16:16.734376+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -1991,9 +1986,19 @@
         "idea_id": "separate-room-transition-20261019-v1",
         "publication_slot": "2026-10-19"
       }
+    },
+    {
+      "at": "2026-10-19T17:58:58.253434+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 1,
+        "publication_slot": "2026-10-19"
+      }
     }
   ],
-  "updated_at": "2026-10-19T17:56:19.186116+00:00",
+  "updated_at": "2026-10-19T17:58:58.253442+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2051,9 +2056,10 @@
         "topic_brief": "כתוב מאמר עברי מקצועי ומעשי להורים בנושא מעבר לחדר נפרד: מתי הזמן המתאים להעביר תינוק או פעוט מחדר ההורים לחדר משלו, הנחיות בטיחות ומוכנות רגשית, איך לבנות שגרת מעבר הדרגתית ונעימה, התמודדות עם פחדי לילה ויקיצות מרובות, ואיך להרגיע בלי להפוך את הלילה למאבק מתמשך.\n\nIdea Request ID: separate-room-transition-20261019-v1\nRequired Primary Keyword: מעבר לחדר נפרד"
       },
       "intent_at": "2026-10-19T17:58:48.938099+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-19T17:58:48.938099+00:00"
     }
   },
   "last_child_notification": {
