@@ -1432,19 +1432,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-18T13:31:03.515884+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to generate exactly one new Hebrew article about pacifier weaning (גמילה ממוצץ) for the specific publication slot `2026-10-19`. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates a high-quality article about pacifier weaning, avoids modifying the image pipeline (adhering to the V3 override), and updates the generated lists (`sitemap.xml`, `rss.xml`, `llms-full.txt`, etc.). * **Safety & Side Effects:** No security or safety issues are present. * **Completeness & Compliance:** The patch fai…",
-        "retry_at": "2026-10-18T13:36:03.515861+00:00",
-        "failure_streak": 1,
-        "run_id": 39128725815,
-        "session_id": "sessions/2770575462461790479"
-      }
-    },
-    {
       "at": "2026-10-18T13:31:03.515923+00:00",
       "from": "article_retry_wait",
       "to": "blocked",
@@ -2275,9 +2262,19 @@
         "item_id": "video-20261019-070254-08f52aa15d-a2",
         "task_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff"
       }
+    },
+    {
+      "at": "2026-10-19T05:10:56.395220+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261019-070254-08f52aa15d-a2",
+        "task_id": "bdad0cc2-29a1-4ae8-a279-cc734ba75eff"
+      }
     }
   ],
-  "updated_at": "2026-10-19T05:06:23.450365+00:00",
+  "updated_at": "2026-10-19T05:10:56.395229+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
