@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "short_running",
+  "status": "short_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1448,16 +1448,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T07:51:08.665442+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261019-103550-5e9153b529",
-        "task_id": "5c435a9c-8917-4b0a-b959-b3d1a48784dd"
-      }
-    },
-    {
       "at": "2026-10-19T07:56:07.754550+00:00",
       "from": "long_video_watchdog_wait",
       "to": "long_video_watchdog_wait",
@@ -2192,9 +2182,19 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-10-19T12:56:13.750220+00:00",
+      "from": "short_running",
+      "to": "short_watchdog_recovery",
+      "reason": "Short provider stalled; re-dispatched derivation from the same verified long-form identity",
+      "details": {
+        "item_id": "video-20261019-152740-6aebd5cab8",
+        "long_item_id": "video-20261019-145912-6aebd5cab8-a3"
+      }
     }
   ],
-  "updated_at": "2026-10-19T12:31:10.854921+00:00",
+  "updated_at": "2026-10-19T12:56:13.750226+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2246,7 +2246,7 @@
     "source_id": "fd8701cf-d5f5-44ce-8a86-f8e7766833e4"
   },
   "short": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -2256,7 +2256,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-19T12:25:15.766297+00:00",
+    "last_dispatch_at": "2026-10-19T12:56:13.750194+00:00",
     "artifact_id": "7b272be9-f48e-44e8-a6db-db13d57d38d1",
     "source_id": "fd8701cf-d5f5-44ce-8a86-f8e7766833e4",
     "adopted_from_long_item_id": "video-20261019-145912-6aebd5cab8-a3",
@@ -2265,8 +2265,8 @@
       "hard_started_at": "2026-10-19T12:27:55.434470+00:00",
       "last_progress_at": "2026-10-19T12:35:18.844069+00:00",
       "last_fingerprint": "9aba4f5cb2a5fc4a267cda9f9eee08be2a4d7688f6be9a801202ceb9b736a5ea",
-      "recovery_count": 0,
-      "last_recovery_at": null
+      "recovery_count": 1,
+      "last_recovery_at": "2026-10-19T12:55:48.188155+00:00"
     }
   },
   "migration": {
@@ -2292,9 +2292,10 @@
         "derive_long_item_id": "video-20261019-145912-6aebd5cab8-a3"
       },
       "intent_at": "2026-10-19T12:55:48.188155+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39251911125,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39255955511,
+      "dispatched_at": "2026-10-19T12:55:48.188155+00:00"
     }
   },
   "last_child_notification": {
@@ -2405,11 +2406,12 @@
       "strike_count": 1,
       "last_check_token": "2026-10-19T15",
       "last_fingerprint": "5b6b053decb4feeb09acf64934b79e65120b90a9c3883733d00329b047404bd2",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
+      "last_controller_action_token": "recovery:1:2026-10-19T12:55:48.188155+00:00",
+      "controller_action_observed": true,
       "last_observed_at": "2026-10-19T12:55:48.188155+00:00",
-      "last_action": "observe_controller",
-      "direct_takeover_required": false
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-10-19T12:55:48.188155+00:00"
     }
   },
   "idea_queue": [
