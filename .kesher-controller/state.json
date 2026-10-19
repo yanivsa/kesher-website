@@ -2583,19 +2583,27 @@
         "long_url": "https://youtu.be/MPjgzNBkp4M",
         "short_url": "https://youtu.be/AuPHjN8hZSw"
       }
+    },
+    {
+      "idea_id": "potty-training-20261018-v1",
+      "fingerprint": "e2c04933ba0c2dc5a8dc36390681979279707103b4a237509fe1dfe70175da8e",
+      "topic_brief": "כתוב מאמר עברי מקצועי, ברור ומעשי להורים לפעוטות בנושא גמילה מטיטול. התייחס לסימני מוכנות, מתי נכון להתחיל, טעויות נפוצות, התמודדות עם התנגדות ופספוסים, ומתי כדאי לעצור ולנסות שוב. שמור על טון רגוע, לא שיפוטי, מבוסס ומעשי, בלי הבטחות מוחלטות. המאמר חייב להישאר ממוקד בכוונת החיפוש של גמילה מטיטול.",
+      "required_primary_keyword": "גמילה מטיטול",
+      "status": "complete",
+      "requested_at": "2026-10-18T12:14:23.849835+00:00",
+      "run_now": true,
+      "publication_slot": "2026-10-19",
+      "claimed_at": "2026-10-19T02:14:18.702745+00:00",
+      "completed_at": "2026-10-19T05:31:06.710047+00:00",
+      "outputs": {
+        "slug": "potty-training-toddlers",
+        "article_url": "https://kesher.saharoni.com/blog/potty-training-toddlers",
+        "long_url": "https://youtu.be/DJlIBnygorA",
+        "short_url": "https://youtu.be/chwf7Hf25nI"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "potty-training-20261018-v1",
-    "fingerprint": "e2c04933ba0c2dc5a8dc36390681979279707103b4a237509fe1dfe70175da8e",
-    "topic_brief": "כתוב מאמר עברי מקצועי, ברור ומעשי להורים לפעוטות בנושא גמילה מטיטול. התייחס לסימני מוכנות, מתי נכון להתחיל, טעויות נפוצות, התמודדות עם התנגדות ופספוסים, ומתי כדאי לעצור ולנסות שוב. שמור על טון רגוע, לא שיפוטי, מבוסס ומעשי, בלי הבטחות מוחלטות. המאמר חייב להישאר ממוקד בכוונת החיפוש של גמילה מטיטול.",
-    "required_primary_keyword": "גמילה מטיטול",
-    "status": "claimed",
-    "requested_at": "2026-10-18T12:14:23.849835+00:00",
-    "run_now": true,
-    "publication_slot": "2026-10-19",
-    "claimed_at": "2026-10-19T02:14:18.702745+00:00"
-  },
+  "active_idea": null,
   "owner_cycle_archive": [
     {
       "cycle": "2026-10-18",
