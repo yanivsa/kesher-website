@@ -189,7 +189,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             for post in posts
             if isinstance(post, dict)
             and str(post.get("date") or "") == slot
-            and self._adoptable_article_slug(post, slot)
+            and v5.core.is_controller_adoptable_post(post)
         ]
         if slot_date < self.now.date() and occupied_slot_posts:
             prior_status = str(state.get("status") or "")
