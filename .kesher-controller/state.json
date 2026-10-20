@@ -1420,19 +1420,9 @@
     "stage": "article",
     "code": "DUPLICATE_ARTICLE_DATE",
     "message": "4 articles share owner publication slot 2026-10-20",
-    "at": "2026-10-20T20:35:52.490936+00:00"
+    "at": "2026-10-20T20:40:50.084103+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-20T12:31:01.088207+00:00",
-      "from": "article_pr_open",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1162,
-        "slot": "2026-10-20"
-      }
-    },
     {
       "at": "2026-10-20T12:32:23.445303+00:00",
       "from": "article_normalizing",
@@ -2323,9 +2313,18 @@
       "details": {
         "message": "4 articles share owner publication slot 2026-10-20"
       }
+    },
+    {
+      "at": "2026-10-20T20:40:50.084119+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "DUPLICATE_ARTICLE_DATE",
+      "details": {
+        "message": "4 articles share owner publication slot 2026-10-20"
+      }
     }
   ],
-  "updated_at": "2026-10-20T20:35:52.490954+00:00",
+  "updated_at": "2026-10-20T20:40:50.084124+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
