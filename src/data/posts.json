@@ -2548,6 +2548,11 @@
         "note": "משרד הבריאות וארגוני רפואת הילדים בעולם ממליצים על שינה בחדר ההורים לפחות עד גיל חצי שנה, ועדיף עד גיל שנה, כדי להפחית סיכון למוות בעריסה."
       }
     ],
-    "controllerManaged": false
+    "controllerManaged": false,
+    "image": "/images/fallback/parenting/parenting_emotional_support_reading.jpg",
+    "imageAlt": "צילום מציאותי של הורה וילד באינטראקציה ביתית רגועה ותומכת",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/fallback/parenting/parenting_emotional_support_reading.jpg",
+    "imageIsFallback": true
   }
 ]
