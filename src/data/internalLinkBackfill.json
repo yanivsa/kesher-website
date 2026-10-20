@@ -164,5 +164,115 @@
       {"target":"early-habits-building-calm-mornings-children","anchor":"שגרת בוקר רגועה ועצמאית יותר","before":"ככל שהילד גדל, אפשר להפוך את העקרונות האלה בהדרגה ל", "after":"."},
       {"target":"separation-anxiety-morning-dropoff","anchor":"חרדת פרידה בבוקר","before":"ואם המאבק מתרכז סביב הכניסה לגן, כדאי לבדוק האם יש גם ","after":" ולא רק מאבק על עצמאות."}
     ]
+  },
+  {
+    "source": "returning-to-israel-after-relocation-relationship",
+    "afterHeadingIncludes": "הפער בין הציפיות למציאות ביום שאחרי",
+    "items": [
+      {"target":"relocation-relationship-adjustments-2026","anchor":"פערי הסתגלות זוגיים ברילוקיישן","before":"כדי להבין איך פער כזה מתפתח לאורך המעבר, כדאי לקרוא גם על ","after":"."},
+      {"target":"relocation-loneliness-accompanying-partner","anchor":"בדידות של בן או בת הזוג המלווים","before":"כאשר צד אחד מרגיש שאיבד יותר מהחיים הקודמים, חשוב להכיר גם את ","after":"."}
+    ]
+  },
+  {
+    "source": "relocation-language-barrier-isolation",
+    "afterHeadingIncludes": "בדידות שקופה",
+    "items": [
+      {"target":"relocation-loneliness-accompanying-partner","anchor":"בדידות ברילוקיישן אצל בן או בת הזוג המלווים","before":"אם תחושת הבדידות קשורה גם לכך שאחד מבני הזוג הגיע בעיקר בעקבות האחר, כדאי לקרוא על ","after":"."},
+      {"target":"relocation-relationship-adjustments-2026","anchor":"פערי הסתגלות בתוך הזוגיות ברילוקיישן","before":"וכשהקצב השונה של ההשתלבות מתחיל להיכנס לקשר, חשוב להבין את ","after":"."}
+    ]
+  },
+  {
+    "source": "relocation-career-loss-and-dependence",
+    "afterHeadingIncludes": "איך התלות הכלכלית משנה את יחסי הכוחות?",
+    "items": [
+      {"target":"relocation-loneliness-accompanying-partner","anchor":"בדידות ותלות של בן הזוג המלווה","before":"התלות הכלכלית עלולה להשתלב גם בתחושת ","after":" כאשר הרשת המקצועית והחברתית נעלמת בבת אחת."},
+      {"target":"relocation-couple-conversations-before-moving","anchor":"השיחות שכדאי לעשות לפני רילוקיישן","before":"חלק מהמתח הזה אפשר לצמצם מראש באמצעות ","after":" על קריירה, כסף וחלוקת אחריות."}
+    ]
+  },
+  {
+    "source": "relocation-couple-conversations-before-moving",
+    "afterHeadingIncludes": "מה יקרה לקריירה של בן או בת הזוג המצטרפים?",
+    "items": [
+      {"target":"relocation-career-loss-and-dependence","anchor":"אובדן קריירה ותלות כלכלית ברילוקיישן","before":"כדי להבין את הסיכון שמעבר כזה יוצר לצד שמוותר על מסלול מקצועי, כדאי להכיר את הנושא של ","after":"."},
+      {"target":"relocation-language-barrier-isolation","anchor":"קשיי שפה ובידוד ברילוקיישן","before":"מעבר לתעסוקה, כדאי לדבר מראש גם על האפשרות של ","after":" ועל הדרך לבנות עצמאות במדינה החדשה."}
+    ]
+  },
+  {
+    "source": "marriage-prep-financial-expectations-2026-08-24",
+    "afterHeadingIncludes": "איך מתחילים את השיחה על כסף?",
+    "items": [
+      {"target":"money-fights-communication","anchor":"מריבות על כסף בזוגיות","before":"אם דיון כלכלי כבר הופך שוב ושוב לעימות, כדאי לזהות את הדפוס שמאחורי ","after":"."},
+      {"target":"marriage-preparation-money-fights","anchor":"איך מדברים על כסף לפני הנישואים","before":"ולזוגות שעדיין לפני החתונה, אפשר להעמיק גם בשאלה ","after":" בלי להפוך את החשבון למבחן התאמה."}
+    ]
+  },
+  {
+    "source": "marriage-preparation-money-fights",
+    "afterHeadingIncludes": "למה כל כך קשה לנו לדבר על חשבון הבנק?",
+    "items": [
+      {"target":"marriage-prep-financial-expectations-2026-08-24","anchor":"תיאום ציפיות כלכליות לפני החתונה","before":"לפני שמגיעים למחלוקת קבועה, כדאי לבנות ","after":" סביב תקציב, חובות, חיסכון וחשבונות."},
+      {"target":"money-fights-communication","anchor":"לשנות את דפוס המריבה על כסף","before":"ואם הוויכוח כבר חוזר שוב ושוב, המטרה היא ","after":" ולא רק להכריע מי צודק."}
+    ]
+  },
+  {
+    "source": "managing-personal-boundaries-marriage",
+    "afterHeadingIncludes": "האם מותר לא לעשות הכל יחד גם אחרי החתונה?",
+    "items": [
+      {"target":"first-year-boundaries-origin-families","anchor":"גבולות מול משפחות המוצא בשנה הראשונה","before":"אותו עיקרון של נפרדות בריאה חשוב במיוחד כשמתחילים לבנות ","after":"."}
+    ]
+  },
+  {
+    "source": "first-year-boundaries-origin-families",
+    "afterHeadingIncludes": "הצבת גבולות לכניסת המשפחה לחיים האישיים",
+    "items": [
+      {"target":"managing-personal-boundaries-marriage","anchor":"לשמור על מרחב אישי בתוך הנישואים","before":"גבול מול המשפחה המורחבת עובד טוב יותר כשהזוג יודע גם ","after":" בלי לפרש מרחב אישי כדחייה."},
+      {"target":"boundaries-extended-family","anchor":"להציב גבולות מול המשפחה המורחבת","before":"לכלים מעשיים נוספים אפשר לקרוא גם על ","after":" בלי לייצר נתק או מלחמת נאמנויות."}
+    ]
+  },
+  {
+    "source": "fights-before-wedding",
+    "afterHeadingIncludes": "למה בעצם אנחנו רבים עכשיו יותר מתמיד?",
+    "items": [
+      {"target":"pre-wedding-stress-and-anxiety","anchor":"לחץ וחרדה לפני החתונה","before":"כשהעומס של ההכנות מתחיל להכתיב את הטון בבית, חשוב לזהות גם ","after":" ולא לפרש כל מתח כסימן שהקשר שגוי."}
+    ]
+  },
+  {
+    "source": "boundaries-without-punishments",
+    "afterHeadingIncludes": "מה עושים ברגע האמת כשהילד פשוט מסרב להקשיב?",
+    "items": [
+      {"target":"breaking-the-yelling-cycle","anchor":"לצאת ממעגל הצעקות","before":"אם הסירוב גורר אתכם שוב ושוב להרמת קול, אפשר לעבוד במקביל על ","after":"."},
+      {"target":"child-argues-every-request-boundaries","anchor":"כשהילד מתווכח על כל בקשה","before":"ואם כמעט כל גבול הופך למשא ומתן, כדאי להבין מה עוזר ","after":" בלי להיגרר להסברים אינסופיים."}
+    ]
+  },
+  {
+    "source": "breaking-the-yelling-cycle",
+    "afterHeadingIncludes": "ומה אם הילד עדיין לא עושה?",
+    "items": [
+      {"target":"boundaries-without-punishments","anchor":"להציב גבולות בלי עונשים ואיומים","before":"כשהוראה ברורה עדיין לא מביאה לשיתוף פעולה, אפשר ללמוד ","after":" ולשמור על עקביות בלי להסלים."},
+      {"target":"child-argues-every-request-boundaries","anchor":"לעצור ויכוח אינסופי סביב כל בקשה","before":"ואם הבעיה היא לא רק הביצוע אלא ויכוח ארוך על כל דרישה, כדאי לעבוד על איך ","after":"."}
+    ]
+  },
+  {
+    "source": "child-argues-every-request-boundaries",
+    "afterHeadingIncludes": "למה הסברים ארוכים לפעמים רק מאריכים את הוויכוח?",
+    "items": [
+      {"target":"boundaries-without-punishments","anchor":"גבולות ברורים בלי עונשים","before":"במקום להוסיף עוד טיעונים, אפשר לבנות ","after":" שמבהירים מה פתוח לשיחה ומה לא."},
+      {"target":"breaking-the-yelling-cycle","anchor":"להעביר הוראה בלי להיכנס למעגל הצעקות","before":"כשהוויכוח מתחיל להעלות את עוצמת הקול, חשוב לעצור וללמוד ","after":"."}
+    ]
+  },
+  {
+    "source": "child-refuses-homework",
+    "afterHeadingIncludes": "",
+    "items": [
+      {"target":"child-argues-every-request-boundaries","anchor":"כשהבקשה הופכת מיד לוויכוח","before":"לפני שמניחים שהבעיה היא רק בשיעורי הבית, כדאי לבדוק מה קורה ","after":" ואיך מצמצמים מאבקי כוח סביב דרישות."},
+      {"target":"school-entry-readiness-emotional-regulation-skills","anchor":"תפקודים ניהוליים ויכולת ויסות בלמידה","before":"כשקשה להתחיל, להתמיד או לעבור בין משימות, כדאי להבין גם את התפקיד של ","after":"."}
+    ]
+  },
+  {
+    "source": "child-meltdown-after-school",
+    "afterHeadingIncludes": "",
+    "items": [
+      {"target":"school-entry-readiness-emotional-regulation-skills","anchor":"יכולת ויסות ותפקודים ניהוליים אחרי יום לימודים","before":"ההתפרקות בבית יכולה להיות קשורה לעומס מצטבר, ולכן מועיל להבין איך ","after":" משפיעים על המעבר מהמסגרת לבית."},
+      {"target":"surviving-the-after-work-transition","anchor":"לנהל את המעבר של אחר הצהריים בלי להסלים","before":"גם הדקות הראשונות שבהן כל המשפחה מתכנסת מחדש יכולות לקבוע את הטון, ולכן כדאי לחשוב איך ","after":"."}
+    ]
   }
 ]
