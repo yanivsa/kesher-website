@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-20",
-  "status": "article_image_rebinding",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -28,7 +28,10 @@
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 39405909437,
-    "normalized_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91"
+    "normalized_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91",
+    "last_error": null,
+    "image_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91",
+    "merge_candidate_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91"
   },
   "backlog": [
     {
@@ -1419,18 +1422,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-19T18:40:28.608918+00:00",
-      "from": "article_normalizing",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 39303644748 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-10-19T18:45:28.608884+00:00",
-        "failure_streak": 1,
-        "run_id": 39303644748
-      }
-    },
-    {
       "at": "2026-10-19T18:46:02.205638+00:00",
       "from": "image_retry_wait",
       "to": "article_image_running",
@@ -2318,12 +2309,18 @@
         "pr_number": 1162,
         "head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91"
       }
+    },
+    {
+      "at": "2026-10-20T11:33:20.509132+00:00",
+      "from": "article_image_rebinding",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-20T11:31:13.232125+00:00",
+  "updated_at": "2026-10-20T11:33:20.509149+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2336,7 +2333,7 @@
     "source_id": "local://public/images/fallback/relocation/family_relocation_transition.jpg",
     "evidence_rebind_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91",
     "evidence_rebind_dispatched_at": "2026-10-20T11:31:13.232060+00:00",
-    "run_id": 39405710776
+    "run_id": 39415526854
   },
   "long_video": {
     "attempt_count": 0,
@@ -2654,23 +2651,10 @@
         "pr_number": "1162",
         "slot": "2026-10-20"
       },
-      "intent_at": "2026-10-20T10:25:43.729664+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-20T11:32:42.833017+00:00",
+      "status": "intent",
       "previous_run_id": 39405909437,
-      "observed_active_run_id": 39407896546,
-      "dispatched_at": "2026-10-20T10:25:43.729664+00:00"
-    },
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
-      "cycle": "2026-10-20",
-      "inputs": {
-        "pr_number": "1162"
-      },
-      "intent_at": "2026-10-20T11:30:47.902671+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 39415526854,
-      "dispatched_at": "2026-10-20T11:30:47.902671+00:00"
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -2683,8 +2667,8 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 39405909437,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 39415526854,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-20"
