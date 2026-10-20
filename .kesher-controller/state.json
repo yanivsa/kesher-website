@@ -18,13 +18,13 @@
     "last_dispatch_at": "2026-10-20T09:22:11.246685+00:00",
     "pr_number": 1162,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1162",
-    "current_pr_head_sha": "3bc81b29149afd739933b487fb6993cd6f8249c3",
+    "current_pr_head_sha": "8835c81fd96755344a7eaf0c7f13b3529fd87f6c",
     "jules_head_sha": "2958e889816417379ab35486b1e9736fb11a9c12",
     "normalization_slot": "2026-10-20",
     "normalization_dispatched_at": "2026-10-20T12:31:01.088177+00:00",
     "normalization_run_id": 39422857607,
-    "normalization_drift_count": 4,
-    "last_normalization_drift_head_sha": "3bc81b29149afd739933b487fb6993cd6f8249c3",
+    "normalization_drift_count": 5,
+    "last_normalization_drift_head_sha": "8835c81fd96755344a7eaf0c7f13b3529fd87f6c",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 39415792304,
@@ -1419,19 +1419,10 @@
   "last_error": {
     "stage": "article",
     "code": "ARTICLE_JULES_UNSTABLE_MUTATION",
-    "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed",
-    "at": "2026-10-20T12:51:04.088092+00:00"
+    "message": "Article PR head mutated repeatedly (5 times) after trusted stages; branch quiescence failed",
+    "at": "2026-10-20T12:55:58.096323+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-19T20:05:56.792224+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
-      "details": {
-        "message": "Article PR head mutated repeatedly (20 times) after trusted stages; branch quiescence failed"
-      }
-    },
     {
       "at": "2026-10-19T20:11:05.957363+00:00",
       "from": "blocked",
@@ -2317,9 +2308,18 @@
       "details": {
         "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed"
       }
+    },
+    {
+      "at": "2026-10-20T12:55:58.096340+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
+      "details": {
+        "message": "Article PR head mutated repeatedly (5 times) after trusted stages; branch quiescence failed"
+      }
     }
   ],
-  "updated_at": "2026-10-20T12:51:04.088119+00:00",
+  "updated_at": "2026-10-20T12:55:58.096347+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
