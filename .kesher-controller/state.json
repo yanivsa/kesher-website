@@ -1423,7 +1423,7 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1162 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-20T10:35:47.394022+00:00"
+    "at": "2026-10-20T10:41:01.255686+00:00"
   },
   "history": [
     {
@@ -2298,9 +2298,18 @@
       "details": {
         "message": "PR #1162 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-10-20T10:41:01.255702+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1162 exceeded maximum auto-merge dispatch budget (3 dispatches)"
+      }
     }
   ],
-  "updated_at": "2026-10-20T10:35:47.394042+00:00",
+  "updated_at": "2026-10-20T10:41:01.255708+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
