@@ -95,13 +95,13 @@ def normalized_posts(
     Relative order and content of every base article are preserved. The new
     article is inserted by ISO publication date into the existing newest-first
     sequence. `src/data/posts.json` is the sole canonical write target;
-    `recent_posts` is checked read-only to prevent duplicate slugs/slots.
-    """
-    try:
-        from .kesher_content_controller import is_controller_adoptable_post
-    except ImportError:
-        from kesher_content_controller import is_controller_adoptable_post
+    `recent_posts` is checked read-only to prevent duplicate identities.
 
+    Multiple distinct controller articles may legitimately share a publication
+    date. That remains true when a zero-touch cycle is normalized after the
+    date has rolled over; identity, not the calendar date, is the uniqueness
+    boundary.
+    """
     article_id = _post_id(article)
     if not article_id:
         raise ArticleNormalizationError("target article has no id/slug")
@@ -114,11 +114,6 @@ def normalized_posts(
             raise ArticleNormalizationError(
                 f"target article identity already exists in main: {article_id}"
             )
-        if _post_date(post) == article_date and is_controller_adoptable_post(post):
-            if article_date < _today_israel():
-                raise ArticleNormalizationError(
-                    f"publication slot already exists in main: {article_date.isoformat()}"
-                )
 
     result: list[dict[str, Any]] = []
     inserted = False
