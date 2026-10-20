@@ -2289,7 +2289,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-20T10:07:47.627005+00:00",
     "artifact_sha256": "9c44be9a246055e9e9a151c3089ab1a6cbd222bfc279f568c9ddaf86fe774dfc",
-    "source_id": "local://public/images/fallback/relocation/family_relocation_transition.jpg"
+    "source_id": "local://public/images/fallback/relocation/family_relocation_transition.jpg",
+    "run_id": 39405710776
   },
   "long_video": {
     "attempt_count": 0,
