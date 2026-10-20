@@ -1420,18 +1420,9 @@
     "stage": "article",
     "code": "DUPLICATE_ARTICLE_DATE",
     "message": "4 articles share owner publication slot 2026-10-20",
-    "at": "2026-10-20T16:51:18.519575+00:00"
+    "at": "2026-10-20T16:55:49.258183+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-19T23:55:45.705887+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
-      "details": {
-        "message": "Article PR head mutated repeatedly (69 times) after trusted stages; branch quiescence failed"
-      }
-    },
     {
       "at": "2026-10-20T00:00:50.681841+00:00",
       "from": "blocked",
@@ -2317,9 +2308,18 @@
       "details": {
         "message": "4 articles share owner publication slot 2026-10-20"
       }
+    },
+    {
+      "at": "2026-10-20T16:55:49.258196+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "DUPLICATE_ARTICLE_DATE",
+      "details": {
+        "message": "4 articles share owner publication slot 2026-10-20"
+      }
     }
   ],
-  "updated_at": "2026-10-20T16:51:18.519593+00:00",
+  "updated_at": "2026-10-20T16:55:49.258203+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
