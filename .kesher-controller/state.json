@@ -2277,7 +2277,7 @@
       "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-20T10:09:20.200609+00:00",
+  "updated_at": "2026-10-20T10:20:58.857205+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2601,6 +2601,18 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-20T09:21:50.233840+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-20",
+      "inputs": {
+        "pr_number": "1162",
+        "slot": "2026-10-20"
+      },
+      "intent_at": "2026-10-20T10:20:44.993956+00:00",
+      "status": "intent",
+      "previous_run_id": 39405909437,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
