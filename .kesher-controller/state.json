@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-19",
-  "status": "blocked",
+  "status": "complete",
   "article": {
     "attempt_count": 1,
     "status": "blocked",
@@ -1402,12 +1402,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-19T17:31:33.109527+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-10-19T17:36:06.664997+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2258,6 +2252,21 @@
       "details": {
         "message": "Article PR head mutated repeatedly (72 times) after trusted stages; branch quiescence failed"
       }
+    },
+    {
+      "at": "2026-10-20T09:18:28.030090+00:00",
+      "from": "blocked",
+      "to": "complete",
+      "reason": "run_now_slot_occupied_after_rollover",
+      "details": {
+        "publication_slot": "2026-10-19",
+        "occupied_slugs": [
+          "pacifier-weaning",
+          "potty-training-toddlers",
+          "transition-from-caregiver-to-daycare",
+          "toddler-bed-transition"
+        ]
+      }
     }
   ],
   "updated_at": "2026-10-20T00:10:48.724763+00:00",
@@ -2613,6 +2622,17 @@
       "run_now": false,
       "status": "queued",
       "requested_at": "2026-10-19T10:26:10.994184+00:00"
+    },
+    {
+      "idea_id": "separate-room-transition-20261019-v1",
+      "fingerprint": "bf7fb7a86716e9f432b6d4c497e932699852592831baaad075d98f46efccd61f",
+      "topic_brief": "כתוב מאמר עברי מקצועי ומעשי להורים בנושא מעבר לחדר נפרד: מתי הזמן המתאים להעביר תינוק או פעוט מחדר ההורים לחדר משלו, הנחיות בטיחות ומוכנות רגשית, איך לבנות שגרת מעבר הדרגתית ונעימה, התמודדות עם פחדי לילה ויקיצות מרובות, ואיך להרגיע בלי להפוך את הלילה למאבק מתמשך.",
+      "required_primary_keyword": "מעבר לחדר נפרד",
+      "run_now": false,
+      "status": "queued",
+      "requested_at": "2026-10-19T17:58:50.524738+00:00",
+      "deferred_reason": "RUN_NOW_SLOT_OCCUPIED_AFTER_ROLLOVER",
+      "deferred_at": "2026-10-20T09:18:28.030064+00:00"
     }
   ],
   "idea_history": [
@@ -2688,17 +2708,7 @@
       }
     }
   ],
-  "active_idea": {
-    "idea_id": "separate-room-transition-20261019-v1",
-    "fingerprint": "bf7fb7a86716e9f432b6d4c497e932699852592831baaad075d98f46efccd61f",
-    "topic_brief": "כתוב מאמר עברי מקצועי ומעשי להורים בנושא מעבר לחדר נפרד: מתי הזמן המתאים להעביר תינוק או פעוט מחדר ההורים לחדר משלו, הנחיות בטיחות ומוכנות רגשית, איך לבנות שגרת מעבר הדרגתית ונעימה, התמודדות עם פחדי לילה ויקיצות מרובות, ואיך להרגיע בלי להפוך את הלילה למאבק מתמשך.",
-    "required_primary_keyword": "מעבר לחדר נפרד",
-    "run_now": true,
-    "status": "claimed",
-    "requested_at": "2026-10-19T17:58:50.524738+00:00",
-    "publication_slot": "2026-10-19",
-    "claimed_at": "2026-10-19T17:58:51.297583+00:00"
-  },
+  "active_idea": null,
   "owner_cycle_archive": [
     {
       "cycle": "2026-10-18",
@@ -3990,10 +4000,5 @@
       "reason": "owner_run_now_cycle_started"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_JULES_UNSTABLE_MUTATION",
-    "message": "Article PR head mutated repeatedly (72 times) after trusted stages; branch quiescence failed",
-    "at": "2026-10-20T00:10:48.724736+00:00"
-  }
+  "last_error": null
 }
