@@ -2335,7 +2335,8 @@
     "artifact_sha256": "9c44be9a246055e9e9a151c3089ab1a6cbd222bfc279f568c9ddaf86fe774dfc",
     "source_id": "local://public/images/fallback/relocation/family_relocation_transition.jpg",
     "evidence_rebind_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91",
-    "evidence_rebind_dispatched_at": "2026-10-20T11:31:13.232060+00:00"
+    "evidence_rebind_dispatched_at": "2026-10-20T11:31:13.232060+00:00",
+    "run_id": 39405710776
   },
   "long_video": {
     "attempt_count": 0,
