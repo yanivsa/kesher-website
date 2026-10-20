@@ -9,10 +9,21 @@ const readList = (file) => {
   return value;
 };
 
+const readObject = (file) => {
+  if (!fs.existsSync(file)) return {};
+  const value = JSON.parse(fs.readFileSync(file, 'utf8'));
+  if (!value || Array.isArray(value) || typeof value !== 'object') {
+    throw new Error(`${file} must contain an object`);
+  }
+  return value;
+};
+
 const loadPosts = () => {
   const historical = readList(path.join(ROOT, 'src', 'data', 'posts.json'));
   const recent = readList(path.join(ROOT, 'src', 'data', 'postsRecent.json'));
-  const combined = [...recent, ...historical];
+  const gifted = readList(path.join(ROOT, 'src', 'data', 'giftedParentPosts.json'));
+  const overrides = readObject(path.join(ROOT, 'src', 'data', 'giftedPostOverrides.json'));
+  const combined = [...recent, ...gifted, ...historical];
   const seen = new Set();
   for (const post of combined) {
     const id = String(post?.id || '').trim();
@@ -20,7 +31,7 @@ const loadPosts = () => {
     if (seen.has(id)) throw new Error(`Duplicate post id across catalogs: ${id}`);
     seen.add(id);
   }
-  return combined;
+  return combined.map((post) => ({ ...post, ...(overrides[post.id] || {}) }));
 };
 
 module.exports = { loadPosts };
