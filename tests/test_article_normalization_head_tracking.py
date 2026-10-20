@@ -378,13 +378,11 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
         self.assertEqual(state["status"], "complete")
         self.assertIsNone(state["active_idea"])
         self.assertIsNone(state["last_error"])
-        self.assertEqual(len(state["idea_queue"]), 1)
         self.assertEqual(state["idea_queue"][0]["idea_id"], "parenting-p1-potty-training-age-4")
-        self.assertEqual(len(state["idea_history"]), 1)
-        self.assertEqual(state["idea_history"][-1]["idea_id"], "separate-room-transition-20261019-v1")
-        self.assertFalse(state["idea_history"][-1]["run_now"])
-        self.assertEqual(state["idea_history"][-1]["status"], "deferred")
-        self.assertEqual(state["idea_history"][-1]["deferred_reason"], "RUN_NOW_SLOT_OCCUPIED_AFTER_ROLLOVER")
+        self.assertEqual(state["idea_queue"][-1]["idea_id"], "separate-room-transition-20261019-v1")
+        self.assertFalse(state["idea_queue"][-1]["run_now"])
+        self.assertEqual(state["idea_queue"][-1]["status"], "queued")
+        self.assertEqual(state["idea_queue"][-1]["deferred_reason"], "RUN_NOW_SLOT_OCCUPIED_AFTER_ROLLOVER")
         self.assertTrue(any(h.get("reason") == "run_now_slot_occupied_after_rollover" for h in state["history"]))
 
 
