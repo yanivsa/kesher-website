@@ -1420,18 +1420,9 @@
     "stage": "article",
     "code": "ARTICLE_JULES_UNSTABLE_MUTATION",
     "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed",
-    "at": "2026-10-20T12:45:54.726913+00:00"
+    "at": "2026-10-20T12:51:04.088092+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-19T20:00:51.427976+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
-      "details": {
-        "message": "Article PR head mutated repeatedly (19 times) after trusted stages; branch quiescence failed"
-      }
-    },
     {
       "at": "2026-10-19T20:05:56.792224+00:00",
       "from": "blocked",
@@ -2317,9 +2308,18 @@
       "details": {
         "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed"
       }
+    },
+    {
+      "at": "2026-10-20T12:51:04.088112+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
+      "details": {
+        "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed"
+      }
     }
   ],
-  "updated_at": "2026-10-20T12:45:54.726937+00:00",
+  "updated_at": "2026-10-20T12:51:04.088119+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
