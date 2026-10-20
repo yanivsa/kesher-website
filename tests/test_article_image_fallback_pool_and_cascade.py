@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 BANK_MANIFEST_PATH = ROOT / "public" / "images" / "fallback" / "manifest.json"
@@ -95,6 +96,26 @@ class ArticleImageFallbackPoolAndCascadeTests(unittest.TestCase):
         self.assertIn("couples", stats["categories"])
         # With 10 fresh assets, capacity_alert should be False
         self.assertFalse(stats["capacity_alert"])
+
+
+class ParentingCanaryImageCategoryTests(unittest.TestCase):
+    def test_parenting_pool_never_falls_through_to_unrelated_generic_category(self):
+        post = {
+            "id": "potty-training-age-4",
+            "slug": "potty-training-age-4",
+            "title": "גמילה מחיתולים בגיל 4",
+            "category": "הדרכת הורים",
+            "subcategory": "גמילה מחיתולים",
+            "excerpt": "מדריך להורים",
+        }
+        unrelated_manifest = {
+            "version": 1,
+            "assets": [{"category": "relocation", "path": "public/images/fallback/relocation/family_relocation_transition.jpg"}],
+        }
+        with mock.patch.object(worker, "_bank_candidates", return_value=[]), mock.patch.object(
+            worker, "_seed_candidates_for_category", return_value=[]
+        ), mock.patch.object(worker, "load_bank_manifest", return_value=unrelated_manifest):
+            self.assertEqual(worker._candidate_pool(post, set()), [])
 
 
 if __name__ == "__main__":
