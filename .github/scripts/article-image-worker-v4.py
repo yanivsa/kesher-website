@@ -260,16 +260,6 @@ def _candidate_pool(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[
         seen.add(source_path)
         result.append((tier, source_path))
 
-    # Final generic bank fallback: any unassigned asset from the verified local bank
-    generic_offset = 100
-    for entry in (load_bank_manifest().get("assets") or []):
-        if not isinstance(entry, dict):
-            continue
-        p = str(entry.get("path") or "").strip()
-        if p and p not in seen and p not in banned_paths:
-            seen.add(p)
-            result.append((generic_offset, p))
-
     return result
 
 
