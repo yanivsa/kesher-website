@@ -1828,6 +1828,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         state.setdefault("article", {})["pr_number"] = number
         state["article"]["pr_url"] = pr.get("html_url")
         head_sha = str((pr.get("head") or {}).get("sha") or "").strip().lower()
+        previously_observed_head_sha = str(state["article"].get("current_pr_head_sha") or "").strip().lower()
         state["article"]["current_pr_head_sha"] = head_sha
         if not state["article"].get("jules_head_sha"):
             state["article"]["jules_head_sha"] = head_sha
@@ -1885,8 +1886,19 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     state.pop("last_error", None)
                     state["article"].pop("last_error", None)
             else:
-                drift_count = int(state["article"].get("normalization_drift_count") or 0) + 1
+                last_drift_head_sha = str(state["article"].get("last_normalization_drift_head_sha") or "").strip().lower()
+                if not last_drift_head_sha:
+                    # Older controller versions counted every poll of the same
+                    # mismatched PR head as a fresh mutation. Start a distinct-
+                    # head counter when migrating that durable state so a stable
+                    # branch can self-heal without a manual state edit.
+                    drift_count = 1
+                elif last_drift_head_sha == head_sha:
+                    drift_count = int(state["article"].get("normalization_drift_count") or 1)
+                else:
+                    drift_count = int(state["article"].get("normalization_drift_count") or 0) + 1
                 state["article"]["normalization_drift_count"] = drift_count
+                state["article"]["last_normalization_drift_head_sha"] = head_sha
                 if drift_count > 3:
                     v5.core.block(
                         state,
@@ -1907,6 +1919,8 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     state["status"] = "article_pr_open"
                     state["article"]["status"] = "running"
                     state["article"].pop("last_error", None)
+                    if previously_observed_head_sha == head_sha:
+                        state.pop("last_error", None)
                 if str((state.get("image") or {}).get("status") or "") in {"running", "complete"}:
                     state["image"]["status"] = "pending"
                     state["image"].pop("run_id", None)
