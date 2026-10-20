@@ -178,6 +178,65 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return v5.core.Action("blocked", "duplicate owner publication-slot articles")
         if targets:
             return None
+
+        # A run-now request may legitimately span midnight, so an old slot by
+        # itself is not stale. Defer only when that prior slot is now occupied
+        # by another adoptable main article; attempting to normalize the old PR
+        # would otherwise fail forever because the slot is no longer available.
+        slot_date = date.fromisoformat(slot)
+        occupied_slot_posts = [
+            post
+            for post in posts
+            if isinstance(post, dict)
+            and str(post.get("date") or "") == slot
+            and self._adoptable_article_slug(post, slot)
+        ]
+        if slot_date < self.now.date() and occupied_slot_posts:
+            prior_status = str(state.get("status") or "")
+            active = state.get("active_idea")
+            if isinstance(active, dict):
+                deferred = copy.deepcopy(active)
+                deferred.pop("publication_slot", None)
+                deferred.pop("claimed_at", None)
+                deferred["run_now"] = False
+                deferred["status"] = "queued"
+                deferred["deferred_reason"] = "RUN_NOW_SLOT_OCCUPIED_AFTER_ROLLOVER"
+                deferred["deferred_at"] = v5.core.utc_now()
+                queue = state.get("idea_queue") if isinstance(state.get("idea_queue"), list) else []
+                idea_id = str(deferred.get("idea_id") or "")
+                fingerprint = str(deferred.get("fingerprint") or "")
+                if not any(
+                    isinstance(row, dict)
+                    and (
+                        (idea_id and str(row.get("idea_id") or "") == idea_id)
+                        or (fingerprint and str(row.get("fingerprint") or "") == fingerprint)
+                    )
+                    for row in queue
+                ):
+                    queue.append(deferred)
+                state["idea_queue"] = queue
+                state["active_idea"] = None
+            state["status"] = "complete"
+            state["last_error"] = None
+            state.setdefault("history", []).append({
+                "at": v5.core.utc_now(),
+                "from": prior_status,
+                "to": "complete",
+                "reason": "run_now_slot_occupied_after_rollover",
+                "details": {
+                    "publication_slot": slot,
+                    "occupied_slugs": [
+                        str(post.get("slug") or post.get("id") or "")
+                        for post in occupied_slot_posts
+                    ],
+                },
+            })
+            state["history"] = state["history"][-100:]
+            return v5.core.Action(
+                "defer_stale_run_now",
+                "stale run-now slot occupied after rollover; idea returned to queue",
+            )
+
         open_prs = self.github.open_article_prs(slot)
         if len(open_prs) > 1:
             v5.core.block(state, "article", "DUPLICATE_ARTICLE_PRS", f"{len(open_prs)} open article PRs share owner publication slot {slot}")
