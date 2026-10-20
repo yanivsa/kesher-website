@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-20",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
-    "status": "exhausted",
+    "status": "running",
     "next_retry_at": null,
     "run_id": 39400158681,
     "processed_run_id": null,
@@ -14,24 +14,20 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
+    "normalization_status": "pending",
     "last_dispatch_at": "2026-10-20T09:22:11.246685+00:00",
     "pr_number": 1162,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1162",
-    "current_pr_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91",
+    "current_pr_head_sha": "568da85224c1100b7f7383ccac94b0b2cccfea2c",
     "jules_head_sha": "2958e889816417379ab35486b1e9736fb11a9c12",
     "normalization_slot": "2026-10-20",
     "normalization_dispatched_at": "2026-10-20T10:06:04.735813+00:00",
     "normalization_run_id": 39405500467,
-    "normalization_drift_count": 2,
-    "last_normalization_drift_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91",
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-10-20T11:33:27.104962+00:00",
-    "merge_run_id": 39415792304,
-    "normalized_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91",
-    "last_error": null,
-    "image_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91",
-    "merge_candidate_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91"
+    "normalization_drift_count": 3,
+    "last_normalization_drift_head_sha": "568da85224c1100b7f7383ccac94b0b2cccfea2c",
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
+    "merge_run_id": 39415792304
   },
   "backlog": [
     {
@@ -2324,7 +2320,7 @@
   "updated_at": "2026-10-20T12:25:59.113893+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2336,8 +2332,7 @@
     "artifact_sha256": "9c44be9a246055e9e9a151c3089ab1a6cbd222bfc279f568c9ddaf86fe774dfc",
     "source_id": "local://public/images/fallback/relocation/family_relocation_transition.jpg",
     "evidence_rebind_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91",
-    "evidence_rebind_dispatched_at": "2026-10-20T11:31:13.232060+00:00",
-    "run_id": 39405710776
+    "evidence_rebind_dispatched_at": "2026-10-20T11:31:13.232060+00:00"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2647,6 +2642,18 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-20T09:21:50.233840+00:00"
+    },
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
+      "cycle": "2026-10-20",
+      "inputs": {
+        "pr_number": "1162",
+        "slot": "2026-10-20"
+      },
+      "intent_at": "2026-10-20T12:30:45.265978+00:00",
+      "status": "intent",
+      "previous_run_id": 39405500467,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
