@@ -313,6 +313,78 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
             res_ok = mod.controller_image_stage_terminal("owner/repo", pr_match, "token")
             self.assertTrue(res_ok)
 
+    def test_stale_run_now_slot_collision_is_deferred_before_stale_pr_handling(self) -> None:
+        github = mock.MagicMock()
+        site = mock.MagicMock()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            now=datetime(2026, 10, 20, 11, 0, tzinfo=ISRAEL_TZ),
+            github=github,
+            site=site,
+        )
+        state = {
+            "cycle": "2026-10-19",
+            "status": "blocked",
+            "schema_version": 5,
+            "last_error": {"stage": "article", "code": "ARTICLE_NORMALIZATION_ERROR"},
+            "history": [],
+            "article": {"attempt_count": 1, "attempts": 1, "status": "blocked"},
+            "idea_queue": [
+                {
+                    "idea_id": "parenting-p1-potty-training-age-4",
+                    "fingerprint": "potty-fp",
+                    "topic_brief": "גמילה בגיל 4",
+                    "required_primary_keyword": "גמילה מחיתולים בגיל 4",
+                    "run_now": False,
+                    "status": "queued",
+                }
+            ],
+            "idea_history": [],
+            "active_idea": {
+                "idea_id": "separate-room-transition-20261019-v1",
+                "fingerprint": "room-fp",
+                "topic_brief": "מעבר לחדר נפרד",
+                "required_primary_keyword": "מעבר לחדר נפרד",
+                "run_now": True,
+                "status": "claimed",
+                "publication_slot": "2026-10-19",
+                "claimed_at": "2026-10-19T18:00:00Z",
+            },
+            "owner_cycle_archive": [{"article": {"slug": "toddler-bed-transition"}}],
+        }
+        posts = [
+            {
+                "id": "toddler-bed-transition",
+                "date": "2026-10-19",
+                "title": "מעבר למיטת מעבר",
+                "content": "<p>x</p>",
+                "category": "הדרכת הורים",
+                "excerpt": "x",
+            }
+        ]
+        github.posts_on_main.return_value = posts
+        github.open_article_prs.return_value = [
+            {"number": 1156, "title": "Publish Kesher article: מעבר לחדר נפרד"}
+        ]
+        controller._active_state_ref = state
+
+        with mock.patch.object(
+            controller,
+            "_handle_open_article_pr",
+            side_effect=AssertionError("stale PR must not enter normalization/merge handling"),
+        ):
+            action = controller._run_now_article_phase(state)
+
+        self.assertEqual(action.kind, "defer_stale_run_now")
+        self.assertEqual(state["status"], "complete")
+        self.assertIsNone(state["active_idea"])
+        self.assertIsNone(state["last_error"])
+        self.assertEqual(state["idea_queue"][0]["idea_id"], "parenting-p1-potty-training-age-4")
+        self.assertEqual(state["idea_queue"][-1]["idea_id"], "separate-room-transition-20261019-v1")
+        self.assertFalse(state["idea_queue"][-1]["run_now"])
+        self.assertEqual(state["idea_queue"][-1]["status"], "queued")
+        self.assertEqual(state["idea_queue"][-1]["deferred_reason"], "RUN_NOW_SLOT_OCCUPIED_AFTER_ROLLOVER")
+        self.assertTrue(any(h.get("reason") == "run_now_slot_occupied_after_rollover" for h in state["history"]))
+
 
 if __name__ == "__main__":
     unittest.main()
