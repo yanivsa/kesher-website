@@ -1420,19 +1420,9 @@
     "stage": "article",
     "code": "DUPLICATE_ARTICLE_DATE",
     "message": "4 articles share owner publication slot 2026-10-20",
-    "at": "2026-10-20T19:30:59.315189+00:00"
+    "at": "2026-10-20T19:35:56.423254+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-20T11:31:13.232115+00:00",
-      "from": "article_pr_open",
-      "to": "article_image_rebinding",
-      "reason": "exact trusted image evidence is valid except for PR head binding",
-      "details": {
-        "pr_number": 1162,
-        "head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91"
-      }
-    },
     {
       "at": "2026-10-20T11:33:20.509132+00:00",
       "from": "article_image_rebinding",
@@ -2321,9 +2311,18 @@
       "details": {
         "message": "4 articles share owner publication slot 2026-10-20"
       }
+    },
+    {
+      "at": "2026-10-20T19:35:56.423269+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "DUPLICATE_ARTICLE_DATE",
+      "details": {
+        "message": "4 articles share owner publication slot 2026-10-20"
+      }
     }
   ],
-  "updated_at": "2026-10-20T19:30:59.315206+00:00",
+  "updated_at": "2026-10-20T19:35:56.423275+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
