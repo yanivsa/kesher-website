@@ -1420,18 +1420,9 @@
     "stage": "article",
     "code": "DUPLICATE_ARTICLE_DATE",
     "message": "4 articles share owner publication slot 2026-10-20",
-    "at": "2026-10-20T18:45:50.787819+00:00"
+    "at": "2026-10-20T18:51:00.555625+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-20T10:46:04.149433+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1162 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
     {
       "at": "2026-10-20T10:50:58.652746+00:00",
       "from": "blocked",
@@ -2321,9 +2312,18 @@
       "details": {
         "message": "4 articles share owner publication slot 2026-10-20"
       }
+    },
+    {
+      "at": "2026-10-20T18:51:00.555638+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "DUPLICATE_ARTICLE_DATE",
+      "details": {
+        "message": "4 articles share owner publication slot 2026-10-20"
+      }
     }
   ],
-  "updated_at": "2026-10-20T18:45:50.787838+00:00",
+  "updated_at": "2026-10-20T18:51:00.555643+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
