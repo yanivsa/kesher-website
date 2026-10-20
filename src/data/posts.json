@@ -2550,9 +2550,11 @@
     ],
     "controllerManaged": false,
     "image": "/images/generated/blog/transition-to-separate-room.jpg",
-    "imageAlt": "צילום מציאותי של זוג צעיר בשיחה ותכנון משותף לקראת חיים זוגיים",
-    "imageProvider": "Local",
-    "imageSourceUrl": "local://public/images/fallback/premarital/premarital_preparation_planning.jpg",
-    "imageIsFallback": true
+    "imageAlt": "הורים וילד קוראים יחד סיפור במיטה ברגע משפחתי רגוע לפני השינה",
+    "imageProvider": "Pexels",
+    "imageSourceUrl": "https://www.pexels.com/photo/a-family-reading-a-story-to-their-son-7938040/",
+    "imageIsFallback": false,
+    "imageCredit": "צילום דרך Pexels",
+    "imageCreditUrl": "https://www.pexels.com/photo/a-family-reading-a-story-to-their-son-7938040/"
   }
 ]
