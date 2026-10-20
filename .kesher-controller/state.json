@@ -1423,18 +1423,9 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1162 exhausted 3 total article content attempts (initial + 2 repairs)",
-    "at": "2026-10-20T12:21:15.826108+00:00"
+    "at": "2026-10-20T12:25:59.113876+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-19T19:30:56.093380+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
-      "details": {
-        "message": "Article PR head mutated repeatedly (13 times) after trusted stages; branch quiescence failed"
-      }
-    },
     {
       "at": "2026-10-19T19:36:09.158948+00:00",
       "from": "blocked",
@@ -2319,9 +2310,18 @@
       "details": {
         "message": "PR #1162 exhausted 3 total article content attempts (initial + 2 repairs)"
       }
+    },
+    {
+      "at": "2026-10-20T12:25:59.113889+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1162 exhausted 3 total article content attempts (initial + 2 repairs)"
+      }
     }
   ],
-  "updated_at": "2026-10-20T12:21:15.826129+00:00",
+  "updated_at": "2026-10-20T12:25:59.113893+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
