@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-20",
-  "status": "article_pr_open",
+  "status": "article_image_rebinding",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1416,23 +1416,8 @@
       "archived_at": "2026-10-20T09:20:36.167503+00:00"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "PR #1162 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-20T11:25:59.154191+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-19T18:38:39.799689+00:00",
-      "from": "article_pr_open",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1156,
-        "slot": "2026-10-19"
-      }
-    },
     {
       "at": "2026-10-19T18:40:28.608918+00:00",
       "from": "article_normalizing",
@@ -2323,12 +2308,22 @@
       "details": {
         "message": "PR #1162 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-10-20T11:31:13.232115+00:00",
+      "from": "article_pr_open",
+      "to": "article_image_rebinding",
+      "reason": "exact trusted image evidence is valid except for PR head binding",
+      "details": {
+        "pr_number": 1162,
+        "head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91"
+      }
     }
   ],
-  "updated_at": "2026-10-20T11:25:59.154212+00:00",
+  "updated_at": "2026-10-20T11:31:13.232125+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "pending",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2338,7 +2333,9 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-20T10:07:47.627005+00:00",
     "artifact_sha256": "9c44be9a246055e9e9a151c3089ab1a6cbd222bfc279f568c9ddaf86fe774dfc",
-    "source_id": "local://public/images/fallback/relocation/family_relocation_transition.jpg"
+    "source_id": "local://public/images/fallback/relocation/family_relocation_transition.jpg",
+    "evidence_rebind_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91",
+    "evidence_rebind_dispatched_at": "2026-10-20T11:31:13.232060+00:00"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2669,9 +2666,10 @@
         "pr_number": "1162"
       },
       "intent_at": "2026-10-20T11:30:47.902671+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39415526854,
+      "dispatched_at": "2026-10-20T11:30:47.902671+00:00"
     }
   },
   "deliverables": {
