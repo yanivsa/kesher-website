@@ -1420,18 +1420,9 @@
     "stage": "article",
     "code": "DUPLICATE_ARTICLE_DATE",
     "message": "4 articles share owner publication slot 2026-10-20",
-    "at": "2026-10-20T23:20:44.871768+00:00"
+    "at": "2026-10-20T23:25:48.950287+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-20T15:05:56.107459+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
     {
       "at": "2026-10-20T15:10:50.774095+00:00",
       "from": "blocked",
@@ -2322,9 +2313,18 @@
       "details": {
         "message": "4 articles share owner publication slot 2026-10-20"
       }
+    },
+    {
+      "at": "2026-10-20T23:25:48.950309+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "DUPLICATE_ARTICLE_DATE",
+      "details": {
+        "message": "4 articles share owner publication slot 2026-10-20"
+      }
     }
   ],
-  "updated_at": "2026-10-20T23:20:44.871785+00:00",
+  "updated_at": "2026-10-20T23:25:48.950318+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
