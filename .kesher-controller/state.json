@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-20",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1435,15 +1435,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T06:08:44.700683+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T06:11:04.005876+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2303,9 +2294,19 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-10-21T13:23:33.424394+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261021-161554-1771eb3dc2-a2",
+        "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5"
+      }
     }
   ],
-  "updated_at": "2026-10-21T13:21:33.153020+00:00",
+  "updated_at": "2026-10-21T13:23:33.424403+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2330,12 +2331,12 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "rejected",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-10-21T13:28:03.588671+00:00",
     "run_id": 39606173243,
-    "processed_run_id": 39603967175,
-    "provider_id": null,
+    "processed_run_id": 39606173243,
+    "provider_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
@@ -2343,8 +2344,24 @@
     "last_dispatch_at": "2026-10-21T13:13:55.855598+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
-    "item_id": "video-20261021-160335-1771eb3dc2",
-    "resume_dispatches": 1
+    "item_id": "video-20261021-161554-1771eb3dc2-a2",
+    "resume_dispatches": 1,
+    "source_slug": "potty-training-age-4",
+    "source_content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
+    "content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
+    "source_id": "6238aa21-70ae-4f4b-a4b2-785671ddcc1b",
+    "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
+    "artifact_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
+    "provider_status": "pending",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:potty-training-age-4:1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6:video-20261021-161554-1771eb3dc2-a2",
+      "hard_started_at": "2026-10-21T13:16:03.738163+00:00",
+      "last_progress_at": "2026-10-21T13:23:03.588671+00:00",
+      "last_fingerprint": "624f505aed66e736f18bdf4b842902fa56d830033126a59eb27caeab0be8938b",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
