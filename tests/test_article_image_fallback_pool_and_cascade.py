@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import importlib.util
 import json
 from pathlib import Path
+import sys
 import unittest
 from unittest import mock
 
@@ -10,11 +12,17 @@ BANK_MANIFEST_PATH = ROOT / "public" / "images" / "fallback" / "manifest.json"
 SEED_MANIFEST_PATH = ROOT / "config" / "article-image-fallback-manifest.json"
 POSTS_PATH = ROOT / "src" / "data" / "posts.json"
 
-import importlib.util
 worker_path = ROOT / ".github" / "scripts" / "article-image-worker-v4.py"
 spec = importlib.util.spec_from_file_location("worker_v4", worker_path)
 worker = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = worker
 spec.loader.exec_module(worker)
+
+worker_v5_path = ROOT / ".github" / "scripts" / "article-image-worker-v5.py"
+spec_v5 = importlib.util.spec_from_file_location("worker_v5", worker_v5_path)
+worker_v5 = importlib.util.module_from_spec(spec_v5)
+sys.modules[spec_v5.name] = worker_v5
+spec_v5.loader.exec_module(worker_v5)
 
 from scripts.kesher_article_contract import image_dimensions, image_pixel_sha256
 
@@ -44,7 +52,6 @@ class ArticleImageFallbackPoolAndCascadeTests(unittest.TestCase):
             ratio = w / h
             self.assertTrue(1.2 <= ratio <= 2.2, f"Bad aspect ratio: {ratio} for {rel_path}")
             pix = image_pixel_sha256(raw)
-            # A bank asset must not collide with unrelated published posts
             colliding_posts = [
                 p.get("id") for p in posts
                 if p.get("image") and (ROOT / "public" / str(p["image"]).lstrip("/")).is_file()
@@ -94,7 +101,6 @@ class ArticleImageFallbackPoolAndCascadeTests(unittest.TestCase):
         self.assertGreater(stats["total_available"], 0)
         self.assertIn("dating", stats["categories"])
         self.assertIn("couples", stats["categories"])
-        # With 10 fresh assets, capacity_alert should be False
         self.assertFalse(stats["capacity_alert"])
 
 
@@ -116,6 +122,86 @@ class ParentingCanaryImageCategoryTests(unittest.TestCase):
             worker, "_seed_candidates_for_category", return_value=[]
         ), mock.patch.object(worker, "load_bank_manifest", return_value=unrelated_manifest):
             self.assertEqual(worker._candidate_pool(post, set()), [])
+
+
+class LocalEditorialFallbackTests(unittest.TestCase):
+    @staticmethod
+    def _post(slug: str, title: str) -> dict[str, str]:
+        return {
+            "id": slug,
+            "slug": slug,
+            "title": title,
+            "category": "הדרכת הורים",
+            "subcategory": "גמילה",
+            "excerpt": "מדריך מעשי להורים עם צעדים ברורים ונורות אזהרה.",
+        }
+
+    def test_local_editorial_is_article_bound_and_contract_compatible(self) -> None:
+        attempts = ["gemini-1", "gemini-2", "pexels", "pixabay"]
+        post = self._post(
+            "potty-training-constipation",
+            "עצירות בגמילה מחיתולים: למה הילד מתאפק ואיך שוברים את המעגל?",
+        )
+        candidate = worker_v5.local_editorial_fallback(
+            "yanivsa/kesher-website",
+            post,
+            "ignored",
+            "ignored",
+            attempts,
+            existing_hashes=set(),
+        )
+        self.assertIsNotNone(candidate)
+        assert candidate is not None
+        self.assertEqual(candidate.provider, "LocalEditorial")
+        self.assertEqual(candidate.attempts, ["local-editorial"])
+        self.assertRegex(candidate.source_url, r"^local-editorial://potty-training-constipation/[0-7]$")
+        self.assertEqual(candidate.ext, "png")
+        width, height, ext = worker_v5.core.validate_candidate(candidate.data)
+        self.assertEqual((width, height, ext), (1200, 675, "png"))
+        self.assertGreaterEqual(len(candidate.visual_match), 24)
+
+    def test_local_editorial_pixels_are_unique_per_article(self) -> None:
+        first = worker_v5.local_editorial_fallback(
+            "yanivsa/kesher-website",
+            self._post("potty-training-constipation", "עצירות בגמילה מחיתולים"),
+            "ignored",
+            "ignored",
+            [],
+            existing_hashes=set(),
+        )
+        second = worker_v5.local_editorial_fallback(
+            "yanivsa/kesher-website",
+            self._post("daycare-adjustment", "הסתגלות למעון"),
+            "ignored",
+            "ignored",
+            [],
+            existing_hashes=set(),
+        )
+        self.assertIsNotNone(first)
+        self.assertIsNotNone(second)
+        assert first is not None and second is not None
+        self.assertNotEqual(
+            worker_v5.core.image_pixel_sha256(first.data),
+            worker_v5.core.image_pixel_sha256(second.data),
+        )
+
+    def test_local_editorial_rotates_away_from_used_pixels(self) -> None:
+        post = self._post("potty-training-constipation", "עצירות בגמילה מחיתולים")
+        first = worker_v5.local_editorial_fallback(
+            "yanivsa/kesher-website", post, "ignored", "ignored", [], existing_hashes=set()
+        )
+        assert first is not None
+        occupied = {"pixels:" + worker_v5.core.image_pixel_sha256(first.data)}
+        second = worker_v5.local_editorial_fallback(
+            "yanivsa/kesher-website", post, "ignored", "ignored", [], existing_hashes=occupied
+        )
+        self.assertIsNotNone(second)
+        assert second is not None
+        self.assertNotEqual(first.source_url, second.source_url)
+        self.assertNotEqual(
+            worker_v5.core.image_pixel_sha256(first.data),
+            worker_v5.core.image_pixel_sha256(second.data),
+        )
 
 
 if __name__ == "__main__":
