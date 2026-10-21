@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-21",
-  "status": "article_needed",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -14,7 +14,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-21T20:21:32.939293+00:00",
     "watchdog": {
@@ -65,7 +65,9 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-10-21T20:56:58.908930+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-10-21T20:57:04.681321+00:00",
+    "next_deploy_retry_at": "2026-10-21T21:01:56.062778+00:00"
   },
   "backlog": [
     {
@@ -1473,12 +1475,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-21T13:13:50.334111+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-21T13:13:55.855612+00:00",
       "from": "article_live",
       "to": "video_running",
@@ -2342,9 +2338,19 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-21T20:57:04.681364+00:00",
+      "from": "article_needed",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-21T20:56:16.553119+00:00",
+  "updated_at": "2026-10-21T20:57:04.681371+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2675,14 +2681,15 @@
       "cycle": "2026-10-21",
       "inputs": {},
       "intent_at": "2026-10-21T20:56:56.062778+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "2790191a68304ba106b0c1a406a1387bc6b7695e"
+      "observed_active_run_id": 39674709129,
+      "dispatch_head_sha": "2790191a68304ba106b0c1a406a1387bc6b7695e",
+      "dispatched_at": "2026-10-21T20:56:56.062778+00:00"
     }
   },
   "deliverables": {
-    "article_url": null,
+    "article_url": "https://kesher.saharoni.com/blog/potty-training-constipation",
     "overview_youtube_url": null,
     "short_youtube_url": null,
     "overview_edit_verified": false,
