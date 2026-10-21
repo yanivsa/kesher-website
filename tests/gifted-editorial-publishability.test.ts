@@ -1,5 +1,6 @@
 import { createRequire } from 'node:module';
 import { describe, expect, it } from 'vitest';
+import publishedPosts from '../src/data/publishedPosts';
 
 const require = createRequire(import.meta.url);
 const { loadPosts } = require('../scripts/load-posts.cjs');
@@ -23,6 +24,14 @@ describe('gifted parenting editorial production contract', () => {
         isPublishable(post),
         `${id} must be publishable (words=${wordCount(post.content)}, h3=${headingCount(post.content)})`,
       ).toBe(true);
+    }
+  });
+
+  it('exposes every editorial gifted-parenting article through the runtime published catalog', () => {
+    const publishedIds = new Set(publishedPosts.map((post) => post.id));
+
+    for (const id of editorialIds) {
+      expect(publishedIds.has(id), `${id} should be available to /blog/:id`).toBe(true);
     }
   });
 });
