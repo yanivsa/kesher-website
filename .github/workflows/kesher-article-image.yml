@@ -51,7 +51,7 @@ jobs:
           PR_NUMBER: ${{ inputs.pr_number }}
         run: |
           set -euo pipefail
-          python3 .github/scripts/article-image-worker-v4.py "${REPO}" "${PR_NUMBER}" 2>&1 | tee image-worker.log
+          python3 .github/scripts/article-image-worker-v5.py "${REPO}" "${PR_NUMBER}" 2>&1 | tee image-worker.log
 
           if grep -q '^ARTICLE_IMAGE_COMMITTED ' image-worker.log; then
             : # Continue below and dispatch fresh CI for the mutated PR head.
