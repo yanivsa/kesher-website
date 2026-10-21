@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-20",
-  "status": "article_image_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1419,15 +1419,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T02:30:48.561411+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T02:36:06.804288+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2323,12 +2314,21 @@
         "attempt": 3,
         "pr_number": 1162
       }
+    },
+    {
+      "at": "2026-10-21T10:26:13.562214+00:00",
+      "from": "article_image_running",
+      "to": "blocked",
+      "reason": "image exhausted 3 total controller dispatch attempts",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-21T10:21:27.261720+00:00",
+  "updated_at": "2026-10-21T10:26:13.562219+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "complete",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 39405710776 completed with conclusion=success but no validated image is present",
@@ -2691,5 +2691,10 @@
     "source_slug": null,
     "slot": "2026-10-20"
   },
-  "last_error": null
+  "last_error": {
+    "stage": "controller",
+    "code": "image exhausted 3 total controller dispatch attempts",
+    "message": "image exhausted 3 total controller dispatch attempts",
+    "at": "2026-10-21T10:26:13.562198+00:00"
+  }
 }
