@@ -45,7 +45,7 @@
     "last_deploy_dispatch_at": "2026-10-21T12:52:03.401868+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39603062014,
-    "live_verified_at": "2026-10-21T14:15:56.752723+00:00"
+    "live_verified_at": "2026-10-21T14:16:11.082457+00:00"
   },
   "backlog": [
     {
@@ -1435,33 +1435,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T07:20:48.219004+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T07:25:44.147583+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T07:31:03.643185+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T07:36:20.445258+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2296,9 +2269,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-10-21T14:16:11.082484+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-21T14:16:11.799267+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-21T14:16:15.088081+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-10-21T14:12:57.285394+00:00",
+  "updated_at": "2026-10-21T14:16:15.088101+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
