@@ -1435,15 +1435,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T06:25:56.694799+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T06:30:51.620343+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2307,9 +2298,19 @@
         "item_id": "video-20261021-161554-1771eb3dc2-a2",
         "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5"
       }
+    },
+    {
+      "at": "2026-10-21T13:41:02.860029+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261021-161554-1771eb3dc2-a2",
+        "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5"
+      }
     }
   ],
-  "updated_at": "2026-10-21T13:36:20.493153+00:00",
+  "updated_at": "2026-10-21T13:41:02.860039+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
