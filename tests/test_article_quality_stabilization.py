@@ -10,6 +10,7 @@ from pathlib import Path
 from unittest import mock
 from zoneinfo import ZoneInfo
 
+from scripts import article_claim_quality
 from scripts import kesher_content_controller_stabilized as stabilized
 from scripts.kesher_runtime.state import StateInvalid
 
@@ -517,6 +518,52 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         self.assertIn("OBSERVED QUERY SIGNAL", text)
         self.assertIn("are NOT sufficient by themselves to prove a query people", text)
         self.assertIn("Do not\n   submit the article PR until at least one current observed query signal", text)
+
+
+class ParentingCanaryQualityContractTests(unittest.TestCase):
+    def _managed_article(self, **overrides):
+        article = {
+            "id": "potty-training-age-4",
+            "slug": "potty-training-age-4",
+            "title": "גמילה מחיתולים בגיל 4",
+            "date": "2026-10-20",
+            "category": "הדרכת הורים",
+            "excerpt": "תקציר שימושי להורים.",
+            "content": (
+                '<p>תוכן זהיר ושימושי.</p>'
+                '<p><a href="/blog/potty-training-age-3-problems">גמילה בגיל 3</a></p>'
+                '<p><a href="/blog/nighttime-potty-training">גמילת לילה</a></p>'
+                '<p><a href="/blog/potty-training-regression">רגרסיה בגמילה</a></p>'
+                '<p><a href="/services/parenting">הדרכת הורים</a></p>'
+            ),
+            "serviceUrl": "/services/parenting",
+            "controllerManaged": True,
+            "evidence": [{"title": "Guidance", "source": "Authority", "url": "https://example.org/guidance", "note": "Source note"}],
+        }
+        article.update(overrides)
+        return article
+
+    def test_canary_requires_evidence(self):
+        errors = article_claim_quality.validate_posts([self._managed_article(evidence=[])])
+        self.assertTrue(any("evidence_missing" in error for error in errors), errors)
+
+    def test_canary_requires_three_internal_blog_links(self):
+        article = self._managed_article(content='<p><a href="/blog/potty-training-regression">רגרסיה</a></p><p><a href="/services/parenting">הדרכת הורים</a></p>')
+        errors = article_claim_quality.validate_posts([article])
+        self.assertTrue(any("internal_blog_links" in error for error in errors), errors)
+
+    def test_canary_requires_declared_service_cta_link(self):
+        article = self._managed_article(content=(
+            '<p><a href="/blog/potty-training-age-3-problems">א</a></p>'
+            '<p><a href="/blog/nighttime-potty-training">ב</a></p>'
+            '<p><a href="/blog/potty-training-regression">ג</a></p>'
+        ))
+        errors = article_claim_quality.validate_posts([article])
+        self.assertTrue(any("service_cta_link" in error for error in errors), errors)
+
+    def test_pre_canary_content_is_not_retroactively_blocked(self):
+        article = self._managed_article(date="2026-10-19", evidence=[], content="<p>תוכן ישן.</p>")
+        self.assertEqual(article_claim_quality.validate_posts([article]), [])
 
 
 if __name__ == "__main__":
