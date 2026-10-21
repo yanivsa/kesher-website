@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-20",
-  "status": "long_video_watchdog_recovery",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1435,15 +1435,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T06:35:47.990881+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T06:41:06.172712+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2311,9 +2302,19 @@
         "slug": "potty-training-age-4",
         "content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6"
       }
+    },
+    {
+      "at": "2026-10-21T13:56:32.374892+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261021-161554-1771eb3dc2-a2",
+        "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5"
+      }
     }
   ],
-  "updated_at": "2026-10-21T13:46:27.527924+00:00",
+  "updated_at": "2026-10-21T13:56:32.374901+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2338,7 +2339,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-10-21T13:28:03.588671+00:00",
     "run_id": 39606173243,
