@@ -39,13 +39,13 @@
     "quality_content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-21T14:15:55.900317+00:00",
+    "quality_checked_at": "2026-10-21T14:20:42.245995+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-21T12:52:03.401868+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39603062014,
-    "live_verified_at": "2026-10-21T14:16:11.082457+00:00"
+    "live_verified_at": "2026-10-21T14:20:43.889796+00:00"
   },
   "backlog": [
     {
@@ -2672,21 +2672,6 @@
       "previous_run_id": 39405710776,
       "observed_active_run_id": 39583987116,
       "dispatched_at": "2026-10-21T10:20:52.052163+00:00"
-    },
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-10-20",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "potty-training-age-4",
-        "derive_content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
-        "derive_long_item_id": "video-20261021-161554-1771eb3dc2-a2"
-      },
-      "intent_at": "2026-10-21T14:10:52.456826+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 39614669037,
-      "dispatched_at": "2026-10-21T14:10:52.456826+00:00"
     }
   },
   "deliverables": {
@@ -2699,8 +2684,8 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 39610928222,
+    "workflow": "Kesher Daily Article Short V4",
+    "run_id": 39614669037,
     "conclusion": "success",
     "source_slug": "potty-training-age-4",
     "slot": "2026-10-20"
