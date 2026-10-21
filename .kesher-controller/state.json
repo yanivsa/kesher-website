@@ -1,51 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-20",
-  "status": "complete",
+  "cycle": "2026-10-21",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
+    "last_error": null,
     "next_retry_at": null,
-    "run_id": 39400158681,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 1,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-10-20T09:22:11.246685+00:00",
-    "pr_number": 1162,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1162",
-    "current_pr_head_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362",
-    "jules_head_sha": "2958e889816417379ab35486b1e9736fb11a9c12",
-    "normalization_slot": "2026-10-20",
-    "normalization_dispatched_at": "2026-10-21T10:06:18.535028+00:00",
-    "normalization_run_id": 39582095354,
-    "normalization_drift_count": 3,
-    "last_normalization_drift_head_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362",
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-10-21T12:46:20.879951+00:00",
-    "merge_run_id": 39602278678,
-    "last_error": null,
-    "normalized_head_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362",
-    "image_head_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362",
-    "merge_candidate_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362",
-    "slug": "potty-training-age-4",
-    "title": "גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק?",
-    "url": "https://kesher.saharoni.com/blog/potty-training-age-4",
-    "published_date": "2026-10-20",
-    "quality_content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
-    "reconciled_existing_article": true,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-10-21T14:50:41.705932+00:00",
-    "quality_violations": [],
-    "live": true,
-    "last_deploy_dispatch_at": "2026-10-21T12:52:03.401868+00:00",
-    "next_deploy_retry_at": null,
-    "deploy_run_id": 39603062014,
-    "live_verified_at": "2026-10-21T14:50:57.422625+00:00"
+    "deploy_attempts": 0,
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -1450,187 +1420,8 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-19"
     }
   ],
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-21T08:00:48.967165+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T08:05:44.266622+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T08:10:55.970921+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T08:15:49.591943+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T08:20:50.273094+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T08:25:45.791119+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T08:30:51.709546+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T08:35:45.088751+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T08:40:46.223591+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T08:45:46.130094+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T08:50:50.631490+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T08:56:03.756537+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T09:00:50.724274+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T09:05:59.073459+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T09:10:57.185272+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T09:15:55.935384+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T09:19:05.848453+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T09:20:50.465344+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T09:25:50.825754+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T09:30:03.550859+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
-      "details": {
-        "message": "Article PR head mutated repeatedly (6 times) after trusted stages; branch quiescence failed"
-      }
-    },
     {
       "at": "2026-10-21T09:30:55.865190+00:00",
       "from": "blocked",
@@ -2302,220 +2093,62 @@
           "toddler-bed-transition"
         ]
       }
+    },
+    {
+      "at": "2026-10-21T14:57:00.568467+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-10-21T14:57:00.568471+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-10-21T14:57:00.569075+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-10-21T14:50:58.313213+00:00",
+  "updated_at": "2026-10-21T14:57:00.568444+00:00",
   "image": {
-    "attempt_count": 3,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "processed_run_id": 39405710776,
-    "provider_id": "Pexels",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 1
-    },
-    "last_dispatch_at": "2026-10-21T10:21:27.261683+00:00",
-    "artifact_sha256": "ca724c5da858970ede1acbbc333a9f01e7f9a3b65903fc26335f1eeaff7162e6",
-    "source_id": "https://www.pexels.com/photo/a-child-washing-his-hands-8432199/",
-    "evidence_rebind_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91",
-    "evidence_rebind_dispatched_at": "2026-10-20T11:31:13.232060+00:00",
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 39405710776,
-    "run_id": null,
-    "image_path": "/images/generated/blog/potty-training-age-4.jpg"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 39610928222,
-    "processed_run_id": 39606173243,
-    "provider_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-21T13:46:27.527896+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261021-161554-1771eb3dc2-a2",
-    "resume_dispatches": 2,
-    "source_slug": "potty-training-age-4",
-    "source_content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
-    "content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
-    "source_id": "6238aa21-70ae-4f4b-a4b2-785671ddcc1b",
-    "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
-    "artifact_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
-    "provider_status": "pending",
-    "verified": true,
-    "watchdog": {
-      "identity": "long_video:potty-training-age-4:1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6:video-20261021-161554-1771eb3dc2-a2",
-      "hard_started_at": "2026-10-21T13:16:03.738163+00:00",
-      "last_progress_at": "2026-10-21T13:23:03.588671+00:00",
-      "last_fingerprint": "624f505aed66e736f18bdf4b842902fa56d830033126a59eb27caeab0be8938b",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-10-21T13:45:59.353831+00:00"
-    },
-    "pending_resume_ready": false,
-    "youtube_id": "pgMZAkR6rDY",
-    "youtube_url": "https://youtu.be/pgMZAkR6rDY",
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 106.967,
-    "content_duration_seconds": 106.958,
-    "signature_duration_seconds": 3.0,
-    "signature_overlay": true,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 39619103611,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "4a04f34b-d2ab-432b-b436-05c420a1986b",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-21T14:41:51.508629+00:00",
-    "artifact_id": "4a04f34b-d2ab-432b-b436-05c420a1986b",
-    "source_id": "c79979ad-869f-4a67-a720-237a7e8470ae",
-    "adopted_from_long_item_id": null,
-    "watchdog": {
-      "identity": "short:potty-training-age-4:1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6:video-20261021-171339-1771eb3dc2",
-      "hard_started_at": "2026-10-21T14:13:47.409489+00:00",
-      "last_progress_at": "2026-10-21T14:20:36.634763+00:00",
-      "last_fingerprint": "ed90195b43aad6c2753f734af05428c15f6f16d3112741ecbbb1f356b695e939",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-10-21T14:41:23.091620+00:00"
-    },
-    "source": {
-      "id": "potty-training-age-4",
-      "slug": "potty-training-age-4",
-      "title": "גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק?",
-      "date": "2026-10-20",
-      "category": "הדרכת הורים",
-      "subcategory": "גמילה מחיתולים",
-      "excerpt": "גמילה מחיתולים בגיל 4: איך מבדילים בין פספוסים זמניים לקושי שמצריך בדיקה, למה חשוב לשלול עצירות, ואיך לעזור בלי לחץ או מאבקי כוח.",
-      "canonical_url": "https://kesher.saharoni.com/blog/potty-training-age-4",
-      "content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
-      "video_title": "גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק?",
-      "short_title": "גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק?",
-      "short_hook": "",
-      "youtube_metadata": {
-        "title": "גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק?",
-        "description": "גמילה מחיתולים בגיל 4: איך מבדילים בין פספוסים זמניים לקושי שמצריך בדיקה, למה חשוב לשלול עצירות, ואיך לעזור בלי לחץ או מאבקי כוח.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/potty-training-age-4\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "גמילה מחיתולים"
-        ]
-      },
-      "short_youtube_metadata": {
-        "title": "בקצרה: גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק?",
-        "description": "גמילה מחיתולים בגיל 4: איך מבדילים בין פספוסים זמניים לקושי שמצריך בדיקה, למה חשוב לשלול עצירות, ואיך לעזור בלי לחץ או מאבקי כוח.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/potty-training-age-4\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "גמילה מחיתולים"
-        ]
-      }
-    },
-    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-    "task_id": "4a04f34b-d2ab-432b-b436-05c420a1986b",
-    "raw_sha256": "d73c5c9ef1111d9e2fcea30f2a0beaf634cba6609587974a04e64d55fcc069e8",
-    "final_sha256": "3e07f9dd092daf2f34a6ae139514fd92708bcf2082e072aac74c320ee6719430",
-    "provider_raw_media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 720,
-      "height": 1280,
-      "duration": 76.0,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 1080,
-      "height": 1920,
-      "duration": 76.0,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "provider_video_format": "short",
-    "provider_native_short": true,
-    "provider_native_short_verified": true,
-    "provider_short_fallback_used": false,
-    "fresh_generation_attempt": 1,
-    "overview_provider_identity": {
-      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-      "source_id": "6238aa21-70ae-4f4b-a4b2-785671ddcc1b",
-      "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
-      "artifact_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
-      "raw_sha256": "9b93383ffedabd40bd872a0131038fe3662bf617d7112d32783e0b695c46c382"
-    },
-    "shared_provider_identity": null,
-    "short_start_seconds": 0.0,
-    "short_duration_seconds": 76.0,
-    "audio_provenance": {
-      "schema_version": 1,
-      "mode": "stream_copy",
-      "raw_sha256": "d73c5c9ef1111d9e2fcea30f2a0beaf634cba6609587974a04e64d55fcc069e8",
-      "final_sha256": "3e07f9dd092daf2f34a6ae139514fd92708bcf2082e072aac74c320ee6719430",
-      "raw_audio_sha256": "a28ff1c9a52724c159fa4203d04543125a1293a9505e31d5ffb83b9c2594109d",
-      "final_audio_sha256": "a28ff1c9a52724c159fa4203d04543125a1293a9505e31d5ffb83b9c2594109d",
-      "raw_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 76.068571
-      },
-      "final_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 76.068571
-      }
-    },
-    "signature_overlay": true,
-    "signature_provenance": {
-      "schema_version": 1,
-      "final_sha256": "3e07f9dd092daf2f34a6ae139514fd92708bcf2082e072aac74c320ee6719430",
-      "raw_sha256": "d73c5c9ef1111d9e2fcea30f2a0beaf634cba6609587974a04e64d55fcc069e8",
-      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-      "segment_sha256": "56bd970989a41cc3dc5997e91c3449d179be2f895cecd766ce105a739a25fa36",
-      "source_duration_seconds": 76.0,
-      "final_duration_seconds": 76.0,
-      "start_seconds": 73.0,
-      "end_seconds": 76.0,
-      "audio_source_sha256": "d73c5c9ef1111d9e2fcea30f2a0beaf634cba6609587974a04e64d55fcc069e8"
-    },
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "item_id": "video-20261021-171339-1771eb3dc2",
-    "type": "article_short",
-    "youtube_id": "KJXZj8vl6Ro",
-    "youtube_url": "https://youtu.be/KJXZj8vl6Ro",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "56bd970989a41cc3dc5997e91c3449d179be2f895cecd766ce105a739a25fa36",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
@@ -2795,89 +2428,5 @@
       }
     }
   ],
-  "active_idea": null,
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-10-20",
-      "inputs": {
-        "slot": "2026-10-20",
-        "topic_brief": "אשכול גמילה שהסתבכה. נושא: ילד בן 4 שעדיין לא גמול או ממשיך לפספס. אות ביקוש: Google Keyword Planner 17.10, טווח 10–100 לחודש. Canonical ID נדרש: potty-training-age-4. כותרת עבודה: גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לרופא/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/רפואיים קודמים למקורות מסחריים. לשמור intent נפרד מגמילה בגיל 3, עצירות, רגרסיה ופספוסים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. אין ליצור/לשנות URL אחר; השתמש ב-ID האנגלי שצוין.\n\nIdea Request ID: parenting-p1-potty-training-age-4\nRequired Primary Keyword: גמילה מחיתולים בגיל 4"
-      },
-      "intent_at": "2026-10-20T09:21:50.233840+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-20T09:21:50.233840+00:00"
-    },
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
-      "cycle": "2026-10-20",
-      "inputs": {
-        "pr_number": "1162"
-      },
-      "intent_at": "2026-10-21T10:20:52.052163+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39405710776,
-      "observed_active_run_id": 39583987116,
-      "dispatched_at": "2026-10-21T10:20:52.052163+00:00"
-    }
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/potty-training-age-4",
-    "overview_youtube_url": "https://youtu.be/pgMZAkR6rDY",
-    "short_youtube_url": "https://youtu.be/KJXZj8vl6Ro",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
-  },
-  "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 39619103611,
-    "conclusion": "success",
-    "source_slug": "potty-training-age-4",
-    "slot": "2026-10-20"
-  },
-  "last_error": null,
-  "processed_child_notifications": [
-    "Deploy to Cloudflare Pages:39603062014",
-    "Kesher Daily NotebookLM Video Overview:39603967175",
-    "Kesher Daily NotebookLM Video Overview:39606173243",
-    "Kesher Daily NotebookLM Video Overview:39610928222",
-    "Kesher Daily Article Short V4:39614669037",
-    "Kesher Daily Article Short V4:39619103611"
-  ],
-  "interventions": {
-    "v5|potty-training-age-4|1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6|long_video": {
-      "pipeline_id": "v5",
-      "slug": "potty-training-age-4",
-      "content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
-      "stage": "long_video",
-      "strike_count": 1,
-      "last_check_token": "2026-10-21T16",
-      "last_fingerprint": "f7b1a2d2f992b7324da8fb9cd63ccbe77d364a589190c53fb2d533cb7d234966",
-      "last_controller_action_token": "recovery:1:2026-10-21T13:45:59.353831+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-10-21T13:45:59.353831+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-21T13:45:59.353831+00:00"
-    },
-    "v5|potty-training-age-4|1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6|short": {
-      "pipeline_id": "v5",
-      "slug": "potty-training-age-4",
-      "content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-10-21T17",
-      "last_fingerprint": "8382e2cf06d69073b6323d6bc327806ba33c5c54f32f1270202efb95812386a7",
-      "last_controller_action_token": "recovery:1:2026-10-21T14:41:23.091620+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-10-21T14:41:23.091620+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-21T14:41:23.091620+00:00"
-    }
-  }
+  "active_idea": null
 }
