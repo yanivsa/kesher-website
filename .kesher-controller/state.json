@@ -1411,7 +1411,7 @@
         "same_failure_streak": 0,
         "failure_count_by_type": {},
         "attempts": 0,
-        "deploy_attempts": 2,
+        "deploy_attempts": 3,
         "normalization_status": "complete",
         "last_dispatch_at": "2026-10-21T20:21:32.939293+00:00",
         "watchdog": {
@@ -1463,7 +1463,7 @@
         "quality_checked_at": "2026-10-21T20:56:58.908930+00:00",
         "quality_violations": [],
         "live": false,
-        "last_deploy_dispatch_at": "2026-10-21T21:06:21.613929+00:00",
+        "last_deploy_dispatch_at": "2026-10-21T21:16:31.613374+00:00",
         "next_deploy_retry_at": "2026-10-21T21:01:56.062778+00:00"
       },
       "long_video": {
@@ -1514,7 +1514,7 @@
         "article_url": "https://kesher.saharoni.com/blog/potty-training-constipation",
         "article_live": false,
         "article_deploy_status": "running",
-        "article_last_deploy_dispatch_at": "2026-10-21T21:06:21.613967+00:00",
+        "article_last_deploy_dispatch_at": "2026-10-21T21:16:31.613392+00:00",
         "last_error": null
       }
     }
@@ -2591,10 +2591,11 @@
       "cycle": "2026-10-22",
       "inputs": {},
       "intent_at": "2026-10-21T21:15:49.639360+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39676027229,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "2790191a68304ba106b0c1a406a1387bc6b7695e"
+      "observed_active_run_id": 39677434115,
+      "dispatch_head_sha": "2790191a68304ba106b0c1a406a1387bc6b7695e",
+      "dispatched_at": "2026-10-21T21:15:49.639360+00:00"
     }
   }
 }
