@@ -2680,6 +2680,20 @@
       "previous_run_id": 39405710776,
       "observed_active_run_id": 39583987116,
       "dispatched_at": "2026-10-21T10:20:52.052163+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-20",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "potty-training-age-4",
+        "derive_content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
+        "derive_long_item_id": "video-20261021-161554-1771eb3dc2-a2"
+      },
+      "intent_at": "2026-10-21T14:41:23.091620+00:00",
+      "status": "intent",
+      "previous_run_id": 39614669037,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -2721,6 +2735,20 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-10-21T13:45:59.353831+00:00"
+    },
+    "v5|potty-training-age-4|1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6|short": {
+      "pipeline_id": "v5",
+      "slug": "potty-training-age-4",
+      "content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-10-21T17",
+      "last_fingerprint": "8382e2cf06d69073b6323d6bc327806ba33c5c54f32f1270202efb95812386a7",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-21T14:41:23.091620+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   }
 }
