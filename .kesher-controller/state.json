@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-20",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
-    "status": "blocked",
+    "status": "running",
     "next_retry_at": null,
     "run_id": 39400158681,
     "processed_run_id": null,
@@ -14,7 +14,7 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "running",
+    "normalization_status": "pending",
     "last_dispatch_at": "2026-10-20T09:22:11.246685+00:00",
     "pr_number": 1162,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1162",
@@ -23,12 +23,11 @@
     "normalization_slot": "2026-10-20",
     "normalization_dispatched_at": "2026-10-20T12:31:01.088177+00:00",
     "normalization_run_id": 39422857607,
-    "normalization_drift_count": 6,
+    "normalization_drift_count": 1,
     "last_normalization_drift_head_sha": "7c0e8db507b51699d626576c121e1f932901d8a7",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
-    "merge_run_id": 39415792304,
-    "last_error": null
+    "merge_run_id": 39415792304
   },
   "backlog": [
     {
@@ -1416,12 +1415,6 @@
       "archived_at": "2026-10-20T09:20:36.167503+00:00"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_JULES_UNSTABLE_MUTATION",
-    "message": "Article PR head mutated repeatedly (6 times) after trusted stages; branch quiescence failed",
-    "at": "2026-10-21T10:00:50.768736+00:00"
-  },
   "history": [
     {
       "at": "2026-10-21T02:05:44.104837+00:00",
@@ -2650,6 +2643,18 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-20T09:21:50.233840+00:00"
+    },
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
+      "cycle": "2026-10-20",
+      "inputs": {
+        "pr_number": "1162",
+        "slot": "2026-10-20"
+      },
+      "intent_at": "2026-10-21T10:06:05.057066+00:00",
+      "status": "intent",
+      "previous_run_id": 39422857607,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
