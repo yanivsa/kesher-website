@@ -22,6 +22,10 @@ jobs:
       - name: Canonically synchronize reviewed authority hashes
         run: |
           set -euo pipefail
+          # This bootstrap workflow is not part of the intended final tree.
+          # Remove it only from the runner worktree so the canonical synchronizer
+          # reviews exactly the post-bootstrap workflow definition set.
+          rm -f .github/workflows/chatgpt-authority-sync-pr.yml
           python3 scripts/kesher_runtime/sync_authority_policy.py --root . --update
           python3 scripts/kesher_runtime/sync_authority_policy.py --root . --check
 
