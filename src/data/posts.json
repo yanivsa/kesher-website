@@ -37,7 +37,8 @@
     "imageAlt": "הורה וילד משוחחים בגובה העיניים על יכולות, קושי וזהות",
     "imageProvider": "Local",
     "imageSourceUrl": "local://public/images/generated/blog/how-to-talk-to-child-about-being-gifted.jpg",
-    "imageIsFallback": false
+    "imageIsFallback": false,
+    "controllerManaged": false
   },
   {
     "id": "gifted-test-accepted-what-next",
@@ -77,7 +78,8 @@
     "imageAlt": "הורה וילד משוחחים ברוגע לקראת כניסה למסגרת מחוננים חדשה",
     "imageProvider": "Local",
     "imageSourceUrl": "local://public/images/generated/blog/gifted-test-accepted-what-next.jpg",
-    "imageIsFallback": false
+    "imageIsFallback": false,
+    "controllerManaged": false
   },
   {
     "id": "gifted-test-not-accepted-parent-response",
@@ -115,7 +117,8 @@
     "imageAlt": "הורה תומך בילד לאחר חוויה מאכזבת ומחזק את תחושת הביטחון שלו",
     "imageProvider": "Local",
     "imageSourceUrl": "local://public/images/generated/blog/gifted-test-not-accepted-parent-response.jpg",
-    "imageIsFallback": false
+    "imageIsFallback": false,
+    "controllerManaged": false
   },
   {
     "id": "gifted-test-emotional-preparation",
@@ -154,7 +157,8 @@
     "imageAlt": "הורה משוחח ברוגע עם ילד לקראת סיטואציה חדשה ומאתגרת",
     "imageProvider": "Local",
     "imageSourceUrl": "local://public/images/generated/blog/gifted-test-emotional-preparation.jpg",
-    "imageIsFallback": false
+    "imageIsFallback": false,
+    "controllerManaged": false
   },
   {
     "id": "pacifier-weaning",
