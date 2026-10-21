@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-21",
-  "status": "image_retry_wait",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1440,14 +1440,7 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-19"
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_WORKFLOW_FAILED",
-    "message": "trusted image run 39625068472 completed with conclusion=failure but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-10-21T15:51:27.869871+00:00",
-    "at": "2026-10-21T15:46:27.869902+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-21T09:30:55.865190+00:00",
@@ -2206,12 +2199,22 @@
         "failure_streak": 1,
         "run_id": 39625068472
       }
+    },
+    {
+      "at": "2026-10-21T16:01:21.774836+00:00",
+      "from": "image_retry_wait",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 2,
+        "pr_number": 1170
+      }
     }
   ],
-  "updated_at": "2026-10-21T15:46:27.869916+00:00",
+  "updated_at": "2026-10-21T16:01:21.774843+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "retry_wait",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": {
       "code": "IMAGE_WORKFLOW_FAILED",
       "message": "trusted image run 39625068472 completed with conclusion=failure but no validated image is present",
@@ -2219,7 +2222,7 @@
       "retry_at": "2026-10-21T15:51:27.869871+00:00",
       "at": "2026-10-21T15:46:27.869902+00:00"
     },
-    "next_retry_at": "2026-10-21T15:51:27.869871+00:00",
+    "next_retry_at": null,
     "run_id": 39625068472,
     "processed_run_id": 39625068472,
     "provider_id": null,
@@ -2228,7 +2231,7 @@
     "failure_count_by_type": {
       "IMAGE_WORKFLOW_FAILED": 1
     },
-    "last_dispatch_at": "2026-10-21T15:22:34.340888+00:00",
+    "last_dispatch_at": "2026-10-21T16:01:21.774811+00:00",
     "last_run_conclusion": "failure",
     "last_failed_run_id": 39625068472
   },
@@ -2544,9 +2547,10 @@
         "pr_number": "1170"
       },
       "intent_at": "2026-10-21T16:00:55.230052+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39625068472,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39630976302,
+      "dispatched_at": "2026-10-21T16:00:55.230052+00:00"
     }
   },
   "deliverables": {
@@ -2568,17 +2572,5 @@
   "processed_child_notifications": [
     "Kesher Article Generation:39621436540",
     "Kesher Normalize Article PR:39624748417"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  ]
 }
