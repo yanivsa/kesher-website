@@ -171,6 +171,44 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
         self.assertEqual(state["status"], "article_normalizing")
         self.assertIsNone(state.get("last_error"))
 
+    def test_stabilized_controller_recovers_after_blocked_drift_head_becomes_stable(self) -> None:
+        github = mock.MagicMock()
+        site = mock.MagicMock()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            now=datetime(2026, 10, 21, 12, 30, tzinfo=ISRAEL_TZ),
+            github=github,
+            site=site,
+        )
+        stable_head = "7" * 40
+        state = {
+            "cycle": "2026-10-20",
+            "status": "blocked",
+            "schema_version": 5,
+            "article": {
+                "pr_number": 1162,
+                "status": "blocked",
+                "current_pr_head_sha": stable_head,
+                "normalized_head_sha": "1" * 40,
+                "normalization_status": "complete",
+                "normalization_drift_count": 6,
+                "last_normalization_drift_head_sha": stable_head,
+                "last_error": {"code": "ARTICLE_JULES_UNSTABLE_MUTATION"},
+            },
+            "image": {"status": "pending"},
+            "last_error": {"code": "ARTICLE_JULES_UNSTABLE_MUTATION"},
+        }
+        pr = {"number": 1162, "html_url": "https://github.com/yanivsa/kesher-website/pull/1162", "head": {"sha": stable_head}}
+        github.request.side_effect = lambda method, url, **kwargs: [] if "/issues/1162/comments" in url else {"parents": [{"sha": "3" * 40}]}
+        github.article_pr_normalization_required.return_value = (True, "2026-10-20")
+        github.active_normalizer_run.return_value = None
+
+        action = controller._handle_open_article_pr(state, pr)
+
+        self.assertEqual(action.kind, "dispatch_normalize")
+        self.assertEqual(state["article"]["normalization_drift_count"], 1)
+        self.assertEqual(state["status"], "article_normalizing")
+        self.assertIsNone(state.get("last_error"))
+
     def test_stabilized_controller_blocks_after_four_distinct_drift_heads(self) -> None:
         github = mock.MagicMock()
         site = mock.MagicMock()
