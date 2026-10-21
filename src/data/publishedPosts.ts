@@ -3,6 +3,7 @@ import recentPosts from './postsRecent.json';
 import giftedEditorialEnhancements from './giftedEditorialEnhancements.json';
 import { applyInternalLinkBackfill } from './internalLinkBackfill';
 
+type Post = (typeof posts)[number];
 type EditorialEnhancement = {
   updatedAt?: string;
   appendContent?: string;
@@ -10,7 +11,7 @@ type EditorialEnhancement = {
 
 const editorialEnhancements = giftedEditorialEnhancements as Record<string, EditorialEnhancement>;
 
-const applyEditorialEnhancement = <T extends { id: string; content: string; updatedAt?: string }>(post: T): T => {
+const applyEditorialEnhancement = (post: Post): Post => {
   const enhancement = editorialEnhancements[post.id];
   if (!enhancement) return post;
 
@@ -21,14 +22,15 @@ const applyEditorialEnhancement = <T extends { id: string; content: string; upda
   };
 };
 
-const allPosts = [...recentPosts, ...posts]
-  .map((post) => applyEditorialEnhancement(post))
+const combinedPosts = [...recentPosts, ...posts] as typeof posts;
+const allPosts = combinedPosts
+  .map(applyEditorialEnhancement)
   .map(applyInternalLinkBackfill) as typeof posts;
 
 const wordCount = (html: string) =>
   html.replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length;
 
-export const isPublishablePost = (post: (typeof posts)[number]) =>
+export const isPublishablePost = (post: Post) =>
   wordCount(post.content) >= 500 &&
   (post.content.match(/<h3/g) || []).length >= 5;
 
