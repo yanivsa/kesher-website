@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-20",
-  "status": "long_video_running",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -45,7 +45,7 @@
     "last_deploy_dispatch_at": "2026-10-21T12:52:03.401868+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39603062014,
-    "live_verified_at": "2026-10-21T13:13:34.565184+00:00"
+    "live_verified_at": "2026-10-21T13:13:50.334083+00:00"
   },
   "backlog": [
     {
@@ -1435,15 +1435,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T05:35:48.308308+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T05:40:45.873627+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2317,9 +2308,15 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-10-21T13:13:50.334111+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-21T13:11:04.847267+00:00",
+  "updated_at": "2026-10-21T13:13:50.334119+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2344,18 +2341,20 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "rejected",
     "last_error": null,
-    "next_retry_at": "2026-10-21T13:18:30.553509+00:00",
+    "next_retry_at": null,
     "run_id": 39603967175,
-    "processed_run_id": null,
+    "processed_run_id": 39603967175,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-10-21T12:58:40.736422+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "last_run_conclusion": "success",
+    "item_id": "video-20261021-160335-1771eb3dc2"
   },
   "short": {
     "attempt_count": 0,
@@ -2665,6 +2664,20 @@
       "previous_run_id": 39405710776,
       "observed_active_run_id": 39583987116,
       "dispatched_at": "2026-10-21T10:20:52.052163+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-20",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "potty-training-age-4",
+        "target_content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
+        "target_item_id": "video-20261021-160335-1771eb3dc2"
+      },
+      "intent_at": "2026-10-21T13:13:30.553509+00:00",
+      "status": "intent",
+      "previous_run_id": 39603967175,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -2686,5 +2699,22 @@
   "last_error": null,
   "processed_child_notifications": [
     "Deploy to Cloudflare Pages:39603062014"
-  ]
+  ],
+  "video": {
+    "attempt_count": 1,
+    "status": "rejected",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": 39603967175,
+    "processed_run_id": 39603967175,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-10-21T12:58:40.736422+00:00",
+    "attempts": 1,
+    "last_run_conclusion": "success",
+    "item_id": "video-20261021-160335-1771eb3dc2"
+  }
 }
