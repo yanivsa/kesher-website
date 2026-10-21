@@ -15,7 +15,8 @@
     "failure_count_by_type": {},
     "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "pending"
+    "normalization_status": "pending",
+    "deploy_run_id": 39676027229
   },
   "backlog": [
     {
@@ -2584,17 +2585,5 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "deploy.yml": {
-      "workflow": "deploy.yml",
-      "cycle": "2026-10-22",
-      "inputs": {},
-      "intent_at": "2026-10-21T21:05:46.843713+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 39676027229,
-      "dispatch_head_sha": "2790191a68304ba106b0c1a406a1387bc6b7695e",
-      "dispatched_at": "2026-10-21T21:05:46.843713+00:00"
-    }
-  }
+  "pending_dispatches": {}
 }
