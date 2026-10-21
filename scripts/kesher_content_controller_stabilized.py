@@ -1954,6 +1954,18 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     drift_count = 1
                 elif last_drift_head_sha == head_sha:
                     drift_count = int(state["article"].get("normalization_drift_count") or 1)
+                    blocked_for_drift = (
+                        str(state.get("status") or "") == "blocked"
+                        and str((state.get("last_error") or {}).get("code") or "") == "ARTICLE_JULES_UNSTABLE_MUTATION"
+                        and previously_observed_head_sha == head_sha
+                    )
+                    if blocked_for_drift and drift_count > 3:
+                        # A branch that stopped mutating after the fail-closed
+                        # threshold gets one fresh normalization attempt. Any
+                        # subsequent distinct head is counted again normally.
+                        drift_count = 1
+                        state.pop("last_error", None)
+                        state["article"].pop("last_error", None)
                 else:
                     drift_count = int(state["article"].get("normalization_drift_count") or 0) + 1
                 state["article"]["normalization_drift_count"] = drift_count
