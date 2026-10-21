@@ -3,8 +3,8 @@
   "cycle": "2026-10-20",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "next_retry_at": null,
     "run_id": 39400158681,
     "processed_run_id": null,
@@ -12,7 +12,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-20T09:22:11.246685+00:00",
@@ -27,11 +27,21 @@
     "last_normalization_drift_head_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362",
     "merge_dispatch_count": 1,
     "merge_dispatch_at": "2026-10-21T12:46:20.879951+00:00",
-    "merge_run_id": 39415792304,
+    "merge_run_id": 39602278678,
     "last_error": null,
     "normalized_head_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362",
     "image_head_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362",
-    "merge_candidate_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362"
+    "merge_candidate_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362",
+    "slug": "potty-training-age-4",
+    "title": "גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק?",
+    "url": "https://kesher.saharoni.com/blog/potty-training-age-4",
+    "published_date": "2026-10-20",
+    "quality_content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-10-21T12:51:55.234595+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2343,7 +2353,9 @@
     "evidence_rebind_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91",
     "evidence_rebind_dispatched_at": "2026-10-20T11:31:13.232060+00:00",
     "last_run_conclusion": "success",
-    "last_failed_run_id": 39405710776
+    "last_failed_run_id": 39405710776,
+    "run_id": null,
+    "image_path": "/images/generated/blog/potty-training-age-4.jpg"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2666,18 +2678,15 @@
       "observed_active_run_id": 39583987116,
       "dispatched_at": "2026-10-21T10:20:52.052163+00:00"
     },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "deploy.yml": {
+      "workflow": "deploy.yml",
       "cycle": "2026-10-20",
-      "inputs": {
-        "pr_number": "1162",
-        "slot": "2026-10-20"
-      },
-      "intent_at": "2026-10-21T12:45:49.616410+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39415792304,
-      "observed_active_run_id": 39602278678,
-      "dispatched_at": "2026-10-21T12:45:49.616410+00:00"
+      "inputs": {},
+      "intent_at": "2026-10-21T12:51:48.525963+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "8fea2d1184ef3b172ae83650dd1c9ff7a3d3940d"
     }
   },
   "deliverables": {
@@ -2690,8 +2699,8 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Kesher Normalize Article PR",
-    "run_id": 39582095354,
+    "workflow": "Auto-merge Kesher article PRs",
+    "run_id": 39602278678,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-20"
