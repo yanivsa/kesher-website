@@ -19,7 +19,12 @@
     "serviceLabel": "הדרכת הורים",
     "directAnswer": "עצירות והתאפקות קורות כי השחרור בשירותים מרגיש שונה מהחיתול ולפעמים מפחיד. אפשר להקל על ידי הרגעת הלחץ, הצבת שרפרף לתמיכה, ואפילו מתן חיתול לקקי באופן זמני. אם יש כאב או שהילד מתאפק ימים, חובה לפנות לרופא.",
     "evidence": [],
-    "controllerManaged": true
+    "controllerManaged": true,
+    "image": "/images/generated/blog/potty-training-constipation.png",
+    "imageAlt": "איור עריכתי מקומי של הורה וילד בחדר רחצה ביתי, לצד אסלה ושרפרף, באווירה רגועה ותומכת.",
+    "imageProvider": "LocalEditorial",
+    "imageSourceUrl": "local-editorial://potty-training-constipation/6",
+    "imageIsFallback": false
   },
   {
     "id": "how-to-talk-to-child-about-being-gifted",
