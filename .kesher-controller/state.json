@@ -1419,15 +1419,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T02:15:54.786927+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T02:20:45.564020+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2321,12 +2312,21 @@
         "failure_streak": 1,
         "run_id": 39405710776
       }
+    },
+    {
+      "at": "2026-10-21T10:10:56.054665+00:00",
+      "from": "image_retry_wait",
+      "to": "image_retry_wait",
+      "reason": "trusted image retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-21T10:12:49.332735+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-21T10:07:49.332769+00:00",
+  "updated_at": "2026-10-21T10:10:56.054681+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "retry_wait",
+    "status": "complete",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 39405710776 completed with conclusion=success but no validated image is present",
@@ -2677,12 +2677,5 @@
     "source_slug": null,
     "slot": "2026-10-20"
   },
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 39405710776 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-10-21T10:12:49.332735+00:00",
-    "at": "2026-10-21T10:07:49.332755+00:00"
-  }
+  "last_error": null
 }
