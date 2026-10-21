@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-20",
-  "status": "article_normalizing",
+  "status": "image_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -14,20 +14,22 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "last_dispatch_at": "2026-10-20T09:22:11.246685+00:00",
     "pr_number": 1162,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1162",
-    "current_pr_head_sha": "7c0e8db507b51699d626576c121e1f932901d8a7",
+    "current_pr_head_sha": "5a936fff6f08ab9d71ebf8d54b9c200f1181beb7",
     "jules_head_sha": "2958e889816417379ab35486b1e9736fb11a9c12",
     "normalization_slot": "2026-10-20",
     "normalization_dispatched_at": "2026-10-21T10:06:18.535028+00:00",
-    "normalization_run_id": 39422857607,
-    "normalization_drift_count": 1,
-    "last_normalization_drift_head_sha": "7c0e8db507b51699d626576c121e1f932901d8a7",
+    "normalization_run_id": 39582095354,
+    "normalization_drift_count": 2,
+    "last_normalization_drift_head_sha": "5a936fff6f08ab9d71ebf8d54b9c200f1181beb7",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
-    "merge_run_id": 39415792304
+    "merge_run_id": 39415792304,
+    "last_error": null,
+    "normalized_head_sha": "5a936fff6f08ab9d71ebf8d54b9c200f1181beb7"
   },
   "backlog": [
     {
@@ -1417,15 +1419,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T02:10:44.695945+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T02:15:54.786927+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2316,25 +2309,47 @@
         "pr_number": 1162,
         "slot": "2026-10-20"
       }
+    },
+    {
+      "at": "2026-10-21T10:07:49.332763+00:00",
+      "from": "article_normalizing",
+      "to": "image_retry_wait",
+      "reason": "IMAGE_OUTPUT_MISSING",
+      "details": {
+        "message": "trusted image run 39405710776 completed with conclusion=success but no validated image is present",
+        "retry_at": "2026-10-21T10:12:49.332735+00:00",
+        "failure_streak": 1,
+        "run_id": 39405710776
+      }
     }
   ],
-  "updated_at": "2026-10-21T10:06:18.535064+00:00",
+  "updated_at": "2026-10-21T10:07:49.332769+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "processed_run_id": null,
+    "status": "retry_wait",
+    "last_error": {
+      "code": "IMAGE_OUTPUT_MISSING",
+      "message": "trusted image run 39405710776 completed with conclusion=success but no validated image is present",
+      "retryable": true,
+      "retry_at": "2026-10-21T10:12:49.332735+00:00",
+      "at": "2026-10-21T10:07:49.332755+00:00"
+    },
+    "next_retry_at": "2026-10-21T10:12:49.332735+00:00",
+    "processed_run_id": 39405710776,
     "provider_id": "Local",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "IMAGE_OUTPUT_MISSING": 1
+    },
     "last_dispatch_at": "2026-10-20T10:07:47.627005+00:00",
     "artifact_sha256": "9c44be9a246055e9e9a151c3089ab1a6cbd222bfc279f568c9ddaf86fe774dfc",
     "source_id": "local://public/images/fallback/relocation/family_relocation_transition.jpg",
     "evidence_rebind_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91",
     "evidence_rebind_dispatched_at": "2026-10-20T11:31:13.232060+00:00",
-    "run_id": 39405710776
+    "run_id": 39405710776,
+    "last_run_conclusion": "success",
+    "last_failed_run_id": 39405710776
   },
   "long_video": {
     "attempt_count": 0,
@@ -2644,19 +2659,6 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-20T09:21:50.233840+00:00"
-    },
-    "normalize-article-pr.yml": {
-      "workflow": "normalize-article-pr.yml",
-      "cycle": "2026-10-20",
-      "inputs": {
-        "pr_number": "1162",
-        "slot": "2026-10-20"
-      },
-      "intent_at": "2026-10-21T10:06:05.057066+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39422857607,
-      "observed_active_run_id": 39582095354,
-      "dispatched_at": "2026-10-21T10:06:05.057066+00:00"
     }
   },
   "deliverables": {
@@ -2670,10 +2672,17 @@
   },
   "last_child_notification": {
     "workflow": "Kesher Normalize Article PR",
-    "run_id": 39422857607,
+    "run_id": 39582095354,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-20"
   },
-  "last_error": null
+  "last_error": {
+    "stage": "image",
+    "code": "IMAGE_OUTPUT_MISSING",
+    "message": "trusted image run 39405710776 completed with conclusion=success but no validated image is present",
+    "retryable": true,
+    "retry_at": "2026-10-21T10:12:49.332735+00:00",
+    "at": "2026-10-21T10:07:49.332755+00:00"
+  }
 }
