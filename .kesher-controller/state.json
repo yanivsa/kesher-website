@@ -33,7 +33,8 @@
     "current_pr_head_sha": "a0186c8bc8059d1fd5dd8e889fb91388226d812e",
     "jules_head_sha": "a0186c8bc8059d1fd5dd8e889fb91388226d812e",
     "normalization_slot": "2026-10-21",
-    "normalization_dispatched_at": "2026-10-21T15:20:36.247267+00:00"
+    "normalization_dispatched_at": "2026-10-21T15:20:36.247267+00:00",
+    "normalization_run_id": 39624748417
   },
   "backlog": [
     {
@@ -2494,21 +2495,7 @@
     "publication_slot": "2026-10-21",
     "claimed_at": "2026-10-21T14:57:31.411393+00:00"
   },
-  "pending_dispatches": {
-    "normalize-article-pr.yml": {
-      "workflow": "normalize-article-pr.yml",
-      "cycle": "2026-10-21",
-      "inputs": {
-        "pr_number": "1170",
-        "slot": "2026-10-21"
-      },
-      "intent_at": "2026-10-21T15:19:44.169051+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 39624748417,
-      "dispatched_at": "2026-10-21T15:19:44.169051+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "deliverables": {
     "article_url": null,
     "overview_youtube_url": null,
@@ -2519,8 +2506,8 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Kesher Article Generation",
-    "run_id": 39621436540,
+    "workflow": "Kesher Normalize Article PR",
+    "run_id": 39624748417,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-21"
