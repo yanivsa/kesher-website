@@ -201,7 +201,14 @@
         "note": "עצירות תפקודית, התאפקות והצורך להימנע מלחץ סביב גמילה כשהילד סובל מעצירות."
       }
     ],
-    "controllerManaged": true
+    "controllerManaged": true,
+    "image": "/images/generated/blog/potty-training-age-4.jpg",
+    "imageAlt": "פעוט רוחץ ידיים בכיור בעזרת מבוגר בחדר רחצה ביתי, כחלק משגרת עצמאות והיגיינה",
+    "imageProvider": "Pexels",
+    "imageSourceUrl": "https://www.pexels.com/photo/a-child-washing-his-hands-8432199/",
+    "imageIsFallback": false,
+    "imageCredit": "צילום דרך Pexels",
+    "imageCreditUrl": "https://www.pexels.com/photo/a-child-washing-his-hands-8432199/"
   },
   {
     "id": "pacifier-weaning",
