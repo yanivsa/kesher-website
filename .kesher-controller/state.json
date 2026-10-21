@@ -45,7 +45,7 @@
     "last_deploy_dispatch_at": "2026-10-21T12:52:03.401868+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39603062014,
-    "live_verified_at": "2026-10-21T14:12:16.724828+00:00"
+    "live_verified_at": "2026-10-21T14:12:51.103963+00:00"
   },
   "backlog": [
     {
@@ -1435,33 +1435,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T07:05:49.819984+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T07:10:51.539376+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T07:15:53.901392+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T07:20:48.219004+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2305,9 +2278,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-10-21T14:12:51.103983+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-21T14:12:52.414402+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-21T14:12:57.285372+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-10-21T14:11:31.371729+00:00",
+  "updated_at": "2026-10-21T14:12:57.285394+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2334,7 +2325,7 @@
     "attempt_count": 2,
     "status": "complete",
     "last_error": null,
-    "next_retry_at": "2026-10-21T14:17:07.576802+00:00",
+    "next_retry_at": null,
     "run_id": 39610928222,
     "processed_run_id": 39606173243,
     "provider_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
@@ -2383,7 +2374,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 39614669037,
     "processed_run_id": null,
     "provider_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
     "failure_fingerprint": null,
