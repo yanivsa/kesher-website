@@ -2675,6 +2675,20 @@
       "previous_run_id": 39405710776,
       "observed_active_run_id": 39583987116,
       "dispatched_at": "2026-10-21T10:20:52.052163+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-20",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "potty-training-age-4",
+        "target_content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
+        "target_item_id": "video-20261021-161554-1771eb3dc2-a2"
+      },
+      "intent_at": "2026-10-21T13:45:59.353831+00:00",
+      "status": "intent",
+      "previous_run_id": 39606173243,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -2698,5 +2712,21 @@
     "Deploy to Cloudflare Pages:39603062014",
     "Kesher Daily NotebookLM Video Overview:39603967175",
     "Kesher Daily NotebookLM Video Overview:39606173243"
-  ]
+  ],
+  "interventions": {
+    "v5|potty-training-age-4|1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6|long_video": {
+      "pipeline_id": "v5",
+      "slug": "potty-training-age-4",
+      "content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-10-21T16",
+      "last_fingerprint": "f7b1a2d2f992b7324da8fb9cd63ccbe77d364a589190c53fb2d533cb7d234966",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-21T13:45:59.353831+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
