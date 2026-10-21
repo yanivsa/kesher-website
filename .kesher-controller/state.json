@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-20",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -18,18 +18,20 @@
     "last_dispatch_at": "2026-10-20T09:22:11.246685+00:00",
     "pr_number": 1162,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1162",
-    "current_pr_head_sha": "5a936fff6f08ab9d71ebf8d54b9c200f1181beb7",
+    "current_pr_head_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362",
     "jules_head_sha": "2958e889816417379ab35486b1e9736fb11a9c12",
     "normalization_slot": "2026-10-20",
     "normalization_dispatched_at": "2026-10-21T10:06:18.535028+00:00",
     "normalization_run_id": 39582095354,
-    "normalization_drift_count": 2,
-    "last_normalization_drift_head_sha": "5a936fff6f08ab9d71ebf8d54b9c200f1181beb7",
+    "normalization_drift_count": 3,
+    "last_normalization_drift_head_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 39415792304,
     "last_error": null,
-    "normalized_head_sha": "5a936fff6f08ab9d71ebf8d54b9c200f1181beb7"
+    "normalized_head_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362",
+    "image_head_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362",
+    "merge_candidate_sha": "99e4b19eff0a3b82801bd8e302ac5c24eb0f3362"
   },
   "backlog": [
     {
@@ -1419,15 +1421,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T04:45:52.959841+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T04:50:49.796399+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2323,33 +2316,32 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-21T12:46:15.735728+00:00",
+      "from": "blocked",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-21T12:41:22.299045+00:00",
+  "updated_at": "2026-10-21T12:46:15.735746+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
-    "last_error": {
-      "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 39405710776 completed with conclusion=success but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-10-21T10:12:49.332735+00:00",
-      "at": "2026-10-21T10:07:49.332755+00:00"
-    },
+    "last_error": null,
     "next_retry_at": null,
     "processed_run_id": 39405710776,
-    "provider_id": "Local",
-    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 1,
+    "provider_id": "Pexels",
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "IMAGE_OUTPUT_MISSING": 1
     },
     "last_dispatch_at": "2026-10-21T10:21:27.261683+00:00",
-    "artifact_sha256": "9c44be9a246055e9e9a151c3089ab1a6cbd222bfc279f568c9ddaf86fe774dfc",
-    "source_id": "local://public/images/fallback/relocation/family_relocation_transition.jpg",
+    "artifact_sha256": "ca724c5da858970ede1acbbc333a9f01e7f9a3b65903fc26335f1eeaff7162e6",
+    "source_id": "https://www.pexels.com/photo/a-child-washing-his-hands-8432199/",
     "evidence_rebind_head_sha": "11d392e386b15c2bd2e93ad9558ee72b2c5a4e91",
     "evidence_rebind_dispatched_at": "2026-10-20T11:31:13.232060+00:00",
-    "run_id": 39405710776,
     "last_run_conclusion": "success",
     "last_failed_run_id": 39405710776
   },
@@ -2673,6 +2665,18 @@
       "previous_run_id": 39405710776,
       "observed_active_run_id": 39583987116,
       "dispatched_at": "2026-10-21T10:20:52.052163+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-20",
+      "inputs": {
+        "pr_number": "1162",
+        "slot": "2026-10-20"
+      },
+      "intent_at": "2026-10-21T12:45:49.616410+00:00",
+      "status": "intent",
+      "previous_run_id": 39415792304,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -2691,10 +2695,5 @@
     "source_slug": null,
     "slot": "2026-10-20"
   },
-  "last_error": {
-    "stage": "controller",
-    "code": "image exhausted 3 total controller dispatch attempts",
-    "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-21T12:41:22.299013+00:00"
-  }
+  "last_error": null
 }
