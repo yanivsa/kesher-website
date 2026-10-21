@@ -1444,18 +1444,9 @@
     "stage": "image",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
     "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-21T17:01:53.990989+00:00"
+    "at": "2026-10-21T17:06:33.170186+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-21T09:40:50.322281+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
-      "details": {
-        "message": "Article PR head mutated repeatedly (6 times) after trusted stages; branch quiescence failed"
-      }
-    },
     {
       "at": "2026-10-21T09:45:57.111067+00:00",
       "from": "blocked",
@@ -2302,9 +2293,18 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-21T17:06:33.170201+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-21T17:01:53.991015+00:00",
+  "updated_at": "2026-10-21T17:06:33.170209+00:00",
   "image": {
     "attempt_count": 3,
     "status": "exhausted",
