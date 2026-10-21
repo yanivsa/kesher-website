@@ -1,101 +1,23 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-21",
-  "status": "article_deploying",
+  "cycle": "2026-10-22",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
     "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 39669600699,
-    "processed_run_id": 39621436540,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 1,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-10-21T20:21:32.939293+00:00",
-    "watchdog": {
-      "identity": "2026-10-21",
-      "session_id": null,
-      "last_progress_at": "2026-10-21T14:57:33+00:00",
-      "last_fingerprint": null,
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "pr_number": 1170,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1170",
-    "current_pr_head_sha": "07ff8623b6b76c0f38713540ceb5c2251e7c68a8",
-    "jules_head_sha": "a0186c8bc8059d1fd5dd8e889fb91388226d812e",
-    "normalization_slot": "2026-10-21",
-    "normalization_dispatched_at": "2026-10-21T15:20:36.247267+00:00",
-    "normalization_run_id": 39624748417,
-    "normalization_drift_count": 2,
-    "last_normalization_drift_head_sha": "07ff8623b6b76c0f38713540ceb5c2251e7c68a8",
-    "merge_dispatch_count": 0,
-    "merge_dispatch_at": null,
-    "merge_run_id": 39668143653,
-    "last_run_conclusion": "success",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-10-21",
-      "outcome": "PR_CREATED",
-      "retryable": false,
-      "message": "",
-      "session_id": "sessions/4424829820432298274",
-      "pr_url": "https://github.com/yanivsa/kesher-website/pull/1170",
-      "github_run_id": "39621436540",
-      "completed_at": "2026-10-21T15:17:19.303083+00:00",
-      "owner_required_primary_keyword": "עצירות בגמילה מחיתולים",
-      "owner_topic_brief_sha256": "03e9cabb22567001373ab3326cef75c0baf6e96b724dda421ae6ab123d1cb0eb"
-    },
-    "last_jules_session_id": "sessions/4424829820432298274",
-    "normalized_head_sha": "07ff8623b6b76c0f38713540ceb5c2251e7c68a8",
-    "slug": "potty-training-constipation",
-    "title": "עצירות בגמילה מחיתולים: למה הילד מתאפק ומה אפשר לעשות?",
-    "url": "https://kesher.saharoni.com/blog/potty-training-constipation",
-    "published_date": "2026-10-21",
-    "quality_content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a",
-    "reconciled_existing_article": true,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-10-21T20:56:58.908930+00:00",
-    "quality_violations": [],
-    "live": false,
-    "last_deploy_dispatch_at": "2026-10-21T20:57:04.681321+00:00",
-    "next_deploy_retry_at": "2026-10-21T21:01:56.062778+00:00"
+    "deploy_attempts": 0,
+    "normalization_status": "pending"
   },
   "backlog": [
-    {
-      "cycle": "2026-09-08",
-      "status": "blocked",
-      "article": {
-        "attempt_count": 1,
-        "status": "running",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 34166172381,
-        "processed_run_id": null,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "attempts": 1,
-        "deploy_attempts": 0,
-        "normalization_status": "complete",
-        "last_dispatch_at": "2026-09-07T22:17:41.196902+00:00",
-        "pr_number": 730,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/730",
-        "normalization_slot": "2026-09-08",
-        "normalization_dispatched_at": "2026-09-08T17:51:57.814260+00:00"
-      },
-      "archived_at": "2026-09-08T23:00:15.681638+00:00",
-      "media": {}
-    },
     {
       "cycle": "2026-09-10",
       "status": "short_watchdog_recovery",
@@ -1470,172 +1392,124 @@
       },
       "quarantined": true,
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-19"
+    },
+    {
+      "cycle": "2026-10-21",
+      "status": "article_deploying",
+      "exact_slug": "potty-training-constipation",
+      "content_sha256": null,
+      "article": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 39669600699,
+        "processed_run_id": 39621436540,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 0,
+        "deploy_attempts": 1,
+        "normalization_status": "complete",
+        "last_dispatch_at": "2026-10-21T20:21:32.939293+00:00",
+        "watchdog": {
+          "identity": "2026-10-21",
+          "session_id": null,
+          "last_progress_at": "2026-10-21T14:57:33+00:00",
+          "last_fingerprint": null,
+          "last_nudge_at": null,
+          "nudge_count": 0,
+          "worker_restart_count": 0,
+          "last_restart_at": null,
+          "last_restart_run_id": null
+        },
+        "pr_number": 1170,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1170",
+        "current_pr_head_sha": "07ff8623b6b76c0f38713540ceb5c2251e7c68a8",
+        "jules_head_sha": "a0186c8bc8059d1fd5dd8e889fb91388226d812e",
+        "normalization_slot": "2026-10-21",
+        "normalization_dispatched_at": "2026-10-21T15:20:36.247267+00:00",
+        "normalization_run_id": 39624748417,
+        "normalization_drift_count": 2,
+        "last_normalization_drift_head_sha": "07ff8623b6b76c0f38713540ceb5c2251e7c68a8",
+        "merge_dispatch_count": 0,
+        "merge_dispatch_at": null,
+        "merge_run_id": 39668143653,
+        "last_run_conclusion": "success",
+        "last_worker_result": {
+          "schema_version": 1,
+          "slot": "2026-10-21",
+          "outcome": "PR_CREATED",
+          "retryable": false,
+          "message": "",
+          "session_id": "sessions/4424829820432298274",
+          "pr_url": "https://github.com/yanivsa/kesher-website/pull/1170",
+          "github_run_id": "39621436540",
+          "completed_at": "2026-10-21T15:17:19.303083+00:00",
+          "owner_required_primary_keyword": "עצירות בגמילה מחיתולים",
+          "owner_topic_brief_sha256": "03e9cabb22567001373ab3326cef75c0baf6e96b724dda421ae6ab123d1cb0eb"
+        },
+        "last_jules_session_id": "sessions/4424829820432298274",
+        "normalized_head_sha": "07ff8623b6b76c0f38713540ceb5c2251e7c68a8",
+        "slug": "potty-training-constipation",
+        "title": "עצירות בגמילה מחיתולים: למה הילד מתאפק ומה אפשר לעשות?",
+        "url": "https://kesher.saharoni.com/blog/potty-training-constipation",
+        "published_date": "2026-10-21",
+        "quality_content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a",
+        "reconciled_existing_article": true,
+        "quality_status": "passed",
+        "quality_checked_at": "2026-10-21T20:56:58.908930+00:00",
+        "quality_violations": [],
+        "live": false,
+        "last_deploy_dispatch_at": "2026-10-21T20:57:04.681321+00:00",
+        "next_deploy_retry_at": "2026-10-21T21:01:56.062778+00:00"
+      },
+      "long_video": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": null,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {}
+      },
+      "short": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": null,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {}
+      },
+      "media_identities": {
+        "long_video_id": null,
+        "short_video_id": null
+      },
+      "counters": {
+        "article_attempts": 0,
+        "article_generation_attempts": 0,
+        "merge_dispatch_count": 0,
+        "deploy_attempts": 1,
+        "long_attempts": 0,
+        "short_attempts": 0
+      },
+      "terminal_state": {
+        "blocked": false,
+        "article_exhausted": false
+      },
+      "archived_at": "2026-10-21T21:00:47.513632+00:00"
     }
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-10-21T13:13:55.855612+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 1
-      }
-    },
-    {
-      "at": "2026-10-21T13:16:19.453922+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-21T13:16:21.300559+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-10-21T13:21:30.922763+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-21T13:21:33.152995+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-10-21T13:23:33.424394+00:00",
-      "from": "long_video_running",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261021-161554-1771eb3dc2-a2",
-        "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5"
-      }
-    },
-    {
-      "at": "2026-10-21T13:26:00.544024+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261021-161554-1771eb3dc2-a2",
-        "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5"
-      }
-    },
-    {
-      "at": "2026-10-21T13:32:01.073281+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261021-161554-1771eb3dc2-a2",
-        "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5"
-      }
-    },
-    {
-      "at": "2026-10-21T13:36:20.493144+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261021-161554-1771eb3dc2-a2",
-        "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5"
-      }
-    },
-    {
-      "at": "2026-10-21T13:41:02.860029+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261021-161554-1771eb3dc2-a2",
-        "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5"
-      }
-    },
-    {
-      "at": "2026-10-21T13:46:27.527916+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_recovery",
-      "reason": "long-form provider stalled; resumed the same durable provider identity",
-      "details": {
-        "item_id": "video-20261021-161554-1771eb3dc2-a2",
-        "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
-        "slug": "potty-training-age-4",
-        "content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6"
-      }
-    },
-    {
-      "at": "2026-10-21T13:56:32.374892+00:00",
-      "from": "long_video_watchdog_recovery",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261021-161554-1771eb3dc2-a2",
-        "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5"
-      }
-    },
-    {
-      "at": "2026-10-21T14:01:38.342519+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261021-161554-1771eb3dc2-a2",
-        "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5"
-      }
-    },
-    {
-      "at": "2026-10-21T14:06:18.377877+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261021-161554-1771eb3dc2-a2",
-        "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5"
-      }
-    },
-    {
-      "at": "2026-10-21T14:11:22.227939+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-21T14:11:23.134829+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-21T14:11:31.371724+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
-    {
-      "at": "2026-10-21T14:12:51.103983+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-21T14:12:52.414402+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-21T14:12:57.285372+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "Short derive workflow already active"
-    },
     {
       "at": "2026-10-21T14:16:11.082484+00:00",
       "from": "short_running",
@@ -2348,28 +2222,38 @@
         "http_status": 404,
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-10-21T21:00:47.513660+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-10-21T21:00:47.513664+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-10-21T21:00:47.514583+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-10-21T20:57:04.681371+00:00",
+  "updated_at": "2026-10-21T21:00:47.513649+00:00",
   "image": {
-    "attempt_count": 3,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "processed_run_id": 39634808317,
-    "provider_id": "LocalEditorial",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "IMAGE_WORKFLOW_FAILED": 3
-    },
-    "last_dispatch_at": "2026-10-21T16:26:36.909577+00:00",
-    "last_run_conclusion": "failure",
-    "last_failed_run_id": 39634808317,
-    "artifact_sha256": "bca3be91dc3ea3f8ca1df27fb5059a866855187f6f1f659970976c7ce31edf05",
-    "source_id": "local-editorial://potty-training-constipation/6",
-    "run_id": 39634808317,
-    "image_path": "/images/generated/blog/potty-training-constipation.png"
+    "failure_count_by_type": {}
   },
   "long_video": {
     "attempt_count": 0,
@@ -2674,42 +2558,5 @@
     "requested_at": "2026-10-19T10:06:51.051674+00:00",
     "publication_slot": "2026-10-21",
     "claimed_at": "2026-10-21T14:57:31.411393+00:00"
-  },
-  "pending_dispatches": {
-    "deploy.yml": {
-      "workflow": "deploy.yml",
-      "cycle": "2026-10-21",
-      "inputs": {},
-      "intent_at": "2026-10-21T20:56:56.062778+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 39674709129,
-      "dispatch_head_sha": "2790191a68304ba106b0c1a406a1387bc6b7695e",
-      "dispatched_at": "2026-10-21T20:56:56.062778+00:00"
-    }
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/potty-training-constipation",
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
-  },
-  "last_child_notification": {
-    "workflow": "Kesher Article Generation",
-    "run_id": 39669600699,
-    "conclusion": "success",
-    "source_slug": null,
-    "slot": "2026-10-21"
-  },
-  "processed_child_notifications": [
-    "Kesher Article Generation:39621436540",
-    "Kesher Normalize Article PR:39624748417",
-    "Kesher Trusted Article Image:39666969397",
-    "Auto-merge Kesher article PRs:39667192585",
-    "Auto-merge Kesher article PRs:39668143653",
-    "Kesher Article Generation:39669600699"
-  ]
+  }
 }
