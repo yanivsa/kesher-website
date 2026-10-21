@@ -2338,7 +2338,8 @@
     "last_run_conclusion": "failure",
     "last_failed_run_id": 39634808317,
     "artifact_sha256": "bca3be91dc3ea3f8ca1df27fb5059a866855187f6f1f659970976c7ce31edf05",
-    "source_id": "local-editorial://potty-training-constipation/6"
+    "source_id": "local-editorial://potty-training-constipation/6",
+    "run_id": 39634808317
   },
   "long_video": {
     "attempt_count": 0,
