@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-21",
-  "status": "blocked",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 2,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39669600699,
@@ -13,7 +13,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 2,
+    "attempts": 0,
     "deploy_attempts": 0,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-21T20:21:32.939293+00:00",
@@ -55,7 +55,17 @@
       "owner_topic_brief_sha256": "03e9cabb22567001373ab3326cef75c0baf6e96b724dda421ae6ab123d1cb0eb"
     },
     "last_jules_session_id": "sessions/4424829820432298274",
-    "normalized_head_sha": "07ff8623b6b76c0f38713540ceb5c2251e7c68a8"
+    "normalized_head_sha": "07ff8623b6b76c0f38713540ceb5c2251e7c68a8",
+    "slug": "potty-training-constipation",
+    "title": "עצירות בגמילה מחיתולים: למה הילד מתאפק ומה אפשר לעשות?",
+    "url": "https://kesher.saharoni.com/blog/potty-training-constipation",
+    "published_date": "2026-10-21",
+    "quality_content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-10-21T20:56:58.908930+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -1460,12 +1470,7 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-19"
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_ATTEMPTS_EXHAUSTED",
-    "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-21T20:56:16.553099+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-21T13:13:50.334111+00:00",
@@ -2342,7 +2347,7 @@
   "updated_at": "2026-10-21T20:56:16.553119+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "exhausted",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": 39634808317,
@@ -2357,7 +2362,8 @@
     "last_failed_run_id": 39634808317,
     "artifact_sha256": "bca3be91dc3ea3f8ca1df27fb5059a866855187f6f1f659970976c7ce31edf05",
     "source_id": "local-editorial://potty-training-constipation/6",
-    "run_id": 39634808317
+    "run_id": 39634808317,
+    "image_path": "/images/generated/blog/potty-training-constipation.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2663,7 +2669,18 @@
     "publication_slot": "2026-10-21",
     "claimed_at": "2026-10-21T14:57:31.411393+00:00"
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-10-21",
+      "inputs": {},
+      "intent_at": "2026-10-21T20:56:56.062778+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "2790191a68304ba106b0c1a406a1387bc6b7695e"
+    }
+  },
   "deliverables": {
     "article_url": null,
     "overview_youtube_url": null,
