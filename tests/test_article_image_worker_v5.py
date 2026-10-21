@@ -55,7 +55,7 @@ class ArticleImageWorkerV5Tests(unittest.TestCase):
         self.assertEqual(candidate.provider, "LocalEditorial")
         self.assertEqual(candidate.attempts, ["local-editorial"])
         self.assertRegex(candidate.source_url, r"^local-editorial://potty-training-constipation/[0-7]$")
-        self.assertEqual(candidate.ext, "png")
+        self.assertEqual(candidate.extension, "png")
         width, height, ext = self.worker.core.validate_candidate(candidate.data)
         self.assertEqual((width, height, ext), (1200, 675, "png"))
         self.assertGreaterEqual(len(candidate.visual_match), 24)
