@@ -45,7 +45,7 @@
     "last_deploy_dispatch_at": "2026-10-21T12:52:03.401868+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39603062014,
-    "live_verified_at": "2026-10-21T13:15:52.054905+00:00"
+    "live_verified_at": "2026-10-21T13:16:19.453893+00:00"
   },
   "backlog": [
     {
@@ -1435,24 +1435,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T05:45:46.778336+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T05:50:48.772700+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T05:55:51.312138+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2315,9 +2297,21 @@
         "operation": "full",
         "resume": 1
       }
+    },
+    {
+      "at": "2026-10-21T13:16:19.453922+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-21T13:16:21.300559+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-10-21T13:13:55.855621+00:00",
+  "updated_at": "2026-10-21T13:16:21.300578+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2342,10 +2336,10 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "rejected",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 39603967175,
+    "run_id": 39606173243,
     "processed_run_id": 39603967175,
     "provider_id": null,
     "failure_fingerprint": null,
