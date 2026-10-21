@@ -2327,7 +2327,7 @@
   "updated_at": "2026-10-21T10:16:03.265002+00:00",
   "image": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 39405710776 completed with conclusion=success but no validated image is present",
@@ -2667,11 +2667,10 @@
       "inputs": {
         "pr_number": "1162"
       },
-      "intent_at": "2026-10-21T10:15:46.736443+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-21T10:20:52.052163+00:00",
+      "status": "intent",
       "previous_run_id": 39405710776,
-      "observed_active_run_id": 39583317136,
-      "dispatched_at": "2026-10-21T10:15:46.736443+00:00"
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
