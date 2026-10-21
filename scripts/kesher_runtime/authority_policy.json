@@ -1269,7 +1269,7 @@
         "status_write",
         "workflow_dispatch"
       ],
-      "definition_sha256": "760bcbdc163ffa1589c91d397c4cfa7ecf774e9a0619a81f380ff22599c2d72f",
+      "definition_sha256": "c2516eb8821600f7f236ae781d2ca8b24b5b595ae436fc8d38095ffab4579dd6",
       "resources": [
         "github.dispatch",
         "github.pull_requests",
