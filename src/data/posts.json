@@ -18,7 +18,26 @@
     "serviceUrl": "/services/parenting",
     "serviceLabel": "הדרכת הורים",
     "directAnswer": "עצירות והתאפקות קורות כי השחרור בשירותים מרגיש שונה מהחיתול ולפעמים מפחיד. אפשר להקל על ידי הרגעת הלחץ, הצבת שרפרף לתמיכה, ואפילו מתן חיתול לקקי באופן זמני. אם יש כאב או שהילד מתאפק ימים, חובה לפנות לרופא.",
-    "evidence": [],
+    "evidence": [
+      {
+        "title": "גמילה מחיתולים",
+        "source": "משרד הבריאות",
+        "url": "https://me.health.gov.il/parenting/learn-more/growth-and-development/toilet-training/",
+        "note": "משרד הבריאות ממליץ על תהליך תומך ללא מאבקי כוח או ענישה, ומציין שכאב ביציאה או עצירות עם צואה קשה ותדירות נמוכה מחייבים התייעצות רפואית."
+      },
+      {
+        "title": "Symptoms & Causes of Constipation in Children",
+        "source": "NIDDK",
+        "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/constipation-children/symptoms-causes",
+        "note": "NIDDK מתאר התאפקות כגורם שכיח לעצירות בילדים ואת המעגל שבו שהיית הצואה במעי הופכת אותה לקשה, יבשה וקשה יותר למעבר."
+      },
+      {
+        "title": "Constipation in Children",
+        "source": "HealthyChildren.org (American Academy of Pediatrics)",
+        "url": "https://www.healthychildren.org/English/health-issues/conditions/abdominal/Pages/constipation.aspx",
+        "note": "האקדמיה האמריקאית לרפואת ילדים מתארת עצירות תפקודית והתאפקות, את חשיבות תנוחת הישיבה ואת הצורך להתייעץ עם רופא לפני טיפול תרופתי."
+      }
+    ],
     "controllerManaged": true,
     "image": "/images/generated/blog/potty-training-constipation.png",
     "imageAlt": "איור עריכתי מקומי של הורה וילד בחדר רחצה ביתי, לצד אסלה ושרפרף, באווירה רגועה ותומכת.",
