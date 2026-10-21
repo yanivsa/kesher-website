@@ -1444,21 +1444,9 @@
     "stage": "image",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
     "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-21T17:31:25.920466+00:00"
+    "at": "2026-10-21T17:36:43.307306+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-21T10:07:49.332763+00:00",
-      "from": "article_normalizing",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 39405710776 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-10-21T10:12:49.332735+00:00",
-        "failure_streak": 1,
-        "run_id": 39405710776
-      }
-    },
     {
       "at": "2026-10-21T10:10:56.054665+00:00",
       "from": "image_retry_wait",
@@ -2301,9 +2289,18 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-21T17:36:43.307321+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-21T17:31:25.920486+00:00",
+  "updated_at": "2026-10-21T17:36:43.307327+00:00",
   "image": {
     "attempt_count": 3,
     "status": "exhausted",
