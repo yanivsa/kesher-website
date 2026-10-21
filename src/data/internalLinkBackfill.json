@@ -84,9 +84,9 @@
   },
   {
     "source": "how-to-identify-a-gifted-child-parents-guide",
-    "afterHeadingIncludes": "התפתחות לא אחידה כמפתח להבנה",
+    "afterHeadingIncludes": "אילו סימנים יכולים לגרום להורים לשאול על מחוננות?",
     "items": [
-      {"target":"gifted-children-social-difficulties","anchor":"קשיים חברתיים אצל ילדים מחוננים","before":"מחוננות אינה מבטיחה קלות חברתית; במקרים מסוימים חשוב להכיר ","after":" בלי להניח שהם נובעים מהמחוננות עצמה."},
+      {"target":"gifted-children-social-difficulties","anchor":"ילדים מחוננים וקשיים חברתיים","before":"מחוננות אינה מבטיחה קלות חברתית; במקרים מסוימים חשוב להכיר ","after":" בלי להניח שהם נובעים מהמחוננות עצמה."},
       {"target":"gifted-children-perfectionism-tears","anchor":"פרפקציוניזם אצל ילדים מחוננים","before":"עוצמות ורגישות יכולות להופיע גם כ", "after":" כאשר הפחד לטעות מתחיל לשתק."},
       {"target":"gifted-adhd-executive-functions-struggle","anchor":"מחוננות וקשיים בתפקודים ניהוליים","before":"וכשיכולת גבוהה מתקיימת לצד קושי בהתארגנות, כדאי להבין את השילוב של ","after":"."}
     ]
