@@ -1419,15 +1419,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T03:25:47.917134+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T03:30:53.761053+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2323,9 +2314,18 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-21T11:20:58.657531+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "image exhausted 3 total controller dispatch attempts",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-21T11:16:07.563092+00:00",
+  "updated_at": "2026-10-21T11:20:58.657537+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2695,6 +2695,6 @@
     "stage": "controller",
     "code": "image exhausted 3 total controller dispatch attempts",
     "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-21T11:16:07.563073+00:00"
+    "at": "2026-10-21T11:20:58.657516+00:00"
   }
 }
