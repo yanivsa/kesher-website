@@ -2374,7 +2374,15 @@
     "last_dispatch_at": "2026-10-21T14:11:31.371704+00:00",
     "artifact_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
     "source_id": "6238aa21-70ae-4f4b-a4b2-785671ddcc1b",
-    "adopted_from_long_item_id": "video-20261021-161554-1771eb3dc2-a2"
+    "adopted_from_long_item_id": "video-20261021-161554-1771eb3dc2-a2",
+    "watchdog": {
+      "identity": "short:potty-training-age-4:1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6:video-20261021-171339-1771eb3dc2",
+      "hard_started_at": "2026-10-21T14:13:47.409489+00:00",
+      "last_progress_at": "2026-10-21T14:20:36.634763+00:00",
+      "last_fingerprint": "ed90195b43aad6c2753f734af05428c15f6f16d3112741ecbbb1f356b695e939",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
