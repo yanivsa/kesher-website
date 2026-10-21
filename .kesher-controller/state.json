@@ -1523,24 +1523,9 @@
     "stage": "controller",
     "code": "IDEA_SLOT_MISMATCH",
     "message": "IDEA_SLOT_MISMATCH",
-    "at": "2026-10-21T23:26:22.179982+00:00"
+    "at": "2026-10-21T23:31:16.398409+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-21T14:51:03.615460+00:00",
-      "from": "complete",
-      "to": "complete",
-      "reason": "backlog_quarantined_ambiguous_identity",
-      "details": {
-        "cycle": "2026-10-19",
-        "candidate_slugs": [
-          "pacifier-weaning",
-          "potty-training-toddlers",
-          "transition-from-caregiver-to-daycare",
-          "toddler-bed-transition"
-        ]
-      }
-    },
     {
       "at": "2026-10-21T14:57:00.568467+00:00",
       "from": null,
@@ -2423,9 +2408,18 @@
       "details": {
         "message": "IDEA_SLOT_MISMATCH"
       }
+    },
+    {
+      "at": "2026-10-21T23:31:16.398419+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IDEA_SLOT_MISMATCH",
+      "details": {
+        "message": "IDEA_SLOT_MISMATCH"
+      }
     }
   ],
-  "updated_at": "2026-10-21T23:26:22.180002+00:00",
+  "updated_at": "2026-10-21T23:31:16.398426+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
