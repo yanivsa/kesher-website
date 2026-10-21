@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-20",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "next_retry_at": null,
     "run_id": 39400158681,
     "processed_run_id": null,
@@ -45,7 +45,7 @@
     "last_deploy_dispatch_at": "2026-10-21T12:52:03.401868+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39603062014,
-    "live_verified_at": "2026-10-21T14:50:42.573687+00:00"
+    "live_verified_at": "2026-10-21T14:50:57.422625+00:00"
   },
   "backlog": [
     {
@@ -1435,33 +1435,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T07:40:48.579492+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T07:46:08.297319+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
-      "at": "2026-10-21T07:51:07.854044+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T07:55:43.595849+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2288,9 +2261,27 @@
         "item_id": "video-20261021-171339-1771eb3dc2",
         "long_item_id": "video-20261021-161554-1771eb3dc2-a2"
       }
+    },
+    {
+      "at": "2026-10-21T14:50:57.422653+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-21T14:50:57.853922+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-21T14:50:58.313198+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-21T14:41:51.508656+00:00",
+  "updated_at": "2026-10-21T14:50:58.313213+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2363,19 +2354,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39619103611,
     "processed_run_id": null,
-    "provider_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
+    "provider_id": "4a04f34b-d2ab-432b-b436-05c420a1986b",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-21T14:41:51.508629+00:00",
-    "artifact_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
-    "source_id": "6238aa21-70ae-4f4b-a4b2-785671ddcc1b",
-    "adopted_from_long_item_id": "video-20261021-161554-1771eb3dc2-a2",
+    "artifact_id": "4a04f34b-d2ab-432b-b436-05c420a1986b",
+    "source_id": "c79979ad-869f-4a67-a720-237a7e8470ae",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:potty-training-age-4:1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6:video-20261021-171339-1771eb3dc2",
       "hard_started_at": "2026-10-21T14:13:47.409489+00:00",
@@ -2383,7 +2374,125 @@
       "last_fingerprint": "ed90195b43aad6c2753f734af05428c15f6f16d3112741ecbbb1f356b695e939",
       "recovery_count": 1,
       "last_recovery_at": "2026-10-21T14:41:23.091620+00:00"
-    }
+    },
+    "source": {
+      "id": "potty-training-age-4",
+      "slug": "potty-training-age-4",
+      "title": "גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק?",
+      "date": "2026-10-20",
+      "category": "הדרכת הורים",
+      "subcategory": "גמילה מחיתולים",
+      "excerpt": "גמילה מחיתולים בגיל 4: איך מבדילים בין פספוסים זמניים לקושי שמצריך בדיקה, למה חשוב לשלול עצירות, ואיך לעזור בלי לחץ או מאבקי כוח.",
+      "canonical_url": "https://kesher.saharoni.com/blog/potty-training-age-4",
+      "content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6",
+      "video_title": "גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק?",
+      "short_title": "גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק?",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק?",
+        "description": "גמילה מחיתולים בגיל 4: איך מבדילים בין פספוסים זמניים לקושי שמצריך בדיקה, למה חשוב לשלול עצירות, ואיך לעזור בלי לחץ או מאבקי כוח.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/potty-training-age-4\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "גמילה מחיתולים"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק?",
+        "description": "גמילה מחיתולים בגיל 4: איך מבדילים בין פספוסים זמניים לקושי שמצריך בדיקה, למה חשוב לשלול עצירות, ואיך לעזור בלי לחץ או מאבקי כוח.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/potty-training-age-4\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "גמילה מחיתולים"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "4a04f34b-d2ab-432b-b436-05c420a1986b",
+    "raw_sha256": "d73c5c9ef1111d9e2fcea30f2a0beaf634cba6609587974a04e64d55fcc069e8",
+    "final_sha256": "3e07f9dd092daf2f34a6ae139514fd92708bcf2082e072aac74c320ee6719430",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 76.0,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 76.0,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "6238aa21-70ae-4f4b-a4b2-785671ddcc1b",
+      "task_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
+      "artifact_id": "280c90c3-0251-4418-9e2d-4fe9e62cecf5",
+      "raw_sha256": "9b93383ffedabd40bd872a0131038fe3662bf617d7112d32783e0b695c46c382"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 76.0,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "d73c5c9ef1111d9e2fcea30f2a0beaf634cba6609587974a04e64d55fcc069e8",
+      "final_sha256": "3e07f9dd092daf2f34a6ae139514fd92708bcf2082e072aac74c320ee6719430",
+      "raw_audio_sha256": "a28ff1c9a52724c159fa4203d04543125a1293a9505e31d5ffb83b9c2594109d",
+      "final_audio_sha256": "a28ff1c9a52724c159fa4203d04543125a1293a9505e31d5ffb83b9c2594109d",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 76.068571
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 76.068571
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "3e07f9dd092daf2f34a6ae139514fd92708bcf2082e072aac74c320ee6719430",
+      "raw_sha256": "d73c5c9ef1111d9e2fcea30f2a0beaf634cba6609587974a04e64d55fcc069e8",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "56bd970989a41cc3dc5997e91c3449d179be2f895cecd766ce105a739a25fa36",
+      "source_duration_seconds": 76.0,
+      "final_duration_seconds": 76.0,
+      "start_seconds": 73.0,
+      "end_seconds": 76.0,
+      "audio_source_sha256": "d73c5c9ef1111d9e2fcea30f2a0beaf634cba6609587974a04e64d55fcc069e8"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261021-171339-1771eb3dc2",
+    "type": "article_short",
+    "youtube_id": "KJXZj8vl6Ro",
+    "youtube_url": "https://youtu.be/KJXZj8vl6Ro",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "56bd970989a41cc3dc5997e91c3449d179be2f895cecd766ce105a739a25fa36",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
