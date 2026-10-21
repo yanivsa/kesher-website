@@ -2478,21 +2478,7 @@
     "publication_slot": "2026-10-21",
     "claimed_at": "2026-10-21T14:57:31.411393+00:00"
   },
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-10-21",
-      "inputs": {
-        "slot": "2026-10-21",
-        "topic_brief": "אשכול גמילה שהסתבכה. נושא/כאב: עצירות/כאב והתאפקות סביב הגמילה. חובה להבחין בין הדרכת הורים לבין צורך רפואי, ולהמליץ לפנות לרופא כשיש כאב או עצירות מתמשכת. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: potty-training-constipation. כותרת עבודה: עצירות בגמילה מחיתולים: למה הילד מתאפק ואיך שוברים את המעגל? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לאיש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תשנה URL קיים.\n\nIdea Request ID: parenting-p1-potty-training-constipation\nRequired Primary Keyword: עצירות בגמילה מחיתולים"
-      },
-      "intent_at": "2026-10-21T14:56:58.400127+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-21T14:56:58.400127+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "deliverables": {
     "article_url": null,
     "overview_youtube_url": null,
@@ -2501,5 +2487,12 @@
     "short_portrait_verified": false,
     "short_signature_verified": false,
     "short_origin_verified": false
+  },
+  "last_child_notification": {
+    "workflow": "Kesher Article Generation",
+    "run_id": 39621436540,
+    "conclusion": "success",
+    "source_slug": null,
+    "slot": "2026-10-21"
   }
 }
