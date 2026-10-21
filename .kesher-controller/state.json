@@ -2775,19 +2775,27 @@
         "long_url": "https://youtu.be/acr4P2AvQWQ",
         "short_url": "https://youtu.be/2rXJNYGIqRA"
       }
+    },
+    {
+      "idea_id": "parenting-p1-potty-training-age-4",
+      "fingerprint": "93db88ddc3f4d4fe934c71f7cf6422570a833a85baf1b1bbde60d18746bfd32e",
+      "topic_brief": "אשכול גמילה שהסתבכה. נושא: ילד בן 4 שעדיין לא גמול או ממשיך לפספס. אות ביקוש: Google Keyword Planner 17.10, טווח 10–100 לחודש. Canonical ID נדרש: potty-training-age-4. כותרת עבודה: גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לרופא/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/רפואיים קודמים למקורות מסחריים. לשמור intent נפרד מגמילה בגיל 3, עצירות, רגרסיה ופספוסים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. אין ליצור/לשנות URL אחר; השתמש ב-ID האנגלי שצוין.",
+      "required_primary_keyword": "גמילה מחיתולים בגיל 4",
+      "run_now": true,
+      "status": "complete",
+      "requested_at": "2026-10-19T10:05:24.453745+00:00",
+      "publication_slot": "2026-10-20",
+      "claimed_at": "2026-10-20T09:22:08.208147+00:00",
+      "completed_at": "2026-10-21T14:51:04.704345+00:00",
+      "outputs": {
+        "slug": "potty-training-age-4",
+        "article_url": "https://kesher.saharoni.com/blog/potty-training-age-4",
+        "long_url": "https://youtu.be/pgMZAkR6rDY",
+        "short_url": "https://youtu.be/KJXZj8vl6Ro"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "parenting-p1-potty-training-age-4",
-    "fingerprint": "93db88ddc3f4d4fe934c71f7cf6422570a833a85baf1b1bbde60d18746bfd32e",
-    "topic_brief": "אשכול גמילה שהסתבכה. נושא: ילד בן 4 שעדיין לא גמול או ממשיך לפספס. אות ביקוש: Google Keyword Planner 17.10, טווח 10–100 לחודש. Canonical ID נדרש: potty-training-age-4. כותרת עבודה: גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לרופא/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/רפואיים קודמים למקורות מסחריים. לשמור intent נפרד מגמילה בגיל 3, עצירות, רגרסיה ופספוסים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. אין ליצור/לשנות URL אחר; השתמש ב-ID האנגלי שצוין.",
-    "required_primary_keyword": "גמילה מחיתולים בגיל 4",
-    "run_now": true,
-    "status": "claimed",
-    "requested_at": "2026-10-19T10:05:24.453745+00:00",
-    "publication_slot": "2026-10-20",
-    "claimed_at": "2026-10-20T09:22:08.208147+00:00"
-  },
+  "active_idea": null,
   "pending_dispatches": {
     "kesher-article-generation.yml": {
       "workflow": "kesher-article-generation.yml",
