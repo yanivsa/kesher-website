@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-20",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1435,15 +1435,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T05:00:44.294809+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T05:05:55.262813+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2334,9 +2325,19 @@
       "from": "article_deploying",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-21T12:58:40.736437+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-21T12:58:32.222807+00:00",
+  "updated_at": "2026-10-21T12:58:40.736448+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2360,8 +2361,8 @@
     "image_path": "/images/generated/blog/potty-training-age-4.jpg"
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2370,7 +2371,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-10-21T12:58:40.736422+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
@@ -2690,9 +2693,10 @@
         "target_content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6"
       },
       "intent_at": "2026-10-21T12:57:56.323073+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39603967175,
+      "dispatched_at": "2026-10-21T12:57:56.323073+00:00"
     }
   },
   "deliverables": {
@@ -2711,18 +2715,5 @@
     "source_slug": null,
     "slot": "2026-10-20"
   },
-  "last_error": null,
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true
-  }
+  "last_error": null
 }
