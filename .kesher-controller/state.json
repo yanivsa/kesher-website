@@ -2585,5 +2585,16 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {}
+  "pending_dispatches": {
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-10-22",
+      "inputs": {},
+      "intent_at": "2026-10-21T21:15:49.639360+00:00",
+      "status": "intent",
+      "previous_run_id": 39676027229,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "2790191a68304ba106b0c1a406a1387bc6b7695e"
+    }
+  }
 }
