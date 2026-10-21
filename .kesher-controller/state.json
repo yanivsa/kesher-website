@@ -1,14 +1,14 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-21",
-  "status": "article_pr_open",
+  "status": "article_result_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-21T20:16:04.121733+00:00",
     "run_id": 39621436540,
-    "processed_run_id": null,
+    "processed_run_id": 39621436540,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
@@ -42,7 +42,22 @@
     "normalized_head_sha": "4b10b7467fdf0b054178327253b132a0baf95c1c",
     "image_head_sha": "4b10b7467fdf0b054178327253b132a0baf95c1c",
     "merge_candidate_sha": "4b10b7467fdf0b054178327253b132a0baf95c1c",
-    "merge_run_id": 39668143653
+    "merge_run_id": 39668143653,
+    "last_run_conclusion": "success",
+    "last_worker_result": {
+      "schema_version": 1,
+      "slot": "2026-10-21",
+      "outcome": "PR_CREATED",
+      "retryable": false,
+      "message": "",
+      "session_id": "sessions/4424829820432298274",
+      "pr_url": "https://github.com/yanivsa/kesher-website/pull/1170",
+      "github_run_id": "39621436540",
+      "completed_at": "2026-10-21T15:17:19.303083+00:00",
+      "owner_required_primary_keyword": "עצירות בגמילה מחיתולים",
+      "owner_topic_brief_sha256": "03e9cabb22567001373ab3326cef75c0baf6e96b724dda421ae6ab123d1cb0eb"
+    },
+    "last_jules_session_id": "sessions/4424829820432298274"
   },
   "backlog": [
     {
@@ -1450,12 +1465,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-21T12:46:15.735728+00:00",
-      "from": "blocked",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
       "at": "2026-10-21T12:52:03.401908+00:00",
       "from": "article_pr_open",
       "to": "article_deploying",
@@ -2295,9 +2304,20 @@
       "from": "blocked",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-21T20:14:04.121758+00:00",
+      "from": "article_pr_open",
+      "to": "article_result_wait",
+      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
+      "details": {
+        "run_id": 39621436540,
+        "outcome": "PR_CREATED",
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1170"
+      }
     }
   ],
-  "updated_at": "2026-10-21T20:11:30.091919+00:00",
+  "updated_at": "2026-10-21T20:14:04.121765+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
