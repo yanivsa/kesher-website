@@ -1444,18 +1444,9 @@
     "stage": "image",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
     "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-21T17:36:43.307306+00:00"
+    "at": "2026-10-21T17:42:24.481921+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-21T10:10:56.054665+00:00",
-      "from": "image_retry_wait",
-      "to": "image_retry_wait",
-      "reason": "trusted image retry backoff is active",
-      "details": {
-        "retry_at": "2026-10-21T10:12:49.332735+00:00"
-      }
-    },
     {
       "at": "2026-10-21T10:16:03.264994+00:00",
       "from": "image_retry_wait",
@@ -2298,9 +2289,18 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-21T17:42:24.481934+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-21T17:36:43.307327+00:00",
+  "updated_at": "2026-10-21T17:42:24.481941+00:00",
   "image": {
     "attempt_count": 3,
     "status": "exhausted",
