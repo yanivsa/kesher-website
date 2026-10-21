@@ -9,10 +9,31 @@ const readList = (file) => {
   return value;
 };
 
+const readObject = (file) => {
+  if (!fs.existsSync(file)) return {};
+  const value = JSON.parse(fs.readFileSync(file, 'utf8'));
+  if (!value || Array.isArray(value) || typeof value !== 'object') {
+    throw new Error(`${file} must contain an object`);
+  }
+  return value;
+};
+
+const applyEditorialEnhancement = (post, enhancements) => {
+  const enhancement = enhancements[post.id];
+  if (!enhancement) return post;
+
+  return {
+    ...post,
+    content: `${post.content || ''}${enhancement.appendContent || ''}`,
+    updatedAt: enhancement.updatedAt || post.updatedAt,
+  };
+};
+
 const loadPosts = () => {
   const historical = readList(path.join(ROOT, 'src', 'data', 'posts.json'));
   const recent = readList(path.join(ROOT, 'src', 'data', 'postsRecent.json'));
-  const combined = [...recent, ...historical];
+  const enhancements = readObject(path.join(ROOT, 'src', 'data', 'giftedEditorialEnhancements.json'));
+  const combined = [...recent, ...historical].map((post) => applyEditorialEnhancement(post, enhancements));
   const seen = new Set();
   for (const post of combined) {
     const id = String(post?.id || '').trim();
