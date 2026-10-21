@@ -43,9 +43,9 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-21T12:52:03.401868+00:00",
-    "next_deploy_retry_at": "2026-10-21T13:02:56.323073+00:00",
+    "next_deploy_retry_at": null,
     "deploy_run_id": 39603062014,
-    "live_verified_at": "2026-10-21T12:58:03.310669+00:00"
+    "live_verified_at": "2026-10-21T12:58:32.222782+00:00"
   },
   "backlog": [
     {
@@ -2336,7 +2336,7 @@
       "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-21T12:58:03.310716+00:00",
+  "updated_at": "2026-10-21T12:58:32.222807+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2680,6 +2680,19 @@
       "previous_run_id": 39405710776,
       "observed_active_run_id": 39583987116,
       "dispatched_at": "2026-10-21T10:20:52.052163+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-20",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "potty-training-age-4",
+        "target_content_sha256": "1771eb3dc2ed9aabf7c65211a233a6ef7e1605113bb664c140c38604f7bf51a6"
+      },
+      "intent_at": "2026-10-21T12:57:56.323073+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -2698,5 +2711,18 @@
     "source_slug": null,
     "slot": "2026-10-20"
   },
-  "last_error": null
+  "last_error": null,
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
+  }
 }
