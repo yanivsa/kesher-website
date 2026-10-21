@@ -2585,11 +2585,10 @@
       "inputs": {
         "pr_number": "1170"
       },
-      "intent_at": "2026-10-21T16:00:55.230052+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39625068472,
-      "observed_active_run_id": 39630976302,
-      "dispatched_at": "2026-10-21T16:00:55.230052+00:00"
+      "intent_at": "2026-10-21T16:25:57.062794+00:00",
+      "status": "intent",
+      "previous_run_id": 39630976302,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -2611,5 +2610,17 @@
   "processed_child_notifications": [
     "Kesher Article Generation:39621436540",
     "Kesher Normalize Article PR:39624748417"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
