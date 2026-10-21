@@ -1440,14 +1440,7 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-19"
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_WORKFLOW_FAILED",
-    "message": "trusted image run 39630976302 completed with conclusion=failure but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-10-21T16:21:40.601060+00:00",
-    "at": "2026-10-21T16:06:40.601089+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-21T09:30:55.865190+00:00",
@@ -2228,9 +2221,18 @@
         "failure_streak": 2,
         "run_id": 39630976302
       }
+    },
+    {
+      "at": "2026-10-21T16:11:27.371362+00:00",
+      "from": "image_retry_wait",
+      "to": "image_retry_wait",
+      "reason": "trusted image retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-21T16:21:40.601060+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-21T16:06:40.601101+00:00",
+  "updated_at": "2026-10-21T16:11:27.371379+00:00",
   "image": {
     "attempt_count": 2,
     "status": "retry_wait",
