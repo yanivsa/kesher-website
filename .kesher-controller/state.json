@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-20",
-  "status": "article_pr_open",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -13,7 +13,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-20T09:22:11.246685+00:00",
     "pr_number": 1162,
@@ -41,7 +41,9 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-10-21T12:51:55.234595+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-10-21T12:52:03.401868+00:00",
+    "next_deploy_retry_at": "2026-10-21T12:56:48.525963+00:00"
   },
   "backlog": [
     {
@@ -1431,15 +1433,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-21T04:50:49.796399+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "4 articles share owner publication slot 2026-10-20"
-      }
-    },
-    {
       "at": "2026-10-21T04:55:44.544880+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2332,9 +2325,19 @@
       "from": "blocked",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-21T12:52:03.401908+00:00",
+      "from": "article_pr_open",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-21T12:46:15.735746+00:00",
+  "updated_at": "2026-10-21T12:52:03.401914+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2683,14 +2686,15 @@
       "cycle": "2026-10-20",
       "inputs": {},
       "intent_at": "2026-10-21T12:51:48.525963+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "8fea2d1184ef3b172ae83650dd1c9ff7a3d3940d"
+      "observed_active_run_id": 39603062014,
+      "dispatch_head_sha": "8fea2d1184ef3b172ae83650dd1c9ff7a3d3940d",
+      "dispatched_at": "2026-10-21T12:51:48.525963+00:00"
     }
   },
   "deliverables": {
-    "article_url": null,
+    "article_url": "https://kesher.saharoni.com/blog/potty-training-age-4",
     "overview_youtube_url": null,
     "short_youtube_url": null,
     "overview_edit_verified": false,
