@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-21",
-  "status": "article_generating",
+  "status": "blocked",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -30,18 +30,15 @@
     },
     "pr_number": 1170,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1170",
-    "current_pr_head_sha": "4b10b7467fdf0b054178327253b132a0baf95c1c",
+    "current_pr_head_sha": "07ff8623b6b76c0f38713540ceb5c2251e7c68a8",
     "jules_head_sha": "a0186c8bc8059d1fd5dd8e889fb91388226d812e",
     "normalization_slot": "2026-10-21",
     "normalization_dispatched_at": "2026-10-21T15:20:36.247267+00:00",
     "normalization_run_id": 39624748417,
-    "normalization_drift_count": 1,
-    "last_normalization_drift_head_sha": "4b10b7467fdf0b054178327253b132a0baf95c1c",
-    "merge_dispatch_count": 2,
-    "merge_dispatch_at": "2026-10-21T20:11:34.824557+00:00",
-    "normalized_head_sha": "4b10b7467fdf0b054178327253b132a0baf95c1c",
-    "image_head_sha": "4b10b7467fdf0b054178327253b132a0baf95c1c",
-    "merge_candidate_sha": "4b10b7467fdf0b054178327253b132a0baf95c1c",
+    "normalization_drift_count": 2,
+    "last_normalization_drift_head_sha": "07ff8623b6b76c0f38713540ceb5c2251e7c68a8",
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
     "merge_run_id": 39668143653,
     "last_run_conclusion": "success",
     "last_worker_result": {
@@ -57,7 +54,8 @@
       "owner_required_primary_keyword": "עצירות בגמילה מחיתולים",
       "owner_topic_brief_sha256": "03e9cabb22567001373ab3326cef75c0baf6e96b724dda421ae6ab123d1cb0eb"
     },
-    "last_jules_session_id": "sessions/4424829820432298274"
+    "last_jules_session_id": "sessions/4424829820432298274",
+    "normalized_head_sha": "07ff8623b6b76c0f38713540ceb5c2251e7c68a8"
   },
   "backlog": [
     {
@@ -1462,18 +1460,13 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-19"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "image",
+    "code": "IMAGE_ATTEMPTS_EXHAUSTED",
+    "message": "image exhausted 3 total controller dispatch attempts",
+    "at": "2026-10-21T20:26:33.621137+00:00"
+  },
   "history": [
-    {
-      "at": "2026-10-21T12:58:40.736437+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "new video workflow dispatched",
-      "details": {
-        "operation": "full",
-        "attempt": 1
-      }
-    },
     {
       "at": "2026-10-21T13:01:33.488685+00:00",
       "from": "long_video_running",
@@ -2317,15 +2310,23 @@
       "details": {
         "attempt": 2
       }
+    },
+    {
+      "at": "2026-10-21T20:26:33.621154+00:00",
+      "from": "article_generating",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-21T20:21:32.939313+00:00",
+  "updated_at": "2026-10-21T20:26:33.621161+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "complete",
+    "status": "exhausted",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 39634808317,
     "processed_run_id": 39634808317,
     "provider_id": "LocalEditorial",
     "failure_fingerprint": null,
