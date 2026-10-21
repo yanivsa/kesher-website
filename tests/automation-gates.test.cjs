@@ -83,7 +83,7 @@ function testTrustedArticleImageV2() {
   assert(!workflow.includes('UNSPLASH_ACCESS_KEY'));
   assert(workflow.includes('PEXELS_API_KEY'));
   assert(workflow.includes('PIXABAY_API_KEY'));
-  assert(workflow.includes('article-image-worker-v4.py'));
+  assert(workflow.includes('article-image-worker-v5.py'));
   assert(workflow.includes('actions/workflows/ci.yml/dispatches'));
   assert(controllerWorkflow.includes('scripts.kesher_runtime.bridge_admission --controller'));
   assert(controllerWorkflow.includes('scripts/kesher_content_controller_stabilized.py --report-json'));
