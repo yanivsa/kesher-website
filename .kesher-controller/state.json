@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-21",
-  "status": "image_retry_wait",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -2248,12 +2248,22 @@
       "details": {
         "retry_at": "2026-10-21T16:21:40.601060+00:00"
       }
+    },
+    {
+      "at": "2026-10-21T16:26:36.909610+00:00",
+      "from": "image_retry_wait",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 3,
+        "pr_number": 1170
+      }
     }
   ],
-  "updated_at": "2026-10-21T16:21:24.791499+00:00",
+  "updated_at": "2026-10-21T16:26:36.909618+00:00",
   "image": {
-    "attempt_count": 2,
-    "status": "retry_wait",
+    "attempt_count": 3,
+    "status": "running",
     "last_error": {
       "code": "IMAGE_WORKFLOW_FAILED",
       "message": "trusted image run 39630976302 completed with conclusion=failure but no validated image is present",
@@ -2261,7 +2271,7 @@
       "retry_at": "2026-10-21T16:21:40.601060+00:00",
       "at": "2026-10-21T16:06:40.601089+00:00"
     },
-    "next_retry_at": "2026-10-21T16:21:40.601060+00:00",
+    "next_retry_at": null,
     "run_id": 39630976302,
     "processed_run_id": 39630976302,
     "provider_id": null,
@@ -2270,7 +2280,7 @@
     "failure_count_by_type": {
       "IMAGE_WORKFLOW_FAILED": 2
     },
-    "last_dispatch_at": "2026-10-21T16:01:21.774811+00:00",
+    "last_dispatch_at": "2026-10-21T16:26:36.909577+00:00",
     "last_run_conclusion": "failure",
     "last_failed_run_id": 39630976302
   },
@@ -2586,9 +2596,10 @@
         "pr_number": "1170"
       },
       "intent_at": "2026-10-21T16:25:57.062794+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39630976302,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39634808317,
+      "dispatched_at": "2026-10-21T16:25:57.062794+00:00"
     }
   },
   "deliverables": {
@@ -2610,17 +2621,5 @@
   "processed_child_notifications": [
     "Kesher Article Generation:39621436540",
     "Kesher Normalize Article PR:39624748417"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  ]
 }
