@@ -1513,9 +1513,9 @@
         "article_title": "עצירות בגמילה מחיתולים: למה הילד מתאפק ומה אפשר לעשות?",
         "article_url": "https://kesher.saharoni.com/blog/potty-training-constipation",
         "article_live": false,
-        "article_deploy_status": "running",
+        "article_deploy_status": "exhausted",
         "article_last_deploy_dispatch_at": "2026-10-21T21:16:31.613392+00:00",
-        "last_error": null
+        "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED"
       }
     }
   ],
