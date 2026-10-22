@@ -1523,21 +1523,9 @@
     "stage": "controller",
     "code": "IDEA_SLOT_MISMATCH",
     "message": "IDEA_SLOT_MISMATCH",
-    "at": "2026-10-22T00:16:05.967719+00:00"
+    "at": "2026-10-22T00:21:25.056294+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-21T15:46:27.869909+00:00",
-      "from": "article_image_running",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_WORKFLOW_FAILED",
-      "details": {
-        "message": "trusted image run 39625068472 completed with conclusion=failure but no validated image is present",
-        "retry_at": "2026-10-21T15:51:27.869871+00:00",
-        "failure_streak": 1,
-        "run_id": 39625068472
-      }
-    },
     {
       "at": "2026-10-21T16:01:21.774836+00:00",
       "from": "image_retry_wait",
@@ -2424,9 +2412,18 @@
       "details": {
         "message": "IDEA_SLOT_MISMATCH"
       }
+    },
+    {
+      "at": "2026-10-22T00:21:25.056307+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IDEA_SLOT_MISMATCH",
+      "details": {
+        "message": "IDEA_SLOT_MISMATCH"
+      }
     }
   ],
-  "updated_at": "2026-10-22T00:16:05.967734+00:00",
+  "updated_at": "2026-10-22T00:21:25.056313+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
