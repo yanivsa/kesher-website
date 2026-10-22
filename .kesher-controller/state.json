@@ -1523,15 +1523,9 @@
     "stage": "controller",
     "code": "IDEA_SLOT_MISMATCH",
     "message": "IDEA_SLOT_MISMATCH",
-    "at": "2026-10-22T04:31:23.787548+00:00"
+    "at": "2026-10-22T04:36:17.366403+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-21T20:04:52.732343+00:00",
-      "from": "blocked",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
     {
       "at": "2026-10-21T20:14:04.121758+00:00",
       "from": "article_pr_open",
@@ -2413,9 +2407,18 @@
       "details": {
         "message": "IDEA_SLOT_MISMATCH"
       }
+    },
+    {
+      "at": "2026-10-22T04:36:17.366418+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IDEA_SLOT_MISMATCH",
+      "details": {
+        "message": "IDEA_SLOT_MISMATCH"
+      }
     }
   ],
-  "updated_at": "2026-10-22T04:31:23.787569+00:00",
+  "updated_at": "2026-10-22T04:36:17.366425+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
