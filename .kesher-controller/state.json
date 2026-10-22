@@ -1523,20 +1523,9 @@
     "stage": "controller",
     "code": "IDEA_SLOT_MISMATCH",
     "message": "IDEA_SLOT_MISMATCH",
-    "at": "2026-10-22T04:36:17.366403+00:00"
+    "at": "2026-10-22T04:41:13.381594+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-21T20:14:04.121758+00:00",
-      "from": "article_pr_open",
-      "to": "article_result_wait",
-      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
-      "details": {
-        "run_id": 39621436540,
-        "outcome": "PR_CREATED",
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1170"
-      }
-    },
     {
       "at": "2026-10-21T20:16:13.610412+00:00",
       "from": "article_result_wait",
@@ -2416,9 +2405,18 @@
       "details": {
         "message": "IDEA_SLOT_MISMATCH"
       }
+    },
+    {
+      "at": "2026-10-22T04:41:13.381606+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IDEA_SLOT_MISMATCH",
+      "details": {
+        "message": "IDEA_SLOT_MISMATCH"
+      }
     }
   ],
-  "updated_at": "2026-10-22T04:36:17.366425+00:00",
+  "updated_at": "2026-10-22T04:41:13.381612+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
