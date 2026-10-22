@@ -1445,14 +1445,16 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         with self.assertRaisesRegex(ArticleNormalizationError, "already exists in main"):
             normalized_posts(posts_historical, dup_slug_article, recent_posts=posts_recent)
 
-        # Duplicate adoptable slot against posts.json (2026-10-12, 2026-10-13, 2026-10-14) or postsRecent.json (2026-10-10) must fail closed
+        # Publication date is not an identity boundary: distinct slugs may share an occupied date.
+        # This preserves rollover recovery while duplicate identity above still fails closed.
         for occupied_date in ("2026-10-10", "2026-10-12", "2026-10-13", "2026-10-14"):
-            dup_slot_article = copy.deepcopy(posts_recent[0])
-            dup_slot_article["id"] = f"different-slug-on-{occupied_date}"
-            dup_slot_article["slug"] = f"different-slug-on-{occupied_date}"
-            dup_slot_article["date"] = occupied_date
-            with self.assertRaisesRegex(ArticleNormalizationError, "publication slot already exists in main"):
-                normalized_posts(posts_historical, dup_slot_article, recent_posts=posts_recent)
+            distinct_article = copy.deepcopy(posts_recent[0])
+            distinct_article["id"] = f"different-slug-on-{occupied_date}"
+            distinct_article["slug"] = f"different-slug-on-{occupied_date}"
+            distinct_article["date"] = occupied_date
+            normalized = normalized_posts(posts_historical, distinct_article, recent_posts=posts_recent)
+            self.assertEqual(normalized[0]["slug"], f"different-slug-on-{occupied_date}")
+            self.assertEqual(len(normalized), len(posts_historical) + 1)
 
         # Valid new article on unoccupied slot (2026-10-25) normalizes into posts.json and leaves postsRecent.json untouched
         valid_new = copy.deepcopy(posts_recent[0])

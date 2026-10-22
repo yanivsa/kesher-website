@@ -49,10 +49,13 @@ class ArticleNormalizerTests(unittest.TestCase):
         normalized_posts(self.main_posts, self.target)
         self.assertEqual(self.main_posts, before)
 
-    def test_rejects_duplicate_target_slot_already_in_main(self):
-        base = [*self.main_posts, {"id": "already", "date": "2026-08-27"}]
-        with self.assertRaises(ArticleNormalizationError):
-            normalized_posts(base, self.target)
+    def test_allows_distinct_articles_on_past_publication_date_after_rollover(self):
+        base = [*self.main_posts, {"id": "already", "date": "2026-08-27", "controllerManaged": True}]
+        result = normalized_posts(base, self.target)
+        ids = [post["id"] for post in result]
+        self.assertIn("already", ids)
+        self.assertIn("aug-27-target", ids)
+        self.assertEqual(len(result), len(base) + 1)
 
     def test_allows_distinct_articles_on_current_active_date(self):
         import os
