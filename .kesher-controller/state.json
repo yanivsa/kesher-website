@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-22",
-  "status": "blocked",
+  "cycle": "2026-10-23",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -15,71 +15,9 @@
     "failure_count_by_type": {},
     "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
-    "deploy_run_id": 39676027229
+    "normalization_status": "pending"
   },
   "backlog": [
-    {
-      "cycle": "2026-09-10",
-      "status": "short_watchdog_recovery",
-      "article": {
-        "attempt_count": 1,
-        "status": "running",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 34412126137,
-        "processed_run_id": null,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "attempts": 1,
-        "deploy_attempts": 0,
-        "normalization_status": "running",
-        "last_dispatch_at": "2026-09-09T22:25:20.173977+00:00",
-        "watchdog": {
-          "identity": "2026-09-10",
-          "session_id": "sessions/12802649080423845172",
-          "last_progress_at": "2026-09-09T23:21:40.392745+00:00",
-          "last_fingerprint": "b566518fffb3cd63b2c5da925ba77a3f01c0d51ad0c0ae87998e8167dce10115",
-          "last_nudge_at": null,
-          "nudge_count": 0,
-          "worker_restart_count": 0,
-          "last_restart_at": null,
-          "last_restart_run_id": null
-        },
-        "pr_number": 766,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/766",
-        "normalization_slot": "2026-09-10",
-        "normalization_dispatched_at": "2026-09-10T01:16:19.801232+00:00",
-        "quality_status": "passed",
-        "quality_content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
-        "quality_checked_at": "2026-09-10T18:23:54.918360+00:00",
-        "quality_violations": [],
-        "slug": "gifted-children-social-difficulties",
-        "title": "ילדים מחוננים וקשיים חברתיים: להבין את הפער בין השכל לרגש",
-        "url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
-        "published_date": "2026-09-10",
-        "live": true,
-        "live_verified_at": "2026-09-10T07:31:55.373291+00:00",
-        "next_deploy_retry_at": null
-      },
-      "archived_at": "2026-09-10T21:05:39.248585+00:00",
-      "media": {
-        "source_slug": "gifted-children-social-difficulties",
-        "source_content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
-        "article_url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
-        "article_live": true,
-        "long_status": "complete",
-        "long_item_id": "video-20260910-074937-1d272ac70c",
-        "long_youtube_url": "https://youtu.be/NwhSRQLzErc",
-        "long_youtube_id": "NwhSRQLzErc",
-        "short_status": "exhausted",
-        "short_dispatch_count": 4,
-        "short_last_dispatch_at": "2026-09-18T19:55:11.206603+00:00",
-        "last_error": "BACKLOG_SHORT_ATTEMPTS_EXHAUSTED"
-      }
-    },
     {
       "cycle": "2026-09-11",
       "status": "image_retry_wait",
@@ -1517,195 +1455,73 @@
         "article_last_deploy_dispatch_at": "2026-10-21T21:16:31.613392+00:00",
         "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED"
       }
+    },
+    {
+      "cycle": "2026-10-22",
+      "status": "blocked",
+      "exact_slug": null,
+      "content_sha256": null,
+      "article": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": null,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 0,
+        "deploy_attempts": 0,
+        "normalization_status": "pending",
+        "deploy_run_id": 39676027229
+      },
+      "long_video": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": null,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {}
+      },
+      "short": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": null,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {}
+      },
+      "media_identities": {
+        "long_video_id": null,
+        "short_video_id": null
+      },
+      "counters": {
+        "article_attempts": 0,
+        "article_generation_attempts": 0,
+        "merge_dispatch_count": 0,
+        "deploy_attempts": 0,
+        "long_attempts": 0,
+        "short_attempts": 0
+      },
+      "terminal_state": {
+        "blocked": true,
+        "article_exhausted": false
+      },
+      "archived_at": "2026-10-22T21:00:45.063074+00:00"
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "IDEA_SLOT_MISMATCH",
-    "message": "IDEA_SLOT_MISMATCH",
-    "at": "2026-10-22T20:56:28.543079+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-22T11:36:03.021465+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T11:41:19.167490+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T11:46:14.225939+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T11:51:14.201084+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T11:56:13.206092+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T12:01:40.434941+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T12:06:06.440574+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T12:11:11.019045+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T12:16:16.481305+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T12:21:01.810246+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T12:26:26.420724+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T12:31:00.801819+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T12:36:25.498021+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T12:41:10.471517+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T12:45:59.675234+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T12:51:10.204376+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T12:56:27.037347+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T13:01:43.107997+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T13:06:14.829504+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-22T13:11:24.127496+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
     {
       "at": "2026-10-22T13:16:14.665824+00:00",
       "from": "blocked",
@@ -2425,9 +2241,27 @@
       "details": {
         "message": "IDEA_SLOT_MISMATCH"
       }
+    },
+    {
+      "at": "2026-10-22T21:00:45.063105+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-10-22T21:00:45.063111+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-10-22T21:00:45.064295+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-10-22T20:56:28.543099+00:00",
+  "updated_at": "2026-10-22T21:00:45.063093+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2743,27 +2577,5 @@
     "requested_at": "2026-10-19T10:06:51.051674+00:00",
     "publication_slot": "2026-10-21",
     "claimed_at": "2026-10-21T14:57:31.411393+00:00"
-  },
-  "deliverables": {
-    "article_url": null,
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
-  },
-  "pending_dispatches": {
-    "deploy.yml": {
-      "workflow": "deploy.yml",
-      "cycle": "2026-10-22",
-      "inputs": {},
-      "intent_at": "2026-10-21T21:15:49.639360+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39676027229,
-      "observed_active_run_id": 39677434115,
-      "dispatch_head_sha": "2790191a68304ba106b0c1a406a1387bc6b7695e",
-      "dispatched_at": "2026-10-21T21:15:49.639360+00:00"
-    }
   }
 }
