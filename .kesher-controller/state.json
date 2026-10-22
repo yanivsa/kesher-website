@@ -1523,19 +1523,9 @@
     "stage": "controller",
     "code": "IDEA_SLOT_MISMATCH",
     "message": "IDEA_SLOT_MISMATCH",
-    "at": "2026-10-22T05:26:09.529322+00:00"
+    "at": "2026-10-22T05:28:27.553124+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-21T20:57:04.681364+00:00",
-      "from": "article_needed",
-      "to": "article_deploying",
-      "reason": "public article check failed; recovery deploy dispatched",
-      "details": {
-        "http_status": 404,
-        "attempt": 1
-      }
-    },
     {
       "at": "2026-10-21T21:00:47.513660+00:00",
       "from": null,
@@ -2414,9 +2404,18 @@
       "details": {
         "message": "IDEA_SLOT_MISMATCH"
       }
+    },
+    {
+      "at": "2026-10-22T05:28:27.553137+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IDEA_SLOT_MISMATCH",
+      "details": {
+        "message": "IDEA_SLOT_MISMATCH"
+      }
     }
   ],
-  "updated_at": "2026-10-22T05:26:09.529342+00:00",
+  "updated_at": "2026-10-22T05:28:27.553143+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
