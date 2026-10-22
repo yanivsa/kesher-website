@@ -17,6 +17,14 @@ from scripts.kesher_runtime.article_verification import reject, validate_rendere
 from scripts.kesher_runtime.identity import SourceIdentity, digest, require_sha
 
 
+def apply_topic_overrides(posts: list[dict], overrides: dict[str, dict]) -> list[dict]:
+    """Return the effective post rows rendered by the site topic override layer."""
+    return [
+        {**post, **overrides.get(str(post.get('id') or ''), {})}
+        for post in posts
+    ]
+
+
 def generate(dist: Path, posts: list[dict], sha: str, *, exclusions: list[dict] | None = None,
              source_heroes: dict[str, bytes] | None = None) -> dict:
     require_sha(sha, 40)
@@ -144,6 +152,10 @@ def main():
     def committed(path):
         return subprocess.run(['git', 'show', f'{args.sha}:{path}'], capture_output=True, check=True, timeout=15).stdout
     posts = json.loads(committed(posts_path.as_posix()))
+    topic_overrides = json.loads(committed('src/data/giftedParentOverrides.json'))
+    if not isinstance(topic_overrides, dict):
+        reject('ARTICLE_SOURCE_MISMATCH', 'Topic override catalog is not an object')
+    posts = apply_topic_overrides(posts, topic_overrides)
     # Use the site's existing publication selector, not another Python copy of
     # its changing word/heading policy. Non-rendered legacy rows remain explicit.
     policy = Path(__file__).resolve().with_name('content-policy.cjs')

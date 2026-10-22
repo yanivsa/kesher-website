@@ -70,6 +70,29 @@ class PublicationManifestTests(unittest.TestCase):
             with self.assertRaises(ArticleVerificationError):
                 self.generate(root, [post], SHA, source_heroes={post['image']: b'different committed image'})
 
+    def test_effective_publication_source_applies_topic_override_before_verification(self):
+        from scripts import kesher_publication_manifest as manifest
+
+        self.assertTrue(
+            hasattr(manifest, 'apply_topic_overrides'),
+            'Publication proof must use the same topic overrides as the rendered site',
+        )
+        base = post_fixture()
+        overrides = {
+            base['id']: {
+                'title': 'כותרת אפקטיבית',
+                'excerpt': 'תקציר אפקטיבי',
+                'updatedAt': '2026-10-23',
+                'content': base['content'].replace('תוכן ', 'תוכן אפקטיבי ', 1),
+            }
+        }
+        effective = manifest.apply_topic_overrides([base], overrides)
+        self.assertEqual(effective[0]['title'], 'כותרת אפקטיבית')
+        self.assertEqual(effective[0]['excerpt'], 'תקציר אפקטיבי')
+        self.assertEqual(effective[0]['updatedAt'], '2026-10-23')
+        self.assertIn('תוכן אפקטיבי', effective[0]['content'])
+        self.assertEqual(base['title'], post_fixture()['title'], 'Applying an override must not mutate the source row')
+
 
 if __name__ == '__main__':
     unittest.main()
