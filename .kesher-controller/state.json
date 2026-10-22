@@ -15,7 +15,9 @@
     "failure_count_by_type": {},
     "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "pending"
+    "normalization_status": "pending",
+    "deploy_run_id": 39874244291,
+    "next_deploy_retry_at": "2026-10-23T00:00:35.189088+00:00"
   },
   "backlog": [
     {
@@ -2593,5 +2595,12 @@
     "short_portrait_verified": false,
     "short_signature_verified": false,
     "short_origin_verified": false
+  },
+  "last_child_notification": {
+    "workflow": "Deploy to Cloudflare Pages",
+    "run_id": 39874244291,
+    "conclusion": "success",
+    "source_slug": null,
+    "slot": "2026-10-23"
   }
 }
