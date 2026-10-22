@@ -58,8 +58,6 @@ def carry_forward(state: dict[str, Any], previous: Any) -> None:
         state["idea_queue"] = copy.deepcopy(previous_queue)[-MAX_QUEUE:]
     if isinstance(previous_history, list):
         state["idea_history"] = copy.deepcopy(previous_history)[-MAX_HISTORY:]
-    # An unfinished active idea belongs to its claimed publication slot. Preserve it
-    # fail-closed instead of claiming another idea on top of it.
     if isinstance(previous_active, dict) and str(previous_active.get("status") or "") != "complete":
         state["active_idea"] = copy.deepcopy(previous_active)
 
@@ -74,9 +72,7 @@ def _all_records(state: dict[str, Any]) -> list[dict[str, Any]]:
     return rows
 
 
-def ingest_from_env(
-    state: dict[str, Any], env: Mapping[str, str], *, now_iso: str
-) -> str | None:
+def ingest_from_env(state: dict[str, Any], env: Mapping[str, str], *, now_iso: str) -> str | None:
     """Append one owner idea idempotently. Returns queued/duplicate/None."""
     idea_id = _clean(env.get("KESHER_IDEA_ID"))
     topic_brief = _clean(env.get("KESHER_IDEA_TOPIC_BRIEF"))
@@ -116,11 +112,7 @@ def ingest_from_env(
         raise IdeaQueueError("IDEA_ID_CONFLICT")
 
     queue_full = len(state["idea_queue"]) >= MAX_QUEUE
-    idle_run_now = (
-        run_now
-        and str(state.get("status") or "") == "complete"
-        and not isinstance(state.get("active_idea"), dict)
-    )
+    idle_run_now = run_now and str(state.get("status") or "") == "complete" and not isinstance(state.get("active_idea"), dict)
     if queue_full and not idle_run_now:
         raise IdeaQueueError("IDEA_QUEUE_FULL")
 
@@ -159,7 +151,15 @@ def article_dispatch_inputs(state: dict[str, Any], inputs: Mapping[str, Any] | N
         return payload
     slot = str(payload.get("slot") or "").strip()
     claimed_slot = str(active.get("publication_slot") or "").strip()
-    if not slot or slot != claimed_slot:
+    if not claimed_slot:
+        raise IdeaQueueError("IDEA_SLOT_MISMATCH")
+    # Legacy/base controller dispatch paths may omit slot after an idea has already
+    # been durably claimed. The claimed publication_slot is authoritative in that
+    # case. An explicitly conflicting slot still fails closed.
+    if not slot:
+        slot = claimed_slot
+        payload["slot"] = claimed_slot
+    elif slot != claimed_slot:
         raise IdeaQueueError("IDEA_SLOT_MISMATCH")
     brief = _clean(active.get("topic_brief"))
     keyword = _clean(active.get("required_primary_keyword"))
