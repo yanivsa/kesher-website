@@ -1523,19 +1523,9 @@
     "stage": "controller",
     "code": "IDEA_SLOT_MISMATCH",
     "message": "IDEA_SLOT_MISMATCH",
-    "at": "2026-10-22T00:21:25.056294+00:00"
+    "at": "2026-10-22T00:25:56.853824+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-21T16:01:21.774836+00:00",
-      "from": "image_retry_wait",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 2,
-        "pr_number": 1170
-      }
-    },
     {
       "at": "2026-10-21T16:06:40.601096+00:00",
       "from": "article_image_running",
@@ -2421,9 +2411,18 @@
       "details": {
         "message": "IDEA_SLOT_MISMATCH"
       }
+    },
+    {
+      "at": "2026-10-22T00:25:56.853838+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IDEA_SLOT_MISMATCH",
+      "details": {
+        "message": "IDEA_SLOT_MISMATCH"
+      }
     }
   ],
-  "updated_at": "2026-10-22T00:21:25.056313+00:00",
+  "updated_at": "2026-10-22T00:25:56.853845+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
