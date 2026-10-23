@@ -12,11 +12,16 @@ const wave2Ids = [
 ];
 
 describe('gifted wave 2 SEO generator catalog', () => {
-  it('loads every wave 2 article into the shared generator catalog', () => {
-    const ids = new Set(loadPosts().map((post) => post.id));
+  it('loads every wave 2 article exactly once into the shared generator catalog', () => {
+    const posts = loadPosts();
 
     for (const id of wave2Ids) {
-      expect(ids.has(id), `expected SEO generator catalog to include ${id}`).toBe(true);
+      expect(posts.filter((post) => post.id === id), `expected one SEO generator entry for ${id}`).toHaveLength(1);
     }
+  });
+
+  it('keeps the full generator catalog free of duplicate ids', () => {
+    const ids = loadPosts().map((post) => post.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 });
