@@ -1452,10 +1452,10 @@
         "source_content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a",
         "article_title": "עצירות בגמילה מחיתולים: למה הילד מתאפק ומה אפשר לעשות?",
         "article_url": "https://kesher.saharoni.com/blog/potty-training-constipation",
-        "article_live": false,
-        "article_deploy_status": "exhausted",
+        "article_live": true,
+        "article_deploy_status": "complete",
         "article_last_deploy_dispatch_at": "2026-10-21T21:16:31.613392+00:00",
-        "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED"
+        "last_error": null
       }
     },
     {
@@ -2605,5 +2605,20 @@
   },
   "processed_child_notifications": [
     "Deploy to Cloudflare Pages:39874244291"
-  ]
+  ],
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-23",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "potty-training-constipation",
+        "target_content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a"
+      },
+      "intent_at": "2026-10-23T00:15:40.828107+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  }
 }
