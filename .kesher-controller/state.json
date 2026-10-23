@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-23",
-  "status": "waiting_for_article_window",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1540,7 +1540,12 @@
       "media": {}
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "controller",
+    "code": "IDEA_SLOT_MISMATCH",
+    "message": "IDEA_SLOT_MISMATCH",
+    "at": "2026-10-23T05:01:31.487869+00:00"
+  },
   "history": [
     {
       "at": "2026-10-22T13:16:14.665824+00:00",
@@ -2325,9 +2330,18 @@
         "backlog_cycle": "2026-10-21",
         "source_slug": "potty-training-constipation"
       }
+    },
+    {
+      "at": "2026-10-23T05:01:31.487882+00:00",
+      "from": "waiting_for_article_window",
+      "to": "blocked",
+      "reason": "IDEA_SLOT_MISMATCH",
+      "details": {
+        "message": "IDEA_SLOT_MISMATCH"
+      }
     }
   ],
-  "updated_at": "2026-10-23T04:56:14.667551+00:00",
+  "updated_at": "2026-10-23T05:01:31.487887+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
