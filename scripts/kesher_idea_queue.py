@@ -46,6 +46,40 @@ def ensure_fields(state: dict[str, Any]) -> None:
         state["active_idea"] = None
 
 
+def _completed_backlog_outputs(previous: dict[str, Any], active: dict[str, Any]) -> dict[str, str] | None:
+    """Return durable outputs when a carried idea already completed in backlog.
+
+    Daily rollover can archive the just-finished cycle before ``finalize_if_complete``
+    gets another chance to clear ``active_idea``.  In that case the archived backlog
+    is stronger evidence than the stale claimed marker and must win; otherwise the
+    next cycle repeatedly fails with IDEA_SLOT_MISMATCH.
+    """
+    slot = str(active.get("publication_slot") or "").strip()
+    if not slot:
+        return None
+    backlog = previous.get("backlog")
+    if not isinstance(backlog, list):
+        return None
+    for row in reversed(backlog):
+        if not isinstance(row, dict) or str(row.get("cycle") or "").strip() != slot:
+            continue
+        media = row.get("media")
+        if not isinstance(media, dict) or media.get("complete") is not True:
+            continue
+        article_url = str(media.get("article_url") or "").strip()
+        long_url = str(media.get("long_youtube_url") or "").strip()
+        short_url = str(media.get("short_youtube_url") or "").strip()
+        slug = str(media.get("source_slug") or "").strip()
+        if article_url and long_url and short_url:
+            return {
+                "slug": slug,
+                "article_url": article_url,
+                "long_url": long_url,
+                "short_url": short_url,
+            }
+    return None
+
+
 def carry_forward(state: dict[str, Any], previous: Any) -> None:
     """Preserve durable owner ideas when the daily controller rolls to a new cycle."""
     ensure_fields(state)
@@ -59,7 +93,30 @@ def carry_forward(state: dict[str, Any], previous: Any) -> None:
     if isinstance(previous_history, list):
         state["idea_history"] = copy.deepcopy(previous_history)[-MAX_HISTORY:]
     if isinstance(previous_active, dict) and str(previous_active.get("status") or "") != "complete":
-        state["active_idea"] = copy.deepcopy(previous_active)
+        outputs = _completed_backlog_outputs(previous, previous_active)
+        if outputs:
+            done = copy.deepcopy(previous_active)
+            done.update({
+                "status": "complete",
+                "completed_at": str(previous.get("updated_at") or ""),
+                "outputs": outputs,
+                "reconciled_from_backlog": True,
+            })
+            idea_id = str(done.get("idea_id") or "")
+            fingerprint = str(done.get("fingerprint") or "")
+            if not any(
+                isinstance(row, dict)
+                and (
+                    (idea_id and str(row.get("idea_id") or "") == idea_id)
+                    or (fingerprint and str(row.get("fingerprint") or "") == fingerprint)
+                )
+                for row in state["idea_history"]
+            ):
+                state["idea_history"].append(done)
+                state["idea_history"] = state["idea_history"][-MAX_HISTORY:]
+            state["active_idea"] = None
+        else:
+            state["active_idea"] = copy.deepcopy(previous_active)
 
 
 def _all_records(state: dict[str, Any]) -> list[dict[str, Any]]:
