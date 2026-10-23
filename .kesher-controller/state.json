@@ -1462,7 +1462,10 @@
         "long_resume_count": 1,
         "long_item_id": "video-20261023-031915-7ef7e10560",
         "long_youtube_url": "https://youtu.be/7YU6BL9BZ98",
-        "long_youtube_id": "7YU6BL9BZ98"
+        "long_youtube_id": "7YU6BL9BZ98",
+        "short_status": "running",
+        "short_dispatch_count": 1,
+        "short_last_dispatch_at": "2026-10-23T00:42:51.593671+00:00"
       }
     },
     {
@@ -2285,9 +2288,19 @@
         "backlog_cycle": "2026-10-21",
         "source_slug": "potty-training-constipation"
       }
+    },
+    {
+      "at": "2026-10-23T00:42:51.593698+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "dispatched independent prior-cycle Short generation",
+      "details": {
+        "backlog_cycle": "2026-10-21",
+        "source_slug": "potty-training-constipation"
+      }
     }
   ],
-  "updated_at": "2026-10-23T00:42:44.009291+00:00",
+  "updated_at": "2026-10-23T00:42:51.593706+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2635,9 +2648,10 @@
         "derive_long_item_id": "video-20261023-031915-7ef7e10560"
       },
       "intent_at": "2026-10-23T00:42:26.268747+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39879741765,
+      "dispatched_at": "2026-10-23T00:42:26.268747+00:00"
     }
   }
 }
