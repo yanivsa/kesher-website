@@ -1458,7 +1458,8 @@
         "last_error": null,
         "long_status": "running",
         "seed_dispatch_count": 1,
-        "long_last_dispatch_at": "2026-10-23T00:16:00.467104+00:00"
+        "long_last_dispatch_at": "2026-10-23T00:26:36.074405+00:00",
+        "long_resume_count": 1
       }
     },
     {
@@ -2630,9 +2631,10 @@
         "target_item_id": "video-20261023-031915-7ef7e10560"
       },
       "intent_at": "2026-10-23T00:25:57.885589+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39878132512,
+      "dispatched_at": "2026-10-23T00:25:57.885589+00:00"
     }
   }
 }
