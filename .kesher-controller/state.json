@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-23",
-  "status": "blocked",
+  "status": "waiting_for_article_window",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1540,22 +1540,8 @@
       "media": {}
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "IDEA_SLOT_MISMATCH",
-    "message": "IDEA_SLOT_MISMATCH",
-    "at": "2026-10-23T11:17:42.897298+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-22T19:11:15.191549+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
     {
       "at": "2026-10-22T19:16:21.648126+00:00",
       "from": "blocked",
@@ -2438,6 +2424,18 @@
       "details": {
         "message": "IDEA_SLOT_MISMATCH"
       }
+    },
+    {
+      "at": "2026-10-23T11:20:52.742501+00:00",
+      "from": "blocked",
+      "to": "waiting_for_article_window",
+      "reason": "stale_active_idea_finalized_from_verified_backlog",
+      "details": {
+        "publication_slot": "2026-10-21",
+        "idea_id": "parenting-p1-potty-training-constipation",
+        "source_slug": "potty-training-constipation",
+        "content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a"
+      }
     }
   ],
   "updated_at": "2026-10-23T11:17:42.897316+00:00",
@@ -2744,19 +2742,29 @@
         "long_url": "https://youtu.be/pgMZAkR6rDY",
         "short_url": "https://youtu.be/KJXZj8vl6Ro"
       }
+    },
+    {
+      "idea_id": "parenting-p1-potty-training-constipation",
+      "fingerprint": "24540f603debb3db2ac59e742dfe84404f1da4356838c842ce0e478cf3e1eb3b",
+      "topic_brief": "אשכול גמילה שהסתבכה. נושא/כאב: עצירות/כאב והתאפקות סביב הגמילה. חובה להבחין בין הדרכת הורים לבין צורך רפואי, ולהמליץ לפנות לרופא כשיש כאב או עצירות מתמשכת. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: potty-training-constipation. כותרת עבודה: עצירות בגמילה מחיתולים: למה הילד מתאפק ואיך שוברים את המעגל? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לאיש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תשנה URL קיים.",
+      "required_primary_keyword": "עצירות בגמילה מחיתולים",
+      "run_now": false,
+      "status": "complete",
+      "requested_at": "2026-10-19T10:06:51.051674+00:00",
+      "publication_slot": "2026-10-21",
+      "claimed_at": "2026-10-21T14:57:31.411393+00:00",
+      "completed_at": "2026-10-23T11:20:52.742501+00:00",
+      "outputs": {
+        "slug": "potty-training-constipation",
+        "content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a",
+        "article_url": "https://kesher.saharoni.com/blog/potty-training-constipation",
+        "long_url": "https://youtu.be/7YU6BL9BZ98",
+        "short_url": "https://youtu.be/jdD0h_rGYkA"
+      },
+      "completion_source": "verified_backlog"
     }
   ],
-  "active_idea": {
-    "idea_id": "parenting-p1-potty-training-constipation",
-    "fingerprint": "24540f603debb3db2ac59e742dfe84404f1da4356838c842ce0e478cf3e1eb3b",
-    "topic_brief": "אשכול גמילה שהסתבכה. נושא/כאב: עצירות/כאב והתאפקות סביב הגמילה. חובה להבחין בין הדרכת הורים לבין צורך רפואי, ולהמליץ לפנות לרופא כשיש כאב או עצירות מתמשכת. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: potty-training-constipation. כותרת עבודה: עצירות בגמילה מחיתולים: למה הילד מתאפק ואיך שוברים את המעגל? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לאיש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תשנה URL קיים.",
-    "required_primary_keyword": "עצירות בגמילה מחיתולים",
-    "run_now": false,
-    "status": "claimed",
-    "requested_at": "2026-10-19T10:06:51.051674+00:00",
-    "publication_slot": "2026-10-21",
-    "claimed_at": "2026-10-21T14:57:31.411393+00:00"
-  },
+  "active_idea": null,
   "deliverables": {
     "article_url": null,
     "overview_youtube_url": null,
