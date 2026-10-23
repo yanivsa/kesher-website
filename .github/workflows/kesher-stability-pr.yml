@@ -73,6 +73,7 @@ jobs:
             tests.test_video_reconcile \
             tests.test_kesher_content_controller \
             tests.test_kesher_controller_queue \
+            tests.test_kesher_idea_queue \
             tests.test_controller_artifact_download \
             tests.test_jules_article_runner \
             tests.test_single_scheduler_policy \
