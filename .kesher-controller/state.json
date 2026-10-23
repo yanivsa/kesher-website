@@ -2821,11 +2821,22 @@
         "pr_number": "1182",
         "slot": "2026-10-23"
       },
-      "intent_at": "2026-10-23T11:57:04.455446+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-23T11:58:27.046867+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": 39949800839,
-      "dispatched_at": "2026-10-23T11:57:04.455446+00:00"
+      "observed_active_run_id": null
     }
+  },
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": "2026-10-23T00:47:26.268747+00:00",
+    "run_id": 39878132512,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   }
 }
