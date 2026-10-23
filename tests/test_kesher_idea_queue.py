@@ -4,11 +4,11 @@ import unittest
 from scripts import kesher_idea_queue as idea_queue
 
 
-SHA = "7ef7e1056067f7718b5e55cdf0bbf8ac0ef1ea59037d70b47ce012feeb5ffae1"
+SHA = "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a"
 SLUG = "potty-training-constipation"
 ARTICLE_URL = "https://kesher.saharoni.com/blog/potty-training-constipation"
-LONG_URL = "https://www.youtube.com/watch?v=7YU6BL9BZ98"
-SHORT_URL = "https://www.youtube.com/watch?v=jdD0h_rGYkA"
+LONG_URL = "https://youtu.be/7YU6BL9BZ98"
+SHORT_URL = "https://youtu.be/jdD0h_rGYkA"
 
 
 def _state():
@@ -24,11 +24,11 @@ def _state():
         "long_video": {"status": "pending", "attempt_count": 0},
         "short": {"status": "pending", "attempt_count": 0},
         "active_idea": {
-            "idea_id": "potty-training-constipation",
+            "idea_id": "parenting-p1-potty-training-constipation",
             "fingerprint": "fp",
-            "topic_brief": "prior idea",
-            "required_primary_keyword": "גמילה מחיתולים ועצירות",
-            "run_now": True,
+            "topic_brief": "prior idea; Canonical ID required: potty-training-constipation",
+            "required_primary_keyword": "עצירות בגמילה מחיתולים",
+            "run_now": False,
             "status": "claimed",
             "publication_slot": "2026-10-21",
         },
@@ -37,19 +37,22 @@ def _state():
         "backlog": [
             {
                 "cycle": "2026-10-21",
+                "status": "article_deploying",
+                "exact_slug": SLUG,
                 "article": {
-                    "status": "complete",
+                    "status": "pending",
                     "slug": SLUG,
                     "url": ARTICLE_URL,
                     "quality_status": "passed",
                     "quality_content_sha256": SHA,
-                    "live": True,
+                    "live": False,
                 },
                 "media": {
                     "source_slug": SLUG,
                     "source_content_sha256": SHA,
                     "article_url": ARTICLE_URL,
                     "article_live": True,
+                    "article_deploy_status": "complete",
                     "long_status": "complete",
                     "long_youtube_url": LONG_URL,
                     "short_status": "complete",
@@ -62,7 +65,7 @@ def _state():
         ],
         "history": [
             {
-                "at": "2026-10-23T04:59:00+00:00",
+                "at": "2026-10-23T01:04:07+00:00",
                 "from": "waiting_for_article_window",
                 "to": "waiting_for_article_window",
                 "reason": "prior-cycle article media delivery verified without disturbing current cycle",
@@ -94,6 +97,7 @@ class StaleActiveIdeaRolloverTests(unittest.TestCase):
         completed = state["idea_history"][-1]
         self.assertEqual(completed["status"], "complete")
         self.assertEqual(completed["outputs"]["slug"], SLUG)
+        self.assertEqual(completed["outputs"]["content_sha256"], SHA)
         self.assertEqual(completed["outputs"]["article_url"], ARTICLE_URL)
         self.assertEqual(completed["outputs"]["long_url"], LONG_URL)
         self.assertEqual(completed["outputs"]["short_url"], SHORT_URL)
@@ -119,6 +123,14 @@ class StaleActiveIdeaRolloverTests(unittest.TestCase):
     def test_duplicate_backlog_cycle_fails_closed(self):
         state = _state()
         state["backlog"].append(copy.deepcopy(state["backlog"][0]))
+        before = copy.deepcopy(state)
+
+        self.assertFalse(idea_queue.finalize_if_complete(state, now_iso="2026-10-23T07:45:00+00:00"))
+        self.assertEqual(state, before)
+
+    def test_missing_delivery_verification_event_fails_closed(self):
+        state = _state()
+        state["history"] = [state["history"][-1]]
         before = copy.deepcopy(state)
 
         self.assertFalse(idea_queue.finalize_if_complete(state, now_iso="2026-10-23T07:45:00+00:00"))
