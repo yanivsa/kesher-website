@@ -27,6 +27,17 @@ describe('gifted parenting topic cluster wave 2', () => {
     }
   });
 
+  it('links the pillar back to every wave 2 article', () => {
+    const pillar = publishedPosts.find((row) => row.id === 'how-to-identify-a-gifted-child-parents-guide');
+    const relatedPostIds = pillar && 'relatedPostIds' in pillar && Array.isArray(pillar.relatedPostIds)
+      ? pillar.relatedPostIds
+      : [];
+
+    for (const id of wave2Ids) {
+      expect(relatedPostIds).toContain(id);
+    }
+  });
+
   it('keeps authoritative evidence on each wave 2 article', () => {
     for (const id of wave2Ids) {
       const post = publishedPosts.find((row) => row.id === id);
