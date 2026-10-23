@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-23",
-  "status": "waiting_for_article_window",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,11 +13,12 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
+    "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "pending",
     "deploy_run_id": 39877522583,
-    "next_deploy_retry_at": "2026-10-23T00:00:35.189088+00:00"
+    "next_deploy_retry_at": "2026-10-23T00:00:35.189088+00:00",
+    "last_dispatch_at": "2026-10-23T11:21:25.468757+00:00"
   },
   "backlog": [
     {
@@ -1543,15 +1544,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-22T19:16:21.648126+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
       "at": "2026-10-22T19:21:12.190992+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2436,9 +2428,18 @@
         "source_slug": "potty-training-constipation",
         "content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a"
       }
+    },
+    {
+      "at": "2026-10-23T11:21:25.468771+00:00",
+      "from": "waiting_for_article_window",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-23T11:17:42.897316+00:00",
+  "updated_at": "2026-10-23T11:21:25.468778+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2798,21 +2799,10 @@
         "topic_brief": "אשכול גמילה שהסתבכה. נושא/כאב: קקי בתחתונים אחרי שהפיפי כבר הסתדר; כאב, בושה ותסכול של ההורה והילד. כתיבה לא שיפוטית והבחנה מעצירות/אנקופרזיס/התאפקות. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: child-poops-in-pants. כותרת עבודה: ילד עושה קקי במכנסיים: מה יכול לעמוד מאחורי זה ואיך מגיבים? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לאיש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תשנה URL קיים.\n\nIdea Request ID: parenting-p1-child-poops-in-pants\nRequired Primary Keyword: ילד עושה קקי במכנסיים"
       },
       "intent_at": "2026-10-23T11:20:49.741869+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-23T11:20:49.741869+00:00"
     }
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": "2026-10-23T00:47:26.268747+00:00",
-    "run_id": 39878132512,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
