@@ -2629,5 +2629,14 @@
     "requested_at": "2026-10-19T10:07:32.684763+00:00",
     "publication_slot": "2026-10-23",
     "claimed_at": "2026-10-23T11:21:21.905802+00:00"
+  },
+  "deliverables": {
+    "article_url": null,
+    "overview_youtube_url": null,
+    "short_youtube_url": null,
+    "overview_edit_verified": false,
+    "short_portrait_verified": false,
+    "short_signature_verified": false,
+    "short_origin_verified": false
   }
 }
