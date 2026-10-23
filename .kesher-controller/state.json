@@ -2795,10 +2795,10 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 39880894669,
+    "workflow": "Kesher Article Generation",
+    "run_id": 39945494171,
     "conclusion": "success",
-    "source_slug": "potty-training-constipation",
+    "source_slug": null,
     "slot": "2026-10-23"
   },
   "processed_child_notifications": [
@@ -2809,19 +2809,6 @@
     "Kesher Daily Article Short V4:39880894669"
   ],
   "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-10-23",
-      "inputs": {
-        "slot": "2026-10-23",
-        "topic_brief": "אשכול גמילה שהסתבכה. נושא/כאב: קקי בתחתונים אחרי שהפיפי כבר הסתדר; כאב, בושה ותסכול של ההורה והילד. כתיבה לא שיפוטית והבחנה מעצירות/אנקופרזיס/התאפקות. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: child-poops-in-pants. כותרת עבודה: ילד עושה קקי במכנסיים: מה יכול לעמוד מאחורי זה ואיך מגיבים? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לאיש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תשנה URL קיים.\n\nIdea Request ID: parenting-p1-child-poops-in-pants\nRequired Primary Keyword: ילד עושה קקי במכנסיים"
-      },
-      "intent_at": "2026-10-23T11:20:49.741869+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-23T11:20:49.741869+00:00"
-    },
     "normalize-article-pr.yml": {
       "workflow": "normalize-article-pr.yml",
       "cycle": "2026-10-23",
