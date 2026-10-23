@@ -1544,7 +1544,7 @@
     "stage": "controller",
     "code": "IDEA_SLOT_MISMATCH",
     "message": "IDEA_SLOT_MISMATCH",
-    "at": "2026-10-23T05:15:55.409776+00:00"
+    "at": "2026-10-23T05:21:03.122715+00:00"
   },
   "history": [
     {
@@ -2366,9 +2366,18 @@
       "details": {
         "message": "IDEA_SLOT_MISMATCH"
       }
+    },
+    {
+      "at": "2026-10-23T05:21:03.122726+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IDEA_SLOT_MISMATCH",
+      "details": {
+        "message": "IDEA_SLOT_MISMATCH"
+      }
     }
   ],
-  "updated_at": "2026-10-23T05:15:55.409793+00:00",
+  "updated_at": "2026-10-23T05:21:03.122733+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
