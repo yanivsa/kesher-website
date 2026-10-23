@@ -13,6 +13,7 @@ MAX_HISTORY = 50
 MAX_TOPIC_BRIEF = 15500
 MAX_KEYWORD = 200
 IDEA_ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
+SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
 
 
 class IdeaQueueError(RuntimeError):
@@ -171,26 +172,182 @@ def article_dispatch_inputs(state: dict[str, Any], inputs: Mapping[str, Any] | N
     return payload
 
 
+def _resume_status_before_slot_mismatch(state: dict[str, Any]) -> str | None:
+    """Recover the exact pre-block status from durable history, never guess it."""
+    history = state.get("history")
+    if not isinstance(history, list):
+        return None
+    for row in reversed(history):
+        if not isinstance(row, dict):
+            continue
+        if str(row.get("reason") or "") != "IDEA_SLOT_MISMATCH":
+            continue
+        if str(row.get("to") or "") != "blocked":
+            continue
+        prior = str(row.get("from") or "").strip()
+        if prior and prior != "blocked":
+            return prior
+    return None
+
+
+def _verified_stale_active_completion(
+    state: dict[str, Any], active: dict[str, Any]
+) -> tuple[dict[str, str], str] | None:
+    """Return exact prior-cycle outputs only when durable backlog identity is complete.
+
+    This is deliberately narrow. It exists solely to heal a stale claimed owner
+    idea after daily rollover when the previous cycle has already been verified
+    end-to-end. Any missing or ambiguous evidence fails closed and leaves state
+    untouched.
+    """
+    current_cycle = str(state.get("cycle") or "").strip()
+    publication_slot = str(active.get("publication_slot") or "").strip()
+    last_error = state.get("last_error")
+    if (
+        str(state.get("status") or "") != "blocked"
+        or not isinstance(last_error, dict)
+        or str(last_error.get("code") or "") != "IDEA_SLOT_MISMATCH"
+        or not current_cycle
+        or not publication_slot
+        or publication_slot == current_cycle
+    ):
+        return None
+
+    backlog = state.get("backlog")
+    if not isinstance(backlog, list):
+        return None
+    matches = [
+        row for row in backlog
+        if isinstance(row, dict) and str(row.get("cycle") or "") == publication_slot
+    ]
+    if len(matches) != 1:
+        return None
+
+    row = matches[0]
+    article = row.get("article")
+    media = row.get("media")
+    if not isinstance(article, dict) or not isinstance(media, dict):
+        return None
+
+    slug = str(article.get("slug") or row.get("exact_slug") or "").strip()
+    exact_slug = str(row.get("exact_slug") or "").strip()
+    idea_id = str(active.get("idea_id") or "").strip()
+    article_url = str(article.get("url") or "").strip()
+    article_sha = str(article.get("quality_content_sha256") or "").strip().lower()
+    media_slug = str(media.get("source_slug") or "").strip()
+    media_sha = str(media.get("source_content_sha256") or "").strip().lower()
+    media_article_url = str(media.get("article_url") or "").strip()
+    long_url = str(media.get("long_youtube_url") or "").strip()
+    short_url = str(media.get("short_youtube_url") or "").strip()
+
+    if not slug or not exact_slug or slug != exact_slug or media_slug != slug:
+        return None
+    if idea_id and idea_id != slug:
+        return None
+    if not SHA256_RE.fullmatch(article_sha) or media_sha != article_sha:
+        return None
+    if str(article.get("quality_status") or "") != "passed":
+        return None
+    if not article_url or media_article_url != article_url or media.get("article_live") is not True:
+        return None
+    if media.get("complete") is not True:
+        return None
+    if str(media.get("long_status") or "") != "complete" or not long_url:
+        return None
+    if str(media.get("short_status") or "") != "complete" or not short_url:
+        return None
+    if int(media.get("short_width") or 0) != 1080 or int(media.get("short_height") or 0) != 1920:
+        return None
+
+    history = state.get("history")
+    delivery_verified = False
+    if isinstance(history, list):
+        for event in reversed(history):
+            if not isinstance(event, dict):
+                continue
+            details = event.get("details") if isinstance(event.get("details"), dict) else {}
+            if (
+                str(event.get("reason") or "")
+                == "prior-cycle article media delivery verified without disturbing current cycle"
+                and str(details.get("backlog_cycle") or "") == publication_slot
+                and str(details.get("source_slug") or "") == slug
+            ):
+                delivery_verified = True
+                break
+    if not delivery_verified:
+        return None
+
+    resume_status = _resume_status_before_slot_mismatch(state)
+    if not resume_status:
+        return None
+
+    return {
+        "slug": slug,
+        "content_sha256": article_sha,
+        "article_url": article_url,
+        "long_url": long_url,
+        "short_url": short_url,
+    }, resume_status
+
+
 def finalize_if_complete(state: dict[str, Any], *, now_iso: str) -> bool:
     ensure_fields(state)
     active = state.get("active_idea")
-    if state.get("status") != "complete" or not isinstance(active, dict):
+    if not isinstance(active, dict):
         return False
-    slug = str((state.get("article") or {}).get("slug") or "").strip()
-    article_url = str((state.get("article") or {}).get("url") or "").strip()
-    if not slug and article_url:
-        slug = article_url.rstrip("/").split("/")[-1].strip()
-    outputs = {
-        "slug": slug,
-        "article_url": article_url,
-        "long_url": str((state.get("long_video") or {}).get("youtube_url") or "").strip(),
-        "short_url": str((state.get("short") or {}).get("youtube_url") or "").strip(),
-    }
-    if not (outputs["article_url"] and outputs["long_url"] and outputs["short_url"]):
+
+    if state.get("status") == "complete":
+        slug = str((state.get("article") or {}).get("slug") or "").strip()
+        article_url = str((state.get("article") or {}).get("url") or "").strip()
+        if not slug and article_url:
+            slug = article_url.rstrip("/").split("/")[-1].strip()
+        outputs = {
+            "slug": slug,
+            "article_url": article_url,
+            "long_url": str((state.get("long_video") or {}).get("youtube_url") or "").strip(),
+            "short_url": str((state.get("short") or {}).get("youtube_url") or "").strip(),
+        }
+        if not (outputs["article_url"] and outputs["long_url"] and outputs["short_url"]):
+            return False
+        done = copy.deepcopy(active)
+        done.update({"status": "complete", "completed_at": now_iso, "outputs": outputs})
+        state["idea_history"].append(done)
+        state["idea_history"] = state["idea_history"][-MAX_HISTORY:]
+        state["active_idea"] = None
+        return True
+
+    verified = _verified_stale_active_completion(state, active)
+    if verified is None:
         return False
+    outputs, resume_status = verified
+
     done = copy.deepcopy(active)
-    done.update({"status": "complete", "completed_at": now_iso, "outputs": outputs})
+    done.update({
+        "status": "complete",
+        "completed_at": now_iso,
+        "outputs": outputs,
+        "completion_source": "verified_backlog",
+    })
     state["idea_history"].append(done)
     state["idea_history"] = state["idea_history"][-MAX_HISTORY:]
     state["active_idea"] = None
+    prior_status = str(state.get("status") or "")
+    state["status"] = resume_status
+    state["last_error"] = None
+    history = state.get("history")
+    if not isinstance(history, list):
+        history = []
+    history.append({
+        "at": now_iso,
+        "from": prior_status,
+        "to": resume_status,
+        "reason": "stale_active_idea_finalized_from_verified_backlog",
+        "details": {
+            "publication_slot": str(active.get("publication_slot") or ""),
+            "idea_id": str(active.get("idea_id") or ""),
+            "source_slug": outputs["slug"],
+            "content_sha256": outputs["content_sha256"],
+        },
+    })
+    state["history"] = history[-100:]
     return True
