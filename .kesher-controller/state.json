@@ -1548,7 +1548,8 @@
         "blocked": true,
         "article_exhausted": true
       },
-      "archived_at": "2026-10-23T21:00:54.743468+00:00"
+      "archived_at": "2026-10-23T21:00:54.743468+00:00",
+      "media": {}
     }
   ],
   "last_error": null,
