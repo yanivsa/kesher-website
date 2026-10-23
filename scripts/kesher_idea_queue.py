@@ -231,7 +231,6 @@ def _verified_stale_active_completion(
 
     slug = str(article.get("slug") or row.get("exact_slug") or "").strip()
     exact_slug = str(row.get("exact_slug") or "").strip()
-    idea_id = str(active.get("idea_id") or "").strip()
     article_url = str(article.get("url") or "").strip()
     article_sha = str(article.get("quality_content_sha256") or "").strip().lower()
     media_slug = str(media.get("source_slug") or "").strip()
@@ -241,8 +240,6 @@ def _verified_stale_active_completion(
     short_url = str(media.get("short_youtube_url") or "").strip()
 
     if not slug or not exact_slug or slug != exact_slug or media_slug != slug:
-        return None
-    if idea_id and idea_id != slug:
         return None
     if not SHA256_RE.fullmatch(article_sha) or media_sha != article_sha:
         return None
@@ -256,7 +253,7 @@ def _verified_stale_active_completion(
         return None
     if str(media.get("short_status") or "") != "complete" or not short_url:
         return None
-    if int(media.get("short_width") or 0) != 1080 or int(media.get("short_height") or 0) != 1920:
+    if media.get("short_width") != 1080 or media.get("short_height") != 1920:
         return None
 
     history = state.get("history")
