@@ -2301,8 +2301,8 @@
     "attempt_count": 0,
     "status": "pending",
     "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
+    "next_retry_at": "2026-10-23T00:47:26.268747+00:00",
+    "run_id": 39878132512,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -2611,31 +2611,15 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 39877522583,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 39878132512,
     "conclusion": "success",
-    "source_slug": null,
+    "source_slug": "potty-training-constipation",
     "slot": "2026-10-23"
   },
   "processed_child_notifications": [
     "Deploy to Cloudflare Pages:39874244291",
     "Deploy to Cloudflare Pages:39877522583"
   ],
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-23",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "potty-training-constipation",
-        "target_content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a",
-        "target_item_id": "video-20261023-031915-7ef7e10560"
-      },
-      "intent_at": "2026-10-23T00:25:57.885589+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 39878132512,
-      "dispatched_at": "2026-10-23T00:25:57.885589+00:00"
-    }
-  }
+  "pending_dispatches": {}
 }
