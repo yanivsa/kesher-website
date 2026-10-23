@@ -5,6 +5,7 @@ import unittest
 
 from scripts import kesher_content_controller as controller
 from scripts import kesher_content_controller_entry as entry
+from tests.test_kesher_idea_queue import StaleActiveIdeaRolloverTests  # noqa: F401
 
 
 def item(
