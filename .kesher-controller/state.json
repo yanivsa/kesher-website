@@ -1456,10 +1456,13 @@
         "article_deploy_status": "complete",
         "article_last_deploy_dispatch_at": "2026-10-21T21:16:31.613392+00:00",
         "last_error": null,
-        "long_status": "running",
+        "long_status": "complete",
         "seed_dispatch_count": 1,
         "long_last_dispatch_at": "2026-10-23T00:26:36.074405+00:00",
-        "long_resume_count": 1
+        "long_resume_count": 1,
+        "long_item_id": "video-20261023-031915-7ef7e10560",
+        "long_youtube_url": "https://youtu.be/7YU6BL9BZ98",
+        "long_youtube_id": "7YU6BL9BZ98"
       }
     },
     {
@@ -2621,5 +2624,20 @@
     "Deploy to Cloudflare Pages:39874244291",
     "Deploy to Cloudflare Pages:39877522583"
   ],
-  "pending_dispatches": {}
+  "pending_dispatches": {
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-23",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "potty-training-constipation",
+        "derive_content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a",
+        "derive_long_item_id": "video-20261023-031915-7ef7e10560"
+      },
+      "intent_at": "2026-10-23T00:42:26.268747+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  }
 }
