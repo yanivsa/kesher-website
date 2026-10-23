@@ -2638,5 +2638,20 @@
     "Deploy to Cloudflare Pages:39877522583",
     "Kesher Daily NotebookLM Video Overview:39878132512"
   ],
-  "pending_dispatches": {}
+  "pending_dispatches": {
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-23",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "potty-training-constipation",
+        "derive_content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a",
+        "derive_long_item_id": "video-20261023-031915-7ef7e10560"
+      },
+      "intent_at": "2026-10-23T00:54:03.783816+00:00",
+      "status": "intent",
+      "previous_run_id": 39879741765,
+      "observed_active_run_id": null
+    }
+  }
 }
