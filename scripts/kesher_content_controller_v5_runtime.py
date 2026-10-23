@@ -35,7 +35,6 @@ TERMINAL_BACKLOG_MEDIA_ERRORS = frozenset({
     "BACKLOG_SHORT_ATTEMPTS_EXHAUSTED",
     "BACKLOG_EXACT_SEED_ATTEMPTS_EXHAUSTED",
     "BACKLOG_LEGACY_EVIDENCE_REBUILD_EXHAUSTED",
-    "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED",
 })
 
 
@@ -295,6 +294,8 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
             )
 
         media["article_deploy_status"] = "complete"
+        if media.get("last_error") == "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED":
+            media["last_error"] = None
 
         long_state = self.github.newest_video_state()
         long_verified = v5._newest(v5._verified_exact(long_state, source))
