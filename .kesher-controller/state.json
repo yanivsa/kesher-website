@@ -2626,13 +2626,13 @@
       "inputs": {
         "operation": "full",
         "target_slug": "potty-training-constipation",
-        "target_content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a"
+        "target_content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a",
+        "target_item_id": "video-20261023-031915-7ef7e10560"
       },
-      "intent_at": "2026-10-23T00:15:40.828107+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-23T00:25:57.885589+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": 39877078385,
-      "dispatched_at": "2026-10-23T00:15:40.828107+00:00"
+      "observed_active_run_id": null
     }
   }
 }
