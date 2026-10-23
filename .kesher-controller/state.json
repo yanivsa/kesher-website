@@ -1455,7 +1455,10 @@
         "article_live": true,
         "article_deploy_status": "complete",
         "article_last_deploy_dispatch_at": "2026-10-21T21:16:31.613392+00:00",
-        "last_error": null
+        "last_error": null,
+        "long_status": "running",
+        "seed_dispatch_count": 1,
+        "long_last_dispatch_at": "2026-10-23T00:16:00.467104+00:00"
       }
     },
     {
@@ -2268,9 +2271,19 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-10-23T00:16:00.467132+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "dispatched exact prior-cycle long-video state handoff before current-cycle watchdog",
+      "details": {
+        "backlog_cycle": "2026-10-21",
+        "source_slug": "potty-training-constipation"
+      }
     }
   ],
-  "updated_at": "2026-10-23T00:15:53.404296+00:00",
+  "updated_at": "2026-10-23T00:16:00.467138+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2616,9 +2629,10 @@
         "target_content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a"
       },
       "intent_at": "2026-10-23T00:15:40.828107+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39877078385,
+      "dispatched_at": "2026-10-23T00:15:40.828107+00:00"
     }
   }
 }
