@@ -209,6 +209,108 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
         self.assertEqual(second.kind, "wait")
         self.assertEqual(gh.dispatches, [(core.DEPLOY_WORKFLOW, None)])
 
+    def test_deploy_exhausted_backlog_that_is_now_public_advances_to_long_video(self):
+        gh = FakeGitHub()
+        post = prior_article()
+        post["controllerManaged"] = True
+        source = v5.article_source_identity(post)
+        gh.posts = [post]
+
+        class LiveSite:
+            def get(self, _url):
+                return 200, (
+                    "<html><head>"
+                    f'<link rel="canonical" href="https://kesher.saharoni.com/blog/{source["slug"]}">'
+                    f'<meta property="og:url" content="https://kesher.saharoni.com/blog/{source["slug"]}">'
+                    f'<meta name="kesher:content-sha256" content="{source["content_sha256"]}">'
+                    "</head>"
+                    f"<body><h1>{post['title']}</h1></body></html>"
+                )
+
+        state = {
+            "status": "waiting_for_article_window",
+            "backlog": [{
+                "cycle": "2026-08-19",
+                "status": "article_deploying",
+                "article": {
+                    "slug": source["slug"],
+                    "quality_content_sha256": source["content_sha256"],
+                    "deploy_attempts": runtime.MAX_BACKLOG_DEPLOY_DISPATCHES,
+                },
+                "media": {
+                    "article_live": False,
+                    "article_deploy_status": "exhausted",
+                    "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED",
+                },
+            }],
+            "history": [],
+        }
+        controller = runtime.RuntimeV5Controller(
+            gh,
+            LiveSite(),
+            now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
+        )
+
+        action = controller._backlog_media_preflight(state)
+
+        self.assertEqual(action.kind, "dispatch_backlog_long_video")
+        self.assertTrue(state["backlog"][0]["media"]["article_live"])
+        self.assertEqual(state["backlog"][0]["media"]["article_deploy_status"], "complete")
+        self.assertIsNone(state["backlog"][0]["media"]["last_error"])
+        self.assertEqual(
+            gh.dispatches,
+            [(
+                v5.LONG_VIDEO_WORKFLOW,
+                {
+                    "operation": "full",
+                    "target_slug": source["slug"],
+                    "target_content_sha256": source["content_sha256"],
+                },
+            )],
+        )
+
+    def test_deploy_exhausted_backlog_still_404s_without_an_extra_deploy(self):
+        gh = FakeGitHub()
+        post = prior_article()
+        post["controllerManaged"] = True
+        source = v5.article_source_identity(post)
+        gh.posts = [post]
+
+        class MissingSite:
+            def get(self, _url):
+                return 404, "<html><h1>not found</h1></html>"
+
+        state = {
+            "status": "waiting_for_article_window",
+            "backlog": [{
+                "cycle": "2026-08-19",
+                "article": {
+                    "slug": source["slug"],
+                    "quality_content_sha256": source["content_sha256"],
+                    "deploy_attempts": runtime.MAX_BACKLOG_DEPLOY_DISPATCHES,
+                },
+                "media": {
+                    "article_live": False,
+                    "article_deploy_status": "exhausted",
+                    "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED",
+                },
+            }],
+            "history": [],
+        }
+        controller = runtime.RuntimeV5Controller(
+            gh,
+            MissingSite(),
+            now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
+        )
+
+        action = controller._backlog_media_preflight(state)
+
+        self.assertEqual(action.kind, "blocked")
+        self.assertEqual(action.reason, "prior-cycle article deployment attempts exhausted")
+        self.assertEqual(gh.dispatches, [])
+        self.assertFalse(state["backlog"][0]["media"]["article_live"])
+        self.assertEqual(state["backlog"][0]["media"]["article_deploy_status"], "exhausted")
+
     def test_published_backlog_source_rejects_title_only_public_page(self):
         gh = FakeGitHub()
         post = prior_article()
