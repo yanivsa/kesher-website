@@ -13,6 +13,117 @@ ISRAEL_TZ = ZoneInfo("Asia/Jerusalem")
 
 
 class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
+    def test_exhausted_auto_merge_recovers_exact_pr_after_late_jules_head_change(self) -> None:
+        github = mock.MagicMock()
+        site = mock.MagicMock()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            now=datetime(2026, 10, 23, 16, 0, tzinfo=ISRAEL_TZ),
+            github=github,
+            site=site,
+        )
+        old_head = "4d922a592dd7cd46d9ea4cbf2be9a026d2b9243e"
+        new_head = "7baf8d39ad4173b9816b15b9e2b9df06c8e534cf"
+        state = {
+            "cycle": "2026-10-23",
+            "status": "blocked",
+            "schema_version": 5,
+            "last_error": {
+                "stage": "article",
+                "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+                "message": "PR #1182 exceeded maximum auto-merge dispatch budget (3 dispatches)",
+            },
+            "article": {
+                "pr_number": 1182,
+                "status": "exhausted",
+                "current_pr_head_sha": old_head,
+                "normalized_head_sha": old_head,
+                "merge_candidate_sha": old_head,
+                "normalization_status": "complete",
+                "merge_dispatch_count": 3,
+                "merge_dispatch_at": "2026-10-23T12:06:28+00:00",
+            },
+            "image": {"status": "complete", "run_id": 123},
+            "pending_dispatches": {
+                "auto-merge-article-prs.yml": {
+                    "workflow": "auto-merge-article-prs.yml",
+                    "cycle": "2026-10-23",
+                    "status": "dispatched",
+                    "inputs": {"pr_number": "1182", "slot": "2026-10-23"},
+                }
+            },
+        }
+        pr = {
+            "number": 1182,
+            "state": "open",
+            "html_url": "https://github.com/yanivsa/kesher-website/pull/1182",
+            "head": {"sha": new_head},
+            "body": "",
+        }
+
+        def request(method, url, **kwargs):
+            if url.endswith("/pulls/1182"):
+                return pr
+            if f"/commits/{new_head}" in url:
+                return {"parents": [{"sha": old_head}]}
+            if "/issues/1182/comments" in url:
+                return []
+            return {}
+
+        github.request.side_effect = request
+        github.article_pr_normalization_required.return_value = (True, "2026-10-23")
+        github.active_normalizer_run.return_value = None
+
+        action = controller._recover_exhausted_article_after_late_head_change(state)
+
+        self.assertIsNotNone(action)
+        self.assertEqual(action.kind, "dispatch_normalize")
+        self.assertEqual(state["article"]["current_pr_head_sha"], new_head)
+        self.assertEqual(state["article"]["merge_dispatch_count"], 0)
+        self.assertNotIn("auto-merge-article-prs.yml", state["pending_dispatches"])
+        self.assertEqual(state["article"]["normalization_status"], "running")
+        self.assertEqual(state["image"]["status"], "pending")
+        self.assertEqual(state["status"], "article_normalizing")
+        self.assertIsNone(state.get("last_error"))
+        github.dispatch.assert_called_once_with(
+            "normalize-article-pr.yml",
+            {"pr_number": "1182", "slot": "2026-10-23"},
+        )
+
+    def test_exhausted_auto_merge_does_not_reopen_when_exact_pr_head_is_unchanged(self) -> None:
+        github = mock.MagicMock()
+        site = mock.MagicMock()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            now=datetime(2026, 10, 23, 16, 0, tzinfo=ISRAEL_TZ),
+            github=github,
+            site=site,
+        )
+        head = "4d922a592dd7cd46d9ea4cbf2be9a026d2b9243e"
+        state = {
+            "cycle": "2026-10-23",
+            "status": "blocked",
+            "schema_version": 5,
+            "last_error": {"stage": "article", "code": "ARTICLE_ATTEMPTS_EXHAUSTED"},
+            "article": {
+                "pr_number": 1182,
+                "status": "exhausted",
+                "current_pr_head_sha": head,
+                "normalized_head_sha": head,
+                "merge_dispatch_count": 3,
+            },
+        }
+        github.request.return_value = {
+            "number": 1182,
+            "state": "open",
+            "head": {"sha": head},
+        }
+
+        action = controller._recover_exhausted_article_after_late_head_change(state)
+
+        self.assertIsNone(action)
+        self.assertEqual(state["status"], "blocked")
+        self.assertEqual(state["article"]["merge_dispatch_count"], 3)
+        github.dispatch.assert_not_called()
+
     def test_v4_controller_invalidates_normalization_when_pr_head_changes(self) -> None:
         github = mock.MagicMock()
         site = mock.MagicMock()
@@ -112,6 +223,14 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
                 "normalization_status": "complete",
             },
             "image": {"status": "running", "run_id": 99999},
+            "pending_dispatches": {
+                "auto-merge-article-prs.yml": {
+                    "workflow": "auto-merge-article-prs.yml",
+                    "cycle": "2026-10-16",
+                    "status": "dispatched",
+                    "inputs": {"pr_number": "1130", "slot": "2026-10-16"},
+                }
+            },
         }
 
         pr = {
@@ -132,6 +251,7 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
         self.assertEqual(state["article"]["normalization_status"], "running")
         self.assertEqual(state["image"]["status"], "pending")
         self.assertNotIn("run_id", state["image"])
+        self.assertNotIn("auto-merge-article-prs.yml", state["pending_dispatches"])
         self.assertEqual(state["status"], "article_normalizing")
 
     def test_stabilized_controller_counts_distinct_drift_heads_not_polls(self) -> None:
