@@ -3,6 +3,7 @@ import recentPosts from './postsRecent.json';
 import giftedParentPosts from './giftedParentPosts.json';
 import giftedParentPostsWave2 from './giftedParentPostsWave2.json';
 import giftedParentOverrides from './giftedParentOverrides.json';
+import giftedParentWave2Overrides from './giftedParentWave2Overrides.json';
 import { applyInternalLinkBackfill } from './internalLinkBackfill';
 
 type BasePost = (typeof posts)[number];
@@ -12,10 +13,12 @@ const topicPosts = [
   ...(giftedParentPostsWave2 as unknown as BasePost[]),
 ];
 const topicOverrides = giftedParentOverrides as unknown as Record<string, Partial<BasePost>>;
+const wave2TopicOverrides = giftedParentWave2Overrides as unknown as Record<string, Partial<BasePost>>;
 
 const applyTopicOverride = (post: BasePost): BasePost => {
   const override = topicOverrides[post.id];
-  return override ? ({ ...post, ...override } as BasePost) : post;
+  const wave2Override = wave2TopicOverrides[post.id];
+  return ({ ...post, ...(override ?? {}), ...(wave2Override ?? {}) } as BasePost);
 };
 
 const allPosts = [
