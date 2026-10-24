@@ -22,8 +22,9 @@ const loadPosts = () => {
   const historical = readList(path.join(ROOT, 'src', 'data', 'posts.json'));
   const recent = readList(path.join(ROOT, 'src', 'data', 'postsRecent.json'));
   const giftedParentPosts = readList(path.join(ROOT, 'src', 'data', 'giftedParentPosts.json'));
+  const giftedParentPostsWave2 = readList(path.join(ROOT, 'src', 'data', 'giftedParentPostsWave2.json'));
   const giftedParentOverrides = readObject(path.join(ROOT, 'src', 'data', 'giftedParentOverrides.json'));
-  const combined = [...giftedParentPosts, ...recent, ...historical]
+  const combined = [...giftedParentPosts, ...giftedParentPostsWave2, ...recent, ...historical]
     .map((post) => ({ ...post, ...(giftedParentOverrides[post.id] || {}) }));
   const seen = new Set();
   for (const post of combined) {
