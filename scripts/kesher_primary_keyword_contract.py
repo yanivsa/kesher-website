@@ -15,7 +15,6 @@ SEMANTIC_KEYWORD_DICTIONARY: dict[str, set[str]] = {
     "גמילה מחיתולים": {"potty", "toilet", "diaper"},
     "גמילה מחיתול": {"potty", "toilet", "diaper"},
     "גמילת לילה": {"night", "potty", "bedwetting", "diaper"},
-    "קקי במכנסיים": {"poops", "pants"},
     # Pacifier weaning / Toddler transitions
     "גמילה ממוצץ": {"pacifier", "weaning", "soother", "dummy"},
     "גמילה ממוצצים": {"pacifier", "weaning", "soother", "dummy"},
@@ -78,6 +77,8 @@ SEMANTIC_KEYWORD_DICTIONARY: dict[str, set[str]] = {
     "שגרת שינה": {"sleep", "bedtime", "routine"},
     "בעיות שינה": {"sleep", "problems", "insomnia"},
     "מריבות בין אחים": {"siblings", "rivalry", "fights"},
+    # Toddler soiling accidents (poop in pants)
+    "ילד עושה קקי במכנסיים": {"poop", "pooping", "soiling", "accident"},
     # Aliyah & Relocation
     "רילוקיישן": {"relocation", "moving", "transition"},
     "עלייה": {"aliyah", "immigration"},
