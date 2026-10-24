@@ -5,16 +5,52 @@
     <link>https://kesher.saharoni.com/blog</link>
     <description>מאמרים מקצועיים, תובנות וכלים מעשיים בנושאי ייעוץ זוגי, הדרכת הורים וגישור משפחתי מאת שירה סהרוני.</description>
     <language>he-IL</language>
-    <lastBuildDate>Wed, 21 Oct 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 23 Oct 2026 00:00:00 GMT</lastBuildDate>
     <managingEditor>shira@saharoni.com (Shira Saharoni)</managingEditor>
     <webMaster>shira@saharoni.com (Shira Saharoni)</webMaster>
     <atom:link href="https://kesher.saharoni.com/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>למה ילד עושה קקי במכנסיים אחרי שנגמל, ואיך להגיב נכון?</title>
+      <link>https://kesher.saharoni.com/blog/child-poops-in-pants</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/child-poops-in-pants</guid>
+      <pubDate>Fri, 23 Oct 2026 00:00:00 GMT</pubDate>
+      <description>פספוסי קקי אצל ילדים שכבר נגמלו יכולים לעורר תסכול ודאגה רבה. למה זה קורה דווקא עכשיו, איך להבדיל בין קושי רגשי לבעיה פיזית, ומה הדרך הכי טובה להגיב כדי לעזור לילד?</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
     <item>
       <title>עצירות בגמילה מחיתולים: למה הילד מתאפק ומה אפשר לעשות?</title>
       <link>https://kesher.saharoni.com/blog/potty-training-constipation</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/potty-training-constipation</guid>
       <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
       <description>תקופת המעבר לשירותים מביאה איתה לפעמים אתגרים לא צפויים, כשאחד המוכרים שבהם הוא התאפקות שמובילה לעצירות. למה זה קורה, איך אפשר להקל על הילד, ומתי מומלץ לפנות לייעוץ רפואי?</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>הילד עבר את מבחן המחוננים — ומה עכשיו? מדריך להורים אחרי התוצאה</title>
+      <link>https://kesher.saharoni.com/blog/after-gifted-identification-next-steps-family</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/after-gifted-identification-next-steps-family</guid>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+      <description>הילד עבר את מבחן המחוננים? לפני שהופכים את התוצאה לתווית, בדקו התאמה למסגרת, ציפיות, קול הילד, אחים ולחץ להצטיין. מדריך להורים לשלב שאחרי.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>הילד לא עבר את מבחן המחוננים — איך מגיבים כהורים?</title>
+      <link>https://kesher.saharoni.com/blog/child-not-selected-gifted-program-parent-response</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/child-not-selected-gifted-program-parent-response</guid>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+      <description>הילד לא עבר את מבחן המחוננים? כך מגיבים בלי לפגוע בביטחון, מפרידים בין תוצאה לזהות, מתמודדים עם אכזבה הורית וממשיכים לטפח סקרנות ויכולת.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>מבחן מחוננים ראשון: איך להכין את הילד רגשית — בלי להפוך את הבית למכון הכנה</title>
+      <link>https://kesher.saharoni.com/blog/gifted-test-first-emotional-preparation-parents</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/gifted-test-first-emotional-preparation-parents</guid>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+      <description>איך מכינים ילד רגשית למבחן מחוננים? מדריך להורים על הורדת לחץ, שיחה נכונה, שגרה ומה עושים לפני ואחרי המבחן — בלי אימון לשאלות.</description>
       <category>הדרכת הורים</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
@@ -370,11 +406,11 @@
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>מה זה ילד מחונן? הגדרה, סימנים ומה חשוב להורים לדעת</title>
+      <title>מה זה ילד מחונן? הגדרה, מאפיינים ומה חשוב להורים לדעת</title>
       <link>https://kesher.saharoni.com/blog/how-to-identify-a-gifted-child-parents-guide</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/how-to-identify-a-gifted-child-parents-guide</guid>
       <pubDate>Mon, 21 Sep 2026 00:00:00 GMT</pubDate>
-      <description>מה זה ילד מחונן, איך מגדירים מחוננות בישראל, אילו סימנים עשויים להופיע ומה חשוב להורים לדעת על איתור, רגש ותמיכה — בלי להפוך את הילד לתווית.</description>
+      <description>מה זה ילד מחונן, איך מגדירים מחוננות בישראל ומה מבחן האיתור כן ולא אומר? מדריך להורים עם דגש על ביטחון רגשי, ציפיות ותמיכה בבית.</description>
       <category>הדרכת הורים</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
