@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-23",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 2,
-    "status": "exhausted",
+    "status": "running",
     "last_error": null,
     "next_retry_at": "2026-10-24T17:40:59.234065+00:00",
     "run_id": 40113449983,
@@ -34,14 +34,14 @@
     },
     "pr_number": 1185,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1185",
-    "current_pr_head_sha": "4b775494c9dae362c0f580ccf66f8ef7ee6119b5",
+    "current_pr_head_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347",
     "jules_head_sha": "4389b5a6530a20da0f2f29980b3235772b1f500a",
     "normalization_slot": "2026-10-23",
     "normalization_dispatched_at": "2026-10-24T17:46:03.327865+00:00",
-    "merge_dispatch_at": "2026-10-24T18:10:59.244021+00:00",
-    "merge_dispatch_count": 3,
+    "merge_dispatch_at": null,
+    "merge_dispatch_count": 0,
     "normalization_run_id": 40117617387,
-    "normalization_drift_count": 2,
+    "normalization_drift_count": 0,
     "last_normalization_drift_head_sha": "4b775494c9dae362c0f580ccf66f8ef7ee6119b5",
     "last_run_conclusion": "failure",
     "last_worker_result": {
@@ -73,9 +73,9 @@
     },
     "last_jules_session_id": "sessions/15737535881463004872",
     "last_failed_run_id": 40113449983,
-    "normalized_head_sha": "4b775494c9dae362c0f580ccf66f8ef7ee6119b5",
-    "image_head_sha": "4b775494c9dae362c0f580ccf66f8ef7ee6119b5",
-    "merge_candidate_sha": "4b775494c9dae362c0f580ccf66f8ef7ee6119b5",
+    "normalized_head_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347",
+    "image_head_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347",
+    "merge_candidate_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347",
     "merge_run_id": 40118371517
   },
   "backlog": [
@@ -1526,22 +1526,8 @@
       "media": {}
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "PR #1185 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-24T19:30:55.843427+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-23T07:06:10.818303+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
     {
       "at": "2026-10-23T07:11:19.887278+00:00",
       "from": "blocked",
@@ -2431,9 +2417,20 @@
       "details": {
         "message": "PR #1185 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-10-24T19:35:56.571716+00:00",
+      "from": "blocked",
+      "to": "article_pr_open",
+      "reason": "late_article_head_after_merge_exhaustion_recovery",
+      "details": {
+        "pr_number": 1185,
+        "previous_head_sha": "4b775494c9dae362c0f580ccf66f8ef7ee6119b5",
+        "current_head_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347"
+      }
     }
   ],
-  "updated_at": "2026-10-24T19:30:55.843444+00:00",
+  "updated_at": "2026-10-24T19:36:07.829717+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2786,19 +2783,6 @@
       "previous_run_id": 39945494171,
       "observed_active_run_id": 40113449983,
       "dispatched_at": "2026-10-24T16:50:51.939465+00:00"
-    },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
-      "cycle": "2026-10-23",
-      "inputs": {
-        "pr_number": "1185",
-        "slot": "2026-10-23"
-      },
-      "intent_at": "2026-10-24T18:10:41.533384+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40118371517,
-      "observed_active_run_id": 40119522115,
-      "dispatched_at": "2026-10-24T18:10:41.533384+00:00"
     }
   },
   "last_child_notification": {
