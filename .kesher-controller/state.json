@@ -1,94 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-23",
-  "status": "complete",
+  "cycle": "2026-10-25",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 40113449983,
-    "processed_run_id": 40113449983,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 1
-    },
+    "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 1,
-    "normalization_status": "complete",
-    "deploy_run_id": 40126405494,
-    "next_deploy_retry_at": null,
-    "last_dispatch_at": "2026-10-24T16:51:04.936112+00:00",
-    "watchdog": {
-      "identity": "2026-10-23",
-      "session_id": null,
-      "last_progress_at": "2026-10-23T11:21:24+00:00",
-      "last_fingerprint": null,
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "pr_number": 1185,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1185",
-    "current_pr_head_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347",
-    "jules_head_sha": "4389b5a6530a20da0f2f29980b3235772b1f500a",
-    "normalization_slot": "2026-10-23",
-    "normalization_dispatched_at": "2026-10-24T17:46:03.327865+00:00",
-    "merge_dispatch_at": null,
-    "merge_dispatch_count": 0,
-    "normalization_run_id": 40117617387,
-    "normalization_drift_count": 0,
-    "last_normalization_drift_head_sha": "4b775494c9dae362c0f580ccf66f8ef7ee6119b5",
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-10-23",
-      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "retryable": true,
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new Hebrew article on the topic of a child pooping in their pants after being potty-trained, targeting the specific publication slot `2026-10-23`, while strictly adhering to pipeline constraints (no image/video generation, specific primary keyword, no global factual claims). 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully adds the required article to `src/data/posts.json` and updates all downstream generated files (`postSummaries.json`, `sitemap.xml`, `rss.…",
-      "session_id": "sessions/15737535881463004872",
-      "pr_url": "",
-      "github_run_id": "40113449983",
-      "completed_at": "2026-10-24T17:31:24.861319+00:00",
-      "diagnostic": {
-        "source": {
-          "name": "sources/github/yanivsa/kesher-website",
-          "owner": "yanivsa",
-          "repo": "kesher-website",
-          "default_branch": "main",
-          "main_available": true
-        },
-        "activity_count": 58,
-        "change_set_count": 55,
-        "change_set_fingerprints": [],
-        "last_agent_message": "",
-        "last_progress": "Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new Hebrew article on the topic of a child pooping in their pants after being potty-trained, targeting the specific publication slot `2026-10-23`, while strictly adhering to pipeline constraints (no image/video generation, specific primary keyword, no global factual claims). 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully adds the required article to `src/data/posts.json` and updates all downstream generated files (`postSummaries.json`, `sitemap.xml`, `rss.…",
-        "last_description": "",
-        "session_failed_reason": ""
-      }
-    },
-    "last_jules_session_id": "sessions/15737535881463004872",
-    "last_failed_run_id": 40113449983,
-    "normalized_head_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347",
-    "image_head_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347",
-    "merge_candidate_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347",
-    "merge_run_id": 40125942362,
-    "slug": "child-poops-in-pants",
-    "title": "למה ילד עושה קקי במכנסיים אחרי שנגמל, ואיך להגיב נכון?",
-    "url": "https://kesher.saharoni.com/blog/child-poops-in-pants",
-    "published_date": "2026-10-23",
-    "quality_content_sha256": "c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce",
-    "reconciled_existing_article": true,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-10-24T20:58:17.754262+00:00",
-    "quality_violations": [],
-    "live": true,
-    "last_deploy_dispatch_at": "2026-10-24T19:40:56.244343+00:00",
-    "live_verified_at": "2026-10-24T20:58:41.827784+00:00"
+    "deploy_attempts": 0,
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -1541,186 +1468,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-23T09:31:39.150777+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T09:36:05.263767+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T09:41:14.479203+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T09:50:15.385412+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T09:53:00.807996+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T10:04:32.071833+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T10:11:13.701445+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T10:16:02.067106+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T10:20:14.346367+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T10:21:25.849217+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T10:24:13.726107+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T10:26:24.997770+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T10:31:26.122732+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T10:36:07.388333+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T10:41:10.719818+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T10:46:29.239892+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T10:50:58.549499+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T10:56:00.378086+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T11:01:22.695594+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
-      "at": "2026-10-23T11:05:59.934960+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
       "at": "2026-10-23T11:11:13.541270+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2374,200 +2121,62 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-24T21:00:46.924894+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-10-24T21:00:46.924898+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-10-24T21:00:46.925528+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-10-24T20:58:43.571493+00:00",
+  "updated_at": "2026-10-24T21:00:46.924876+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "LocalEditorial",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-24T17:47:21.683315+00:00",
-    "artifact_sha256": "7b510cec37dc6e0b2313166008f7950f91edef29f3112de8057424177d63b8fd",
-    "source_id": "local-editorial://child-poops-in-pants/2",
-    "run_id": null,
-    "image_path": "/images/generated/blog/child-poops-in-pants.png"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 40126913602,
-    "processed_run_id": 39878132512,
-    "provider_id": "bd578723-20be-464c-b746-42c26abf4691",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_run_conclusion": "success",
-    "last_dispatch_at": "2026-10-24T19:47:50.948484+00:00",
-    "attempts": 1,
-    "item_id": "video-20261024-225012-c8700c124e",
-    "youtube_id": "2moNskgB728",
-    "youtube_url": "https://youtu.be/2moNskgB728",
-    "verified": true,
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 109.8,
-    "content_duration_seconds": 109.792,
-    "signature_duration_seconds": 3.0,
-    "signature_overlay": true,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "artifact_id": "bd578723-20be-464c-b746-42c26abf4691",
-    "source_id": "ba0a1e5e-1806-436d-9d44-8c2e50d355dd"
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 40131642362,
-    "processed_run_id": 39880894669,
-    "provider_id": "705046f9-62dc-40cc-a4fc-c46bde2e7139",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_run_conclusion": "success",
-    "last_dispatch_at": "2026-10-24T20:51:15.540015+00:00",
-    "artifact_id": "705046f9-62dc-40cc-a4fc-c46bde2e7139",
-    "source_id": "ae44c681-7b42-4308-821f-d68184fc9e09",
-    "adopted_from_long_item_id": null,
-    "watchdog": {
-      "identity": "short:child-poops-in-pants:c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce:video-20261024-231842-c8700c124e",
-      "hard_started_at": "2026-10-24T20:18:50.601405+00:00",
-      "last_progress_at": "2026-10-24T20:25:40.322584+00:00",
-      "last_fingerprint": "4e21bc5481f4e9a8e9418c54523f45b0e7c0a94c05d5e3b1356776b6cf45759d",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-10-24T20:50:43.716218+00:00"
-    },
-    "source": {
-      "id": "child-poops-in-pants",
-      "slug": "child-poops-in-pants",
-      "title": "למה ילד עושה קקי במכנסיים אחרי שנגמל, ואיך להגיב נכון?",
-      "date": "2026-10-23",
-      "category": "הדרכת הורים",
-      "subcategory": "גמילה מחיתולים",
-      "excerpt": "פספוסי קקי אצל ילדים שכבר נגמלו יכולים לעורר תסכול ודאגה רבה. למה זה קורה דווקא עכשיו, איך להבדיל בין קושי רגשי לבעיה פיזית, ומה הדרך הכי טובה להגיב כדי לעזור לילד?",
-      "canonical_url": "https://kesher.saharoni.com/blog/child-poops-in-pants",
-      "content_sha256": "c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce",
-      "video_title": "למה ילד עושה קקי במכנסיים אחרי שנגמל, ואיך להגיב נכון?",
-      "short_title": "למה ילד עושה קקי במכנסיים אחרי שנגמל, ואיך להגיב נכון?",
-      "short_hook": "",
-      "youtube_metadata": {
-        "title": "למה ילד עושה קקי במכנסיים אחרי שנגמל, ואיך להגיב נכון?",
-        "description": "פספוסי קקי אצל ילדים שכבר נגמלו יכולים לעורר תסכול ודאגה רבה. למה זה קורה דווקא עכשיו, איך להבדיל בין קושי רגשי לבעיה פיזית, ומה הדרך הכי טובה להגיב כדי לעזור לילד?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/child-poops-in-pants\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "גמילה מחיתולים"
-        ]
-      },
-      "short_youtube_metadata": {
-        "title": "בקצרה: למה ילד עושה קקי במכנסיים אחרי שנגמל, ואיך להגיב נכון?",
-        "description": "פספוסי קקי אצל ילדים שכבר נגמלו יכולים לעורר תסכול ודאגה רבה. למה זה קורה דווקא עכשיו, איך להבדיל בין קושי רגשי לבעיה פיזית, ומה הדרך הכי טובה להגיב כדי לעזור לילד?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/child-poops-in-pants\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "גמילה מחיתולים"
-        ]
-      }
-    },
-    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-    "task_id": "705046f9-62dc-40cc-a4fc-c46bde2e7139",
-    "raw_sha256": "f0f61e91d060489f6d8b9225256ce0c29fd54888b602c4e4357678630ba20e3e",
-    "final_sha256": "f9d549c9cdbdda56ad8ed958233074f493575f67744201a4b14188da3b482e21",
-    "provider_raw_media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 720,
-      "height": 1280,
-      "duration": 66.733,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 1080,
-      "height": 1920,
-      "duration": 66.733,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "provider_video_format": "short",
-    "provider_native_short": true,
-    "provider_native_short_verified": true,
-    "provider_short_fallback_used": false,
-    "fresh_generation_attempt": 1,
-    "overview_provider_identity": {
-      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-      "source_id": "ba0a1e5e-1806-436d-9d44-8c2e50d355dd",
-      "task_id": "bd578723-20be-464c-b746-42c26abf4691",
-      "artifact_id": "bd578723-20be-464c-b746-42c26abf4691",
-      "raw_sha256": "abbc158b7ac7377dd08b85b31b2823371c3798e8baa122a55a8c5da33549f010"
-    },
-    "shared_provider_identity": null,
-    "short_start_seconds": 0.0,
-    "short_duration_seconds": 66.733,
-    "audio_provenance": {
-      "schema_version": 1,
-      "mode": "stream_copy",
-      "raw_sha256": "f0f61e91d060489f6d8b9225256ce0c29fd54888b602c4e4357678630ba20e3e",
-      "final_sha256": "f9d549c9cdbdda56ad8ed958233074f493575f67744201a4b14188da3b482e21",
-      "raw_audio_sha256": "93df730f4747bf0edfb6d2444c6c82eda706632e068782b8ef32fd0fa21503fa",
-      "final_audio_sha256": "93df730f4747bf0edfb6d2444c6c82eda706632e068782b8ef32fd0fa21503fa",
-      "raw_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 66.78059
-      },
-      "final_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 66.78059
-      }
-    },
-    "signature_overlay": true,
-    "signature_provenance": {
-      "schema_version": 1,
-      "final_sha256": "f9d549c9cdbdda56ad8ed958233074f493575f67744201a4b14188da3b482e21",
-      "raw_sha256": "f0f61e91d060489f6d8b9225256ce0c29fd54888b602c4e4357678630ba20e3e",
-      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-      "segment_sha256": "6d1c2e55a0b80b77e87e397f5ea7ec25c6bdc35b29646bb9892b49552a79bd23",
-      "source_duration_seconds": 66.733,
-      "final_duration_seconds": 66.733,
-      "start_seconds": 63.733000000000004,
-      "end_seconds": 66.733,
-      "audio_source_sha256": "f0f61e91d060489f6d8b9225256ce0c29fd54888b602c4e4357678630ba20e3e"
-    },
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "item_id": "video-20261024-231842-c8700c124e",
-    "type": "article_short",
-    "youtube_id": "A4-DzyBRJQ4",
-    "youtube_url": "https://youtu.be/A4-DzyBRJQ4",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "6d1c2e55a0b80b77e87e397f5ea7ec25c6bdc35b29646bb9892b49552a79bd23",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
@@ -2867,59 +2476,5 @@
       }
     }
   ],
-  "active_idea": null,
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/child-poops-in-pants",
-    "overview_youtube_url": "https://youtu.be/2moNskgB728",
-    "short_youtube_url": "https://youtu.be/A4-DzyBRJQ4",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
-  },
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-10-23",
-      "inputs": {
-        "slot": "2026-10-23",
-        "topic_brief": "אשכול גמילה שהסתבכה. נושא/כאב: קקי בתחתונים אחרי שהפיפי כבר הסתדר; כאב, בושה ותסכול של ההורה והילד. כתיבה לא שיפוטית והבחנה מעצירות/אנקופרזיס/התאפקות. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: child-poops-in-pants. כותרת עבודה: ילד עושה קקי במכנסיים: מה יכול לעמוד מאחורי זה ואיך מגיבים? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לאיש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תשנה URL קיים.\n\nIdea Request ID: parenting-p1-child-poops-in-pants\nRequired Primary Keyword: ילד עושה קקי במכנסיים"
-      },
-      "intent_at": "2026-10-24T16:50:51.939465+00:00",
-      "status": "active",
-      "previous_run_id": 39945494171,
-      "observed_active_run_id": 40113449983,
-      "dispatched_at": "2026-10-24T16:50:51.939465+00:00"
-    }
-  },
-  "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 40131642362,
-    "conclusion": "success",
-    "source_slug": "child-poops-in-pants",
-    "slot": "2026-10-23"
-  },
-  "processed_child_notifications": [
-    "Deploy to Cloudflare Pages:40126405494",
-    "Kesher Daily NotebookLM Video Overview:40126913602",
-    "Kesher Daily Article Short V4:40129088128",
-    "Kesher Daily Article Short V4:40131642362"
-  ],
-  "interventions": {
-    "v5|child-poops-in-pants|c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce|short": {
-      "pipeline_id": "v5",
-      "slug": "child-poops-in-pants",
-      "content_sha256": "c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-10-24T23",
-      "last_fingerprint": "0482b6c465d23d940c3464567300a0a70c94cd245ead7a590905204593b43540",
-      "last_controller_action_token": "recovery:1:2026-10-24T20:50:43.716218+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-10-24T20:50:43.716218+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-24T20:50:43.716218+00:00"
-    }
-  }
+  "active_idea": null
 }
