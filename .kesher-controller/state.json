@@ -19,7 +19,7 @@
     "deploy_attempts": 1,
     "normalization_status": "complete",
     "deploy_run_id": 40126405494,
-    "next_deploy_retry_at": null,
+    "next_deploy_retry_at": "2026-10-24T19:52:09.325154+00:00",
     "last_dispatch_at": "2026-10-24T16:51:04.936112+00:00",
     "watchdog": {
       "identity": "2026-10-23",
