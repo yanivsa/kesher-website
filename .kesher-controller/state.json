@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-23",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1541,15 +1541,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-23T07:21:31.713835+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
       "at": "2026-10-23T07:25:57.661773+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2438,9 +2429,19 @@
       "from": "article_deploying",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-24T19:47:50.948496+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-24T19:47:43.822197+00:00",
+  "updated_at": "2026-10-24T19:47:50.948503+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2458,8 +2459,8 @@
     "image_path": "/images/generated/blog/child-poops-in-pants.png"
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 39878132512,
@@ -2469,7 +2470,9 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_run_conclusion": "success"
+    "last_run_conclusion": "success",
+    "last_dispatch_at": "2026-10-24T19:47:50.948484+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
@@ -2806,9 +2809,10 @@
         "target_content_sha256": "c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce"
       },
       "intent_at": "2026-10-24T19:47:09.325154+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39878132512,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40126913602,
+      "dispatched_at": "2026-10-24T19:47:09.325154+00:00"
     }
   },
   "last_child_notification": {
@@ -2817,19 +2821,5 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-23"
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": 39878132512,
-    "processed_run_id": 39878132512,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_run_conclusion": "success"
   }
 }
