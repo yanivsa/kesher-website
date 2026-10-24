@@ -84,11 +84,11 @@
     "quality_content_sha256": "c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-24T20:10:46.310529+00:00",
+    "quality_checked_at": "2026-10-24T20:16:23.501564+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-24T19:40:56.244343+00:00",
-    "live_verified_at": "2026-10-24T20:11:14.793170+00:00"
+    "live_verified_at": "2026-10-24T20:16:25.522912+00:00"
   },
   "backlog": [
     {
@@ -2435,14 +2435,31 @@
     "next_retry_at": null,
     "run_id": 40126913602,
     "processed_run_id": 39878132512,
-    "provider_id": null,
+    "provider_id": "bd578723-20be-464c-b746-42c26abf4691",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_run_conclusion": "success",
     "last_dispatch_at": "2026-10-24T19:47:50.948484+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "item_id": "video-20261024-225012-c8700c124e",
+    "youtube_id": "2moNskgB728",
+    "youtube_url": "https://youtu.be/2moNskgB728",
+    "verified": true,
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 109.8,
+    "content_duration_seconds": 109.792,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "artifact_id": "bd578723-20be-464c-b746-42c26abf4691",
+    "source_id": "ba0a1e5e-1806-436d-9d44-8c2e50d355dd"
   },
   "short": {
     "attempt_count": 0,
