@@ -1512,15 +1512,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-23T11:21:25.468771+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
       "at": "2026-10-23T11:27:34.290504+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2338,9 +2329,18 @@
       "details": {
         "session_id": null
       }
+    },
+    {
+      "at": "2026-10-24T23:13:35.113784+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-24T23:09:31.184833+00:00",
+  "updated_at": "2026-10-24T23:13:35.113793+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
