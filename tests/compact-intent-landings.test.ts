@@ -1,5 +1,6 @@
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { LANDING_PAGES_CONFIG } from '../src/data/landingPagesConfig';
 import { inferServiceType } from '../src/lib/analytics';
@@ -38,8 +39,8 @@ describe('new-intent compact landing pilot contract', () => {
   });
 
   it('wires each pilot into app routing and standalone landing layout', () => {
-    const appSource = fs.readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8');
-    const layoutSource = fs.readFileSync(new URL('../src/components/Layout/Layout.tsx', import.meta.url), 'utf8');
+    const appSource = fs.readFileSync(path.resolve('src/App.tsx'), 'utf8');
+    const layoutSource = fs.readFileSync(path.resolve('src/components/Layout/Layout.tsx'), 'utf8');
     pilots.forEach(([key]) => {
       expect(appSource).toContain(`path="/${key}"`);
       expect(layoutSource).toContain(`cleanPath === '/${key}'`);
