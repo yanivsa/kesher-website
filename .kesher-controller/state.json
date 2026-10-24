@@ -1512,18 +1512,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-23T11:20:52.742501+00:00",
-      "from": "blocked",
-      "to": "waiting_for_article_window",
-      "reason": "stale_active_idea_finalized_from_verified_backlog",
-      "details": {
-        "publication_slot": "2026-10-21",
-        "idea_id": "parenting-p1-potty-training-constipation",
-        "source_slug": "potty-training-constipation",
-        "content_sha256": "7ef7e1056067f070f8beb91388d3a9e3bdf3de2c3899f6665ae6e4b7e257244a"
-      }
-    },
-    {
       "at": "2026-10-23T11:21:25.468771+00:00",
       "from": "waiting_for_article_window",
       "to": "article_generating",
@@ -2341,9 +2329,18 @@
       "details": {
         "session_id": null
       }
+    },
+    {
+      "at": "2026-10-24T23:09:31.184823+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-24T23:04:23.749651+00:00",
+  "updated_at": "2026-10-24T23:09:31.184833+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
