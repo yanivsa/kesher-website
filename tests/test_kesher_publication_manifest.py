@@ -93,6 +93,14 @@ class PublicationManifestTests(unittest.TestCase):
         self.assertIn('תוכן אפקטיבי', effective[0]['content'])
         self.assertEqual(base['title'], post_fixture()['title'], 'Applying an override must not mutate the source row')
 
+    def test_publication_catalog_uses_same_resolved_posts_as_site(self):
+        from scripts import kesher_publication_manifest as manifest
+
+        posts = manifest.load_site_posts(Path.cwd())
+        ids = {post['id'] for post in posts}
+        self.assertIn('gifted-test-first-emotional-preparation-parents', ids)
+        self.assertIn('how-to-talk-to-child-about-being-gifted', ids)
+
 
 if __name__ == '__main__':
     unittest.main()
