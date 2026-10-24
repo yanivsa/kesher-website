@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-24",
-  "status": "blocked",
+  "status": "waiting_for_article_window",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1552,12 +1552,7 @@
       "media": {}
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "HEBCAL_SUNSET_UNAVAILABLE",
-    "message": "HEBCAL_SUNSET_UNAVAILABLE: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>",
-    "at": "2026-10-24T15:15:59.848673+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-23T05:15:55.409787+00:00",
@@ -2315,9 +2310,15 @@
       "details": {
         "message": "HEBCAL_SUNSET_UNAVAILABLE: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>"
       }
+    },
+    {
+      "at": "2026-10-24T15:21:16.188045+00:00",
+      "from": "blocked",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-10-24T15:15:59.848692+00:00",
+  "updated_at": "2026-10-24T15:21:16.188057+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
