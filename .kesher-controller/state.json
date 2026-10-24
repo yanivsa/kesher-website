@@ -32,9 +32,9 @@
       "last_restart_at": null,
       "last_restart_run_id": null
     },
-    "pr_number": 1182,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1182",
-    "current_pr_head_sha": "7baf8d39ad4173b9816b15b9e2b9df06c8e534cf",
+    "pr_number": 1185,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1185",
+    "current_pr_head_sha": "68a2c3ad84023cb8663a0ce25e196c8d81203ca6",
     "jules_head_sha": "4389b5a6530a20da0f2f29980b3235772b1f500a",
     "normalization_slot": "2026-10-23",
     "normalization_dispatched_at": "2026-10-23T11:56:29.786207+00:00",
@@ -2780,6 +2780,18 @@
       "previous_run_id": 39945494171,
       "observed_active_run_id": 40113449983,
       "dispatched_at": "2026-10-24T16:50:51.939465+00:00"
+    },
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
+      "cycle": "2026-10-23",
+      "inputs": {
+        "pr_number": "1185",
+        "slot": "2026-10-23"
+      },
+      "intent_at": "2026-10-24T17:45:44.906664+00:00",
+      "status": "intent",
+      "previous_run_id": 39949642271,
+      "observed_active_run_id": null
     }
   }
 }
