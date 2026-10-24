@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import tempfile
 import unittest
+from datetime import date, timedelta
 from pathlib import Path
 from unittest import mock
 
@@ -40,6 +41,32 @@ class JulesArticleRunnerV4Tests(unittest.TestCase):
         diagnose.assert_called_once_with("key", "sessions/123")
         attach.assert_called_once_with(path, diagnostic)
 
+    def test_autonomous_mode_is_exactly_seven_seo_gap_three_trend_per_ten_slots(self):
+        start = date(2026, 9, 20)
+        modes = [
+            runner.autonomous_discovery_mode((start + timedelta(days=offset)).isoformat())
+            for offset in range(10)
+        ]
+
+        self.assertEqual(modes.count("seo-gap"), 7)
+        self.assertEqual(modes.count("trend"), 3)
+
+    def test_seo_gap_discovery_runs_on_seo_slot_without_owner_topic(self):
+        with mock.patch.dict(
+            "os.environ",
+            {
+                "KESHER_ARTICLE_TOPIC_BRIEF": "",
+                "KESHER_ARTICLE_TOPIC_BRIEF_FILE": "",
+            },
+            clear=False,
+        ), mock.patch.object(runner, "_v3_build_prompt", return_value="BASE"):
+            prompt = runner.build_prompt("2026-09-21", "POLICY")
+
+        self.assertIn("SEO GAP TOPIC DISCOVERY CONTRACT", prompt)
+        self.assertNotIn("VIRAL TOPIC DISCOVERY CONTRACT", prompt)
+        self.assertIn("Discovery Mix: seo-gap", prompt)
+        self.assertIn("CLICKABLE SEARCH-INTENT TITLE CONTRACT", prompt)
+        self.assertNotIn("OWNER-SUPPLIED TOPIC BRIEF CONTRACT", prompt)
 
     def test_viral_discovery_runs_only_without_owner_topic(self):
         with mock.patch.dict(
@@ -53,6 +80,12 @@ class JulesArticleRunnerV4Tests(unittest.TestCase):
             prompt = runner.build_prompt("2026-09-28", "POLICY")
 
         self.assertIn("VIRAL TOPIC DISCOVERY CONTRACT", prompt)
+        self.assertIn("--- SEO GAP TOPIC DISCOVERY CONTRACT ---", prompt)
+        self.assertLess(
+            prompt.index("VIRAL TOPIC DISCOVERY CONTRACT"),
+            prompt.index("--- SEO GAP TOPIC DISCOVERY CONTRACT ---"),
+        )
+        self.assertIn("Discovery Mix: trend", prompt)
         self.assertIn("CLICKABLE SEARCH-INTENT TITLE CONTRACT", prompt)
         self.assertNotIn("OWNER-SUPPLIED TOPIC BRIEF CONTRACT", prompt)
         self.assertLess(
@@ -60,7 +93,7 @@ class JulesArticleRunnerV4Tests(unittest.TestCase):
             prompt.index("CLICKABLE SEARCH-INTENT TITLE CONTRACT"),
         )
 
-    def test_viral_discovery_preserves_legacy_fallback(self):
+    def test_viral_discovery_preserves_seo_gap_fallback(self):
         with mock.patch.dict(
             "os.environ",
             {
@@ -74,11 +107,11 @@ class JulesArticleRunnerV4Tests(unittest.TestCase):
             prompt = runner.build_prompt("2026-09-29", "POLICY")
 
         self.assertTrue(prompt.startswith("LEGACY_BASE_PROMPT"))
-        self.assertIn("pre-existing V3/base article topic-selection mechanism", prompt)
-        self.assertIn("fallback-to-legacy-selection", prompt)
+        self.assertIn("Fall back to the SEO GAP TOPIC DISCOVERY CONTRACT", prompt)
+        self.assertIn("fallback-to-seo-gap", prompt)
         self.assertIn("EXACTLY ONE article and one PR", prompt)
 
-    def test_owner_topic_bypasses_viral_discovery(self):
+    def test_owner_topic_bypasses_all_autonomous_discovery(self):
         with mock.patch.dict(
             "os.environ",
             {
@@ -90,6 +123,8 @@ class JulesArticleRunnerV4Tests(unittest.TestCase):
             prompt = runner.build_prompt("2026-09-28", "POLICY")
 
         self.assertNotIn("VIRAL TOPIC DISCOVERY CONTRACT", prompt)
+        self.assertNotIn("SEO GAP TOPIC DISCOVERY CONTRACT", prompt)
+        self.assertNotIn("Discovery Mix:", prompt)
         self.assertIn("CLICKABLE SEARCH-INTENT TITLE CONTRACT", prompt)
         self.assertIn("OWNER-SUPPLIED TOPIC BRIEF CONTRACT", prompt)
         self.assertIn("נושא מפורש מהבעלים", prompt)
