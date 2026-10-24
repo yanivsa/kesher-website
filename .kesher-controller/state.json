@@ -1,24 +1,24 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-23",
-  "status": "article_result_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-24T16:47:49.314075+00:00",
+    "next_retry_at": null,
     "run_id": 39945494171,
     "processed_run_id": 39945494171,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 2,
     "deploy_attempts": 0,
     "normalization_status": "pending",
     "deploy_run_id": 39877522583,
     "next_deploy_retry_at": "2026-10-23T00:00:35.189088+00:00",
-    "last_dispatch_at": "2026-10-23T11:21:25.468757+00:00",
+    "last_dispatch_at": "2026-10-24T16:51:04.936112+00:00",
     "watchdog": {
       "identity": "2026-10-23",
       "session_id": null,
@@ -1508,15 +1508,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-23T05:15:55.409787+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
       "at": "2026-10-23T05:21:03.122726+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2401,9 +2392,19 @@
         "outcome": "PR_CREATED",
         "pr_url": "https://github.com/yanivsa/kesher-website/pull/1182"
       }
+    },
+    {
+      "at": "2026-10-24T16:51:04.936141+00:00",
+      "from": "article_result_wait",
+      "to": "article_generating",
+      "reason": "claimed scheduled article retry dispatched on original publication slot",
+      "details": {
+        "attempt": 2,
+        "publication_slot": "2026-10-23"
+      }
     }
   ],
-  "updated_at": "2026-10-24T16:45:49.314109+00:00",
+  "updated_at": "2026-10-24T16:51:04.936149+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2749,9 +2750,10 @@
         "topic_brief": "אשכול גמילה שהסתבכה. נושא/כאב: קקי בתחתונים אחרי שהפיפי כבר הסתדר; כאב, בושה ותסכול של ההורה והילד. כתיבה לא שיפוטית והבחנה מעצירות/אנקופרזיס/התאפקות. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: child-poops-in-pants. כותרת עבודה: ילד עושה קקי במכנסיים: מה יכול לעמוד מאחורי זה ואיך מגיבים? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לאיש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תשנה URL קיים.\n\nIdea Request ID: parenting-p1-child-poops-in-pants\nRequired Primary Keyword: ילד עושה קקי במכנסיים"
       },
       "intent_at": "2026-10-24T16:50:51.939465+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39945494171,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-24T16:50:51.939465+00:00"
     }
   }
 }
