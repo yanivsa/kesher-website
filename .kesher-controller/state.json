@@ -1512,15 +1512,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-23T11:17:42.897310+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
       "at": "2026-10-23T11:20:52.742501+00:00",
       "from": "blocked",
       "to": "waiting_for_article_window",
@@ -2341,9 +2332,18 @@
       "details": {
         "attempt": 3
       }
+    },
+    {
+      "at": "2026-10-24T23:04:23.749638+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-24T22:56:22.862648+00:00",
+  "updated_at": "2026-10-24T23:04:23.749651+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
