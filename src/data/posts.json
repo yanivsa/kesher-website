@@ -33,7 +33,12 @@
         "note": "התנגדות להליכה לשירותים ופספוסים יכולים להיות תגובה ללחץ או למאבקי שליטה, ויש להתמודד איתם בסבלנות וללא ענישה."
       }
     ],
-    "controllerManaged": true
+    "controllerManaged": true,
+    "image": "/images/generated/blog/child-poops-in-pants.png",
+    "imageAlt": "איור עריכתי מקומי של הורה וילד בחדר רחצה ביתי, לצד אסלה ושרפרף, באווירה רגועה ותומכת.",
+    "imageProvider": "LocalEditorial",
+    "imageSourceUrl": "local-editorial://child-poops-in-pants/2",
+    "imageIsFallback": false
   },
   {
     "id": "potty-training-constipation",
