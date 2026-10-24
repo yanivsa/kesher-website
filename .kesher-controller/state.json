@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-23",
-  "status": "short_running",
+  "status": "short_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1541,15 +1541,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-23T09:15:34.034557+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
       "at": "2026-10-23T09:19:44.483696+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2382,9 +2373,19 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-10-24T20:51:15.540033+00:00",
+      "from": "short_running",
+      "to": "short_watchdog_recovery",
+      "reason": "Short provider stalled; re-dispatched derivation from the same verified long-form identity",
+      "details": {
+        "item_id": "video-20261024-231842-c8700c124e",
+        "long_item_id": "video-20261024-225012-c8700c124e"
+      }
     }
   ],
-  "updated_at": "2026-10-24T20:21:31.100127+00:00",
+  "updated_at": "2026-10-24T20:51:15.540041+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2435,7 +2436,7 @@
     "source_id": "ba0a1e5e-1806-436d-9d44-8c2e50d355dd"
   },
   "short": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -2446,7 +2447,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_run_conclusion": "success",
-    "last_dispatch_at": "2026-10-24T20:17:08.803368+00:00",
+    "last_dispatch_at": "2026-10-24T20:51:15.540015+00:00",
     "artifact_id": "bd578723-20be-464c-b746-42c26abf4691",
     "source_id": "ba0a1e5e-1806-436d-9d44-8c2e50d355dd",
     "adopted_from_long_item_id": "video-20261024-225012-c8700c124e",
@@ -2455,8 +2456,8 @@
       "hard_started_at": "2026-10-24T20:18:50.601405+00:00",
       "last_progress_at": "2026-10-24T20:25:40.322584+00:00",
       "last_fingerprint": "4e21bc5481f4e9a8e9418c54523f45b0e7c0a94c05d5e3b1356776b6cf45759d",
-      "recovery_count": 0,
-      "last_recovery_at": null
+      "recovery_count": 1,
+      "last_recovery_at": "2026-10-24T20:50:43.716218+00:00"
     }
   },
   "migration": {
@@ -2783,9 +2784,10 @@
         "derive_long_item_id": "video-20261024-225012-c8700c124e"
       },
       "intent_at": "2026-10-24T20:50:43.716218+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40129088128,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40131642362,
+      "dispatched_at": "2026-10-24T20:50:43.716218+00:00"
     }
   },
   "last_child_notification": {
@@ -2809,11 +2811,12 @@
       "strike_count": 1,
       "last_check_token": "2026-10-24T23",
       "last_fingerprint": "0482b6c465d23d940c3464567300a0a70c94cd245ead7a590905204593b43540",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
+      "last_controller_action_token": "recovery:1:2026-10-24T20:50:43.716218+00:00",
+      "controller_action_observed": true,
       "last_observed_at": "2026-10-24T20:50:43.716218+00:00",
-      "last_action": "observe_controller",
-      "direct_takeover_required": false
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-10-24T20:50:43.716218+00:00"
     }
   }
 }
