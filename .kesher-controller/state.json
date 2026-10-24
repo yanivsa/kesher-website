@@ -1,19 +1,20 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_generating",
+  "status": "blocked",
   "article": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "exhausted",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-24T23:46:01.955501+00:00",
     "run_id": 40140650906,
-    "processed_run_id": 40137472129,
+    "processed_run_id": 40140650906,
     "provider_id": null,
-    "failure_fingerprint": "COMPLETED_WITHOUT_PR",
-    "same_failure_streak": 2,
+    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "same_failure_streak": 1,
     "failure_count_by_type": {
-      "COMPLETED_WITHOUT_PR": 2
+      "COMPLETED_WITHOUT_PR": 2,
+      "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
     "attempts": 3,
     "deploy_attempts": 0,
@@ -34,13 +35,13 @@
     "last_worker_result": {
       "schema_version": 1,
       "slot": "2026-10-25",
-      "outcome": "COMPLETED_WITHOUT_PR",
+      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
       "retryable": true,
-      "message": "Jules completed without creating a pull request; Jules diagnostic: The repository `main` branch already contains an article targeting the Primary Keyword 'הסתגלות למעון' (Title: \"מעבר ממטפלת למעון: מה עושים עם הבכי ואיך צולחים ימי הסתגלות למעון\", ID: `transition-from-caregiver-to-daycare`). According to the instructions for this run, if a pre-existing primary keyword conflict is detected, I must stop cleanly without editing anything and without creating another PR. I have verified the repository state using all testing tools, and no edits or branches were made. I am stopping the session cleanly.",
-      "session_id": "sessions/3922460796070441108",
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Jules was unable to complete the task.",
+      "session_id": "sessions/164577257335942144",
       "pr_url": "",
-      "github_run_id": "40137472129",
-      "completed_at": "2026-10-24T22:33:36.720991+00:00",
+      "github_run_id": "40140650906",
+      "completed_at": "2026-10-24T23:34:47.253296+00:00",
       "diagnostic": {
         "source": {
           "name": "sources/github/yanivsa/kesher-website",
@@ -49,17 +50,17 @@
           "default_branch": "main",
           "main_available": true
         },
-        "activity_count": 16,
-        "change_set_count": 13,
+        "activity_count": 1,
+        "change_set_count": 0,
         "change_set_fingerprints": [],
-        "last_agent_message": "The repository `main` branch already contains an article targeting the Primary Keyword 'הסתגלות למעון' (Title: \"מעבר ממטפלת למעון: מה עושים עם הבכי ואיך צולחים ימי הסתגלות למעון\", ID: `transition-from-caregiver-to-daycare`). According to the instructions for this run, if a pre-existing primary keyword conflict is detected, I must stop cleanly without editing anything and without creating another PR. I have verified the repository state using all testing tools, and no edits or branches were made. I am stopping the session cleanly.",
-        "last_progress": "Completed pre-commit steps by verifying all checks pass on a clean working tr... — Completed pre-commit steps by verifying all checks pass on a clean working tree and recording learnings.",
+        "last_agent_message": "",
+        "last_progress": "",
         "last_description": "",
-        "session_failed_reason": ""
+        "session_failed_reason": "Jules was unable to complete the task."
       }
     },
-    "last_jules_session_id": "sessions/3922460796070441108",
-    "last_failed_run_id": 40137472129
+    "last_jules_session_id": "sessions/164577257335942144",
+    "last_failed_run_id": 40140650906
   },
   "backlog": [
     {
@@ -1509,27 +1510,13 @@
       "media": {}
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+    "message": "article exhausted 3 total controller dispatch attempts",
+    "at": "2026-10-24T23:41:01.955581+00:00"
+  },
   "history": [
-    {
-      "at": "2026-10-23T11:52:22.538730+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-10-23T11:56:29.786234+00:00",
-      "from": "article_generating",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1182,
-        "slot": "2026-10-23"
-      }
-    },
     {
       "at": "2026-10-23T12:16:11.001211+00:00",
       "from": "article_normalizing",
@@ -2338,9 +2325,31 @@
       "details": {
         "session_id": null
       }
+    },
+    {
+      "at": "2026-10-24T23:41:01.955522+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "details": {
+        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Jules was unable to complete the task.",
+        "retry_at": "2026-10-24T23:46:01.955501+00:00",
+        "failure_streak": 1,
+        "run_id": 40140650906,
+        "session_id": "sessions/164577257335942144"
+      }
+    },
+    {
+      "at": "2026-10-24T23:41:01.955585+00:00",
+      "from": "article_retry_wait",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "article exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-24T23:33:39.932481+00:00",
+  "updated_at": "2026-10-24T23:41:01.955590+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
