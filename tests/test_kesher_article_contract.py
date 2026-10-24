@@ -1,6 +1,7 @@
 import unittest
 
 from scripts import kesher_article_contract as contract
+from scripts.kesher_primary_keyword_contract import slug_represents_keyword
 
 
 class ArticleContractTests(unittest.TestCase):
@@ -22,6 +23,13 @@ class ArticleContractTests(unittest.TestCase):
             ),
             ["src/pages/Home/Home.module.css"],
         )
+
+    def test_child_poops_in_pants_keyword_maps_to_canonical_slug(self):
+        ok, message = slug_represents_keyword(
+            "child-poops-in-pants",
+            "ילד עושה קקי במכנסיים",
+        )
+        self.assertTrue(ok, message)
 
 
 if __name__ == "__main__":
