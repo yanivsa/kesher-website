@@ -2332,9 +2332,18 @@
       "details": {
         "retry_at": "2026-10-24T22:51:15.821472+00:00"
       }
+    },
+    {
+      "at": "2026-10-24T22:51:13.929723+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-24T22:51:15.821472+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-24T22:46:32.988436+00:00",
+  "updated_at": "2026-10-24T22:51:13.929737+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
