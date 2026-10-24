@@ -72,6 +72,176 @@ class IdeaQueueTests(unittest.TestCase):
             ctrl._guarded_dispatch(state,core.ARTICLE_WORKFLOW,{"slot":"2026-10-19"},lambda w,i: raw.append((w,i)))
         self.assertEqual(len(raw),1); self.assertIn("Required Primary Keyword: גמילה מטיטול",raw[0][1]["topic_brief"]); self.assertEqual(state["active_idea"]["idea_id"],"potty")
 
+class ScheduledIdeaRolloverTests(unittest.TestCase):
+    def stage(self, *, status="pending"):
+        return {
+            "attempt_count": 0,
+            "status": status,
+            "last_error": None,
+            "next_retry_at": None,
+            "run_id": None,
+            "processed_run_id": None,
+            "provider_id": None,
+            "failure_fingerprint": None,
+            "same_failure_streak": 0,
+            "failure_count_by_type": {},
+        }
+
+    def active_idea(self):
+        return {
+            "idea_id": "parenting-p1-child-poops-in-pants",
+            "fingerprint": "fp-child-poops",
+            "topic_brief": "ילד עושה קקי במכנסיים",
+            "required_primary_keyword": "ילד עושה קקי במכנסיים",
+            "run_now": False,
+            "status": "claimed",
+            "requested_at": "2026-10-19T10:07:32Z",
+            "publication_slot": "2026-10-23",
+            "claimed_at": "2026-10-23T11:21:21Z",
+        }
+
+    def active_cycle(self):
+        article = self.stage(status="exhausted")
+        article.update({
+            "attempt_count": 1,
+            "attempts": 1,
+            "deploy_attempts": 0,
+            "pr_number": 1182,
+            "pr_url": "https://github.com/yanivsa/kesher-website/pull/1182",
+            "current_pr_head_sha": "4d922a592dd7cd46d9ea4cbf2be9a026d2b9243e",
+            "normalized_head_sha": "4d922a592dd7cd46d9ea4cbf2be9a026d2b9243e",
+            "normalization_status": "complete",
+            "merge_dispatch_count": 3,
+            "merge_dispatch_at": "2026-10-23T12:06:28Z",
+        })
+        return {
+            "schema_version": 5,
+            "cycle": "2026-10-23",
+            "status": "blocked",
+            "last_error": {
+                "stage": "article",
+                "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+                "message": "PR #1182 exceeded maximum auto-merge dispatch budget (3 dispatches)",
+            },
+            "history": [],
+            "backlog": [],
+            "article": article,
+            "image": self.stage(),
+            "long_video": self.stage(),
+            "short": self.stage(),
+            "idea_queue": [],
+            "idea_history": [],
+            "active_idea": self.active_idea(),
+        }
+
+    def test_scheduled_claimed_cycle_survives_midnight_without_archival(self):
+        previous = self.active_cycle()
+        github = FakeGitHub(previous, [])
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            github, FakeSite(), now=datetime(2026, 10, 24, 0, 10, tzinfo=TZ)
+        )
+
+        state = controller.state()
+
+        self.assertEqual(state["cycle"], "2026-10-23")
+        self.assertEqual(state["article"]["pr_number"], 1182)
+        self.assertEqual(state["article"]["merge_dispatch_count"], 3)
+        self.assertEqual(state["active_idea"]["publication_slot"], "2026-10-23")
+        self.assertFalse(any(row.get("cycle") == "2026-10-23" for row in state.get("backlog", [])))
+
+    def test_already_rolled_shell_restores_exact_incomplete_active_cycle_from_backlog(self):
+        prior = self.active_cycle()
+        backlog_row = {
+            "cycle": "2026-10-23",
+            "status": "blocked",
+            "exact_slug": None,
+            "content_sha256": None,
+            "article": copy.deepcopy(prior["article"]),
+            "long_video": copy.deepcopy(prior["long_video"]),
+            "short": copy.deepcopy(prior["short"]),
+            "terminal_state": {"blocked": True, "article_exhausted": True},
+            "archived_at": "2026-10-23T21:00:54Z",
+            "media": {},
+        }
+        current = {
+            "schema_version": 5,
+            "cycle": "2026-10-24",
+            "status": "blocked",
+            "last_error": {"stage": "controller", "code": "IDEA_SLOT_MISMATCH", "message": "IDEA_SLOT_MISMATCH"},
+            "history": [],
+            "backlog": [backlog_row],
+            "article": {**self.stage(), "attempts": 0, "deploy_attempts": 0, "normalization_status": "pending"},
+            "image": self.stage(),
+            "long_video": self.stage(),
+            "short": self.stage(),
+            "idea_queue": [],
+            "idea_history": [],
+            "active_idea": self.active_idea(),
+        }
+        github = FakeGitHub(current, [])
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            github, FakeSite(), now=datetime(2026, 10, 24, 19, 0, tzinfo=TZ)
+        )
+
+        state = controller.state()
+
+        self.assertEqual(state["cycle"], "2026-10-23")
+        self.assertEqual(state["status"], "blocked")
+        self.assertEqual(state["article"]["pr_number"], 1182)
+        self.assertEqual(state["article"]["merge_dispatch_count"], 3)
+        self.assertEqual(state["last_error"]["code"], "ARTICLE_ATTEMPTS_EXHAUSTED")
+        self.assertFalse(any(row.get("cycle") == "2026-10-23" for row in state.get("backlog", [])))
+        self.assertTrue(any(row.get("reason") == "incomplete_active_cycle_restored_from_backlog" for row in state["history"]))
+
+    def test_scheduled_active_cycle_selects_article_from_claimed_publication_slot_after_midnight(self):
+        state = self.active_cycle()
+        state["status"] = "article_live"
+        state["article"].update({"status": "complete", "slug": "child-poops-in-pants"})
+        posts = [{
+            "id": "child-poops-in-pants",
+            "date": "2026-10-23",
+            "title": "ילד עושה קקי במכנסיים",
+            "content": "<p>x</p>",
+            "category": "הדרכת הורים",
+            "excerpt": "x",
+        }]
+        github = FakeGitHub(state, posts)
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            github, FakeSite(), now=datetime(2026, 10, 24, 1, 0, tzinfo=TZ)
+        )
+
+        matches = controller._reconcile_existing_current_day_article(state, posts)
+
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(core.canonical_slug(matches[0]), "child-poops-in-pants")
+
+    def test_scheduled_active_prior_slot_routes_open_pr_after_midnight(self):
+        state = self.active_cycle()
+        state["status"] = "article_normalizing"
+        state["article"]["status"] = "running"
+        state["article"]["merge_dispatch_count"] = 0
+        state["article"]["normalization_status"] = "running"
+        github = FakeGitHub(state, [])
+        pr = {
+            "number": 1182,
+            "state": "open",
+            "html_url": "https://github.com/yanivsa/kesher-website/pull/1182",
+            "head": {"sha": "7baf8d39ad4173b9816b15b9e2b9df06c8e534cf"},
+        }
+        github.open_article_prs = mock.Mock(side_effect=lambda slot=None: [pr] if slot == "2026-10-23" else [])
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            github, FakeSite(), now=datetime(2026, 10, 24, 1, 0, tzinfo=TZ)
+        )
+        controller._active_state_ref = state
+
+        with mock.patch.object(controller, "_handle_open_article_pr", return_value=core.Action("wait", "handled")) as handler:
+            action = controller._scheduled_active_article_phase(state)
+
+        self.assertEqual(action.kind, "wait")
+        github.open_article_prs.assert_called_with("2026-10-23")
+        handler.assert_called_once_with(state, pr)
+
+
 class IdeaRunNowTests(unittest.TestCase):
     def pacifier_env(self):
         return {
