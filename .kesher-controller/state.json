@@ -1509,14 +1509,7 @@
       "media": {}
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "COMPLETED_WITHOUT_PR",
-    "message": "Jules completed without creating a pull request; Jules diagnostic: The repository `main` branch already contains an article targeting the Primary Keyword 'הסתגלות למעון' (Title: \"מעבר ממטפלת למעון: מה עושים עם הבכי ואיך צולחים ימי הסתגלות למעון\", ID: `transition-from-caregiver-to-daycare`). According to the instructions for this run, if a pre-existing primary keyword conflict is detected, I must stop cleanly without editing anything and without creating another PR. I have verified the repository state using all testing tools, and no edits or branches were made. I am stopping the session cleanly.",
-    "retryable": true,
-    "retry_at": "2026-10-24T22:51:15.821472+00:00",
-    "at": "2026-10-24T22:36:15.821493+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-23T11:11:13.541270+00:00",
@@ -2321,9 +2314,18 @@
         "run_id": 40137472129,
         "session_id": "sessions/3922460796070441108"
       }
+    },
+    {
+      "at": "2026-10-24T22:41:15.903075+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-24T22:51:15.821472+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-24T22:36:15.821502+00:00",
+  "updated_at": "2026-10-24T22:41:15.903087+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
