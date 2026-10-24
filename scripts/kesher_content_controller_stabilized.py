@@ -88,9 +88,9 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         return bool(isinstance(active, dict) and active.get("run_now") is True and str(active.get("status") or "") != "complete")
 
     @staticmethod
-    def _run_now_slot(state: dict | None) -> str:
+    def _active_idea_slot(state: dict | None) -> str:
         active = (state or {}).get("active_idea") if isinstance(state, dict) else None
-        if not isinstance(active, dict) or active.get("run_now") is not True:
+        if not isinstance(active, dict) or str(active.get("status") or "") == "complete":
             return ""
         value = str(active.get("publication_slot") or "").strip()
         try:
@@ -98,6 +98,13 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         except ValueError:
             return ""
         return value
+
+    @classmethod
+    def _run_now_slot(cls, state: dict | None) -> str:
+        active = (state or {}).get("active_idea") if isinstance(state, dict) else None
+        if not isinstance(active, dict) or active.get("run_now") is not True:
+            return ""
+        return cls._active_idea_slot(state)
 
     def _first_free_publication_slot(self, posts: list[dict]) -> str:
         """Assign the authoritative publication slot for a run_now cycle.
@@ -267,6 +274,97 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         })
         v5.core.transition(state, "article_generating", "owner run-now article dispatched immediately", attempt=attempts, publication_slot=slot)
         return v5.core.Action("dispatch_article", "owner run-now idea started immediately", payload)
+
+    def _scheduled_active_article_phase(self, state: dict):
+        """Continue a claimed scheduled article on its original slot after midnight."""
+        active = state.get("active_idea") if isinstance(state, dict) else None
+        if (
+            not isinstance(active, dict)
+            or active.get("run_now") is True
+            or str(active.get("status") or "") == "complete"
+        ):
+            return None
+        slot = self._active_idea_slot(state)
+        if not slot or slot == self.now.date().isoformat():
+            return None
+
+        posts = self.posts_on_main("main")
+        targets = self._reconcile_existing_current_day_article(state, posts)
+        if len(targets) > 1:
+            v5.core.block(
+                state,
+                "article",
+                "DUPLICATE_ARTICLE_DATE",
+                f"{len(targets)} articles share claimed publication slot {slot}",
+            )
+            return v5.core.Action("blocked", "duplicate claimed publication-slot articles")
+        if targets:
+            return None
+
+        open_prs = self.github.open_article_prs(slot)
+        if len(open_prs) > 1:
+            v5.core.block(
+                state,
+                "article",
+                "DUPLICATE_ARTICLE_PRS",
+                f"{len(open_prs)} open article PRs share claimed publication slot {slot}",
+            )
+            return v5.core.Action("blocked", "duplicate claimed article PRs")
+        if len(open_prs) == 1:
+            return self._handle_open_article_pr(state, open_prs[0])
+
+        active_run = self.github.active_workflow_run(v5.core.ARTICLE_WORKFLOW)
+        if active_run:
+            state.setdefault("article", {})["run_id"] = active_run.get("id")
+            v5.core.transition(
+                state,
+                "article_generating",
+                "claimed scheduled article workflow remains active across rollover",
+                publication_slot=slot,
+            )
+            return v5.core.Action("wait", "claimed scheduled article workflow active")
+
+        reconciled = self._reconcile_completed_article_run(state)
+        if reconciled is not None:
+            return reconciled
+        if not v5.core.retry_ready(state["article"], self.now):
+            retry_at = state["article"].get("next_retry_at")
+            v5.core.transition(
+                state,
+                "article_retry_wait",
+                "claimed scheduled article retry backoff remains active across rollover",
+                retry_at=retry_at,
+            )
+            return v5.core.Action("wait", f"article retry scheduled for {retry_at}")
+
+        attempts = int(state.get("article", {}).get("attempts") or 0)
+        if attempts <= 0:
+            v5.core.block(
+                state,
+                "article",
+                "ACTIVE_IDEA_ROLLOVER_EVIDENCE_MISSING",
+                f"claimed idea for {slot} has no durable article attempt to recover",
+            )
+            return v5.core.Action("blocked", "claimed rollover article has no durable attempt evidence")
+
+        payload = idea_queue.article_dispatch_inputs(state, {"slot": slot})
+        self.github.dispatch(v5.core.ARTICLE_WORKFLOW, payload)
+        attempts += 1
+        state["article"].update({
+            "attempts": attempts,
+            "attempt_count": attempts,
+            "last_dispatch_at": v5.core.utc_now(),
+            "next_retry_at": None,
+            "status": "running",
+        })
+        v5.core.transition(
+            state,
+            "article_generating",
+            "claimed scheduled article retry dispatched on original publication slot",
+            attempt=attempts,
+            publication_slot=slot,
+        )
+        return v5.core.Action("dispatch_article", "continue claimed scheduled article after rollover", payload)
 
     def _safe_newest_video_state(self) -> dict:
         getter = getattr(self.github, "newest_video_state", None)
@@ -589,7 +687,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if not isinstance(posts, list):
             return []
 
-        slot = self._run_now_slot(state)
+        slot = self._active_idea_slot(state)
         target_day = date.fromisoformat(slot) if slot else self.now.date()
         expected_date = target_day.isoformat()
 
@@ -649,9 +747,117 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
         return candidates
 
+    @staticmethod
+    def _rollover_shell_is_empty(state: dict) -> bool:
+        article = state.get("article") if isinstance(state.get("article"), dict) else {}
+        if (
+            article.get("pr_number")
+            or article.get("slug")
+            or article.get("run_id")
+            or int(article.get("attempts") or 0) > 0
+            or int(article.get("attempt_count") or 0) > 0
+            or int(article.get("deploy_attempts") or 0) > 0
+        ):
+            return False
+        for name in ("image", "long_video", "short"):
+            stage = state.get(name) if isinstance(state.get(name), dict) else {}
+            if (
+                stage.get("run_id")
+                or stage.get("provider_id")
+                or stage.get("item_id")
+                or stage.get("youtube_id")
+                or int(stage.get("attempt_count") or 0) > 0
+            ):
+                return False
+        return not bool(state.get("pending_dispatches"))
+
+    def _restore_incomplete_active_cycle_from_backlog(self, state: dict) -> dict:
+        """Undo an old rollover only when an exact active slot has a single inert shell."""
+        slot = self._active_idea_slot(state)
+        current_cycle = str(state.get("cycle") or "").strip()
+        if not slot or not current_cycle or slot == current_cycle:
+            return state
+        if not self._rollover_shell_is_empty(state):
+            return state
+
+        backlog = state.get("backlog") if isinstance(state.get("backlog"), list) else []
+        matches = [row for row in backlog if isinstance(row, dict) and str(row.get("cycle") or "") == slot]
+        if len(matches) != 1:
+            return state
+        row = matches[0]
+        if str(row.get("status") or "") == "complete":
+            return state
+        if row.get("media"):
+            return state
+        article = row.get("article") if isinstance(row.get("article"), dict) else {}
+        if not (article.get("pr_number") or int(article.get("attempts") or 0) > 0):
+            return state
+        if not isinstance(row.get("image"), dict) and (article.get("image_head_sha") or article.get("merge_candidate_sha")):
+            return state
+
+        def restored_stage(raw):
+            value = copy.deepcopy(raw) if isinstance(raw, dict) else {}
+            for key, default in v5.v3._stage_template().items():
+                value.setdefault(key, copy.deepcopy(default))
+            return value
+
+        prior_cycle = current_cycle
+        state["cycle"] = slot
+        state["status"] = str(row.get("status") or "article_needed")
+        state["article"] = restored_stage(article)
+        state["article"].setdefault("attempts", int(article.get("attempt_count") or 0))
+        state["article"].setdefault("deploy_attempts", 0)
+        state["article"].setdefault("normalization_status", "pending")
+        state["image"] = restored_stage(row.get("image"))
+        state["long_video"] = restored_stage(row.get("long_video"))
+        state["short"] = restored_stage(row.get("short"))
+        state.pop("video", None)
+        state["pending_dispatches"] = {}
+        state["backlog"] = [entry for entry in backlog if entry is not row]
+
+        terminal = row.get("terminal_state") if isinstance(row.get("terminal_state"), dict) else {}
+        if article.get("status") == "exhausted" or terminal.get("article_exhausted") is True:
+            pr_number = int(article.get("pr_number") or 0)
+            dispatches = int(article.get("merge_dispatch_count") or 0)
+            message = (
+                f"PR #{pr_number} exceeded maximum auto-merge dispatch budget ({dispatches} dispatches)"
+                if pr_number > 0 and dispatches > 0
+                else "article cycle has durable terminal attempt exhaustion"
+            )
+            state["last_error"] = {
+                "stage": "article",
+                "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+                "message": message,
+                "at": v5.core.utc_now(),
+            }
+            state["article"]["status"] = "exhausted"
+            state["status"] = "blocked"
+        else:
+            state["last_error"] = None
+
+        state.setdefault("history", []).append({
+            "at": v5.core.utc_now(),
+            "from": prior_cycle,
+            "to": slot,
+            "reason": "incomplete_active_cycle_restored_from_backlog",
+            "details": {
+                "idea_id": str((state.get("active_idea") or {}).get("idea_id") or ""),
+                "publication_slot": slot,
+                "pr_number": state["article"].get("pr_number"),
+            },
+        })
+        state["history"] = state["history"][-100:]
+        state["updated_at"] = v5.core.utc_now()
+        return state
+
     def state(self):
         previous = self.github.load_controller_state() if getattr(self, "github", None) is not None else None
-        if self._run_now_active(previous) and isinstance(previous, dict) and previous.get("schema_version") == v5.STATE_SCHEMA_VERSION:
+        preserve_active_cycle = bool(
+            isinstance(previous, dict)
+            and previous.get("schema_version") == v5.STATE_SCHEMA_VERSION
+            and self._active_idea_slot(previous)
+        )
+        if preserve_active_cycle:
             state = copy.deepcopy(previous)
             for stage_name in ("article", "image", "long_video", "short"):
                 current = state.setdefault(stage_name, {})
@@ -661,6 +867,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         else:
             state = super().state()
         idea_queue.carry_forward(state, previous)
+        state = self._restore_incomplete_active_cycle_from_backlog(state)
         if isinstance(state, dict) and isinstance(state.get("article"), dict):
             state["article"].pop("_tick_live_verified", None)
         try:
@@ -2486,6 +2693,11 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             if run_now_action is not None:
                 self._safe_save_controller_state(state)
                 return state, run_now_action
+
+            scheduled_action = self._scheduled_active_article_phase(state)
+            if scheduled_action is not None:
+                self._safe_save_controller_state(state)
+                return state, scheduled_action
 
             blocker = self._quality_preflight(state)
             if blocker is not None:
