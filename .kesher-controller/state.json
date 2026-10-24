@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-23",
-  "status": "blocked",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -17,7 +17,7 @@
     },
     "attempts": 2,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "deploy_run_id": 39877522583,
     "next_deploy_retry_at": "2026-10-23T00:00:35.189088+00:00",
     "last_dispatch_at": "2026-10-24T16:51:04.936112+00:00",
@@ -37,7 +37,7 @@
     "current_pr_head_sha": "68a2c3ad84023cb8663a0ce25e196c8d81203ca6",
     "jules_head_sha": "4389b5a6530a20da0f2f29980b3235772b1f500a",
     "normalization_slot": "2026-10-23",
-    "normalization_dispatched_at": "2026-10-23T11:56:29.786207+00:00",
+    "normalization_dispatched_at": "2026-10-24T17:46:03.327865+00:00",
     "merge_dispatch_at": null,
     "merge_dispatch_count": 0,
     "normalization_run_id": 39949642271,
@@ -1522,22 +1522,8 @@
       "media": {}
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "IDEA_SLOT_MISMATCH",
-    "message": "IDEA_SLOT_MISMATCH",
-    "at": "2026-10-24T17:35:59.234129+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-23T05:31:38.102763+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
     {
       "at": "2026-10-23T05:36:00.239876+00:00",
       "from": "blocked",
@@ -2428,9 +2414,19 @@
       "details": {
         "message": "IDEA_SLOT_MISMATCH"
       }
+    },
+    {
+      "at": "2026-10-24T17:46:03.327891+00:00",
+      "from": "blocked",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1185,
+        "slot": "2026-10-23"
+      }
     }
   ],
-  "updated_at": "2026-10-24T17:35:59.234136+00:00",
+  "updated_at": "2026-10-24T17:46:03.327899+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2789,9 +2785,10 @@
         "slot": "2026-10-23"
       },
       "intent_at": "2026-10-24T17:45:44.906664+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39949642271,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40117617387,
+      "dispatched_at": "2026-10-24T17:45:44.906664+00:00"
     }
   }
 }
