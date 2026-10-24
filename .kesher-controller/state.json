@@ -1,14 +1,14 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-23",
-  "status": "blocked",
+  "status": "article_result_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-24T16:47:49.314075+00:00",
     "run_id": 39945494171,
-    "processed_run_id": null,
+    "processed_run_id": 39945494171,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
@@ -40,7 +40,22 @@
     "merge_dispatch_count": 0,
     "normalization_run_id": 39949642271,
     "normalization_drift_count": 1,
-    "last_normalization_drift_head_sha": "7baf8d39ad4173b9816b15b9e2b9df06c8e534cf"
+    "last_normalization_drift_head_sha": "7baf8d39ad4173b9816b15b9e2b9df06c8e534cf",
+    "last_run_conclusion": "success",
+    "last_worker_result": {
+      "schema_version": 1,
+      "slot": "2026-10-23",
+      "outcome": "PR_CREATED",
+      "retryable": false,
+      "message": "",
+      "session_id": "sessions/459231498173632670",
+      "pr_url": "https://github.com/yanivsa/kesher-website/pull/1182",
+      "github_run_id": "39945494171",
+      "completed_at": "2026-10-23T11:55:44.713342+00:00",
+      "owner_required_primary_keyword": "ילד עושה קקי במכנסיים",
+      "owner_topic_brief_sha256": "2092f512a692c91b153cc255b1a79c7b67ebdcf1459ae079934563244fb30cae"
+    },
+    "last_jules_session_id": "sessions/459231498173632670"
   },
   "backlog": [
     {
@@ -1490,12 +1505,7 @@
       "media": {}
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "ARTICLE_SLOT_UNRESOLVED",
-    "message": "ARTICLE_SLOT_UNRESOLVED",
-    "at": "2026-10-24T16:41:37.346830+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-23T05:15:55.409787+00:00",
@@ -2380,9 +2390,20 @@
       "details": {
         "message": "ARTICLE_SLOT_UNRESOLVED"
       }
+    },
+    {
+      "at": "2026-10-24T16:45:49.314098+00:00",
+      "from": "blocked",
+      "to": "article_result_wait",
+      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
+      "details": {
+        "run_id": 39945494171,
+        "outcome": "PR_CREATED",
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1182"
+      }
     }
   ],
-  "updated_at": "2026-10-24T16:41:37.346854+00:00",
+  "updated_at": "2026-10-24T16:45:49.314109+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
