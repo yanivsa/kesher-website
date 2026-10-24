@@ -1,19 +1,19 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-24T22:51:15.821472+00:00",
     "run_id": 40137472129,
-    "processed_run_id": 40134936203,
+    "processed_run_id": 40137472129,
     "provider_id": null,
     "failure_fingerprint": "COMPLETED_WITHOUT_PR",
-    "same_failure_streak": 1,
+    "same_failure_streak": 2,
     "failure_count_by_type": {
-      "COMPLETED_WITHOUT_PR": 1
+      "COMPLETED_WITHOUT_PR": 2
     },
     "attempts": 2,
     "deploy_attempts": 0,
@@ -36,11 +36,11 @@
       "slot": "2026-10-25",
       "outcome": "COMPLETED_WITHOUT_PR",
       "retryable": true,
-      "message": "Jules completed without creating a pull request; Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
-      "session_id": "sessions/16953509373435387090",
+      "message": "Jules completed without creating a pull request; Jules diagnostic: The repository `main` branch already contains an article targeting the Primary Keyword 'הסתגלות למעון' (Title: \"מעבר ממטפלת למעון: מה עושים עם הבכי ואיך צולחים ימי הסתגלות למעון\", ID: `transition-from-caregiver-to-daycare`). According to the instructions for this run, if a pre-existing primary keyword conflict is detected, I must stop cleanly without editing anything and without creating another PR. I have verified the repository state using all testing tools, and no edits or branches were made. I am stopping the session cleanly.",
+      "session_id": "sessions/3922460796070441108",
       "pr_url": "",
-      "github_run_id": "40134936203",
-      "completed_at": "2026-10-24T22:00:44.964398+00:00",
+      "github_run_id": "40137472129",
+      "completed_at": "2026-10-24T22:33:36.720991+00:00",
       "diagnostic": {
         "source": {
           "name": "sources/github/yanivsa/kesher-website",
@@ -49,17 +49,17 @@
           "default_branch": "main",
           "main_available": true
         },
-        "activity_count": 30,
-        "change_set_count": 27,
+        "activity_count": 16,
+        "change_set_count": 13,
         "change_set_fingerprints": [],
-        "last_agent_message": "",
-        "last_progress": "All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
+        "last_agent_message": "The repository `main` branch already contains an article targeting the Primary Keyword 'הסתגלות למעון' (Title: \"מעבר ממטפלת למעון: מה עושים עם הבכי ואיך צולחים ימי הסתגלות למעון\", ID: `transition-from-caregiver-to-daycare`). According to the instructions for this run, if a pre-existing primary keyword conflict is detected, I must stop cleanly without editing anything and without creating another PR. I have verified the repository state using all testing tools, and no edits or branches were made. I am stopping the session cleanly.",
+        "last_progress": "Completed pre-commit steps by verifying all checks pass on a clean working tr... — Completed pre-commit steps by verifying all checks pass on a clean working tree and recording learnings.",
         "last_description": "",
         "session_failed_reason": ""
       }
     },
-    "last_jules_session_id": "sessions/16953509373435387090",
-    "last_failed_run_id": 40134936203
+    "last_jules_session_id": "sessions/3922460796070441108",
+    "last_failed_run_id": 40137472129
   },
   "backlog": [
     {
@@ -1509,7 +1509,14 @@
       "media": {}
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "COMPLETED_WITHOUT_PR",
+    "message": "Jules completed without creating a pull request; Jules diagnostic: The repository `main` branch already contains an article targeting the Primary Keyword 'הסתגלות למעון' (Title: \"מעבר ממטפלת למעון: מה עושים עם הבכי ואיך צולחים ימי הסתגלות למעון\", ID: `transition-from-caregiver-to-daycare`). According to the instructions for this run, if a pre-existing primary keyword conflict is detected, I must stop cleanly without editing anything and without creating another PR. I have verified the repository state using all testing tools, and no edits or branches were made. I am stopping the session cleanly.",
+    "retryable": true,
+    "retry_at": "2026-10-24T22:51:15.821472+00:00",
+    "at": "2026-10-24T22:36:15.821493+00:00"
+  },
   "history": [
     {
       "at": "2026-10-23T11:11:13.541270+00:00",
@@ -2301,9 +2308,22 @@
       "details": {
         "session_id": null
       }
+    },
+    {
+      "at": "2026-10-24T22:36:15.821497+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "COMPLETED_WITHOUT_PR",
+      "details": {
+        "message": "Jules completed without creating a pull request; Jules diagnostic: The repository `main` branch already contains an article targeting the Primary Keyword 'הסתגלות למעון' (Title: \"מעבר ממטפלת למעון: מה עושים עם הבכי ואיך צולחים ימי הסתגלות למעון\", ID: `transition-from-caregiver-to-daycare`). According to the instructions for this run, if a pre-existing primary keyword conflict is detected, I must stop cleanly without editing anything and without creating another PR. I have verified the repository state using all testing tools, and no edits or branches were made. I am stopping the session cleanly.",
+        "retry_at": "2026-10-24T22:51:15.821472+00:00",
+        "failure_streak": 2,
+        "run_id": 40137472129,
+        "session_id": "sessions/3922460796070441108"
+      }
     }
   ],
-  "updated_at": "2026-10-24T22:33:56.628514+00:00",
+  "updated_at": "2026-10-24T22:36:15.821502+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
