@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('node:vm');
-const { ROOT } = require('./content-policy.cjs');
+const { ROOT, isPublishable } = require('./content-policy.cjs');
 
 const readList = (file) => {
   if (!fs.existsSync(file)) return [];
@@ -39,6 +39,17 @@ const readTrustedTsList = (file, exportName) => {
   return value;
 };
 
+const requireUniqueIds = (posts, label) => {
+  const seen = new Set();
+  for (const post of posts) {
+    const id = String(post?.id || '').trim();
+    if (!id) throw new Error(`Post without id in ${label}`);
+    if (seen.has(id)) throw new Error(`Duplicate post id in ${label}: ${id}`);
+    seen.add(id);
+  }
+  return seen;
+};
+
 const loadPosts = () => {
   const historical = readList(path.join(ROOT, 'src', 'data', 'posts.json'));
   const recent = readList(path.join(ROOT, 'src', 'data', 'postsRecent.json'));
@@ -50,26 +61,35 @@ const loadPosts = () => {
   );
   const giftedParentOverrides = readObject(path.join(ROOT, 'src', 'data', 'giftedParentOverrides.json'));
   const giftedParentWave2Overrides = readObject(path.join(ROOT, 'src', 'data', 'giftedParentWave2Overrides.json'));
+  const topicOverrides = { ...giftedParentOverrides, ...giftedParentWave2Overrides };
 
-  const combined = [
+  const authoritativePosts = [
     ...manualPostsOct2026,
     ...giftedParentPosts,
     ...giftedParentPostsWave2,
-    ...recent,
-    ...historical,
+  ];
+  const authoritativeIds = requireUniqueIds(authoritativePosts, 'authoritative publication catalogs');
+  const legacyPosts = [...recent, ...historical];
+
+  // Dedicated publication catalogs are authoritative over older editorial stubs.
+  // Shadow only an exact legacy ID whose old copy is non-publishable. If both
+  // copies are publishable, fail closed instead of silently hiding a real duplicate.
+  for (const post of legacyPosts) {
+    const id = String(post?.id || '').trim();
+    if (authoritativeIds.has(id) && isPublishable(post)) {
+      throw new Error(`Duplicate publishable post id across authoritative and legacy catalogs: ${id}`);
+    }
+  }
+
+  const combined = [
+    ...authoritativePosts,
+    ...legacyPosts.filter((post) => !authoritativeIds.has(String(post?.id || '').trim())),
   ].map((post) => ({
     ...post,
-    ...(giftedParentOverrides[post.id] || {}),
-    ...(giftedParentWave2Overrides[post.id] || {}),
+    ...(topicOverrides[post.id] || {}),
   }));
 
-  const seen = new Set();
-  for (const post of combined) {
-    const id = String(post?.id || '').trim();
-    if (!id) throw new Error('Post without id in combined catalog');
-    if (seen.has(id)) throw new Error(`Duplicate post id across catalogs: ${id}`);
-    seen.add(id);
-  }
+  requireUniqueIds(combined, 'combined catalog');
   return combined;
 };
 
