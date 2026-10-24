@@ -720,7 +720,7 @@
           "tests/automation-gates.test.cjs": "13b10f432232449fd5fc347b4c12fb1003ee4d6d1c35052b06fda670bc4dfc5e",
           "tests/test_article_quality_stabilization.py": "29fb20246a547668800901ab0f295f3e97da567ed22e57be3182373250f01bf1",
           "tests/test_ci_profile.py": "bf648f9a24e7de3f0702f7cd6c78483f5586db63948c0517d7d9319136c48457",
-          "tests/test_kesher_article_contract.py": "7b7fad9dd779cf988cb25d9da6ef91c056ef43dfff89c475e0f53bf81ec97b16",
+          "tests/test_kesher_article_contract.py": "d1eaf04ed9aa7e1cb22c03c6eb69140d137d8962b85c403f536300032c6e5177",
           "tests/test_kesher_article_normalizer.py": "e95ccc6eb3025c209178edc288ca16f483c430d3de0afec7296e5be0adfefaf2",
           "tests/test_kesher_canonical_state.py": "1b2df228a1bec270e2124babfb977762430da6b1600ed0de9d6f886dac536f0a",
           "tests/test_kesher_e2e_readiness.py": "70c115df63a859151170b2292451aa576aaf104635beafe003eb9025eb3f258a",
