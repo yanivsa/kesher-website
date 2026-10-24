@@ -84,11 +84,11 @@
     "quality_content_sha256": "c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-24T20:55:48.264364+00:00",
+    "quality_checked_at": "2026-10-24T20:58:17.754262+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-24T19:40:56.244343+00:00",
-    "live_verified_at": "2026-10-24T20:55:49.754909+00:00"
+    "live_verified_at": "2026-10-24T20:58:19.110631+00:00"
   },
   "backlog": [
     {
@@ -2440,7 +2440,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 40129088128,
+    "run_id": 40131642362,
     "processed_run_id": 39880894669,
     "provider_id": "bd578723-20be-464c-b746-42c26abf4691",
     "failure_fingerprint": null,
@@ -2773,26 +2773,11 @@
       "previous_run_id": 39945494171,
       "observed_active_run_id": 40113449983,
       "dispatched_at": "2026-10-24T16:50:51.939465+00:00"
-    },
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-10-23",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "child-poops-in-pants",
-        "derive_content_sha256": "c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce",
-        "derive_long_item_id": "video-20261024-225012-c8700c124e"
-      },
-      "intent_at": "2026-10-24T20:50:43.716218+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40129088128,
-      "observed_active_run_id": 40131642362,
-      "dispatched_at": "2026-10-24T20:50:43.716218+00:00"
     }
   },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
-    "run_id": 40129088128,
+    "run_id": 40131642362,
     "conclusion": "success",
     "source_slug": "child-poops-in-pants",
     "slot": "2026-10-23"
