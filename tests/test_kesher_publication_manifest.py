@@ -93,6 +93,40 @@ class PublicationManifestTests(unittest.TestCase):
         self.assertIn('תוכן אפקטיבי', effective[0]['content'])
         self.assertEqual(base['title'], post_fixture()['title'], 'Applying an override must not mutate the source row')
 
+    def test_effective_publication_source_applies_manual_internal_link_backfill(self):
+        from scripts import kesher_publication_manifest as manifest
+
+        post = {
+            **post_fixture(),
+            'id': 'manual-backfill-source',
+            'slug': 'manual-backfill-source',
+            'content': '<h3>כותרת יעד לבדיקה</h3><p>תוכן קיים.</p>',
+        }
+        manual_rule = {
+            'source': post['id'],
+            'afterHeadingIncludes': 'כותרת יעד',
+            'items': [{
+                'target': 'family-chores-quality-time-with-kids',
+                'anchor': 'מטלות בית עם ילדים',
+                'before': 'להמשך קריאה: ',
+                'after': '.',
+            }],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data = root / 'src' / 'data'
+            data.mkdir(parents=True)
+            (data / 'internalLinkBackfill.json').write_text('[]\n', encoding='utf-8')
+            (data / 'internalLinkBackfillManual.json').write_text(
+                json.dumps([manual_rule], ensure_ascii=False),
+                encoding='utf-8',
+            )
+
+            effective = manifest._apply_backfill([post], root)
+
+        self.assertIn('/blog/family-chores-quality-time-with-kids', effective[0]['content'])
+        self.assertIn('מטלות בית עם ילדים', effective[0]['content'])
+
 
 if __name__ == '__main__':
     unittest.main()
