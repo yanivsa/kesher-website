@@ -3,19 +3,19 @@
   "cycle": "2026-10-23",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 2,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
-    "next_retry_at": "2026-10-24T17:40:59.234065+00:00",
+    "next_retry_at": null,
     "run_id": 40113449983,
     "processed_run_id": 40113449983,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
-    "attempts": 2,
+    "attempts": 0,
     "deploy_attempts": 0,
     "normalization_status": "complete",
     "deploy_run_id": 39877522583,
@@ -76,7 +76,17 @@
     "normalized_head_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347",
     "image_head_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347",
     "merge_candidate_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347",
-    "merge_run_id": 40118371517
+    "merge_run_id": 40118371517,
+    "slug": "child-poops-in-pants",
+    "title": "למה ילד עושה קקי במכנסיים אחרי שנגמל, ואיך להגיב נכון?",
+    "url": "https://kesher.saharoni.com/blog/child-poops-in-pants",
+    "published_date": "2026-10-23",
+    "quality_content_sha256": "c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-10-24T19:40:49.860148+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2444,7 +2454,8 @@
     "last_dispatch_at": "2026-10-24T17:47:21.683315+00:00",
     "artifact_sha256": "7b510cec37dc6e0b2313166008f7950f91edef29f3112de8057424177d63b8fd",
     "source_id": "local-editorial://child-poops-in-pants/2",
-    "run_id": null
+    "run_id": null,
+    "image_path": "/images/generated/blog/child-poops-in-pants.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2783,6 +2794,16 @@
       "previous_run_id": 39945494171,
       "observed_active_run_id": 40113449983,
       "dispatched_at": "2026-10-24T16:50:51.939465+00:00"
+    },
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-10-23",
+      "inputs": {},
+      "intent_at": "2026-10-24T19:40:45.113901+00:00",
+      "status": "intent",
+      "previous_run_id": 39877522583,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "1afc0fe4ee223020b64ccb3b1cfee61989ce18a3"
     }
   },
   "last_child_notification": {
