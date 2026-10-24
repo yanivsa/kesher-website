@@ -76,7 +76,7 @@
     "normalized_head_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347",
     "image_head_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347",
     "merge_candidate_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347",
-    "merge_run_id": 40118371517,
+    "merge_run_id": 40125942362,
     "slug": "child-poops-in-pants",
     "title": "למה ילד עושה קקי במכנסיים אחרי שנגמל, ואיך להגיב נכון?",
     "url": "https://kesher.saharoni.com/blog/child-poops-in-pants",
@@ -84,7 +84,7 @@
     "quality_content_sha256": "c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-24T19:40:49.860148+00:00",
+    "quality_checked_at": "2026-10-24T19:41:45.648885+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-10-24T19:40:56.244343+00:00"
@@ -2442,7 +2442,7 @@
       }
     }
   ],
-  "updated_at": "2026-10-24T19:40:56.244393+00:00",
+  "updated_at": "2026-10-24T19:41:48.146953+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2811,7 +2811,7 @@
   },
   "last_child_notification": {
     "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 40118371517,
+    "run_id": 40125942362,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-23"
