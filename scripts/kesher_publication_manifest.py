@@ -25,6 +25,35 @@ def apply_topic_overrides(posts: list[dict], overrides: dict[str, dict]) -> list
     ]
 
 
+def load_site_posts(root: Path) -> list[dict]:
+    """Resolve the exact content catalog used by the site build."""
+    loader = root / 'scripts' / 'load-posts.cjs'
+    resolved = subprocess.run(
+        [
+            'node',
+            '-e',
+            (
+                "const path=require('path'); "
+                "const {loadPosts}=require(path.resolve(process.argv[1])); "
+                "process.stdout.write(JSON.stringify(loadPosts()));"
+            ),
+            str(loader),
+        ],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=True,
+        timeout=30,
+    )
+    try:
+        posts = json.loads(resolved.stdout)
+    except json.JSONDecodeError as exc:
+        reject('ARTICLE_SOURCE_MISMATCH', f'Site publication catalog emitted invalid JSON: {exc}')
+    if not isinstance(posts, list):
+        reject('ARTICLE_SOURCE_MISMATCH', 'Site publication catalog is not an array')
+    return posts
+
+
 def generate(dist: Path, posts: list[dict], sha: str, *, exclusions: list[dict] | None = None,
              source_heroes: dict[str, bytes] | None = None) -> dict:
     require_sha(sha, 40)
@@ -148,14 +177,11 @@ def main():
     if checkout != args.sha:
         reject('ARTICLE_SOURCE_MISMATCH', 'Deployment SHA differs from actual checkout')
     root = Path(subprocess.run(['git', 'rev-parse', '--show-toplevel'], capture_output=True, text=True, check=True, timeout=15).stdout.strip())
-    posts_path = args.posts.resolve().relative_to(root)
     def committed(path):
         return subprocess.run(['git', 'show', f'{args.sha}:{path}'], capture_output=True, check=True, timeout=15).stdout
-    posts = json.loads(committed(posts_path.as_posix()))
-    topic_overrides = json.loads(committed('src/data/giftedParentOverrides.json'))
-    if not isinstance(topic_overrides, dict):
-        reject('ARTICLE_SOURCE_MISMATCH', 'Topic override catalog is not an object')
-    posts = apply_topic_overrides(posts, topic_overrides)
+    # Resolve publication rows through the same catalog loader used by the site.
+    # The checkout SHA is validated above, so these bytes are the exact deploy source.
+    posts = load_site_posts(root)
     # Use the site's existing publication selector, not another Python copy of
     # its changing word/heading policy. Non-rendered legacy rows remain explicit.
     policy = Path(__file__).resolve().with_name('content-policy.cjs')
