@@ -83,13 +83,17 @@ def generate(dist: Path, posts: list[dict], sha: str, *, exclusions: list[dict] 
 
 
 def _apply_backfill(posts: list[dict], root: Path) -> list[dict]:
-    backfill_path = root / 'src' / 'data' / 'internalLinkBackfill.json'
-    if not backfill_path.is_file():
-        return posts
-    try:
-        rules = json.loads(backfill_path.read_text(encoding='utf-8'))
-    except Exception:
-        return posts
+    rules = []
+    for filename in ('internalLinkBackfill.json', 'internalLinkBackfillManual.json'):
+        backfill_path = root / 'src' / 'data' / filename
+        if not backfill_path.is_file():
+            continue
+        try:
+            loaded = json.loads(backfill_path.read_text(encoding='utf-8'))
+        except Exception:
+            continue
+        if isinstance(loaded, list):
+            rules.extend(loaded)
     rule_map = {r['source']: r for r in rules if isinstance(r, dict) and 'source' in r}
     if not rule_map:
         return posts
