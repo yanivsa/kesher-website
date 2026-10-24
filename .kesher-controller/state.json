@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-23",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -34,15 +34,15 @@
     },
     "pr_number": 1185,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1185",
-    "current_pr_head_sha": "e807c90052749bf6915a653b39e0aaa26f2b365f",
+    "current_pr_head_sha": "4b775494c9dae362c0f580ccf66f8ef7ee6119b5",
     "jules_head_sha": "4389b5a6530a20da0f2f29980b3235772b1f500a",
     "normalization_slot": "2026-10-23",
     "normalization_dispatched_at": "2026-10-24T17:46:03.327865+00:00",
     "merge_dispatch_at": null,
     "merge_dispatch_count": 0,
     "normalization_run_id": 40117617387,
-    "normalization_drift_count": 1,
-    "last_normalization_drift_head_sha": "7baf8d39ad4173b9816b15b9e2b9df06c8e534cf",
+    "normalization_drift_count": 2,
+    "last_normalization_drift_head_sha": "4b775494c9dae362c0f580ccf66f8ef7ee6119b5",
     "last_run_conclusion": "failure",
     "last_worker_result": {
       "schema_version": 1,
@@ -73,7 +73,9 @@
     },
     "last_jules_session_id": "sessions/15737535881463004872",
     "last_failed_run_id": 40113449983,
-    "normalized_head_sha": "e807c90052749bf6915a653b39e0aaa26f2b365f"
+    "normalized_head_sha": "4b775494c9dae362c0f580ccf66f8ef7ee6119b5",
+    "image_head_sha": "4b775494c9dae362c0f580ccf66f8ef7ee6119b5",
+    "merge_candidate_sha": "4b775494c9dae362c0f580ccf66f8ef7ee6119b5"
   },
   "backlog": [
     {
@@ -1526,15 +1528,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-23T05:40:56.055601+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
       "at": "2026-10-23T05:46:35.405105+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2426,21 +2419,28 @@
         "attempt": 1,
         "pr_number": 1185
       }
+    },
+    {
+      "at": "2026-10-24T17:48:40.298183+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-24T17:47:21.683346+00:00",
+  "updated_at": "2026-10-24T17:48:40.298200+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "LocalEditorial",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-24T17:47:21.683315+00:00"
+    "last_dispatch_at": "2026-10-24T17:47:21.683315+00:00",
+    "artifact_sha256": "7b510cec37dc6e0b2313166008f7950f91edef29f3112de8057424177d63b8fd",
+    "source_id": "local-editorial://child-poops-in-pants/2"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2780,22 +2780,22 @@
       "observed_active_run_id": 40113449983,
       "dispatched_at": "2026-10-24T16:50:51.939465+00:00"
     },
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
       "cycle": "2026-10-23",
       "inputs": {
-        "pr_number": "1185"
+        "pr_number": "1185",
+        "slot": "2026-10-23"
       },
-      "intent_at": "2026-10-24T17:47:05.134017+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-24T17:48:24.399046+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": 40117717072,
-      "dispatched_at": "2026-10-24T17:47:05.134017+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Normalize Article PR",
-    "run_id": 40117617387,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 40117717072,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-23"
