@@ -41,7 +41,7 @@ describe('new-intent compact landing pilot contract', () => {
     const appSource = fs.readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8');
     const layoutSource = fs.readFileSync(new URL('../src/components/Layout/Layout.tsx', import.meta.url), 'utf8');
     pilots.forEach(([key]) => {
-      expect(appSource).toContain(`path=\"/${key}\"`);
+      expect(appSource).toContain(`path="/${key}"`);
       expect(layoutSource).toContain(`cleanPath === '/${key}'`);
     });
   });
