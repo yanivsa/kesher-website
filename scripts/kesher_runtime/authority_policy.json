@@ -3249,7 +3249,7 @@
           "tests/test_kesher_output_artifacts.py": "89cd90e4d483a94e4b08e10ddbc9c2eea6080d4c870d5dbfc79312706e80408e",
           "tests/test_kesher_provider_recovery.py": "98d4b49f4815b56b5ab4d6880543463ddc69a4dbcc347bb3a9d7b72102b301f3",
           "tests/test_kesher_public_delivery.py": "865b95eb166069d4b0a701f371f31ab78c2bf688bd6d23cc38402cdef56e5cc3",
-          "tests/test_kesher_publication_manifest.py": "6fd1f9c5e7059c46aa5531a98a658350d962c41832106e06811f91b76ddddfd7",
+          "tests/test_kesher_publication_manifest.py": "9366b4dfd6c4da3bed3c6fcce49b9c6ca4fdbe367fe26f2ff09cce43e0a2950c",
           "tests/test_kesher_runtime_migration.py": "f900de0d2f33b710277cda0887890f514996709d4829868fcf8ad065986be510",
           "tests/test_kesher_state_write_safety.py": "1f23f3915cf1f1851ad77b84765efd2825bc5bd9862dba22a9f20046c72aac33",
           "tests/test_kesher_v5_backlog_priority.py": "d534ee995e932c8b194652d52003093c807411af1c2fb6aa3f34bb37c3a5d648",

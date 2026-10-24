@@ -61,7 +61,6 @@ const loadPosts = () => {
   );
   const giftedParentOverrides = readObject(path.join(ROOT, 'src', 'data', 'giftedParentOverrides.json'));
   const giftedParentWave2Overrides = readObject(path.join(ROOT, 'src', 'data', 'giftedParentWave2Overrides.json'));
-  const topicOverrides = { ...giftedParentOverrides, ...giftedParentWave2Overrides };
 
   const authoritativePosts = [
     ...manualPostsOct2026,
@@ -86,7 +85,8 @@ const loadPosts = () => {
     ...legacyPosts.filter((post) => !authoritativeIds.has(String(post?.id || '').trim())),
   ].map((post) => ({
     ...post,
-    ...(topicOverrides[post.id] || {}),
+    ...(giftedParentOverrides[post.id] || {}),
+    ...(giftedParentWave2Overrides[post.id] || {}),
   }));
 
   requireUniqueIds(combined, 'combined catalog');

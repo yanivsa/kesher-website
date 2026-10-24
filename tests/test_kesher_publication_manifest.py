@@ -97,9 +97,21 @@ class PublicationManifestTests(unittest.TestCase):
         from scripts import kesher_publication_manifest as manifest
 
         posts = manifest.load_site_posts(Path.cwd())
-        ids = {post['id'] for post in posts}
-        self.assertIn('gifted-test-first-emotional-preparation-parents', ids)
-        self.assertIn('how-to-talk-to-child-about-being-gifted', ids)
+        by_id = {post['id']: post for post in posts}
+        self.assertIn('gifted-test-first-emotional-preparation-parents', by_id)
+        self.assertIn('how-to-talk-to-child-about-being-gifted', by_id)
+
+        pillar = by_id['how-to-identify-a-gifted-child-parents-guide']
+        self.assertEqual(
+            pillar['title'],
+            'מה זה ילד מחונן? הגדרה, מאפיינים ומה חשוב להורים לדעת',
+            'Wave 2 additions must not replace the earlier title/content override',
+        )
+        self.assertIn(
+            'gifted-child-emotional-sensitivity-myths',
+            pillar['relatedPostIds'],
+            'Wave 2 related-post additions must still be present',
+        )
 
     def test_effective_publication_source_applies_manual_internal_link_backfill(self):
         from scripts import kesher_publication_manifest as manifest
