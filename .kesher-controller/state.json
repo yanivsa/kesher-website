@@ -84,11 +84,11 @@
     "quality_content_sha256": "c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-24T20:25:45.199802+00:00",
+    "quality_checked_at": "2026-10-24T20:30:46.011202+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-24T19:40:56.244343+00:00",
-    "live_verified_at": "2026-10-24T20:25:46.700943+00:00"
+    "live_verified_at": "2026-10-24T20:30:47.150110+00:00"
   },
   "backlog": [
     {
