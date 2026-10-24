@@ -2772,6 +2772,20 @@
       "previous_run_id": 39945494171,
       "observed_active_run_id": 40113449983,
       "dispatched_at": "2026-10-24T16:50:51.939465+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-23",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "child-poops-in-pants",
+        "derive_content_sha256": "c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce",
+        "derive_long_item_id": "video-20261024-225012-c8700c124e"
+      },
+      "intent_at": "2026-10-24T20:50:43.716218+00:00",
+      "status": "intent",
+      "previous_run_id": 40129088128,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2785,5 +2799,21 @@
     "Deploy to Cloudflare Pages:40126405494",
     "Kesher Daily NotebookLM Video Overview:40126913602",
     "Kesher Daily Article Short V4:40129088128"
-  ]
+  ],
+  "interventions": {
+    "v5|child-poops-in-pants|c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce|short": {
+      "pipeline_id": "v5",
+      "slug": "child-poops-in-pants",
+      "content_sha256": "c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-10-24T23",
+      "last_fingerprint": "0482b6c465d23d940c3464567300a0a70c94cd245ead7a590905204593b43540",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-24T20:50:43.716218+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
