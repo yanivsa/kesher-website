@@ -673,6 +673,81 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         self._correlate_child_notification_fields(state)
         return state
 
+    def _recover_exhausted_article_after_late_head_change(self, state):
+        """Resume the exact open PR when Jules mutates it after merge budget exhaustion.
+
+        Recovery is deliberately fail-closed: only an article-stage
+        ARTICLE_ATTEMPTS_EXHAUSTED block with the same stored PR number and a
+        different live PR head may reopen. The previous auto-merge intent is
+        invalid for the new head and is discarded before the PR re-enters the
+        trusted normalize -> image -> merge gates.
+        """
+        if not isinstance(state, dict) or str(state.get("status") or "") != "blocked":
+            return None
+        last_error = state.get("last_error") if isinstance(state.get("last_error"), dict) else {}
+        article = state.get("article") if isinstance(state.get("article"), dict) else {}
+        if (
+            str(last_error.get("stage") or "") != "article"
+            or str(last_error.get("code") or "") != "ARTICLE_ATTEMPTS_EXHAUSTED"
+            or str(article.get("status") or "") != "exhausted"
+        ):
+            return None
+
+        try:
+            pr_number = int(article.get("pr_number") or 0)
+        except (TypeError, ValueError):
+            return None
+        observed_head = str(article.get("current_pr_head_sha") or "").strip().lower()
+        if pr_number <= 0 or not observed_head:
+            return None
+
+        api = getattr(self.github, "api", "") or f"https://api.github.com/repos/{getattr(self.github, 'repo', 'yanivsa/kesher-website')}"
+        try:
+            pr = self.github.request(
+                "GET",
+                f"{api}/pulls/{pr_number}",
+                allow_404=True,
+            )
+        except Exception:
+            return None
+        if not isinstance(pr, dict) or not pr:
+            return None
+        try:
+            actual_number = int(pr.get("number") or 0)
+        except (TypeError, ValueError):
+            return None
+        live_head = str((pr.get("head") or {}).get("sha") or "").strip().lower()
+        if (
+            actual_number != pr_number
+            or str(pr.get("state") or "").lower() != "open"
+            or not live_head
+            or live_head == observed_head
+        ):
+            return None
+
+        pending = state.get("pending_dispatches")
+        if isinstance(pending, dict):
+            pending.pop(ARTICLE_AUTO_MERGE_WORKFLOW, None)
+        article["merge_dispatch_count"] = 0
+        article["merge_dispatch_at"] = None
+        article["status"] = "running"
+        article["last_error"] = None
+        state["status"] = "article_pr_open"
+        state["last_error"] = None
+        state.setdefault("history", []).append({
+            "at": v5.core.utc_now(),
+            "from": "blocked",
+            "to": "article_pr_open",
+            "reason": "late_article_head_after_merge_exhaustion_recovery",
+            "details": {
+                "pr_number": pr_number,
+                "previous_head_sha": observed_head,
+                "current_head_sha": live_head,
+            },
+        })
+        state["history"] = state["history"][-100:]
+        return self._handle_open_article_pr(state, pr)
+
     def _quality_preflight(self, state):
         posts = self.posts_on_main("main")
         if not isinstance(posts, list):
@@ -1889,6 +1964,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         head_sha = str((pr.get("head") or {}).get("sha") or "").strip().lower()
         previously_observed_head_sha = str(state["article"].get("current_pr_head_sha") or "").strip().lower()
         state["article"]["current_pr_head_sha"] = head_sha
+        if previously_observed_head_sha and head_sha and previously_observed_head_sha != head_sha:
+            pending = state.get("pending_dispatches")
+            if isinstance(pending, dict):
+                pending.pop(ARTICLE_AUTO_MERGE_WORKFLOW, None)
         if not state["article"].get("jules_head_sha"):
             state["article"]["jules_head_sha"] = head_sha
 
@@ -2398,6 +2477,11 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         v5.core.GitHubClient.dispatch = guarded_core_dispatch  # type: ignore[method-assign]
 
         try:
+            late_head_action = self._recover_exhausted_article_after_late_head_change(state)
+            if late_head_action is not None:
+                self._safe_save_controller_state(state)
+                return state, late_head_action
+
             run_now_action = self._run_now_article_phase(state)
             if run_now_action is not None:
                 self._safe_save_controller_state(state)
