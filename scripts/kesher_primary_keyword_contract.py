@@ -15,6 +15,7 @@ SEMANTIC_KEYWORD_DICTIONARY: dict[str, set[str]] = {
     "גמילה מחיתולים": {"potty", "toilet", "diaper"},
     "גמילה מחיתול": {"potty", "toilet", "diaper"},
     "גמילת לילה": {"night", "potty", "bedwetting", "diaper"},
+    "קקי במכנסיים": {"poops", "pants"},
     # Pacifier weaning / Toddler transitions
     "גמילה ממוצץ": {"pacifier", "weaning", "soother", "dummy"},
     "גמילה ממוצצים": {"pacifier", "weaning", "soother", "dummy"},
