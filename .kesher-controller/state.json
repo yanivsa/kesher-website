@@ -2449,7 +2449,15 @@
     "last_dispatch_at": "2026-10-24T20:17:08.803368+00:00",
     "artifact_id": "bd578723-20be-464c-b746-42c26abf4691",
     "source_id": "ba0a1e5e-1806-436d-9d44-8c2e50d355dd",
-    "adopted_from_long_item_id": "video-20261024-225012-c8700c124e"
+    "adopted_from_long_item_id": "video-20261024-225012-c8700c124e",
+    "watchdog": {
+      "identity": "short:child-poops-in-pants:c8700c124e3988caf5843cc3e1b695a7ce693d64d10c54d129ea8191d15db1ce:video-20261024-231842-c8700c124e",
+      "hard_started_at": "2026-10-24T20:18:50.601405+00:00",
+      "last_progress_at": "2026-10-24T20:25:40.322584+00:00",
+      "last_fingerprint": "4e21bc5481f4e9a8e9418c54523f45b0e7c0a94c05d5e3b1356776b6cf45759d",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
