@@ -1485,12 +1485,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-25T16:41:29.214258+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
-    {
       "at": "2026-10-25T16:46:24.907587+00:00",
       "from": "short_running",
       "to": "article_live",
@@ -2199,9 +2193,18 @@
       "details": {
         "message": "PR #1209 exhausted 3 total article content attempts (initial + 2 repairs)"
       }
+    },
+    {
+      "at": "2026-10-25T21:25:57.574864+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1209 exhausted 3 total article content attempts (initial + 2 repairs)"
+      }
     }
   ],
-  "updated_at": "2026-10-25T21:21:48.910017+00:00",
+  "updated_at": "2026-10-25T21:25:57.574871+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -3129,6 +3132,6 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1209 exhausted 3 total article content attempts (initial + 2 repairs)",
-    "at": "2026-10-25T21:21:48.909998+00:00"
+    "at": "2026-10-25T21:25:57.574845+00:00"
   }
 }
