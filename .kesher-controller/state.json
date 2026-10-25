@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -18,18 +18,20 @@
     "last_dispatch_at": "2026-10-25T12:13:03.131964+00:00",
     "pr_number": 1201,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1201",
-    "current_pr_head_sha": "65e93ed93d8e1022a9fc167fe064577fbad0da9f",
+    "current_pr_head_sha": "2e5c52416f233ea973a47e604b1a5f184b1fab7f",
     "jules_head_sha": "083ff8e93b18fb2484959d8aa86db0e22a957cbf",
     "normalization_status": "complete",
     "normalization_slot": "2026-10-25",
     "normalization_dispatched_at": "2026-10-25T12:40:54.564386+00:00",
     "normalization_run_id": 40194185898,
-    "normalization_drift_count": 2,
-    "last_normalization_drift_head_sha": "65e93ed93d8e1022a9fc167fe064577fbad0da9f",
+    "normalization_drift_count": 3,
+    "last_normalization_drift_head_sha": "2e5c52416f233ea973a47e604b1a5f184b1fab7f",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 40194959063,
-    "normalized_head_sha": "65e93ed93d8e1022a9fc167fe064577fbad0da9f"
+    "normalized_head_sha": "2e5c52416f233ea973a47e604b1a5f184b1fab7f",
+    "image_head_sha": "2e5c52416f233ea973a47e604b1a5f184b1fab7f",
+    "merge_candidate_sha": "2e5c52416f233ea973a47e604b1a5f184b1fab7f"
   },
   "backlog": [
     {
@@ -1482,12 +1484,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T10:32:01.190813+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-25T10:32:02.011684+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2195,12 +2191,18 @@
         "attempt": 2,
         "pr_number": 1201
       }
+    },
+    {
+      "at": "2026-10-25T15:12:48.599920+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-25T15:11:17.051287+00:00",
+  "updated_at": "2026-10-25T15:12:48.599937+00:00",
   "image": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2210,8 +2212,7 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-25T15:11:17.051236+00:00",
     "artifact_sha256": "d0e6c5bfbb3b9088f00c6542974906285de0826098099234f60f585dfd92edb2",
-    "source_id": "local-editorial://transition-to-municipal-kindergarten/4",
-    "run_id": 40205744086
+    "source_id": "local-editorial://transition-to-municipal-kindergarten/4"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2565,22 +2566,22 @@
     "short_origin_verified": true
   },
   "pending_dispatches": {
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
       "cycle": "2026-10-25",
       "inputs": {
-        "pr_number": "1201"
+        "pr_number": "1201",
+        "slot": "2026-10-25"
       },
-      "intent_at": "2026-10-25T15:10:58.508261+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 40205744086,
-      "dispatched_at": "2026-10-25T15:10:58.508261+00:00"
+      "intent_at": "2026-10-25T15:12:26.920036+00:00",
+      "status": "intent",
+      "previous_run_id": 40194959063,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 40194959063,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 40205744086,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-25"
