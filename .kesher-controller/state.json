@@ -2729,7 +2729,18 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-10-25",
+      "inputs": {},
+      "intent_at": "2026-10-25T06:10:50.002940+00:00",
+      "status": "intent",
+      "previous_run_id": 40167587223,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "ecc9dca2dcf1a2620865c52bef4a8b1fa98c4b70"
+    }
+  },
   "last_child_notification": {
     "workflow": "Auto-merge Kesher article PRs",
     "run_id": 40166426072,
