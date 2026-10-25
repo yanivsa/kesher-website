@@ -39,13 +39,13 @@
     "quality_content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-25T16:35:13.857089+00:00",
+    "quality_checked_at": "2026-10-25T16:40:54.956475+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-25T15:19:44.408119+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40206406296,
-    "live_verified_at": "2026-10-25T16:35:15.087438+00:00"
+    "live_verified_at": "2026-10-25T16:40:56.334413+00:00"
   },
   "backlog": [
     {
@@ -2328,7 +2328,7 @@
     "task_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
     "artifact_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
     "provider_status": "pending",
-    "verified": false,
+    "verified": true,
     "watchdog": {
       "identity": "long_video:transition-to-municipal-kindergarten:109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5:video-20261025-182242-109b70354e",
       "hard_started_at": "2026-10-25T16:22:48.594992+00:00",
@@ -2336,7 +2336,20 @@
       "last_fingerprint": "185cbb402b88ba4acc87f5675fd4ffbb2bb0862b2a0f1b33bcd6f213549a3d65",
       "recovery_count": 0,
       "last_recovery_at": null
-    }
+    },
+    "youtube_id": "p3ntKY8tDjQ",
+    "youtube_url": "https://youtu.be/p3ntKY8tDjQ",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 121.733,
+    "content_duration_seconds": 121.75,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
