@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_pr_open",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1484,12 +1484,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T16:18:35.053194+00:00",
-      "from": "long_video_retry_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-25T16:18:38.946304+00:00",
       "from": "article_live",
       "to": "blocked",
@@ -2186,12 +2180,22 @@
         "previous_head_sha": "99d1019f5fcdd75aaa21e2911e14e777db52d1d7",
         "current_head_sha": "c95927cc918a07abed89844fa44d096404585ec1"
       }
+    },
+    {
+      "at": "2026-10-25T21:06:52.048212+00:00",
+      "from": "article_pr_open",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 2,
+        "pr_number": 1209
+      }
     }
   ],
-  "updated_at": "2026-10-25T20:55:59.204394+00:00",
+  "updated_at": "2026-10-25T21:06:52.048221+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "pending",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2199,7 +2203,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-25T19:15:00.688138+00:00",
+    "last_dispatch_at": "2026-10-25T21:06:52.048181+00:00",
     "artifact_sha256": "0c9fb37a16cad28ffdfe382a05a376c572d4fa4d52661b18f7467a7ed8b96b59",
     "source_id": "local-editorial://changing-kindergarten-midyear/1"
   },
@@ -2584,9 +2588,10 @@
         "pr_number": "1209"
       },
       "intent_at": "2026-10-25T21:06:24.493144+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40233939999,
+      "dispatched_at": "2026-10-25T21:06:24.493144+00:00"
     }
   },
   "last_child_notification": {
