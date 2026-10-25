@@ -322,7 +322,8 @@ class ValidationWorkflowContractTests(unittest.TestCase):
                 '    def test_jules_review_api_timeout_remains_blocked_from_upload(self):\n'
                 '        self.fail("obsolete timeout assertion executed")\n')
             modules = ('test_video_pending_evidence_repair', 'test_video_exact_item_binding',
-                       'test_video_exact_item_callers', 'test_canonical_article', 'test_canonical_media',
+                       'test_video_exact_item_callers', 'test_video_state_first_restore',
+                       'test_canonical_article', 'test_canonical_media',
                        'test_canonical_controller', 'test_canonical_authority', 'test_new_publication_regression')
             for module in modules:
                 (tests / (module + '.py')).write_text(
