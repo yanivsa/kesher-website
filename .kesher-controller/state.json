@@ -1,51 +1,20 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "complete",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 40192138366,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 1,
-    "last_dispatch_at": "2026-10-25T12:13:03.131964+00:00",
-    "pr_number": 1201,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1201",
-    "current_pr_head_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
-    "jules_head_sha": "083ff8e93b18fb2484959d8aa86db0e22a957cbf",
-    "normalization_status": "complete",
-    "normalization_slot": "2026-10-25",
-    "normalization_dispatched_at": "2026-10-25T12:40:54.564386+00:00",
-    "normalization_run_id": 40194185898,
-    "normalization_drift_count": 0,
-    "last_normalization_drift_head_sha": "2e5c52416f233ea973a47e604b1a5f184b1fab7f",
-    "merge_dispatch_count": 0,
-    "merge_dispatch_at": null,
-    "merge_run_id": 40205866288,
-    "normalized_head_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
-    "image_head_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
-    "merge_candidate_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
-    "slug": "transition-to-municipal-kindergarten",
-    "title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
-    "url": "https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten",
-    "published_date": "2026-10-25",
-    "quality_content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
-    "reconciled_existing_article": true,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-10-25T18:44:59.404930+00:00",
-    "quality_violations": [],
-    "live": true,
-    "last_deploy_dispatch_at": "2026-10-25T15:19:44.408119+00:00",
-    "next_deploy_retry_at": null,
-    "deploy_run_id": 40219496122,
-    "live_verified_at": "2026-10-25T18:45:12.435024+00:00"
+    "deploy_attempts": 0
   },
   "backlog": [
     {
@@ -1498,16 +1467,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T15:19:44.408161+00:00",
-      "from": "article_pr_open",
-      "to": "article_deploying",
-      "reason": "public article check failed; recovery deploy dispatched",
-      "details": {
-        "http_status": 404,
-        "attempt": 1
-      }
-    },
-    {
       "at": "2026-10-25T15:24:36.622538+00:00",
       "from": "article_deploying",
       "to": "article_live",
@@ -2172,215 +2131,54 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-25T18:45:54.359146+00:00",
+      "from": "complete",
+      "to": "article_needed",
+      "reason": "owner_run_now_cycle_started",
+      "details": {
+        "idea_id": "parenting-p1-changing-kindergarten-midyear",
+        "publication_slot": "2026-10-25"
+      }
     }
   ],
   "updated_at": "2026-10-25T18:45:13.341595+00:00",
   "image": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "LocalEditorial",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-25T15:11:17.051236+00:00",
-    "artifact_sha256": "d0e6c5bfbb3b9088f00c6542974906285de0826098099234f60f585dfd92edb2",
-    "source_id": "local-editorial://transition-to-municipal-kindergarten/4",
-    "run_id": 40205744086,
-    "image_path": "/images/generated/blog/transition-to-municipal-kindergarten.png"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 3,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 40209325764,
-    "processed_run_id": 40209325764,
-    "provider_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "VIDEO_WORKFLOW_FAILED": 3
-    },
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-25T15:56:49.514412+00:00",
-    "attempts": 3,
-    "last_run_conclusion": "failure",
-    "last_failed_run_id": 40209325764,
-    "item_id": "video-20261025-182242-109b70354e",
-    "source_slug": "transition-to-municipal-kindergarten",
-    "source_content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
-    "content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
-    "source_id": "ad815fed-89f9-4afa-9219-71e1db7deae3",
-    "task_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
-    "artifact_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
-    "provider_status": "pending",
-    "verified": true,
-    "watchdog": {
-      "identity": "long_video:transition-to-municipal-kindergarten:109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5:video-20261025-182242-109b70354e",
-      "hard_started_at": "2026-10-25T16:22:48.594992+00:00",
-      "last_progress_at": "2026-10-25T16:29:38.656913+00:00",
-      "last_fingerprint": "185cbb402b88ba4acc87f5675fd4ffbb2bb0862b2a0f1b33bcd6f213549a3d65",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    },
-    "youtube_id": "p3ntKY8tDjQ",
-    "youtube_url": "https://youtu.be/p3ntKY8tDjQ",
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 121.733,
-    "content_duration_seconds": 121.75,
-    "signature_duration_seconds": 3.0,
-    "signature_overlay": true,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 40215226497,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "689473fc-a1a1-4882-b5be-27255ae62880",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-25T17:11:04.627142+00:00",
-    "artifact_id": "689473fc-a1a1-4882-b5be-27255ae62880",
-    "source_id": "8fae7ac1-fa9c-4ce6-90f4-5e2ef5ba4646",
-    "adopted_from_long_item_id": null,
-    "watchdog": {
-      "identity": "short:transition-to-municipal-kindergarten:109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5:video-20261025-184317-109b70354e",
-      "hard_started_at": "2026-10-25T16:43:27.093924+00:00",
-      "last_progress_at": "2026-10-25T16:50:15.575051+00:00",
-      "last_fingerprint": "b306ed4e9a7887b312f73d0642f8159a450ddd49d876bdb95d34333c23174c86",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-10-25T17:10:49.009132+00:00"
-    },
-    "source": {
-      "id": "transition-to-municipal-kindergarten",
-      "slug": "transition-to-municipal-kindergarten",
-      "title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
-      "date": "2026-10-25",
-      "category": "הדרכת הורים",
-      "subcategory": "הגיל הרך",
-      "excerpt": "המעבר מגן פרטי קטן ועוטף לגן עירייה עם יותר ילדים ופחות אנשי צוות יכול להיות מלחיץ. איך נכין את הילדים לשגרה החדשה, לצוות החדש ולעצמאות הנדרשת מהם, מבלי לייצר אצלם חרדה מוקדמת?",
-      "canonical_url": "https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten",
-      "content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
-      "video_title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
-      "short_title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
-      "short_hook": "",
-      "youtube_metadata": {
-        "title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
-        "description": "המעבר מגן פרטי קטן ועוטף לגן עירייה עם יותר ילדים ופחות אנשי צוות יכול להיות מלחיץ. איך נכין את הילדים לשגרה החדשה, לצוות החדש ולעצמאות הנדרשת מהם, מבלי לייצר אצלם חרדה מוקדמת?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/transition-to-municipal-kindergarten\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "הגיל הרך"
-        ]
-      },
-      "short_youtube_metadata": {
-        "title": "בקצרה: מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
-        "description": "המעבר מגן פרטי קטן ועוטף לגן עירייה עם יותר ילדים ופחות אנשי צוות יכול להיות מלחיץ. איך נכין את הילדים לשגרה החדשה, לצוות החדש ולעצמאות הנדרשת מהם, מבלי לייצר אצלם חרדה מוקדמת?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/transition-to-municipal-kindergarten\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "הגיל הרך"
-        ]
-      }
-    },
-    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-    "task_id": "689473fc-a1a1-4882-b5be-27255ae62880",
-    "raw_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498",
-    "final_sha256": "8dd0df226d1cbf72c3320f208ffa63a130c568a27a2bd484e8a04676ad527d26",
-    "provider_raw_media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 720,
-      "height": 1280,
-      "duration": 77.0,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 1080,
-      "height": 1920,
-      "duration": 77.0,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "provider_video_format": "short",
-    "provider_native_short": true,
-    "provider_native_short_verified": true,
-    "provider_short_fallback_used": false,
-    "fresh_generation_attempt": 1,
-    "overview_provider_identity": {
-      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-      "source_id": "ad815fed-89f9-4afa-9219-71e1db7deae3",
-      "task_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
-      "artifact_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
-      "raw_sha256": "406d0fe28806d2634f553186a801b5a01a70f055cb6f4c3011b819ee104655e7"
-    },
-    "shared_provider_identity": null,
-    "short_start_seconds": 0.0,
-    "short_duration_seconds": 77.0,
-    "audio_provenance": {
-      "schema_version": 1,
-      "mode": "stream_copy",
-      "raw_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498",
-      "final_sha256": "8dd0df226d1cbf72c3320f208ffa63a130c568a27a2bd484e8a04676ad527d26",
-      "raw_audio_sha256": "696da2863459b74ffc51382434cf2d60bbb5ee616c66e137c36eb9afc2653d89",
-      "final_audio_sha256": "696da2863459b74ffc51382434cf2d60bbb5ee616c66e137c36eb9afc2653d89",
-      "raw_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 77.067029
-      },
-      "final_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 77.067029
-      }
-    },
-    "signature_overlay": true,
-    "signature_provenance": {
-      "schema_version": 1,
-      "final_sha256": "8dd0df226d1cbf72c3320f208ffa63a130c568a27a2bd484e8a04676ad527d26",
-      "raw_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498",
-      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-      "segment_sha256": "617632604891381072936e76a15773f768ee2dea851e8dc647615e55096fed85",
-      "source_duration_seconds": 77.0,
-      "final_duration_seconds": 77.0,
-      "start_seconds": 74.0,
-      "end_seconds": 77.0,
-      "audio_source_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498"
-    },
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "item_id": "video-20261025-184317-109b70354e",
-    "type": "article_short",
-    "youtube_id": "f_GsGagsVww",
-    "youtube_url": "https://youtu.be/f_GsGagsVww",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "617632604891381072936e76a15773f768ee2dea851e8dc647615e55096fed85",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
@@ -2394,15 +2192,6 @@
       "run_now": false,
       "status": "queued",
       "requested_at": "2026-10-19T10:12:46.078090+00:00"
-    },
-    {
-      "idea_id": "parenting-p1-changing-kindergarten-midyear",
-      "fingerprint": "0e497f8a781bfbe4d254d7604e790bfbee67ff1bb9b2158daa054db387fbb399",
-      "topic_brief": "אשכול מעון לגן. נושא/כאב: ילד שעוזב צוות, חברים ושגרה מוכרת ונכנס לגן חדש באמצע השנה; הורה שמתלבט אם המעבר יפגע בו ומרגיש אשמה או חוסר ודאות. להתמקד בפרידה, הכנה והתחלה מחדש. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: changing-kindergarten-midyear. כותרת עבודה: מעבר גן באמצע שנה: איך לעזור לילד להיפרד ולהתחיל מחדש? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
-      "required_primary_keyword": "מעבר גן באמצע שנה",
-      "run_now": false,
-      "status": "queued",
-      "requested_at": "2026-10-19T10:13:42.169596+00:00"
     },
     {
       "idea_id": "parenting-p1-kindergarten-adjustment-difficulties",
@@ -2707,7 +2496,17 @@
       }
     }
   ],
-  "active_idea": null,
+  "active_idea": {
+    "idea_id": "parenting-p1-changing-kindergarten-midyear",
+    "fingerprint": "0e497f8a781bfbe4d254d7604e790bfbee67ff1bb9b2158daa054db387fbb399",
+    "topic_brief": "אשכול מעון לגן. נושא/כאב: ילד שעוזב צוות, חברים ושגרה מוכרת ונכנס לגן חדש באמצע השנה; הורה שמתלבט אם המעבר יפגע בו ומרגיש אשמה או חוסר ודאות. להתמקד בפרידה, הכנה והתחלה מחדש. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: changing-kindergarten-midyear. כותרת עבודה: מעבר גן באמצע שנה: איך לעזור לילד להיפרד ולהתחיל מחדש? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
+    "required_primary_keyword": "מעבר גן באמצע שנה",
+    "run_now": true,
+    "status": "claimed",
+    "requested_at": "2026-10-19T10:13:42.169596+00:00",
+    "publication_slot": "2026-10-25",
+    "claimed_at": "2026-10-25T18:45:54.359130+00:00"
+  },
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten",
     "overview_youtube_url": "https://youtu.be/p3ntKY8tDjQ",
@@ -2725,13 +2524,7 @@
     "source_slug": null,
     "slot": "2026-10-25"
   },
-  "processed_child_notifications": [
-    "Deploy to Cloudflare Pages:40206406296",
-    "Kesher Daily NotebookLM Video Overview:40211303211",
-    "Kesher Daily Article Short V4:40212882714",
-    "Kesher Daily Article Short V4:40215226497",
-    "Deploy to Cloudflare Pages:40219496122"
-  ],
+  "processed_child_notifications": [],
   "deploy_history": [
     {
       "workflow": "deploy.yml",
@@ -3012,6 +2805,248 @@
         "height": 1920
       },
       "archived_at": "2026-10-25T12:12:56.608000+00:00",
+      "reason": "owner_run_now_cycle_started"
+    },
+    {
+      "cycle": "2026-10-25",
+      "status": "complete",
+      "article": {
+        "attempt_count": 0,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 40192138366,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 0,
+        "deploy_attempts": 1,
+        "last_dispatch_at": "2026-10-25T12:13:03.131964+00:00",
+        "pr_number": 1201,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1201",
+        "current_pr_head_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
+        "jules_head_sha": "083ff8e93b18fb2484959d8aa86db0e22a957cbf",
+        "normalization_status": "complete",
+        "normalization_slot": "2026-10-25",
+        "normalization_dispatched_at": "2026-10-25T12:40:54.564386+00:00",
+        "normalization_run_id": 40194185898,
+        "normalization_drift_count": 0,
+        "last_normalization_drift_head_sha": "2e5c52416f233ea973a47e604b1a5f184b1fab7f",
+        "merge_dispatch_count": 0,
+        "merge_dispatch_at": null,
+        "merge_run_id": 40205866288,
+        "normalized_head_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
+        "image_head_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
+        "merge_candidate_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
+        "slug": "transition-to-municipal-kindergarten",
+        "title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
+        "url": "https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten",
+        "published_date": "2026-10-25",
+        "quality_content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
+        "reconciled_existing_article": true,
+        "quality_status": "passed",
+        "quality_checked_at": "2026-10-25T18:44:59.404930+00:00",
+        "quality_violations": [],
+        "live": true,
+        "last_deploy_dispatch_at": "2026-10-25T15:19:44.408119+00:00",
+        "next_deploy_retry_at": null,
+        "deploy_run_id": 40219496122,
+        "live_verified_at": "2026-10-25T18:45:12.435024+00:00"
+      },
+      "long_video": {
+        "attempt_count": 3,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 40209325764,
+        "processed_run_id": 40209325764,
+        "provider_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {
+          "VIDEO_WORKFLOW_FAILED": 3
+        },
+        "overview_evidence_required": true,
+        "last_dispatch_at": "2026-10-25T15:56:49.514412+00:00",
+        "attempts": 3,
+        "last_run_conclusion": "failure",
+        "last_failed_run_id": 40209325764,
+        "item_id": "video-20261025-182242-109b70354e",
+        "source_slug": "transition-to-municipal-kindergarten",
+        "source_content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
+        "content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
+        "source_id": "ad815fed-89f9-4afa-9219-71e1db7deae3",
+        "task_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
+        "artifact_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
+        "provider_status": "pending",
+        "verified": true,
+        "watchdog": {
+          "identity": "long_video:transition-to-municipal-kindergarten:109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5:video-20261025-182242-109b70354e",
+          "hard_started_at": "2026-10-25T16:22:48.594992+00:00",
+          "last_progress_at": "2026-10-25T16:29:38.656913+00:00",
+          "last_fingerprint": "185cbb402b88ba4acc87f5675fd4ffbb2bb0862b2a0f1b33bcd6f213549a3d65",
+          "recovery_count": 0,
+          "last_recovery_at": null
+        },
+        "youtube_id": "p3ntKY8tDjQ",
+        "youtube_url": "https://youtu.be/p3ntKY8tDjQ",
+        "technical_verified": true,
+        "visual_pipeline": "remotion-v1-notebooklm-audio",
+        "codec": "h264",
+        "width": 1280,
+        "height": 720,
+        "duration": 121.733,
+        "content_duration_seconds": 121.75,
+        "signature_duration_seconds": 3.0,
+        "signature_overlay": true,
+        "signature_fullscreen": true,
+        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
+      },
+      "short": {
+        "attempt_count": 2,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 40215226497,
+        "processed_run_id": null,
+        "provider_id": "689473fc-a1a1-4882-b5be-27255ae62880",
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "last_dispatch_at": "2026-10-25T17:11:04.627142+00:00",
+        "artifact_id": "689473fc-a1a1-4882-b5be-27255ae62880",
+        "source_id": "8fae7ac1-fa9c-4ce6-90f4-5e2ef5ba4646",
+        "adopted_from_long_item_id": null,
+        "watchdog": {
+          "identity": "short:transition-to-municipal-kindergarten:109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5:video-20261025-184317-109b70354e",
+          "hard_started_at": "2026-10-25T16:43:27.093924+00:00",
+          "last_progress_at": "2026-10-25T16:50:15.575051+00:00",
+          "last_fingerprint": "b306ed4e9a7887b312f73d0642f8159a450ddd49d876bdb95d34333c23174c86",
+          "recovery_count": 1,
+          "last_recovery_at": "2026-10-25T17:10:49.009132+00:00"
+        },
+        "source": {
+          "id": "transition-to-municipal-kindergarten",
+          "slug": "transition-to-municipal-kindergarten",
+          "title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
+          "date": "2026-10-25",
+          "category": "הדרכת הורים",
+          "subcategory": "הגיל הרך",
+          "excerpt": "המעבר מגן פרטי קטן ועוטף לגן עירייה עם יותר ילדים ופחות אנשי צוות יכול להיות מלחיץ. איך נכין את הילדים לשגרה החדשה, לצוות החדש ולעצמאות הנדרשת מהם, מבלי לייצר אצלם חרדה מוקדמת?",
+          "canonical_url": "https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten",
+          "content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
+          "video_title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
+          "short_title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
+          "short_hook": "",
+          "youtube_metadata": {
+            "title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
+            "description": "המעבר מגן פרטי קטן ועוטף לגן עירייה עם יותר ילדים ופחות אנשי צוות יכול להיות מלחיץ. איך נכין את הילדים לשגרה החדשה, לצוות החדש ולעצמאות הנדרשת מהם, מבלי לייצר אצלם חרדה מוקדמת?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/transition-to-municipal-kindergarten\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+            "tags": [
+              "הדרכת הורים",
+              "הגיל הרך"
+            ]
+          },
+          "short_youtube_metadata": {
+            "title": "בקצרה: מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
+            "description": "המעבר מגן פרטי קטן ועוטף לגן עירייה עם יותר ילדים ופחות אנשי צוות יכול להיות מלחיץ. איך נכין את הילדים לשגרה החדשה, לצוות החדש ולעצמאות הנדרשת מהם, מבלי לייצר אצלם חרדה מוקדמת?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/transition-to-municipal-kindergarten\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+            "tags": [
+              "הדרכת הורים",
+              "הגיל הרך"
+            ]
+          }
+        },
+        "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+        "task_id": "689473fc-a1a1-4882-b5be-27255ae62880",
+        "raw_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498",
+        "final_sha256": "8dd0df226d1cbf72c3320f208ffa63a130c568a27a2bd484e8a04676ad527d26",
+        "provider_raw_media": {
+          "codec": "h264",
+          "audio_codec": "aac",
+          "width": 720,
+          "height": 1280,
+          "duration": 77.0,
+          "format": "mov,mp4,m4a,3gp,3g2,mj2"
+        },
+        "media": {
+          "codec": "h264",
+          "audio_codec": "aac",
+          "width": 1080,
+          "height": 1920,
+          "duration": 77.0,
+          "format": "mov,mp4,m4a,3gp,3g2,mj2"
+        },
+        "provider_video_format": "short",
+        "provider_native_short": true,
+        "provider_native_short_verified": true,
+        "provider_short_fallback_used": false,
+        "fresh_generation_attempt": 1,
+        "overview_provider_identity": {
+          "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+          "source_id": "ad815fed-89f9-4afa-9219-71e1db7deae3",
+          "task_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
+          "artifact_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
+          "raw_sha256": "406d0fe28806d2634f553186a801b5a01a70f055cb6f4c3011b819ee104655e7"
+        },
+        "shared_provider_identity": null,
+        "short_start_seconds": 0.0,
+        "short_duration_seconds": 77.0,
+        "audio_provenance": {
+          "schema_version": 1,
+          "mode": "stream_copy",
+          "raw_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498",
+          "final_sha256": "8dd0df226d1cbf72c3320f208ffa63a130c568a27a2bd484e8a04676ad527d26",
+          "raw_audio_sha256": "696da2863459b74ffc51382434cf2d60bbb5ee616c66e137c36eb9afc2653d89",
+          "final_audio_sha256": "696da2863459b74ffc51382434cf2d60bbb5ee616c66e137c36eb9afc2653d89",
+          "raw_timing": {
+            "codec": "aac",
+            "sample_rate": 44100,
+            "channels": 1,
+            "start_seconds": 0.0,
+            "duration_seconds": 77.067029
+          },
+          "final_timing": {
+            "codec": "aac",
+            "sample_rate": 44100,
+            "channels": 1,
+            "start_seconds": 0.0,
+            "duration_seconds": 77.067029
+          }
+        },
+        "signature_overlay": true,
+        "signature_provenance": {
+          "schema_version": 1,
+          "final_sha256": "8dd0df226d1cbf72c3320f208ffa63a130c568a27a2bd484e8a04676ad527d26",
+          "raw_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498",
+          "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+          "segment_sha256": "617632604891381072936e76a15773f768ee2dea851e8dc647615e55096fed85",
+          "source_duration_seconds": 77.0,
+          "final_duration_seconds": 77.0,
+          "start_seconds": 74.0,
+          "end_seconds": 77.0,
+          "audio_source_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498"
+        },
+        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+        "item_id": "video-20261025-184317-109b70354e",
+        "type": "article_short",
+        "youtube_id": "f_GsGagsVww",
+        "youtube_url": "https://youtu.be/f_GsGagsVww",
+        "verified": true,
+        "portrait_verified": true,
+        "signature_verified": true,
+        "signature_asset": "signature-mask.svg",
+        "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+        "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+        "technical_verified": true,
+        "signature_duration_seconds": 3.0,
+        "signature_fullscreen": true,
+        "signature_video_sha256": "617632604891381072936e76a15773f768ee2dea851e8dc647615e55096fed85",
+        "source_mode": "direct-short",
+        "width": 1080,
+        "height": 1920
+      },
+      "archived_at": "2026-10-25T18:45:54.359116+00:00",
       "reason": "owner_run_now_cycle_started"
     }
   ]
