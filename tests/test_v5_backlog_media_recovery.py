@@ -311,6 +311,56 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
         self.assertFalse(state["backlog"][0]["media"]["article_live"])
         self.assertEqual(state["backlog"][0]["media"]["article_deploy_status"], "exhausted")
 
+    def _starvation_fixture(self, *, older_public=False, all_exhausted=False):
+        gh = FakeGitHub()
+        posts, rows, probes = [], [], []
+        for date, slug, attempts in [("2026-08-19", "newest-exhausted", 3), ("2026-08-18", "older-eligible", 3 if all_exhausted else 0)]:
+            post = prior_article()
+            post.update(id=slug, slug=slug, date=date, controllerManaged=True)
+            source = v5.article_source_identity(post)
+            posts.append(post)
+            rows.append({"cycle": date, "article": {"slug": slug, "quality_content_sha256": source["content_sha256"], "deploy_attempts": attempts}})
+        gh.posts = posts
+        class Site:
+            def get(self, url):
+                probes.append(url)
+                if older_public and url.endswith("/older-eligible"):
+                    source = v5.article_source_identity(posts[1])
+                    return 200, (f'<link rel="canonical" href="{url}"><meta name="kesher:content-sha256" content="{source["content_sha256"]}"><h1>{posts[1]["title"]}</h1>')
+                return 404, "<h1>Not found</h1>"
+        state = {"status": "complete", "backlog": rows, "history": []}
+        controller = runtime.RuntimeV5Controller(gh, Site(), now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ))
+        return controller, state, gh, probes
+
+    def test_exhausted_deploy_does_not_starve_older_eligible_deploy(self):
+        controller, state, gh, probes = self._starvation_fixture()
+        action = controller._backlog_media_preflight(state)
+        self.assertEqual(action.kind, "dispatch_backlog_deploy")
+        self.assertEqual(action.inputs["target_slug"], "older-eligible")
+        self.assertEqual(gh.dispatches, [(core.DEPLOY_WORKFLOW, None)])
+        self.assertEqual([r["article"]["deploy_attempts"] for r in state["backlog"]], [3, 1])
+        self.assertEqual(state["backlog"][0]["media"]["last_error"], "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED")
+        self.assertEqual(len(probes), 2)
+
+    def test_all_exhausted_backlog_is_bounded_and_does_not_fail_completed_cycle(self):
+        controller, state, gh, probes = self._starvation_fixture(all_exhausted=True)
+        action = controller._backlog_media_preflight(state)
+        self.assertEqual(action.kind, "wait")
+        self.assertEqual(gh.dispatches, [])
+        self.assertEqual(len(probes), 2)
+        for row in state["backlog"]:
+            self.assertEqual(row["article"]["deploy_attempts"], 3)
+            self.assertEqual(row["media"]["last_error"], "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED")
+            self.assertIsNot(row["media"].get("complete"), True)
+
+    def test_exhausted_deploy_does_not_starve_older_public_media(self):
+        controller, state, gh, probes = self._starvation_fixture(older_public=True)
+        action = controller._backlog_media_preflight(state)
+        self.assertEqual(action.kind, "dispatch_backlog_long_video")
+        self.assertEqual(gh.dispatches[0][1]["target_slug"], "older-eligible")
+        self.assertEqual(len(gh.dispatches), 1)
+        self.assertEqual(len(probes), 2)
+
     def test_published_backlog_source_rejects_title_only_public_page(self):
         gh = FakeGitHub()
         post = prior_article()
