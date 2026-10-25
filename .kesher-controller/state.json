@@ -1479,12 +1479,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-24T15:21:16.188045+00:00",
-      "from": "blocked",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
-    {
       "at": "2026-10-24T16:01:16.392462+00:00",
       "from": "waiting_for_article_window",
       "to": "blocked",
@@ -2334,9 +2328,18 @@
       "details": {
         "session_id": null
       }
+    },
+    {
+      "at": "2026-10-25T05:28:13.116650+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-25T05:24:00.113414+00:00",
+  "updated_at": "2026-10-25T05:28:13.116658+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
