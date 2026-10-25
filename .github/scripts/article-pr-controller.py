@@ -15,6 +15,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -229,13 +230,27 @@ def verify_check(checks: dict) -> dict | None:
     return sorted(candidates, key=lambda item: item.get("completed_at") or item.get("started_at") or "")[-1]
 
 
+TRANSIENT_IMAGE_HTTP_CODES = frozenset({429, 500, 502, 503, 504})
+IMAGE_FETCH_MAX_ATTEMPTS = 3
+
+
 def image_loader(entry: dict, token: str) -> bytes:
     request = urllib.request.Request(
         entry["raw_url"],
         headers={"Authorization": f"Bearer {token}", "User-Agent": "kesher-article-controller"},
     )
-    with urllib.request.urlopen(request, timeout=30) as response:
-        return response.read()
+    for attempt in range(1, IMAGE_FETCH_MAX_ATTEMPTS + 1):
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                return response.read()
+        except urllib.error.HTTPError as exc:
+            if exc.code not in TRANSIENT_IMAGE_HTTP_CODES or attempt >= IMAGE_FETCH_MAX_ATTEMPTS:
+                raise
+        except (urllib.error.URLError, TimeoutError):
+            if attempt >= IMAGE_FETCH_MAX_ATTEMPTS:
+                raise
+        time.sleep(attempt)
+    raise RuntimeError("unreachable image fetch retry state")
 
 
 def existing_repair_attempts(repo: str, number: int, token: str) -> tuple[int, set[str]]:

@@ -543,6 +543,44 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
         self.assertEqual(state["idea_queue"][-1]["deferred_reason"], "RUN_NOW_SLOT_OCCUPIED_AFTER_ROLLOVER")
         self.assertTrue(any(h.get("reason") == "run_now_slot_occupied_after_rollover" for h in state["history"]))
 
+    def test_successful_deferred_auto_merge_refunds_one_dispatch_idempotently(self) -> None:
+        github = mock.MagicMock()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            now=datetime(2026, 10, 25, 15, 30, tzinfo=ISRAEL_TZ),
+            github=github,
+            site=mock.MagicMock(),
+        )
+        state = {
+            "cycle": "2026-10-25",
+            "status": "article_pr_open",
+            "article": {
+                "pr_number": 1201,
+                "current_pr_head_sha": "a" * 40,
+                "merge_candidate_sha": "a" * 40,
+                "merge_dispatch_count": 3,
+            },
+            "history": [],
+        }
+        pr = {"number": 1201, "state": "open", "head": {"sha": "a" * 40}}
+        notification = {
+            "workflow": "Auto-merge Kesher article PRs",
+            "run_id": "40194959063",
+            "conclusion": "success",
+            "source_slug": "",
+            "slot": "2026-10-25",
+            "source_sha": "",
+        }
+
+        with mock.patch.object(controller, "_child_notification_env", return_value=notification):
+            first = controller._refund_deferred_auto_merge_success(state, pr)
+            second = controller._refund_deferred_auto_merge_success(state, pr)
+
+        self.assertTrue(first)
+        self.assertFalse(second)
+        self.assertEqual(state["article"]["merge_dispatch_count"], 2)
+        self.assertEqual(state["article"]["last_refunded_auto_merge_run_id"], 40194959063)
+        self.assertEqual(state["history"][-1]["reason"], "successful_deferred_auto_merge_refunded")
+
 
 if __name__ == "__main__":
     unittest.main()

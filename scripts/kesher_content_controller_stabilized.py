@@ -2165,6 +2165,64 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         errors.extend(quality.full_article_violations(post))
         return errors
 
+    def _refund_deferred_auto_merge_success(self, state: dict, pr: dict) -> bool:
+        """Refund one raw merge dispatch when an exact successful child left the PR open.
+
+        A successful auto-merge workflow can legitimately defer publication while a
+        trusted repair/check is still converging. That is not a failed content
+        attempt. Refunds are exact-run idempotent and bounded so persistent no-op
+        success cannot create an infinite publication loop.
+        """
+        info = self._child_notification_env()
+        if str(info.get("workflow") or "") != "Auto-merge Kesher article PRs":
+            return False
+        if str(info.get("conclusion") or "") != "success":
+            return False
+        raw_run_id = str(info.get("run_id") or "").strip()
+        if not raw_run_id.isdigit() or int(raw_run_id) <= 0:
+            return False
+        run_id = int(raw_run_id)
+
+        article = state.get("article") if isinstance(state.get("article"), dict) else {}
+        pr_number = int(pr.get("number") or 0)
+        if pr_number <= 0 or int(article.get("pr_number") or 0) != pr_number:
+            return False
+        if str(pr.get("state") or "open") != "open":
+            return False
+        pr_head = str((pr.get("head") or {}).get("sha") or "").strip().lower()
+        current_head = str(article.get("current_pr_head_sha") or "").strip().lower()
+        if not pr_head or not current_head or pr_head != current_head:
+            return False
+        if int(article.get("last_refunded_auto_merge_run_id") or 0) == run_id:
+            return False
+
+        refund_count = int(article.get("deferred_auto_merge_refund_count") or 0)
+        if refund_count >= 3:
+            return False
+        dispatch_count = int(article.get("merge_dispatch_count") or 0)
+        if dispatch_count <= 0:
+            return False
+
+        article["merge_dispatch_count"] = dispatch_count - 1
+        article["last_refunded_auto_merge_run_id"] = run_id
+        article["deferred_auto_merge_refund_count"] = refund_count + 1
+        history = state.setdefault("history", [])
+        history.append({
+            "at": v5.core.utc_now(),
+            "from": str(state.get("status") or ""),
+            "to": str(state.get("status") or ""),
+            "reason": "successful_deferred_auto_merge_refunded",
+            "details": {
+                "run_id": run_id,
+                "pr_number": pr_number,
+                "head_sha": pr_head,
+                "merge_dispatch_count": article["merge_dispatch_count"],
+                "refund_count": article["deferred_auto_merge_refund_count"],
+            },
+        })
+        state["history"] = history[-100:]
+        return True
+
     def _handle_open_article_pr(self, state, pr):
         number = int(pr.get("number") or 0)
         state.setdefault("article", {})["pr_number"] = number
@@ -2172,6 +2230,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         head_sha = str((pr.get("head") or {}).get("sha") or "").strip().lower()
         previously_observed_head_sha = str(state["article"].get("current_pr_head_sha") or "").strip().lower()
         state["article"]["current_pr_head_sha"] = head_sha
+        self._refund_deferred_auto_merge_success(state, pr)
         if previously_observed_head_sha and head_sha and previously_observed_head_sha != head_sha:
             pending = state.get("pending_dispatches")
             if isinstance(pending, dict):
