@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "long_video_complete",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1509,12 +1509,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-24T19:56:29.939925+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-24T19:56:32.353896+00:00",
       "from": "article_live",
       "to": "video_running",
@@ -2284,9 +2278,15 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-25T07:28:35.698271+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-10-25T07:28:26.780794+00:00",
+  "updated_at": "2026-10-25T07:28:35.698279+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2338,16 +2338,20 @@
     "source_id": "64bcd596-660d-4267-acb1-da7e92490627"
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "71676e72-27c2-42ca-aa1f-b2974e4297d3",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-10-25T07:28:35.698245+00:00",
+    "artifact_id": "71676e72-27c2-42ca-aa1f-b2974e4297d3",
+    "source_id": "64bcd596-660d-4267-acb1-da7e92490627",
+    "adopted_from_long_item_id": "video-20261025-090029-4e09877ab3-a3"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -2678,9 +2682,10 @@
         "derive_long_item_id": "video-20261025-090029-4e09877ab3-a3"
       },
       "intent_at": "2026-10-25T07:27:47.787683+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40172898886,
+      "dispatched_at": "2026-10-25T07:27:47.787683+00:00"
     }
   },
   "last_child_notification": {
