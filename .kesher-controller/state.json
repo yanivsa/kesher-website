@@ -54,9 +54,9 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-25T06:10:59.806914+00:00",
-    "next_deploy_retry_at": "2026-10-25T06:32:49.425102+00:00",
+    "next_deploy_retry_at": null,
     "deploy_run_id": 40168790661,
-    "live_verified_at": "2026-10-25T06:27:52.925334+00:00"
+    "live_verified_at": "2026-10-25T06:28:17.270225+00:00"
   },
   "backlog": [
     {
@@ -2362,7 +2362,7 @@
       "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-25T06:27:52.925360+00:00",
+  "updated_at": "2026-10-25T06:28:17.270244+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2722,7 +2722,21 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-25",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "daycare-adjustment-difficulties",
+        "target_content_sha256": "4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8"
+      },
+      "intent_at": "2026-10-25T06:27:49.425102+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Deploy to Cloudflare Pages",
     "run_id": 40168790661,
@@ -2748,5 +2762,18 @@
       "superseded_run_id": 40168193080,
       "reason": "deploy for SHA ecc9dca2dcf1a2620865c52bef4a8b1fa98c4b70 superseded by newer main SHA 006fd42ee41c50769d5dea795673c5f7f74320ed"
     }
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
+  }
 }
