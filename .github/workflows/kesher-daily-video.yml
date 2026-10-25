@@ -448,19 +448,6 @@ jobs:
               output.write(f"item_id={item['id']}\n")
           PYCODE
 
-      - name: Publish immutable evidence bundle for advisory Jules review
-        if: ${{ steps.pending.outputs.found == 'true' }}
-        id: review_artifact
-        continue-on-error: true
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        with:
-          name: kesher-video-review-${{ github.run_id }}
-          path: ${{ env.KESHER_STATE_DIR }}
-          if-no-files-found: error
-          retention-days: 1
-          compression-level: 0
-          include-hidden-files: true
-
       - name: Publish minimal evidence branch for advisory Jules review
         if: ${{ steps.pending.outputs.found == 'true' }}
         id: review_branch
@@ -491,35 +478,29 @@ jobs:
             echo "evidence_root=${evidence_root}"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Jules performs strict advisory review
+      - name: Dispatch strict advisory Jules review
         if: ${{ steps.pending.outputs.found == 'true' && steps.review_branch.outputs.branch != '' }}
         continue-on-error: true
-        env:
-          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
-        run: |
-          set -euo pipefail
-          python -u scripts/jules_video_reviewer_v3.py \
-            --state-dir "$KESHER_STATE_DIR" \
-            --target-slug "$TARGET_SLUG" \
-            --target-content-sha256 "$TARGET_CONTENT_SHA256" \
-            --item-id "${{ steps.pending.outputs.item_id }}" \
-            --review-branch "${{ steps.review_branch.outputs.branch }}" \
-            --evidence-root "${{ steps.review_branch.outputs.evidence_root }}" \
-            --timeout-seconds 900
-
-      - name: Delete temporary Jules evidence branch
-        if: ${{ always() && steps.review_branch.outputs.branch != '' }}
+        timeout-minutes: 2
         env:
           GH_TOKEN: ${{ github.token }}
           REVIEW_BRANCH: ${{ steps.review_branch.outputs.branch }}
-        run: gh api --method DELETE "repos/${GITHUB_REPOSITORY}/git/refs/heads/${REVIEW_BRANCH}" || true
-
-      - name: Delete completed Jules review artifact
-        if: ${{ always() && steps.review_artifact.outputs.artifact-id != '' }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REVIEW_ARTIFACT_ID: ${{ steps.review_artifact.outputs.artifact-id }}
-        run: gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${REVIEW_ARTIFACT_ID}" || true
+          EVIDENCE_ROOT: ${{ steps.review_branch.outputs.evidence_root }}
+          REVIEW_ITEM_ID: ${{ steps.pending.outputs.item_id }}
+        run: |
+          set -euo pipefail
+          if gh workflow run kesher-video-advisory-review.yml \
+            --ref main \
+            -f review_branch="$REVIEW_BRANCH" \
+            -f evidence_root="$EVIDENCE_ROOT" \
+            -f item_id="$REVIEW_ITEM_ID" \
+            -f target_slug="$TARGET_SLUG" \
+            -f target_content_sha256="$TARGET_CONTENT_SHA256"; then
+            echo "Advisory Jules review dispatched asynchronously for ${REVIEW_ITEM_ID}."
+          else
+            echo "::warning::Advisory Jules review dispatch failed; publication remains governed by the technical gate."
+            gh api --method DELETE "repos/${GITHUB_REPOSITORY}/git/refs/heads/${REVIEW_BRANCH}" || true
+          fi
 
       - name: Prepare technically verified upload
         id: prepare_upload

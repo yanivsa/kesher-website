@@ -2016,7 +2016,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "057d9fa668e880badb28ba7b53b8b502d5ff69ca8e0107cf24556e56a659f404",
+      "definition_sha256": "32d011f5bbbdd12f46d0399e225f6f1650b31bad25a40996cfec80deae8ca825",
       "registration_id": 331086666,
       "resources": [
         "github.dispatch",
@@ -2078,7 +2078,7 @@
           "tests/test_production_contract_v3.py": "490a8dc039dc956bfd568b03c585e6b6cc1890bb6b1351c983c92f9ea2fdd49a",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "a7faf6eb1607ee2eeda767e0bc04b0fefc69d5974374a40040d58287ae9c14ad",
-          "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
+          "tests/test_video_review_policy.py": "655a6d277dce463984783ff85ce8e0d956cd4b56a3a4db349942c0571b2664a2",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
           "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc"
         },
@@ -2373,7 +2373,7 @@
       "review": {
         "call_chain": {
           ".github/prompts/jules-remotion-video-upgrade.md": "b77ed706da6ca440bebb8fd4102b2ded5f0b96628039c372e50fe3fab3e13d6a",
-          ".github/workflows/kesher-daily-video.yml": "057d9fa668e880badb28ba7b53b8b502d5ff69ca8e0107cf24556e56a659f404",
+          ".github/workflows/kesher-daily-video.yml": "32d011f5bbbdd12f46d0399e225f6f1650b31bad25a40996cfec80deae8ca825",
           ".github/workflows/kesher-short-v4.yml": "a0566d23b3c3563bd9973fcb4b42b9063a3a5b48fb199cf585a0a9461de4629a",
           "config/kesher-production-contract.json": "f6b7622a1ec3cbd49683893d560cebf13dd312e13a6a0000cdcd5af24a28de8d",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-free-stock-source-20261001.py.txt": "a60b2592a5e3b845b81735047fddcd140da9e0c1954a4d1257f1c88a10570d2f",
@@ -2452,7 +2452,7 @@
           "tests/test_v4_runtime_activation.py": "98b614126a9f1df68acd252ebf56de11472be8b38267e60430b1c7191fd7845e",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "a7faf6eb1607ee2eeda767e0bc04b0fefc69d5974374a40040d58287ae9c14ad",
-          "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
+          "tests/test_video_review_policy.py": "655a6d277dce463984783ff85ce8e0d956cd4b56a3a4db349942c0571b2664a2",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93"
         },
@@ -2476,7 +2476,7 @@
               "youtube_metadata",
               "youtube_upload"
             ],
-            "definition_sha256": "057d9fa668e880badb28ba7b53b8b502d5ff69ca8e0107cf24556e56a659f404",
+            "definition_sha256": "32d011f5bbbdd12f46d0399e225f6f1650b31bad25a40996cfec80deae8ca825",
             "inputs": {
               "operation": "full",
               "target_slug": "$.github/kesher-goal-request.json.target_slug"
@@ -2892,7 +2892,7 @@
       ],
       "review": {
         "call_chain": {
-          ".github/workflows/kesher-daily-video.yml": "057d9fa668e880badb28ba7b53b8b502d5ff69ca8e0107cf24556e56a659f404",
+          ".github/workflows/kesher-daily-video.yml": "32d011f5bbbdd12f46d0399e225f6f1650b31bad25a40996cfec80deae8ca825",
           ".github/workflows/kesher-short-v4.yml": "a0566d23b3c3563bd9973fcb4b42b9063a3a5b48fb199cf585a0a9461de4629a",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
           "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
@@ -2964,7 +2964,7 @@
           "tests/test_v4_runtime_activation.py": "98b614126a9f1df68acd252ebf56de11472be8b38267e60430b1c7191fd7845e",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "a7faf6eb1607ee2eeda767e0bc04b0fefc69d5974374a40040d58287ae9c14ad",
-          "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
+          "tests/test_video_review_policy.py": "655a6d277dce463984783ff85ce8e0d956cd4b56a3a4db349942c0571b2664a2",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93"
         },
@@ -3259,7 +3259,7 @@
           "tests/test_single_scheduler_policy.py": "d5202cc5d132c9f4c677be7819a66d6bb00195a8cf8e6f4eafbb43fe11475b62",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "a7faf6eb1607ee2eeda767e0bc04b0fefc69d5974374a40040d58287ae9c14ad",
-          "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
+          "tests/test_video_review_policy.py": "655a6d277dce463984783ff85ce8e0d956cd4b56a3a4db349942c0571b2664a2",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
           "scripts/kesher_runtime/authority_client.py": "2faf396e363269382163aafcb73bc80863e630bff551d3e22f872fc42b779e36",
           "scripts/kesher_runtime/cutover_host.py": "9da32d13cd7c8616caeb36160452ba1fcf3981ae611817b6bed72af64b87c99c",
@@ -4206,10 +4206,10 @@
           "tests/test_production_contract_v3.py": "490a8dc039dc956bfd568b03c585e6b6cc1890bb6b1351c983c92f9ea2fdd49a",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "a7faf6eb1607ee2eeda767e0bc04b0fefc69d5974374a40040d58287ae9c14ad",
-          "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
+          "tests/test_video_review_policy.py": "655a6d277dce463984783ff85ce8e0d956cd4b56a3a4db349942c0571b2664a2",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
           "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc",
-          ".github/workflows/kesher-daily-video.yml": "057d9fa668e880badb28ba7b53b8b502d5ff69ca8e0107cf24556e56a659f404",
+          ".github/workflows/kesher-daily-video.yml": "32d011f5bbbdd12f46d0399e225f6f1650b31bad25a40996cfec80deae8ca825",
           "scripts/article_claim_quality.py": "9d3a9d1fcb4f0bbc6fc8f2ec12a72bfffe1cda617c1b8e6071bf2a1981943a95",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
           "scripts/kesher_article_contract.py": "92f8f6c9e0ca2340cbb3a27178521eb6c9eee80e2edc57017ccba81311b3feec",
@@ -4257,7 +4257,7 @@
               "youtube_metadata",
               "youtube_upload"
             ],
-            "definition_sha256": "057d9fa668e880badb28ba7b53b8b502d5ff69ca8e0107cf24556e56a659f404",
+            "definition_sha256": "32d011f5bbbdd12f46d0399e225f6f1650b31bad25a40996cfec80deae8ca825",
             "inputs": {
               "operation": "full",
               "target_slug": "$.github/kesher-media-recovery-request.json.target_slug"
