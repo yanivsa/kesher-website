@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1498,12 +1498,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T10:41:20.428478+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-10-25T10:46:23.837288+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2229,9 +2223,19 @@
       "from": "long_video_retry_wait",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-25T15:35:09.616721+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 2
+      }
     }
   ],
-  "updated_at": "2026-10-25T15:34:59.527145+00:00",
+  "updated_at": "2026-10-25T15:35:09.616729+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -2249,10 +2253,10 @@
     "image_path": "/images/generated/blog/transition-to-municipal-kindergarten.png"
   },
   "long_video": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-25T15:32:04.409654+00:00",
+    "next_retry_at": null,
     "run_id": 40206817671,
     "processed_run_id": 40206817671,
     "provider_id": null,
@@ -2262,8 +2266,8 @@
       "VIDEO_WORKFLOW_FAILED": 1
     },
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-25T15:24:56.384441+00:00",
-    "attempts": 1,
+    "last_dispatch_at": "2026-10-25T15:35:09.616707+00:00",
+    "attempts": 2,
     "last_run_conclusion": "failure",
     "last_failed_run_id": 40206817671
   },
@@ -2616,9 +2620,10 @@
         "target_content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5"
       },
       "intent_at": "2026-10-25T15:34:16.016095+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40206817671,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40207636749,
+      "dispatched_at": "2026-10-25T15:34:16.016095+00:00"
     }
   },
   "last_child_notification": {
@@ -2898,24 +2903,5 @@
       "archived_at": "2026-10-25T12:12:56.608000+00:00",
       "reason": "owner_run_now_cycle_started"
     }
-  ],
-  "video": {
-    "attempt_count": 1,
-    "status": "running",
-    "last_error": null,
-    "next_retry_at": "2026-10-25T15:32:04.409654+00:00",
-    "run_id": 40206817671,
-    "processed_run_id": 40206817671,
-    "provider_id": null,
-    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
-    "failure_count_by_type": {
-      "VIDEO_WORKFLOW_FAILED": 1
-    },
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-25T15:24:56.384441+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "failure",
-    "last_failed_run_id": 40206817671
-  }
+  ]
 }
