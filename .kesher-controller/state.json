@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_pr_open",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -14,7 +14,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "last_dispatch_at": "2026-10-25T05:01:25.683925+00:00",
     "watchdog": {
       "identity": "2026-10-25",
@@ -52,7 +52,9 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-10-25T05:42:51.065488+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-10-25T05:42:57.468139+00:00",
+    "next_deploy_retry_at": "2026-10-25T05:47:46.647654+00:00"
   },
   "backlog": [
     {
@@ -1505,15 +1507,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-24T16:16:17.568479+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
       "at": "2026-10-24T16:21:05.168435+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2362,9 +2355,19 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-25T05:42:57.468180+00:00",
+      "from": "article_pr_open",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-25T05:41:06.341820+00:00",
+  "updated_at": "2026-10-25T05:42:57.468187+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2715,7 +2718,7 @@
     "claimed_at": "2026-10-25T05:01:03.066464+00:00"
   },
   "deliverables": {
-    "article_url": null,
+    "article_url": "https://kesher.saharoni.com/blog/daycare-adjustment-difficulties",
     "overview_youtube_url": null,
     "short_youtube_url": null,
     "overview_edit_verified": false,
@@ -2729,10 +2732,11 @@
       "cycle": "2026-10-25",
       "inputs": {},
       "intent_at": "2026-10-25T05:42:46.647654+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "ecc9dca2dcf1a2620865c52bef4a8b1fa98c4b70"
+      "observed_active_run_id": 40166530075,
+      "dispatch_head_sha": "ecc9dca2dcf1a2620865c52bef4a8b1fa98c4b70",
+      "dispatched_at": "2026-10-25T05:42:46.647654+00:00"
     }
   },
   "last_child_notification": {
