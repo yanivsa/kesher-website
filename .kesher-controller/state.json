@@ -3,8 +3,8 @@
   "cycle": "2026-10-25",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40164009107,
@@ -13,7 +13,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
     "last_dispatch_at": "2026-10-25T05:01:25.683925+00:00",
     "watchdog": {
@@ -42,7 +42,17 @@
     "normalized_head_sha": "c3bf3075880fd8c8ad886ef6b236a359748b0d89",
     "image_head_sha": "c3bf3075880fd8c8ad886ef6b236a359748b0d89",
     "merge_candidate_sha": "c3bf3075880fd8c8ad886ef6b236a359748b0d89",
-    "merge_run_id": 40165965762
+    "merge_run_id": 40166426072,
+    "slug": "daycare-adjustment-difficulties",
+    "title": "קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?",
+    "url": "https://kesher.saharoni.com/blog/daycare-adjustment-difficulties",
+    "published_date": "2026-10-25",
+    "quality_content_sha256": "4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-10-25T05:42:51.065488+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2368,7 +2378,8 @@
     "last_dispatch_at": "2026-10-25T05:31:27.768845+00:00",
     "artifact_sha256": "c720c08386a55beb395879c2b0b41d519a677e082b5800d1b404b00b1f96cdda",
     "source_id": "local-editorial://daycare-adjustment-difficulties/3",
-    "run_id": 40165845123
+    "run_id": 40165845123,
+    "image_path": "/images/generated/blog/daycare-adjustment-difficulties.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2713,23 +2724,20 @@
     "short_origin_verified": false
   },
   "pending_dispatches": {
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "deploy.yml": {
+      "workflow": "deploy.yml",
       "cycle": "2026-10-25",
-      "inputs": {
-        "pr_number": "1197",
-        "slot": "2026-10-25"
-      },
-      "intent_at": "2026-10-25T05:40:41.123534+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40165965762,
-      "observed_active_run_id": 40166426072,
-      "dispatched_at": "2026-10-25T05:40:41.123534+00:00"
+      "inputs": {},
+      "intent_at": "2026-10-25T05:42:46.647654+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "ecc9dca2dcf1a2620865c52bef4a8b1fa98c4b70"
     }
   },
   "last_child_notification": {
     "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 40165965762,
+    "run_id": 40166426072,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-25"
