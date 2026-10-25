@@ -61,7 +61,12 @@
     "serviceLabel": "הדרכת הורים",
     "directAnswer": "כדי להכין ילדים לקראת מעבר לגן עירייה, מומלץ לטפח עצמאות יומיומית כמו נעילת נעליים, לשדר ביטחון בפרידה, ולהימנע ממשפטים מלחיצים כמו \"אתה כבר גדול, אי אפשר לבכות\". חשוב להבדיל בין קושי פרידה שכיח למצוקה מתמשכת.",
     "evidence": [],
-    "controllerManaged": true
+    "controllerManaged": true,
+    "image": "/images/generated/blog/transition-to-municipal-kindergarten.png",
+    "imageAlt": "איור עריכתי מקומי של הורה ופעוט בכניסה למסגרת ילדים, עם דלת פתוחה וקוביות משחק, ברגע פרידה תומך.",
+    "imageProvider": "LocalEditorial",
+    "imageSourceUrl": "local-editorial://transition-to-municipal-kindergarten/4",
+    "imageIsFallback": false
   },
   {
     "id": "child-poops-in-pants",
