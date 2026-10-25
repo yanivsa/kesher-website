@@ -2779,19 +2779,27 @@
         "transition-from-caregiver-to-daycare"
       ],
       "prior_article_attempts": 3
+    },
+    {
+      "idea_id": "parenting-p1-daycare-adjustment-difficulties",
+      "fingerprint": "2e144781ca8bb0692ceacc1ce315586930fc98d747b59aa208d45d9de3dbe355",
+      "topic_brief": "אשכול מטפלת למעון. נושא/כאב: הסתגלות למעון שלא משתפרת: בכי, קושי בפרידה, עייפות/שינוי התנהגות והורה שלא יודע אם לתת עוד זמן או לבדוק מה לא עובד. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: daycare-adjustment-difficulties. כותרת עבודה: קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
+      "required_primary_keyword": "קשיי הסתגלות למעון",
+      "run_now": false,
+      "status": "complete",
+      "requested_at": "2026-10-19T10:09:43.134302+00:00",
+      "publication_slot": "2026-10-25",
+      "claimed_at": "2026-10-25T05:01:03.066464+00:00",
+      "completed_at": "2026-10-25T08:10:30.633249+00:00",
+      "outputs": {
+        "slug": "daycare-adjustment-difficulties",
+        "article_url": "https://kesher.saharoni.com/blog/daycare-adjustment-difficulties",
+        "long_url": "https://youtu.be/QbnceJ0QYw0",
+        "short_url": "https://youtu.be/brMKbQhv_hQ"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "parenting-p1-daycare-adjustment-difficulties",
-    "fingerprint": "2e144781ca8bb0692ceacc1ce315586930fc98d747b59aa208d45d9de3dbe355",
-    "topic_brief": "אשכול מטפלת למעון. נושא/כאב: הסתגלות למעון שלא משתפרת: בכי, קושי בפרידה, עייפות/שינוי התנהגות והורה שלא יודע אם לתת עוד זמן או לבדוק מה לא עובד. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: daycare-adjustment-difficulties. כותרת עבודה: קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
-    "required_primary_keyword": "קשיי הסתגלות למעון",
-    "run_now": false,
-    "status": "claimed",
-    "requested_at": "2026-10-19T10:09:43.134302+00:00",
-    "publication_slot": "2026-10-25",
-    "claimed_at": "2026-10-25T05:01:03.066464+00:00"
-  },
+  "active_idea": null,
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/daycare-adjustment-difficulties",
     "overview_youtube_url": "https://youtu.be/QbnceJ0QYw0",
