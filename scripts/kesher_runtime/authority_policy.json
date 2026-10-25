@@ -718,7 +718,7 @@
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "scripts/requirements-article.txt": "8c620822e39bbd1233c03fd0296879f1f58dbc5a1f4366f6650c3d3c7cb32a77",
           "tests/automation-gates.test.cjs": "caf4a120237ec0ab66efac3a162621ef83dff1f1256784557b7d4d4a25bb2280",
-          "tests/test_article_quality_stabilization.py": "29fb20246a547668800901ab0f295f3e97da567ed22e57be3182373250f01bf1",
+          "tests/test_article_quality_stabilization.py": "5961a31347e206a991508964bab1c488de1754d801b4d7e89b764801b1424b13",
           "tests/test_ci_profile.py": "bf648f9a24e7de3f0702f7cd6c78483f5586db63948c0517d7d9319136c48457",
           "tests/test_kesher_article_contract.py": "d1eaf04ed9aa7e1cb22c03c6eb69140d137d8962b85c403f536300032c6e5177",
           "tests/test_kesher_article_normalizer.py": "e95ccc6eb3025c209178edc288ca16f483c430d3de0afec7296e5be0adfefaf2",
