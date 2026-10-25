@@ -162,7 +162,7 @@
         "article_title": "מוכנות לכיתה א: איך בונים עצמאות ושגרה לפני הצלצול הראשון",
         "article_url": "https://kesher.saharoni.com/blog/מוכנות-לכיתה-א-עצמאות-ושגרה",
         "article_live": false,
-        "article_deploy_status": "running",
+        "article_deploy_status": "exhausted",
         "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED"
       }
     },
