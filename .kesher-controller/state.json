@@ -1479,12 +1479,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-23T21:00:54.744156+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
       "at": "2026-10-23T21:01:28.406526+00:00",
       "from": "article_needed",
       "to": "waiting_for_article_window",
@@ -2328,9 +2322,18 @@
       "details": {
         "session_id": null
       }
+    },
+    {
+      "at": "2026-10-25T05:13:39.048613+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-25T05:05:35.181664+00:00",
+  "updated_at": "2026-10-25T05:13:39.048623+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
