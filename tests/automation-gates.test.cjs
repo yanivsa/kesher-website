@@ -256,15 +256,25 @@ function testOtherAuditAutonomyContracts() {
 
 function testTechnicalVideoPublicationCannotBeRegressed() {
   const daily = read('.github/workflows/kesher-daily-video.yml');
+  const advisory = read('.github/workflows/kesher-video-advisory-review.yml');
   const contract = JSON.parse(read('config/kesher-production-contract.json'));
   assert.strictEqual(contract.video.publication_gate, 'technical');
   assert.strictEqual(contract.video.jules_review, 'advisory');
   assert.strictEqual(contract.video.durable_state_artifacts_to_keep, 3);
   assert.strictEqual(contract.video.max_attempts_per_stage, 3);
-  assert(daily.includes('Jules performs strict advisory review'));
+  assert(daily.includes('Dispatch strict advisory Jules review'));
+  assert(daily.includes('gh workflow run kesher-video-advisory-review.yml'));
+  assert(!daily.includes('Jules performs strict advisory review'));
+  assert(!daily.includes('scripts/jules_video_reviewer_v3.py'));
   assert(daily.includes('Prepare technically verified upload'));
   assert(daily.includes('Upload exact technically verified MP4'));
+  assert(daily.indexOf('Dispatch strict advisory Jules review') < daily.indexOf('Prepare technically verified upload'));
   assert(daily.includes('continue-on-error: true'));
+  assert(advisory.includes('Jules performs strict advisory review'));
+  assert(advisory.includes('scripts/jules_video_reviewer_v3.py'));
+  assert(advisory.includes('Validate exact advisory evidence identity'));
+  assert(advisory.includes('Persist advisory Jules review result'));
+  assert(advisory.includes('Delete temporary Jules evidence branch'));
   assert(!daily.includes('mandatory Jules'));
   assert(!daily.includes('Jules-approved MP4'));
   assert(!daily.includes('Upload only after all mandatory review gates approve'));
