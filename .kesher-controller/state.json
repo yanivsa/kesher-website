@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
-    "status": "exhausted",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40192138366,
@@ -18,20 +18,18 @@
     "last_dispatch_at": "2026-10-25T12:13:03.131964+00:00",
     "pr_number": 1201,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1201",
-    "current_pr_head_sha": "2d02d9698f1156ff03371c673e8b21e5e1f8e112",
+    "current_pr_head_sha": "65e93ed93d8e1022a9fc167fe064577fbad0da9f",
     "jules_head_sha": "083ff8e93b18fb2484959d8aa86db0e22a957cbf",
     "normalization_status": "complete",
     "normalization_slot": "2026-10-25",
     "normalization_dispatched_at": "2026-10-25T12:40:54.564386+00:00",
     "normalization_run_id": 40194185898,
-    "normalization_drift_count": 1,
-    "last_normalization_drift_head_sha": "2d02d9698f1156ff03371c673e8b21e5e1f8e112",
-    "merge_dispatch_count": 3,
-    "merge_dispatch_at": "2026-10-25T13:07:50.106496+00:00",
-    "normalized_head_sha": "2d02d9698f1156ff03371c673e8b21e5e1f8e112",
-    "image_head_sha": "2d02d9698f1156ff03371c673e8b21e5e1f8e112",
-    "merge_candidate_sha": "2d02d9698f1156ff03371c673e8b21e5e1f8e112",
-    "merge_run_id": 40194959063
+    "normalization_drift_count": 2,
+    "last_normalization_drift_head_sha": "65e93ed93d8e1022a9fc167fe064577fbad0da9f",
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
+    "merge_run_id": 40194959063,
+    "normalized_head_sha": "65e93ed93d8e1022a9fc167fe064577fbad0da9f"
   },
   "backlog": [
     {
@@ -1481,19 +1479,8 @@
       "media": {}
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "PR #1201 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-25T15:06:06.191343+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-25T10:26:22.795055+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-10-25T10:26:23.735562+00:00",
       "from": "long_video_complete",
@@ -2193,12 +2180,23 @@
       "details": {
         "message": "PR #1201 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-10-25T15:11:00.760564+00:00",
+      "from": "blocked",
+      "to": "article_pr_open",
+      "reason": "late_article_head_after_merge_exhaustion_recovery",
+      "details": {
+        "pr_number": 1201,
+        "previous_head_sha": "2d02d9698f1156ff03371c673e8b21e5e1f8e112",
+        "current_head_sha": "65e93ed93d8e1022a9fc167fe064577fbad0da9f"
+      }
     }
   ],
   "updated_at": "2026-10-25T15:06:06.191367+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2208,8 +2206,7 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-25T12:42:16.496870+00:00",
     "artifact_sha256": "d0e6c5bfbb3b9088f00c6542974906285de0826098099234f60f585dfd92edb2",
-    "source_id": "local-editorial://transition-to-municipal-kindergarten/4",
-    "run_id": 40194288623
+    "source_id": "local-editorial://transition-to-municipal-kindergarten/4"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2563,18 +2560,16 @@
     "short_origin_verified": true
   },
   "pending_dispatches": {
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
       "cycle": "2026-10-25",
       "inputs": {
-        "pr_number": "1201",
-        "slot": "2026-10-25"
+        "pr_number": "1201"
       },
-      "intent_at": "2026-10-25T13:07:34.104968+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40194959063,
-      "observed_active_run_id": 40196205016,
-      "dispatched_at": "2026-10-25T13:07:34.104968+00:00"
+      "intent_at": "2026-10-25T15:10:58.508261+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
