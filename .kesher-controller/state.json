@@ -26,8 +26,8 @@
     "normalization_run_id": 40224985092,
     "normalization_drift_count": 1,
     "last_normalization_drift_head_sha": "99d1019f5fcdd75aaa21e2911e14e777db52d1d7",
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-10-25T19:31:23.388818+00:00",
+    "merge_dispatch_count": 2,
+    "merge_dispatch_at": "2026-10-25T19:36:04.789068+00:00",
     "normalized_head_sha": "99d1019f5fcdd75aaa21e2911e14e777db52d1d7",
     "image_head_sha": "99d1019f5fcdd75aaa21e2911e14e777db52d1d7",
     "merge_candidate_sha": "99d1019f5fcdd75aaa21e2911e14e777db52d1d7",
@@ -2570,9 +2570,10 @@
         "slot": "2026-10-25"
       },
       "intent_at": "2026-10-25T19:35:46.886866+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40225448235,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40226800531,
+      "dispatched_at": "2026-10-25T19:35:46.886866+00:00"
     }
   },
   "last_child_notification": {
