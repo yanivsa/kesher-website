@@ -1,25 +1,25 @@
 [
   {
-    "source": "child-argues-every-request-boundaries",
-    "afterHeadingIncludes": "למה הסברים ארוכים לפעמים רק מאריכים את הוויכוח?",
+    "source": "child-meltdown-after-school",
+    "afterHeadingIncludes": "למה זה קורה דווקא בבית?",
     "items": [
       {
         "target": "family-chores-quality-time-with-kids",
         "anchor": "שיתוף ילדים במטלות הבית כדרך לבנות שיתוף פעולה",
-        "before": "מחוץ לרגעי הוויכוח, אפשר לתרגל אחריות ושותפות דרך ",
-        "after": " — במשימה קטנה ומותאמת גיל."
+        "before": "כשהילד כבר רגוע ופנוי יותר, אפשר לחזק תחושת שותפות גם דרך ",
+        "after": " — במשימה קטנה, מותאמת גיל וללא מאבק."
       }
     ]
   },
   {
-    "source": "boundaries-without-punishments",
-    "afterHeadingIncludes": "מה עושים ברגע האמת כשהילד פשוט מסרב להקשיב?",
+    "source": "prepare-for-first-grade",
+    "afterHeadingIncludes": "לתרגל עצמאות במנות קטנות",
     "items": [
       {
         "target": "family-chores-quality-time-with-kids",
-        "anchor": "מטלות בית משותפות שיכולות להפוך לזמן איכות",
-        "before": "כדי לבנות שיתוף פעולה גם בזמנים רגועים, אפשר להתחיל ב",
-        "after": " ולא לחכות רק לרגעי העימות."
+        "anchor": "שיתוף ילדים במטלות הבית",
+        "before": "דרך יומיומית נוספת לתרגל עצמאות, מסוגלות ושייכות היא ",
+        "after": " באמצעות משימות קצרות שמתאימות לגיל."
       }
     ]
   }
