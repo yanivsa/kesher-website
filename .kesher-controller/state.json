@@ -14,7 +14,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 1,
+    "deploy_attempts": 2,
     "last_dispatch_at": "2026-10-25T05:01:25.683925+00:00",
     "watchdog": {
       "identity": "2026-10-25",
@@ -53,8 +53,8 @@
     "quality_checked_at": "2026-10-25T05:50:49.395857+00:00",
     "quality_violations": [],
     "live": false,
-    "last_deploy_dispatch_at": "2026-10-25T05:42:57.468139+00:00",
-    "next_deploy_retry_at": "2026-10-25T05:47:46.647654+00:00",
+    "last_deploy_dispatch_at": "2026-10-25T05:50:57.661157+00:00",
+    "next_deploy_retry_at": "2026-10-25T05:55:46.417408+00:00",
     "deploy_run_id": 40166530075
   },
   "backlog": [
@@ -1508,15 +1508,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-24T16:21:05.168435+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
       "at": "2026-10-24T16:24:53.535488+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2366,9 +2357,19 @@
         "http_status": 404,
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-10-25T05:50:57.661205+00:00",
+      "from": "article_deploying",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 2
+      }
     }
   ],
-  "updated_at": "2026-10-25T05:42:57.468187+00:00",
+  "updated_at": "2026-10-25T05:50:57.661213+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2733,10 +2734,11 @@
       "cycle": "2026-10-25",
       "inputs": {},
       "intent_at": "2026-10-25T05:50:46.417408+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40166530075,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "ecc9dca2dcf1a2620865c52bef4a8b1fa98c4b70"
+      "observed_active_run_id": 40167004892,
+      "dispatch_head_sha": "ecc9dca2dcf1a2620865c52bef4a8b1fa98c4b70",
+      "dispatched_at": "2026-10-25T05:50:46.417408+00:00"
     }
   },
   "last_child_notification": {
