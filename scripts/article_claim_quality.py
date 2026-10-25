@@ -16,6 +16,7 @@ import sys
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 ERROR_CODE = "ARTICLE_CONTENT_QUALITY_FAILED"
 
@@ -34,6 +35,17 @@ def managed_article_policy_violations(article: dict[str, Any]) -> list[str]:
     evidence = article.get("evidence")
     if not isinstance(evidence, list) or not evidence:
         violations.append("evidence_missing: controller-managed canary article requires at least one evidence source")
+
+    if isinstance(evidence, list):
+        for index, reference in enumerate(evidence):
+            url = str(reference.get("url") or "").strip() if isinstance(reference, dict) else ""
+            try:
+                parsed = urlsplit(url)
+                valid = parsed.scheme in {"https", "http"} and bool(parsed.hostname) and not any(c.isspace() for c in url)
+            except ValueError:
+                valid = False
+            if not valid:
+                violations.append(f"evidence_url_invalid: evidence[{index}] requires an absolute HTTP(S) source URL; verify relevance before publication")
 
     content = str(article.get("content") or "")
     blog_links = {match for match in INTERNAL_BLOG_LINK_RE.findall(content)}

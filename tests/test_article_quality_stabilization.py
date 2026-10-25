@@ -594,6 +594,16 @@ class ParentingCanaryQualityContractTests(unittest.TestCase):
         errors = article_claim_quality.validate_posts([self._managed_article(evidence=[])])
         self.assertTrue(any("evidence_missing" in error for error in errors), errors)
 
+    def test_canary_rejects_unverifiable_evidence_reference(self):
+        for url in (None, "", "APA review", "/guidance", "javascript:alert(1)", "https://"):
+            with self.subTest(url=url):
+                article = self._managed_article(evidence=[{"title": "Guidance", "source": "APA", "url": url}])
+                errors = article_claim_quality.validate_posts([article])
+                self.assertTrue(any("evidence_url_invalid" in error for error in errors), errors)
+
+    def test_canary_accepts_linked_evidence(self):
+        self.assertEqual(article_claim_quality.validate_posts([self._managed_article()]), [])
+
     def test_canary_requires_three_internal_blog_links(self):
         article = self._managed_article(content='<p><a href="/blog/potty-training-regression">רגרסיה</a></p><p><a href="/services/parenting">הדרכת הורים</a></p>')
         errors = article_claim_quality.validate_posts([article])
