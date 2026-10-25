@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_pr_open",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1482,12 +1482,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T10:26:23.735562+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-10-25T10:32:01.190813+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2191,12 +2185,22 @@
         "previous_head_sha": "2d02d9698f1156ff03371c673e8b21e5e1f8e112",
         "current_head_sha": "65e93ed93d8e1022a9fc167fe064577fbad0da9f"
       }
+    },
+    {
+      "at": "2026-10-25T15:11:17.051274+00:00",
+      "from": "article_pr_open",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 2,
+        "pr_number": 1201
+      }
     }
   ],
-  "updated_at": "2026-10-25T15:06:06.191367+00:00",
+  "updated_at": "2026-10-25T15:11:17.051287+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "pending",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2204,7 +2208,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-25T12:42:16.496870+00:00",
+    "last_dispatch_at": "2026-10-25T15:11:17.051236+00:00",
     "artifact_sha256": "d0e6c5bfbb3b9088f00c6542974906285de0826098099234f60f585dfd92edb2",
     "source_id": "local-editorial://transition-to-municipal-kindergarten/4"
   },
@@ -2567,9 +2571,10 @@
         "pr_number": "1201"
       },
       "intent_at": "2026-10-25T15:10:58.508261+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40205744086,
+      "dispatched_at": "2026-10-25T15:10:58.508261+00:00"
     }
   },
   "last_child_notification": {
