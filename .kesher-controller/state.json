@@ -2702,7 +2702,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-25",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "transition-to-municipal-kindergarten",
+        "derive_content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
+        "derive_long_item_id": "video-20261025-182242-109b70354e"
+      },
+      "intent_at": "2026-10-25T17:10:49.009132+00:00",
+      "status": "intent",
+      "previous_run_id": 40212882714,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
     "run_id": 40212882714,
@@ -2741,6 +2756,20 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-10-25T08:00:56.506529+00:00"
+    },
+    "v5|transition-to-municipal-kindergarten|109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5|short": {
+      "pipeline_id": "v5",
+      "slug": "transition-to-municipal-kindergarten",
+      "content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-10-25T19",
+      "last_fingerprint": "03e26a9fa88aa03f222af14f060cc1c7218c4267eea9d41e711810cecf2bff60",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-25T17:10:49.009132+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   },
   "owner_cycle_archive": [
