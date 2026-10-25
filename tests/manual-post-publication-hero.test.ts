@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import manualPostsOct2026 from '../src/data/manualPostsOct2026';
 
 const slug = 'family-chores-quality-time-with-kids';
-const hero = '/images/generated/blog/family-chores-quality-time-with-kids.jpg';
+const hero = '/images/generated/blog/parenting-the-stubborn-child.jpg';
 
 describe('manual article publication hero contract', () => {
   it('keeps the chores article eligible for exact-source publication verification', () => {
