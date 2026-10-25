@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LANDING_PAGES_CONFIG } from '../src/data/landingPagesConfig';
+import { COMPACT_KEYWORD_PILOT_CONFIG } from '../src/data/compactKeywordPilotConfig';
 import { preloadRoute } from '../src/App';
 
 const PILOTS = [
@@ -12,7 +12,7 @@ const PILOTS = [
 
 describe('compact keyword pilot', () => {
   it.each(PILOTS)('%s owns a distinct indexable landing-page intent', (key, slug, query) => {
-    const config = LANDING_PAGES_CONFIG[key];
+    const config = COMPACT_KEYWORD_PILOT_CONFIG[key];
     expect(config).toBeDefined();
     expect(config.slug).toBe(slug);
     expect(config.meta.canonicalUrl).toBe(`https://kesher.saharoni.com${slug}`);
