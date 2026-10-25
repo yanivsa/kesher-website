@@ -1485,16 +1485,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-25T17:11:04.627159+00:00",
-      "from": "short_running",
-      "to": "short_watchdog_recovery",
-      "reason": "Short provider stalled; re-dispatched derivation from the same verified long-form identity",
-      "details": {
-        "item_id": "video-20261025-184317-109b70354e",
-        "long_item_id": "video-20261025-182242-109b70354e"
-      }
-    },
-    {
       "at": "2026-10-25T17:17:32.684996+00:00",
       "from": "short_watchdog_recovery",
       "to": "article_live",
@@ -2211,9 +2201,18 @@
       "details": {
         "message": "PR #1209 exhausted 3 total article content attempts (initial + 2 repairs)"
       }
+    },
+    {
+      "at": "2026-10-25T21:47:50.408217+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1209 exhausted 3 total article content attempts (initial + 2 repairs)"
+      }
     }
   ],
-  "updated_at": "2026-10-25T21:41:04.317280+00:00",
+  "updated_at": "2026-10-25T21:47:50.408225+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -3141,6 +3140,6 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1209 exhausted 3 total article content attempts (initial + 2 repairs)",
-    "at": "2026-10-25T21:41:04.317253+00:00"
+    "at": "2026-10-25T21:47:50.408201+00:00"
   }
 }
