@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40164009107,
@@ -56,7 +56,7 @@
     "last_deploy_dispatch_at": "2026-10-25T06:10:59.806914+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40168790661,
-    "live_verified_at": "2026-10-25T08:09:58.080612+00:00"
+    "live_verified_at": "2026-10-25T08:10:21.570874+00:00"
   },
   "backlog": [
     {
@@ -1509,24 +1509,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-24T20:16:58.561294+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-24T20:16:59.798274+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-24T20:17:08.803394+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
-    {
       "at": "2026-10-24T20:18:14.099052+00:00",
       "from": "short_running",
       "to": "article_live",
@@ -2288,9 +2270,27 @@
         "item_id": "video-20261025-093034-4e09877ab3",
         "long_item_id": "video-20261025-090029-4e09877ab3-a3"
       }
+    },
+    {
+      "at": "2026-10-25T08:10:21.570912+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-25T08:10:22.525280+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-25T08:10:23.370693+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-25T08:01:19.529395+00:00",
+  "updated_at": "2026-10-25T08:10:23.370718+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2343,19 +2343,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40174989301,
     "processed_run_id": null,
-    "provider_id": "71676e72-27c2-42ca-aa1f-b2974e4297d3",
+    "provider_id": "ac91ad96-e5c4-4404-b844-3a87b97e5f4f",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-25T08:01:19.529368+00:00",
-    "artifact_id": "71676e72-27c2-42ca-aa1f-b2974e4297d3",
-    "source_id": "64bcd596-660d-4267-acb1-da7e92490627",
-    "adopted_from_long_item_id": "video-20261025-090029-4e09877ab3-a3",
+    "artifact_id": "ac91ad96-e5c4-4404-b844-3a87b97e5f4f",
+    "source_id": "4e46ca91-151b-44ce-be06-8d9754adb0b8",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:daycare-adjustment-difficulties:4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8:video-20261025-093034-4e09877ab3",
       "hard_started_at": "2026-10-25T07:30:48.104993+00:00",
@@ -2363,7 +2363,125 @@
       "last_fingerprint": "5c30c4a65a33c905bcbd62f98a88dbd04cd1ab51310854316d78505a540d3277",
       "recovery_count": 1,
       "last_recovery_at": "2026-10-25T08:00:56.506529+00:00"
-    }
+    },
+    "source": {
+      "id": "daycare-adjustment-difficulties",
+      "slug": "daycare-adjustment-difficulties",
+      "title": "קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?",
+      "date": "2026-10-25",
+      "category": "הדרכת הורים",
+      "subcategory": "גיל הרך",
+      "excerpt": "הפרידות בבוקר קשות, הילד בוכה בכל פעם שמגיעים למעון, וההתנהגות שלו בבית השתנתה. איך מבחינים בין תהליך טבעי של קשיי הסתגלות למעון לבין מצב שדורש התערבות? הנה מה שאפשר לעשות.",
+      "canonical_url": "https://kesher.saharoni.com/blog/daycare-adjustment-difficulties",
+      "content_sha256": "4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8",
+      "video_title": "קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?",
+      "short_title": "קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?",
+        "description": "הפרידות בבוקר קשות, הילד בוכה בכל פעם שמגיעים למעון, וההתנהגות שלו בבית השתנתה. איך מבחינים בין תהליך טבעי של קשיי הסתגלות למעון לבין מצב שדורש התערבות? הנה מה שאפשר לעשות.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/daycare-adjustment-difficulties\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "גיל הרך"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?",
+        "description": "הפרידות בבוקר קשות, הילד בוכה בכל פעם שמגיעים למעון, וההתנהגות שלו בבית השתנתה. איך מבחינים בין תהליך טבעי של קשיי הסתגלות למעון לבין מצב שדורש התערבות? הנה מה שאפשר לעשות.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/daycare-adjustment-difficulties\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "גיל הרך"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "ac91ad96-e5c4-4404-b844-3a87b97e5f4f",
+    "raw_sha256": "396bdd36494ddcd7d47a552f1c2ad251698da054d22b79f4ed7a278d3c2b003f",
+    "final_sha256": "8caee3926fc68f39e20dc39a4d0a014f34af1af1a3899d7368601354e6f67070",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 91.8,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 91.8,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "64bcd596-660d-4267-acb1-da7e92490627",
+      "task_id": "71676e72-27c2-42ca-aa1f-b2974e4297d3",
+      "artifact_id": "71676e72-27c2-42ca-aa1f-b2974e4297d3",
+      "raw_sha256": "0236083add1b5a2cbbec0bf43c9189f507fa5cfb2567a96cb6814f1adbcb1540"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 91.8,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "396bdd36494ddcd7d47a552f1c2ad251698da054d22b79f4ed7a278d3c2b003f",
+      "final_sha256": "8caee3926fc68f39e20dc39a4d0a014f34af1af1a3899d7368601354e6f67070",
+      "raw_audio_sha256": "a4d5e4457e6c61e4e46c633df754784651d05343895de5d13a86f9aceb9de66d",
+      "final_audio_sha256": "a4d5e4457e6c61e4e46c633df754784651d05343895de5d13a86f9aceb9de66d",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 91.858141
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 91.858141
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "8caee3926fc68f39e20dc39a4d0a014f34af1af1a3899d7368601354e6f67070",
+      "raw_sha256": "396bdd36494ddcd7d47a552f1c2ad251698da054d22b79f4ed7a278d3c2b003f",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "4bd95e18818f74236ea2998a3ff2bd155a4169e41450e4c9d024ff514938c348",
+      "source_duration_seconds": 91.8,
+      "final_duration_seconds": 91.8,
+      "start_seconds": 88.8,
+      "end_seconds": 91.8,
+      "audio_source_sha256": "396bdd36494ddcd7d47a552f1c2ad251698da054d22b79f4ed7a278d3c2b003f"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261025-093034-4e09877ab3",
+    "type": "article_short",
+    "youtube_id": "brMKbQhv_hQ",
+    "youtube_url": "https://youtu.be/brMKbQhv_hQ",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "4bd95e18818f74236ea2998a3ff2bd155a4169e41450e4c9d024ff514938c348",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
