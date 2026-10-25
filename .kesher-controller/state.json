@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "long_video_retry_wait",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -45,7 +45,7 @@
     "last_deploy_dispatch_at": "2026-10-25T15:19:44.408119+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40206406296,
-    "live_verified_at": "2026-10-25T16:18:09.659379+00:00"
+    "live_verified_at": "2026-10-25T16:18:35.053157+00:00"
   },
   "backlog": [
     {
@@ -1495,20 +1495,13 @@
       "media": {}
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "long_video",
+    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
+    "message": "video exhausted 3 total controller dispatch attempts",
+    "at": "2026-10-25T16:18:38.946283+00:00"
+  },
   "history": [
-    {
-      "at": "2026-10-25T11:15:59.913592+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-25T11:16:00.357516+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-10-25T11:16:00.876660+00:00",
       "from": "long_video_complete",
@@ -2272,9 +2265,24 @@
       "details": {
         "retry_at": "2026-10-25T16:16:42.550770+00:00"
       }
+    },
+    {
+      "at": "2026-10-25T16:18:35.053194+00:00",
+      "from": "long_video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-25T16:18:38.946304+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-25T16:12:03.777186+00:00",
+  "updated_at": "2026-10-25T16:18:38.946309+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -2293,7 +2301,7 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "exhausted",
     "last_error": null,
     "next_retry_at": "2026-10-25T16:16:42.550770+00:00",
     "run_id": 40209325764,
