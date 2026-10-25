@@ -520,6 +520,53 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         self.assertIn("Do not\n   submit the article PR until at least one current observed query signal", text)
 
 
+    def test_pr_content_preflight_enforces_full_canary_quality_contract_before_image_ci(self):
+        base_article = {
+            "id": "existing-article",
+            "slug": "existing-article",
+            "title": "מאמר קיים",
+            "date": "2026-10-24",
+            "content": "<p>תוכן קיים.</p>",
+        }
+        candidate = {
+            "id": "transition-to-municipal-kindergarten",
+            "slug": "transition-to-municipal-kindergarten",
+            "title": "מעבר לגן עירייה",
+            "date": "2026-10-25",
+            "category": "הדרכת הורים",
+            "excerpt": "הכנה מעשית למעבר לגן עירייה.",
+            "content": (
+                "<h3>הכנה</h3><p>" + ("מילה " * 145) + "</p>"
+                "<h3>שגרה</h3><p>" + ("מילה " * 145) + "</p>"
+                "<h3>פרידה</h3><p>" + ("מילה " * 145) + "</p>"
+                "<h3>צוות</h3><p>" + ("מילה " * 145) + "</p>"
+                "<h3>התחלה</h3><p>" + ("מילה " * 145) + "</p>"
+                '<p><a href="/services/parenting">הדרכת הורים</a></p>'
+            ),
+            "serviceUrl": "/services/parenting",
+            "controllerManaged": True,
+            "evidence": [],
+        }
+
+        class FakeGitHub:
+            def contents_json(self, path, ref="main"):
+                self.assertEqual(path, "src/data/posts.json")
+                return [base_article, candidate] if ref == "head-sha" else [base_article]
+
+            def assertEqual(self, left, right):
+                if left != right:
+                    raise AssertionError(f"{left!r} != {right!r}")
+
+        controller = object.__new__(stabilized.StabilizedRuntimeV5Controller)
+        controller.github = FakeGitHub()
+        pr = {"head": {"sha": "head-sha"}, "base": {"sha": "base-sha"}}
+
+        errors = controller._pr_content_structure_errors(pr)
+
+        self.assertTrue(any("evidence_missing" in error for error in errors), errors)
+        self.assertTrue(any("internal_blog_links" in error for error in errors), errors)
+
+
 class ParentingCanaryQualityContractTests(unittest.TestCase):
     def _managed_article(self, **overrides):
         article = {

@@ -6,8 +6,10 @@ import hashlib
 import importlib.util
 import io
 import json
+import sys
 from pathlib import Path
 import unittest
+import urllib.error
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -382,6 +384,43 @@ Image Evidence Head: {self.head_sha}"""
              patch.object(validator, "fetch_posts", side_effect=mock_fetch):
             with self.assertRaisesRegex(ValueError, "postsRecent.json fetch failure"):
                 validator.main()
+
+    def test_article_controller_image_loader_retries_transient_503(self) -> None:
+        controller_path = ROOT / ".github" / "scripts" / "article-pr-controller.py"
+        spec = importlib.util.spec_from_file_location("article_pr_controller_retry_test", controller_path)
+        assert spec and spec.loader
+        controller = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = controller
+        spec.loader.exec_module(controller)
+
+        transient = urllib.error.HTTPError(
+            "https://raw.githubusercontent.com/example/image.jpg",
+            503,
+            "between bytes timeout",
+            hdrs=None,
+            fp=io.BytesIO(b""),
+        )
+
+        class Response:
+            def __enter__(self):
+                return self
+            def __exit__(self, exc_type, exc, tb):
+                return False
+            def read(self):
+                return b"image-bytes"
+
+        with unittest.mock.patch.object(
+            controller.urllib.request,
+            "urlopen",
+            side_effect=[transient, Response()],
+        ) as urlopen, unittest.mock.patch.object(controller.time, "sleep"):
+            payload = controller.image_loader(
+                {"raw_url": "https://raw.githubusercontent.com/example/image.jpg"},
+                "token",
+            )
+
+        self.assertEqual(payload, b"image-bytes")
+        self.assertEqual(urlopen.call_count, 2)
 
 
 if __name__ == "__main__":
