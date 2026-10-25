@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_needed",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,8 +13,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
-    "deploy_attempts": 0
+    "attempts": 1,
+    "deploy_attempts": 0,
+    "last_dispatch_at": "2026-10-25T12:13:03.131964+00:00"
   },
   "backlog": [
     {
@@ -1467,12 +1468,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T09:32:22.189531+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-25T09:32:23.106135+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2069,9 +2064,19 @@
         "idea_id": "parenting-p1-transition-to-municipal-kindergarten",
         "publication_slot": "2026-10-25"
       }
+    },
+    {
+      "at": "2026-10-25T12:13:03.131987+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 1,
+        "publication_slot": "2026-10-25"
+      }
     }
   ],
-  "updated_at": "2026-10-25T12:11:45.058325+00:00",
+  "updated_at": "2026-10-25T12:13:03.131997+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2444,9 +2449,10 @@
         "topic_brief": "אשכול מעון לגן. נושא/כאב: הורה שמכין ילד למעבר ממעון/גן פרטי לגן עירייה: קבוצה גדולה יותר, צוות חדש, פחות תשומת לב אישית, שגרה אחרת ואי-ודאות לפני היום הראשון. המאמר עוסק בהכנה לפני המעבר, לא בהסתגלות שכבר התחילה. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: transition-to-municipal-kindergarten. כותרת עבודה: מעבר לגן עירייה: איך מכינים ילד לשינוי הגדול בלי להלחיץ אותו? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-transition-to-municipal-kindergarten\nRequired Primary Keyword: מעבר לגן עירייה"
       },
       "intent_at": "2026-10-25T12:12:54.654744+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-25T12:12:54.654744+00:00"
     }
   },
   "last_child_notification": {
