@@ -2172,7 +2172,7 @@
       }
     }
   ],
-  "updated_at": "2026-10-25T19:31:18.592916+00:00",
+  "updated_at": "2026-10-25T19:36:00.699326+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2569,11 +2569,10 @@
         "pr_number": "1209",
         "slot": "2026-10-25"
       },
-      "intent_at": "2026-10-25T19:30:48.636367+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-25T19:35:46.886866+00:00",
+      "status": "intent",
       "previous_run_id": 40225448235,
-      "observed_active_run_id": 40226428502,
-      "dispatched_at": "2026-10-25T19:30:48.636367+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
