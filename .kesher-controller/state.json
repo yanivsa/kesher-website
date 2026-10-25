@@ -2191,7 +2191,7 @@
   "updated_at": "2026-10-25T20:55:59.204394+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2585,11 +2585,10 @@
         "pr_number": "1209",
         "slot": "2026-10-25"
       },
-      "intent_at": "2026-10-25T20:58:38.904661+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-25T21:04:53.760570+00:00",
+      "status": "intent",
       "previous_run_id": 40225448235,
-      "observed_active_run_id": 40233278263,
-      "dispatched_at": "2026-10-25T20:58:38.904661+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
