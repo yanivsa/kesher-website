@@ -56,7 +56,7 @@
     "last_deploy_dispatch_at": "2026-10-25T06:10:59.806914+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40168790661,
-    "live_verified_at": "2026-10-25T06:31:22.515323+00:00"
+    "live_verified_at": "2026-10-25T06:31:52.236997+00:00"
   },
   "backlog": [
     {
@@ -1509,29 +1509,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-24T16:51:04.936141+00:00",
-      "from": "article_result_wait",
-      "to": "article_generating",
-      "reason": "claimed scheduled article retry dispatched on original publication slot",
-      "details": {
-        "attempt": 2,
-        "publication_slot": "2026-10-23"
-      }
-    },
-    {
-      "at": "2026-10-24T17:35:59.234089+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new Hebrew article on the topic of a child pooping in their pants after being potty-trained, targeting the specific publication slot `2026-10-23`, while strictly adhering to pipeline constraints (no image/video generation, specific primary keyword, no global factual claims). 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully adds the required article to `src/data/posts.json` and updates all downstream generated files (`postSummaries.json`, `sitemap.xml`, `rss.…",
-        "retry_at": "2026-10-24T17:40:59.234065+00:00",
-        "failure_streak": 1,
-        "run_id": 40113449983,
-        "session_id": "sessions/15737535881463004872"
-      }
-    },
-    {
       "at": "2026-10-24T17:35:59.234132+00:00",
       "from": "article_retry_wait",
       "to": "blocked",
@@ -2359,9 +2336,21 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-10-25T06:31:52.237026+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-25T06:31:54.108015+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-10-25T06:28:24.024784+00:00",
+  "updated_at": "2026-10-25T06:31:54.108036+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
