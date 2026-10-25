@@ -6,12 +6,16 @@ import copy
 import hashlib
 import json
 import re
+from pathlib import Path
 from typing import Any, Mapping
 
 MAX_QUEUE = 100
 MAX_HISTORY = 50
 MAX_TOPIC_BRIEF = 15500
 MAX_KEYWORD = 200
+# Conservative default coverage catalog: published post summaries on main.
+DEFAULT_COVERAGE_POSTS_SOURCE = Path("src/data/postSummaries.json")
+ARTICLE_DISPATCH_WORKFLOW = "kesher-article-generation.yml"
 IDEA_ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
 SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
 
@@ -36,6 +40,72 @@ def _fingerprint(idea_id: str, topic_brief: str, keyword: str) -> str:
         separators=(",", ":"),
     ).encode("utf-8")
     return hashlib.sha256(raw).hexdigest()
+
+
+def load_coverage_posts(posts: Any) -> list[dict[str, Any]] | None:
+    """Resolve the existing-articles coverage catalog.
+
+    An explicit ``posts`` argument is used as-is (dependency injection for tests).
+    ``posts=None`` loads the default published post-summaries catalog. A missing,
+    unreadable or non-list catalog returns ``None``: coverage checks then stay
+    disabled and claim/finalize keep their pre-coverage behavior instead of
+    guessing coverage.
+    """
+    if posts is not None:
+        return posts if isinstance(posts, list) else None
+    try:
+        raw = json.loads(DEFAULT_COVERAGE_POSTS_SOURCE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    return raw if isinstance(raw, list) else None
+
+
+def keyword_covered_by_post(required_keyword: str, post: Any) -> bool:
+    """Conservative exact coverage test.
+
+    A keyword counts as covered only when it exactly equals the post's
+    primaryKeyword/primarySearchQuery or appears as the exact contiguous phrase
+    inside the post title. No fuzzy or semantic matching of any kind.
+    """
+    required = str(required_keyword or "").strip()
+    if not required or not isinstance(post, dict):
+        return False
+    for field in ("primaryKeyword", "primarySearchQuery"):
+        if str(post.get(field) or "").strip() == required:
+            return True
+    return required in str(post.get("title") or "")
+
+
+def find_covering_post(required_keyword: str, posts: Any) -> dict[str, Any] | None:
+    """Return the deterministic best cover (newest date, then id) or None."""
+    if not isinstance(posts, list):
+        return None
+    matches = [
+        post
+        for post in posts
+        if isinstance(post, dict) and keyword_covered_by_post(required_keyword, post)
+    ]
+    if not matches:
+        return None
+    return max(matches, key=lambda post: (str(post.get("date") or ""), str(post.get("id") or "")))
+
+
+def _coverage_record(
+    row: dict[str, Any], covering: dict[str, Any], now_iso: str
+) -> dict[str, Any]:
+    done = copy.deepcopy(row)
+    slug = str(covering.get("id") or "").strip()
+    done.update({
+        "status": "covered_existing",
+        "completed_at": now_iso,
+        "covered_at": now_iso,
+        "coverage_source": "existing_article",
+        "outputs": {
+            "slug": slug,
+            "article_url": f"/blog/{slug}" if slug else "",
+        },
+    })
+    return done
 
 
 def ensure_fields(state: dict[str, Any]) -> None:
@@ -133,10 +203,28 @@ def ingest_from_env(state: dict[str, Any], env: Mapping[str, str], *, now_iso: s
     return "queued"
 
 
-def claim_next(state: dict[str, Any], cycle: str, *, now_iso: str) -> dict[str, Any] | None:
+def claim_next(
+    state: dict[str, Any],
+    cycle: str,
+    *,
+    now_iso: str,
+    posts: Any = None,
+) -> dict[str, Any] | None:
     ensure_fields(state)
     if isinstance(state.get("active_idea"), dict):
         return state["active_idea"]
+    if not state["idea_queue"]:
+        return None
+    coverage = load_coverage_posts(posts)
+    while state["idea_queue"] and coverage:
+        candidate = state["idea_queue"][0]
+        keyword = _clean(candidate.get("required_primary_keyword")) if isinstance(candidate, dict) else ""
+        covering = find_covering_post(keyword, coverage) if keyword else None
+        if covering is None:
+            break
+        covered = _coverage_record(state["idea_queue"].pop(0), covering, now_iso)
+        state["idea_history"].append(covered)
+        state["idea_history"] = state["idea_history"][-MAX_HISTORY:]
     if not state["idea_queue"]:
         return None
     row = copy.deepcopy(state["idea_queue"].pop(0))
@@ -287,7 +375,118 @@ def _verified_stale_active_completion(
     }, resume_status
 
 
-def finalize_if_complete(state: dict[str, Any], *, now_iso: str) -> bool:
+def _covered_active_idea_heal(
+    state: dict[str, Any],
+    active: dict[str, Any],
+    now_iso: str,
+    posts: Any,
+) -> bool | None:
+    """Heal an active owner idea already covered by an existing published article.
+
+    Applies only to the durable ARTICLE_ATTEMPTS_EXHAUSTED block and only when
+    nothing of value exists to discard: no durable article identity and no
+    started image/long/short work. Every other state keeps the existing
+    fail-closed behavior (verified-backlog completion, slot-mismatch recovery).
+    """
+    last_error = state.get("last_error") if isinstance(state.get("last_error"), dict) else {}
+    if (
+        str(state.get("status") or "") != "blocked"
+        or str(last_error.get("code") or "") != "ARTICLE_ATTEMPTS_EXHAUSTED"
+    ):
+        return None
+    if _article_has_durable_identity(state) or _downstream_stage_started(state):
+        return None
+    article = state.get("article")
+    if isinstance(article, dict) and str(article.get("status") or "").strip() == "running":
+        return None
+    coverage = load_coverage_posts(posts)
+    keyword = _clean(active.get("required_primary_keyword"))
+    if not coverage or not keyword:
+        return None
+    covering = find_covering_post(keyword, coverage)
+    if covering is None:
+        return None
+
+    prior_status = str(state.get("status") or "")
+    covered = _coverage_record(active, covering, now_iso)
+    covered["coverage_source"] = "existing_article"
+    state["idea_history"].append(covered)
+    state["idea_history"] = state["idea_history"][-MAX_HISTORY:]
+    state["active_idea"] = None
+
+    article_state = state.get("article") if isinstance(state.get("article"), dict) else {}
+    fresh_fields = {
+        "status": "pending",
+        "attempt_count": 0,
+        "attempts": 0,
+        "next_retry_at": None,
+        "last_error": None,
+        "run_id": None,
+        "processed_run_id": None,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+    }
+    if isinstance(article, dict):
+        article_state = article
+    article_state.update(fresh_fields)
+    state["article"] = article_state
+    state["status"] = "article_needed"
+    state["last_error"] = None
+    pending = state.get("pending_dispatches")
+    if isinstance(pending, dict):
+        pending.pop(ARTICLE_DISPATCH_WORKFLOW, None)
+
+    history = state.get("history")
+    if not isinstance(history, list):
+        history = []
+    history.append({
+        "at": now_iso,
+        "from": prior_status,
+        "to": "article_needed",
+        "reason": "active_idea_covered_by_existing_article",
+        "details": {
+            "idea_id": str(active.get("idea_id") or ""),
+            "required_primary_keyword": keyword,
+            "existing_slug": str(covering.get("id") or ""),
+            "coverage_source": "existing_article",
+        },
+    })
+    state["history"] = history[-100:]
+    state["updated_at"] = now_iso
+    return True
+
+
+def _article_has_durable_identity(state: dict[str, Any]) -> bool:
+    """Durable article identity means work already produced and must never be discarded."""
+    article = state.get("article")
+    if not isinstance(article, dict):
+        return False
+    for key in ("slug", "url", "pr_number", "pr_url"):
+        if str(article.get(key) or "").strip():
+            return True
+    return False
+
+
+def _downstream_stage_started(state: dict[str, Any]) -> bool:
+    for stage in ("image", "long_video", "short"):
+        stage_state = state.get(stage)
+        if not isinstance(stage_state, dict):
+            continue
+        if int(stage_state.get("attempt_count") or stage_state.get("attempts") or 0) > 0:
+            return True
+        if stage_state.get("run_id") not in (None, ""):
+            return True
+        if str(stage_state.get("status") or "").strip() not in ("", "pending"):
+            return True
+    return False
+
+
+def finalize_if_complete(
+    state: dict[str, Any],
+    *,
+    now_iso: str,
+    posts: Any = None,
+) -> bool:
     ensure_fields(state)
     active = state.get("active_idea")
     if not isinstance(active, dict):
@@ -312,6 +511,10 @@ def finalize_if_complete(state: dict[str, Any], *, now_iso: str) -> bool:
         state["idea_history"] = state["idea_history"][-MAX_HISTORY:]
         state["active_idea"] = None
         return True
+
+    heal = _covered_active_idea_heal(state, active, now_iso, posts)
+    if heal is not None:
+        return heal
 
     verified = _verified_stale_active_completion(state, active)
     if verified is None:
