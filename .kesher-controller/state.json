@@ -1468,19 +1468,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T15:27:04.409683+00:00",
-      "from": "article_live",
-      "to": "video_retry_wait",
-      "reason": "VIDEO_WORKFLOW_FAILED",
-      "details": {
-        "message": "video run 40206817671 completed with conclusion=failure",
-        "retry_at": "2026-10-25T15:32:04.409654+00:00",
-        "failure_streak": 1,
-        "run_id": 40206817671,
-        "session_id": null
-      }
-    },
-    {
       "at": "2026-10-25T15:27:04.409719+00:00",
       "from": "video_retry_wait",
       "to": "video_retry_wait",
@@ -2148,9 +2135,18 @@
       "details": {
         "publication_slot": "2026-10-25"
       }
+    },
+    {
+      "at": "2026-10-25T19:06:08.386261+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "owner run-now article workflow already active",
+      "details": {
+        "publication_slot": "2026-10-25"
+      }
     }
   ],
-  "updated_at": "2026-10-25T19:01:04.426441+00:00",
+  "updated_at": "2026-10-25T19:06:08.386283+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
