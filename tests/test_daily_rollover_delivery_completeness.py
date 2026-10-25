@@ -268,6 +268,34 @@ class PrimaryKeywordConflictAdvanceTests(unittest.TestCase):
         self.assertEqual(state["active_idea"]["idea_id"], "parenting-p1-daycare-adjustment")
         self.assertEqual(state["article"]["attempts"], 3)
 
+    @mock.patch.object(
+        idea_queue,
+        "_published_title_keyword_conflicts",
+        return_value=["transition-from-caregiver-to-daycare"],
+    )
+    def test_prior_cycle_stale_active_idea_is_not_reclassified_as_keyword_collision(self, _conflicts):
+        state = self._blocked_state(attempts=0)
+        state["cycle"] = "2026-10-26"
+        state["active_idea"]["publication_slot"] = "2026-10-25"
+        state["status"] = "blocked"
+        state["last_error"] = {"stage": "article", "code": "IDEA_SLOT_MISMATCH"}
+        state["history"] = [
+            {
+                "at": "2026-10-26T00:01:00Z",
+                "from": "article_needed",
+                "to": "blocked",
+                "reason": "IDEA_SLOT_MISMATCH",
+            }
+        ]
+        self.assertIsNone(
+            idea_queue.recover_primary_keyword_conflict(
+                state,
+                now_iso="2026-10-26T04:28:00Z",
+            )
+        )
+        self.assertEqual(state["active_idea"]["idea_id"], "parenting-p1-daycare-adjustment")
+        self.assertEqual(len(state["idea_history"]), 0)
+
     @mock.patch.object(idea_queue, "_published_title_keyword_conflicts", return_value=[])
     def test_no_published_exact_phrase_keeps_active_idea_and_attempt_debt(self, _conflicts):
         state = self._blocked_state(attempts=3)
