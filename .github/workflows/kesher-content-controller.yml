@@ -126,4 +126,4 @@ jobs:
           KESHER_IDEA_TOPIC_BRIEF: ${{ inputs.topic_brief || '' }}
           KESHER_IDEA_REQUIRED_PRIMARY_KEYWORD: ${{ inputs.required_primary_keyword || '' }}
           KESHER_IDEA_RUN_NOW: ${{ inputs.run_now || false }}
-        run: PYTHONPATH=. python3 -u scripts/kesher_content_controller_stabilized.py --report-json
+        run: PYTHONPATH=. python3 -u scripts/kesher_content_controller_keyword_recovery.py --report-json
