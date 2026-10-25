@@ -10,6 +10,7 @@ from scripts.kesher_automation_policy import POLICY_PATH, load_policy
 ROOT = Path(__file__).resolve().parents[1]
 LEGACY_POLICY = ROOT / "config" / "kesher-automation-policy.json"
 VIDEO_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
+VIDEO_ADVISORY_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-video-advisory-review.yml"
 VIDEO_REVIEW_POLICY = ROOT / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
 ARTICLE_POLICY = ROOT / ".github" / "prompts" / "jules-weekday-article-update.md"
 ARTICLE_PR_CONTROLLER_V3 = ROOT / ".github" / "scripts" / "article-pr-controller-v3.py"
@@ -143,9 +144,15 @@ class ProductionContractV3Tests(unittest.TestCase):
         for text in forbidden:
             self.assertNotIn(text.lower(), workflow.lower())
             self.assertNotIn(text.lower(), review_policy.lower())
+        advisory = VIDEO_ADVISORY_WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("Prepare technically verified upload", workflow)
         self.assertIn("Upload exact technically verified MP4", workflow)
-        self.assertIn("Jules performs strict advisory review", workflow)
+        self.assertIn("Dispatch strict advisory Jules review", workflow)
+        self.assertNotIn("Jules performs strict advisory review", workflow)
+        self.assertNotIn("scripts/jules_video_reviewer_v3.py", workflow)
+        self.assertIn("Jules performs strict advisory review", advisory)
+        self.assertIn("scripts/jules_video_reviewer_v3.py", advisory)
+        self.assertIn("Validate exact advisory evidence identity", advisory)
 
 
     def test_video_upload_workflow_enforces_exact_identity_lock(self) -> None:
