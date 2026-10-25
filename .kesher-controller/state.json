@@ -2351,7 +2351,15 @@
     "last_dispatch_at": "2026-10-25T07:28:35.698245+00:00",
     "artifact_id": "71676e72-27c2-42ca-aa1f-b2974e4297d3",
     "source_id": "64bcd596-660d-4267-acb1-da7e92490627",
-    "adopted_from_long_item_id": "video-20261025-090029-4e09877ab3-a3"
+    "adopted_from_long_item_id": "video-20261025-090029-4e09877ab3-a3",
+    "watchdog": {
+      "identity": "short:daycare-adjustment-difficulties:4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8:video-20261025-093034-4e09877ab3",
+      "hard_started_at": "2026-10-25T07:30:48.104993+00:00",
+      "last_progress_at": "2026-10-25T07:37:45.766214+00:00",
+      "last_fingerprint": "5c30c4a65a33c905bcbd62f98a88dbd04cd1ab51310854316d78505a540d3277",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
