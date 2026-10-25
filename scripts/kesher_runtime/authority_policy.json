@@ -2006,6 +2006,8 @@
       "capabilities": [
         "branch_write",
         "capability_write",
+        "jules_continue",
+        "jules_create",
         "pr_write",
         "provider_continue",
         "provider_create",
@@ -2021,6 +2023,7 @@
         "github.pull_requests",
         "github.refs",
         "github.state",
+        "jules.sessions",
         "notebooklm.jobs",
         "youtube.metadata",
         "youtube.objects"
@@ -2102,31 +2105,7 @@
         "dispatches": [
           ".github/workflows/kesher-video-advisory-review.yml"
         ],
-        "note": "Reviewed current-main manual media recovery bridge. Exact main/repository dispatch; read-only protected-state admission before provider credentials; retains existing exact media/source protections; retired and drained before VERIFIED.",
-        "dispatch_bindings": {
-          ".github/workflows/kesher-video-advisory-review.yml": {
-            "capabilities": [
-              "branch_write",
-              "jules_continue",
-              "jules_create",
-              "read",
-              "workflow_dispatch"
-            ],
-            "definition_sha256": "69f32386227222c69dfe21dd9c254f31962058e1c7d60d12ef03f75335a4fbbb",
-            "inputs": {
-              "review_branch": "kesher-video-review-${GITHUB_RUN_ID}",
-              "evidence_root": ".jules-video-review/${GITHUB_RUN_ID}",
-              "item_id": "steps.pending.outputs.item_id",
-              "target_slug": "TARGET_SLUG",
-              "target_content_sha256": "TARGET_CONTENT_SHA256"
-            },
-            "resources": [
-              "github.dispatch",
-              "github.refs",
-              "jules.sessions"
-            ]
-          }
-        }
+        "note": "Reviewed current-main manual media recovery bridge. Exact main/repository dispatch; read-only protected-state admission before provider credentials; retains existing exact media/source protections; retired and drained before VERIFIED."
       },
       "role": "emergency_bridge"
     },
@@ -2486,6 +2465,8 @@
             "capabilities": [
               "branch_write",
               "capability_write",
+              "jules_continue",
+              "jules_create",
               "provider_continue",
               "provider_create",
               "read",
@@ -2503,6 +2484,7 @@
               "github.dispatch",
               "github.refs",
               "github.state",
+              "jules.sessions",
               "notebooklm.jobs",
               "youtube.metadata",
               "youtube.objects"
@@ -4264,6 +4246,8 @@
             "capabilities": [
               "branch_write",
               "capability_write",
+              "jules_continue",
+              "jules_create",
               "provider_continue",
               "provider_create",
               "read",
@@ -4281,6 +4265,7 @@
               "github.dispatch",
               "github.refs",
               "github.state",
+              "jules.sessions",
               "notebooklm.jobs",
               "youtube.metadata",
               "youtube.objects"
@@ -4352,15 +4337,14 @@
     },
     ".github/workflows/kesher-video-advisory-review.yml": {
       "capabilities": [
+        "artifact_write",
         "branch_write",
         "jules_continue",
         "jules_create",
-        "read",
-        "workflow_dispatch"
+        "read"
       ],
       "definition_sha256": "69f32386227222c69dfe21dd9c254f31962058e1c7d60d12ef03f75335a4fbbb",
       "resources": [
-        "github.dispatch",
         "github.refs",
         "jules.sessions"
       ],
@@ -4382,9 +4366,9 @@
           "JULES_API_KEY"
         ],
         "dispatches": [],
-        "note": "Strict asynchronous advisory video reviewer. Exact review-branch/evidence/item/content identities fail closed before evidence checkout or Jules credentials. Writes only the bounded advisory result artifact and deletes only kesher-video-review-<run_id>; it has no publication, YouTube, provider, canonical-state or scheduler authority."
+        "note": "Strict asynchronous advisory video reviewer sidecar. Exact review-branch/evidence/item/content identities fail closed before evidence checkout or Jules credentials. It can persist only the advisory result artifact and delete only kesher-video-review-<run_id>; it has no publication, YouTube, provider, canonical-state or scheduler authority. At Schema-6 cutover it requires explicit resource separation proof or is classified retired."
       },
-      "role": "worker"
+      "role": "separate_infrastructure"
     }
   }
 }
