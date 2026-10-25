@@ -56,7 +56,7 @@
     "last_deploy_dispatch_at": "2026-10-25T06:10:59.806914+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40168790661,
-    "live_verified_at": "2026-10-25T09:25:21.598196+00:00"
+    "live_verified_at": "2026-10-25T09:25:39.922028+00:00"
   },
   "backlog": [
     {
@@ -1509,47 +1509,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-24T23:41:01.955585+00:00",
-      "from": "article_retry_wait",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "article exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-25T05:01:03.066464+00:00",
-      "from": "blocked",
-      "to": "article_needed",
-      "reason": "primary_keyword_conflict_advanced",
-      "details": {
-        "rejected_idea_id": "parenting-p1-daycare-adjustment",
-        "required_primary_keyword": "הסתגלות למעון",
-        "conflicting_slugs": [
-          "transition-from-caregiver-to-daycare"
-        ],
-        "prior_article_attempts": 3,
-        "previous_error": {
-          "stage": "article",
-          "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-          "message": "article exhausted 3 total controller dispatch attempts",
-          "at": "2026-10-24T23:41:01.955581+00:00"
-        },
-        "replacement_idea_id": "parenting-p1-daycare-adjustment-difficulties",
-        "replacement_primary_keyword": "קשיי הסתגלות למעון",
-        "publication_slot": "2026-10-25"
-      }
-    },
-    {
-      "at": "2026-10-25T05:01:25.683940+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
       "at": "2026-10-25T05:05:35.181654+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2197,9 +2156,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-25T09:25:39.922049+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-25T09:25:40.615682+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-25T09:25:41.333198+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-25T09:21:10.905766+00:00",
+  "updated_at": "2026-10-25T09:25:41.333216+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
