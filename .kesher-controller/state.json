@@ -3,8 +3,8 @@
   "cycle": "2026-10-25",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40192138366,
@@ -13,7 +13,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
     "last_dispatch_at": "2026-10-25T12:13:03.131964+00:00",
     "pr_number": 1201,
@@ -28,10 +28,20 @@
     "last_normalization_drift_head_sha": "2e5c52416f233ea973a47e604b1a5f184b1fab7f",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
-    "merge_run_id": 40194959063,
+    "merge_run_id": 40205866288,
     "normalized_head_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
     "image_head_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
-    "merge_candidate_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7"
+    "merge_candidate_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
+    "slug": "transition-to-municipal-kindergarten",
+    "title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
+    "url": "https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten",
+    "published_date": "2026-10-25",
+    "quality_content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-10-25T15:19:38.465145+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2213,7 +2223,8 @@
     "last_dispatch_at": "2026-10-25T15:11:17.051236+00:00",
     "artifact_sha256": "d0e6c5bfbb3b9088f00c6542974906285de0826098099234f60f585dfd92edb2",
     "source_id": "local-editorial://transition-to-municipal-kindergarten/4",
-    "run_id": 40205744086
+    "run_id": 40205744086,
+    "image_path": "/images/generated/blog/transition-to-municipal-kindergarten.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2566,10 +2577,21 @@
     "short_signature_verified": true,
     "short_origin_verified": true
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-10-25",
+      "inputs": {},
+      "intent_at": "2026-10-25T15:19:34.225223+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "03158fb3aa69e9a9f4747940db0b99e40773e5ad"
+    }
+  },
   "last_child_notification": {
-    "workflow": "Kesher Trusted Article Image",
-    "run_id": 40205744086,
+    "workflow": "Auto-merge Kesher article PRs",
+    "run_id": 40205866288,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-25"
