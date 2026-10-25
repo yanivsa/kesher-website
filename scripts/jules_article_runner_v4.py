@@ -361,7 +361,7 @@ def _github_posts_at_ref(token: str, ref: str) -> list[dict]:
 
 
 def _exact_pr_candidate(token: str, pr_url: str) -> tuple[dict, dict]:
-    match = re.fullmatch(rf"https://github\\.com/{re.escape(v3.core.REPO)}/pull/(\\d+)", pr_url.strip())
+    match = re.fullmatch(rf"https://github\.com/{re.escape(v3.core.REPO)}/pull/(\d+)", pr_url.strip())
     if not match:
         raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_IDENTITY_INVALID", f"unexpected PR URL: {pr_url}")
     number = int(match.group(1))
@@ -389,7 +389,9 @@ def _exact_pr_candidate(token: str, pr_url: str) -> tuple[dict, dict]:
             "ARTICLE_PRE_PR_IDENTITY_INVALID",
             f"expected exactly one new PR article, found {len(new_posts)}",
         )
-    return pr, new_posts[0]
+    article = dict(new_posts[0])
+    article["controllerManaged"] = True
+    return pr, article
 
 
 def _wait_for_same_pr_repair(
@@ -400,7 +402,7 @@ def _wait_for_same_pr_repair(
     prior_head_sha: str,
     timeout_seconds: int = 15 * 60,
 ) -> bool:
-    match = re.fullmatch(rf"https://github\\.com/{re.escape(v3.core.REPO)}/pull/(\\d+)", pr_url.strip())
+    match = re.fullmatch(rf"https://github\.com/{re.escape(v3.core.REPO)}/pull/(\d+)", pr_url.strip())
     if not match:
         raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_IDENTITY_INVALID", f"unexpected PR URL: {pr_url}")
     number = int(match.group(1))

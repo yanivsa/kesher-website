@@ -17,10 +17,22 @@ class ArticleNormalizerTests(unittest.TestCase):
         ]
         self.target = {
             "id": "aug-27-target",
+            "slug": "aug-27-target",
+            "controllerManaged": True,
             "date": "2026-08-27",
             "title": "target",
             "content": "TARGET",
         }
+
+    def test_recent_owned_article_cannot_omit_slug_or_management_marker(self):
+        post = {**self.target, "date": "2026-10-25"}
+        post.pop("slug")
+        post.pop("controllerManaged")
+        result = extract_target_article(self.main_posts, [*self.main_posts, post], "2026-10-25")
+        self.assertEqual(result.get("slug"), post["id"])
+        self.assertIs(result.get("controllerManaged"), True)
+        self.assertNotIn("slug", post)
+        self.assertNotIn("controllerManaged", post)
 
     def test_extracts_only_target_slot_from_dirty_head(self):
         dirty_head = [

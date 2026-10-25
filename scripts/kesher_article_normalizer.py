@@ -77,8 +77,9 @@ def extract_target_article(
             f"expected exactly one new article for {slot}, found {len(candidates)}"
         )
     extracted = copy.deepcopy(candidates[0])
-    if extracted.get("controllerManaged") is False:
-        extracted["controllerManaged"] = True
+    extracted["controllerManaged"] = True
+    if not str(extracted.get("slug") or "").strip():
+        extracted["slug"] = _post_id(extracted)
     if "subcategory" in extracted and extracted["subcategory"] is None:
         del extracted["subcategory"]
     return extracted
