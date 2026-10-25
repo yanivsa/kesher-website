@@ -42,6 +42,32 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Validate exact advisory evidence identity
+        env:
+          REVIEW_BRANCH: ${{ inputs.review_branch }}
+          EVIDENCE_ROOT: ${{ inputs.evidence_root }}
+          REVIEW_ITEM_ID: ${{ inputs.item_id }}
+          TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$REVIEW_BRANCH" =~ ^kesher-video-review-([0-9]+)$ ]]; then
+            echo "Invalid advisory review branch identity." >&2
+            exit 1
+          fi
+          review_run_id="${BASH_REMATCH[1]}"
+          if [ "$EVIDENCE_ROOT" != ".jules-video-review/${review_run_id}" ]; then
+            echo "Advisory evidence root does not match review branch identity." >&2
+            exit 1
+          fi
+          if [[ ! "$REVIEW_ITEM_ID" =~ ^video-[0-9]{8}-[0-9]{6}-[0-9a-f]{10}$ ]]; then
+            echo "Invalid advisory video item identity." >&2
+            exit 1
+          fi
+          if [[ ! "$TARGET_CONTENT_SHA256" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "Invalid authoritative content SHA-256." >&2
+            exit 1
+          fi
+
       - name: Checkout immutable Jules evidence branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:

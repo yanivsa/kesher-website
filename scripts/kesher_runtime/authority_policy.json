@@ -2006,8 +2006,6 @@
       "capabilities": [
         "branch_write",
         "capability_write",
-        "jules_continue",
-        "jules_create",
         "pr_write",
         "provider_continue",
         "provider_create",
@@ -2023,7 +2021,6 @@
         "github.pull_requests",
         "github.refs",
         "github.state",
-        "jules.sessions",
         "notebooklm.jobs",
         "youtube.metadata",
         "youtube.objects"
@@ -2033,8 +2030,6 @@
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
           "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
-          "scripts/jules_video_reviewer.py": "12f80bcb26079cc200bc0d1ef1e024e5d14e27e4be699649407d8d2940be281e",
-          "scripts/jules_video_reviewer_v3.py": "973eb21e712420b83cf636308f876f51a57f5b6a668def83dae65d5d0be7aedd",
           "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
           "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
@@ -2078,13 +2073,12 @@
           "tests/test_production_contract_v3.py": "490a8dc039dc956bfd568b03c585e6b6cc1890bb6b1351c983c92f9ea2fdd49a",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "a7faf6eb1607ee2eeda767e0bc04b0fefc69d5974374a40040d58287ae9c14ad",
-          "tests/test_video_review_policy.py": "655a6d277dce463984783ff85ce8e0d956cd4b56a3a4db349942c0571b2664a2",
+          "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
           "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
-          "JULES_API_KEY": "jules",
           "KESHER_RECOVERY_STATE_JSON": null,
           "NOTEBOOKLM_AUTH_JSON": "notebooklm",
           "NOTEBOOKLM_MASTER_TOKEN_JSON": "notebooklm",
@@ -2096,7 +2090,6 @@
         },
         "credentials": [
           "GITHUB_TOKEN",
-          "JULES_API_KEY",
           "KESHER_RECOVERY_STATE_JSON",
           "NOTEBOOKLM_AUTH_JSON",
           "NOTEBOOKLM_MASTER_TOKEN_JSON",
@@ -2106,8 +2099,34 @@
           "YOUTUBE_CLIENT_SECRET",
           "YOUTUBE_REFRESH_TOKEN"
         ],
-        "dispatches": [],
-        "note": "Reviewed current-main manual media recovery bridge. Exact main/repository dispatch; read-only protected-state admission before provider credentials; retains existing exact media/source protections; retired and drained before VERIFIED."
+        "dispatches": [
+          ".github/workflows/kesher-video-advisory-review.yml"
+        ],
+        "note": "Reviewed current-main manual media recovery bridge. Exact main/repository dispatch; read-only protected-state admission before provider credentials; retains existing exact media/source protections; retired and drained before VERIFIED.",
+        "dispatch_bindings": {
+          ".github/workflows/kesher-video-advisory-review.yml": {
+            "capabilities": [
+              "branch_write",
+              "jules_continue",
+              "jules_create",
+              "read",
+              "workflow_dispatch"
+            ],
+            "definition_sha256": "69f32386227222c69dfe21dd9c254f31962058e1c7d60d12ef03f75335a4fbbb",
+            "inputs": {
+              "review_branch": "kesher-video-review-${GITHUB_RUN_ID}",
+              "evidence_root": ".jules-video-review/${GITHUB_RUN_ID}",
+              "item_id": "steps.pending.outputs.item_id",
+              "target_slug": "TARGET_SLUG",
+              "target_content_sha256": "TARGET_CONTENT_SHA256"
+            },
+            "resources": [
+              "github.dispatch",
+              "github.refs",
+              "jules.sessions"
+            ]
+          }
+        }
       },
       "role": "emergency_bridge"
     },
@@ -2452,7 +2471,7 @@
           "tests/test_v4_runtime_activation.py": "98b614126a9f1df68acd252ebf56de11472be8b38267e60430b1c7191fd7845e",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "a7faf6eb1607ee2eeda767e0bc04b0fefc69d5974374a40040d58287ae9c14ad",
-          "tests/test_video_review_policy.py": "655a6d277dce463984783ff85ce8e0d956cd4b56a3a4db349942c0571b2664a2",
+          "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93"
         },
@@ -2467,8 +2486,6 @@
             "capabilities": [
               "branch_write",
               "capability_write",
-              "jules_continue",
-              "jules_create",
               "provider_continue",
               "provider_create",
               "read",
@@ -2486,7 +2503,6 @@
               "github.dispatch",
               "github.refs",
               "github.state",
-              "jules.sessions",
               "notebooklm.jobs",
               "youtube.metadata",
               "youtube.objects"
@@ -2964,7 +2980,7 @@
           "tests/test_v4_runtime_activation.py": "98b614126a9f1df68acd252ebf56de11472be8b38267e60430b1c7191fd7845e",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "a7faf6eb1607ee2eeda767e0bc04b0fefc69d5974374a40040d58287ae9c14ad",
-          "tests/test_video_review_policy.py": "655a6d277dce463984783ff85ce8e0d956cd4b56a3a4db349942c0571b2664a2",
+          "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93"
         },
@@ -3259,7 +3275,7 @@
           "tests/test_single_scheduler_policy.py": "d5202cc5d132c9f4c677be7819a66d6bb00195a8cf8e6f4eafbb43fe11475b62",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "a7faf6eb1607ee2eeda767e0bc04b0fefc69d5974374a40040d58287ae9c14ad",
-          "tests/test_video_review_policy.py": "655a6d277dce463984783ff85ce8e0d956cd4b56a3a4db349942c0571b2664a2",
+          "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
           "scripts/kesher_runtime/authority_client.py": "2faf396e363269382163aafcb73bc80863e630bff551d3e22f872fc42b779e36",
           "scripts/kesher_runtime/cutover_host.py": "9da32d13cd7c8616caeb36160452ba1fcf3981ae611817b6bed72af64b87c99c",
@@ -4206,7 +4222,7 @@
           "tests/test_production_contract_v3.py": "490a8dc039dc956bfd568b03c585e6b6cc1890bb6b1351c983c92f9ea2fdd49a",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "a7faf6eb1607ee2eeda767e0bc04b0fefc69d5974374a40040d58287ae9c14ad",
-          "tests/test_video_review_policy.py": "655a6d277dce463984783ff85ce8e0d956cd4b56a3a4db349942c0571b2664a2",
+          "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
           "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc",
           ".github/workflows/kesher-daily-video.yml": "32d011f5bbbdd12f46d0399e225f6f1650b31bad25a40996cfec80deae8ca825",
@@ -4248,8 +4264,6 @@
             "capabilities": [
               "branch_write",
               "capability_write",
-              "jules_continue",
-              "jules_create",
               "provider_continue",
               "provider_create",
               "read",
@@ -4267,7 +4281,6 @@
               "github.dispatch",
               "github.refs",
               "github.state",
-              "jules.sessions",
               "notebooklm.jobs",
               "youtube.metadata",
               "youtube.objects"
@@ -4336,6 +4349,42 @@
         "dispatches": [],
         "note": "Reviewed unchanged current-main inline OAuth exchange, channel/video GET and videos PUT metadata writer. Shared YouTube metadata mutation requires independently enforced resource separation; the frozen governance exception grants no production admission."
       }
+    },
+    ".github/workflows/kesher-video-advisory-review.yml": {
+      "capabilities": [
+        "branch_write",
+        "jules_continue",
+        "jules_create",
+        "read",
+        "workflow_dispatch"
+      ],
+      "definition_sha256": "69f32386227222c69dfe21dd9c254f31962058e1c7d60d12ef03f75335a4fbbb",
+      "resources": [
+        "github.dispatch",
+        "github.refs",
+        "jules.sessions"
+      ],
+      "review": {
+        "call_chain": {
+          "scripts/jules_video_reviewer.py": "12f80bcb26079cc200bc0d1ef1e024e5d14e27e4be699649407d8d2940be281e",
+          "scripts/jules_video_reviewer_v3.py": "973eb21e712420b83cf636308f876f51a57f5b6a668def83dae65d5d0be7aedd",
+          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/requirements-video-cloud.txt": "682a6c18a81ae81f328fc3f91b0b58d77a3a494c14577e6b681c2f1a1a95f1ec",
+          "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
+          "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
+        },
+        "credential_services": {
+          "GITHUB_TOKEN": "github",
+          "JULES_API_KEY": "jules"
+        },
+        "credentials": [
+          "GITHUB_TOKEN",
+          "JULES_API_KEY"
+        ],
+        "dispatches": [],
+        "note": "Strict asynchronous advisory video reviewer. Exact review-branch/evidence/item/content identities fail closed before evidence checkout or Jules credentials. Writes only the bounded advisory result artifact and deletes only kesher-video-review-<run_id>; it has no publication, YouTube, provider, canonical-state or scheduler authority."
+      },
+      "role": "worker"
     }
   }
 }
