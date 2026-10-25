@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_pr_open",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "exhausted",
     "next_retry_at": null,
     "run_id": 40222812230,
     "processed_run_id": null,
@@ -25,14 +25,15 @@
     "normalization_run_id": 40233815507,
     "normalization_drift_count": 1,
     "last_normalization_drift_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
-    "merge_dispatch_count": 1,
+    "merge_dispatch_count": 0,
     "merge_dispatch_at": "2026-10-25T21:11:09.043678+00:00",
-    "merge_run_id": 40225448235,
-    "last_refunded_auto_merge_run_id": 40225448235,
-    "deferred_auto_merge_refund_count": 2,
+    "merge_run_id": 40234285467,
+    "last_refunded_auto_merge_run_id": 40234285467,
+    "deferred_auto_merge_refund_count": 3,
     "normalized_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
     "image_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
-    "merge_candidate_sha": "56327598256edc4190ce277ce805d3e5c1b98b83"
+    "merge_candidate_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
+    "last_error": null
   },
   "backlog": [
     {
@@ -1484,26 +1485,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-25T16:30:12.808966+00:00",
-      "from": "blocked",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261025-182242-109b70354e",
-        "task_id": "71c21c37-4f95-4728-8823-1f38b512ea3e"
-      }
-    },
-    {
-      "at": "2026-10-25T16:35:24.139135+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261025-182242-109b70354e",
-        "task_id": "71c21c37-4f95-4728-8823-1f38b512ea3e"
-      }
-    },
-    {
       "at": "2026-10-25T16:41:20.202538+00:00",
       "from": "long_video_watchdog_wait",
       "to": "article_live",
@@ -2190,9 +2171,31 @@
       "details": {
         "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed"
       }
+    },
+    {
+      "at": "2026-10-25T21:12:22.058360+00:00",
+      "from": "article_pr_open",
+      "to": "article_pr_open",
+      "reason": "successful_deferred_auto_merge_refunded",
+      "details": {
+        "run_id": 40234285467,
+        "pr_number": 1209,
+        "head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
+        "merge_dispatch_count": 0,
+        "refund_count": 3
+      }
+    },
+    {
+      "at": "2026-10-25T21:12:22.308704+00:00",
+      "from": "article_pr_open",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1209 exhausted 3 total article content attempts (initial + 2 repairs)"
+      }
     }
   ],
-  "updated_at": "2026-10-25T21:11:04.726420+00:00",
+  "updated_at": "2026-10-25T21:12:22.308712+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -2581,24 +2584,11 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-25T18:45:49.335905+00:00"
-    },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
-      "cycle": "2026-10-25",
-      "inputs": {
-        "pr_number": "1209",
-        "slot": "2026-10-25"
-      },
-      "intent_at": "2026-10-25T21:10:45.977792+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40225448235,
-      "observed_active_run_id": 40234285467,
-      "dispatched_at": "2026-10-25T21:10:45.977792+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Trusted Article Image",
-    "run_id": 40233939999,
+    "workflow": "Auto-merge Kesher article PRs",
+    "run_id": 40234285467,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-25"
@@ -3129,5 +3119,10 @@
       "reason": "owner_run_now_cycle_started"
     }
   ],
-  "last_error": null
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+    "message": "PR #1209 exhausted 3 total article content attempts (initial + 2 repairs)",
+    "at": "2026-10-25T21:12:22.308687+00:00"
+  }
 }
