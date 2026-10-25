@@ -1,11 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
-    "status": "blocked",
-    "last_error": null,
+    "status": "running",
     "next_retry_at": null,
     "run_id": 40222812230,
     "processed_run_id": null,
@@ -24,14 +23,16 @@
     "normalization_slot": "2026-10-25",
     "normalization_dispatched_at": "2026-10-25T19:13:18.627111+00:00",
     "normalization_run_id": 40233815507,
-    "normalization_drift_count": 4,
+    "normalization_drift_count": 1,
     "last_normalization_drift_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 40225448235,
     "last_refunded_auto_merge_run_id": 40225448235,
     "deferred_auto_merge_refund_count": 2,
-    "normalized_head_sha": "d8f8f8f23aa85b16653055ed1f7d717b6d3d1d49"
+    "normalized_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
+    "image_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
+    "merge_candidate_sha": "56327598256edc4190ce277ce805d3e5c1b98b83"
   },
   "backlog": [
     {
@@ -1481,12 +1482,6 @@
       "media": {}
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_JULES_UNSTABLE_MUTATION",
-    "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed",
-    "at": "2026-10-25T21:08:10.961870+00:00"
-  },
   "history": [
     {
       "at": "2026-10-25T16:30:12.808966+00:00",
@@ -2197,10 +2192,10 @@
       }
     }
   ],
-  "updated_at": "2026-10-25T21:08:10.961891+00:00",
+  "updated_at": "2026-10-25T21:11:04.726420+00:00",
   "image": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2210,8 +2205,7 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-25T21:06:52.048181+00:00",
     "artifact_sha256": "0c9fb37a16cad28ffdfe382a05a376c572d4fa4d52661b18f7467a7ed8b96b59",
-    "source_id": "local-editorial://changing-kindergarten-midyear/1",
-    "run_id": 40233939999
+    "source_id": "local-editorial://changing-kindergarten-midyear/1"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2586,6 +2580,18 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-25T18:45:49.335905+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-25",
+      "inputs": {
+        "pr_number": "1209",
+        "slot": "2026-10-25"
+      },
+      "intent_at": "2026-10-25T21:10:45.977792+00:00",
+      "status": "intent",
+      "previous_run_id": 40225448235,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3120,5 +3126,6 @@
       "archived_at": "2026-10-25T18:45:54.359116+00:00",
       "reason": "owner_run_now_cycle_started"
     }
-  ]
+  ],
+  "last_error": null
 }
