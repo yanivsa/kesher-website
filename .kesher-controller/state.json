@@ -45,7 +45,7 @@
     "last_deploy_dispatch_at": "2026-10-25T15:19:44.408119+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40206406296,
-    "live_verified_at": "2026-10-25T18:05:48.491814+00:00"
+    "live_verified_at": "2026-10-25T18:06:01.042961+00:00"
   },
   "backlog": [
     {
@@ -1498,34 +1498,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T12:30:47.590465+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-25"
-      }
-    },
-    {
-      "at": "2026-10-25T12:35:52.679609+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-25"
-      }
-    },
-    {
-      "at": "2026-10-25T12:40:54.564410+00:00",
-      "from": "article_generating",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1201,
-        "slot": "2026-10-25"
-      }
-    },
-    {
       "at": "2026-10-25T12:42:16.496897+00:00",
       "from": "article_normalizing",
       "to": "article_image_running",
@@ -2270,9 +2242,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-25T18:06:01.042986+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-25T18:06:01.492618+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-25T18:06:01.965377+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-25T18:01:18.736278+00:00",
+  "updated_at": "2026-10-25T18:06:01.965396+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
