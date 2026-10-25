@@ -50,13 +50,13 @@
     "quality_content_sha256": "4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-25T07:25:58.327307+00:00",
+    "quality_checked_at": "2026-10-25T07:27:52.666770+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-25T06:10:59.806914+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40168790661,
-    "live_verified_at": "2026-10-25T07:26:34.521508+00:00"
+    "live_verified_at": "2026-10-25T07:27:54.636721+00:00"
   },
   "backlog": [
     {
@@ -2307,10 +2307,10 @@
     "attempt_count": 3,
     "status": "rejected",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-25T07:32:47.787683+00:00",
     "run_id": 40171034643,
     "processed_run_id": 40169950109,
-    "provider_id": null,
+    "provider_id": "71676e72-27c2-42ca-aa1f-b2974e4297d3",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
@@ -2318,8 +2318,24 @@
     "last_dispatch_at": "2026-10-25T06:58:36.342673+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
-    "item_id": "video-20261025-084731-4e09877ab3-a2",
-    "resume_dispatches": 2
+    "item_id": "video-20261025-090029-4e09877ab3-a3",
+    "resume_dispatches": 2,
+    "youtube_id": "QbnceJ0QYw0",
+    "youtube_url": "https://youtu.be/QbnceJ0QYw0",
+    "verified": true,
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 121.467,
+    "content_duration_seconds": 121.458,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "artifact_id": "71676e72-27c2-42ca-aa1f-b2974e4297d3",
+    "source_id": "64bcd596-660d-4267-acb1-da7e92490627"
   },
   "short": {
     "attempt_count": 0,
@@ -2651,26 +2667,10 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-25",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "daycare-adjustment-difficulties",
-        "target_content_sha256": "4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8",
-        "target_item_id": "video-20261025-084731-4e09877ab3-a2"
-      },
-      "intent_at": "2026-10-25T06:57:50.936179+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40169950109,
-      "observed_active_run_id": 40171034643,
-      "dispatched_at": "2026-10-25T06:57:50.936179+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 40169950109,
+    "run_id": 40171034643,
     "conclusion": "success",
     "source_slug": "daycare-adjustment-difficulties",
     "slot": "2026-10-25"
