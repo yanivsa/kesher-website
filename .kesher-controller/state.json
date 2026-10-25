@@ -2366,7 +2366,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-25T05:31:27.768845+00:00",
     "artifact_sha256": "c720c08386a55beb395879c2b0b41d519a677e082b5800d1b404b00b1f96cdda",
-    "source_id": "local-editorial://daycare-adjustment-difficulties/3"
+    "source_id": "local-editorial://daycare-adjustment-difficulties/3",
+    "run_id": 40165845123
   },
   "long_video": {
     "attempt_count": 0,
