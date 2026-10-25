@@ -2718,5 +2718,8 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-25"
-  }
+  },
+  "processed_child_notifications": [
+    "Deploy to Cloudflare Pages:40162798622"
+  ]
 }
