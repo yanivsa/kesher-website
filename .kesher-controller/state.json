@@ -56,7 +56,7 @@
     "last_deploy_dispatch_at": "2026-10-25T06:10:59.806914+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40168790661,
-    "live_verified_at": "2026-10-25T07:22:58.578629+00:00"
+    "live_verified_at": "2026-10-25T07:23:27.225114+00:00"
   },
   "backlog": [
     {
@@ -1509,27 +1509,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-24T19:35:56.571716+00:00",
-      "from": "blocked",
-      "to": "article_pr_open",
-      "reason": "late_article_head_after_merge_exhaustion_recovery",
-      "details": {
-        "pr_number": 1185,
-        "previous_head_sha": "4b775494c9dae362c0f580ccf66f8ef7ee6119b5",
-        "current_head_sha": "521e19dbe09c2fa2c4c5de0cf56c6af34455a347"
-      }
-    },
-    {
-      "at": "2026-10-24T19:40:56.244387+00:00",
-      "from": "article_pr_open",
-      "to": "article_deploying",
-      "reason": "public article check failed; recovery deploy dispatched",
-      "details": {
-        "http_status": 404,
-        "attempt": 1
-      }
-    },
-    {
       "at": "2026-10-24T19:47:14.885782+00:00",
       "from": "article_deploying",
       "to": "article_live",
@@ -2297,9 +2276,21 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-10-25T07:23:27.225147+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-25T07:23:29.655724+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-10-25T07:16:14.536120+00:00",
+  "updated_at": "2026-10-25T07:23:29.655750+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
