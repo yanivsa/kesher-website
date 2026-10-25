@@ -2016,7 +2016,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "32d011f5bbbdd12f46d0399e225f6f1650b31bad25a40996cfec80deae8ca825",
+      "definition_sha256": "cac7622c51396b9cd521dd551e2e2d038000624746dfc20058f84565f74d04f3",
       "registration_id": 331086666,
       "resources": [
         "github.dispatch",
@@ -2371,7 +2371,7 @@
       "review": {
         "call_chain": {
           ".github/prompts/jules-remotion-video-upgrade.md": "b77ed706da6ca440bebb8fd4102b2ded5f0b96628039c372e50fe3fab3e13d6a",
-          ".github/workflows/kesher-daily-video.yml": "32d011f5bbbdd12f46d0399e225f6f1650b31bad25a40996cfec80deae8ca825",
+          ".github/workflows/kesher-daily-video.yml": "cac7622c51396b9cd521dd551e2e2d038000624746dfc20058f84565f74d04f3",
           ".github/workflows/kesher-short-v4.yml": "a0566d23b3c3563bd9973fcb4b42b9063a3a5b48fb199cf585a0a9461de4629a",
           "config/kesher-production-contract.json": "f6b7622a1ec3cbd49683893d560cebf13dd312e13a6a0000cdcd5af24a28de8d",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-free-stock-source-20261001.py.txt": "a60b2592a5e3b845b81735047fddcd140da9e0c1954a4d1257f1c88a10570d2f",
@@ -2474,7 +2474,7 @@
               "youtube_metadata",
               "youtube_upload"
             ],
-            "definition_sha256": "32d011f5bbbdd12f46d0399e225f6f1650b31bad25a40996cfec80deae8ca825",
+            "definition_sha256": "cac7622c51396b9cd521dd551e2e2d038000624746dfc20058f84565f74d04f3",
             "inputs": {
               "operation": "full",
               "target_slug": "$.github/kesher-goal-request.json.target_slug"
@@ -2890,7 +2890,7 @@
       ],
       "review": {
         "call_chain": {
-          ".github/workflows/kesher-daily-video.yml": "32d011f5bbbdd12f46d0399e225f6f1650b31bad25a40996cfec80deae8ca825",
+          ".github/workflows/kesher-daily-video.yml": "cac7622c51396b9cd521dd551e2e2d038000624746dfc20058f84565f74d04f3",
           ".github/workflows/kesher-short-v4.yml": "a0566d23b3c3563bd9973fcb4b42b9063a3a5b48fb199cf585a0a9461de4629a",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
           "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
@@ -4207,7 +4207,7 @@
           "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
           "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc",
-          ".github/workflows/kesher-daily-video.yml": "32d011f5bbbdd12f46d0399e225f6f1650b31bad25a40996cfec80deae8ca825",
+          ".github/workflows/kesher-daily-video.yml": "cac7622c51396b9cd521dd551e2e2d038000624746dfc20058f84565f74d04f3",
           "scripts/article_claim_quality.py": "86910d132cabd5f2043c1c2820521d3716f59405cb71cfa03450fdf4a8edf670",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
           "scripts/kesher_article_contract.py": "92f8f6c9e0ca2340cbb3a27178521eb6c9eee80e2edc57017ccba81311b3feec",
@@ -4255,7 +4255,7 @@
               "youtube_metadata",
               "youtube_upload"
             ],
-            "definition_sha256": "32d011f5bbbdd12f46d0399e225f6f1650b31bad25a40996cfec80deae8ca825",
+            "definition_sha256": "cac7622c51396b9cd521dd551e2e2d038000624746dfc20058f84565f74d04f3",
             "inputs": {
               "operation": "full",
               "target_slug": "$.github/kesher-media-recovery-request.json.target_slug"

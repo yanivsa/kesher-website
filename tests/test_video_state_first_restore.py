@@ -175,7 +175,7 @@ exec /usr/bin/python3 "$@"
             env["PATH"] = f"{mock_bin}:{env.get('PATH', '')}"
             env["GITHUB_REPOSITORY"] = "test/repo"
             env["KESHER_STATE_DIR"] = str(state_dir)
-            env["KESHER_STATE_FILE"] = str(state_dir / "state.json")
+            env.pop("KESHER_STATE_FILE", None)  # Production only supplies KESHER_STATE_DIR.
             env["RESTORE_OPERATION"] = "full"
             env["RESTORE_TARGET_ITEM_ID"] = "video-exact"
             env["RESTORE_TARGET_SLUG"] = "target-slug"
