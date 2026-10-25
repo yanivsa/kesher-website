@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_image_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "blocked",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40222812230,
@@ -18,14 +18,14 @@
     "last_dispatch_at": "2026-10-25T18:46:08.329305+00:00",
     "pr_number": 1209,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1209",
-    "current_pr_head_sha": "d8f8f8f23aa85b16653055ed1f7d717b6d3d1d49",
+    "current_pr_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
     "jules_head_sha": "72e6083f550698466d8beadc124e010cbcdd2d6b",
     "normalization_status": "complete",
     "normalization_slot": "2026-10-25",
     "normalization_dispatched_at": "2026-10-25T19:13:18.627111+00:00",
     "normalization_run_id": 40233815507,
-    "normalization_drift_count": 3,
-    "last_normalization_drift_head_sha": "d8f8f8f23aa85b16653055ed1f7d717b6d3d1d49",
+    "normalization_drift_count": 4,
+    "last_normalization_drift_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 40225448235,
@@ -1481,17 +1481,13 @@
       "media": {}
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_JULES_UNSTABLE_MUTATION",
+    "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed",
+    "at": "2026-10-25T21:08:10.961870+00:00"
+  },
   "history": [
-    {
-      "at": "2026-10-25T16:18:38.946304+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
     {
       "at": "2026-10-25T16:30:12.808966+00:00",
       "from": "blocked",
@@ -2190,9 +2186,18 @@
         "attempt": 2,
         "pr_number": 1209
       }
+    },
+    {
+      "at": "2026-10-25T21:08:10.961884+00:00",
+      "from": "article_image_running",
+      "to": "blocked",
+      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
+      "details": {
+        "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed"
+      }
     }
   ],
-  "updated_at": "2026-10-25T21:06:52.048221+00:00",
+  "updated_at": "2026-10-25T21:08:10.961891+00:00",
   "image": {
     "attempt_count": 2,
     "status": "running",
@@ -2581,23 +2586,11 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-25T18:45:49.335905+00:00"
-    },
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
-      "cycle": "2026-10-25",
-      "inputs": {
-        "pr_number": "1209"
-      },
-      "intent_at": "2026-10-25T21:06:24.493144+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 40233939999,
-      "dispatched_at": "2026-10-25T21:06:24.493144+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Normalize Article PR",
-    "run_id": 40233815507,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 40233939999,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-25"
