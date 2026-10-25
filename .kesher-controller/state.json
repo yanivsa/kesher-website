@@ -60,7 +60,9 @@
       }
     },
     "last_jules_session_id": "sessions/164577257335942144",
-    "last_failed_run_id": 40140650906
+    "last_failed_run_id": 40140650906,
+    "deploy_run_id": 40162798622,
+    "next_deploy_retry_at": "2026-10-25T04:51:53.834181+00:00"
   },
   "backlog": [
     {
@@ -2709,5 +2711,12 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-24T22:55:50.386917+00:00"
     }
+  },
+  "last_child_notification": {
+    "workflow": "Deploy to Cloudflare Pages",
+    "run_id": 40162798622,
+    "conclusion": "success",
+    "source_slug": null,
+    "slot": "2026-10-25"
   }
 }
