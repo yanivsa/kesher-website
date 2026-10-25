@@ -6,6 +6,8 @@ import copy
 import hashlib
 import json
 import re
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Mapping
 
 MAX_QUEUE = 100
@@ -14,6 +16,7 @@ MAX_TOPIC_BRIEF = 15500
 MAX_KEYWORD = 200
 IDEA_ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
 SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
+_PUBLISHED_POST_FILES = ("src/data/posts.json", "src/data/postsRecent.json")
 
 
 class IdeaQueueError(RuntimeError):
@@ -36,6 +39,56 @@ def _fingerprint(idea_id: str, topic_brief: str, keyword: str) -> str:
         separators=(",", ":"),
     ).encode("utf-8")
     return hashlib.sha256(raw).hexdigest()
+
+
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _normalized_phrase(value: Any) -> str:
+    text = str(value or "").casefold()
+    text = re.sub(r"[^\w\u0590-\u05ff]+", " ", text, flags=re.UNICODE)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _published_title_keyword_conflicts(keyword: str, *, root: Path | None = None) -> list[str]:
+    """Return published slugs whose visible title already owns the exact SEO phrase.
+
+    The Primary Keyword contract is intentionally strict: an exact phrase already
+    present in another published title is treated as an SEO/content collision. The
+    detector reads only versioned main-site post catalogs from the trusted checkout;
+    it never depends on Jules prose or heuristic parsing of agent responses.
+    """
+    normalized_keyword = _normalized_phrase(keyword)
+    if not normalized_keyword:
+        return []
+    needle = f" {normalized_keyword} "
+    repo_root = root or Path(__file__).resolve().parents[1]
+    seen_files = 0
+    conflicts: set[str] = set()
+    for relative in _PUBLISHED_POST_FILES:
+        path = repo_root / relative
+        if not path.is_file():
+            continue
+        seen_files += 1
+        try:
+            rows = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+            raise IdeaQueueError("IDEA_PUBLISHED_INDEX_INVALID") from exc
+        if not isinstance(rows, list):
+            raise IdeaQueueError("IDEA_PUBLISHED_INDEX_INVALID")
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            title = _normalized_phrase(row.get("title"))
+            if needle not in f" {title} ":
+                continue
+            slug = _clean(row.get("slug") or row.get("id"))
+            if slug:
+                conflicts.add(slug)
+    if seen_files == 0:
+        raise IdeaQueueError("IDEA_PUBLISHED_INDEX_MISSING")
+    return sorted(conflicts)
 
 
 def ensure_fields(state: dict[str, Any]) -> None:
@@ -145,8 +198,169 @@ def claim_next(state: dict[str, Any], cycle: str, *, now_iso: str) -> dict[str, 
     return row
 
 
+def _fresh_stage() -> dict[str, Any]:
+    return {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": None,
+        "next_retry_at": None,
+        "run_id": None,
+        "processed_run_id": None,
+        "provider_id": None,
+        "failure_fingerprint": None,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+    }
+
+
+def _article_has_durable_identity(state: dict[str, Any]) -> bool:
+    article = state.get("article") if isinstance(state.get("article"), dict) else {}
+    if article.get("live") is True or article.get("public") is True:
+        return True
+    for field in (
+        "pr_number",
+        "pr_url",
+        "slug",
+        "url",
+        "quality_content_sha256",
+        "current_pr_head_sha",
+    ):
+        if str(article.get(field) or "").strip():
+            return True
+    return False
+
+
+def _keyword_conflict_recovery_eligible(state: dict[str, Any]) -> bool:
+    """Permit rejection only before first dispatch or after exact terminal exhaustion.
+
+    This prevents a catalog refresh from changing ownership while a worker or PR may
+    still be active. A first-attempt preflight is race-free; terminal exhaustion is
+    also safe because the controller has already stopped dispatching that idea.
+    """
+    if _article_has_durable_identity(state):
+        return False
+    article = state.get("article") if isinstance(state.get("article"), dict) else {}
+    attempts = int(article.get("attempts") or article.get("attempt_count") or 0)
+    if attempts == 0 and str(article.get("status") or "pending") not in {"running", "in_progress"}:
+        return True
+    last_error = state.get("last_error") if isinstance(state.get("last_error"), dict) else {}
+    return (
+        str(state.get("status") or "") == "blocked"
+        and str(last_error.get("stage") or "") == "article"
+        and str(last_error.get("code") or "") == "ARTICLE_ATTEMPTS_EXHAUSTED"
+        and str(article.get("status") or "") == "exhausted"
+        and attempts >= 3
+    )
+
+
+def recover_primary_keyword_conflict(
+    state: dict[str, Any],
+    *,
+    now_iso: str,
+    root: Path | None = None,
+) -> str | None:
+    """Reject a proven published Primary Keyword collision and advance the queue.
+
+    Returns ``advanced`` when a replacement was claimed, ``blocked`` when the
+    conflicting idea was rejected but no replacement exists, and ``None`` when no
+    safe collision recovery applies.
+    """
+    ensure_fields(state)
+    active = state.get("active_idea")
+    if not isinstance(active, dict) or str(active.get("status") or "") in {"complete", "rejected"}:
+        return None
+    if not _keyword_conflict_recovery_eligible(state):
+        return None
+
+    keyword = _clean(active.get("required_primary_keyword"))
+    if not keyword:
+        return None
+    conflicts = _published_title_keyword_conflicts(keyword, root=root)
+    if not conflicts:
+        return None
+
+    article = state.get("article") if isinstance(state.get("article"), dict) else {}
+    prior_attempts = int(article.get("attempts") or article.get("attempt_count") or 0)
+    prior_status = str(state.get("status") or "")
+    previous_error = copy.deepcopy(state.get("last_error"))
+    publication_slot = _clean(active.get("publication_slot") or state.get("cycle"))
+
+    rejected = copy.deepcopy(active)
+    rejected.update({
+        "status": "rejected",
+        "rejected_at": now_iso,
+        "rejection_code": "PRIMARY_KEYWORD_CONFLICT",
+        "rejection_message": f"Primary Keyword already owned by published article(s): {', '.join(conflicts)}",
+        "conflicting_slugs": conflicts,
+        "prior_article_attempts": prior_attempts,
+    })
+    state["idea_history"].append(rejected)
+    state["idea_history"] = state["idea_history"][-MAX_HISTORY:]
+    state["active_idea"] = None
+
+    replacement = claim_next(state, publication_slot, now_iso=now_iso) if publication_slot else None
+    history = state.get("history") if isinstance(state.get("history"), list) else []
+    if replacement is None:
+        state["status"] = "blocked"
+        state["last_error"] = {
+            "stage": "article",
+            "code": "PRIMARY_KEYWORD_CONFLICT_NO_REPLACEMENT",
+            "message": f"Rejected {rejected.get('idea_id')} because '{keyword}' already exists; no queued replacement is available",
+            "at": now_iso,
+        }
+        history.append({
+            "at": now_iso,
+            "from": prior_status,
+            "to": "blocked",
+            "reason": "primary_keyword_conflict_rejected",
+            "details": {
+                "rejected_idea_id": rejected.get("idea_id"),
+                "required_primary_keyword": keyword,
+                "conflicting_slugs": conflicts,
+                "prior_article_attempts": prior_attempts,
+                "previous_error": previous_error,
+            },
+        })
+        state["history"] = history[-100:]
+        state["updated_at"] = now_iso
+        return "blocked"
+
+    article_stage = _fresh_stage()
+    article_stage.update({"attempts": 0, "deploy_attempts": 0})
+    state["article"] = article_stage
+    state["image"] = _fresh_stage()
+    state["long_video"] = _fresh_stage()
+    state["short"] = _fresh_stage()
+    state.pop("video", None)
+    state["pending_dispatches"] = {}
+    state["status"] = "article_needed"
+    state["last_error"] = None
+    history.append({
+        "at": now_iso,
+        "from": prior_status,
+        "to": "article_needed",
+        "reason": "primary_keyword_conflict_advanced",
+        "details": {
+            "rejected_idea_id": rejected.get("idea_id"),
+            "required_primary_keyword": keyword,
+            "conflicting_slugs": conflicts,
+            "prior_article_attempts": prior_attempts,
+            "previous_error": previous_error,
+            "replacement_idea_id": replacement.get("idea_id"),
+            "replacement_primary_keyword": replacement.get("required_primary_keyword"),
+            "publication_slot": replacement.get("publication_slot"),
+        },
+    })
+    state["history"] = history[-100:]
+    state["updated_at"] = now_iso
+    return "advanced"
+
+
 def article_dispatch_inputs(state: dict[str, Any], inputs: Mapping[str, Any] | None) -> dict[str, str]:
     payload = {str(k): str(v) for k, v in dict(inputs or {}).items() if v is not None}
+    recovery = recover_primary_keyword_conflict(state, now_iso=_utc_now())
+    if recovery == "blocked":
+        raise IdeaQueueError("PRIMARY_KEYWORD_CONFLICT_NO_REPLACEMENT")
     active = state.get("active_idea")
     if not isinstance(active, dict):
         return payload
@@ -289,6 +503,9 @@ def _verified_stale_active_completion(
 
 def finalize_if_complete(state: dict[str, Any], *, now_iso: str) -> bool:
     ensure_fields(state)
+    collision_recovery = recover_primary_keyword_conflict(state, now_iso=now_iso)
+    if collision_recovery is not None:
+        return True
     active = state.get("active_idea")
     if not isinstance(active, dict):
         return False
