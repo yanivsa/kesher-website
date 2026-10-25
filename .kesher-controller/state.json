@@ -1,39 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-25",
-  "status": "complete",
+  "cycle": "2026-10-26",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 1,
-    "status": "exhausted",
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
     "next_retry_at": null,
-    "run_id": 40222812230,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-10-25T18:46:08.329305+00:00",
-    "pr_number": 1209,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1209",
-    "current_pr_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
-    "jules_head_sha": "72e6083f550698466d8beadc124e010cbcdd2d6b",
-    "normalization_status": "complete",
-    "normalization_slot": "2026-10-25",
-    "normalization_dispatched_at": "2026-10-25T19:13:18.627111+00:00",
-    "normalization_run_id": 40233815507,
-    "normalization_drift_count": 1,
-    "last_normalization_drift_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
-    "merge_dispatch_count": 0,
-    "merge_dispatch_at": "2026-10-25T21:11:09.043678+00:00",
-    "merge_run_id": 40234285467,
-    "last_refunded_auto_merge_run_id": 40234285467,
-    "deferred_auto_merge_refund_count": 3,
-    "normalized_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
-    "image_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
-    "merge_candidate_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
-    "last_error": null
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -1481,129 +1463,90 @@
       },
       "archived_at": "2026-10-22T21:00:45.063074+00:00",
       "media": {}
+    },
+    {
+      "cycle": "2026-10-25",
+      "status": "complete",
+      "exact_slug": null,
+      "content_sha256": null,
+      "article": {
+        "attempt_count": 1,
+        "status": "exhausted",
+        "next_retry_at": null,
+        "run_id": 40222812230,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 1,
+        "deploy_attempts": 0,
+        "last_dispatch_at": "2026-10-25T18:46:08.329305+00:00",
+        "pr_number": 1209,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1209",
+        "current_pr_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
+        "jules_head_sha": "72e6083f550698466d8beadc124e010cbcdd2d6b",
+        "normalization_status": "complete",
+        "normalization_slot": "2026-10-25",
+        "normalization_dispatched_at": "2026-10-25T19:13:18.627111+00:00",
+        "normalization_run_id": 40233815507,
+        "normalization_drift_count": 1,
+        "last_normalization_drift_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
+        "merge_dispatch_count": 0,
+        "merge_dispatch_at": "2026-10-25T21:11:09.043678+00:00",
+        "merge_run_id": 40234285467,
+        "last_refunded_auto_merge_run_id": 40234285467,
+        "deferred_auto_merge_refund_count": 3,
+        "normalized_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
+        "image_head_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
+        "merge_candidate_sha": "56327598256edc4190ce277ce805d3e5c1b98b83",
+        "last_error": null
+      },
+      "long_video": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": null,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {}
+      },
+      "short": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": null,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {}
+      },
+      "media_identities": {
+        "long_video_id": null,
+        "short_video_id": null
+      },
+      "counters": {
+        "article_attempts": 1,
+        "article_generation_attempts": 0,
+        "merge_dispatch_count": 0,
+        "deploy_attempts": 0,
+        "long_attempts": 0,
+        "short_attempts": 0
+      },
+      "terminal_state": {
+        "blocked": false,
+        "article_exhausted": true
+      },
+      "archived_at": "2026-10-25T22:07:25.486102+00:00"
     }
   ],
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-25T17:21:11.698861+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-25T17:21:12.981269+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-25T17:21:14.215827+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-25T17:27:44.465327+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-25T17:27:45.674971+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-25T17:27:46.881357+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-25T17:31:26.221051+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-25T17:31:26.616883+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-25T17:31:26.961039+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-25T17:37:19.039683+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-25T17:37:20.326712+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-25T17:37:21.561184+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-25T17:41:01.376448+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-25T17:41:01.751858+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-25T17:41:02.265638+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-25T17:46:40.266422+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-25T17:46:41.130353+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-25T17:46:41.981548+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-25T17:55:20.245080+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-25T17:55:21.541874+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-10-25T17:55:22.788307+00:00",
       "from": "long_video_complete",
@@ -2223,23 +2166,38 @@
           "transition-to-municipal-kindergarten"
         ]
       }
+    },
+    {
+      "at": "2026-10-25T22:07:25.486132+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-10-25T22:07:25.486137+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-10-25T22:07:25.487238+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-10-25T21:55:59.576362+00:00",
+  "updated_at": "2026-10-25T22:07:25.486121+00:00",
   "image": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "LocalEditorial",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-25T21:06:52.048181+00:00",
-    "artifact_sha256": "0c9fb37a16cad28ffdfe382a05a376c572d4fa4d52661b18f7467a7ed8b96b59",
-    "source_id": "local-editorial://changing-kindergarten-midyear/1",
-    "run_id": 40233939999
+    "failure_count_by_type": {}
   },
   "long_video": {
     "attempt_count": 0,
@@ -2592,563 +2550,5 @@
       }
     }
   ],
-  "active_idea": null,
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten",
-    "overview_youtube_url": "https://youtu.be/p3ntKY8tDjQ",
-    "short_youtube_url": "https://youtu.be/f_GsGagsVww",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
-  },
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-10-25",
-      "inputs": {
-        "slot": "2026-10-25",
-        "topic_brief": "אשכול מעון לגן. נושא/כאב: ילד שעוזב צוות, חברים ושגרה מוכרת ונכנס לגן חדש באמצע השנה; הורה שמתלבט אם המעבר יפגע בו ומרגיש אשמה או חוסר ודאות. להתמקד בפרידה, הכנה והתחלה מחדש. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: changing-kindergarten-midyear. כותרת עבודה: מעבר גן באמצע שנה: איך לעזור לילד להיפרד ולהתחיל מחדש? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-changing-kindergarten-midyear\nRequired Primary Keyword: מעבר גן באמצע שנה"
-      },
-      "intent_at": "2026-10-25T18:45:49.335905+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-25T18:45:49.335905+00:00"
-    }
-  },
-  "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 40234285467,
-    "conclusion": "success",
-    "source_slug": null,
-    "slot": "2026-10-25"
-  },
-  "processed_child_notifications": [],
-  "deploy_history": [
-    {
-      "workflow": "deploy.yml",
-      "superseded_sha": "ecc9dca2dcf1a2620865c52bef4a8b1fa98c4b70",
-      "current_sha": "006fd42ee41c50769d5dea795673c5f7f74320ed",
-      "superseded_at": "2026-10-25T06:20:58.881599+00:00",
-      "superseded_status": "dispatched",
-      "superseded_run_id": 40168193080,
-      "reason": "deploy for SHA ecc9dca2dcf1a2620865c52bef4a8b1fa98c4b70 superseded by newer main SHA 006fd42ee41c50769d5dea795673c5f7f74320ed"
-    }
-  ],
-  "interventions": {
-    "v5|daycare-adjustment-difficulties|4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8|short": {
-      "pipeline_id": "v5",
-      "slug": "daycare-adjustment-difficulties",
-      "content_sha256": "4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-10-25T10",
-      "last_fingerprint": "b028eab82ff62a8e557dce19f916c41bfdbb75028d4844396c15aaba0d5a0898",
-      "last_controller_action_token": "recovery:1:2026-10-25T08:00:56.506529+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-10-25T08:00:56.506529+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-25T08:00:56.506529+00:00"
-    },
-    "v5|transition-to-municipal-kindergarten|109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5|short": {
-      "pipeline_id": "v5",
-      "slug": "transition-to-municipal-kindergarten",
-      "content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-10-25T19",
-      "last_fingerprint": "03e26a9fa88aa03f222af14f060cc1c7218c4267eea9d41e711810cecf2bff60",
-      "last_controller_action_token": "recovery:1:2026-10-25T17:10:49.009132+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-10-25T17:10:49.009132+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-25T17:10:49.009132+00:00"
-    }
-  },
-  "owner_cycle_archive": [
-    {
-      "cycle": "2026-10-25",
-      "status": "complete",
-      "article": {
-        "attempt_count": 0,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 40164009107,
-        "processed_run_id": null,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "attempts": 0,
-        "deploy_attempts": 4,
-        "last_dispatch_at": "2026-10-25T05:01:25.683925+00:00",
-        "watchdog": {
-          "identity": "2026-10-25",
-          "session_id": null,
-          "last_progress_at": "2026-10-25T05:01:24+00:00",
-          "last_fingerprint": null,
-          "last_nudge_at": null,
-          "nudge_count": 0,
-          "worker_restart_count": 0,
-          "last_restart_at": null,
-          "last_restart_run_id": null
-        },
-        "pr_number": 1197,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1197",
-        "current_pr_head_sha": "c3bf3075880fd8c8ad886ef6b236a359748b0d89",
-        "jules_head_sha": "e846e633bb9905717b27367d256e70d5a4885ff1",
-        "normalization_status": "complete",
-        "normalization_slot": "2026-10-25",
-        "normalization_dispatched_at": "2026-10-25T05:29:45.485055+00:00",
-        "normalization_run_id": 40165732919,
-        "normalization_drift_count": 1,
-        "last_normalization_drift_head_sha": "c3bf3075880fd8c8ad886ef6b236a359748b0d89",
-        "merge_dispatch_count": 3,
-        "merge_dispatch_at": "2026-10-25T05:41:09.530236+00:00",
-        "normalized_head_sha": "c3bf3075880fd8c8ad886ef6b236a359748b0d89",
-        "image_head_sha": "c3bf3075880fd8c8ad886ef6b236a359748b0d89",
-        "merge_candidate_sha": "c3bf3075880fd8c8ad886ef6b236a359748b0d89",
-        "merge_run_id": 40166426072,
-        "slug": "daycare-adjustment-difficulties",
-        "title": "קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?",
-        "url": "https://kesher.saharoni.com/blog/daycare-adjustment-difficulties",
-        "published_date": "2026-10-25",
-        "quality_content_sha256": "4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8",
-        "reconciled_existing_article": true,
-        "quality_status": "passed",
-        "quality_checked_at": "2026-10-25T12:11:17.730707+00:00",
-        "quality_violations": [],
-        "live": true,
-        "last_deploy_dispatch_at": "2026-10-25T06:10:59.806914+00:00",
-        "next_deploy_retry_at": null,
-        "deploy_run_id": 40168790661,
-        "live_verified_at": "2026-10-25T12:11:42.526170+00:00"
-      },
-      "long_video": {
-        "attempt_count": 3,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 40171034643,
-        "processed_run_id": 40169950109,
-        "provider_id": "71676e72-27c2-42ca-aa1f-b2974e4297d3",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "overview_evidence_required": true,
-        "last_dispatch_at": "2026-10-25T06:58:36.342673+00:00",
-        "attempts": 1,
-        "last_run_conclusion": "success",
-        "item_id": "video-20261025-090029-4e09877ab3-a3",
-        "resume_dispatches": 2,
-        "youtube_id": "QbnceJ0QYw0",
-        "youtube_url": "https://youtu.be/QbnceJ0QYw0",
-        "verified": true,
-        "technical_verified": true,
-        "visual_pipeline": "remotion-v1-notebooklm-audio",
-        "codec": "h264",
-        "width": 1280,
-        "height": 720,
-        "duration": 121.467,
-        "content_duration_seconds": 121.458,
-        "signature_duration_seconds": 3.0,
-        "signature_overlay": true,
-        "signature_fullscreen": true,
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "artifact_id": "71676e72-27c2-42ca-aa1f-b2974e4297d3",
-        "source_id": "64bcd596-660d-4267-acb1-da7e92490627"
-      },
-      "short": {
-        "attempt_count": 2,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 40174989301,
-        "processed_run_id": null,
-        "provider_id": "ac91ad96-e5c4-4404-b844-3a87b97e5f4f",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "last_dispatch_at": "2026-10-25T08:01:19.529368+00:00",
-        "artifact_id": "ac91ad96-e5c4-4404-b844-3a87b97e5f4f",
-        "source_id": "4e46ca91-151b-44ce-be06-8d9754adb0b8",
-        "adopted_from_long_item_id": null,
-        "watchdog": {
-          "identity": "short:daycare-adjustment-difficulties:4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8:video-20261025-093034-4e09877ab3",
-          "hard_started_at": "2026-10-25T07:30:48.104993+00:00",
-          "last_progress_at": "2026-10-25T07:37:45.766214+00:00",
-          "last_fingerprint": "5c30c4a65a33c905bcbd62f98a88dbd04cd1ab51310854316d78505a540d3277",
-          "recovery_count": 1,
-          "last_recovery_at": "2026-10-25T08:00:56.506529+00:00"
-        },
-        "source": {
-          "id": "daycare-adjustment-difficulties",
-          "slug": "daycare-adjustment-difficulties",
-          "title": "קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?",
-          "date": "2026-10-25",
-          "category": "הדרכת הורים",
-          "subcategory": "גיל הרך",
-          "excerpt": "הפרידות בבוקר קשות, הילד בוכה בכל פעם שמגיעים למעון, וההתנהגות שלו בבית השתנתה. איך מבחינים בין תהליך טבעי של קשיי הסתגלות למעון לבין מצב שדורש התערבות? הנה מה שאפשר לעשות.",
-          "canonical_url": "https://kesher.saharoni.com/blog/daycare-adjustment-difficulties",
-          "content_sha256": "4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8",
-          "video_title": "קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?",
-          "short_title": "קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?",
-          "short_hook": "",
-          "youtube_metadata": {
-            "title": "קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?",
-            "description": "הפרידות בבוקר קשות, הילד בוכה בכל פעם שמגיעים למעון, וההתנהגות שלו בבית השתנתה. איך מבחינים בין תהליך טבעי של קשיי הסתגלות למעון לבין מצב שדורש התערבות? הנה מה שאפשר לעשות.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/daycare-adjustment-difficulties\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים",
-              "גיל הרך"
-            ]
-          },
-          "short_youtube_metadata": {
-            "title": "בקצרה: קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?",
-            "description": "הפרידות בבוקר קשות, הילד בוכה בכל פעם שמגיעים למעון, וההתנהגות שלו בבית השתנתה. איך מבחינים בין תהליך טבעי של קשיי הסתגלות למעון לבין מצב שדורש התערבות? הנה מה שאפשר לעשות.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/daycare-adjustment-difficulties\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים",
-              "גיל הרך"
-            ]
-          }
-        },
-        "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-        "task_id": "ac91ad96-e5c4-4404-b844-3a87b97e5f4f",
-        "raw_sha256": "396bdd36494ddcd7d47a552f1c2ad251698da054d22b79f4ed7a278d3c2b003f",
-        "final_sha256": "8caee3926fc68f39e20dc39a4d0a014f34af1af1a3899d7368601354e6f67070",
-        "provider_raw_media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 720,
-          "height": 1280,
-          "duration": 91.8,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 1080,
-          "height": 1920,
-          "duration": 91.8,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "provider_video_format": "short",
-        "provider_native_short": true,
-        "provider_native_short_verified": true,
-        "provider_short_fallback_used": false,
-        "fresh_generation_attempt": 1,
-        "overview_provider_identity": {
-          "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-          "source_id": "64bcd596-660d-4267-acb1-da7e92490627",
-          "task_id": "71676e72-27c2-42ca-aa1f-b2974e4297d3",
-          "artifact_id": "71676e72-27c2-42ca-aa1f-b2974e4297d3",
-          "raw_sha256": "0236083add1b5a2cbbec0bf43c9189f507fa5cfb2567a96cb6814f1adbcb1540"
-        },
-        "shared_provider_identity": null,
-        "short_start_seconds": 0.0,
-        "short_duration_seconds": 91.8,
-        "audio_provenance": {
-          "schema_version": 1,
-          "mode": "stream_copy",
-          "raw_sha256": "396bdd36494ddcd7d47a552f1c2ad251698da054d22b79f4ed7a278d3c2b003f",
-          "final_sha256": "8caee3926fc68f39e20dc39a4d0a014f34af1af1a3899d7368601354e6f67070",
-          "raw_audio_sha256": "a4d5e4457e6c61e4e46c633df754784651d05343895de5d13a86f9aceb9de66d",
-          "final_audio_sha256": "a4d5e4457e6c61e4e46c633df754784651d05343895de5d13a86f9aceb9de66d",
-          "raw_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 91.858141
-          },
-          "final_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 91.858141
-          }
-        },
-        "signature_overlay": true,
-        "signature_provenance": {
-          "schema_version": 1,
-          "final_sha256": "8caee3926fc68f39e20dc39a4d0a014f34af1af1a3899d7368601354e6f67070",
-          "raw_sha256": "396bdd36494ddcd7d47a552f1c2ad251698da054d22b79f4ed7a278d3c2b003f",
-          "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-          "segment_sha256": "4bd95e18818f74236ea2998a3ff2bd155a4169e41450e4c9d024ff514938c348",
-          "source_duration_seconds": 91.8,
-          "final_duration_seconds": 91.8,
-          "start_seconds": 88.8,
-          "end_seconds": 91.8,
-          "audio_source_sha256": "396bdd36494ddcd7d47a552f1c2ad251698da054d22b79f4ed7a278d3c2b003f"
-        },
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "item_id": "video-20261025-093034-4e09877ab3",
-        "type": "article_short",
-        "youtube_id": "brMKbQhv_hQ",
-        "youtube_url": "https://youtu.be/brMKbQhv_hQ",
-        "verified": true,
-        "portrait_verified": true,
-        "signature_verified": true,
-        "signature_asset": "signature-mask.svg",
-        "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-        "technical_verified": true,
-        "signature_duration_seconds": 3.0,
-        "signature_fullscreen": true,
-        "signature_video_sha256": "4bd95e18818f74236ea2998a3ff2bd155a4169e41450e4c9d024ff514938c348",
-        "source_mode": "direct-short",
-        "width": 1080,
-        "height": 1920
-      },
-      "archived_at": "2026-10-25T12:12:56.608000+00:00",
-      "reason": "owner_run_now_cycle_started"
-    },
-    {
-      "cycle": "2026-10-25",
-      "status": "complete",
-      "article": {
-        "attempt_count": 0,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 40192138366,
-        "processed_run_id": null,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "attempts": 0,
-        "deploy_attempts": 1,
-        "last_dispatch_at": "2026-10-25T12:13:03.131964+00:00",
-        "pr_number": 1201,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1201",
-        "current_pr_head_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
-        "jules_head_sha": "083ff8e93b18fb2484959d8aa86db0e22a957cbf",
-        "normalization_status": "complete",
-        "normalization_slot": "2026-10-25",
-        "normalization_dispatched_at": "2026-10-25T12:40:54.564386+00:00",
-        "normalization_run_id": 40194185898,
-        "normalization_drift_count": 0,
-        "last_normalization_drift_head_sha": "2e5c52416f233ea973a47e604b1a5f184b1fab7f",
-        "merge_dispatch_count": 0,
-        "merge_dispatch_at": null,
-        "merge_run_id": 40205866288,
-        "normalized_head_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
-        "image_head_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
-        "merge_candidate_sha": "0d79b48f4025714d4976d32dcf103987e8afb2a7",
-        "slug": "transition-to-municipal-kindergarten",
-        "title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
-        "url": "https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten",
-        "published_date": "2026-10-25",
-        "quality_content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
-        "reconciled_existing_article": true,
-        "quality_status": "passed",
-        "quality_checked_at": "2026-10-25T18:44:59.404930+00:00",
-        "quality_violations": [],
-        "live": true,
-        "last_deploy_dispatch_at": "2026-10-25T15:19:44.408119+00:00",
-        "next_deploy_retry_at": null,
-        "deploy_run_id": 40219496122,
-        "live_verified_at": "2026-10-25T18:45:12.435024+00:00"
-      },
-      "long_video": {
-        "attempt_count": 3,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 40209325764,
-        "processed_run_id": 40209325764,
-        "provider_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {
-          "VIDEO_WORKFLOW_FAILED": 3
-        },
-        "overview_evidence_required": true,
-        "last_dispatch_at": "2026-10-25T15:56:49.514412+00:00",
-        "attempts": 3,
-        "last_run_conclusion": "failure",
-        "last_failed_run_id": 40209325764,
-        "item_id": "video-20261025-182242-109b70354e",
-        "source_slug": "transition-to-municipal-kindergarten",
-        "source_content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
-        "content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
-        "source_id": "ad815fed-89f9-4afa-9219-71e1db7deae3",
-        "task_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
-        "artifact_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
-        "provider_status": "pending",
-        "verified": true,
-        "watchdog": {
-          "identity": "long_video:transition-to-municipal-kindergarten:109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5:video-20261025-182242-109b70354e",
-          "hard_started_at": "2026-10-25T16:22:48.594992+00:00",
-          "last_progress_at": "2026-10-25T16:29:38.656913+00:00",
-          "last_fingerprint": "185cbb402b88ba4acc87f5675fd4ffbb2bb0862b2a0f1b33bcd6f213549a3d65",
-          "recovery_count": 0,
-          "last_recovery_at": null
-        },
-        "youtube_id": "p3ntKY8tDjQ",
-        "youtube_url": "https://youtu.be/p3ntKY8tDjQ",
-        "technical_verified": true,
-        "visual_pipeline": "remotion-v1-notebooklm-audio",
-        "codec": "h264",
-        "width": 1280,
-        "height": 720,
-        "duration": 121.733,
-        "content_duration_seconds": 121.75,
-        "signature_duration_seconds": 3.0,
-        "signature_overlay": true,
-        "signature_fullscreen": true,
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
-      },
-      "short": {
-        "attempt_count": 2,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 40215226497,
-        "processed_run_id": null,
-        "provider_id": "689473fc-a1a1-4882-b5be-27255ae62880",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "last_dispatch_at": "2026-10-25T17:11:04.627142+00:00",
-        "artifact_id": "689473fc-a1a1-4882-b5be-27255ae62880",
-        "source_id": "8fae7ac1-fa9c-4ce6-90f4-5e2ef5ba4646",
-        "adopted_from_long_item_id": null,
-        "watchdog": {
-          "identity": "short:transition-to-municipal-kindergarten:109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5:video-20261025-184317-109b70354e",
-          "hard_started_at": "2026-10-25T16:43:27.093924+00:00",
-          "last_progress_at": "2026-10-25T16:50:15.575051+00:00",
-          "last_fingerprint": "b306ed4e9a7887b312f73d0642f8159a450ddd49d876bdb95d34333c23174c86",
-          "recovery_count": 1,
-          "last_recovery_at": "2026-10-25T17:10:49.009132+00:00"
-        },
-        "source": {
-          "id": "transition-to-municipal-kindergarten",
-          "slug": "transition-to-municipal-kindergarten",
-          "title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
-          "date": "2026-10-25",
-          "category": "הדרכת הורים",
-          "subcategory": "הגיל הרך",
-          "excerpt": "המעבר מגן פרטי קטן ועוטף לגן עירייה עם יותר ילדים ופחות אנשי צוות יכול להיות מלחיץ. איך נכין את הילדים לשגרה החדשה, לצוות החדש ולעצמאות הנדרשת מהם, מבלי לייצר אצלם חרדה מוקדמת?",
-          "canonical_url": "https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten",
-          "content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
-          "video_title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
-          "short_title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
-          "short_hook": "",
-          "youtube_metadata": {
-            "title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
-            "description": "המעבר מגן פרטי קטן ועוטף לגן עירייה עם יותר ילדים ופחות אנשי צוות יכול להיות מלחיץ. איך נכין את הילדים לשגרה החדשה, לצוות החדש ולעצמאות הנדרשת מהם, מבלי לייצר אצלם חרדה מוקדמת?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/transition-to-municipal-kindergarten\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים",
-              "הגיל הרך"
-            ]
-          },
-          "short_youtube_metadata": {
-            "title": "בקצרה: מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
-            "description": "המעבר מגן פרטי קטן ועוטף לגן עירייה עם יותר ילדים ופחות אנשי צוות יכול להיות מלחיץ. איך נכין את הילדים לשגרה החדשה, לצוות החדש ולעצמאות הנדרשת מהם, מבלי לייצר אצלם חרדה מוקדמת?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/transition-to-municipal-kindergarten\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים",
-              "הגיל הרך"
-            ]
-          }
-        },
-        "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-        "task_id": "689473fc-a1a1-4882-b5be-27255ae62880",
-        "raw_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498",
-        "final_sha256": "8dd0df226d1cbf72c3320f208ffa63a130c568a27a2bd484e8a04676ad527d26",
-        "provider_raw_media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 720,
-          "height": 1280,
-          "duration": 77.0,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 1080,
-          "height": 1920,
-          "duration": 77.0,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "provider_video_format": "short",
-        "provider_native_short": true,
-        "provider_native_short_verified": true,
-        "provider_short_fallback_used": false,
-        "fresh_generation_attempt": 1,
-        "overview_provider_identity": {
-          "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-          "source_id": "ad815fed-89f9-4afa-9219-71e1db7deae3",
-          "task_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
-          "artifact_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
-          "raw_sha256": "406d0fe28806d2634f553186a801b5a01a70f055cb6f4c3011b819ee104655e7"
-        },
-        "shared_provider_identity": null,
-        "short_start_seconds": 0.0,
-        "short_duration_seconds": 77.0,
-        "audio_provenance": {
-          "schema_version": 1,
-          "mode": "stream_copy",
-          "raw_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498",
-          "final_sha256": "8dd0df226d1cbf72c3320f208ffa63a130c568a27a2bd484e8a04676ad527d26",
-          "raw_audio_sha256": "696da2863459b74ffc51382434cf2d60bbb5ee616c66e137c36eb9afc2653d89",
-          "final_audio_sha256": "696da2863459b74ffc51382434cf2d60bbb5ee616c66e137c36eb9afc2653d89",
-          "raw_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 77.067029
-          },
-          "final_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 77.067029
-          }
-        },
-        "signature_overlay": true,
-        "signature_provenance": {
-          "schema_version": 1,
-          "final_sha256": "8dd0df226d1cbf72c3320f208ffa63a130c568a27a2bd484e8a04676ad527d26",
-          "raw_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498",
-          "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-          "segment_sha256": "617632604891381072936e76a15773f768ee2dea851e8dc647615e55096fed85",
-          "source_duration_seconds": 77.0,
-          "final_duration_seconds": 77.0,
-          "start_seconds": 74.0,
-          "end_seconds": 77.0,
-          "audio_source_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498"
-        },
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "item_id": "video-20261025-184317-109b70354e",
-        "type": "article_short",
-        "youtube_id": "f_GsGagsVww",
-        "youtube_url": "https://youtu.be/f_GsGagsVww",
-        "verified": true,
-        "portrait_verified": true,
-        "signature_verified": true,
-        "signature_asset": "signature-mask.svg",
-        "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-        "technical_verified": true,
-        "signature_duration_seconds": 3.0,
-        "signature_fullscreen": true,
-        "signature_video_sha256": "617632604891381072936e76a15773f768ee2dea851e8dc647615e55096fed85",
-        "source_mode": "direct-short",
-        "width": 1080,
-        "height": 1920
-      },
-      "archived_at": "2026-10-25T18:45:54.359116+00:00",
-      "reason": "owner_run_now_cycle_started"
-    }
-  ],
-  "last_error": null
+  "active_idea": null
 }
