@@ -50,11 +50,12 @@
     "quality_content_sha256": "4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-25T05:42:51.065488+00:00",
+    "quality_checked_at": "2026-10-25T05:50:49.395857+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-10-25T05:42:57.468139+00:00",
-    "next_deploy_retry_at": "2026-10-25T05:47:46.647654+00:00"
+    "next_deploy_retry_at": "2026-10-25T05:47:46.647654+00:00",
+    "deploy_run_id": 40166530075
   },
   "backlog": [
     {
@@ -2726,19 +2727,7 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "deploy.yml": {
-      "workflow": "deploy.yml",
-      "cycle": "2026-10-25",
-      "inputs": {},
-      "intent_at": "2026-10-25T05:42:46.647654+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 40166530075,
-      "dispatch_head_sha": "ecc9dca2dcf1a2620865c52bef4a8b1fa98c4b70",
-      "dispatched_at": "2026-10-25T05:42:46.647654+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
     "workflow": "Auto-merge Kesher article PRs",
     "run_id": 40166426072,
