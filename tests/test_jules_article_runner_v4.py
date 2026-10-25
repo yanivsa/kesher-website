@@ -11,6 +11,31 @@ from scripts import jules_article_runner_v4 as runner
 
 
 class JulesArticleRunnerV4Tests(unittest.TestCase):
+    def test_real_exact_pr_candidate_accepts_canonical_url_and_enforces_owned_quality(self):
+        pr = {"number": 1209, "state": "open", "base": {"sha": "a" * 40}, "head": {"sha": "b" * 40}}
+        post = {"id": "changing-kindergarten-midyear", "date": "2026-10-25", "content": "<p>תוכן</p>"}
+        with mock.patch.object(runner.v3.core, "request_json", return_value=pr), mock.patch.object(runner, "_github_posts_at_ref", side_effect=[[], [post]]):
+            actual, candidate = runner._exact_pr_candidate("token", "https://github.com/yanivsa/kesher-website/pull/1209")
+        self.assertEqual(actual["number"], 1209)
+        self.assertIs(candidate.get("controllerManaged"), True)
+        self.assertNotIn("controllerManaged", post)
+        errors = runner.article_quality.full_article_violations(candidate)
+        self.assertTrue(any("evidence_missing" in x for x in errors), errors)
+
+    def test_real_same_pr_wait_accepts_canonical_url(self):
+        with mock.patch.object(runner.v3.core, "request_json", side_effect=[{"state": "COMPLETED"}, {"head": {"sha": "b" * 40}}]):
+            self.assertTrue(runner._wait_for_same_pr_repair("token", "key", "sessions/1", "https://github.com/yanivsa/kesher-website/pull/1209", "a" * 40))
+
+    def test_both_pr_paths_reject_wrong_host_repo_and_suffix_before_network(self):
+        urls = ["https://githubXcom/yanivsa/kesher-website/pull/1209", "https://github.com/other/repo/pull/1209", "https://github.com/yanivsa/kesher-website/pull/1209/extra"]
+        for url in urls:
+            with self.subTest(url=url), mock.patch.object(runner.v3.core, "request_json") as request:
+                with self.assertRaises(runner.v3.core.ArticleRunnerError):
+                    runner._exact_pr_candidate("token", url)
+                with self.assertRaises(runner.v3.core.ArticleRunnerError):
+                    runner._wait_for_same_pr_repair("token", "key", "sessions/1", url, "a" * 40)
+                request.assert_not_called()
+
     def test_failure_diagnostic_is_persisted_for_preserved_session(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "result.json"
