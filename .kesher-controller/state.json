@@ -45,7 +45,7 @@
     "last_deploy_dispatch_at": "2026-10-25T15:19:44.408119+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40206406296,
-    "live_verified_at": "2026-10-25T16:05:52.703528+00:00"
+    "live_verified_at": "2026-10-25T16:06:15.079978+00:00"
   },
   "backlog": [
     {
@@ -1498,18 +1498,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T11:06:29.938744+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-25T11:11:11.191192+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-25T11:11:12.093654+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2266,9 +2254,24 @@
       "details": {
         "retry_at": "2026-10-25T16:16:42.550770+00:00"
       }
+    },
+    {
+      "at": "2026-10-25T16:06:15.080007+00:00",
+      "from": "long_video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-25T16:06:16.447403+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-25T16:16:42.550770+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-25T16:01:42.550840+00:00",
+  "updated_at": "2026-10-25T16:06:16.447425+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
