@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "blocked",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1495,19 +1495,8 @@
       "media": {}
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-25T16:18:38.946283+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-25T11:16:00.876660+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
     {
       "at": "2026-10-25T11:21:23.197868+00:00",
       "from": "complete",
@@ -2280,9 +2269,19 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-25T16:30:12.808966+00:00",
+      "from": "blocked",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261025-182242-109b70354e",
+        "task_id": "71c21c37-4f95-4728-8823-1f38b512ea3e"
+      }
     }
   ],
-  "updated_at": "2026-10-25T16:18:38.946309+00:00",
+  "updated_at": "2026-10-25T16:30:12.808972+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -2301,12 +2300,12 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "exhausted",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-10-25T16:16:42.550770+00:00",
     "run_id": 40211303211,
-    "processed_run_id": 40209325764,
-    "provider_id": null,
+    "processed_run_id": 40211303211,
+    "provider_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
     "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
     "same_failure_streak": 3,
     "failure_count_by_type": {
@@ -2315,8 +2314,25 @@
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-10-25T15:56:49.514412+00:00",
     "attempts": 3,
-    "last_run_conclusion": "failure",
-    "last_failed_run_id": 40209325764
+    "last_run_conclusion": "success",
+    "last_failed_run_id": 40209325764,
+    "item_id": "video-20261025-182242-109b70354e",
+    "source_slug": "transition-to-municipal-kindergarten",
+    "source_content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
+    "content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
+    "source_id": "ad815fed-89f9-4afa-9219-71e1db7deae3",
+    "task_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
+    "artifact_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
+    "provider_status": "pending",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:transition-to-municipal-kindergarten:109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5:video-20261025-182242-109b70354e",
+      "hard_started_at": "2026-10-25T16:22:48.594992+00:00",
+      "last_progress_at": "2026-10-25T16:29:38.656913+00:00",
+      "last_fingerprint": "185cbb402b88ba4acc87f5675fd4ffbb2bb0862b2a0f1b33bcd6f213549a3d65",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
