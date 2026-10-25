@@ -3,16 +3,22 @@
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import os
+import re
+import urllib.parse
 import sys
+import time
 from pathlib import Path
 
 if __package__:
+    from . import article_claim_quality as article_quality
     from . import jules_article_runner_v3 as v3
     from .kesher_primary_keyword_contract import parse_owner_required_keyword
 else:
+    import article_claim_quality as article_quality
     import jules_article_runner_v3 as v3
     from kesher_primary_keyword_contract import parse_owner_required_keyword
 
@@ -336,6 +342,179 @@ def build_prompt(slot: str, policy: str) -> str:
     return prompt
 
 
+def _github_posts_at_ref(token: str, ref: str) -> list[dict]:
+    encoded_ref = urllib.parse.quote(ref, safe="")
+    payload = v3.core.request_json(
+        "GET",
+        f"https://api.github.com/repos/{v3.core.REPO}/contents/src/data/posts.json?ref={encoded_ref}",
+        v3.core.github_headers(token),
+    )
+    if not isinstance(payload, dict) or str(payload.get("encoding") or "") != "base64":
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_QUALITY_SOURCE_INVALID", "posts.json content payload is not base64")
+    try:
+        rows = json.loads(base64.b64decode(str(payload.get("content") or "")).decode("utf-8"))
+    except (ValueError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_QUALITY_SOURCE_INVALID", "cannot decode posts.json for PR quality validation") from exc
+    if not isinstance(rows, list):
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_QUALITY_SOURCE_INVALID", "posts.json is not an array")
+    return [row for row in rows if isinstance(row, dict)]
+
+
+def _exact_pr_candidate(token: str, pr_url: str) -> tuple[dict, dict]:
+    match = re.fullmatch(rf"https://github\\.com/{re.escape(v3.core.REPO)}/pull/(\\d+)", pr_url.strip())
+    if not match:
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_IDENTITY_INVALID", f"unexpected PR URL: {pr_url}")
+    number = int(match.group(1))
+    pr = v3.core.request_json(
+        "GET",
+        f"https://api.github.com/repos/{v3.core.REPO}/pulls/{number}",
+        v3.core.github_headers(token),
+    )
+    if not isinstance(pr, dict) or int(pr.get("number") or 0) != number or str(pr.get("state") or "") != "open":
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_IDENTITY_INVALID", f"PR #{number} is not the expected open PR")
+    base_sha = str((pr.get("base") or {}).get("sha") or "").strip()
+    head_sha = str((pr.get("head") or {}).get("sha") or "").strip()
+    if not base_sha or not head_sha:
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_IDENTITY_INVALID", f"PR #{number} is missing base/head identity")
+    base_posts = _github_posts_at_ref(token, base_sha)
+    head_posts = _github_posts_at_ref(token, head_sha)
+    base_ids = {str(row.get("id") or row.get("slug") or "").strip() for row in base_posts}
+    new_posts = [
+        row for row in head_posts
+        if str(row.get("id") or row.get("slug") or "").strip()
+        and str(row.get("id") or row.get("slug") or "").strip() not in base_ids
+    ]
+    if len(new_posts) != 1:
+        raise v3.core.ArticleRunnerError(
+            "ARTICLE_PRE_PR_IDENTITY_INVALID",
+            f"expected exactly one new PR article, found {len(new_posts)}",
+        )
+    return pr, new_posts[0]
+
+
+def _wait_for_same_pr_repair(
+    token: str,
+    api_key: str,
+    session: str,
+    pr_url: str,
+    prior_head_sha: str,
+    timeout_seconds: int = 15 * 60,
+) -> bool:
+    match = re.fullmatch(rf"https://github\\.com/{re.escape(v3.core.REPO)}/pull/(\\d+)", pr_url.strip())
+    if not match:
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_IDENTITY_INVALID", f"unexpected PR URL: {pr_url}")
+    number = int(match.group(1))
+    sid = session.removeprefix("sessions/")
+    deadline = time.monotonic() + timeout_seconds
+    continued = False
+    approved = False
+    resumed = False
+    while time.monotonic() < deadline:
+        current = v3.core.request_json(
+            "GET", f"{v3.core.API_BASE}/sessions/{sid}", v3.core.jules_headers(api_key)
+        )
+        state = str((current or {}).get("state") or "UNKNOWN").upper()
+        pr = v3.core.request_json(
+            "GET", f"https://api.github.com/repos/{v3.core.REPO}/pulls/{number}", v3.core.github_headers(token)
+        )
+        head_sha = str(((pr or {}).get("head") or {}).get("sha") or "").strip().lower()
+        changed = bool(head_sha and head_sha != prior_head_sha.strip().lower())
+        if changed and state == "COMPLETED":
+            print(f"ARTICLE_PRE_PR_REPAIR_TERMINAL pr={number} head={head_sha}", flush=True)
+            return True
+        if state in v3.core.TERMINAL_FAILURES:
+            return False
+        if state in {"AWAITING_USER_FEEDBACK", "WAITING_FOR_USER"} and not continued:
+            v3.core.send_message(api_key, sid, "Continue autonomously. Finish the exact same PR repair and do not ask a question.")
+            continued = True
+        elif state == "AWAITING_PLAN_APPROVAL" and not approved:
+            v3.core.request_json(
+                "POST", f"{v3.core.API_BASE}/sessions/{sid}:approvePlan", v3.core.jules_headers(api_key), {}, max_attempts=1
+            )
+            approved = True
+        elif state == "PAUSED" and not resumed:
+            v3.core.send_message(api_key, sid, "Resume autonomously and finish the exact same PR repair.")
+            resumed = True
+        time.sleep(15)
+    return False
+
+
+def _record_pre_pr_quality(*, status: str, violations: list[str], repaired: bool) -> None:
+    path = v3.core.result_path()
+    if not path.is_file():
+        return
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["pre_pr_quality_status"] = status
+    payload["pre_pr_quality_violations"] = list(violations)
+    payload["pre_pr_quality_repaired"] = bool(repaired)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    tmp.replace(path)
+
+
+def enforce_post_pr_quality() -> bool:
+    path = v3.core.result_path()
+    if not path.is_file():
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_QUALITY_RESULT_MISSING", "article result is missing")
+    result = json.loads(path.read_text(encoding="utf-8"))
+    if str(result.get("outcome") or "") != "PR_CREATED":
+        return True
+    token = os.environ.get("GITHUB_TOKEN", "").strip()
+    api_key = os.environ.get("JULES_API_KEY", "").strip()
+    session = str(result.get("session_id") or "").strip()
+    pr_url = str(result.get("pr_url") or "").strip()
+    if not token or not api_key or not session or not pr_url:
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_QUALITY_IDENTITY_MISSING", "quality validation is missing token/session/PR identity")
+
+    pr, article = _exact_pr_candidate(token, pr_url)
+    prior_head_sha = str((pr.get("head") or {}).get("sha") or "").strip()
+    violations = article_quality.full_article_violations(article)
+    if not violations:
+        _record_pre_pr_quality(status="passed", violations=[], repaired=False)
+        print("ARTICLE_PRE_PR_QUALITY_PASSED repaired=no", flush=True)
+        return True
+
+    sid = session.removeprefix("sessions/")
+    number = int(pr.get("number") or 0)
+    error_text = "\n".join(f"- {item}" for item in violations)
+    prompt = f"""Your existing Kesher article PR #{number} failed the deterministic pre-publication quality contract.
+
+Repair THE SAME PR and THE SAME BRANCH only. Do not create a new branch or PR. Do not modify images, workflows, tests, scripts or packages.
+
+Exact violations:
+{error_text}
+
+Fix the new article so it satisfies every listed violation. For evidence, use only genuine authoritative/reputable sources and never invent a study, statistic or URL. Ensure at least three distinct relevant internal /blog/ links and keep the declared service CTA linked. Re-check unsupported absolute/causal claims. Push the corrected text/index changes to the existing PR branch and finish this same Jules session autonomously."""
+    v3.core.send_message(api_key, sid, prompt)
+    if not _wait_for_same_pr_repair(token, api_key, session, pr_url, prior_head_sha):
+        v3.core.emit_result(
+            str(result.get("slot") or ""),
+            "ARTICLE_PRE_PR_QUALITY_REPAIR_FAILED",
+            retryable=True,
+            message="same-session quality repair did not reach a new terminal PR head within the bounded repair window",
+            session_id=session,
+            pr_url=pr_url,
+        )
+        return False
+
+    _, repaired_article = _exact_pr_candidate(token, pr_url)
+    remaining = article_quality.full_article_violations(repaired_article)
+    if remaining:
+        _record_pre_pr_quality(status="failed", violations=remaining, repaired=True)
+        v3.core.emit_result(
+            str(result.get("slot") or ""),
+            "ARTICLE_PRE_PR_QUALITY_FAILED",
+            retryable=True,
+            message=" | ".join(remaining[:5]),
+            session_id=session,
+            pr_url=pr_url,
+        )
+        return False
+    _record_pre_pr_quality(status="passed", violations=[], repaired=True)
+    print("ARTICLE_PRE_PR_QUALITY_PASSED repaired=yes", flush=True)
+    return True
+
+
 def persist_owner_keyword_result_metadata() -> None:
     """Bind owner keyword requirements to the trusted workflow result artifact.
 
@@ -362,6 +541,8 @@ def main() -> int:
     v3.build_prompt = build_prompt
     code = v3.main()
     if code == 0:
+        if not enforce_post_pr_quality():
+            return 1
         persist_owner_keyword_result_metadata()
     return code
 
