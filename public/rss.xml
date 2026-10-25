@@ -5,16 +5,70 @@
     <link>https://kesher.saharoni.com/blog</link>
     <description>מאמרים מקצועיים, תובנות וכלים מעשיים בנושאי ייעוץ זוגי, הדרכת הורים וגישור משפחתי מאת שירה סהרוני.</description>
     <language>he-IL</language>
-    <lastBuildDate>Fri, 23 Oct 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 25 Oct 2026 00:00:00 GMT</lastBuildDate>
     <managingEditor>shira@saharoni.com (Shira Saharoni)</managingEditor>
     <webMaster>shira@saharoni.com (Shira Saharoni)</webMaster>
     <atom:link href="https://kesher.saharoni.com/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?</title>
+      <link>https://kesher.saharoni.com/blog/daycare-adjustment-difficulties</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/daycare-adjustment-difficulties</guid>
+      <pubDate>Sun, 25 Oct 2026 00:00:00 GMT</pubDate>
+      <description>הפרידות בבוקר קשות, הילד בוכה בכל פעם שמגיעים למעון, וההתנהגות שלו בבית השתנתה. איך מבחינים בין תהליך טבעי של קשיי הסתגלות למעון לבין מצב שדורש התערבות? הנה מה שאפשר לעשות.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>מטלות בית עם ילדים: פחות עומס, יותר זמן איכות</title>
+      <link>https://kesher.saharoni.com/blog/family-chores-quality-time-with-kids</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/family-chores-quality-time-with-kids</guid>
+      <pubDate>Sat, 24 Oct 2026 00:00:00 GMT</pubDate>
+      <description>איך להפוך מטלות בית לזמן איכות עם הילדים? רעיונות לפי גיל, התמודדות עם סירוב ודרך פשוטה להפחית עומס ולחזק שייכות בבית.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
     <item>
       <title>למה ילד עושה קקי במכנסיים אחרי שנגמל, ואיך להגיב נכון?</title>
       <link>https://kesher.saharoni.com/blog/child-poops-in-pants</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/child-poops-in-pants</guid>
       <pubDate>Fri, 23 Oct 2026 00:00:00 GMT</pubDate>
       <description>פספוסי קקי אצל ילדים שכבר נגמלו יכולים לעורר תסכול ודאגה רבה. למה זה קורה דווקא עכשיו, איך להבדיל בין קושי רגשי לבעיה פיזית, ומה הדרך הכי טובה להגיב כדי לעזור לילד?</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>ילד מחונן ורגישות רגשית: מה באמת קשור למחוננות ומה עלול להיות מיתוס</title>
+      <link>https://kesher.saharoni.com/blog/gifted-child-emotional-sensitivity-myths</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/gifted-child-emotional-sensitivity-myths</guid>
+      <pubDate>Fri, 23 Oct 2026 00:00:00 GMT</pubDate>
+      <description>האם ילדים מחוננים רגישים יותר, חרדתיים יותר או מתקשים חברתית? כך מפרידים בין מאפיינים אפשריים לבין סטריאוטיפים ובודקים את הילד עצמו לפני שמסבירים הכול דרך המחוננות.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>ילד מחונן משתעמם בבית הספר: מה הורים יכולים לעשות בלי להיכנס למלחמה עם המערכת</title>
+      <link>https://kesher.saharoni.com/blog/gifted-child-bored-at-school-parent-guide</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/gifted-child-bored-at-school-parent-guide</guid>
+      <pubDate>Fri, 23 Oct 2026 00:00:00 GMT</pubDate>
+      <description>הילד אומר שמשעמם לו בבית הספר? כך בודקים אם חסר אתגר, מבדילים בין שעמום לקושי אחר, מדברים עם הצוות ובונים מענה בלי להפוך כל שיעור למאבק.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>ילד מחונן ולחץ להצטיין: איך הורים תומכים בלי להפוך יכולת לחובה</title>
+      <link>https://kesher.saharoni.com/blog/gifted-child-pressure-to-achieve-parent-guide</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/gifted-child-pressure-to-achieve-parent-guide</guid>
+      <pubDate>Fri, 23 Oct 2026 00:00:00 GMT</pubDate>
+      <description>כשהילד המחונן מרגיש שהוא חייב להצליח תמיד, גם מחמאה יכולה להפוך ללחץ. כך בונים בבית ציפיות בריאות, יחס גמיש לטעויות ומקום למאמץ, מנוחה ובקשת עזרה.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>איך לדבר עם ילד על זה שהוא מחונן — בלי להפוך את המחוננות לזהות מלחיצה</title>
+      <link>https://kesher.saharoni.com/blog/how-to-talk-to-child-about-being-gifted</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/how-to-talk-to-child-about-being-gifted</guid>
+      <pubDate>Fri, 23 Oct 2026 00:00:00 GMT</pubDate>
+      <description>האם לומר לילד שהוא מחונן? כך מסבירים את המשמעות בגובה העיניים, נמנעים מתווית של ״הילד החכם״ ומשאירים מקום לטעות, למאמץ ולזהות רחבה.</description>
       <category>הדרכת הורים</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
