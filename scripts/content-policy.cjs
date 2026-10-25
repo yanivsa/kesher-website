@@ -2,38 +2,16 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const STATIC_ROUTES = [
-  '/',
-  '/about',
-  '/now',
-  '/friends',
-  '/links',
-  '/lectures',
-  '/contact',
-  '/appointment',
-  '/services/couples',
-  '/services/parenting',
-  '/services/mediation',
-  '/services/gifted-parenting',
-  '/services/aliyah-families',
-  '/services/couples-aliyah-relocation',
-  '/services/premarital-first-year',
-  '/services/late-singleness',
-  '/services/finding-relationship',
-  '/blog',
-  '/faq',
-  '/couples-counseling-ashdod',
-  '/parenting-guidance-ashdod',
-  '/couples-mediation-ashdod',
-  '/couples-crisis-ashdod',
-  '/parenting-adhd-ashdod',
-  '/couples-counseling-gan-yavne',
-  '/services/couples/crisis',
-  '/services/couples/before-separation',
-  '/thank-you-booked',
-  '/thank-you-contact',
-  '/accessibility',
-  '/privacy',
-  '/terms',
+  '/', '/about', '/now', '/friends', '/links', '/lectures', '/contact', '/appointment',
+  '/services/couples', '/services/parenting', '/services/mediation', '/services/gifted-parenting',
+  '/services/aliyah-families', '/services/couples-aliyah-relocation', '/services/premarital-first-year',
+  '/services/late-singleness', '/services/finding-relationship', '/blog', '/faq',
+  '/couples-counseling-ashdod', '/parenting-guidance-ashdod', '/couples-mediation-ashdod',
+  '/couples-crisis-ashdod', '/parenting-adhd-ashdod', '/couples-counseling-gan-yavne',
+  '/couples-counseling-after-infidelity', '/parenting-guidance-divorce',
+  '/parenting-guidance-early-childhood', '/couples-adhd', '/couples-second-chapter',
+  '/services/couples/crisis', '/services/couples/before-separation', '/thank-you-booked',
+  '/thank-you-contact', '/accessibility', '/privacy', '/terms',
 ];
 
 const stripHtml = (html) => html.replace(/<[^>]+>/g, ' ');
@@ -42,12 +20,4 @@ const headingCount = (html) => (html.match(/<h3/g) || []).length;
 const isPublishable = (post) => wordCount(post.content) >= 500 && headingCount(post.content) >= 5;
 const blogRoute = (post) => `/blog/${post.id}`;
 
-module.exports = {
-  ROOT,
-  STATIC_ROUTES,
-  stripHtml,
-  wordCount,
-  headingCount,
-  isPublishable,
-  blogRoute,
-};
+module.exports = { ROOT, STATIC_ROUTES, stripHtml, wordCount, headingCount, isPublishable, blogRoute };
