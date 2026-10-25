@@ -43,9 +43,9 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-25T15:19:44.408119+00:00",
-    "next_deploy_retry_at": "2026-10-25T18:14:11.688600+00:00",
+    "next_deploy_retry_at": null,
     "deploy_run_id": 40219496122,
-    "live_verified_at": "2026-10-25T18:09:16.597283+00:00"
+    "live_verified_at": "2026-10-25T18:09:35.692935+00:00"
   },
   "backlog": [
     {
@@ -1498,33 +1498,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T13:31:21.073505+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1201 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-25T13:35:48.291002+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1201 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-25T13:40:48.512141+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1201 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-25T13:45:54.135169+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2244,9 +2217,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-25T18:09:35.692966+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-25T18:09:36.402918+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-25T18:09:37.111711+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-25T18:08:32.944883+00:00",
+  "updated_at": "2026-10-25T18:09:37.111731+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
