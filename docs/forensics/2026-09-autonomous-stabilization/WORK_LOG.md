@@ -429,3 +429,34 @@ Main advanced through9947d0c6 during validation. One reviewed reconciliation pre
 Validated implementation1bd4c260e1fac3d9f1eb6541a0d92798d54304c3 on exact9947 base:1198Python including28new cutover,217media-policy,499controller,152Vitest,140browser,130routes/98posts; actual root syntheticOverview/Short decoded audio/signature/cache/duration proof; compile/actionlint/diff/lint0errors(17configured-ignore warnings) pass. Independent139affected tests pass; finalCritical0/Important0. Policy74definitions/39retained/1481matchingcallchain pins, zero stale/unknown; policyca0aafefd1d786f8cb05190d8937020dccd06c71bcc33a1740024a02ff7a2f3a. Standard generated llms/sitemap incidental changes restored to main bytes. All five closed5.2 artifacts and three quarantines unchanged; no sealing/import/substitution.
 
 VerdictBLOCKED: genuine native external ports and GitHub complete predecessor-grant/direct-write-denial boundary, all19infra separation scopes, service factory/TLS/protected environment/durable denial ledger and independently approved post-merge identities/revision/key custody remain administrator prerequisites. Reports,672execution-input hashes, checkpoints, feasibility sources, exact conditional post-merge runbook and hashed full/red validation logs saved. Task production_state_written=false,production_activated=false,public_completion_inferred=false; live read-only snapshot Schema5/nohandover/noexclusion. Draft PR review only; no merge, activation, live mutation or next implementation slice.
+
+## 2026-10-25 Backlog Deploy Exhaustion Traversal Repair
+
+### Production Incident Evidence
+Controller run 40219838123 failed with `action=blocked, reason=prior-cycle article deployment attempts exhausted`.
+Deploy run 40219496122 succeeded.
+Current article+long+Short chain was complete, but fresh work was starved by an exhausted historical backlog row.
+
+### Production Article Live Audit Findings
+- `/blog/transition-to-municipal-kindergarten` (2026-10-25): HTTP 200, Canonical `https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten`, Content SHA256 `109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5` matches `src/data/posts.json`, server-side pre-rendered title in HTML body. Status: PUBLIC and verified. First assisted recovered chain: article `/blog/transition-to-municipal-kindergarten`, long `p3ntKY8tDjQ`, Short `f_GsGagsVww`.
+- `/blog/daycare-adjustment-difficulties` (2026-10-25): HTTP 200, Content SHA256 matches, pre-rendered title present. Status: PUBLIC.
+- `/blog/how-to-talk-to-child-about-being-gifted` (2026-10-20): HTTP 200, but returns SPA container fallback without pre-rendered article title or `kesher:content-sha256` meta tag in initial HTML body (`absent prerender`).
+- `/blog/gifted-test-accepted-what-next` (2026-10-20): HTTP 404 (`absent prerender` / not deployed).
+
+### Root Cause & Remediation
+`scripts/kesher_content_controller_v5_runtime.py:_backlog_media_preflight` previously selected a single row via `_published_backlog_source(require_public=False)`. If that row was non-public and its deployment budget was exhausted (`deploy_attempts >= MAX_BACKLOG_DEPLOY_DISPATCHES`), `_backlog_media_preflight` immediately returned `Action("blocked")`, head-of-line blocking all subsequent backlog items and starving current-cycle delivery.
+
+Remediation:
+1. `_backlog_media_preflight` now traverses `ordered_recoverable_backlog` candidate rows within a single tick.
+2. Exhausted rows are rechecked against live HTTP status/prerender content hash. If now public, `article_deploy_status` advances to `"complete"`, `last_error` is cleared, and long/Short media recovery resumes with unchanged source/item identity.
+3. If still non-public and deploy budget is exhausted, `media["article_deploy_status"] = "exhausted"` and `media["last_error"] = "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED"` are preserved without dispatching extra deploys or incrementing counters, and the loop continues to evaluate the next candidate backlog row in the SAME tick.
+4. Traversal is bounded to each candidate row at most once per tick without retry loops or budget resets.
+5. When all candidate rows are exhausted/non-public, `_backlog_media_preflight` reports `Action("backlog_unresolved", ...)` which allows `tick()` to complete with the current cycle action without global controller failure.
+
+### Executed Tests
+- `tests.test_kesher_v5_backlog_priority` (8 tests)
+- `tests.test_v5_backlog_media_recovery` (16 tests) including RED->GREEN regressions for exhausted newest row with older eligible row advancement, bounded all-exhausted backlog traversal, exhausted row becoming public, and current actionable cycle isolation.
+- `tests.test_kesher_authority_digest` and `tests.test_kesher_authority_topology` (63 tests).
+
+### Proof Gap
+Remaining proof gap: clean count is currently 0/3. Permanent production policy requires 3 clean consecutive article+long+Short cycles before declaring full stabilization.

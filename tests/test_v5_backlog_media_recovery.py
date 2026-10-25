@@ -305,8 +305,8 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
 
         action = controller._backlog_media_preflight(state)
 
-        self.assertEqual(action.kind, "blocked")
-        self.assertEqual(action.reason, "prior-cycle article deployment attempts exhausted")
+        self.assertEqual(action.kind, "backlog_unresolved")
+        self.assertEqual(action.reason, "prior-cycle backlog items remain unresolved or exhausted")
         self.assertEqual(gh.dispatches, [])
         self.assertFalse(state["backlog"][0]["media"]["article_live"])
         self.assertEqual(state["backlog"][0]["media"]["article_deploy_status"], "exhausted")
@@ -497,6 +497,222 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
         self.assertIn("kesher_exact_video_target.py", workflow)
         self.assertIn("kesher-daily-video.yml -f operation=full", workflow)
         self.assertIn("name: kesher-video-state", workflow)
+
+    def test_exhausted_newest_row_allows_older_eligible_row_to_advance(self):
+        gh = FakeGitHub()
+        post_new = prior_article()
+        post_new["slug"] = "newest-article"
+        post_new["date"] = "2026-08-20"
+        post_new["controllerManaged"] = True
+        source_new = v5.article_source_identity(post_new)
+
+        post_old = article("older-article")
+        post_old["date"] = "2026-08-19"
+        post_old["controllerManaged"] = True
+        source_old = v5.article_source_identity(post_old)
+
+        gh.posts = [post_new, post_old]
+
+        class HybridSite:
+            def get(self, url):
+                if source_old["slug"] in url:
+                    return 200, (
+                        "<html><head>"
+                        f'<link rel="canonical" href="https://kesher.saharoni.com/blog/{source_old["slug"]}">'
+                        f'<meta property="og:url" content="https://kesher.saharoni.com/blog/{source_old["slug"]}">'
+                        f'<meta name="kesher:content-sha256" content="{source_old["content_sha256"]}">'
+                        "</head>"
+                        f"<body><h1>{post_old['title']}</h1></body></html>"
+                    )
+                return 404, "<html><h1>not found</h1></html>"
+
+        state = {
+            "status": "waiting_for_article_window",
+            "backlog": [
+                {
+                    "cycle": "2026-08-20",
+                    "article": {
+                        "slug": source_new["slug"],
+                        "quality_content_sha256": source_new["content_sha256"],
+                        "deploy_attempts": runtime.MAX_BACKLOG_DEPLOY_DISPATCHES,
+                    },
+                    "media": {
+                        "article_live": False,
+                        "article_deploy_status": "exhausted",
+                        "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED",
+                    },
+                },
+                {
+                    "cycle": "2026-08-19",
+                    "article": {
+                        "slug": source_old["slug"],
+                        "quality_content_sha256": source_old["content_sha256"],
+                        "deploy_attempts": 0,
+                    },
+                    "media": {
+                        "article_live": False,
+                    },
+                },
+            ],
+            "history": [],
+        }
+        controller = runtime.RuntimeV5Controller(
+            gh,
+            HybridSite(),
+            now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
+        )
+
+        action = controller._backlog_media_preflight(state)
+
+        self.assertEqual(action.kind, "dispatch_backlog_long_video")
+        self.assertEqual(state["backlog"][0]["media"]["article_deploy_status"], "exhausted")
+        self.assertEqual(state["backlog"][0]["article"]["deploy_attempts"], runtime.MAX_BACKLOG_DEPLOY_DISPATCHES)
+        self.assertTrue(state["backlog"][1]["media"]["article_live"])
+        self.assertEqual(
+            gh.dispatches,
+            [(
+                v5.LONG_VIDEO_WORKFLOW,
+                {
+                    "operation": "full",
+                    "target_slug": source_old["slug"],
+                    "target_content_sha256": source_old["content_sha256"],
+                },
+            )],
+        )
+
+    def test_all_deploy_exhausted_backlog_ends_boundedly_without_global_controller_failure(self):
+        gh = FakeGitHub()
+        prior_post = prior_article()
+        prior_post["controllerManaged"] = True
+        source = v5.article_source_identity(prior_post)
+
+        today_post = article("today-article")
+        today_post["date"] = "2026-08-20"
+        today_post["controllerManaged"] = True
+        source_today = v5.article_source_identity(today_post)
+        gh.posts = [today_post, prior_post]
+
+        class SiteWithTodayPublic:
+            def get(self, url):
+                if source_today["slug"] in url:
+                    return 200, (
+                        "<html><head>"
+                        f'<link rel="canonical" href="https://kesher.saharoni.com/blog/{source_today["slug"]}">'
+                        f'<meta property="og:url" content="https://kesher.saharoni.com/blog/{source_today["slug"]}">'
+                        f'<meta name="kesher:content-sha256" content="{source_today["content_sha256"]}">'
+                        "</head>"
+                        f"<body><h1>{today_post['title']}</h1></body></html>"
+                    )
+                return 404, "<html><h1>not found</h1></html>"
+
+        gh.active[v5.LONG_VIDEO_WORKFLOW] = {
+            "id": 999,
+            "status": "in_progress",
+            "event": "workflow_dispatch",
+        }
+
+        state = {
+            "schema_version": v5.STATE_SCHEMA_VERSION,
+            "cycle": "2026-08-20",
+            "status": "waiting_for_article_window",
+            "article": {"status": "pending"},
+            "image": {"status": "pending"},
+            "long_video": {"status": "running", "run_id": 999},
+            "short": {"status": "pending"},
+            "backlog": [{
+                "cycle": "2026-08-19",
+                "article": {
+                    "slug": source["slug"],
+                    "quality_content_sha256": source["content_sha256"],
+                    "deploy_attempts": runtime.MAX_BACKLOG_DEPLOY_DISPATCHES,
+                },
+                "media": {
+                    "article_live": False,
+                    "article_deploy_status": "exhausted",
+                    "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED",
+                },
+            }],
+            "history": [],
+        }
+        gh.saved_state = state
+
+        controller = runtime.RuntimeV5Controller(
+            gh,
+            SiteWithTodayPublic(),
+            now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
+        )
+
+        state_out, action = controller.tick()
+
+        self.assertEqual(action.kind, "wait")
+        self.assertEqual(gh.dispatches, [])
+        self.assertEqual(state_out["backlog"][0]["media"]["article_deploy_status"], "exhausted")
+
+    def test_current_actionable_cycle_unaffected_by_backlog_exhaustion(self):
+        gh = FakeGitHub()
+        prior_post = prior_article()
+        prior_post["controllerManaged"] = True
+        source = v5.article_source_identity(prior_post)
+
+        today_post = article("today-article")
+        today_post["date"] = "2026-08-20"
+        today_post["controllerManaged"] = True
+        source_today = v5.article_source_identity(today_post)
+        gh.posts = [today_post, prior_post]
+
+        class SiteWithTodayPublic:
+            def get(self, url):
+                if source_today["slug"] in url:
+                    return 200, (
+                        "<html><head>"
+                        f'<link rel="canonical" href="https://kesher.saharoni.com/blog/{source_today["slug"]}">'
+                        f'<meta property="og:url" content="https://kesher.saharoni.com/blog/{source_today["slug"]}">'
+                        f'<meta name="kesher:content-sha256" content="{source_today["content_sha256"]}">'
+                        "</head>"
+                        f"<body><h1>{today_post['title']}</h1></body></html>"
+                    )
+                return 404, "<html><h1>not found</h1></html>"
+
+        state = {
+            "schema_version": v5.STATE_SCHEMA_VERSION,
+            "cycle": "2026-08-20",
+            "status": "long_video_running",
+            "article": {"status": "complete", "live": True},
+            "image": {"status": "complete"},
+            "long_video": {"status": "running", "run_id": 123},
+            "short": {"status": "pending"},
+            "backlog": [{
+                "cycle": "2026-08-19",
+                "article": {
+                    "slug": source["slug"],
+                    "quality_content_sha256": source["content_sha256"],
+                    "deploy_attempts": runtime.MAX_BACKLOG_DEPLOY_DISPATCHES,
+                },
+                "media": {
+                    "article_live": False,
+                    "article_deploy_status": "exhausted",
+                    "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED",
+                },
+            }],
+            "history": [],
+        }
+        gh.saved_state = state
+        gh.active[v5.LONG_VIDEO_WORKFLOW] = {
+            "id": 123,
+            "status": "in_progress",
+            "event": "workflow_dispatch",
+        }
+
+        controller = runtime.RuntimeV5Controller(
+            gh,
+            SiteWithTodayPublic(),
+            now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
+        )
+
+        state_out, action = controller.tick()
+
+        self.assertEqual(action.kind, "wait")
+        self.assertEqual(action.reason, "video workflow active")
 
 
 if __name__ == "__main__":

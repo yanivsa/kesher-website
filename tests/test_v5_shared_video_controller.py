@@ -76,6 +76,8 @@ class FakeGitHub:
                 "event": "workflow_dispatch",
             }
             return {}
+        if method == "GET" and "/actions/artifacts" in path:
+            return {"artifacts": []}
         raise AssertionError(f"unexpected request {method} {path}")
 
     def load_controller_state(self):
