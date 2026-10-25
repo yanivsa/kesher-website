@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import io
 import json
+import sys
 from pathlib import Path
 import unittest
 import urllib.error
