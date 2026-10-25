@@ -190,6 +190,15 @@ def article_violations(article: dict[str, Any]) -> list[str]:
     return violations
 
 
+def full_article_violations(article: dict[str, Any]) -> list[str]:
+    """Return the complete publication-quality contract for one article.
+
+    All pre-publication callers must use this helper rather than selecting only
+    the claim or managed-canary half of the contract.
+    """
+    return article_violations(article) + managed_article_policy_violations(article)
+
+
 def newest_articles(posts: list[dict[str, Any]]) -> list[dict[str, Any]]:
     rows = [row for row in posts if isinstance(row, dict) and str(row.get("date") or "").strip()]
     if not rows:
@@ -202,9 +211,7 @@ def validate_posts(posts: list[dict[str, Any]]) -> list[str]:
     errors: list[str] = []
     for article in newest_articles(posts):
         slug = str(article.get("slug") or article.get("id") or "unknown")
-        for violation in article_violations(article):
-            errors.append(f"{slug}: {violation}")
-        for violation in managed_article_policy_violations(article):
+        for violation in full_article_violations(article):
             errors.append(f"{slug}: {violation}")
     return errors
 

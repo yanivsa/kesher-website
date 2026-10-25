@@ -964,7 +964,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return None
 
         source = v5.article_source_identity(article)
-        violations = quality.article_violations(article)
+        violations = quality.full_article_violations(article)
         state["article"].update({
             "quality_status": "failed" if violations else "passed",
             "quality_content_sha256": source["content_sha256"],
@@ -2162,6 +2162,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             errors.append(f"New article word count must be 700-1100 (found {words})")
         if post.get("video"):
             errors.append("New article may not contain a video field")
+        errors.extend(quality.full_article_violations(post))
         return errors
 
     def _handle_open_article_pr(self, state, pr):

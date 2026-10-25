@@ -33,7 +33,7 @@ jobs:
     # Bounded manual emergency bridge; explicitly retired by coordinated cutover.
     if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    timeout-minutes: 75
     env:
       KESHER_ARTICLE_RESULT_PATH: ${{ github.workspace }}/.kesher-article-result/result.json
     steps:
