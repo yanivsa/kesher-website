@@ -2615,7 +2615,9 @@
     "source_slug": null,
     "slot": "2026-10-25"
   },
-  "processed_child_notifications": [],
+  "processed_child_notifications": [
+    "Deploy to Cloudflare Pages:40206406296"
+  ],
   "deploy_history": [
     {
       "workflow": "deploy.yml",
