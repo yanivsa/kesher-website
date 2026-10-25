@@ -2667,7 +2667,20 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-article-generation.yml": {
+      "workflow": "kesher-article-generation.yml",
+      "cycle": "2026-10-25",
+      "inputs": {
+        "slot": "2026-10-25",
+        "topic_brief": "אשכול מטפלת למעון. נושא/כאב: הסתגלות למעון שלא משתפרת: בכי, קושי בפרידה, עייפות/שינוי התנהגות והורה שלא יודע אם לתת עוד זמן או לבדוק מה לא עובד. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: daycare-adjustment-difficulties. כותרת עבודה: קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-daycare-adjustment-difficulties\nRequired Primary Keyword: קשיי הסתגלות למעון"
+      },
+      "intent_at": "2026-10-25T05:01:01.904601+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Deploy to Cloudflare Pages",
     "run_id": 40162798622,
@@ -2677,5 +2690,17 @@
   },
   "processed_child_notifications": [
     "Deploy to Cloudflare Pages:40162798622"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
