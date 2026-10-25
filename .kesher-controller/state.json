@@ -56,7 +56,7 @@
     "last_deploy_dispatch_at": "2026-10-25T06:10:59.806914+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40168790661,
-    "live_verified_at": "2026-10-25T09:35:45.610356+00:00"
+    "live_verified_at": "2026-10-25T09:35:57.728282+00:00"
   },
   "backlog": [
     {
@@ -1509,34 +1509,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T05:24:00.113405+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-10-25T05:28:13.116650+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-10-25T05:29:45.485073+00:00",
-      "from": "article_generating",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1197,
-        "slot": "2026-10-25"
-      }
-    },
-    {
       "at": "2026-10-25T05:31:27.768877+00:00",
       "from": "article_normalizing",
       "to": "article_image_running",
@@ -2165,9 +2137,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-25T09:35:57.728302+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-25T09:35:58.252381+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-25T09:35:58.706596+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-25T09:32:24.131960+00:00",
+  "updated_at": "2026-10-25T09:35:58.706610+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
