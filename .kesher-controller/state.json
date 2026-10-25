@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "long_video_running",
+  "status": "long_video_retry_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -45,7 +45,7 @@
     "last_deploy_dispatch_at": "2026-10-25T15:19:44.408119+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40206406296,
-    "live_verified_at": "2026-10-25T15:35:56.003795+00:00"
+    "live_verified_at": "2026-10-25T15:36:25.030411+00:00"
   },
   "backlog": [
     {
@@ -1498,24 +1498,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T10:46:23.837288+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-25T10:46:25.125394+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-25T10:46:26.351548+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-10-25T10:51:23.492291+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2233,9 +2215,37 @@
         "operation": "full",
         "attempt": 2
       }
+    },
+    {
+      "at": "2026-10-25T15:36:25.030443+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-25T15:36:27.478274+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "VIDEO_WORKFLOW_FAILED",
+      "details": {
+        "message": "video run 40207636749 completed with conclusion=failure",
+        "retry_at": "2026-10-25T15:51:27.478247+00:00",
+        "failure_streak": 2,
+        "run_id": 40207636749,
+        "session_id": null
+      }
+    },
+    {
+      "at": "2026-10-25T15:36:27.478309+00:00",
+      "from": "video_retry_wait",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-25T15:51:27.478247+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-25T15:35:09.616729+00:00",
+  "updated_at": "2026-10-25T15:36:27.478314+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -2256,20 +2266,20 @@
     "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-25T15:51:27.478247+00:00",
     "run_id": 40207636749,
-    "processed_run_id": 40206817671,
+    "processed_run_id": 40207636749,
     "provider_id": null,
     "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
+    "same_failure_streak": 2,
     "failure_count_by_type": {
-      "VIDEO_WORKFLOW_FAILED": 1
+      "VIDEO_WORKFLOW_FAILED": 2
     },
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-10-25T15:35:09.616707+00:00",
     "attempts": 2,
     "last_run_conclusion": "failure",
-    "last_failed_run_id": 40206817671
+    "last_failed_run_id": 40207636749
   },
   "short": {
     "attempt_count": 0,
