@@ -11,6 +11,9 @@ except ImportError:
     from kesher_article_contract import forbidden_article_paths
 
 
+OWNED_METADATA_ENFORCEMENT_DATE = date(2026, 10, 20)
+
+
 class ArticleNormalizationError(RuntimeError):
     pass
 
@@ -77,9 +80,12 @@ def extract_target_article(
             f"expected exactly one new article for {slot}, found {len(candidates)}"
         )
     extracted = copy.deepcopy(candidates[0])
-    extracted["controllerManaged"] = True
-    if not str(extracted.get("slug") or "").strip():
-        extracted["slug"] = _post_id(extracted)
+    if extracted.get("controllerManaged") is False:
+        extracted["controllerManaged"] = True
+    if _post_date(extracted) >= OWNED_METADATA_ENFORCEMENT_DATE:
+        extracted["controllerManaged"] = True
+        if not str(extracted.get("slug") or "").strip():
+            extracted["slug"] = _post_id(extracted)
     if "subcategory" in extracted and extracted["subcategory"] is None:
         del extracted["subcategory"]
     return extracted

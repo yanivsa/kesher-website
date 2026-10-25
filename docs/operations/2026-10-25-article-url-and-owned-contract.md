@@ -10,9 +10,9 @@ Root causes:
 Fixes:
 - Correct both regexes while preserving exact host/repository/path checks.
 - Validate every worker-owned new PR article as controllerManaged using a copy, so untrusted writer metadata cannot disable evidence/link/CTA requirements.
-- Trusted extraction marks its owned article and fills a missing slug from the existing identity; original inputs and existing main articles remain untouched.
+- Trusted extraction marks its owned article and fills a missing slug from the existing identity from the existing managed-quality cutoff 2026-10-20 onward; earlier legacy metadata is preserved; original inputs and existing main articles remain untouched.
 
-Regression evidence: canonical real parser and repair-wait paths failed before the regex fix; omitted-marker/slug extraction failed before normalization. After repair, 139 focused tests passed, including negative URL tests, quality, normalization worker, controller, authority and governance tests. Independent review found no blocking findings. Required CI and production same-PR content recovery remain separate gates.
+Regression evidence: canonical real parser and repair-wait paths failed before the regex fix; omitted-marker/slug extraction failed before normalization. After repair, 187 focused tests passed, including negative URL tests, quality, normalization worker, controller, authority and governance tests. Independent review found no blocking findings. Full CI then identified historical normalization compatibility; a dedicated regression reproduced that failure and verifies the cutoff stays aligned with the quality policy. Required CI and production same-PR content recovery remain separate gates.
 
 Learning: mock only remote IO at trust boundaries; run the real URL parsing and quality decision. Required metadata belongs to trusted normalization, not only to model prompts. Missing ownership metadata must never disable publication quality checks.
 

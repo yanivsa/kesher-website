@@ -191,7 +191,7 @@ class RealGitNormalizationTests(unittest.TestCase):
         commit = result['new_head_sha']
         posts = json.loads(self.git('show', commit + ':src/data/posts.json'))
         self.assertEqual(posts[1], self.base_post)
-        self.assertEqual(posts[0], {'id': 'new', 'slug': 'new', 'controllerManaged': True, 'date': DAY, 'title': 'New'})
+        self.assertEqual(posts[0], {'id': 'new', 'date': DAY, 'title': 'New'})
         self.assertEqual(json.loads(self.git('show', commit + ':package.json')), {'trusted': True})
         self.assertNotIn('untrusted.txt', self.git('ls-tree', '-r', '--name-only', commit).splitlines())
         self.assertEqual(json.loads(self.git('show', commit + ':src/data/postSummaries.json'))['ids'], ['new', 'existing'])
