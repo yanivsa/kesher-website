@@ -33,7 +33,12 @@
         "note": "האקדמיה האמריקאית לרפואת ילדים מתארת את חרדת הפרידה כתקינה התפתחותית, מדגישה את החשיבות של פרידות החלטיות וקצרות ומזהירה מפני היעלמות ללא פרידה, תוך פירוט מתי הקושי נחשב לחריג."
       }
     ],
-    "controllerManaged": true
+    "controllerManaged": true,
+    "image": "/images/generated/blog/daycare-adjustment-difficulties.png",
+    "imageAlt": "איור עריכתי מקומי של הורה ופעוט בכניסה למסגרת ילדים, עם דלת פתוחה וקוביות משחק, ברגע פרידה תומך.",
+    "imageProvider": "LocalEditorial",
+    "imageSourceUrl": "local-editorial://daycare-adjustment-difficulties/3",
+    "imageIsFallback": false
   },
   {
     "id": "child-poops-in-pants",
