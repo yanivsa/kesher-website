@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1509,12 +1509,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-24T17:48:40.298183+00:00",
-      "from": "article_image_running",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
       "at": "2026-10-24T18:15:59.209566+00:00",
       "from": "article_pr_open",
       "to": "blocked",
@@ -2337,9 +2331,19 @@
       "from": "long_video_running",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-25T06:40:51.982763+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 1
+      }
     }
   ],
-  "updated_at": "2026-10-25T06:40:46.494105+00:00",
+  "updated_at": "2026-10-25T06:40:51.982773+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2357,8 +2361,8 @@
     "image_path": "/images/generated/blog/daycare-adjustment-difficulties.png"
   },
   "long_video": {
-    "attempt_count": 1,
-    "status": "rejected",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40169199075,
@@ -2368,10 +2372,11 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-25T06:28:24.024766+00:00",
+    "last_dispatch_at": "2026-10-25T06:40:51.982750+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
-    "item_id": "video-20261025-083025-4e09877ab3"
+    "item_id": "video-20261025-083025-4e09877ab3",
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
@@ -2714,9 +2719,10 @@
         "target_item_id": "video-20261025-083025-4e09877ab3"
       },
       "intent_at": "2026-10-25T06:40:29.648261+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40169199075,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40169950109,
+      "dispatched_at": "2026-10-25T06:40:29.648261+00:00"
     }
   },
   "last_child_notification": {
@@ -2745,22 +2751,5 @@
       "superseded_run_id": 40168193080,
       "reason": "deploy for SHA ecc9dca2dcf1a2620865c52bef4a8b1fa98c4b70 superseded by newer main SHA 006fd42ee41c50769d5dea795673c5f7f74320ed"
     }
-  ],
-  "video": {
-    "attempt_count": 1,
-    "status": "rejected",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": 40169199075,
-    "processed_run_id": 40169199075,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-25T06:28:24.024766+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261025-083025-4e09877ab3"
-  }
+  ]
 }
