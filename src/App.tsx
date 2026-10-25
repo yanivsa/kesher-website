@@ -4,38 +4,16 @@ import Layout from './components/Layout/Layout'
 import ScrollToTop from './components/ScrollToTop'
 
 type PageModule = { default: React.ComponentType };
-
 const loadable = (loader: () => Promise<PageModule>) => {
   let Component: React.ComponentType | undefined;
   let pending: Promise<void> | undefined;
-
-  const preload = () => {
-    pending ??= loader().then((module) => {
-      Component = module.default;
-    });
-    return pending;
-  };
-
+  const preload = () => { pending ??= loader().then((module) => { Component = module.default; }); return pending; };
   const LoadablePage = () => {
     const [, refresh] = useState(0);
-
-    React.useEffect(() => {
-      if (Component) return;
-      let active = true;
-      preload().then(() => {
-        if (active) refresh((value) => value + 1);
-      });
-      return () => {
-        active = false;
-      };
-    }, []);
-
-    if (!Component) {
-      return <div className="route-loading" role="status">טוענת...</div>;
-    }
+    React.useEffect(() => { if (Component) return; let active = true; preload().then(() => { if (active) refresh((value) => value + 1); }); return () => { active = false; }; }, []);
+    if (!Component) return <div className="route-loading" role="status">טוענת...</div>;
     return <Component />;
   };
-
   return { Page: LoadablePage, preload };
 };
 
@@ -70,136 +48,40 @@ const parentingAdhdAshdod = loadable(() => import('./pages/Landing/ParentingAdhd
 const couplesCounselingGanYavne = loadable(() => import('./pages/Landing/CouplesCounselingGanYavne/CouplesCounselingGanYavnePage'));
 const couplesCrisis = loadable(() => import('./pages/Landing/CouplesCrisis/CouplesCrisisPage'));
 const couplesBeforeSeparation = loadable(() => import('./pages/Landing/CouplesBeforeSeparation/CouplesBeforeSeparationPage'));
+const couplesAfterInfidelity = loadable(() => import('./pages/Landing/Compact/CouplesAfterInfidelityPage'));
+const parentingDivorce = loadable(() => import('./pages/Landing/Compact/ParentingDivorcePage'));
+const parentingEarlyChildhood = loadable(() => import('./pages/Landing/Compact/ParentingEarlyChildhoodPage'));
+const couplesAdhd = loadable(() => import('./pages/Landing/Compact/CouplesAdhdPage'));
+const couplesSecondChapter = loadable(() => import('./pages/Landing/Compact/CouplesSecondChapterPage'));
 const thankYouBooked = loadable(() => import('./pages/ThankYou/ThankYouBookedPage'));
 const thankYouContact = loadable(() => import('./pages/ThankYou/ThankYouContactPage'));
 const notFound = loadable(() => import('./pages/NotFound/NotFound'));
 
-const {
-  Page: Home,
-} = home;
-const { Page: CouplesCounseling } = couples;
-const { Page: PremaritalPage } = premarital;
-const { Page: ParentingGuidance } = parenting;
-const { Page: MediationPage } = mediation;
-const { Page: GiftedParentingPage } = gifted;
-const { Page: AliyahFamiliesPage } = aliyah;
-const { Page: RelocationPage } = relocation;
-const { Page: LateSinglenessPage } = lateSingleness;
-const { Page: FindingRelationshipPage } = findingRelationship;
-const { Page: BlogList } = blogList;
-const { Page: BlogPost } = blogPost;
-const { Page: FAQ } = faq;
-const { Page: AboutPage } = about;
-const { Page: NowPage } = now;
-const { Page: FriendsPage } = friends;
-const { Page: LinksPage } = links;
-const { Page: LecturesPage } = lectures;
-const { Page: ContactPage } = contact;
-const { Page: AppointmentPage } = appointment;
-const { Page: AccessibilityPage } = accessibility;
-const { Page: PrivacyPolicy } = privacy;
-const { Page: TermsOfUse } = terms;
-const { Page: CouplesCounselingAshdodPage } = couplesCounselingAshdod;
-const { Page: ParentingGuidanceAshdodPage } = parentingGuidanceAshdod;
-const { Page: CouplesMediationAshdodPage } = couplesMediationAshdod;
-const { Page: CouplesCrisisAshdodPage } = couplesCrisisAshdod;
-const { Page: ParentingAdhdAshdodPage } = parentingAdhdAshdod;
-const { Page: CouplesCounselingGanYavnePage } = couplesCounselingGanYavne;
-const { Page: CouplesCrisisPage } = couplesCrisis;
-const { Page: CouplesBeforeSeparationPage } = couplesBeforeSeparation;
-const { Page: ThankYouBookedPage } = thankYouBooked;
-const { Page: ThankYouContactPage } = thankYouContact;
-const { Page: NotFound } = notFound;
+const { Page: Home } = home;
+const { Page: CouplesCounseling } = couples; const { Page: PremaritalPage } = premarital; const { Page: ParentingGuidance } = parenting; const { Page: MediationPage } = mediation; const { Page: GiftedParentingPage } = gifted; const { Page: AliyahFamiliesPage } = aliyah; const { Page: RelocationPage } = relocation; const { Page: LateSinglenessPage } = lateSingleness; const { Page: FindingRelationshipPage } = findingRelationship;
+const { Page: BlogList } = blogList; const { Page: BlogPost } = blogPost; const { Page: FAQ } = faq; const { Page: AboutPage } = about; const { Page: ContactPage } = contact; const { Page: AppointmentPage } = appointment; const { Page: AccessibilityPage } = accessibility; const { Page: PrivacyPolicy } = privacy; const { Page: TermsOfUse } = terms; const { Page: NowPage } = now; const { Page: FriendsPage } = friends; const { Page: LinksPage } = links; const { Page: LecturesPage } = lectures;
+const { Page: CouplesCounselingAshdodPage } = couplesCounselingAshdod; const { Page: ParentingGuidanceAshdodPage } = parentingGuidanceAshdod; const { Page: CouplesMediationAshdodPage } = couplesMediationAshdod; const { Page: CouplesCrisisAshdodPage } = couplesCrisisAshdod; const { Page: ParentingAdhdAshdodPage } = parentingAdhdAshdod; const { Page: CouplesCounselingGanYavnePage } = couplesCounselingGanYavne; const { Page: CouplesCrisisPage } = couplesCrisis; const { Page: CouplesBeforeSeparationPage } = couplesBeforeSeparation;
+const { Page: CouplesAfterInfidelityPage } = couplesAfterInfidelity; const { Page: ParentingDivorcePage } = parentingDivorce; const { Page: ParentingEarlyChildhoodPage } = parentingEarlyChildhood; const { Page: CouplesAdhdPage } = couplesAdhd; const { Page: CouplesSecondChapterPage } = couplesSecondChapter;
+const { Page: ThankYouBookedPage } = thankYouBooked; const { Page: ThankYouContactPage } = thankYouContact; const { Page: NotFound } = notFound;
 
 const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
-  [/^\/$/, home.preload],
-  [/^\/couples-counseling-ashdod\/?$/, couplesCounselingAshdod.preload],
-  [/^\/parenting-guidance-ashdod\/?$/, parentingGuidanceAshdod.preload],
-  [/^\/couples-mediation-ashdod\/?$/, couplesMediationAshdod.preload],
-  [/^\/couples-crisis-ashdod\/?$/, couplesCrisisAshdod.preload],
-  [/^\/parenting-adhd-ashdod\/?$/, parentingAdhdAshdod.preload],
-  [/^\/couples-counseling-gan-yavne\/?$/, couplesCounselingGanYavne.preload],
-  [/^\/services\/couples\/ashdod\/?$/, couplesCounselingAshdod.preload],
-  [/^\/services\/couples\/crisis\/?$/, couplesCrisis.preload],
-  [/^\/services\/couples\/before-separation\/?$/, couplesBeforeSeparation.preload],
-  [/^\/thank-you-booked\/?$/, thankYouBooked.preload],
-  [/^\/thank-you-contact\/?$/, thankYouContact.preload],
-  [/^\/about\/?$/, about.preload],
-  [/^\/now\/?$/, now.preload],
-  [/^\/friends\/?$/, friends.preload],
-  [/^\/links\/?$/, links.preload],
-  [/^\/lectures\/?$/, lectures.preload],
-  [/^\/services\/couples\/?$/, couples.preload],
-  [/^\/services\/premarital-first-year\/?$/, premarital.preload],
-  [/^\/services\/parenting\/?$/, parenting.preload],
-  [/^\/services\/mediation\/?$/, mediation.preload],
-  [/^\/services\/gifted-parenting\/?$/, gifted.preload],
-  [/^\/services\/aliyah-families\/?$/, aliyah.preload],
-  [/^\/services\/couples-aliyah-relocation\/?$/, relocation.preload],
-  [/^\/services\/late-singleness\/?$/, lateSingleness.preload],
-  [/^\/services\/finding-relationship\/?$/, findingRelationship.preload],
-  [/^\/blog\/?$/, blogList.preload],
-  [/^\/blog\/[^/]+\/?$/, blogPost.preload],
-  [/^\/faq\/?$/, faq.preload],
-  [/^\/contact\/?$/, contact.preload],
-  [/^\/appointment\/?$/, appointment.preload],
-  [/^\/accessibility\/?$/, accessibility.preload],
-  [/^\/privacy\/?$/, privacy.preload],
-  [/^\/terms\/?$/, terms.preload],
+  [/^\/$/, home.preload], [/^\/couples-counseling-ashdod\/?$/, couplesCounselingAshdod.preload], [/^\/parenting-guidance-ashdod\/?$/, parentingGuidanceAshdod.preload], [/^\/couples-mediation-ashdod\/?$/, couplesMediationAshdod.preload], [/^\/couples-crisis-ashdod\/?$/, couplesCrisisAshdod.preload], [/^\/parenting-adhd-ashdod\/?$/, parentingAdhdAshdod.preload], [/^\/couples-counseling-gan-yavne\/?$/, couplesCounselingGanYavne.preload],
+  [/^\/couples-counseling-after-infidelity\/?$/, couplesAfterInfidelity.preload], [/^\/parenting-guidance-divorce\/?$/, parentingDivorce.preload], [/^\/parenting-guidance-early-childhood\/?$/, parentingEarlyChildhood.preload], [/^\/couples-adhd\/?$/, couplesAdhd.preload], [/^\/couples-second-chapter\/?$/, couplesSecondChapter.preload],
+  [/^\/services\/couples\/ashdod\/?$/, couplesCounselingAshdod.preload], [/^\/services\/couples\/crisis\/?$/, couplesCrisis.preload], [/^\/services\/couples\/before-separation\/?$/, couplesBeforeSeparation.preload], [/^\/thank-you-booked\/?$/, thankYouBooked.preload], [/^\/thank-you-contact\/?$/, thankYouContact.preload], [/^\/about\/?$/, about.preload], [/^\/now\/?$/, now.preload], [/^\/friends\/?$/, friends.preload], [/^\/links\/?$/, links.preload], [/^\/lectures\/?$/, lectures.preload], [/^\/services\/couples\/?$/, couples.preload], [/^\/services\/premarital-first-year\/?$/, premarital.preload], [/^\/services\/parenting\/?$/, parenting.preload], [/^\/services\/mediation\/?$/, mediation.preload], [/^\/services\/gifted-parenting\/?$/, gifted.preload], [/^\/services\/aliyah-families\/?$/, aliyah.preload], [/^\/services\/couples-aliyah-relocation\/?$/, relocation.preload], [/^\/services\/late-singleness\/?$/, lateSingleness.preload], [/^\/services\/finding-relationship\/?$/, findingRelationship.preload], [/^\/blog\/?$/, blogList.preload], [/^\/blog\/[^/]+\/?$/, blogPost.preload], [/^\/faq\/?$/, faq.preload], [/^\/contact\/?$/, contact.preload], [/^\/appointment\/?$/, appointment.preload], [/^\/accessibility\/?$/, accessibility.preload], [/^\/privacy\/?$/, privacy.preload], [/^\/terms\/?$/, terms.preload],
 ];
 
-// The preloader intentionally shares the same module cache as the route
-// components, so it must live beside them.
 // eslint-disable-next-line react-refresh/only-export-components
-export const preloadRoute = (pathname: string) =>
-  (routeLoaders.find(([pattern]) => pattern.test(pathname))?.[1] ?? notFound.preload)();
+export const preloadRoute = (pathname: string) => (routeLoaders.find(([pattern]) => pattern.test(pathname))?.[1] ?? notFound.preload)();
 
 function App() {
-  return (
-    <Router>
-      <ScrollToTop />
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/couples-counseling-ashdod" element={<CouplesCounselingAshdodPage />} />
-          <Route path="/parenting-guidance-ashdod" element={<ParentingGuidanceAshdodPage />} />
-          <Route path="/couples-mediation-ashdod" element={<CouplesMediationAshdodPage />} />
-          <Route path="/couples-crisis-ashdod" element={<CouplesCrisisAshdodPage />} />
-          <Route path="/parenting-adhd-ashdod" element={<ParentingAdhdAshdodPage />} />
-          <Route path="/couples-counseling-gan-yavne" element={<CouplesCounselingGanYavnePage />} />
-          <Route path="/services/couples/ashdod" element={<Navigate to="/couples-counseling-ashdod" replace />} />
-          <Route path="/services/couples/crisis" element={<CouplesCrisisPage />} />
-          <Route path="/services/couples/before-separation" element={<CouplesBeforeSeparationPage />} />
-          <Route path="/thank-you-booked" element={<ThankYouBookedPage />} />
-          <Route path="/thank-you-contact" element={<ThankYouContactPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/now" element={<NowPage />} />
-          <Route path="/friends" element={<FriendsPage />} />
-          <Route path="/links" element={<LinksPage />} />
-          <Route path="/lectures" element={<LecturesPage />} />
-          <Route path="/services/couples" element={<CouplesCounseling />} />
-          <Route path="/services/premarital-first-year" element={<PremaritalPage />} />
-          <Route path="/services/parenting" element={<ParentingGuidance />} />
-          <Route path="/services/mediation" element={<MediationPage />} />
-          <Route path="/services/gifted-parenting" element={<GiftedParentingPage />} />
-          <Route path="/services/aliyah-families" element={<AliyahFamiliesPage />} />
-          <Route path="/services/couples-aliyah-relocation" element={<RelocationPage />} />
-          <Route path="/services/late-singleness" element={<LateSinglenessPage />} />
-          <Route path="/services/finding-relationship" element={<FindingRelationshipPage />} />
-          <Route path="/services/singles-guidance" element={<Navigate to="/services/late-singleness" replace />} />
-          <Route path="/blog" element={<BlogList />} />
-          <Route path="/blog/:id" element={<BlogPost />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/appointment" element={<AppointmentPage />} />
-          <Route path="/accessibility" element={<AccessibilityPage />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<TermsOfUse />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Layout>
-    </Router>
-  )
+  return <Router><ScrollToTop /><Layout><Routes>
+    <Route path="/" element={<Home />} />
+    <Route path="/couples-counseling-ashdod" element={<CouplesCounselingAshdodPage />} /><Route path="/parenting-guidance-ashdod" element={<ParentingGuidanceAshdodPage />} /><Route path="/couples-mediation-ashdod" element={<CouplesMediationAshdodPage />} /><Route path="/couples-crisis-ashdod" element={<CouplesCrisisAshdodPage />} /><Route path="/parenting-adhd-ashdod" element={<ParentingAdhdAshdodPage />} /><Route path="/couples-counseling-gan-yavne" element={<CouplesCounselingGanYavnePage />} />
+    <Route path="/couples-counseling-after-infidelity" element={<CouplesAfterInfidelityPage />} /><Route path="/parenting-guidance-divorce" element={<ParentingDivorcePage />} /><Route path="/parenting-guidance-early-childhood" element={<ParentingEarlyChildhoodPage />} /><Route path="/couples-adhd" element={<CouplesAdhdPage />} /><Route path="/couples-second-chapter" element={<CouplesSecondChapterPage />} />
+    <Route path="/services/couples/ashdod" element={<Navigate to="/couples-counseling-ashdod" replace />} /><Route path="/services/couples/crisis" element={<CouplesCrisisPage />} /><Route path="/services/couples/before-separation" element={<CouplesBeforeSeparationPage />} />
+    <Route path="/thank-you-booked" element={<ThankYouBookedPage />} /><Route path="/thank-you-contact" element={<ThankYouContactPage />} /><Route path="/about" element={<AboutPage />} /><Route path="/now" element={<NowPage />} /><Route path="/friends" element={<FriendsPage />} /><Route path="/links" element={<LinksPage />} /><Route path="/lectures" element={<LecturesPage />} />
+    <Route path="/services/couples" element={<CouplesCounseling />} /><Route path="/services/premarital-first-year" element={<PremaritalPage />} /><Route path="/services/parenting" element={<ParentingGuidance />} /><Route path="/services/mediation" element={<MediationPage />} /><Route path="/services/gifted-parenting" element={<GiftedParentingPage />} /><Route path="/services/aliyah-families" element={<AliyahFamiliesPage />} /><Route path="/services/couples-aliyah-relocation" element={<RelocationPage />} /><Route path="/services/late-singleness" element={<LateSinglenessPage />} /><Route path="/services/finding-relationship" element={<FindingRelationshipPage />} /><Route path="/services/singles-guidance" element={<Navigate to="/services/late-singleness" replace />} />
+    <Route path="/blog" element={<BlogList />} /><Route path="/blog/:id" element={<BlogPost />} /><Route path="/faq" element={<FAQ />} /><Route path="/contact" element={<ContactPage />} /><Route path="/appointment" element={<AppointmentPage />} /><Route path="/accessibility" element={<AccessibilityPage />} /><Route path="/privacy" element={<PrivacyPolicy />} /><Route path="/terms" element={<TermsOfUse />} /><Route path="*" element={<NotFound />} />
+  </Routes></Layout></Router>
 }
-
 export default App
