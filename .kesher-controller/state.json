@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_generating",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -19,7 +19,10 @@
     "pr_number": 1209,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1209",
     "current_pr_head_sha": "72e6083f550698466d8beadc124e010cbcdd2d6b",
-    "jules_head_sha": "72e6083f550698466d8beadc124e010cbcdd2d6b"
+    "jules_head_sha": "72e6083f550698466d8beadc124e010cbcdd2d6b",
+    "normalization_status": "running",
+    "normalization_slot": "2026-10-25",
+    "normalization_dispatched_at": "2026-10-25T19:13:18.627111+00:00"
   },
   "backlog": [
     {
@@ -1472,15 +1475,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T15:27:04.409719+00:00",
-      "from": "video_retry_wait",
-      "to": "video_retry_wait",
-      "reason": "video retry backoff is active",
-      "details": {
-        "retry_at": "2026-10-25T15:32:04.409654+00:00"
-      }
-    },
-    {
       "at": "2026-10-25T15:34:59.527139+00:00",
       "from": "long_video_retry_wait",
       "to": "article_live",
@@ -2148,9 +2142,19 @@
       "details": {
         "publication_slot": "2026-10-25"
       }
+    },
+    {
+      "at": "2026-10-25T19:13:18.627138+00:00",
+      "from": "article_generating",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1209,
+        "slot": "2026-10-25"
+      }
     }
   ],
-  "updated_at": "2026-10-25T19:06:08.386283+00:00",
+  "updated_at": "2026-10-25T19:13:18.627147+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2545,9 +2549,10 @@
         "slot": "2026-10-25"
       },
       "intent_at": "2026-10-25T19:12:55.849760+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40224985092,
+      "dispatched_at": "2026-10-25T19:12:55.849760+00:00"
     }
   },
   "last_child_notification": {
