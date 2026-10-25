@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -29,13 +29,19 @@
     },
     "pr_number": 1197,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1197",
-    "current_pr_head_sha": "113733d4dca3c97334b7e438710cb1084e6083d7",
+    "current_pr_head_sha": "c3bf3075880fd8c8ad886ef6b236a359748b0d89",
     "jules_head_sha": "e846e633bb9905717b27367d256e70d5a4885ff1",
     "normalization_status": "complete",
     "normalization_slot": "2026-10-25",
     "normalization_dispatched_at": "2026-10-25T05:29:45.485055+00:00",
-    "normalized_head_sha": "113733d4dca3c97334b7e438710cb1084e6083d7",
-    "normalization_run_id": 40165732919
+    "normalization_run_id": 40165732919,
+    "normalization_drift_count": 1,
+    "last_normalization_drift_head_sha": "c3bf3075880fd8c8ad886ef6b236a359748b0d89",
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
+    "normalized_head_sha": "c3bf3075880fd8c8ad886ef6b236a359748b0d89",
+    "image_head_sha": "c3bf3075880fd8c8ad886ef6b236a359748b0d89",
+    "merge_candidate_sha": "c3bf3075880fd8c8ad886ef6b236a359748b0d89"
   },
   "backlog": [
     {
@@ -1488,15 +1494,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-24T16:11:23.304297+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
       "at": "2026-10-24T16:16:17.568479+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2348,21 +2345,28 @@
         "attempt": 1,
         "pr_number": 1197
       }
+    },
+    {
+      "at": "2026-10-25T05:32:22.976808+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-25T05:31:27.768885+00:00",
+  "updated_at": "2026-10-25T05:32:22.976830+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 40165845123,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "LocalEditorial",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-25T05:31:27.768845+00:00"
+    "last_dispatch_at": "2026-10-25T05:31:27.768845+00:00",
+    "artifact_sha256": "c720c08386a55beb395879c2b0b41d519a677e082b5800d1b404b00b1f96cdda",
+    "source_id": "local-editorial://daycare-adjustment-difficulties/3"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2718,6 +2722,18 @@
       "previous_run_id": null,
       "observed_active_run_id": 40165845123,
       "dispatched_at": "2026-10-25T05:30:42.059436+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-25",
+      "inputs": {
+        "pr_number": "1197",
+        "slot": "2026-10-25"
+      },
+      "intent_at": "2026-10-25T05:31:58.896233+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2730,5 +2746,17 @@
   "processed_child_notifications": [
     "Deploy to Cloudflare Pages:40162798622",
     "Kesher Article Generation:40164009107"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
