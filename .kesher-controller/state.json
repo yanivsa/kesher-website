@@ -1498,12 +1498,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T11:21:23.197868+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-25T11:21:24.235340+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2279,9 +2273,19 @@
         "item_id": "video-20261025-182242-109b70354e",
         "task_id": "71c21c37-4f95-4728-8823-1f38b512ea3e"
       }
+    },
+    {
+      "at": "2026-10-25T16:35:24.139135+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261025-182242-109b70354e",
+        "task_id": "71c21c37-4f95-4728-8823-1f38b512ea3e"
+      }
     }
   ],
-  "updated_at": "2026-10-25T16:30:12.808972+00:00",
+  "updated_at": "2026-10-25T16:35:24.139149+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -2304,7 +2308,7 @@
     "last_error": null,
     "next_retry_at": "2026-10-25T16:16:42.550770+00:00",
     "run_id": 40209325764,
-    "processed_run_id": 40211303211,
+    "processed_run_id": 40209325764,
     "provider_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
     "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
     "same_failure_streak": 3,
@@ -2314,7 +2318,7 @@
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-10-25T15:56:49.514412+00:00",
     "attempts": 3,
-    "last_run_conclusion": "success",
+    "last_run_conclusion": "failure",
     "last_failed_run_id": 40209325764,
     "item_id": "video-20261025-182242-109b70354e",
     "source_slug": "transition-to-municipal-kindergarten",
