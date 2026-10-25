@@ -26,7 +26,11 @@
       "worker_restart_count": 0,
       "last_restart_at": null,
       "last_restart_run_id": null
-    }
+    },
+    "pr_number": 1197,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1197",
+    "current_pr_head_sha": "e846e633bb9905717b27367d256e70d5a4885ff1",
+    "jules_head_sha": "e846e633bb9905717b27367d256e70d5a4885ff1"
   },
   "backlog": [
     {
@@ -2694,7 +2698,20 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
+      "cycle": "2026-10-25",
+      "inputs": {
+        "pr_number": "1197",
+        "slot": "2026-10-25"
+      },
+      "intent_at": "2026-10-25T05:29:10.118808+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Article Generation",
     "run_id": 40164009107,
@@ -2704,5 +2721,17 @@
   },
   "processed_child_notifications": [
     "Deploy to Cloudflare Pages:40162798622"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
