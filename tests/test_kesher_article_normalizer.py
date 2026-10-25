@@ -22,6 +22,25 @@ class ArticleNormalizerTests(unittest.TestCase):
             "content": "TARGET",
         }
 
+    def test_recent_owned_article_cannot_omit_slug_or_management_marker(self):
+        post = {**self.target, "date": "2026-10-25"}
+        post.pop("slug", None)
+        post.pop("controllerManaged", None)
+        result = extract_target_article(self.main_posts, [*self.main_posts, post], "2026-10-25")
+        self.assertEqual(result.get("slug"), post["id"])
+        self.assertIs(result.get("controllerManaged"), True)
+        self.assertNotIn("slug", post)
+        self.assertNotIn("controllerManaged", post)
+
+    def test_owned_metadata_cutoff_matches_quality_policy_and_preserves_legacy(self):
+        from datetime import date
+        from scripts import article_claim_quality
+        from scripts.kesher_article_normalizer import OWNED_METADATA_ENFORCEMENT_DATE
+        self.assertEqual(OWNED_METADATA_ENFORCEMENT_DATE, date.fromisoformat(article_claim_quality.CANARY_POLICY_ENFORCEMENT_DATE))
+        post = {**self.target, "date": "2026-10-19"}
+        result = extract_target_article(self.main_posts, [*self.main_posts, post], "2026-10-19")
+        self.assertEqual(result, post)
+
     def test_extracts_only_target_slot_from_dirty_head(self):
         dirty_head = [
             {"id": "sep-03", "date": "2026-09-03", "title": "MUTATED", "content": "BAD"},
