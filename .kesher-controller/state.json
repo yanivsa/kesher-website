@@ -50,13 +50,13 @@
     "quality_content_sha256": "4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-25T06:55:49.313382+00:00",
+    "quality_checked_at": "2026-10-25T06:57:55.137157+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-25T06:10:59.806914+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40168790661,
-    "live_verified_at": "2026-10-25T06:56:14.472174+00:00"
+    "live_verified_at": "2026-10-25T06:57:56.912990+00:00"
   },
   "backlog": [
     {
@@ -2346,7 +2346,7 @@
     "attempt_count": 2,
     "status": "rejected",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-25T07:02:50.936179+00:00",
     "run_id": 40169950109,
     "processed_run_id": 40169199075,
     "provider_id": null,
@@ -2690,26 +2690,10 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-25",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "daycare-adjustment-difficulties",
-        "target_content_sha256": "4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8",
-        "target_item_id": "video-20261025-083025-4e09877ab3"
-      },
-      "intent_at": "2026-10-25T06:40:29.648261+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40169199075,
-      "observed_active_run_id": 40169950109,
-      "dispatched_at": "2026-10-25T06:40:29.648261+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 40169199075,
+    "run_id": 40169950109,
     "conclusion": "success",
     "source_slug": "daycare-adjustment-difficulties",
     "slot": "2026-10-25"
