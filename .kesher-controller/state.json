@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_pr_open",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -14,7 +14,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "last_dispatch_at": "2026-10-25T12:13:03.131964+00:00",
     "pr_number": 1201,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1201",
@@ -41,7 +41,9 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-10-25T15:19:38.465145+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-10-25T15:19:44.408119+00:00",
+    "next_deploy_retry_at": "2026-10-25T15:24:34.225223+00:00"
   },
   "backlog": [
     {
@@ -1494,12 +1496,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T10:32:02.011684+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-25T10:32:02.916943+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2207,9 +2203,19 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-25T15:19:44.408161+00:00",
+      "from": "article_pr_open",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-25T15:16:15.659565+00:00",
+  "updated_at": "2026-10-25T15:19:44.408168+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -2569,13 +2575,13 @@
     "claimed_at": "2026-10-25T12:12:56.608012+00:00"
   },
   "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/daycare-adjustment-difficulties",
-    "overview_youtube_url": "https://youtu.be/QbnceJ0QYw0",
-    "short_youtube_url": "https://youtu.be/brMKbQhv_hQ",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
+    "article_url": "https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten",
+    "overview_youtube_url": null,
+    "short_youtube_url": null,
+    "overview_edit_verified": false,
+    "short_portrait_verified": false,
+    "short_signature_verified": false,
+    "short_origin_verified": false
   },
   "pending_dispatches": {
     "deploy.yml": {
@@ -2583,10 +2589,11 @@
       "cycle": "2026-10-25",
       "inputs": {},
       "intent_at": "2026-10-25T15:19:34.225223+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "03158fb3aa69e9a9f4747940db0b99e40773e5ad"
+      "observed_active_run_id": 40206406296,
+      "dispatch_head_sha": "03158fb3aa69e9a9f4747940db0b99e40773e5ad",
+      "dispatched_at": "2026-10-25T15:19:34.225223+00:00"
     }
   },
   "last_child_notification": {
