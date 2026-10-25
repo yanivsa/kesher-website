@@ -1466,7 +1466,7 @@
     },
     {
       "cycle": "2026-10-25",
-      "status": "complete",
+      "status": "quarantined_ambiguous_identity",
       "exact_slug": null,
       "content_sha256": null,
       "article": {
@@ -1542,7 +1542,22 @@
         "blocked": false,
         "article_exhausted": true
       },
-      "archived_at": "2026-10-25T22:07:25.486102+00:00"
+      "archived_at": "2026-10-25T22:07:25.486102+00:00",
+      "media": {
+        "status": "quarantined_ambiguous_identity",
+        "long_status": "quarantined_ambiguous_identity",
+        "quarantined": true,
+        "quarantined_at": "2026-10-25T22:07:49.739547+00:00",
+        "quarantine_reason": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS",
+        "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-25",
+        "ambiguous_candidate_slugs": [
+          "daycare-adjustment-difficulties",
+          "transition-to-municipal-kindergarten"
+        ],
+        "ambiguous_candidate_count": 2
+      },
+      "quarantined": true,
+      "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-25"
     }
   ],
   "last_error": null,
@@ -2190,6 +2205,19 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-10-25T22:07:49.739566+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "backlog_quarantined_ambiguous_identity",
+      "details": {
+        "cycle": "2026-10-25",
+        "candidate_slugs": [
+          "daycare-adjustment-difficulties",
+          "transition-to-municipal-kindergarten"
+        ]
+      }
     }
   ],
   "updated_at": "2026-10-25T22:07:45.646942+00:00",
