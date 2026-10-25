@@ -1751,6 +1751,89 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
     return 0
 
 
+def durable_media_restore_required(
+    state: dict[str, Any],
+    *,
+    operation: str = "",
+    target_item_id: str = "",
+    target_slug: str = "",
+) -> bool:
+    """Return whether exact local media bytes must be hydrated for this invocation.
+
+    The lightweight state is sufficient for provider polling and fresh technical
+    retries. Local MP4/evidence bytes are required only when the next legal step
+    consumes those bytes directly (render/review/upload), plus the explicit final
+    wrong-voice fallback which revalidates the third provider artifact in place.
+    """
+    op = (operation or os.environ.get("OPERATION") or "").strip().lower()
+    if op in {"upload", "rebuild"}:
+        return True
+
+    items = [row for row in (state.get("items") or []) if isinstance(row, dict)]
+    requested_id = (target_item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
+    requested_slug = (
+        target_slug
+        or os.environ.get("TARGET_SLUG")
+        or os.environ.get("DERIVE_SLUG")
+        or ""
+    ).strip()
+
+    if requested_id:
+        candidates = [row for row in items if str(row.get("id") or "").strip() == requested_id]
+    elif requested_slug:
+        candidates = [
+            row
+            for row in items
+            if str((row.get("source") or {}).get("slug") or "").strip() == requested_slug
+            and row.get("uploaded") is not True
+            and row.get("status") != "superseded"
+        ]
+    else:
+        candidates = [
+            row
+            for row in items
+            if row.get("uploaded") is not True and row.get("status") != "superseded"
+        ]
+
+    if any(str(row.get("status") or "") in {"downloaded", "pending_review", "approved", "uploading"}
+           for row in candidates):
+        return True
+
+    try:
+        contract = json.loads(PRODUCTION_CONTRACT_FILE.read_text(encoding="utf-8"))
+        voice_policy = contract["video"]["voice_policy"]
+        female_attempts = int(voice_policy["female_attempts_before_fallback"])
+        final_male_fallback = (
+            voice_policy["fallback_voice_after_failed_female_attempts"] == "male"
+            and voice_policy["accept_male_on_final_female_attempt"] is True
+        )
+    except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
+        raise PipelineError(f"Voice fallback policy is unreadable: {type(exc).__name__}") from exc
+
+    if final_male_fallback:
+        for row in candidates:
+            technical_note = str((row.get("review_notes") or {}).get("technical") or "")
+            wrong_voice = (
+                row.get("failure_signature") == "wrong_narrator_gender"
+                or "Detected male voice" in technical_note
+            )
+            try:
+                attempt = int(row.get("fresh_generation_attempt") or 1)
+            except (TypeError, ValueError):
+                attempt = 1
+            if (
+                row.get("status") == "rejected"
+                and row.get("technical_verified") is not True
+                and wrong_voice
+                and attempt >= female_attempts
+                and bool(str(row.get("raw_mp4") or "").strip())
+                and bool(str(row.get("task_id") or "").strip())
+            ):
+                return True
+
+    return False
+
+
 def prune_uploaded_media() -> int:
     state = load_state()
     removed = 0
@@ -2520,9 +2603,11 @@ def build_parser() -> argparse.ArgumentParser:
     mode.add_argument("--review-item")
     mode.add_argument("--remotion-rebuild-item")
     mode.add_argument("--prune-uploaded-media", action="store_true")
+    mode.add_argument("--requires-durable-media-restore", action="store_true")
     mode.add_argument("--report-json", action="store_true")
     parser.add_argument("--slug")
     parser.add_argument("--item-id")
+    parser.add_argument("--operation", choices=("full", "generate", "recovery", "upload", "rebuild", "preflight"))
     parser.add_argument("--max-wait-seconds", type=int, default=3600)
     parser.add_argument("--require-israel-hour", type=int, choices=range(24))
     parser.add_argument("--visual-status", choices=sorted(ALLOWED_REVIEW))
@@ -2556,6 +2641,16 @@ def main() -> int:
         return rebuild_rejected_with_remotion(args.remotion_rebuild_item)
     if args.prune_uploaded_media:
         return prune_uploaded_media()
+    if args.requires_durable_media_restore:
+        state = load_state()
+        required = durable_media_restore_required(
+            state,
+            operation=args.operation or "",
+            target_item_id=args.item_id or "",
+            target_slug=args.slug or "",
+        )
+        print("true" if required else "false")
+        return 0
     if args.report_json:
         return report()
     return run_generation(
