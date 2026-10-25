@@ -2679,7 +2679,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-25",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "daycare-adjustment-difficulties",
+        "derive_content_sha256": "4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8",
+        "derive_long_item_id": "video-20261025-090029-4e09877ab3-a3"
+      },
+      "intent_at": "2026-10-25T08:00:56.506529+00:00",
+      "status": "intent",
+      "previous_run_id": 40172898886,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
     "run_id": 40172898886,
@@ -2710,5 +2725,21 @@
       "superseded_run_id": 40168193080,
       "reason": "deploy for SHA ecc9dca2dcf1a2620865c52bef4a8b1fa98c4b70 superseded by newer main SHA 006fd42ee41c50769d5dea795673c5f7f74320ed"
     }
-  ]
+  ],
+  "interventions": {
+    "v5|daycare-adjustment-difficulties|4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8|short": {
+      "pipeline_id": "v5",
+      "slug": "daycare-adjustment-difficulties",
+      "content_sha256": "4e09877ab37313dcf33c95b5686ad90eab5de50f25adb357a9f387289d8e56f8",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-10-25T10",
+      "last_fingerprint": "b028eab82ff62a8e557dce19f916c41bfdbb75028d4844396c15aaba0d5a0898",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-25T08:00:56.506529+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
