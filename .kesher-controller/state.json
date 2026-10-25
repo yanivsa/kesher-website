@@ -15,7 +15,11 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-10-25T12:13:03.131964+00:00"
+    "last_dispatch_at": "2026-10-25T12:13:03.131964+00:00",
+    "pr_number": 1201,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1201",
+    "current_pr_head_sha": "083ff8e93b18fb2484959d8aa86db0e22a957cbf",
+    "jules_head_sha": "083ff8e93b18fb2484959d8aa86db0e22a957cbf"
   },
   "backlog": [
     {
@@ -2456,25 +2460,24 @@
     "short_origin_verified": true
   },
   "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
       "cycle": "2026-10-25",
       "inputs": {
-        "slot": "2026-10-25",
-        "topic_brief": "אשכול מעון לגן. נושא/כאב: הורה שמכין ילד למעבר ממעון/גן פרטי לגן עירייה: קבוצה גדולה יותר, צוות חדש, פחות תשומת לב אישית, שגרה אחרת ואי-ודאות לפני היום הראשון. המאמר עוסק בהכנה לפני המעבר, לא בהסתגלות שכבר התחילה. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: transition-to-municipal-kindergarten. כותרת עבודה: מעבר לגן עירייה: איך מכינים ילד לשינוי הגדול בלי להלחיץ אותו? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-transition-to-municipal-kindergarten\nRequired Primary Keyword: מעבר לגן עירייה"
+        "pr_number": "1201",
+        "slot": "2026-10-25"
       },
-      "intent_at": "2026-10-25T12:12:54.654744+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-25T12:40:39.883205+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-25T12:12:54.654744+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 40174989301,
+    "workflow": "Kesher Article Generation",
+    "run_id": 40192138366,
     "conclusion": "success",
-    "source_slug": "daycare-adjustment-difficulties",
+    "source_slug": null,
     "slot": "2026-10-25"
   },
   "processed_child_notifications": [],
