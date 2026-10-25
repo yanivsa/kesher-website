@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40192138366,
@@ -45,7 +45,7 @@
     "last_deploy_dispatch_at": "2026-10-25T15:19:44.408119+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40206406296,
-    "live_verified_at": "2026-10-25T17:17:00.721722+00:00"
+    "live_verified_at": "2026-10-25T17:17:32.684969+00:00"
   },
   "backlog": [
     {
@@ -1498,24 +1498,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-25T11:31:31.426284+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-25T11:36:28.096286+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-25T11:36:29.381090+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-25T11:36:30.565122+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2287,9 +2269,27 @@
         "item_id": "video-20261025-184317-109b70354e",
         "long_item_id": "video-20261025-182242-109b70354e"
       }
+    },
+    {
+      "at": "2026-10-25T17:17:32.684996+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-25T17:17:33.978233+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-25T17:17:35.203796+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-25T17:11:04.627165+00:00",
+  "updated_at": "2026-10-25T17:17:35.203812+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -2357,19 +2357,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40215226497,
     "processed_run_id": null,
-    "provider_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
+    "provider_id": "689473fc-a1a1-4882-b5be-27255ae62880",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-25T17:11:04.627142+00:00",
-    "artifact_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
-    "source_id": "ad815fed-89f9-4afa-9219-71e1db7deae3",
-    "adopted_from_long_item_id": "video-20261025-182242-109b70354e",
+    "artifact_id": "689473fc-a1a1-4882-b5be-27255ae62880",
+    "source_id": "8fae7ac1-fa9c-4ce6-90f4-5e2ef5ba4646",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:transition-to-municipal-kindergarten:109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5:video-20261025-184317-109b70354e",
       "hard_started_at": "2026-10-25T16:43:27.093924+00:00",
@@ -2377,7 +2377,125 @@
       "last_fingerprint": "b306ed4e9a7887b312f73d0642f8159a450ddd49d876bdb95d34333c23174c86",
       "recovery_count": 1,
       "last_recovery_at": "2026-10-25T17:10:49.009132+00:00"
-    }
+    },
+    "source": {
+      "id": "transition-to-municipal-kindergarten",
+      "slug": "transition-to-municipal-kindergarten",
+      "title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
+      "date": "2026-10-25",
+      "category": "הדרכת הורים",
+      "subcategory": "הגיל הרך",
+      "excerpt": "המעבר מגן פרטי קטן ועוטף לגן עירייה עם יותר ילדים ופחות אנשי צוות יכול להיות מלחיץ. איך נכין את הילדים לשגרה החדשה, לצוות החדש ולעצמאות הנדרשת מהם, מבלי לייצר אצלם חרדה מוקדמת?",
+      "canonical_url": "https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten",
+      "content_sha256": "109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5",
+      "video_title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
+      "short_title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
+        "description": "המעבר מגן פרטי קטן ועוטף לגן עירייה עם יותר ילדים ופחות אנשי צוות יכול להיות מלחיץ. איך נכין את הילדים לשגרה החדשה, לצוות החדש ולעצמאות הנדרשת מהם, מבלי לייצר אצלם חרדה מוקדמת?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/transition-to-municipal-kindergarten\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "הגיל הרך"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו",
+        "description": "המעבר מגן פרטי קטן ועוטף לגן עירייה עם יותר ילדים ופחות אנשי צוות יכול להיות מלחיץ. איך נכין את הילדים לשגרה החדשה, לצוות החדש ולעצמאות הנדרשת מהם, מבלי לייצר אצלם חרדה מוקדמת?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/transition-to-municipal-kindergarten\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "הגיל הרך"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "689473fc-a1a1-4882-b5be-27255ae62880",
+    "raw_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498",
+    "final_sha256": "8dd0df226d1cbf72c3320f208ffa63a130c568a27a2bd484e8a04676ad527d26",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 77.0,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 77.0,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "ad815fed-89f9-4afa-9219-71e1db7deae3",
+      "task_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
+      "artifact_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
+      "raw_sha256": "406d0fe28806d2634f553186a801b5a01a70f055cb6f4c3011b819ee104655e7"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 77.0,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498",
+      "final_sha256": "8dd0df226d1cbf72c3320f208ffa63a130c568a27a2bd484e8a04676ad527d26",
+      "raw_audio_sha256": "696da2863459b74ffc51382434cf2d60bbb5ee616c66e137c36eb9afc2653d89",
+      "final_audio_sha256": "696da2863459b74ffc51382434cf2d60bbb5ee616c66e137c36eb9afc2653d89",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 77.067029
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 77.067029
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "8dd0df226d1cbf72c3320f208ffa63a130c568a27a2bd484e8a04676ad527d26",
+      "raw_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "617632604891381072936e76a15773f768ee2dea851e8dc647615e55096fed85",
+      "source_duration_seconds": 77.0,
+      "final_duration_seconds": 77.0,
+      "start_seconds": 74.0,
+      "end_seconds": 77.0,
+      "audio_source_sha256": "b104e0a5c67e52fb0bbea7c2681554a826237f0bf4ef94a2ec786e9d3662c498"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261025-184317-109b70354e",
+    "type": "article_short",
+    "youtube_id": "f_GsGagsVww",
+    "youtube_url": "https://youtu.be/f_GsGagsVww",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "617632604891381072936e76a15773f768ee2dea851e8dc647615e55096fed85",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
