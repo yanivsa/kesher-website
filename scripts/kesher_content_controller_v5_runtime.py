@@ -248,14 +248,17 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
         return v5._newest(rows)
 
     def _backlog_media_preflight(self, state):
+        rows = state.get("backlog") or state.get("media_recovery_backlog") or []
         visited = set()
         deferred = False
         while True:
             # Shallow views retain durable row mutations but never remove history.
             candidates = dict(state)
-            for key in ("backlog", "media_recovery_backlog"):
-                candidates[key] = [row for row in state.get(key) or [] if id(row) not in visited]
+            candidates["backlog"] = [row for row in rows if id(row) not in visited]
+            candidates["media_recovery_backlog"] = []
             row, source = self._published_backlog_source(candidates, require_public=False)
+            if "history" in candidates:
+                state["history"] = candidates["history"]
             if row is None or source is None or id(row) in visited:
                 if deferred:
                     kind = "wait" if state.get("status") == "complete" else "blocked"

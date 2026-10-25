@@ -361,6 +361,40 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
         self.assertEqual(len(gh.dispatches), 1)
         self.assertEqual(len(probes), 2)
 
+    def test_exhausted_primary_cannot_fall_back_to_stale_lower_budget_copy(self):
+        controller, state, gh, probes = self._starvation_fixture(all_exhausted=True)
+        state["backlog"] = state["backlog"][:1]
+        stale = copy.deepcopy(state["backlog"][0])
+        stale["article"]["deploy_attempts"] = 0
+        state["media_recovery_backlog"] = [stale]
+        action = controller._backlog_media_preflight(state)
+        self.assertEqual(action.kind, "wait")
+        self.assertEqual(gh.dispatches, [])
+        self.assertEqual(stale["article"]["deploy_attempts"], 0)
+        self.assertEqual(len(probes), 1)
+
+    def test_fallback_collection_remains_usable_when_primary_initially_empty(self):
+        controller, state, gh, probes = self._starvation_fixture()
+        state["media_recovery_backlog"] = state.pop("backlog")
+        action = controller._backlog_media_preflight(state)
+        self.assertEqual(action.kind, "dispatch_backlog_deploy")
+        self.assertEqual(action.inputs["target_slug"], "older-eligible")
+        self.assertEqual(len(gh.dispatches), 1)
+
+    def test_candidate_quarantine_history_survives_missing_and_full_history(self):
+        for size in (None, 100):
+            with self.subTest(size=size):
+                controller, state, gh, probes = self._starvation_fixture()
+                state["backlog"][0]["article"]["slug"] = "missing-identity"
+                if size is None:
+                    state.pop("history")
+                else:
+                    state["history"] = [{"reason": f"old-{i}"} for i in range(size)]
+                action = controller._backlog_media_preflight(state)
+                self.assertEqual(action.kind, "dispatch_backlog_deploy")
+                self.assertTrue(any(x.get("reason") == "backlog_quarantined_ambiguous_identity" for x in state.get("history", [])))
+                self.assertLessEqual(len(state.get("history", [])), 100)
+
     def test_published_backlog_source_rejects_title_only_public_page(self):
         gh = FakeGitHub()
         post = prior_article()

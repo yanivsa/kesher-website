@@ -13,7 +13,7 @@ Repair contract:
 - Recheck public reality next tick so a later external publication can recover an exhausted row.
 - Keep current actionable-cycle priority.
 
-Validation: three behavioral regressions observed failing before repair and passing after repair; 106 focused backlog/controller/rollover/liveness tests passed. Required CI and production replay remain separate completion gates.
+Validation: three behavioral regressions observed failing before repair and passing after repair; 118 focused backlog/controller/rollover/liveness/authority tests passed. Independent review found and reproduced two additional regressions: switching to a stale fallback collection could bypass a primary deployment budget, and shallow state views lost root history assignments. Both were observed RED and fixed; collection precedence is now fixed for the tick and selector history is written back with its existing bound. Required CI and production replay remain separate completion gates.
 
 Learning: test queue fairness with multiple mixed-state rows, not only single-row failure handling. A green workflow or green deploy does not prove public article identity. Direct HTTP probes from the owner cloud environment returned 403, which is inconclusive about production publication; do not infer an outage or weaken the public identity gate.
 
