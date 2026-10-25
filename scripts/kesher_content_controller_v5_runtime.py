@@ -248,50 +248,65 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
         return v5._newest(rows)
 
     def _backlog_media_preflight(self, state):
-        row, source = self._published_backlog_source(state, require_public=False)
-        if row is None or source is None:
-            return None
-        media = row["media"]
+        rows = state.get("backlog") or state.get("media_recovery_backlog") or []
+        visited = set()
+        deferred = False
+        while True:
+            # Shallow views retain durable row mutations but never remove history.
+            candidates = dict(state)
+            candidates["backlog"] = [row for row in rows if id(row) not in visited]
+            candidates["media_recovery_backlog"] = []
+            row, source = self._published_backlog_source(candidates, require_public=False)
+            if "history" in candidates:
+                state["history"] = candidates["history"]
+            if row is None or source is None or id(row) in visited:
+                if deferred:
+                    kind = "wait" if state.get("status") == "complete" else "blocked"
+                    return v5.core.Action(kind, "prior-cycle article deployment attempts exhausted")
+                return None
+            visited.add(id(row))
+            media = row["media"]
 
-        article_url = str(media.get("article_url") or f"{v5.core.SITE_URL}/blog/{source['slug']}")
-        status, body = self.site.get(article_url)
-        article_live = status == 200 and v5.core.article_is_public(
-            body,
-            str(media.get("article_title") or ""),
-            source["slug"],
-            source["content_sha256"],
-        )
-        media["article_live"] = bool(article_live)
-        if not article_live:
-            if self.github.active_workflow_run(v5.core.DEPLOY_WORKFLOW, production_only=True):
-                media["article_deploy_status"] = "running"
-                return v5.core.Action("wait", "prior-cycle article deployment is already active")
-
-            article_state = row.setdefault("article", {})
-            deploy_count = int(article_state.get("deploy_attempts") or 0)
-            if deploy_count >= MAX_BACKLOG_DEPLOY_DISPATCHES:
-                media["article_deploy_status"] = "exhausted"
-                media["last_error"] = "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED"
-                return v5.core.Action("blocked", "prior-cycle article deployment attempts exhausted")
-
-            self.github.dispatch(v5.core.DEPLOY_WORKFLOW)
-            article_state.update({
-                "deploy_attempts": deploy_count + 1,
-                "last_deploy_dispatch_at": v5.core.utc_now(),
-            })
-            media.update({
-                "article_deploy_status": "running",
-                "article_last_deploy_dispatch_at": v5.core.utc_now(),
-                "last_error": None,
-            })
-            return v5.core.Action(
-                "dispatch_backlog_deploy",
-                "dispatched deployment for exact prior-cycle article already present on main",
-                {
-                    "target_slug": source["slug"],
-                    "target_content_sha256": source["content_sha256"],
-                },
+            article_url = str(media.get("article_url") or f"{v5.core.SITE_URL}/blog/{source['slug']}")
+            status, body = self.site.get(article_url)
+            article_live = status == 200 and v5.core.article_is_public(
+                body,
+                str(media.get("article_title") or ""),
+                source["slug"],
+                source["content_sha256"],
             )
+            media["article_live"] = bool(article_live)
+            if not article_live:
+                article_state = row.setdefault("article", {})
+                deploy_count = int(article_state.get("deploy_attempts") or 0)
+                if deploy_count >= MAX_BACKLOG_DEPLOY_DISPATCHES:
+                    media["article_deploy_status"] = "exhausted"
+                    media["last_error"] = "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED"
+                    deferred = True
+                    continue
+                if self.github.active_workflow_run(v5.core.DEPLOY_WORKFLOW, production_only=True):
+                    media["article_deploy_status"] = "running"
+                    return v5.core.Action("wait", "prior-cycle article deployment is already active")
+
+                self.github.dispatch(v5.core.DEPLOY_WORKFLOW)
+                article_state.update({
+                    "deploy_attempts": deploy_count + 1,
+                    "last_deploy_dispatch_at": v5.core.utc_now(),
+                })
+                media.update({
+                    "article_deploy_status": "running",
+                    "article_last_deploy_dispatch_at": v5.core.utc_now(),
+                    "last_error": None,
+                })
+                return v5.core.Action(
+                    "dispatch_backlog_deploy",
+                    "dispatched deployment for exact prior-cycle article already present on main",
+                    {
+                        "target_slug": source["slug"],
+                        "target_content_sha256": source["content_sha256"],
+                    },
+                )
+            break
 
         media["article_deploy_status"] = "complete"
         if media.get("last_error") == "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED":
