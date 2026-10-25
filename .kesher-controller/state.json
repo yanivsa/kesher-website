@@ -2365,7 +2365,15 @@
     "last_dispatch_at": "2026-10-25T16:41:29.214228+00:00",
     "artifact_id": "71c21c37-4f95-4728-8823-1f38b512ea3e",
     "source_id": "ad815fed-89f9-4afa-9219-71e1db7deae3",
-    "adopted_from_long_item_id": "video-20261025-182242-109b70354e"
+    "adopted_from_long_item_id": "video-20261025-182242-109b70354e",
+    "watchdog": {
+      "identity": "short:transition-to-municipal-kindergarten:109b70354e35782206c450fed874b15ec89ca78cb2352bfebdad69cbc054a1b5:video-20261025-184317-109b70354e",
+      "hard_started_at": "2026-10-25T16:43:27.093924+00:00",
+      "last_progress_at": "2026-10-25T16:50:15.575051+00:00",
+      "last_fingerprint": "b306ed4e9a7887b312f73d0642f8159a450ddd49d876bdb95d34333c23174c86",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
