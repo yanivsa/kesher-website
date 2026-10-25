@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-26",
-  "status": "article_normalizing",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "exhausted",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40240966780,
@@ -1582,7 +1582,12 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-25"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+    "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)",
+    "at": "2026-10-25T23:16:22.321639+00:00"
+  },
   "history": [
     {
       "at": "2026-10-25T17:55:22.788307+00:00",
@@ -2295,9 +2300,18 @@
         "pr_number": 1213,
         "slot": "2026-10-26"
       }
+    },
+    {
+      "at": "2026-10-25T23:16:22.321657+00:00",
+      "from": "article_normalizing",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
+      }
     }
   ],
-  "updated_at": "2026-10-25T23:01:48.090594+00:00",
+  "updated_at": "2026-10-25T23:16:22.321661+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
