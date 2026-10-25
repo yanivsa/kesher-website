@@ -269,6 +269,12 @@ def recover_primary_keyword_conflict(
     active = state.get("active_idea")
     if not isinstance(active, dict) or str(active.get("status") or "") in {"complete", "rejected"}:
         return None
+    current_cycle = _clean(state.get("cycle"))
+    publication_slot = _clean(active.get("publication_slot"))
+    if current_cycle and publication_slot and publication_slot != current_cycle:
+        # A prior-cycle claimed idea must be finalized only by the existing verified
+        # backlog path. Its now-published title is completion evidence, not a collision.
+        return None
     if not _keyword_conflict_recovery_eligible(state):
         return None
 
@@ -283,7 +289,7 @@ def recover_primary_keyword_conflict(
     prior_attempts = int(article.get("attempts") or article.get("attempt_count") or 0)
     prior_status = str(state.get("status") or "")
     previous_error = copy.deepcopy(state.get("last_error"))
-    publication_slot = _clean(active.get("publication_slot") or state.get("cycle"))
+    replacement_slot = publication_slot or current_cycle
 
     rejected = copy.deepcopy(active)
     rejected.update({
@@ -298,7 +304,7 @@ def recover_primary_keyword_conflict(
     state["idea_history"] = state["idea_history"][-MAX_HISTORY:]
     state["active_idea"] = None
 
-    replacement = claim_next(state, publication_slot, now_iso=now_iso) if publication_slot else None
+    replacement = claim_next(state, replacement_slot, now_iso=now_iso) if replacement_slot else None
     history = state.get("history") if isinstance(state.get("history"), list) else []
     if replacement is None:
         state["status"] = "blocked"
