@@ -1479,15 +1479,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-24T15:15:59.848687+00:00",
-      "from": "waiting_for_article_window",
-      "to": "blocked",
-      "reason": "HEBCAL_SUNSET_UNAVAILABLE",
-      "details": {
-        "message": "HEBCAL_SUNSET_UNAVAILABLE: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>"
-      }
-    },
-    {
       "at": "2026-10-24T15:21:16.188045+00:00",
       "from": "blocked",
       "to": "waiting_for_article_window",
@@ -2334,9 +2325,18 @@
       "details": {
         "session_id": null
       }
+    },
+    {
+      "at": "2026-10-25T05:24:00.113405+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-25T05:20:00.714458+00:00",
+  "updated_at": "2026-10-25T05:24:00.113414+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
