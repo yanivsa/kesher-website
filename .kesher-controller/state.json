@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-25",
-  "status": "article_deploy_wait",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -14,7 +14,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 3,
+    "deploy_attempts": 4,
     "last_dispatch_at": "2026-10-25T05:01:25.683925+00:00",
     "watchdog": {
       "identity": "2026-10-25",
@@ -53,8 +53,8 @@
     "quality_checked_at": "2026-10-25T06:10:52.659230+00:00",
     "quality_violations": [],
     "live": false,
-    "last_deploy_dispatch_at": "2026-10-25T06:00:58.214096+00:00",
-    "next_deploy_retry_at": "2026-10-25T06:05:47.479790+00:00",
+    "last_deploy_dispatch_at": "2026-10-25T06:10:59.806914+00:00",
+    "next_deploy_retry_at": "2026-10-25T06:25:50.002940+00:00",
     "deploy_run_id": 40167587223
   },
   "backlog": [
@@ -1508,15 +1508,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-24T16:36:32.375047+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
       "at": "2026-10-24T16:41:04.068749+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2368,9 +2359,19 @@
       "details": {
         "retry_at": "2026-10-25T06:05:47.479790+00:00"
       }
+    },
+    {
+      "at": "2026-10-25T06:10:59.806956+00:00",
+      "from": "article_deploy_wait",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 4
+      }
     }
   ],
-  "updated_at": "2026-10-25T06:05:50.103210+00:00",
+  "updated_at": "2026-10-25T06:10:59.806963+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2735,10 +2736,11 @@
       "cycle": "2026-10-25",
       "inputs": {},
       "intent_at": "2026-10-25T06:10:50.002940+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40167587223,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "ecc9dca2dcf1a2620865c52bef4a8b1fa98c4b70"
+      "observed_active_run_id": 40168193080,
+      "dispatch_head_sha": "ecc9dca2dcf1a2620865c52bef4a8b1fa98c4b70",
+      "dispatched_at": "2026-10-25T06:10:50.002940+00:00"
     }
   },
   "last_child_notification": {
