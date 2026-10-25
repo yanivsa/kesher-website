@@ -2212,7 +2212,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-25T15:11:17.051236+00:00",
     "artifact_sha256": "d0e6c5bfbb3b9088f00c6542974906285de0826098099234f60f585dfd92edb2",
-    "source_id": "local-editorial://transition-to-municipal-kindergarten/4"
+    "source_id": "local-editorial://transition-to-municipal-kindergarten/4",
+    "run_id": 40205744086
   },
   "long_video": {
     "attempt_count": 0,
