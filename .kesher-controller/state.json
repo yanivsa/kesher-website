@@ -1604,7 +1604,27 @@
         "blocked": false,
         "article_exhausted": false
       },
-      "archived_at": "2026-10-26T22:05:44.217346+00:00"
+      "archived_at": "2026-10-26T22:05:44.217346+00:00",
+      "media": {
+        "source_slug": "municipal-kindergarten-adjustment",
+        "source_content_sha256": "d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836",
+        "article_title": "הסתגלות לגן עירייה: מתי הבכי טבעי ומתי כדאי להתערב?",
+        "article_url": "https://kesher.saharoni.com/blog/municipal-kindergarten-adjustment",
+        "article_live": true,
+        "article_deploy_status": "complete",
+        "long_status": "complete",
+        "long_item_id": "video-20261026-131504-d4ece4f847-a2",
+        "long_youtube_url": "https://youtu.be/FzAzvOP15Mo",
+        "long_youtube_id": "FzAzvOP15Mo",
+        "short_status": "complete",
+        "short_item_id": "video-20261026-133251-d4ece4f847",
+        "short_youtube_url": "https://youtu.be/xkLKquTygoQ",
+        "short_youtube_id": "xkLKquTygoQ",
+        "short_width": 1080,
+        "short_height": 1920,
+        "complete": true,
+        "completed_at": "2026-10-26T22:06:14.841824+00:00"
+      }
     }
   ],
   "last_error": null,
@@ -2148,9 +2168,19 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-10-26T22:06:14.841853+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
+      "details": {
+        "backlog_cycle": "2026-10-26",
+        "source_slug": "municipal-kindergarten-adjustment"
+      }
     }
   ],
-  "updated_at": "2026-10-26T22:06:08.705167+00:00",
+  "updated_at": "2026-10-26T22:06:14.841857+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
