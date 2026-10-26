@@ -2555,7 +2555,15 @@
     "last_dispatch_at": "2026-10-26T11:31:33.343326+00:00",
     "artifact_id": "7120cf18-bee8-4481-bb22-cb1948f69d3f",
     "source_id": "e0049592-e4f2-40a6-afa8-b0b9fe64daed",
-    "adopted_from_long_item_id": "video-20261026-131504-d4ece4f847-a2"
+    "adopted_from_long_item_id": "video-20261026-131504-d4ece4f847-a2",
+    "watchdog": {
+      "identity": "short:municipal-kindergarten-adjustment:d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836:video-20261026-133251-d4ece4f847",
+      "hard_started_at": "2026-10-26T11:32:58.318089+00:00",
+      "last_progress_at": "2026-10-26T11:39:55.222042+00:00",
+      "last_fingerprint": "4fb7a2176a1ec46344c4ca136c3973ced1ed983898a3e3121db9075827ead814",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
