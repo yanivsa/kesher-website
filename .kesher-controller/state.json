@@ -1588,19 +1588,9 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-26T03:01:49.250722+00:00"
+    "at": "2026-10-26T03:06:28.744197+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-25T18:45:54.359146+00:00",
-      "from": "complete",
-      "to": "article_needed",
-      "reason": "owner_run_now_cycle_started",
-      "details": {
-        "idea_id": "parenting-p1-changing-kindergarten-midyear",
-        "publication_slot": "2026-10-25"
-      }
-    },
     {
       "at": "2026-10-25T18:46:08.329331+00:00",
       "from": "article_needed",
@@ -2503,9 +2493,18 @@
       "details": {
         "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-10-26T03:06:28.744220+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
+      }
     }
   ],
-  "updated_at": "2026-10-26T03:01:49.250744+00:00",
+  "updated_at": "2026-10-26T03:06:28.744226+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
