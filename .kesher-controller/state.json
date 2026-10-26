@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-26",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40240966780,
@@ -58,7 +58,7 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-26T10:45:04.766463+00:00",
-    "live_verified_at": "2026-10-26T12:09:28.959391+00:00"
+    "live_verified_at": "2026-10-26T12:09:57.114299+00:00"
   },
   "backlog": [
     {
@@ -1606,33 +1606,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-26T04:21:17.415213+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-26T04:26:18.783707+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-26T04:41:01.661058+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-26T04:46:33.057563+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2476,9 +2449,27 @@
         "item_id": "video-20261026-133251-d4ece4f847",
         "long_item_id": "video-20261026-131504-d4ece4f847-a2"
       }
+    },
+    {
+      "at": "2026-10-26T12:09:57.114332+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-26T12:09:58.274117+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-26T12:09:59.539991+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-26T12:01:08.127117+00:00",
+  "updated_at": "2026-10-26T12:09:59.540012+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2544,19 +2535,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40319338229,
     "processed_run_id": null,
-    "provider_id": "7120cf18-bee8-4481-bb22-cb1948f69d3f",
+    "provider_id": "676c76d2-246b-4abf-abb0-1064ccca4cac",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-26T12:01:08.127088+00:00",
-    "artifact_id": "7120cf18-bee8-4481-bb22-cb1948f69d3f",
-    "source_id": "e0049592-e4f2-40a6-afa8-b0b9fe64daed",
-    "adopted_from_long_item_id": "video-20261026-131504-d4ece4f847-a2",
+    "artifact_id": "676c76d2-246b-4abf-abb0-1064ccca4cac",
+    "source_id": "6863c000-b361-401b-85f1-2877f8595cee",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:municipal-kindergarten-adjustment:d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836:video-20261026-133251-d4ece4f847",
       "hard_started_at": "2026-10-26T11:32:58.318089+00:00",
@@ -2564,7 +2555,125 @@
       "last_fingerprint": "4fb7a2176a1ec46344c4ca136c3973ced1ed983898a3e3121db9075827ead814",
       "recovery_count": 1,
       "last_recovery_at": "2026-10-26T12:00:47.334318+00:00"
-    }
+    },
+    "source": {
+      "id": "municipal-kindergarten-adjustment",
+      "slug": "municipal-kindergarten-adjustment",
+      "title": "הסתגלות לגן עירייה: מתי הבכי טבעי ומתי כדאי להתערב?",
+      "date": "2026-10-26",
+      "category": "הדרכת הורים",
+      "subcategory": "גיל הרך",
+      "excerpt": "הימים הראשונים בגן עירייה מביאים איתם בכי, עייפות והסתגרות. מה נחשב להסתגלות סבירה, אילו פעולות יכולות לעזור לילד להתרגל לשגרה החדשה, ומתי כדאי לערב איש מקצוע?",
+      "canonical_url": "https://kesher.saharoni.com/blog/municipal-kindergarten-adjustment",
+      "content_sha256": "d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836",
+      "video_title": "הסתגלות לגן עירייה: מתי הבכי טבעי ומתי כדאי להתערב?",
+      "short_title": "הסתגלות לגן עירייה: מתי הבכי טבעי ומתי כדאי להתערב?",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "הסתגלות לגן עירייה: מתי הבכי טבעי ומתי כדאי להתערב?",
+        "description": "הימים הראשונים בגן עירייה מביאים איתם בכי, עייפות והסתגרות. מה נחשב להסתגלות סבירה, אילו פעולות יכולות לעזור לילד להתרגל לשגרה החדשה, ומתי כדאי לערב איש מקצוע?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/municipal-kindergarten-adjustment\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "גיל הרך"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: הסתגלות לגן עירייה: מתי הבכי טבעי ומתי כדאי להתערב?",
+        "description": "הימים הראשונים בגן עירייה מביאים איתם בכי, עייפות והסתגרות. מה נחשב להסתגלות סבירה, אילו פעולות יכולות לעזור לילד להתרגל לשגרה החדשה, ומתי כדאי לערב איש מקצוע?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/municipal-kindergarten-adjustment\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "גיל הרך"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "676c76d2-246b-4abf-abb0-1064ccca4cac",
+    "raw_sha256": "5d199e64c2c263e0d6b5f721e9f76f6351c81bb6667628da815441477b6a012d",
+    "final_sha256": "d00854d9d96e35f70caf8d0b7fa06f8b3a49c9de80b3967ab42106195b85efa5",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 88.767,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 88.767,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "e0049592-e4f2-40a6-afa8-b0b9fe64daed",
+      "task_id": "7120cf18-bee8-4481-bb22-cb1948f69d3f",
+      "artifact_id": "7120cf18-bee8-4481-bb22-cb1948f69d3f",
+      "raw_sha256": "1a0c578d0dcd1e4b49fd7f31fff6e9bffee35a674415e8c9f7eefca8f009d882"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 88.767,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "5d199e64c2c263e0d6b5f721e9f76f6351c81bb6667628da815441477b6a012d",
+      "final_sha256": "d00854d9d96e35f70caf8d0b7fa06f8b3a49c9de80b3967ab42106195b85efa5",
+      "raw_audio_sha256": "1b0c687c218d856033bfa74c4840ffe919937fc71c1b3a126d04280b9cdf58b1",
+      "final_audio_sha256": "1b0c687c218d856033bfa74c4840ffe919937fc71c1b3a126d04280b9cdf58b1",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 88.816327
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 88.816327
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "d00854d9d96e35f70caf8d0b7fa06f8b3a49c9de80b3967ab42106195b85efa5",
+      "raw_sha256": "5d199e64c2c263e0d6b5f721e9f76f6351c81bb6667628da815441477b6a012d",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "545051c5887986dbcee42f34b03f5c0378f86ee5664e836f536677e4c5a384f1",
+      "source_duration_seconds": 88.767,
+      "final_duration_seconds": 88.767,
+      "start_seconds": 85.767,
+      "end_seconds": 88.767,
+      "audio_source_sha256": "5d199e64c2c263e0d6b5f721e9f76f6351c81bb6667628da815441477b6a012d"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261026-133251-d4ece4f847",
+    "type": "article_short",
+    "youtube_id": "xkLKquTygoQ",
+    "youtube_url": "https://youtu.be/xkLKquTygoQ",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "545051c5887986dbcee42f34b03f5c0378f86ee5664e836f536677e4c5a384f1",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
