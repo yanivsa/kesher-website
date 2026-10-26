@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import copy
+import importlib.util
 import json
 import os
 import re
@@ -2165,6 +2166,21 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         errors.extend(quality.full_article_violations(post))
         return errors
 
+    def _request_article_text_repair(self, pr: dict[str, Any], errors: list[str]) -> bool:
+        """Request bounded same-PR text repair without entering the image/merge bridge."""
+        key = os.environ.get("JULES_API_KEY", "").strip()
+        if not key:
+            raise RuntimeError("JULES_REPAIR_CREDENTIAL_MISSING")
+        path = Path(__file__).resolve().parents[1] / ".github/scripts/article-pr-controller-v3.py"
+        spec = importlib.util.spec_from_file_location("kesher_pre_image_repair", path)
+        if spec is None or spec.loader is None:
+            raise RuntimeError("JULES_REPAIR_ADAPTER_UNAVAILABLE")
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        return adapter.send_jules_repair_v3(
+            self.github.repo, pr, errors, None, self.github.token, key,
+        )
+
     def _refund_deferred_auto_merge_success(self, state: dict, pr: dict) -> bool:
         """Refund one raw merge dispatch when an exact successful child left the PR open.
 
@@ -2450,10 +2466,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return v5.core.Action("blocked", str(exc))
 
         if content_errors:
-            self._dispatch_auto_merge_v4(state)
+            requested = self._request_article_text_repair(pr, content_errors)
             return v5.core.Action(
-                "wait",
-                f"article PR #{number} has content errors: {' | '.join(content_errors)}; waiting for repair",
+                "request_text_repair" if requested else "wait",
+                f"article PR #{number} has content errors: {' | '.join(content_errors)}; same-PR text repair {'requested' if requested else 'pending or exhausted'}",
             )
 
         return super()._handle_open_article_pr(state, pr)
