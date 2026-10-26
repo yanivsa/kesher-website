@@ -60,30 +60,6 @@
     ]
   },
   {
-    "source": "unattached-adults-missed-chances-regrets",
-    "afterHeadingIncludes": "תפקידה של השוואה חברתית",
-    "items": [
-      {
-        "target": "older-singles-friendship-changes-loneliness",
-        "anchor": "השינויים בחברויות כשהחברים מתחתנים",
-        "before": "כשההשוואה לאחרים מתחזקת בגלל השינוי במעגל החברתי, כדאי לקרוא גם על ",
-        "after": " ועל דרכים להישאר מחוברים בלי לבטל את הקושי."
-      }
-    ]
-  },
-  {
-    "source": "older-singles-friendship-changes-loneliness",
-    "afterHeadingIncludes": "הפער בשגרת החיים ותחושת השייכות",
-    "items": [
-      {
-        "target": "unattached-adults-missed-chances-regrets",
-        "anchor": "תחושת החמצה והשוואה למסלול החיים של אחרים",
-        "before": "אם הפער מול החברים מעורר בעיקר מחשבות על מה שהיה אמור לקרות עד עכשיו, אפשר להעמיק גם ב",
-        "after": " במקום להישאר רק עם התחושה שכולם מתקדמים."
-      }
-    ]
-  },
-  {
     "source": "siblings-fairness-vs-equality",
     "afterHeadingIncludes": "איך עונים ל\"למה הוא קיבל יותר?\" בלי להצטדק",
     "items": [
