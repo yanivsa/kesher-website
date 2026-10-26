@@ -118,6 +118,9 @@ const ParentingGuidance: React.FC = () => {
               <p>נחפש שינויים קטנים שמפחיתים חיכוך ומאפשרים גם קשר, משחק ושיחה בתוך היום העמוס.</p>
             </div>
           </div>
+          <p style={{ marginTop: '1.5rem' }}>
+            בתקופות או בגילים שדורשים מענה ממוקד יותר, אפשר לקרוא על <Link to="/parenting-guidance-divorce">הדרכת הורים בזמן פרידה וגירושין</Link> ועל <Link to="/parenting-guidance-early-childhood">הדרכת הורים לגיל הרך</Link>.
+          </p>
         </div>
       </section>
 

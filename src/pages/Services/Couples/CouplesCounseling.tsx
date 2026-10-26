@@ -131,6 +131,9 @@ const CouplesCounseling: React.FC = () => {
               <p>כשאירוע משמעותי, פגיעה באמון או תקופה מתוחה מטלטלים את הקשר וקשה למצוא דרך קדימה.</p>
             </div>
           </div>
+          <p style={{ marginTop: '1.5rem' }}>
+            אם הקושי ממוקד יותר, אפשר לקרוא גם על <Link to="/couples-counseling-after-infidelity">ייעוץ זוגי אחרי בגידה ושיקום אמון</Link>, על <Link to="/couples-adhd">ייעוץ זוגי כש-ADHD משפיע על הקשר</Link>, או על <Link to="/couples-second-chapter">ייעוץ זוגי לפרק ב׳ ולמשפחה משולבת</Link>.
+          </p>
         </div>
       </section>
 
