@@ -7,12 +7,23 @@ const {
   auditInternalLinkCoverage,
 } = require('./internal-link-policy.cjs');
 
-const planPath = path.join(__dirname, 'internal-link-plan.json');
-const backfillPath = path.join(__dirname, '..', 'src', 'data', 'internalLinkBackfill.json');
-const plan = JSON.parse(fs.readFileSync(planPath, 'utf8'));
-const backfillRules = fs.existsSync(backfillPath)
-  ? JSON.parse(fs.readFileSync(backfillPath, 'utf8'))
-  : [];
+const planFiles = [
+  'internal-link-plan.json',
+  'internal-link-plan-priority2.json',
+  'internal-link-plan-priority3.json',
+];
+const backfillFiles = [
+  path.join(__dirname, '..', 'src', 'data', 'internalLinkBackfill.json'),
+  path.join(__dirname, '..', 'src', 'data', 'internalLinkBackfillManual.json'),
+];
+
+const plan = planFiles.flatMap((fileName) => {
+  const filePath = path.join(__dirname, fileName);
+  return fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath, 'utf8')) : [];
+});
+const backfillRules = backfillFiles.flatMap((filePath) =>
+  fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath, 'utf8')) : [],
+);
 const posts = loadPosts();
 const errors = validateInternalLinkPlan(posts, plan);
 
@@ -41,29 +52,39 @@ const hasPlacementHeading = (content, needle) => {
 };
 
 const effectivePosts = posts.map((post) => {
-  const rule = backfillRules.find((candidate) => candidate.source === post.id);
-  if (!rule || !hasPlacementHeading(post.content, rule.afterHeadingIncludes)) return post;
+  const matchingRules = backfillRules.filter((candidate) => candidate.source === post.id);
+  if (matchingRules.length === 0) return post;
 
-  const existing = new Set(extractBlogLinks(post.content));
-  const overlayLinks = rule.items
-    .filter((item) => !existing.has(`/blog/${item.target}`))
-    .map((item) => `<a href="/blog/${item.target}">${item.anchor}</a>`)
-    .join('');
+  let content = post.content;
+  for (const rule of matchingRules) {
+    if (!hasPlacementHeading(content, rule.afterHeadingIncludes)) continue;
 
-  return overlayLinks ? { ...post, content: `${post.content}${overlayLinks}` } : post;
+    const existing = new Set(extractBlogLinks(content));
+    const overlayLinks = rule.items
+      .filter((item) => typeof item.target === 'string' && !existing.has(`/blog/${item.target}`))
+      .map((item) => `<a href="/blog/${item.target}">${item.anchor}</a>`)
+      .join('');
+
+    if (overlayLinks) content = `${content}${overlayLinks}`;
+  }
+
+  return content === post.content ? post : { ...post, content };
 });
 
 const audit = auditInternalLinkCoverage(effectivePosts, plan);
 const clusters = new Map();
 for (const entry of plan) {
   const row = clusters.get(entry.cluster) || { planned: 0, present: 0 };
-  const sourceRows = audit.rows.filter((item) => item.source === entry.source);
-  row.planned += sourceRows.length;
-  row.present += sourceRows.filter((item) => item.present).length;
+  for (const target of entry.targets) {
+    row.planned += 1;
+    if (audit.rows.some((item) => item.source === entry.source && item.target === target && item.present)) {
+      row.present += 1;
+    }
+  }
   clusters.set(entry.cluster, row);
 }
 
-console.log(`Internal-link plan valid: ${plan.length} source articles, ${audit.planned} planned article-to-article links.`);
+console.log(`Internal-link plan valid: ${plan.length} source-plan entries, ${audit.planned} planned article-to-article links.`);
 console.log(`Coverage now: ${audit.present}/${audit.planned} present; ${audit.missing} still missing.`);
 for (const [cluster, stats] of clusters) {
   console.log(`- ${cluster}: ${stats.present}/${stats.planned} present`);
