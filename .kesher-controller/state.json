@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "article_image_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "blocked",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40413728115,
@@ -30,13 +30,13 @@
     },
     "pr_number": 1227,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1227",
-    "current_pr_head_sha": "d9905ac154f21d74a48e34e240606d77bf84c975",
+    "current_pr_head_sha": "c0a288e59c45efdbfaf95bed46efad4d5ef46456",
     "jules_head_sha": "83f03f857ea48f0712dc32d753f58cabead1e781",
     "normalization_slot": "2026-10-27",
     "normalization_dispatched_at": "2026-10-26T23:21:39.625935+00:00",
     "normalization_run_id": 40419205628,
-    "normalization_drift_count": 3,
-    "last_normalization_drift_head_sha": "d9905ac154f21d74a48e34e240606d77bf84c975",
+    "normalization_drift_count": 4,
+    "last_normalization_drift_head_sha": "c0a288e59c45efdbfaf95bed46efad4d5ef46456",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 40417365994,
@@ -1652,7 +1652,12 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_JULES_UNSTABLE_MUTATION",
+    "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed",
+    "at": "2026-10-26T23:33:34.157599+00:00"
+  },
   "history": [
     {
       "at": "2026-10-26T18:21:14.108286+00:00",
@@ -2324,9 +2329,18 @@
         "attempt": 2,
         "pr_number": 1227
       }
+    },
+    {
+      "at": "2026-10-26T23:33:34.157616+00:00",
+      "from": "article_image_running",
+      "to": "blocked",
+      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
+      "details": {
+        "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed"
+      }
     }
   ],
-  "updated_at": "2026-10-26T23:31:23.753060+00:00",
+  "updated_at": "2026-10-26T23:33:34.157622+00:00",
   "image": {
     "attempt_count": 2,
     "status": "running",
