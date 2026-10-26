@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-26",
-  "status": "article_pr_open",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -14,7 +14,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-25T22:36:11.593811+00:00",
     "watchdog": {
@@ -38,7 +38,7 @@
     "merge_dispatch_at": null,
     "merge_dispatch_count": 0,
     "deploy_run_id": 40263452088,
-    "next_deploy_retry_at": "2026-10-26T02:27:33.688714+00:00",
+    "next_deploy_retry_at": "2026-10-26T10:49:56.582646+00:00",
     "normalization_drift_count": 0,
     "last_normalization_drift_head_sha": "f68cc38970a44a979abc3d0b758a7b8059f8c3ab",
     "normalized_head_sha": "0cfb687dfded698e1eda5918b82bd4f507c6ca63",
@@ -56,7 +56,8 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-10-26T10:44:59.464915+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-10-26T10:45:04.766463+00:00"
   },
   "backlog": [
     {
@@ -1604,15 +1605,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-26T02:26:24.303039+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-26T02:31:17.947088+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2506,9 +2498,19 @@
         "merge_dispatch_count": 0,
         "refund_count": 1
       }
+    },
+    {
+      "at": "2026-10-26T10:45:04.766508+00:00",
+      "from": "article_pr_open",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-26T10:41:29.304544+00:00",
+  "updated_at": "2026-10-26T10:45:04.766517+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2879,7 +2881,7 @@
     "claimed_at": "2026-10-25T22:36:08.735959+00:00"
   },
   "deliverables": {
-    "article_url": null,
+    "article_url": "https://kesher.saharoni.com/blog/municipal-kindergarten-adjustment",
     "overview_youtube_url": null,
     "short_youtube_url": null,
     "overview_edit_verified": false,
@@ -2906,10 +2908,11 @@
       "cycle": "2026-10-26",
       "inputs": {},
       "intent_at": "2026-10-26T10:44:56.582646+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40263452088,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "68a6b32ed068344d405f5d550a2836d2cf417a47"
+      "observed_active_run_id": 40309825213,
+      "dispatch_head_sha": "68a6b32ed068344d405f5d550a2836d2cf417a47",
+      "dispatched_at": "2026-10-26T10:44:56.582646+00:00"
     }
   },
   "last_child_notification": {
