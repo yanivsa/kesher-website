@@ -582,7 +582,7 @@ jobs:
       - name: Persist lightweight controller state
         if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-video-state/state.json') != '' }}
         id: persist_controller_state
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: kesher-video-controller-state
           path: |
@@ -596,7 +596,7 @@ jobs:
       - name: Persist latest state and media evidence
         if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-video-state/state.json') != '' }}
         id: persist_state
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: kesher-video-state
           path: ${{ env.KESHER_STATE_DIR }}
