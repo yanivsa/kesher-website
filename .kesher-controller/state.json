@@ -1606,15 +1606,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-26T02:56:14.640527+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-26T03:01:49.250738+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2504,9 +2495,19 @@
         "item_id": "video-20261026-125344-d4ece4f847",
         "task_id": "9613c045-2913-410a-adcc-813f1b9c64a0"
       }
+    },
+    {
+      "at": "2026-10-26T11:09:53.103768+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261026-125344-d4ece4f847",
+        "task_id": "9613c045-2913-410a-adcc-813f1b9c64a0"
+      }
     }
   ],
-  "updated_at": "2026-10-26T11:06:22.174987+00:00",
+  "updated_at": "2026-10-26T11:09:53.103777+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
