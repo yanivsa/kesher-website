@@ -25,8 +25,10 @@ const countHref = (html: string, href: string) => {
 };
 
 describe('compact keyword internal-link reinforcement', () => {
-  it.each(SERVICE_LINKS)('$source links contextually to $target', ({ source, target }) => {
-    expect(readSource(source)).toContain(`to="${target}"`);
+  it('links the core service pages contextually to every compact destination', () => {
+    for (const { source, target } of SERVICE_LINKS) {
+      expect(readSource(source), `${source} should link to ${target}`).toContain(`to="${target}"`);
+    }
   });
 
   it.each(ARTICLE_LINKS)('%s links exactly once to %s', (source, target) => {
