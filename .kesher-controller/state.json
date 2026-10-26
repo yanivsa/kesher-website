@@ -2726,6 +2726,17 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-26T22:35:51.687881+00:00"
+    },
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
+      "cycle": "2026-10-27",
+      "inputs": {
+        "pr_number": "1227"
+      },
+      "intent_at": "2026-10-26T23:30:43.268510+00:00",
+      "status": "intent",
+      "previous_run_id": 40417078313,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2739,5 +2750,17 @@
     "Kesher Normalize Article PR:40416796391",
     "Kesher Trusted Article Image:40417078313",
     "Kesher Normalize Article PR:40419205628"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
