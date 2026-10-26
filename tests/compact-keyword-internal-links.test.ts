@@ -3,8 +3,6 @@ import { describe, expect, it } from 'vitest';
 import publishedPosts from '../src/data/publishedPosts';
 import manualRules from '../src/data/internalLinkBackfillManual.json';
 
-const readSource = (path: string) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
-
 const ARTICLE_LINKS = [
   ['healing-after-infidelity', '/couples-counseling-after-infidelity'],
   ['couples-adhd-partner', '/couples-adhd'],
@@ -18,12 +16,12 @@ const countHref = (html: string, href: string) => {
 
 describe('compact keyword internal-link reinforcement', () => {
   it('links the core service pages contextually to every compact destination', () => {
-    const couples = readSource('src/pages/Services/Couples/CouplesCounseling.tsx');
+    const couples = readFileSync(new URL('../src/pages/Services/Couples/CouplesCounseling.tsx', import.meta.url), 'utf8');
     expect(couples).toContain('to="/couples-counseling-after-infidelity"');
     expect(couples).toContain('to="/couples-adhd"');
     expect(couples).toContain('to="/couples-second-chapter"');
 
-    const parenting = readSource('src/pages/Services/Parenting/ParentingGuidance.tsx');
+    const parenting = readFileSync(new URL('../src/pages/Services/Parenting/ParentingGuidance.tsx', import.meta.url), 'utf8');
     expect(parenting).toContain('to="/parenting-guidance-divorce"');
     expect(parenting).toContain('to="/parenting-guidance-early-childhood"');
   });
