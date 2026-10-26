@@ -7,6 +7,7 @@ from typing import Any
 import base64
 import hashlib
 import html
+from html.parser import HTMLParser
 import io
 from datetime import datetime, timezone
 import json
@@ -32,6 +33,29 @@ IMAGE_PREFIX = ARTICLE_IMAGE_PREFIX
 def word_count(content: str) -> int:
     visible = html.unescape(re.sub(r"<[^>]+>", " ", content or ""))
     return len([word for word in re.split(r"\s+", visible.strip()) if word])
+
+
+def internal_blog_link_errors(content: str, catalog: list[dict]) -> list[str]:
+    """Resolve internal blog destinations against real current and archived posts."""
+    known = {str(row.get(key) or "").strip() for row in catalog if isinstance(row, dict)
+             for key in ("id", "slug") if row.get(key)}
+    hrefs: list[str] = []
+
+    class Links(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            if tag.lower() == "a":
+                hrefs.extend(value for key, value in attrs if key.lower() == "href" and value)
+
+    Links().feed(str(content or ""))
+    errors = []
+    for href in hrefs:
+        parts = urllib.parse.urlsplit(href)
+        if parts.netloc and parts.netloc.lower() != "kesher.saharoni.com":
+            continue
+        path = urllib.parse.unquote(parts.path)
+        if path.startswith("/blog/") and path.removeprefix("/blog/").strip("/") not in known:
+            errors.append(f"internal_blog_link_missing: {path}")
+    return sorted(set(errors))
 
 
 def raw_github_content_url(repo: str, ref: str, repo_path: str) -> str:
@@ -223,6 +247,9 @@ def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra
 
     post = new_posts[0]
     content_errors: list[str] = []
+    content_errors.extend(internal_blog_link_errors(
+        post.get("content", ""), list(head_posts) + list(extra_base_posts or []),
+    ))
     count = word_count(post.get("content", ""))
     if not 700 <= count <= 1100:
         content_errors.append(f"New article word count must be 700-1100, found {count}")
