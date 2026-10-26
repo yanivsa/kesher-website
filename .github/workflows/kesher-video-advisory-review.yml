@@ -43,6 +43,7 @@ jobs:
           persist-credentials: false
 
       - name: Validate exact advisory evidence identity
+        id: identity
         env:
           REVIEW_BRANCH: ${{ inputs.review_branch }}
           EVIDENCE_ROOT: ${{ inputs.evidence_root }}
@@ -59,7 +60,7 @@ jobs:
             echo "Advisory evidence root does not match review branch identity." >&2
             exit 1
           fi
-          if [[ ! "$REVIEW_ITEM_ID" =~ ^video-[0-9]{8}-[0-9]{6}-[0-9a-f]{10}$ ]]; then
+          if [[ ! "$REVIEW_ITEM_ID" =~ ^video-[0-9]{8}-[0-9]{6}-[0-9a-f]{10}(-a[23])?$ ]]; then
             echo "Invalid advisory video item identity." >&2
             exit 1
           fi
@@ -105,7 +106,7 @@ jobs:
             --timeout-seconds 900
 
       - name: Persist advisory Jules review result
-        if: ${{ always() }}
+        if: ${{ always() && steps.identity.outcome == 'success' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: kesher-video-advisory-review-${{ github.run_id }}
@@ -115,7 +116,7 @@ jobs:
           compression-level: 9
 
       - name: Delete temporary Jules evidence branch
-        if: ${{ always() }}
+        if: ${{ success() }}
         env:
           GH_TOKEN: ${{ github.token }}
           REVIEW_BRANCH: ${{ inputs.review_branch }}
