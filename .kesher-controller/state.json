@@ -38,7 +38,7 @@
     "merge_dispatch_at": null,
     "merge_dispatch_count": 0,
     "deploy_run_id": 40309825213,
-    "next_deploy_retry_at": null,
+    "next_deploy_retry_at": "2026-10-26T10:57:13.653229+00:00",
     "normalization_drift_count": 0,
     "last_normalization_drift_head_sha": "f68cc38970a44a979abc3d0b758a7b8059f8c3ab",
     "normalized_head_sha": "0cfb687dfded698e1eda5918b82bd4f507c6ca63",
