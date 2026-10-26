@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-26",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1606,15 +1606,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-26T03:06:28.744220+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-26T03:11:05.375865+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2502,9 +2493,19 @@
       "from": "long_video_watchdog_wait",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-26T11:14:12.479221+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 1
+      }
     }
   ],
-  "updated_at": "2026-10-26T11:14:05.617576+00:00",
+  "updated_at": "2026-10-26T11:14:12.479230+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2522,8 +2523,8 @@
     "image_path": "/images/generated/blog/municipal-kindergarten-adjustment.png"
   },
   "long_video": {
-    "attempt_count": 1,
-    "status": "rejected",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40312786351,
@@ -2533,7 +2534,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-26T10:52:36.668627+00:00",
+    "last_dispatch_at": "2026-10-26T11:14:12.479202+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
     "item_id": "video-20261026-125344-d4ece4f847",
@@ -2552,7 +2553,8 @@
       "last_fingerprint": "e5d174ad9696f03880a369a92748ef06c2dc41d02a657fb179ce01c95758ab4a",
       "recovery_count": 0,
       "last_recovery_at": null
-    }
+    },
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
@@ -2928,9 +2930,10 @@
         "target_item_id": "video-20261026-125344-d4ece4f847"
       },
       "intent_at": "2026-10-26T11:13:34.787211+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40312786351,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40313540505,
+      "dispatched_at": "2026-10-26T11:13:34.787211+00:00"
     }
   },
   "last_child_notification": {
@@ -2951,38 +2954,5 @@
     "Deploy to Cloudflare Pages:40309825213",
     "Kesher Daily NotebookLM Video Overview:40310789798",
     "Deploy to Cloudflare Pages:40312285020"
-  ],
-  "video": {
-    "attempt_count": 1,
-    "status": "rejected",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": 40312786351,
-    "processed_run_id": 40312786351,
-    "provider_id": "9613c045-2913-410a-adcc-813f1b9c64a0",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-26T10:52:36.668627+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261026-125344-d4ece4f847",
-    "source_slug": "municipal-kindergarten-adjustment",
-    "source_content_sha256": "d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836",
-    "content_sha256": "d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836",
-    "source_id": "64e4c92e-31c7-4be1-978e-7125afd94300",
-    "task_id": "9613c045-2913-410a-adcc-813f1b9c64a0",
-    "artifact_id": "9613c045-2913-410a-adcc-813f1b9c64a0",
-    "provider_status": "pending",
-    "verified": false,
-    "watchdog": {
-      "identity": "long_video:municipal-kindergarten-adjustment:d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836:video-20261026-125344-d4ece4f847",
-      "hard_started_at": "2026-10-26T10:53:50.937111+00:00",
-      "last_progress_at": "2026-10-26T11:00:36.018046+00:00",
-      "last_fingerprint": "e5d174ad9696f03880a369a92748ef06c2dc41d02a657fb179ce01c95758ab4a",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    }
-  }
+  ]
 }
