@@ -4,6 +4,7 @@ import giftedParentPosts from './giftedParentPosts.json';
 import giftedParentPostsWave2 from './giftedParentPostsWave2.json';
 import giftedParentOverrides from './giftedParentOverrides.json';
 import giftedParentWave2Overrides from './giftedParentWave2Overrides.json';
+import legacyHeroOverrides from './legacyHeroOverrides.json';
 import manualPostsOct2026 from './manualPostsOct2026';
 import { applyInternalLinkBackfill } from './internalLinkBackfill';
 
@@ -16,11 +17,13 @@ const topicPosts = [
 const manualPosts = manualPostsOct2026 as unknown as BasePost[];
 const topicOverrides = giftedParentOverrides as unknown as Record<string, Partial<BasePost>>;
 const wave2TopicOverrides = giftedParentWave2Overrides as unknown as Record<string, Partial<BasePost>>;
+const legacyHeroOverrideMap = legacyHeroOverrides as unknown as Record<string, Partial<BasePost>>;
 
 const applyTopicOverride = (post: BasePost): BasePost => {
   const override = topicOverrides[post.id];
   const wave2Override = wave2TopicOverrides[post.id];
-  return ({ ...post, ...(override ?? {}), ...(wave2Override ?? {}) } as BasePost);
+  const legacyHeroOverride = legacyHeroOverrideMap[post.id];
+  return ({ ...post, ...(override ?? {}), ...(wave2Override ?? {}), ...(legacyHeroOverride ?? {}) } as BasePost);
 };
 
 const allPosts = [
