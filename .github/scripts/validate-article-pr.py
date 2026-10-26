@@ -180,10 +180,10 @@ def resolve_latest_verify_check(candidates: list[dict]) -> tuple[dict | None, st
     return None, "Multiple indistinguishable or conflicting latest verify checks"
 
 
-def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader, extra_base_posts=None, owner_topic_brief=""):
+def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader, extra_base_posts=None, owner_topic_brief="", published_catalog=None):
     errors = evaluate_content(
         pr, files_data, base_posts, head_posts, image_loader,
-        extra_base_posts=extra_base_posts, owner_topic_brief=owner_topic_brief,
+        extra_base_posts=extra_base_posts, owner_topic_brief=owner_topic_brief, published_catalog=published_catalog,
     )
     head_sha = str((pr.get("head") or {}).get("sha") or "").strip()
     if not head_sha:
@@ -214,7 +214,7 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader, extra
     return errors
 
 
-def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra_base_posts=None, owner_topic_brief=""):
+def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra_base_posts=None, owner_topic_brief="", published_catalog=None):
     """Pure content policy, also run inside canonical CI before CI can finish."""
     errors: list[str] = []
     files = [entry["filename"] for entry in files_data]
@@ -248,7 +248,8 @@ def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra
     post = new_posts[0]
     content_errors: list[str] = []
     content_errors.extend(internal_blog_link_errors(
-        post.get("content", ""), list(head_posts) + list(extra_base_posts or []),
+        post.get("content", ""),
+        list(published_catalog) + [post] if published_catalog is not None else list(head_posts) + list(extra_base_posts or []),
     ))
     count = word_count(post.get("content", ""))
     if not 700 <= count <= 1100:
@@ -504,6 +505,7 @@ def main() -> int:
     base_posts = fetch_posts(repo, pr["base"]["sha"], token, "src/data/posts.json")
     head_posts = fetch_posts(repo, pr["head"]["sha"], token, "src/data/posts.json")
     extra_base_posts = fetch_posts(repo, pr["base"]["sha"], token, "src/data/postsRecent.json")
+    published_catalog = fetch_repo_json(repo, pr["base"]["sha"], token, "src/data/postSummaries.json")
 
     def load_image(entry):
         request = urllib.request.Request(
@@ -520,7 +522,7 @@ def main() -> int:
         return 1
     errors = evaluate(
         pr, files_data, checks, base_posts, head_posts, load_image,
-        extra_base_posts=extra_base_posts, owner_topic_brief=owner_topic_brief,
+        extra_base_posts=extra_base_posts, owner_topic_brief=owner_topic_brief, published_catalog=published_catalog,
     )
     if errors:
         print("\n".join(errors), file=sys.stderr)

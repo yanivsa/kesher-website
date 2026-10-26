@@ -188,6 +188,7 @@ class ValidationWorkerTests(unittest.TestCase):
                          'image_data': f.image, 'image_path': 'public' + f.post['image'],
                          'paths': [row['filename'] for row in f.files]}
         self.git = Mock()
+        self.git.blob.side_effect = lambda ref, path: json.dumps([]).encode() if ref == CODE and path == 'src/data/postSummaries.json' else b''
         self.git.inspect.side_effect = lambda *args: copy.deepcopy(self.snapshot)
         self.main = CODE
         self.run, self.jobs = fixture()[2:]

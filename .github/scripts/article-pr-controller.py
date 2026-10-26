@@ -400,6 +400,9 @@ def process(repo: str, number: int, github_token: str, jules_key: str) -> int:
     validator = load_validator()
     base_posts = validator.fetch_posts(repo, (pr.get("base") or {}).get("sha") or "", github_token)
     head_posts = validator.fetch_posts(repo, sha, github_token)
+    published_catalog = validator.fetch_repo_json(
+        repo, pr["base"]["sha"], github_token, "src/data/postSummaries.json",
+    )
     errors = validator.evaluate(
         pr,
         files,
@@ -407,6 +410,7 @@ def process(repo: str, number: int, github_token: str, jules_key: str) -> int:
         base_posts,
         head_posts,
         lambda entry: image_loader(entry, github_token),
+        published_catalog=published_catalog,
     )
     if not errors:
         merge_and_deploy(repo, pr, github_token)
