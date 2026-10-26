@@ -6,11 +6,11 @@ import manualRules from '../src/data/internalLinkBackfillManual.json';
 const readSource = (path: string) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
 const SERVICE_LINKS = [
-  ['src/pages/Services/Couples/CouplesCounseling.tsx', '/couples-counseling-after-infidelity'],
-  ['src/pages/Services/Couples/CouplesCounseling.tsx', '/couples-adhd'],
-  ['src/pages/Services/Couples/CouplesCounseling.tsx', '/couples-second-chapter'],
-  ['src/pages/Services/Parenting/ParentingGuidance.tsx', '/parenting-guidance-divorce'],
-  ['src/pages/Services/Parenting/ParentingGuidance.tsx', '/parenting-guidance-early-childhood'],
+  { source: 'src/pages/Services/Couples/CouplesCounseling.tsx', target: '/couples-counseling-after-infidelity' },
+  { source: 'src/pages/Services/Couples/CouplesCounseling.tsx', target: '/couples-adhd' },
+  { source: 'src/pages/Services/Couples/CouplesCounseling.tsx', target: '/couples-second-chapter' },
+  { source: 'src/pages/Services/Parenting/ParentingGuidance.tsx', target: '/parenting-guidance-divorce' },
+  { source: 'src/pages/Services/Parenting/ParentingGuidance.tsx', target: '/parenting-guidance-early-childhood' },
 ] as const;
 
 const ARTICLE_LINKS = [
@@ -25,7 +25,7 @@ const countHref = (html: string, href: string) => {
 };
 
 describe('compact keyword internal-link reinforcement', () => {
-  it.each(SERVICE_LINKS)('%s links contextually to %s', (source, target) => {
+  it.each(SERVICE_LINKS)('$source links contextually to $target', ({ source, target }) => {
     expect(readSource(source)).toContain(`to="${target}"`);
   });
 

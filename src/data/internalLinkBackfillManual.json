@@ -22,5 +22,41 @@
         "after": " באמצעות משימות קצרות שמתאימות לגיל."
       }
     ]
+  },
+  {
+    "source": "healing-after-infidelity",
+    "afterHeadingIncludes": "",
+    "items": [
+      {
+        "href": "/couples-counseling-after-infidelity",
+        "anchor": "ייעוץ זוגי אחרי בגידה ושיקום אמון",
+        "before": "אם אתם נמצאים בתוך משבר כזה ורוצים להבין איך נראה תהליך ממוקד, אפשר לקרוא גם על ",
+        "after": "."
+      }
+    ]
+  },
+  {
+    "source": "couples-adhd-partner",
+    "afterHeadingIncludes": "",
+    "items": [
+      {
+        "href": "/couples-adhd",
+        "anchor": "ייעוץ זוגי כש-ADHD משפיע על הקשר",
+        "before": "כשהדפוס הזה כבר משפיע על הזוגיות עצמה, אפשר לקרוא גם על ",
+        "after": "."
+      }
+    ]
+  },
+  {
+    "source": "public-tantrums-emotional-regulation",
+    "afterHeadingIncludes": "",
+    "items": [
+      {
+        "href": "/parenting-guidance-early-childhood",
+        "anchor": "הדרכת הורים לגיל הרך",
+        "before": "כשהתפרצויות, גבולות ושגרה הופכים למאבק חוזר, אפשר לקרוא גם על ",
+        "after": "."
+      }
+    ]
   }
 ]
