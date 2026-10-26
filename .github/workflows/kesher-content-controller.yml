@@ -76,6 +76,7 @@ permissions:
   contents: write
   actions: write
   pull-requests: read
+  issues: write
 
 concurrency:
   group: kesher-content-controller
