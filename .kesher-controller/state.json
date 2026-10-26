@@ -3,8 +3,8 @@
   "cycle": "2026-10-26",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40240966780,
@@ -13,7 +13,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-25T22:36:11.593811+00:00",
@@ -44,9 +44,19 @@
     "normalized_head_sha": "0cfb687dfded698e1eda5918b82bd4f507c6ca63",
     "image_head_sha": "0cfb687dfded698e1eda5918b82bd4f507c6ca63",
     "merge_candidate_sha": "0cfb687dfded698e1eda5918b82bd4f507c6ca63",
-    "merge_run_id": 40308714105,
+    "merge_run_id": 40309160981,
     "last_refunded_auto_merge_run_id": 40308714105,
-    "deferred_auto_merge_refund_count": 1
+    "deferred_auto_merge_refund_count": 1,
+    "slug": "municipal-kindergarten-adjustment",
+    "title": "הסתגלות לגן עירייה: מתי הבכי טבעי ומתי כדאי להתערב?",
+    "url": "https://kesher.saharoni.com/blog/municipal-kindergarten-adjustment",
+    "published_date": "2026-10-26",
+    "quality_content_sha256": "d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-10-26T10:44:59.464915+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2512,7 +2522,8 @@
     "last_dispatch_at": "2026-10-26T10:34:22.032718+00:00",
     "artifact_sha256": "cf93be1ec43c6437a928452366beb658009e736cb3ddd990711b0913937817b9",
     "source_id": "local-editorial://municipal-kindergarten-adjustment/5",
-    "run_id": 40308449881
+    "run_id": 40308449881,
+    "image_path": "/images/generated/blog/municipal-kindergarten-adjustment.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2889,11 +2900,21 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-25T22:35:44.590946+00:00"
+    },
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-10-26",
+      "inputs": {},
+      "intent_at": "2026-10-26T10:44:56.582646+00:00",
+      "status": "intent",
+      "previous_run_id": 40263452088,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "68a6b32ed068344d405f5d550a2836d2cf417a47"
     }
   },
   "last_child_notification": {
     "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 40308714105,
+    "run_id": 40309160981,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-26"
