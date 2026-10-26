@@ -4343,7 +4343,7 @@
         "jules_create",
         "read"
       ],
-      "definition_sha256": "69f32386227222c69dfe21dd9c254f31962058e1c7d60d12ef03f75335a4fbbb",
+      "definition_sha256": "782fd919b5ed5b02cc2ba8986595e08639a72f2dfe51a0784e69185bfa76496d",
       "resources": [
         "github.refs",
         "jules.sessions"
