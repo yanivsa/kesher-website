@@ -36,7 +36,7 @@
     "normalization_dispatched_at": "2026-10-25T23:01:48.090530+00:00",
     "normalization_run_id": 40308245998,
     "merge_dispatch_at": "2026-10-26T10:36:22.203220+00:00",
-    "merge_dispatch_count": 1,
+    "merge_dispatch_count": 0,
     "deploy_run_id": 40263452088,
     "next_deploy_retry_at": "2026-10-26T02:27:33.688714+00:00",
     "normalization_drift_count": 2,
@@ -44,7 +44,9 @@
     "normalized_head_sha": "f68cc38970a44a979abc3d0b758a7b8059f8c3ab",
     "image_head_sha": "f68cc38970a44a979abc3d0b758a7b8059f8c3ab",
     "merge_candidate_sha": "f68cc38970a44a979abc3d0b758a7b8059f8c3ab",
-    "merge_run_id": 40308714105
+    "merge_run_id": 40308714105,
+    "last_refunded_auto_merge_run_id": 40308714105,
+    "deferred_auto_merge_refund_count": 1
   },
   "backlog": [
     {
@@ -1592,15 +1594,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-26T02:22:53.570363+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-26T02:26:24.303039+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2490,9 +2483,22 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-26T10:38:23.850598+00:00",
+      "from": "article_pr_open",
+      "to": "article_pr_open",
+      "reason": "successful_deferred_auto_merge_refunded",
+      "details": {
+        "run_id": 40308714105,
+        "pr_number": 1213,
+        "head_sha": "f68cc38970a44a979abc3d0b758a7b8059f8c3ab",
+        "merge_dispatch_count": 0,
+        "refund_count": 1
+      }
     }
   ],
-  "updated_at": "2026-10-26T10:36:17.648680+00:00",
+  "updated_at": "2026-10-26T10:38:37.388842+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
