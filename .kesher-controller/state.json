@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-26",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
-    "status": "exhausted",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40240966780,
@@ -30,16 +30,18 @@
     },
     "pr_number": 1213,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1213",
-    "current_pr_head_sha": "1e79ec227769ea697ad927e90753d69d16ea6be3",
+    "current_pr_head_sha": "cfb1533fb8b9b36c19774c0a6b1303bc8d964519",
     "jules_head_sha": "aad5c762bdce81f67d50210838d117c8179c6ae0",
     "normalization_slot": "2026-10-26",
     "normalization_dispatched_at": "2026-10-25T23:01:48.090530+00:00",
-    "normalization_run_id": 40242876882,
-    "normalized_head_sha": "1e79ec227769ea697ad927e90753d69d16ea6be3",
-    "merge_dispatch_at": "2026-10-25T23:13:48.886363+00:00",
-    "merge_dispatch_count": 3,
+    "normalization_run_id": 40308245998,
+    "merge_dispatch_at": null,
+    "merge_dispatch_count": 0,
     "deploy_run_id": 40263452088,
-    "next_deploy_retry_at": "2026-10-26T02:27:33.688714+00:00"
+    "next_deploy_retry_at": "2026-10-26T02:27:33.688714+00:00",
+    "normalization_drift_count": 1,
+    "last_normalization_drift_head_sha": "cfb1533fb8b9b36c19774c0a6b1303bc8d964519",
+    "normalized_head_sha": "cfb1533fb8b9b36c19774c0a6b1303bc8d964519"
   },
   "backlog": [
     {
@@ -1584,22 +1586,8 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-25"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-26T10:31:28.872292+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-26T02:06:28.019878+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
     {
       "at": "2026-10-26T02:11:26.396952+00:00",
       "from": "blocked",
@@ -2490,6 +2478,17 @@
       "details": {
         "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-10-26T10:34:06.543661+00:00",
+      "from": "blocked",
+      "to": "article_pr_open",
+      "reason": "late_article_head_after_merge_exhaustion_recovery",
+      "details": {
+        "pr_number": 1213,
+        "previous_head_sha": "1e79ec227769ea697ad927e90753d69d16ea6be3",
+        "current_head_sha": "cfb1533fb8b9b36c19774c0a6b1303bc8d964519"
+      }
     }
   ],
   "updated_at": "2026-10-26T10:31:28.872314+00:00",
@@ -2881,23 +2880,21 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-25T22:35:44.590946+00:00"
     },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
       "cycle": "2026-10-26",
       "inputs": {
-        "pr_number": "1213",
-        "slot": "2026-10-26"
+        "pr_number": "1213"
       },
-      "intent_at": "2026-10-25T23:13:13.936133+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-26T10:34:03.838709+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": 40243795281,
-      "dispatched_at": "2026-10-25T23:13:13.936133+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 40263452088,
+    "workflow": "Kesher Normalize Article PR",
+    "run_id": 40308245998,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-26"
