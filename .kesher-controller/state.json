@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "article_normalizing",
+  "status": "image_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -15,7 +15,7 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "last_dispatch_at": "2026-10-26T22:36:29.031574+00:00",
     "watchdog": {
       "identity": "2026-10-27",
@@ -30,16 +30,17 @@
     },
     "pr_number": 1227,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1227",
-    "current_pr_head_sha": "9aa8a96b7ae218aecc8147341b60bd090919c7ee",
+    "current_pr_head_sha": "d9905ac154f21d74a48e34e240606d77bf84c975",
     "jules_head_sha": "83f03f857ea48f0712dc32d753f58cabead1e781",
     "normalization_slot": "2026-10-27",
     "normalization_dispatched_at": "2026-10-26T23:21:39.625935+00:00",
     "normalization_run_id": 40419205628,
-    "normalization_drift_count": 2,
-    "last_normalization_drift_head_sha": "9aa8a96b7ae218aecc8147341b60bd090919c7ee",
+    "normalization_drift_count": 3,
+    "last_normalization_drift_head_sha": "d9905ac154f21d74a48e34e240606d77bf84c975",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
-    "merge_run_id": 40417365994
+    "merge_run_id": 40417365994,
+    "normalized_head_sha": "d9905ac154f21d74a48e34e240606d77bf84c975"
   },
   "backlog": [
     {
@@ -1651,7 +1652,14 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "image",
+    "code": "IMAGE_OUTPUT_MISSING",
+    "message": "trusted image run 40417078313 completed with conclusion=success but no validated image is present",
+    "retryable": true,
+    "retry_at": "2026-10-26T23:28:19.062816+00:00",
+    "at": "2026-10-26T23:23:19.062860+00:00"
+  },
   "history": [
     {
       "at": "2026-10-26T18:21:14.108286+00:00",
@@ -2292,23 +2300,45 @@
         "pr_number": 1227,
         "slot": "2026-10-27"
       }
+    },
+    {
+      "at": "2026-10-26T23:23:19.062867+00:00",
+      "from": "article_normalizing",
+      "to": "image_retry_wait",
+      "reason": "IMAGE_OUTPUT_MISSING",
+      "details": {
+        "message": "trusted image run 40417078313 completed with conclusion=success but no validated image is present",
+        "retry_at": "2026-10-26T23:28:19.062816+00:00",
+        "failure_streak": 1,
+        "run_id": 40417078313
+      }
     }
   ],
-  "updated_at": "2026-10-26T23:21:39.625967+00:00",
+  "updated_at": "2026-10-26T23:23:19.062872+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "processed_run_id": null,
+    "status": "retry_wait",
+    "last_error": {
+      "code": "IMAGE_OUTPUT_MISSING",
+      "message": "trusted image run 40417078313 completed with conclusion=success but no validated image is present",
+      "retryable": true,
+      "retry_at": "2026-10-26T23:28:19.062816+00:00",
+      "at": "2026-10-26T23:23:19.062860+00:00"
+    },
+    "next_retry_at": "2026-10-26T23:28:19.062816+00:00",
+    "processed_run_id": 40417078313,
     "provider_id": "LocalEditorial",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "IMAGE_OUTPUT_MISSING": 1
+    },
     "last_dispatch_at": "2026-10-26T23:03:48.293160+00:00",
     "artifact_sha256": "12d58b57fd0347bb3699ffd4373bea24bcda85a74343f3383d27416ccf244782",
     "source_id": "local-editorial://kindergarten-adjustment-difficulties/5",
-    "run_id": 40417078313
+    "run_id": 40417078313,
+    "last_run_conclusion": "success",
+    "last_failed_run_id": 40417078313
   },
   "long_video": {
     "attempt_count": 0,
