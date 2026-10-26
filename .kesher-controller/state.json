@@ -2498,7 +2498,7 @@
       }
     }
   ],
-  "updated_at": "2026-10-26T10:38:37.388842+00:00",
+  "updated_at": "2026-10-26T10:39:51.434721+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2889,6 +2889,18 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-25T22:35:44.590946+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-26",
+      "inputs": {
+        "pr_number": "1213",
+        "slot": "2026-10-26"
+      },
+      "intent_at": "2026-10-26T10:39:15.871048+00:00",
+      "status": "intent",
+      "previous_run_id": 40308714105,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2906,5 +2918,17 @@
     "Deploy to Cloudflare Pages:40263452088",
     "Kesher Trusted Article Image:40308449881",
     "Auto-merge Kesher article PRs:40308714105"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
