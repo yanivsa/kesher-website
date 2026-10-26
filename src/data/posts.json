@@ -25,7 +25,12 @@
         "url": "https://www.nhs.uk/mental-health/children-and-young-adults/advice-for-parents/anxiety-disorders-in-children/",
         "note": "סימנים אפשריים כוללים היצמדות, קשיי שינה ותלונות על כאבי בטן; מומלץ לפנות לעזרה כשהקושי מתמשך, מחמיר או פוגע בתפקוד."
       }
-    ]
+    ],
+    "image": "/images/generated/blog/municipal-kindergarten-adjustment.png",
+    "imageAlt": "איור עריכתי מקומי של הורה ופעוט בכניסה למסגרת ילדים, עם דלת פתוחה וקוביות משחק, ברגע פרידה תומך.",
+    "imageProvider": "LocalEditorial",
+    "imageSourceUrl": "local-editorial://municipal-kindergarten-adjustment/5",
+    "imageIsFallback": false
   },
   {
     "id": "daycare-adjustment-difficulties",
