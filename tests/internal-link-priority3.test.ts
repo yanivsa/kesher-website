@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import publishedPosts from '../src/data/publishedPosts';
 import priority3Plan from '../scripts/internal-link-plan-priority3.json';
+import cannibalizationHolds from '../scripts/internal-link-cannibalization-holds.json';
 
 const countTargetHref = (html: string, target: string) => {
   const escapedTarget = target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -26,6 +27,21 @@ describe('priority-3 internal-link backfill', () => {
       expect(publishedIds.has(entry.source), `missing published source: ${entry.source}`).toBe(true);
       for (const target of entry.targets) {
         expect(publishedIds.has(target), `missing published target: ${target}`).toBe(true);
+      }
+    }
+  });
+
+  it('does not strengthen pages on an active cannibalization hold', () => {
+    const heldSlugs = new Set(
+      cannibalizationHolds
+        .filter((hold) => hold.status === 'hold')
+        .flatMap((hold) => hold.slugs),
+    );
+
+    for (const entry of priority3Plan) {
+      expect(heldSlugs.has(entry.source), `${entry.source} is on a cannibalization hold`).toBe(false);
+      for (const target of entry.targets) {
+        expect(heldSlugs.has(target), `${target} is on a cannibalization hold`).toBe(false);
       }
     }
   });
