@@ -70,7 +70,7 @@ const manualPostsOct2026 = [
       {
         title: 'Chores and Children',
         source: 'American Academy of Child and Adolescent Psychiatry',
-        url: 'https://www.aacap.org/AACAP/AACAP/Families_and_Youth/Facts_for_Families/FFF-Guide/Chores_And_Children-125.aspx',
+        url: 'https://www.aacap.org/AACAP/AACAP/Families_and_Youth/Facts_for_Families/FFF-Guide/Chores_and_Children-125.aspx',
         note: 'סקירה של תרומת מטלות לאחריות ומיומנויות יומיומיות, עם הצעות לפי גיל.'
       },
       {
