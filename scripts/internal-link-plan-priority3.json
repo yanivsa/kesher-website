@@ -1,0 +1,54 @@
+[
+  {
+    "cluster": "late-singlehood",
+    "priority": 3,
+    "source": "unattached-adults-missed-chances-regrets",
+    "targets": ["older-singles-friendship-changes-loneliness"],
+    "placements": [
+      {
+        "target": "older-singles-friendship-changes-loneliness",
+        "anchor": "השינויים בחברויות כשהחברים מתחתנים",
+        "placementCue": "בחלק על השוואה חברתית והתחושה שאחרים מתקדמים במסלול החיים"
+      }
+    ]
+  },
+  {
+    "cluster": "late-singlehood",
+    "priority": 3,
+    "source": "older-singles-friendship-changes-loneliness",
+    "targets": ["unattached-adults-missed-chances-regrets"],
+    "placements": [
+      {
+        "target": "unattached-adults-missed-chances-regrets",
+        "anchor": "תחושת החמצה והשוואה למסלול החיים של אחרים",
+        "placementCue": "בחלק על הפער בשגרת החיים והתחושה שהחברים מתקדמים בזמן שאני נשאר מאחור"
+      }
+    ]
+  },
+  {
+    "cluster": "sibling-conflict",
+    "priority": 3,
+    "source": "siblings-fairness-vs-equality",
+    "targets": ["sibling-rivalry-parent-intervention"],
+    "placements": [
+      {
+        "target": "sibling-rivalry-parent-intervention",
+        "anchor": "מתי לא כדאי להיכנס לתפקיד השופט במריבות אחים",
+        "placementCue": "בחלק שמסביר איך לענות לטענת למה הוא קיבל יותר בלי להצטדק"
+      }
+    ]
+  },
+  {
+    "cluster": "sibling-conflict",
+    "priority": 3,
+    "source": "sibling-rivalry-parent-intervention",
+    "targets": ["siblings-fairness-vs-equality"],
+    "placements": [
+      {
+        "target": "siblings-fairness-vs-equality",
+        "anchor": "ההבדל בין שוויון להוגנות בין אחים",
+        "placementCue": "בחלק שמסביר למה הניסיון ההורי לעשות צדק במריבה עלול להחמיר אותה"
+      }
+    ]
+  }
+]
