@@ -3007,11 +3007,11 @@
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/municipal-kindergarten-adjustment",
     "overview_youtube_url": "https://youtu.be/FzAzvOP15Mo",
-    "short_youtube_url": null,
+    "short_youtube_url": "https://youtu.be/xkLKquTygoQ",
     "overview_edit_verified": true,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
+    "short_portrait_verified": true,
+    "short_signature_verified": true,
+    "short_origin_verified": true
   },
   "pending_dispatches": {
     "kesher-article-generation.yml": {
