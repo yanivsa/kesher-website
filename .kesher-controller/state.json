@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-26",
-  "status": "article_pr_open",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1589,15 +1589,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-26T02:11:26.396952+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-26T02:16:27.867865+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2489,12 +2480,22 @@
         "previous_head_sha": "1e79ec227769ea697ad927e90753d69d16ea6be3",
         "current_head_sha": "cfb1533fb8b9b36c19774c0a6b1303bc8d964519"
       }
+    },
+    {
+      "at": "2026-10-26T10:34:22.032751+00:00",
+      "from": "article_pr_open",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 1,
+        "pr_number": 1213
+      }
     }
   ],
-  "updated_at": "2026-10-26T10:31:28.872314+00:00",
+  "updated_at": "2026-10-26T10:34:22.032761+00:00",
   "image": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2502,7 +2503,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-10-26T10:34:22.032718+00:00"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2887,9 +2889,10 @@
         "pr_number": "1213"
       },
       "intent_at": "2026-10-26T10:34:03.838709+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40308449881,
+      "dispatched_at": "2026-10-26T10:34:03.838709+00:00"
     }
   },
   "last_child_notification": {
