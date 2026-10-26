@@ -5,14 +5,6 @@ import manualRules from '../src/data/internalLinkBackfillManual.json';
 
 const readSource = (path: string) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
-const SERVICE_LINKS = [
-  { source: 'src/pages/Services/Couples/CouplesCounseling.tsx', target: '/couples-counseling-after-infidelity' },
-  { source: 'src/pages/Services/Couples/CouplesCounseling.tsx', target: '/couples-adhd' },
-  { source: 'src/pages/Services/Couples/CouplesCounseling.tsx', target: '/couples-second-chapter' },
-  { source: 'src/pages/Services/Parenting/ParentingGuidance.tsx', target: '/parenting-guidance-divorce' },
-  { source: 'src/pages/Services/Parenting/ParentingGuidance.tsx', target: '/parenting-guidance-early-childhood' },
-] as const;
-
 const ARTICLE_LINKS = [
   ['healing-after-infidelity', '/couples-counseling-after-infidelity'],
   ['couples-adhd-partner', '/couples-adhd'],
@@ -26,9 +18,14 @@ const countHref = (html: string, href: string) => {
 
 describe('compact keyword internal-link reinforcement', () => {
   it('links the core service pages contextually to every compact destination', () => {
-    for (const { source, target } of SERVICE_LINKS) {
-      expect(readSource(source), `${source} should link to ${target}`).toContain(`to="${target}"`);
-    }
+    const couples = readSource('src/pages/Services/Couples/CouplesCounseling.tsx');
+    expect(couples).toContain('to="/couples-counseling-after-infidelity"');
+    expect(couples).toContain('to="/couples-adhd"');
+    expect(couples).toContain('to="/couples-second-chapter"');
+
+    const parenting = readSource('src/pages/Services/Parenting/ParentingGuidance.tsx');
+    expect(parenting).toContain('to="/parenting-guidance-divorce"');
+    expect(parenting).toContain('to="/parenting-guidance-early-childhood"');
   });
 
   it.each(ARTICLE_LINKS)('%s links exactly once to %s', (source, target) => {
