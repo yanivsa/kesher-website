@@ -1563,12 +1563,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-26T17:41:14.388674+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-26T17:41:15.155334+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2178,9 +2172,18 @@
       "details": {
         "publication_slot": "2026-10-26"
       }
+    },
+    {
+      "at": "2026-10-26T20:40:53.799150+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "owner run-now article workflow already active",
+      "details": {
+        "publication_slot": "2026-10-26"
+      }
     }
   ],
-  "updated_at": "2026-10-26T20:35:51.166879+00:00",
+  "updated_at": "2026-10-26T20:40:53.799173+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
