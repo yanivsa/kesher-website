@@ -2916,6 +2916,20 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-25T22:35:44.590946+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-26",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "municipal-kindergarten-adjustment",
+        "derive_content_sha256": "d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836",
+        "derive_long_item_id": "video-20261026-131504-d4ece4f847-a2"
+      },
+      "intent_at": "2026-10-26T12:00:47.334318+00:00",
+      "status": "intent",
+      "previous_run_id": 40315712176,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2940,5 +2954,21 @@
     "Kesher Daily NotebookLM Video Overview:40313540505",
     "Kesher Daily NotebookLM Video Overview:40314746817",
     "Kesher Daily Article Short V4:40315712176"
-  ]
+  ],
+  "interventions": {
+    "v5|municipal-kindergarten-adjustment|d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836|short": {
+      "pipeline_id": "v5",
+      "slug": "municipal-kindergarten-adjustment",
+      "content_sha256": "d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-10-26T14",
+      "last_fingerprint": "8af617008df3dbac46bccf3545a8a992ebc62c9e7e8684aef54e8f95a32c2c6a",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-26T12:00:47.334318+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
