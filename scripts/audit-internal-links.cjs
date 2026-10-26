@@ -84,10 +84,26 @@ for (const entry of plan) {
   clusters.set(entry.cluster, row);
 }
 
+const archiveRows = effectivePosts.map((post) => ({
+  id: post.id,
+  outgoingArticleLinks: new Set(extractBlogLinks(post.content)).size,
+}));
+const archiveZero = archiveRows.filter((row) => row.outgoingArticleLinks === 0);
+const archiveOne = archiveRows.filter((row) => row.outgoingArticleLinks === 1);
+const archiveTwoPlus = archiveRows.filter((row) => row.outgoingArticleLinks >= 2);
+
 console.log(`Internal-link plan valid: ${plan.length} source-plan entries, ${audit.planned} planned article-to-article links.`);
 console.log(`Coverage now: ${audit.present}/${audit.planned} present; ${audit.missing} still missing.`);
 for (const [cluster, stats] of clusters) {
   console.log(`- ${cluster}: ${stats.present}/${stats.planned} present`);
+}
+console.log(`Archive outgoing article-link coverage: ${archiveZero.length} with 0 links; ${archiveOne.length} with 1 link; ${archiveTwoPlus.length} with 2+ links; ${archiveRows.length} posts total.`);
+
+if (process.argv.includes('--orphans')) {
+  console.log('\nPosts with 0 outgoing article links:');
+  for (const row of archiveZero) console.log(`- ${row.id}`);
+  console.log('\nPosts with exactly 1 outgoing article link:');
+  for (const row of archiveOne) console.log(`- ${row.id}`);
 }
 
 if (process.argv.includes('--strict') && audit.missing > 0) {
