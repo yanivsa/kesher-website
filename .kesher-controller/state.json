@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -30,12 +30,18 @@
     },
     "pr_number": 1227,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1227",
-    "current_pr_head_sha": "cc2f8e2bcc2f2b7f315d7d49184291da0c1d43a3",
+    "current_pr_head_sha": "8aaa8a9f61d7f30c4fc27543a4844ee3452303eb",
     "jules_head_sha": "83f03f857ea48f0712dc32d753f58cabead1e781",
     "normalization_slot": "2026-10-27",
     "normalization_dispatched_at": "2026-10-26T23:01:25.151514+00:00",
     "normalization_run_id": 40416796391,
-    "normalized_head_sha": "cc2f8e2bcc2f2b7f315d7d49184291da0c1d43a3"
+    "normalization_drift_count": 1,
+    "last_normalization_drift_head_sha": "8aaa8a9f61d7f30c4fc27543a4844ee3452303eb",
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
+    "normalized_head_sha": "8aaa8a9f61d7f30c4fc27543a4844ee3452303eb",
+    "image_head_sha": "8aaa8a9f61d7f30c4fc27543a4844ee3452303eb",
+    "merge_candidate_sha": "8aaa8a9f61d7f30c4fc27543a4844ee3452303eb"
   },
   "backlog": [
     {
@@ -2263,21 +2269,28 @@
         "attempt": 1,
         "pr_number": 1227
       }
+    },
+    {
+      "at": "2026-10-26T23:06:02.745333+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-26T23:03:48.293196+00:00",
+  "updated_at": "2026-10-26T23:06:02.745352+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 40417078313,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "LocalEditorial",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-26T23:03:48.293160+00:00"
+    "last_dispatch_at": "2026-10-26T23:03:48.293160+00:00",
+    "artifact_sha256": "12d58b57fd0347bb3699ffd4373bea24bcda85a74343f3383d27416ccf244782",
+    "source_id": "local-editorial://kindergarten-adjustment-difficulties/5"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2663,6 +2676,18 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-26T22:35:51.687881+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-27",
+      "inputs": {
+        "pr_number": "1227",
+        "slot": "2026-10-27"
+      },
+      "intent_at": "2026-10-26T23:05:20.847665+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2674,5 +2699,17 @@
   },
   "processed_child_notifications": [
     "Kesher Normalize Article PR:40416796391"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
