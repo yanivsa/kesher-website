@@ -57,7 +57,7 @@ const manualPostsOct2026 = [
     tags: ['שיתוף ילדים במטלות הבית', 'זמן איכות עם הילדים', 'תחושת שייכות אצל ילדים', 'עומס אימהי', 'הדרכת הורים'],
     serviceUrl: '/services/parenting',
     serviceLabel: 'הדרכת הורים באשדוד',
-    image: '/images/generated/blog/family-chores-quality-time-with-kids.jpg',
+    image: '/images/generated/blog/family-chores-quality-time-with-kids.png',
     imageAlt: 'אמא וילדים משתפים פעולה יחד במטלות הבית בזמן משפחתי משותף',
     relatedPostIds: ['child-argues-every-request-boundaries', 'child-meltdown-after-school'],
     evidence: [
@@ -70,7 +70,7 @@ const manualPostsOct2026 = [
       {
         title: 'Chores and Children',
         source: 'American Academy of Child and Adolescent Psychiatry',
-        url: 'https://www.aacap.org/AACAP/AACAP/Families_and_Youth/Facts_for_Families/FFF-Guide/Chores_and_Children-125.aspx',
+        url: 'https://www.aacap.org/AACAP/AACAP/Families_and_Youth/Facts_for_Families/FFF-Guide/Chores_And_Children-125.aspx',
         note: 'סקירה של תרומת מטלות לאחריות ומיומנויות יומיומיות, עם הצעות לפי גיל.'
       },
       {
