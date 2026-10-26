@@ -16,7 +16,18 @@
     "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-10-26T22:36:29.031574+00:00"
+    "last_dispatch_at": "2026-10-26T22:36:29.031574+00:00",
+    "watchdog": {
+      "identity": "2026-10-27",
+      "session_id": null,
+      "last_progress_at": "2026-10-26T22:36:27+00:00",
+      "last_fingerprint": null,
+      "last_nudge_at": null,
+      "nudge_count": 0,
+      "worker_restart_count": 0,
+      "last_restart_at": null,
+      "last_restart_run_id": null
+    }
   },
   "backlog": [
     {
@@ -2188,9 +2199,18 @@
       "details": {
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-10-26T22:44:07.743448+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-26T22:36:29.031592+00:00",
+  "updated_at": "2026-10-26T22:44:07.743457+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
