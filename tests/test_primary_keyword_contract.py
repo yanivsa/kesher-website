@@ -29,6 +29,7 @@ class TestPrimaryKeywordContract(unittest.TestCase):
             with self.subTest(keyword=keyword):
                 self.assertEqual(slug_represents_keyword(slug, keyword), (True, ""))
                 self.assertFalse(slug_represents_keyword("stock-market-investments", keyword)[0])
+                self.assertFalse(slug_represents_keyword("investment-grade-bonds", keyword)[0])
 
     def test_midyear_kindergarten_topic_accepts_relevant_slug_only(self):
         self.assertEqual(slug_represents_keyword("changing-kindergarten-midyear", "מעבר גן באמצע שנה"), (True, ""))
