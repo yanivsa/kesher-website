@@ -2466,10 +2466,19 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return v5.core.Action("blocked", str(exc))
 
         if content_errors:
+            if max_attempt >= 2:
+                v5.core.block(state, "article", "ARTICLE_ATTEMPTS_EXHAUSTED",
+                              f"PR #{number} remains invalid after two same-PR repairs")
+                state["article"]["status"] = "exhausted"
+                return v5.core.Action("blocked", "article content repair budget exhausted")
             requested = self._request_article_text_repair(pr, content_errors)
+            if not requested:
+                v5.core.block(state, "article", "ARTICLE_TEXT_REPAIR_NOT_REQUESTED",
+                              f"PR #{number} has invalid content and no new bounded repair was requested")
+                return v5.core.Action("blocked", "same-PR text repair did not start")
             return v5.core.Action(
-                "request_text_repair" if requested else "wait",
-                f"article PR #{number} has content errors: {' | '.join(content_errors)}; same-PR text repair {'requested' if requested else 'pending or exhausted'}",
+                "request_text_repair",
+                f"article PR #{number} has content errors: {' | '.join(content_errors)}; same-PR text repair requested",
             )
 
         return super()._handle_open_article_pr(state, pr)
