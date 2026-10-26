@@ -54,11 +54,11 @@
     "quality_content_sha256": "d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-26T11:25:56.237865+00:00",
+    "quality_checked_at": "2026-10-26T11:30:51.298071+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-26T10:45:04.766463+00:00",
-    "live_verified_at": "2026-10-26T11:25:57.986219+00:00"
+    "live_verified_at": "2026-10-26T11:30:53.133135+00:00"
   },
   "backlog": [
     {
@@ -2517,7 +2517,7 @@
     "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-10-26T11:29:16.631382+00:00",
-    "run_id": 40313540505,
+    "run_id": 40314746817,
     "processed_run_id": 40313540505,
     "provider_id": "7120cf18-bee8-4481-bb22-cb1948f69d3f",
     "failure_fingerprint": null,
@@ -2535,7 +2535,7 @@
     "task_id": "7120cf18-bee8-4481-bb22-cb1948f69d3f",
     "artifact_id": "7120cf18-bee8-4481-bb22-cb1948f69d3f",
     "provider_status": "pending",
-    "verified": false,
+    "verified": true,
     "watchdog": {
       "identity": "long_video:municipal-kindergarten-adjustment:d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836:video-20261026-131504-d4ece4f847-a2",
       "hard_started_at": "2026-10-26T11:15:17.471042+00:00",
@@ -2544,7 +2544,20 @@
       "recovery_count": 0,
       "last_recovery_at": null
     },
-    "resume_dispatches": 1
+    "resume_dispatches": 1,
+    "youtube_id": "FzAzvOP15Mo",
+    "youtube_url": "https://youtu.be/FzAzvOP15Mo",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 114.667,
+    "content_duration_seconds": 114.667,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
@@ -2913,7 +2926,7 @@
   },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 40313540505,
+    "run_id": 40314746817,
     "conclusion": "success",
     "source_slug": "municipal-kindergarten-adjustment",
     "slot": "2026-10-26"
