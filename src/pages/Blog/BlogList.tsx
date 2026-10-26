@@ -230,6 +230,7 @@ const BlogList: React.FC = () => {
                   <div className={styles.meta}>
                     <time dateTime={post.date}>
                       {new Date(post.date).toLocaleDateString('he-IL', {
+                        timeZone: 'UTC',
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric',
