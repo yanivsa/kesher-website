@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-26",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -30,7 +30,7 @@
     },
     "pr_number": 1213,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1213",
-    "current_pr_head_sha": "cfb1533fb8b9b36c19774c0a6b1303bc8d964519",
+    "current_pr_head_sha": "f68cc38970a44a979abc3d0b758a7b8059f8c3ab",
     "jules_head_sha": "aad5c762bdce81f67d50210838d117c8179c6ae0",
     "normalization_slot": "2026-10-26",
     "normalization_dispatched_at": "2026-10-25T23:01:48.090530+00:00",
@@ -39,9 +39,11 @@
     "merge_dispatch_count": 0,
     "deploy_run_id": 40263452088,
     "next_deploy_retry_at": "2026-10-26T02:27:33.688714+00:00",
-    "normalization_drift_count": 1,
-    "last_normalization_drift_head_sha": "cfb1533fb8b9b36c19774c0a6b1303bc8d964519",
-    "normalized_head_sha": "cfb1533fb8b9b36c19774c0a6b1303bc8d964519"
+    "normalization_drift_count": 2,
+    "last_normalization_drift_head_sha": "f68cc38970a44a979abc3d0b758a7b8059f8c3ab",
+    "normalized_head_sha": "f68cc38970a44a979abc3d0b758a7b8059f8c3ab",
+    "image_head_sha": "f68cc38970a44a979abc3d0b758a7b8059f8c3ab",
+    "merge_candidate_sha": "f68cc38970a44a979abc3d0b758a7b8059f8c3ab"
   },
   "backlog": [
     {
@@ -1589,15 +1591,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-26T02:16:27.867865+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-26T02:22:53.570363+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2490,21 +2483,28 @@
         "attempt": 1,
         "pr_number": 1213
       }
+    },
+    {
+      "at": "2026-10-26T10:36:17.648645+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-26T10:34:22.032761+00:00",
+  "updated_at": "2026-10-26T10:36:17.648680+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 40308449881,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "LocalEditorial",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-26T10:34:22.032718+00:00"
+    "last_dispatch_at": "2026-10-26T10:34:22.032718+00:00",
+    "artifact_sha256": "cf93be1ec43c6437a928452366beb658009e736cb3ddd990711b0913937817b9",
+    "source_id": "local-editorial://municipal-kindergarten-adjustment/5"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2881,6 +2881,18 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-25T22:35:44.590946+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-26",
+      "inputs": {
+        "pr_number": "1213",
+        "slot": "2026-10-26"
+      },
+      "intent_at": "2026-10-26T10:35:32.874696+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2896,5 +2908,17 @@
     "Deploy to Cloudflare Pages:40259633891",
     "Deploy to Cloudflare Pages:40260342252",
     "Deploy to Cloudflare Pages:40263452088"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
