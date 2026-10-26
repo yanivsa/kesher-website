@@ -2290,7 +2290,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-26T23:03:48.293160+00:00",
     "artifact_sha256": "12d58b57fd0347bb3699ffd4373bea24bcda85a74343f3383d27416ccf244782",
-    "source_id": "local-editorial://kindergarten-adjustment-difficulties/5"
+    "source_id": "local-editorial://kindergarten-adjustment-difficulties/5",
+    "run_id": 40417078313
   },
   "long_video": {
     "attempt_count": 0,
