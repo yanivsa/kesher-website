@@ -35,8 +35,8 @@
     "normalization_slot": "2026-10-26",
     "normalization_dispatched_at": "2026-10-25T23:01:48.090530+00:00",
     "normalization_run_id": 40308245998,
-    "merge_dispatch_at": null,
-    "merge_dispatch_count": 0,
+    "merge_dispatch_at": "2026-10-26T10:36:22.203220+00:00",
+    "merge_dispatch_count": 1,
     "deploy_run_id": 40263452088,
     "next_deploy_retry_at": "2026-10-26T02:27:33.688714+00:00",
     "normalization_drift_count": 2,
@@ -2890,9 +2890,10 @@
         "slot": "2026-10-26"
       },
       "intent_at": "2026-10-26T10:35:32.874696+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40308714105,
+      "dispatched_at": "2026-10-26T10:35:32.874696+00:00"
     }
   },
   "last_child_notification": {
@@ -2908,17 +2909,5 @@
     "Deploy to Cloudflare Pages:40259633891",
     "Deploy to Cloudflare Pages:40260342252",
     "Deploy to Cloudflare Pages:40263452088"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  ]
 }
