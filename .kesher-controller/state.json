@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "image_retry_wait",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -2314,12 +2314,22 @@
       "details": {
         "retry_at": "2026-10-26T23:28:19.062816+00:00"
       }
+    },
+    {
+      "at": "2026-10-26T23:31:23.753053+00:00",
+      "from": "image_retry_wait",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 2,
+        "pr_number": 1227
+      }
     }
   ],
-  "updated_at": "2026-10-26T23:26:10.707977+00:00",
+  "updated_at": "2026-10-26T23:31:23.753060+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 40417078313 completed with conclusion=success but no validated image is present",
@@ -2327,7 +2337,7 @@
       "retry_at": "2026-10-26T23:28:19.062816+00:00",
       "at": "2026-10-26T23:23:19.062860+00:00"
     },
-    "next_retry_at": "2026-10-26T23:28:19.062816+00:00",
+    "next_retry_at": null,
     "processed_run_id": 40417078313,
     "provider_id": "LocalEditorial",
     "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
@@ -2335,7 +2345,7 @@
     "failure_count_by_type": {
       "IMAGE_OUTPUT_MISSING": 1
     },
-    "last_dispatch_at": "2026-10-26T23:03:48.293160+00:00",
+    "last_dispatch_at": "2026-10-26T23:31:23.753026+00:00",
     "artifact_sha256": "12d58b57fd0347bb3699ffd4373bea24bcda85a74343f3383d27416ccf244782",
     "source_id": "local-editorial://kindergarten-adjustment-difficulties/5",
     "run_id": 40417078313,
@@ -2734,9 +2744,10 @@
         "pr_number": "1227"
       },
       "intent_at": "2026-10-26T23:30:43.268510+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40417078313,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40420329446,
+      "dispatched_at": "2026-10-26T23:30:43.268510+00:00"
     }
   },
   "last_child_notification": {
@@ -2750,17 +2761,5 @@
     "Kesher Normalize Article PR:40416796391",
     "Kesher Trusted Article Image:40417078313",
     "Kesher Normalize Article PR:40419205628"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  ]
 }
