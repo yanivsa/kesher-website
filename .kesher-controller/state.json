@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-26",
-  "status": "complete",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "complete",
@@ -58,7 +58,7 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-26T10:45:04.766463+00:00",
-    "live_verified_at": "2026-10-26T14:51:14.150234+00:00"
+    "live_verified_at": "2026-10-26T14:50:51.289822+00:00"
   },
   "backlog": [
     {
@@ -1603,8 +1603,29 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-25"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "controller",
+    "code": "GITHUB_MUTATION_UNCERTAIN",
+    "message": "GITHUB_MUTATION_UNCERTAIN: PUT https://api.github.com/repos/yanivsa/kesher-website/contents/.kesher-controller/state.json HTTP 502; reconcile before retry",
+    "at": "2026-10-26T14:51:26.430507+00:00"
+  },
   "history": [
+    {
+      "at": "2026-10-26T11:14:12.479221+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 1
+      }
+    },
+    {
+      "at": "2026-10-26T11:16:05.194434+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
     {
       "at": "2026-10-26T11:16:06.221049+00:00",
       "from": "article_live",
@@ -2203,25 +2224,16 @@
       "reason": "article, long-form video and derivative Short verified public"
     },
     {
-      "at": "2026-10-26T14:51:14.150266+00:00",
+      "at": "2026-10-26T14:51:26.430528+00:00",
       "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-26T14:51:15.043595+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-26T14:51:15.954364+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
+      "to": "blocked",
+      "reason": "GITHUB_MUTATION_UNCERTAIN",
+      "details": {
+        "message": "GITHUB_MUTATION_UNCERTAIN: PUT https://api.github.com/repos/yanivsa/kesher-website/contents/.kesher-controller/state.json HTTP 502; reconcile before retry"
+      }
     }
   ],
-  "updated_at": "2026-10-26T14:51:15.954385+00:00",
+  "updated_at": "2026-10-26T14:51:26.430532+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
