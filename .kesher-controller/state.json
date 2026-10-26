@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "article_normalizing",
+  "status": "image_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -14,7 +14,7 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "last_dispatch_at": "2026-10-26T22:36:29.031574+00:00",
     "watchdog": {
       "identity": "2026-10-27",
@@ -29,19 +29,20 @@
     },
     "pr_number": 1227,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1227",
-    "current_pr_head_sha": "665c1ef4a097d7205666e2e74994a98dccd3d60d",
+    "current_pr_head_sha": "9c479c95ef0f4868302292b3ff7fcfbf895cee07",
     "jules_head_sha": "83f03f857ea48f0712dc32d753f58cabead1e781",
     "normalization_slot": "2026-10-27",
     "normalization_dispatched_at": "2026-10-26T23:55:54.534061+00:00",
     "normalization_run_id": 40423060078,
-    "normalization_drift_count": 2,
-    "last_normalization_drift_head_sha": "665c1ef4a097d7205666e2e74994a98dccd3d60d",
+    "normalization_drift_count": 3,
+    "last_normalization_drift_head_sha": "9c479c95ef0f4868302292b3ff7fcfbf895cee07",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 40420921104,
     "last_error": null,
     "last_refunded_auto_merge_run_id": 40420921104,
-    "deferred_auto_merge_refund_count": 1
+    "deferred_auto_merge_refund_count": 1,
+    "normalized_head_sha": "9c479c95ef0f4868302292b3ff7fcfbf895cee07"
   },
   "backlog": [
     {
@@ -1655,12 +1656,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-26T18:31:48.803729+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-10-26T18:36:27.738939+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2367,26 +2362,44 @@
         "pr_number": 1227,
         "slot": "2026-10-27"
       }
+    },
+    {
+      "at": "2026-10-26T23:57:30.087912+00:00",
+      "from": "article_normalizing",
+      "to": "image_retry_wait",
+      "reason": "IMAGE_OUTPUT_MISSING",
+      "details": {
+        "message": "trusted image run 40420329446 completed with conclusion=success but no validated image is present",
+        "retry_at": "2026-10-27T00:02:30.087878+00:00",
+        "failure_streak": 1,
+        "run_id": 40420329446
+      }
     }
   ],
-  "updated_at": "2026-10-26T23:55:54.534098+00:00",
+  "updated_at": "2026-10-26T23:57:30.087920+00:00",
   "image": {
     "attempt_count": 2,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "processed_run_id": 40417078313,
+    "status": "retry_wait",
+    "last_error": {
+      "code": "IMAGE_OUTPUT_MISSING",
+      "message": "trusted image run 40420329446 completed with conclusion=success but no validated image is present",
+      "retryable": true,
+      "retry_at": "2026-10-27T00:02:30.087878+00:00",
+      "at": "2026-10-26T23:57:30.087905+00:00"
+    },
+    "next_retry_at": "2026-10-27T00:02:30.087878+00:00",
+    "processed_run_id": 40420329446,
     "provider_id": "LocalEditorial",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
+    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
+    "same_failure_streak": 1,
     "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 1
+      "IMAGE_OUTPUT_MISSING": 2
     },
     "last_dispatch_at": "2026-10-26T23:31:23.753026+00:00",
     "artifact_sha256": "12d58b57fd0347bb3699ffd4373bea24bcda85a74343f3383d27416ccf244782",
     "source_id": "local-editorial://kindergarten-adjustment-difficulties/5",
     "last_run_conclusion": "success",
-    "last_failed_run_id": 40417078313,
+    "last_failed_run_id": 40420329446,
     "run_id": 40420329446
   },
   "long_video": {
@@ -2789,5 +2802,12 @@
     "Kesher Trusted Article Image:40420329446",
     "Auto-merge Kesher article PRs:40420921104"
   ],
-  "last_error": null
+  "last_error": {
+    "stage": "image",
+    "code": "IMAGE_OUTPUT_MISSING",
+    "message": "trusted image run 40420329446 completed with conclusion=success but no validated image is present",
+    "retryable": true,
+    "retry_at": "2026-10-27T00:02:30.087878+00:00",
+    "at": "2026-10-26T23:57:30.087905+00:00"
+  }
 }
