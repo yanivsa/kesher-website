@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "blocked",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -15,7 +15,7 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "last_dispatch_at": "2026-10-26T22:36:29.031574+00:00",
     "watchdog": {
       "identity": "2026-10-27",
@@ -33,7 +33,7 @@
     "current_pr_head_sha": "9aa8a96b7ae218aecc8147341b60bd090919c7ee",
     "jules_head_sha": "83f03f857ea48f0712dc32d753f58cabead1e781",
     "normalization_slot": "2026-10-27",
-    "normalization_dispatched_at": "2026-10-26T23:01:25.151514+00:00",
+    "normalization_dispatched_at": "2026-10-26T23:21:39.625935+00:00",
     "normalization_run_id": 40416796391,
     "normalization_drift_count": 2,
     "last_normalization_drift_head_sha": "9aa8a96b7ae218aecc8147341b60bd090919c7ee",
@@ -1651,12 +1651,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "GITHUB_MUTATION_UNCERTAIN",
-    "message": "GITHUB_MUTATION_UNCERTAIN: PUT https://api.github.com/repos/yanivsa/kesher-website/contents/.kesher-controller/state.json HTTP 500; reconcile before retry",
-    "at": "2026-10-26T23:08:14.468163+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-26T18:21:14.108286+00:00",
@@ -2287,9 +2282,19 @@
       "details": {
         "message": "GITHUB_MUTATION_UNCERTAIN: PUT https://api.github.com/repos/yanivsa/kesher-website/contents/.kesher-controller/state.json HTTP 500; reconcile before retry"
       }
+    },
+    {
+      "at": "2026-10-26T23:21:39.625960+00:00",
+      "from": "blocked",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1227,
+        "slot": "2026-10-27"
+      }
     }
   ],
-  "updated_at": "2026-10-26T23:08:14.468188+00:00",
+  "updated_at": "2026-10-26T23:21:39.625967+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
@@ -2697,9 +2702,10 @@
         "slot": "2026-10-27"
       },
       "intent_at": "2026-10-26T23:20:47.359068+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40416796391,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40419205628,
+      "dispatched_at": "2026-10-26T23:20:47.359068+00:00"
     }
   },
   "last_child_notification": {
@@ -2712,17 +2718,5 @@
   "processed_child_notifications": [
     "Kesher Normalize Article PR:40416796391",
     "Kesher Trusted Article Image:40417078313"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  ]
 }
