@@ -2550,7 +2550,20 @@
     "short_signature_verified": true,
     "short_origin_verified": true
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-article-generation.yml": {
+      "workflow": "kesher-article-generation.yml",
+      "cycle": "2026-10-26",
+      "inputs": {
+        "slot": "2026-10-26",
+        "topic_brief": "אשכול מעון לגן. נושא/כאב: ילד שעוזב צוות, חברים ושגרה מוכרת ונכנס לגן חדש באמצע השנה; הורה שמתלבט אם המעבר יפגע בו ומרגיש אשמה או חוסר ודאות. להתמקד בפרידה, הכנה והתחלה מחדש. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: changing-kindergarten-midyear. כותרת עבודה: מעבר גן באמצע שנה: איך לעזור לילד להיפרד ולהתחיל מחדש? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-changing-kindergarten-midyear\nRequired Primary Keyword: מעבר גן באמצע שנה"
+      },
+      "intent_at": "2026-10-26T20:23:49.345390+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
     "run_id": 40319338229,
