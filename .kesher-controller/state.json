@@ -2504,7 +2504,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-26T10:34:22.032718+00:00",
     "artifact_sha256": "cf93be1ec43c6437a928452366beb658009e736cb3ddd990711b0913937817b9",
-    "source_id": "local-editorial://municipal-kindergarten-adjustment/5"
+    "source_id": "local-editorial://municipal-kindergarten-adjustment/5",
+    "run_id": 40308449881
   },
   "long_video": {
     "attempt_count": 0,
