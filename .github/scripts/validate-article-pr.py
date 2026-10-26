@@ -7,6 +7,7 @@ from typing import Any
 import base64
 import hashlib
 import html
+from html.parser import HTMLParser
 import io
 from datetime import datetime, timezone
 import json
@@ -32,6 +33,29 @@ IMAGE_PREFIX = ARTICLE_IMAGE_PREFIX
 def word_count(content: str) -> int:
     visible = html.unescape(re.sub(r"<[^>]+>", " ", content or ""))
     return len([word for word in re.split(r"\s+", visible.strip()) if word])
+
+
+def internal_blog_link_errors(content: str, catalog: list[dict]) -> list[str]:
+    """Resolve internal blog destinations against real current and archived posts."""
+    known = {str(row.get(key) or "").strip() for row in catalog if isinstance(row, dict)
+             for key in ("id", "slug") if row.get(key)}
+    hrefs: list[str] = []
+
+    class Links(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            if tag.lower() == "a":
+                hrefs.extend(value for key, value in attrs if key.lower() == "href" and value)
+
+    Links().feed(str(content or ""))
+    errors = []
+    for href in hrefs:
+        parts = urllib.parse.urlsplit(href)
+        if parts.netloc and parts.netloc.lower() != "kesher.saharoni.com":
+            continue
+        path = urllib.parse.unquote(parts.path)
+        if path.startswith("/blog/") and path.removeprefix("/blog/").strip("/") not in known:
+            errors.append(f"internal_blog_link_missing: {path}")
+    return sorted(set(errors))
 
 
 def raw_github_content_url(repo: str, ref: str, repo_path: str) -> str:
@@ -156,10 +180,10 @@ def resolve_latest_verify_check(candidates: list[dict]) -> tuple[dict | None, st
     return None, "Multiple indistinguishable or conflicting latest verify checks"
 
 
-def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader, extra_base_posts=None, owner_topic_brief=""):
+def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader, extra_base_posts=None, owner_topic_brief="", published_catalog=None):
     errors = evaluate_content(
         pr, files_data, base_posts, head_posts, image_loader,
-        extra_base_posts=extra_base_posts, owner_topic_brief=owner_topic_brief,
+        extra_base_posts=extra_base_posts, owner_topic_brief=owner_topic_brief, published_catalog=published_catalog,
     )
     head_sha = str((pr.get("head") or {}).get("sha") or "").strip()
     if not head_sha:
@@ -190,7 +214,7 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader, extra
     return errors
 
 
-def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra_base_posts=None, owner_topic_brief=""):
+def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra_base_posts=None, owner_topic_brief="", published_catalog=None):
     """Pure content policy, also run inside canonical CI before CI can finish."""
     errors: list[str] = []
     files = [entry["filename"] for entry in files_data]
@@ -223,6 +247,10 @@ def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra
 
     post = new_posts[0]
     content_errors: list[str] = []
+    content_errors.extend(internal_blog_link_errors(
+        post.get("content", ""),
+        list(published_catalog) + [post] if published_catalog is not None else list(head_posts) + list(extra_base_posts or []),
+    ))
     count = word_count(post.get("content", ""))
     if not 700 <= count <= 1100:
         content_errors.append(f"New article word count must be 700-1100, found {count}")
@@ -477,6 +505,7 @@ def main() -> int:
     base_posts = fetch_posts(repo, pr["base"]["sha"], token, "src/data/posts.json")
     head_posts = fetch_posts(repo, pr["head"]["sha"], token, "src/data/posts.json")
     extra_base_posts = fetch_posts(repo, pr["base"]["sha"], token, "src/data/postsRecent.json")
+    published_catalog = fetch_repo_json(repo, pr["base"]["sha"], token, "src/data/postSummaries.json")
 
     def load_image(entry):
         request = urllib.request.Request(
@@ -493,7 +522,7 @@ def main() -> int:
         return 1
     errors = evaluate(
         pr, files_data, checks, base_posts, head_posts, load_image,
-        extra_base_posts=extra_base_posts, owner_topic_brief=owner_topic_brief,
+        extra_base_posts=extra_base_posts, owner_topic_brief=owner_topic_brief, published_catalog=published_catalog,
     )
     if errors:
         print("\n".join(errors), file=sys.stderr)

@@ -170,11 +170,11 @@ const BlogPost: React.FC = () => {
             <span>מאת: </span>
             <Link to="/about" className={styles.authorLink}>{post.author || SITE_CONFIG.author}</Link>
             <span className={styles.metaDivider}>•</span>
-            <span className={styles.date} data-kesher-article-date={post.date}>{new Date(post.date).toLocaleDateString('he-IL')}</span>
+            <span className={styles.date} data-kesher-article-date={post.date}>{new Date(post.date).toLocaleDateString('he-IL', { timeZone: 'UTC' })}</span>
             {'updatedAt' in post && typeof post.updatedAt === 'string' && post.updatedAt && post.updatedAt !== post.date && (
               <>
                 <span className={styles.metaDivider}>•</span>
-                <span className={styles.updatedDate}>עודכן: {new Date(post.updatedAt).toLocaleDateString('he-IL')}</span>
+                <span className={styles.updatedDate}>עודכן: {new Date(post.updatedAt).toLocaleDateString('he-IL', { timeZone: 'UTC' })}</span>
               </>
             )}
           </div>
