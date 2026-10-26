@@ -58,5 +58,29 @@
         "after": "."
       }
     ]
+  },
+  {
+    "source": "siblings-fairness-vs-equality",
+    "afterHeadingIncludes": "איך עונים ל\"למה הוא קיבל יותר?\" בלי להצטדק",
+    "items": [
+      {
+        "target": "sibling-rivalry-parent-intervention",
+        "anchor": "מתי לא כדאי להיכנס לתפקיד השופט במריבות אחים",
+        "before": "כשהוויכוח כבר הופך למאבק בין האחים עצמם, חשוב לדעת גם ",
+        "after": " כדי לא לחזק בטעות תפקידי צודק ואשם."
+      }
+    ]
+  },
+  {
+    "source": "sibling-rivalry-parent-intervention",
+    "afterHeadingIncludes": "למה הניסיון שלנו לעשות צדק רק מחמיר את המצב?",
+    "items": [
+      {
+        "target": "siblings-fairness-vs-equality",
+        "anchor": "ההבדל בין שוויון להוגנות בין אחים",
+        "before": "חלק מהיציאה מתפקיד השופט הוא להבין את ",
+        "after": " — בלי לנסות לחלק כל דבר בדיוק חצי-חצי."
+      }
+    ]
   }
 ]

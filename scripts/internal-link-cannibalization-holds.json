@@ -1,0 +1,12 @@
+[
+  {
+    "cluster": "late-singlehood-friendship",
+    "status": "hold",
+    "issue": 1217,
+    "reason": "Overlapping search intent around friends marrying/moving forward and loneliness in late singlehood; do not strengthen either page with Priority-3 links before consolidation or clear intent separation.",
+    "slugs": [
+      "late-singleness-friends-moving-forward",
+      "older-singles-friendship-changes-loneliness"
+    ]
+  }
+]
