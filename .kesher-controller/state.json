@@ -1588,18 +1588,9 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-26T05:11:36.983805+00:00"
+    "at": "2026-10-26T05:16:13.661481+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-25T20:50:56.646953+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1209 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
     {
       "at": "2026-10-25T20:55:59.204389+00:00",
       "from": "blocked",
@@ -2494,9 +2485,18 @@
       "details": {
         "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-10-26T05:16:13.661499+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
+      }
     }
   ],
-  "updated_at": "2026-10-26T05:11:36.983830+00:00",
+  "updated_at": "2026-10-26T05:16:13.661504+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
