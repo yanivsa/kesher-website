@@ -2991,19 +2991,27 @@
         "long_url": "https://youtu.be/p3ntKY8tDjQ",
         "short_url": "https://youtu.be/f_GsGagsVww"
       }
+    },
+    {
+      "idea_id": "parenting-p1-municipal-kindergarten-adjustment",
+      "fingerprint": "be5ab84ae5f68adcd9b97f90f84a94353083fc777582e0682063060ef6f23fcd",
+      "topic_brief": "אשכול מעון לגן. נושא/כאב: הימים והשבועות הראשונים אחרי הכניסה לגן עירייה: בכי, עייפות, הסתגרות או רגישות. להסביר מה נחשב הסתגלות סבירה, מה עוזר ומה מצריך תשומת לב. נפרד מהכנה לפני היום הראשון. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: municipal-kindergarten-adjustment. כותרת עבודה: הסתגלות לגן עירייה: כמה זמן זה לוקח ומה עוזר באמת? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
+      "required_primary_keyword": "הסתגלות לגן עירייה",
+      "run_now": false,
+      "status": "complete",
+      "requested_at": "2026-10-19T10:12:46.078090+00:00",
+      "publication_slot": "2026-10-26",
+      "claimed_at": "2026-10-25T22:36:08.735959+00:00",
+      "completed_at": "2026-10-26T12:10:07.983763+00:00",
+      "outputs": {
+        "slug": "municipal-kindergarten-adjustment",
+        "article_url": "https://kesher.saharoni.com/blog/municipal-kindergarten-adjustment",
+        "long_url": "https://youtu.be/FzAzvOP15Mo",
+        "short_url": "https://youtu.be/xkLKquTygoQ"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "parenting-p1-municipal-kindergarten-adjustment",
-    "fingerprint": "be5ab84ae5f68adcd9b97f90f84a94353083fc777582e0682063060ef6f23fcd",
-    "topic_brief": "אשכול מעון לגן. נושא/כאב: הימים והשבועות הראשונים אחרי הכניסה לגן עירייה: בכי, עייפות, הסתגרות או רגישות. להסביר מה נחשב הסתגלות סבירה, מה עוזר ומה מצריך תשומת לב. נפרד מהכנה לפני היום הראשון. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: municipal-kindergarten-adjustment. כותרת עבודה: הסתגלות לגן עירייה: כמה זמן זה לוקח ומה עוזר באמת? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
-    "required_primary_keyword": "הסתגלות לגן עירייה",
-    "run_now": false,
-    "status": "claimed",
-    "requested_at": "2026-10-19T10:12:46.078090+00:00",
-    "publication_slot": "2026-10-26",
-    "claimed_at": "2026-10-25T22:36:08.735959+00:00"
-  },
+  "active_idea": null,
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/municipal-kindergarten-adjustment",
     "overview_youtube_url": "https://youtu.be/FzAzvOP15Mo",
