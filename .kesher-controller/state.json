@@ -54,11 +54,11 @@
     "quality_content_sha256": "d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-26T10:55:52.901003+00:00",
+    "quality_checked_at": "2026-10-26T11:00:40.908645+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-26T10:45:04.766463+00:00",
-    "live_verified_at": "2026-10-26T10:56:09.285652+00:00"
+    "live_verified_at": "2026-10-26T11:00:42.998095+00:00"
   },
   "backlog": [
     {
@@ -2524,7 +2524,7 @@
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-26T11:05:36.018046+00:00",
     "run_id": 40310789798,
     "processed_run_id": null,
     "provider_id": null,
@@ -2898,27 +2898,13 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-25T22:35:44.590946+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-26",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "municipal-kindergarten-adjustment",
-        "target_content_sha256": "d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836"
-      },
-      "intent_at": "2026-10-26T10:52:13.653229+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 40310789798,
-      "dispatched_at": "2026-10-26T10:52:13.653229+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 40309825213,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 40310789798,
     "conclusion": "success",
-    "source_slug": null,
+    "source_slug": "municipal-kindergarten-adjustment",
     "slot": "2026-10-26"
   },
   "processed_child_notifications": [
