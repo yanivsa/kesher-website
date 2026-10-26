@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import manualPostsOct2026 from './manualPostsOct2026';
 
 const ARTICLE_ID = 'family-chores-quality-time-with-kids';
-const EXPECTED_HERO = `/images/generated/blog/${ARTICLE_ID}.jpg`;
+const EXPECTED_HERO = `/images/generated/blog/${ARTICLE_ID}.png`;
 
 describe('manual October 2026 publication contract', () => {
   it('keeps the family chores article eligible for exact-source hero verification', () => {
