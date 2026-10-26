@@ -58,7 +58,7 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-26T10:45:04.766463+00:00",
-    "live_verified_at": "2026-10-26T11:21:01.059193+00:00"
+    "live_verified_at": "2026-10-26T11:21:25.860037+00:00"
   },
   "backlog": [
     {
@@ -1606,24 +1606,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-26T03:26:02.854663+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-26T03:30:39.088109+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1213 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-26T03:36:29.952414+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2497,9 +2479,21 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-10-26T11:21:25.860066+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-26T11:21:27.787894+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-10-26T11:16:06.221071+00:00",
+  "updated_at": "2026-10-26T11:21:27.787917+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2518,7 +2512,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "rejected",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40313540505,
@@ -2531,7 +2525,7 @@
     "last_dispatch_at": "2026-10-26T11:14:12.479202+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
-    "item_id": "video-20261026-125344-d4ece4f847",
+    "item_id": "video-20261026-131504-d4ece4f847-a2",
     "source_slug": "municipal-kindergarten-adjustment",
     "source_content_sha256": "d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836",
     "content_sha256": "d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836",
