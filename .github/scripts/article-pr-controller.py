@@ -254,18 +254,25 @@ def image_loader(entry: dict, token: str) -> bytes:
 
 
 def existing_repair_attempts(repo: str, number: int, token: str) -> tuple[int, set[str]]:
-    comments = request_json(
-        "GET",
-        f"https://api.github.com/repos/{repo}/issues/{number}/comments?per_page=100",
-        token,
-    )
     total = 0
     heads: set[str] = set()
-    if isinstance(comments, list):
+    page = 1
+    while True:
+        suffix = "" if page == 1 else f"&page={page}"
+        comments = request_json(
+            "GET",
+            f"https://api.github.com/repos/{repo}/issues/{number}/comments?per_page=100{suffix}",
+            token,
+        )
+        if not isinstance(comments, list):
+            raise RuntimeError("PR_REPAIR_HISTORY_UNREADABLE")
         for comment in comments:
             for match in REPAIR_MARKER.finditer(comment.get("body") or ""):
                 total = max(total, int(match.group(1)))
                 heads.add(match.group(2).lower())
+        if len(comments) < 100:
+            break
+        page += 1
     return total, heads
 
 

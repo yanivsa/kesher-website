@@ -32,6 +32,7 @@ SEMANTIC_KEYWORD_DICTIONARY: dict[str, set[str]] = {
     "הסתגלות למעון": {"daycare", "nursery", "adaptation", "transition"},
     "הסתגלות לפעוטון": {"toddler", "daycare", "nursery", "adaptation", "transition"},
     "מעבר לגן": {"kindergarten", "preschool", "daycare", "transition"},
+    "מעבר גן באמצע שנה": {"kindergarten", "preschool"},
     "הסתגלות לגן": {"kindergarten", "preschool", "adaptation", "transition"},
     "מעבר למיטת מעבר": {"toddler", "bed", "crib", "transition"},
     "מעבר לחדר נפרד": {"separate", "room", "baby", "transition"},
