@@ -58,7 +58,7 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-26T10:45:04.766463+00:00",
-    "live_verified_at": "2026-10-26T17:35:59.514184+00:00"
+    "live_verified_at": "2026-10-26T17:36:21.598905+00:00"
   },
   "backlog": [
     {
@@ -1606,27 +1606,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-26T14:51:26.430528+00:00",
-      "from": "complete",
-      "to": "blocked",
-      "reason": "GITHUB_MUTATION_UNCERTAIN",
-      "details": {
-        "message": "GITHUB_MUTATION_UNCERTAIN: PUT https://api.github.com/repos/yanivsa/kesher-website/contents/.kesher-controller/state.json HTTP 502; reconcile before retry"
-      }
-    },
-    {
-      "at": "2026-10-26T14:55:52.615385+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-26T14:56:13.815471+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-26T14:56:14.702476+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2207,9 +2186,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-26T17:36:21.598937+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-26T17:36:22.769854+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-26T17:36:23.739061+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-26T17:31:38.106549+00:00",
+  "updated_at": "2026-10-26T17:36:23.739081+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
