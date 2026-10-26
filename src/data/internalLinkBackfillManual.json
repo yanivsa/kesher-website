@@ -58,5 +58,53 @@
         "after": "."
       }
     ]
+  },
+  {
+    "source": "unattached-adults-missed-chances-regrets",
+    "afterHeadingIncludes": "תפקידה של השוואה חברתית",
+    "items": [
+      {
+        "target": "older-singles-friendship-changes-loneliness",
+        "anchor": "השינויים בחברויות כשהחברים מתחתנים",
+        "before": "כשההשוואה לאחרים מתחזקת בגלל השינוי במעגל החברתי, כדאי לקרוא גם על ",
+        "after": " ועל דרכים להישאר מחוברים בלי לבטל את הקושי."
+      }
+    ]
+  },
+  {
+    "source": "older-singles-friendship-changes-loneliness",
+    "afterHeadingIncludes": "הפער בשגרת החיים ותחושת השייכות",
+    "items": [
+      {
+        "target": "unattached-adults-missed-chances-regrets",
+        "anchor": "תחושת החמצה והשוואה למסלול החיים של אחרים",
+        "before": "אם הפער מול החברים מעורר בעיקר מחשבות על מה שהיה אמור לקרות עד עכשיו, אפשר להעמיק גם ב",
+        "after": " במקום להישאר רק עם התחושה שכולם מתקדמים."
+      }
+    ]
+  },
+  {
+    "source": "siblings-fairness-vs-equality",
+    "afterHeadingIncludes": "איך עונים ל\"למה הוא קיבל יותר?\" בלי להצטדק",
+    "items": [
+      {
+        "target": "sibling-rivalry-parent-intervention",
+        "anchor": "מתי לא כדאי להיכנס לתפקיד השופט במריבות אחים",
+        "before": "כשהוויכוח כבר הופך למאבק בין האחים עצמם, חשוב לדעת גם ",
+        "after": " כדי לא לחזק בטעות תפקידי צודק ואשם."
+      }
+    ]
+  },
+  {
+    "source": "sibling-rivalry-parent-intervention",
+    "afterHeadingIncludes": "למה הניסיון שלנו לעשות צדק רק מחמיר את המצב?",
+    "items": [
+      {
+        "target": "siblings-fairness-vs-equality",
+        "anchor": "ההבדל בין שוויון להוגנות בין אחים",
+        "before": "חלק מהיציאה מתפקיד השופט הוא להבין את ",
+        "after": " — בלי לנסות לחלק כל דבר בדיוק חצי-חצי."
+      }
+    ]
   }
 ]
