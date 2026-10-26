@@ -13,9 +13,10 @@ const countTargetHref = (html: string, target: string) => {
 
 describe('priority-3 internal-link backfill', () => {
   it('keeps the first tranche intentionally sparse', () => {
-    expect(priority3Plan).toHaveLength(4);
+    expect(priority3Plan).toHaveLength(2);
     for (const entry of priority3Plan) {
       expect(entry.targets).toHaveLength(1);
+      expect(entry.priority).toBe(3);
     }
   });
 
