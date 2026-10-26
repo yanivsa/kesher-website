@@ -15,7 +15,7 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
+    "normalization_status": "pending",
     "last_dispatch_at": "2026-10-26T22:36:29.031574+00:00",
     "watchdog": {
       "identity": "2026-10-27",
@@ -30,18 +30,15 @@
     },
     "pr_number": 1227,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1227",
-    "current_pr_head_sha": "8aaa8a9f61d7f30c4fc27543a4844ee3452303eb",
+    "current_pr_head_sha": "9aa8a96b7ae218aecc8147341b60bd090919c7ee",
     "jules_head_sha": "83f03f857ea48f0712dc32d753f58cabead1e781",
     "normalization_slot": "2026-10-27",
     "normalization_dispatched_at": "2026-10-26T23:01:25.151514+00:00",
     "normalization_run_id": 40416796391,
-    "normalization_drift_count": 1,
-    "last_normalization_drift_head_sha": "8aaa8a9f61d7f30c4fc27543a4844ee3452303eb",
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-10-26T23:06:06.930475+00:00",
-    "normalized_head_sha": "8aaa8a9f61d7f30c4fc27543a4844ee3452303eb",
-    "image_head_sha": "8aaa8a9f61d7f30c4fc27543a4844ee3452303eb",
-    "merge_candidate_sha": "8aaa8a9f61d7f30c4fc27543a4844ee3452303eb",
+    "normalization_drift_count": 2,
+    "last_normalization_drift_head_sha": "9aa8a96b7ae218aecc8147341b60bd090919c7ee",
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
     "merge_run_id": 40417365994
   },
   "backlog": [
@@ -2295,7 +2292,7 @@
   "updated_at": "2026-10-26T23:08:14.468188+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2305,8 +2302,7 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-26T23:03:48.293160+00:00",
     "artifact_sha256": "12d58b57fd0347bb3699ffd4373bea24bcda85a74343f3383d27416ccf244782",
-    "source_id": "local-editorial://kindergarten-adjustment-difficulties/5",
-    "run_id": 40417078313
+    "source_id": "local-editorial://kindergarten-adjustment-difficulties/5"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2692,6 +2688,18 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-26T22:35:51.687881+00:00"
+    },
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
+      "cycle": "2026-10-27",
+      "inputs": {
+        "pr_number": "1227",
+        "slot": "2026-10-27"
+      },
+      "intent_at": "2026-10-26T23:20:47.359068+00:00",
+      "status": "intent",
+      "previous_run_id": 40416796391,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2704,5 +2712,17 @@
   "processed_child_notifications": [
     "Kesher Normalize Article PR:40416796391",
     "Kesher Trusted Article Image:40417078313"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
