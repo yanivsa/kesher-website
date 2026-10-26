@@ -9,6 +9,14 @@
     "image": "/images/generated/blog/municipal-kindergarten-adjustment.png"
   },
   {
+    "id": "changing-kindergarten-midyear",
+    "title": "מעבר גן באמצע שנה: איך לעזור לילד להיפרד ולהתחיל מחדש?",
+    "date": "2026-10-26",
+    "category": "הדרכת הורים",
+    "subcategory": "הגיל הרך",
+    "excerpt": "מעבר גן באמצע השנה מעורר התלבטויות וחששות אצל הורים וילדים. איך מכינים את הילד לפרידה מהגן המוכר, מהן הדרכים לעזור לו להשתלב מחדש בסביבה החדשה, ומה חשוב שלא לעשות בתהליך המעבר."
+  },
+  {
     "id": "daycare-adjustment-difficulties",
     "title": "קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?",
     "date": "2026-10-25",
@@ -27,6 +35,51 @@
     "image": "/images/generated/blog/transition-to-municipal-kindergarten.png"
   },
   {
+    "id": "family-chores-quality-time-with-kids",
+    "title": "מטלות בית עם ילדים: פחות עומס, יותר זמן איכות",
+    "date": "2026-10-24",
+    "category": "הדרכת הורים",
+    "subcategory": "שיתוף פעולה במשפחה",
+    "excerpt": "איך להפוך מטלות בית לזמן איכות עם הילדים? רעיונות לפי גיל, התמודדות עם סירוב ודרך פשוטה להפחית עומס ולחזק שייכות בבית.",
+    "image": "/images/generated/blog/family-chores-quality-time-with-kids.png"
+  },
+  {
+    "id": "how-to-talk-to-child-about-being-gifted",
+    "title": "איך לדבר עם ילד על זה שהוא מחונן — בלי להפוך את המחוננות לזהות מלחיצה",
+    "date": "2026-10-23",
+    "category": "הדרכת הורים",
+    "subcategory": "ילדים מחוננים",
+    "excerpt": "האם לומר לילד שהוא מחונן? כך מסבירים את המשמעות בגובה העיניים, נמנעים מתווית של ״הילד החכם״ ומשאירים מקום לטעות, למאמץ ולזהות רחבה.",
+    "image": "/images/generated/blog/how-to-talk-to-child-about-being-gifted.png"
+  },
+  {
+    "id": "gifted-child-pressure-to-achieve-parent-guide",
+    "title": "ילד מחונן ולחץ להצטיין: איך הורים תומכים בלי להפוך יכולת לחובה",
+    "date": "2026-10-23",
+    "category": "הדרכת הורים",
+    "subcategory": "ילדים מחוננים",
+    "excerpt": "כשהילד המחונן מרגיש שהוא חייב להצליח תמיד, גם מחמאה יכולה להפוך ללחץ. כך בונים בבית ציפיות בריאות, יחס גמיש לטעויות ומקום למאמץ, מנוחה ובקשת עזרה.",
+    "image": "/images/generated/blog/gifted-child-pressure-to-achieve-parent-guide.png"
+  },
+  {
+    "id": "gifted-child-bored-at-school-parent-guide",
+    "title": "ילד מחונן משתעמם בבית הספר: מה הורים יכולים לעשות בלי להיכנס למלחמה עם המערכת",
+    "date": "2026-10-23",
+    "category": "הדרכת הורים",
+    "subcategory": "ילדים מחוננים",
+    "excerpt": "הילד אומר שמשעמם לו בבית הספר? כך בודקים אם חסר אתגר, מבדילים בין שעמום לקושי אחר, מדברים עם הצוות ובונים מענה בלי להפוך כל שיעור למאבק.",
+    "image": "/images/generated/blog/gifted-child-bored-at-school-parent-guide.png"
+  },
+  {
+    "id": "gifted-child-emotional-sensitivity-myths",
+    "title": "ילד מחונן ורגישות רגשית: מה באמת קשור למחוננות ומה עלול להיות מיתוס",
+    "date": "2026-10-23",
+    "category": "הדרכת הורים",
+    "subcategory": "ילדים מחוננים",
+    "excerpt": "האם ילדים מחוננים רגישים יותר, חרדתיים יותר או מתקשים חברתית? כך מפרידים בין מאפיינים אפשריים לבין סטריאוטיפים ובודקים את הילד עצמו לפני שמסבירים הכול דרך המחוננות.",
+    "image": "/images/generated/blog/gifted-child-emotional-sensitivity-myths.png"
+  },
+  {
     "id": "child-poops-in-pants",
     "title": "למה ילד עושה קקי במכנסיים אחרי שנגמל, ואיך להגיב נכון?",
     "date": "2026-10-23",
@@ -34,6 +87,33 @@
     "subcategory": "גמילה מחיתולים",
     "excerpt": "פספוסי קקי אצל ילדים שכבר נגמלו יכולים לעורר תסכול ודאגה רבה. למה זה קורה דווקא עכשיו, איך להבדיל בין קושי רגשי לבעיה פיזית, ומה הדרך הכי טובה להגיב כדי לעזור לילד?",
     "image": "/images/generated/blog/child-poops-in-pants.png"
+  },
+  {
+    "id": "gifted-test-first-emotional-preparation-parents",
+    "title": "מבחן מחוננים ראשון: איך להכין את הילד רגשית — בלי להפוך את הבית למכון הכנה",
+    "date": "2026-10-21",
+    "category": "הדרכת הורים",
+    "subcategory": "ילדים מחוננים",
+    "excerpt": "איך מכינים ילד רגשית למבחן מחוננים? מדריך להורים על הורדת לחץ, שיחה נכונה, שגרה ומה עושים לפני ואחרי המבחן — בלי אימון לשאלות.",
+    "image": "/images/generated/blog/gifted-test-first-emotional-preparation-parents.png"
+  },
+  {
+    "id": "child-not-selected-gifted-program-parent-response",
+    "title": "הילד לא עבר את מבחן המחוננים — איך מגיבים כהורים?",
+    "date": "2026-10-21",
+    "category": "הדרכת הורים",
+    "subcategory": "ילדים מחוננים",
+    "excerpt": "הילד לא עבר את מבחן המחוננים? כך מגיבים בלי לפגוע בביטחון, מפרידים בין תוצאה לזהות, מתמודדים עם אכזבה הורית וממשיכים לטפח סקרנות ויכולת.",
+    "image": "/images/generated/blog/child-not-selected-gifted-program-parent-response.png"
+  },
+  {
+    "id": "after-gifted-identification-next-steps-family",
+    "title": "הילד עבר את מבחן המחוננים — ומה עכשיו? מדריך להורים אחרי התוצאה",
+    "date": "2026-10-21",
+    "category": "הדרכת הורים",
+    "subcategory": "ילדים מחוננים",
+    "excerpt": "הילד עבר את מבחן המחוננים? לפני שהופכים את התוצאה לתווית, בדקו התאמה למסגרת, ציפיות, קול הילד, אחים ולחץ להצטיין. מדריך להורים לשלב שאחרי.",
+    "image": "/images/generated/blog/after-gifted-identification-next-steps-family.png"
   },
   {
     "id": "potty-training-constipation",
@@ -89,6 +169,51 @@
     "image": "/images/generated/blog/toddler-bed-transition.jpg"
   },
   {
+    "id": "prepare-for-first-grade",
+    "title": "הכנה לכיתה א: איך להפוך את המעבר למוכר ורגוע יותר",
+    "date": "2026-10-18",
+    "category": "הדרכת הורים",
+    "subcategory": "מעברים ושינויים",
+    "excerpt": "הכנה לכיתה א אינה מבחן מוכנות, אלא הזדמנות להפוך את המעבר למוכר וברור יותר. רעיונות לביקור בבית הספר, בניית שגרה, תרגול עצמאות ושיחה רגישה על רגשות וציפיות.",
+    "image": "/images/generated/blog/prepare-for-first-grade.png"
+  },
+  {
+    "id": "first-grade-readiness",
+    "title": "מוכנות לכיתה א: איך לזהות מה הילד צריך בלי להפוך את זה למבחן",
+    "date": "2026-10-18",
+    "category": "הדרכת הורים",
+    "subcategory": "מוכנות לבית הספר",
+    "excerpt": "מוכנות לכיתה א אינה מבחן באותיות ובמספרים. היא מתפתחת בתחומים רגשיים, חברתיים, מוטוריים, תפקודיים, שפתיים וקוגניטיביים, ואפשר להתבונן בה דרך חיי היום־יום.",
+    "image": "/images/generated/blog/first-grade-readiness.png"
+  },
+  {
+    "id": "potty-training-age-3-problems",
+    "title": "גמילה מחיתולים בגיל 3: מה עושים כשהתהליך נתקע?",
+    "date": "2026-10-18",
+    "category": "הדרכת הורים",
+    "subcategory": "גמילה מחיתולים",
+    "excerpt": "גמילה מחיתולים בגיל שלוש שלא מתקדמת יכולה לעורר תסכול אצל הילד וההורים. כך אפשר לבדוק מוכנות, להפחית מאבקי כוח, להתייחס לפער בין פיפי לקקי ולדעת מתי לעצור או לפנות לבדיקה רפואית.",
+    "image": "/images/generated/blog/potty-training-age-3-problems.png"
+  },
+  {
+    "id": "nighttime-potty-training",
+    "title": "גמילה מחיתולים בלילה: מתי לנסות ואיך להגיב לתאונות?",
+    "date": "2026-10-18",
+    "category": "הדרכת הורים",
+    "subcategory": "גמילה מחיתולים",
+    "excerpt": "יובש בלילה מתפתח בקצב שונה משליטה ביום. איך לזהות סימני מוכנות, ליצור שגרת ערב נעימה ולהגיב ברוגע לתאונות — ומתי כדאי להתייעץ עם רופאת ילדים.",
+    "image": "/images/generated/blog/nighttime-potty-training.png"
+  },
+  {
+    "id": "potty-training-regression",
+    "title": "רגרסיה בגמילה מחיתולים: למה זה קורה ומה עושים?",
+    "date": "2026-10-18",
+    "category": "הדרכת הורים",
+    "subcategory": "גמילה מחיתולים",
+    "excerpt": "ילד שכבר נגמל וחוזר לפספס עשוי להזדקק לתמיכה נוספת, לא לביקורת. איך מגיבים לתאונות, מתי מחזירים עזרה, ואילו סימנים מצדיקים פנייה לרופא?",
+    "image": "/images/generated/blog/potty-training-regression.png"
+  },
+  {
     "id": "why-is-it-so-hard-to-find-a-relationship",
     "title": "למה כל כך קשה למצוא זוגיות: העייפות, השחיקה ואיך מתחילים לשנות גישה",
     "date": "2026-10-18",
@@ -134,6 +259,33 @@
     "image": "/images/generated/blog/dating-apps-burnout-finding-a-partner.jpg"
   },
   {
+    "id": "when-everyone-around-you-gets-married",
+    "title": "כשכולם סביבכם מתחתנים: למה החתונות של החברים כל כך מכאיבות – ומה עושים עם הלבד",
+    "date": "2026-10-13",
+    "category": "זוגיות",
+    "subcategory": "רווקות מאוחרת",
+    "excerpt": "עונת החתונות בשיאה, והפיד מלא בטבעות, שמלות וריקודים. עבור חלק מהרווקים והרווקות, כל הזמנה לחתונה היא תזכורת כואבת לפער בין החיים שלהם לבין המקום שבו חשבו שיהיו. למה זה כל כך כואב, ואיך אפשר לנווט בתוך ההשוואות והלחץ הסביבתי?",
+    "image": "/images/generated/blog/when-everyone-around-you-gets-married.jpg"
+  },
+  {
+    "id": "relocation-loneliness-accompanying-partner",
+    "title": "בדידות ברילוקיישן: למה בן הזוג המצטרף מרגיש שקוף – ומה אפשר לעשות",
+    "date": "2026-10-12",
+    "category": "זוגיות",
+    "subcategory": "זוגיות בעלייה ורילוקיישן",
+    "excerpt": "ההחלטה לעבור מדינה היא משותפת, אבל בפועל, החוויה של בן הזוג שנוסע בעקבות העבודה ושל בן הזוג המצטרף יכולה להיות שונה. כשהשגרה מתחילה, המצטרף עשוי להתמודד עם שינוי בזהות המקצועית, מחסום שפה ותחושת בדידות עמוקה. איך מתמודדים עם הפער הזה בתוך הזוגיות?",
+    "image": "/images/generated/blog/placeholder-no-image-yet.png"
+  },
+  {
+    "id": "child-argues-every-request-boundaries",
+    "title": "הילד מתווכח על כל בקשה? 6 דרכים להציב גבול בלי להיכנס למשא ומתן אינסופי",
+    "date": "2026-10-10",
+    "category": "הדרכת הורים",
+    "subcategory": "גבולות ושיתוף פעולה",
+    "excerpt": "כל בקשה בבית הופכת לוויכוח? כך מפרידים בין הקשבה לבין פתיחת הגבול מחדש, מציעים בחירה בתוך המסגרת ומפסיקים את מעגל ההסברים, האיומים והמשא ומתן.",
+    "image": "/images/generated/blog/child-argues-every-request-boundaries.png"
+  },
+  {
     "id": "how-to-repair-after-couple-fight",
     "title": "איך משלימים אחרי ריב בזוגיות? 5 צעדים לתיקון שלא מתחיל ב״אבל״",
     "date": "2026-10-09",
@@ -161,6 +313,15 @@
     "image": "/images/generated/blog/2026-10-08-recurring-arguments.png"
   },
   {
+    "id": "child-meltdown-after-school",
+    "title": "הילד מתפרץ אחרי בית הספר? למה דווקא בבית הוא מתפרק — ומה עושים ב־20 הדקות הראשונות",
+    "date": "2026-10-06",
+    "category": "הדרכת הורים",
+    "subcategory": "ויסות רגשי",
+    "excerpt": "בבית הספר הוא מחזיק מעמד, ובבית הוא מתפוצץ? כך עומס, מעברים וויסות עצמי יכולים להסביר את אחר הצהריים — ומה אפשר לעשות ב־20 הדקות הראשונות בלי להפוך את הכניסה הביתה לעוד מאבק.",
+    "image": "/images/generated/blog/child-meltdown-after-school.png"
+  },
+  {
     "id": "20-second-hug-relationship-stress",
     "title": "חיבוק של 20 שניות: מה המחקר באמת אומר על סטרס, לחץ דם וזוגיות",
     "date": "2026-10-05",
@@ -176,7 +337,7 @@
     "category": "הנחיית הורים",
     "subcategory": "שגרה ולמידה",
     "excerpt": "כל יום אותו סיפור: המחברת על השולחן, הילד מורח זמן ואתם כבר מאבדים סבלנות. לפני שמגבירים לחץ, כדאי לבדוק מה באמת עוצר אותו — ואיך עוזרים בלי לעשות את שיעורי הבית במקומו.",
-    "image": "/images/generated/services/parenting-room.jpg"
+    "image": "/images/generated/blog/child-refuses-homework.png"
   },
   {
     "id": "jealousy-in-relationships",
@@ -188,6 +349,42 @@
     "image": "/images/generated/blog/jealousy-in-relationships.jpg"
   },
   {
+    "id": "marshmallow-test-environmental-reliability",
+    "title": "חושבים שלילד אין כוח רצון? מה מבחן המרשמלו באמת גילה על אמון",
+    "date": "2026-10-02",
+    "category": "הנחיית הורים",
+    "subcategory": "סמכות הורית",
+    "excerpt": "הילד מתקשה לחכות ונראה שאין לו דחיית סיפוקים? מחקר המרשמלו של סלסט קיד הראה שאמינות המבוגר משנה את ההחלטה אם שווה לחכות. מה זה אומר להורים — ומה חשוב לא להגזים ממנו.",
+    "image": "/images/generated/blog/marshmallow-test-environmental-reliability.jpg"
+  },
+  {
+    "id": "sleep-needs-10-year-old",
+    "title": "כמה שעות שינה צריך ילד בן 10? 7 טעויות שגורמות לו להירדם מאוחר ולקום עייף",
+    "date": "2026-10-02",
+    "category": "הנחיית הורים",
+    "subcategory": "שגרת שינה",
+    "excerpt": "יש לכם ילד בן 10 שלא הולך לישון גם כשהשעה כבר מאוחרת? לפני שמקדימים לו את שעת השינה בעוד חצי שעה, שווה לבדוק מה קורה בערב עצמו: מסכים, משא ומתן אינסופי, סוף שבוע שיוצא מהמסלול ושגרה שמתחילה מאוחר מדי.",
+    "image": "/images/generated/blog/sleep-needs-10-year-old.jpg"
+  },
+  {
+    "id": "adhd-waiting-mode",
+    "title": "יש לילד חוג בארבע? למה כל היום נתקע כשיש הפרעת קשב — ומה עוזר לצאת מ״מצב המתנה״",
+    "date": "2026-10-01",
+    "category": "הנחיית הורים",
+    "subcategory": "הפרעת קשב ותפקודים ניהוליים",
+    "excerpt": "אירוע אחד אחר הצהריים יכול לגרום לילד עם הפרעת קשב להסתובב כל היום בתחושת המתנה. למה זה עשוי לקרות, מה המחקר באמת אומר, ואיך טיימר ועוגן זמן יכולים לעזור להתחיל?",
+    "image": "/images/generated/blog/adhd-waiting-mode.jpg"
+  },
+  {
+    "id": "marriage-hack-7-minutes",
+    "title": "האק הנישואין של 7 דקות: התרגיל המחקרי שעוזר לעצור את השחיקה אחרי ריבים",
+    "date": "2026-10-01",
+    "category": "זוגיות",
+    "subcategory": "תקשורת ופתרון קונפליקטים",
+    "excerpt": "מחקר בן שנתיים בקרב 120 זוגות מצא שתרגיל כתיבה של 7 דקות, שלוש פעמים בשנה, מנקודת מבט של צד שלישי ניטרלי עצר את הירידה באיכות הזוגית שנראתה בקבוצת הביקורת. כך מנסים אותו בלי להפוך מחקר לטריק קסם.",
+    "image": "/images/generated/blog/marriage-hack-7-minutes.jpg"
+  },
+  {
     "id": "relationship-crisis-flydubai-lessons",
     "title": "זוגיות במשבר: 7 דברים שאפשר ללמוד מהדרמה בטיסת פליי דובאי על ריבים, שליטה ועבודת צוות",
     "date": "2026-09-30",
@@ -197,13 +394,13 @@
     "image": "/images/generated/blog/relationship-crisis-flydubai-lessons.jpg"
   },
   {
-    "id": "marshmallow-test-environmental-reliability",
-    "title": "חושבים שלילד אין כוח רצון? מה מבחן המרשמלו באמת גילה על אמון",
-    "date": "2026-10-02",
+    "id": "empty-threats-parenting",
+    "title": "הילד לא מקשיב? איך להציב גבולות בלי לאיים בדברים שלא תקיימו",
+    "date": "2026-09-29",
     "category": "הנחיית הורים",
     "subcategory": "סמכות הורית",
-    "excerpt": "הילד מתקשה לחכות ונראה שאין לו דחיית סיפוקים? מחקר המרשמלו של סלסט קיד הראה שאמינות המבוגר משנה את ההחלטה אם שווה לחכות. מה זה אומר להורים — ומה חשוב לא להגזים ממנו.",
-    "image": "/images/generated/blog/marshmallow-test-environmental-reliability.jpg"
+    "excerpt": "זורקים על הילד איומים מפוצצים שברור לשניכם שלא תבצעו? הנה הסיבה שהוא מפסיק להקשיב לכם, ומה באמת אפשר לעשות כדי לבנות סמכות הורית עקבית ורגועה יותר.",
+    "image": "/images/generated/blog/empty-threats-parenting.jpg"
   },
   {
     "id": "new-couples-navigating-disappointments",
@@ -221,6 +418,15 @@
     "category": "הדרכת הורים",
     "excerpt": "ילדים רבים לא פעם על 'למה הוא קיבל יותר', אבל הניסיון לתת בדיוק אותו דבר לכל ילד לא תמיד פותר את הבעיה. איך מסבירים לילדים שהוגנות אינה בהכרח שוויון?",
     "image": "/images/generated/blog/siblings-fairness-vs-equality.jpg"
+  },
+  {
+    "id": "teens-and-artificial-intelligence",
+    "title": "מתבגרים ובינה מלאכותית: מה עושים כשהילד סומך על הצ'אט?",
+    "date": "2026-09-26",
+    "category": "הנחיית הורים",
+    "subcategory": "גיל ההתבגרות",
+    "excerpt": "המתבגר שואל שאלה, אתם עונים, והוא מיד אומר: 'רגע, אני אבדוק בבינה המלאכותית'. איך מגיבים כשהילד מתייחס לטכנולוגיה כסמכות עליונה, ואיך הופכים את החיפוש העצמאי הזה להזדמנות לחיזוק הקשר והתקשורת בבית?",
+    "image": "/images/generated/blog/teens-and-artificial-intelligence.jpg"
   },
   {
     "id": "adhd-morning-conflict-dopamine-myth",
@@ -269,10 +475,11 @@
   },
   {
     "id": "how-to-identify-a-gifted-child-parents-guide",
-    "title": "מה זה ילד מחונן? הגדרה, סימנים ומה חשוב להורים לדעת",
+    "title": "מה זה ילד מחונן? הגדרה, מאפיינים ומה חשוב להורים לדעת",
     "date": "2026-09-21",
     "category": "הדרכת הורים",
-    "excerpt": "מה זה ילד מחונן, איך מגדירים מחוננות בישראל, אילו סימנים עשויים להופיע ומה חשוב להורים לדעת על איתור, רגש ותמיכה — בלי להפוך את הילד לתווית.",
+    "subcategory": "ילדים מחוננים",
+    "excerpt": "מה זה ילד מחונן, איך מגדירים מחוננות בישראל ומה מבחן האיתור כן ולא אומר? מדריך להורים עם דגש על ביטחון רגשי, ציפיות ותמיכה בבית.",
     "image": "/images/generated/blog/how-to-identify-a-gifted-child-parents-guide.jpg"
   },
   {
@@ -283,6 +490,22 @@
     "subcategory": "רווקות מאוחרת",
     "excerpt": "השאלה למה כל כך קשה למצוא זוגיות מעסיקה רבים ורבות שנמצאים בשלבי רווקות מאוחרת. בין לחץ מהמשפחה, ציפיות אישיות והתלבטויות אחרי דייטים, הנה כמה דרכים להתבונן על הקושי בלי להאשים את עצמכם.",
     "image": "/images/generated/blog/five-questions-marriage.jpg"
+  },
+  {
+    "id": "money-fights-communication",
+    "title": "מריבות על כסף בזוגיות: איך מדברים על הוצאות בלי להיכנס לאותו ריב",
+    "date": "2026-09-20",
+    "category": "זוגיות",
+    "excerpt": "מריבות על כסף בזוגיות נוגעות לעיתים גם בביטחון, חופש ואמון. כך אפשר לעבור מהאשמות לשיחה ברורה יותר על הוצאות, גבולות והחלטות משותפות.",
+    "image": "/images/generated/blog/money-fights-communication.jpg"
+  },
+  {
+    "id": "relationship-after-childbirth",
+    "title": "משבר זוגיות אחרי לידה: איך מתמודדים עם ריחוק, עומס וריבים",
+    "date": "2026-09-20",
+    "category": "זוגיות",
+    "excerpt": "זוגיות אחרי לידה יכולה להשתנות בגלל עייפות, עומס וחלוקת אחריות חדשה. איך לדבר על הקושי, לצמצם פנקסנות ולשמור מקום לקשר.",
+    "image": "/images/generated/blog/relationship-after-childbirth.jpg"
   },
   {
     "id": "gottman-perpetual-problems-69-percent",
@@ -310,6 +533,15 @@
     "subcategory": "הכנה לכיתה א׳",
     "excerpt": "המעבר מהגן לבית הספר מלווה בלא מעט התרגשות, אבל גם בחששות לגבי ההתארגנות בבוקר. איך אפשר לנצל את חודשי הקיץ כדי לעזור לילדים (וגם לנו) להגיע ליום הלימודים הראשון רגועים יותר? כמה רעיונות לבניית שגרה משפחתית חדשה.",
     "image": "/images/generated/blog/early-habits-building-calm-mornings-children.png"
+  },
+  {
+    "id": "fights-before-wedding",
+    "title": "ריבים לפני החתונה: איך שומרים על הזוגיות בדרך לחופה?",
+    "date": "2026-09-16",
+    "category": "זוגיות",
+    "subcategory": "הכנה לנישואים והשנה הראשונה",
+    "excerpt": "ההכנות לחתונה מביאות איתן לפעמים מתח רב, והרבה זוגות מוצאים את עצמם רבים בדיוק כשהם אמורים להיות הכי מאושרים. למה זה קורה, ואיך מתמודדים עם לחץ לפני החתונה?",
+    "image": "/images/generated/blog/fights-before-wedding-local.png"
   },
   {
     "id": "returning-to-israel-after-relocation-relationship",
@@ -393,23 +625,6 @@
     "image": "/images/generated/blog/newlyweds-domestic-duties-sharing.jpg"
   },
   {
-    "id": "parenting-back-to-school-screen-limits",
-    "title": "חזרה לשגרת מסכים בריאה לקראת שנת הלימודים: גבולות ברוגע בלי מלחמות",
-    "date": "2026-08-27",
-    "category": "הדרכת הורים",
-    "excerpt": "סוף החופש הגדול מביא איתו אתגר מוכר: שעות מסך מרובות והרגלי שינה משובשים. גלו איך להחזיר את הגבולות בצורה הדרגתית, מעצימה וללא ויכוחים יומיומיים.",
-    "image": "/images/generated/blog/parenting-back-to-school-screen-limits.jpg"
-  },
-  {
-    "id": "aliyah-homesickness-balance",
-    "title": "זוגיות בעלייה ורילוקיישן: כשהגעגוע לארץ מפר את האיזון",
-    "date": "2026-09-01",
-    "category": "זוגיות",
-    "subcategory": "זוגיות בעלייה ורילוקיישן",
-    "excerpt": "רילוקיישן או עלייה לישראל הם צעדים משמעותיים. לעיתים אחד מבני הזוג מתאקלם מהר, בעוד השני חווה געגועים עזים לחיים שהושארו מאחור. איך מתמודדים עם הפער הזה בחוויות?",
-    "image": "/images/generated/blog/aliyah-homesickness-balance.jpg"
-  },
-  {
     "id": "smart-youth-focus-tasks-organization",
     "title": "הילד נבון מאוד אבל מתקשה להתארגן: מה קורה כשהמחוננות פוגשת קשיי קשב",
     "date": "2026-09-03",
@@ -428,6 +643,15 @@
     "image": "/images/generated/blog/mediation-for-will-conflicts.jpg"
   },
   {
+    "id": "aliyah-homesickness-balance",
+    "title": "זוגיות בעלייה ורילוקיישן: כשהגעגוע לארץ מפר את האיזון",
+    "date": "2026-09-01",
+    "category": "זוגיות",
+    "subcategory": "זוגיות בעלייה ורילוקיישן",
+    "excerpt": "רילוקיישן או עלייה לישראל הם צעדים משמעותיים. לעיתים אחד מבני הזוג מתאקלם מהר, בעוד השני חווה געגועים עזים לחיים שהושארו מאחור. איך מתמודדים עם הפער הזה בחוויות?",
+    "image": "/images/generated/blog/aliyah-homesickness-balance.jpg"
+  },
+  {
     "id": "aliyah-couples-cultural-gaps-identity",
     "title": "מדברים בשתי שפות: כיצד להתמודד עם פערי תרבות ושפה בזוגיות בעלייה",
     "date": "2026-08-31",
@@ -435,6 +659,14 @@
     "subcategory": "זוגיות בעלייה ורילוקיישן",
     "excerpt": "המעבר למדינה חדשה מביא איתו אתגרי שפה ותרבות שעשויים להציף מתחים בזוגיות. מה קורה כשבן זוג אחד משתלב מהר יותר, ואיך בונים גשרים של תקשורת בתוך השינוי?",
     "image": "/images/generated/blog/aliyah-couples-cultural-gaps.jpg"
+  },
+  {
+    "id": "parenting-back-to-school-screen-limits",
+    "title": "חזרה לשגרת מסכים בריאה לקראת שנת הלימודים: גבולות ברוגע בלי מלחמות",
+    "date": "2026-08-27",
+    "category": "הדרכת הורים",
+    "excerpt": "סוף החופש הגדול מביא איתו אתגר מוכר: שעות מסך מרובות והרגלי שינה משובשים. גלו איך להחזיר את הגבולות בצורה הדרגתית, מעצימה וללא ויכוחים יומיומיים.",
+    "image": "/images/generated/blog/parenting-back-to-school-screen-limits.jpg"
   },
   {
     "id": "new-relationship-initial-intentions",
@@ -888,7 +1120,7 @@
     "category": "זוגיות",
     "subcategory": "הכנה לחתונה",
     "excerpt": "החתונה יכולה לעורר אצל מי שגדל עם הורים שנפרדו פחדים ושאלות שלא תמיד מדברים עליהן. הכנה זוגית עוזרת להפוך את הסיפור המשפחתי למקור להבנה ולא לנבואה.",
-    "image": "/images/generated/services/couples-room.jpg"
+    "image": "/images/generated/blog/premarital-counseling-divorced-parents.png"
   },
   {
     "id": "couples-adhd-partner",
@@ -916,14 +1148,6 @@
     "image": "/images/generated/blog/public-tantrums-emotional-regulation.jpg"
   },
   {
-    "id": "money-fights-communication",
-    "title": "מריבות על כסף בזוגיות: איך מדברים על הוצאות בלי להיכנס לאותו ריב",
-    "date": "2026-09-20",
-    "category": "זוגיות",
-    "excerpt": "מריבות על כסף בזוגיות נוגעות לעיתים גם בביטחון, חופש ואמון. כך אפשר לעבור מהאשמות לשיחה ברורה יותר על הוצאות, גבולות והחלטות משותפות.",
-    "image": "/images/generated/blog/money-fights-communication.jpg"
-  },
-  {
     "id": "adhd-morning-routine",
     "title": "התארגנות בוקר עם ילד עם הפרעת קשב וריכוז (ADHD): צעדים מעשיים לשגרה רגועה ללא צעקות",
     "date": "2026-06-01",
@@ -948,14 +1172,6 @@
     "image": "/images/generated/blog/healing-after-infidelity.jpg"
   },
   {
-    "id": "relationship-after-childbirth",
-    "title": "משבר זוגיות אחרי לידה: איך מתמודדים עם ריחוק, עומס וריבים",
-    "date": "2026-09-20",
-    "category": "זוגיות",
-    "excerpt": "זוגיות אחרי לידה יכולה להשתנות בגלל עייפות, עומס וחלוקת אחריות חדשה. איך לדבר על הקושי, לצמצם פנקסנות ולשמור מקום לקשר.",
-    "image": "/images/generated/blog/relationship-after-childbirth.jpg"
-  },
-  {
     "id": "breaking-the-yelling-cycle",
     "title": "צועקים לילד מהמטבח והוא לא מקשיב? כלל הקרבה שעוזר בלי לצעוק",
     "date": "2024-11-20",
@@ -970,77 +1186,5 @@
     "category": "הדרכת הורים",
     "excerpt": "שעת ההשכבה שוב מסתיימת בצרחות, והילד שלכם יורה לעברכם את המילים הכי כואבות שיש: \"אני שונא אותך!\". במקום להיעלב ולהיכנס למאבקי כוח, בואו נבין מה באמת מסתתר מאחורי הזעם הזה ואיך מגיבים נכון כדי ללמד אותו תקשורת בריאה יותר.",
     "image": "/images/generated/blog/when-children-say-i-hate-you.jpg"
-  },
-  {
-    "id": "fights-before-wedding",
-    "title": "ריבים לפני החתונה: איך שומרים על הזוגיות בדרך לחופה?",
-    "date": "2026-09-16",
-    "category": "זוגיות",
-    "subcategory": "הכנה לנישואים והשנה הראשונה",
-    "excerpt": "ההכנות לחתונה מביאות איתן לפעמים מתח רב, והרבה זוגות מוצאים את עצמם רבים בדיוק כשהם אמורים להיות הכי מאושרים. למה זה קורה, ואיך מתמודדים עם לחץ לפני החתונה?",
-    "image": "/images/generated/blog/fights-before-wedding-local.png"
-  },
-  {
-    "id": "teens-and-artificial-intelligence",
-    "title": "מתבגרים ובינה מלאכותית: מה עושים כשהילד סומך על הצ'אט?",
-    "date": "2026-09-26",
-    "category": "הנחיית הורים",
-    "subcategory": "גיל ההתבגרות",
-    "excerpt": "המתבגר שואל שאלה, אתם עונים, והוא מיד אומר: 'רגע, אני אבדוק בבינה המלאכותית'. איך מגיבים כשהילד מתייחס לטכנולוגיה כסמכות עליונה, ואיך הופכים את החיפוש העצמאי הזה להזדמנות לחיזוק הקשר והתקשורת בבית?",
-    "image": "/images/generated/blog/teens-and-artificial-intelligence.jpg"
-  },
-  {
-    "id": "empty-threats-parenting",
-    "title": "הילד לא מקשיב? איך להציב גבולות בלי לאיים בדברים שלא תקיימו",
-    "date": "2026-09-29",
-    "category": "הנחיית הורים",
-    "subcategory": "סמכות הורית",
-    "excerpt": "זורקים על הילד איומים מפוצצים שברור לשניכם שלא תבצעו? הנה הסיבה שהוא מפסיק להקשיב לכם, ומה באמת אפשר לעשות כדי לבנות סמכות הורית עקבית ורגועה יותר.",
-    "image": "/images/generated/blog/empty-threats-parenting.jpg"
-  },
-  {
-    "id": "adhd-waiting-mode",
-    "title": "יש לילד חוג בארבע? למה כל היום נתקע כשיש הפרעת קשב — ומה עוזר לצאת מ״מצב המתנה״",
-    "date": "2026-10-01",
-    "category": "הנחיית הורים",
-    "subcategory": "הפרעת קשב ותפקודים ניהוליים",
-    "excerpt": "אירוע אחד אחר הצהריים יכול לגרום לילד עם הפרעת קשב להסתובב כל היום בתחושת המתנה. למה זה עשוי לקרות, מה המחקר באמת אומר, ואיך טיימר ועוגן זמן יכולים לעזור להתחיל?",
-    "image": "/images/generated/blog/adhd-waiting-mode.jpg"
-  },
-  {
-    "id": "marriage-hack-7-minutes",
-    "title": "האק הנישואין של 7 דקות: התרגיל המחקרי שעוזר לעצור את השחיקה אחרי ריבים",
-    "date": "2026-10-01",
-    "category": "זוגיות",
-    "subcategory": "תקשורת ופתרון קונפליקטים",
-    "excerpt": "מחקר בן שנתיים בקרב 120 זוגות מצא שתרגיל כתיבה של 7 דקות, שלוש פעמים בשנה, מנקודת מבט של צד שלישי ניטרלי עצר את הירידה באיכות הזוגית שנראתה בקבוצת הביקורת. כך מנסים אותו בלי להפוך מחקר לטריק קסם.",
-    "image": "/images/generated/blog/marriage-hack-7-minutes.jpg"
-  },
-  {
-    "id": "sleep-needs-10-year-old",
-    "title": "כמה שעות שינה צריך ילד בן 10? 7 טעויות שגורמות לו להירדם מאוחר ולקום עייף",
-    "date": "2026-10-02",
-    "category": "הנחיית הורים",
-    "subcategory": "שגרת שינה",
-    "excerpt": "יש לכם ילד בן 10 שלא הולך לישון גם כשהשעה כבר מאוחרת? לפני שמקדימים לו את שעת השינה בעוד חצי שעה, שווה לבדוק מה קורה בערב עצמו: מסכים, משא ומתן אינסופי, סוף שבוע שיוצא מהמסלול ושגרה שמתחילה מאוחר מדי.",
-    "image": "/images/generated/blog/sleep-needs-10-year-old.jpg"
-  },
-  {
-    "id": "relocation-loneliness-accompanying-partner",
-    "title": "בדידות ברילוקיישן: למה בן הזוג המצטרף מרגיש שקוף – ומה אפשר לעשות",
-    "date": "2026-10-12",
-    "category": "זוגיות",
-    "subcategory": "זוגיות בעלייה ורילוקיישן",
-    "excerpt": "ההחלטה לעבור מדינה היא משותפת, אבל בפועל, החוויה של בן הזוג שנוסע בעקבות העבודה ושל בן הזוג המצטרף יכולה להיות שונה. כשהשגרה מתחילה, המצטרף עשוי להתמודד עם שינוי בזהות המקצועית, מחסום שפה ותחושת בדידות עמוקה. איך מתמודדים עם הפער הזה בתוך הזוגיות?",
-    "image": "/images/generated/blog/placeholder-no-image-yet.png"
-  },
-  {
-    "id": "when-everyone-around-you-gets-married",
-    "title": "כשכולם סביבכם מתחתנים: למה החתונות של החברים כל כך מכאיבות – ומה עושים עם הלבד",
-    "date": "2026-10-13",
-    "category": "זוגיות",
-    "subcategory": "רווקות מאוחרת",
-    "excerpt": "עונת החתונות בשיאה, והפיד מלא בטבעות, שמלות וריקודים. עבור חלק מהרווקים והרווקות, כל הזמנה לחתונה היא תזכורת כואבת לפער בין החיים שלהם לבין המקום שבו חשבו שיהיו. למה זה כל כך כואב, ואיך אפשר לנווט בתוך ההשוואות והלחץ הסביבתי?",
-    "image": "/images/generated/blog/when-everyone-around-you-gets-married.jpg"
   }
 ]
