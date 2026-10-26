@@ -20,6 +20,16 @@ from scripts.kesher_primary_keyword_contract import (
 
 
 class TestPrimaryKeywordContract(unittest.TestCase):
+    def test_queued_first_grade_topics_accept_relevant_slugs_and_reject_unrelated_slugs(self):
+        for slug, keyword in [
+            ("first-grade-maturity", "בשלות לכיתה א"),
+            ("emotional-preparation-first-grade", "הכנה רגשית לכיתה א"),
+            ("first-grade-adjustment", "הסתגלות לכיתה א"),
+        ]:
+            with self.subTest(keyword=keyword):
+                self.assertEqual(slug_represents_keyword(slug, keyword), (True, ""))
+                self.assertFalse(slug_represents_keyword("stock-market-investments", keyword)[0])
+
     def test_midyear_kindergarten_topic_accepts_relevant_slug_only(self):
         self.assertEqual(slug_represents_keyword("changing-kindergarten-midyear", "מעבר גן באמצע שנה"), (True, ""))
         self.assertFalse(slug_represents_keyword("stock-market-investments", "מעבר גן באמצע שנה")[0])

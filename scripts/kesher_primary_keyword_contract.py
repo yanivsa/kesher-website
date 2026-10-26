@@ -37,6 +37,7 @@ SEMANTIC_KEYWORD_DICTIONARY: dict[str, set[str]] = {
     "מעבר למיטת מעבר": {"toddler", "bed", "crib", "transition"},
     "מעבר לחדר נפרד": {"separate", "room", "baby", "transition"},
     # Gifted children / Education
+    "כיתה א": {"grade", "school"},
     "ילד מחונן": {"gifted", "child", "giftedness"},
     "ילדים מחוננים": {"gifted", "children", "giftedness"},
     "מחוננות": {"gifted", "giftedness"},
