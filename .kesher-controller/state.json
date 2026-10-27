@@ -1748,14 +1748,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "COMPLETED_WITHOUT_PR",
-    "message": "Jules completed without creating a pull request; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to run an autonomous publication task to draft and publish a new Hebrew article about \"first-grade maturity\" for the `2026-10-28` slot, correctly adhering to the schema and omitting image generation. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates an appropriate article adhering to the provided topic brief. It correctly identifies the required Primary Keyword (\"בשלות לכיתה א\"), uses it in the title, opening paragraph, and URL slug. In compliance with the V3 image-stage override, it rig…",
-    "retryable": true,
-    "retry_at": "2026-10-27T23:21:00.630987+00:00",
-    "at": "2026-10-27T23:16:00.631007+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-27T16:01:02.066280+00:00",
@@ -2593,9 +2586,18 @@
         "run_id": 40596118530,
         "session_id": "sessions/13254194464638107348"
       }
+    },
+    {
+      "at": "2026-10-27T23:21:17.972966+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-27T23:21:00.630987+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-27T23:16:00.631017+00:00",
+  "updated_at": "2026-10-27T23:21:17.972976+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
