@@ -1656,12 +1656,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-26T18:51:07.711395+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-26T18:51:08.217965+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2409,9 +2403,18 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-27T00:51:31.598470+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-27T00:46:27.040155+00:00",
+  "updated_at": "2026-10-27T00:51:31.598477+00:00",
   "image": {
     "attempt_count": 3,
     "status": "exhausted",
@@ -2844,6 +2847,6 @@
     "stage": "image",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
     "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-27T00:46:27.040133+00:00"
+    "at": "2026-10-27T00:51:31.598454+00:00"
   }
 }
