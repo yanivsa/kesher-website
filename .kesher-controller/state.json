@@ -1656,12 +1656,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-26T22:05:44.217382+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
       "at": "2026-10-26T22:05:44.218139+00:00",
       "from": "article_needed",
       "to": "v5_migrated",
@@ -2565,9 +2559,18 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-27T06:06:32.065070+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-27T06:01:12.756402+00:00",
+  "updated_at": "2026-10-27T06:06:32.065076+00:00",
   "image": {
     "attempt_count": 3,
     "status": "exhausted",
@@ -3000,6 +3003,6 @@
     "stage": "image",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
     "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-27T06:01:12.756379+00:00"
+    "at": "2026-10-27T06:06:32.065053+00:00"
   }
 }
