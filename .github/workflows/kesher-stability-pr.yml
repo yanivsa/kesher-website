@@ -77,6 +77,7 @@ jobs:
             tests.kesher_daily_pipeline_suite \
             tests.test_video_review_policy \
             tests.test_video_review_schema \
+            tests.test_advisory_review_retry_identity \
             tests.test_video_reconcile \
             tests.test_kesher_content_controller \
             tests.test_kesher_controller_queue \

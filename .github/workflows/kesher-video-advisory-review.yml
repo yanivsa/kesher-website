@@ -23,6 +23,10 @@ on:
         description: Exact authoritative article content SHA-256
         required: true
         type: string
+      review_session:
+        description: Optional existing Jules session for the same immutable evidence
+        default: ''
+        type: string
 
 permissions:
   contents: write
@@ -49,6 +53,7 @@ jobs:
           EVIDENCE_ROOT: ${{ inputs.evidence_root }}
           REVIEW_ITEM_ID: ${{ inputs.item_id }}
           TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}
+          REVIEW_SESSION: ${{ inputs.review_session }}
         run: |
           set -euo pipefail
           if [[ ! "$REVIEW_BRANCH" =~ ^kesher-video-review-([0-9]+)$ ]]; then
@@ -66,6 +71,10 @@ jobs:
           fi
           if [[ ! "$TARGET_CONTENT_SHA256" =~ ^[0-9a-f]{64}$ ]]; then
             echo "Invalid authoritative content SHA-256." >&2
+            exit 1
+          fi
+          if [[ -n "${REVIEW_SESSION:-}" && ! "${REVIEW_SESSION:-}" =~ ^sessions/[0-9]+$ ]]; then
+            echo "Invalid existing Jules session identity." >&2
             exit 1
           fi
 
@@ -93,6 +102,7 @@ jobs:
         env:
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
           EVIDENCE_STATE_DIR: ${{ github.workspace }}/review-evidence/${{ inputs.evidence_root }}
+          REVIEW_SESSION: ${{ inputs.review_session }}
         run: |
           set -euo pipefail
           test -s "$EVIDENCE_STATE_DIR/state.json"
@@ -103,7 +113,8 @@ jobs:
             --item-id "${{ inputs.item_id }}" \
             --review-branch "${{ inputs.review_branch }}" \
             --evidence-root "${{ inputs.evidence_root }}" \
-            --timeout-seconds 900
+            --timeout-seconds 900 \
+            --review-session "$REVIEW_SESSION"
 
       - name: Persist advisory Jules review result
         if: ${{ always() && steps.identity.outcome == 'success' }}

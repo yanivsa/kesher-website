@@ -7,7 +7,7 @@ import yaml
 
 
 class AdvisoryReviewRetryIdentityTests(unittest.TestCase):
-    def run_preflight(self, item):
+    def run_preflight(self, item, session=None):
         path = Path(__file__).resolve().parents[1] / '.github/workflows/kesher-video-advisory-review.yml'
         steps = yaml.safe_load(path.read_text())['jobs']['review']['steps']
         script = next(s['run'] for s in steps if s['name'] == 'Validate exact advisory evidence identity')
@@ -15,6 +15,7 @@ class AdvisoryReviewRetryIdentityTests(unittest.TestCase):
             'REVIEW_BRANCH': 'kesher-video-review-40314746817',
             'EVIDENCE_ROOT': '.jules-video-review/40314746817',
             'REVIEW_ITEM_ID': item, 'TARGET_CONTENT_SHA256': 'd' * 64,
+            **({'REVIEW_SESSION': session} if session is not None else {}),
         }, capture_output=True, text=True)
 
     def test_real_preflight_accepts_initial_and_bounded_retry_items(self):
@@ -29,3 +30,9 @@ class AdvisoryReviewRetryIdentityTests(unittest.TestCase):
         for item in [base + '-a1', base + '-a4', base + '-a20', base + '/../../main']:
             with self.subTest(item=item):
                 self.assertNotEqual(self.run_preflight(item).returncode, 0)
+
+    def test_existing_session_is_optional_but_must_be_exact_numeric_identity(self):
+        item = 'video-20261026-131504-d4ece4f847-a2'
+        for value, valid in [('', True), ('sessions/10952397359603929287', True), ('sessions/abc', False), ('sessions/123;echo', False)]:
+            with self.subTest(session=value):
+                self.assertEqual(self.run_preflight(item, value).returncode == 0, valid)
