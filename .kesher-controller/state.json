@@ -1633,15 +1633,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T08:21:49.252609+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T08:26:45.804915+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2479,9 +2470,18 @@
       "details": {
         "retry_at": "2026-10-27T15:45:56.896823+00:00"
       }
+    },
+    {
+      "at": "2026-10-27T15:42:03.882104+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "owner run-now article retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-27T15:45:56.896823+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-27T15:36:05.144455+00:00",
+  "updated_at": "2026-10-27T15:42:03.882123+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
