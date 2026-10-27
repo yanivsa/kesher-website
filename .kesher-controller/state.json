@@ -42,7 +42,9 @@
     "last_refunded_auto_merge_run_id": 40420921104,
     "deferred_auto_merge_refund_count": 1,
     "last_error": null,
-    "normalized_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8"
+    "normalized_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8",
+    "deploy_run_id": 40492426489,
+    "next_deploy_retry_at": "2026-10-27T11:08:36.885592+00:00"
   },
   "backlog": [
     {
@@ -2969,8 +2971,8 @@
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Normalize Article PR",
-    "run_id": 40425842920,
+    "workflow": "Deploy to Cloudflare Pages",
+    "run_id": 40492426489,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-27"
