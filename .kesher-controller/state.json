@@ -56,9 +56,9 @@
     "live": true,
     "last_deploy_dispatch_at": "2026-10-27T12:26:07.015051+00:00",
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-27T13:50:58.803149+00:00",
+    "quality_checked_at": "2026-10-27T13:56:10.218236+00:00",
     "quality_violations": [],
-    "live_verified_at": "2026-10-27T13:51:32.838119+00:00"
+    "live_verified_at": "2026-10-27T13:56:11.718077+00:00"
   },
   "backlog": [
     {
@@ -2992,26 +2992,11 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-26T22:35:51.687881+00:00"
-    },
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-10-27",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "kindergarten-adjustment-difficulties",
-        "derive_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
-        "derive_long_item_id": "video-20261027-150726-7292321e86-a2"
-      },
-      "intent_at": "2026-10-27T13:42:39.029033+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 40514562849,
-      "dispatched_at": "2026-10-27T13:42:39.029033+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 40513458741,
+    "workflow": "Kesher Daily Article Short V4",
+    "run_id": 40514562849,
     "conclusion": "success",
     "source_slug": "kindergarten-adjustment-difficulties",
     "slot": "2026-10-27"
