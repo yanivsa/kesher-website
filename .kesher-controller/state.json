@@ -1656,12 +1656,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-26T18:41:05.259167+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-10-26T18:47:02.142072+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2394,12 +2388,21 @@
         "failure_streak": 1,
         "run_id": 40424206418
       }
+    },
+    {
+      "at": "2026-10-27T00:26:25.076125+00:00",
+      "from": "image_retry_wait",
+      "to": "image_retry_wait",
+      "reason": "trusted image retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-27T00:28:06.631333+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-27T00:23:06.631371+00:00",
+  "updated_at": "2026-10-27T00:26:25.076146+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "retry_wait",
+    "status": "complete",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 40424206418 completed with conclusion=success but no validated image is present",
@@ -2825,12 +2828,5 @@
     "Kesher Trusted Article Image:40424206418",
     "Kesher Normalize Article PR:40425842920"
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 40424206418 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-10-27T00:28:06.631333+00:00",
-    "at": "2026-10-27T00:23:06.631360+00:00"
-  }
+  "last_error": null
 }
