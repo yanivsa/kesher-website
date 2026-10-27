@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1672,15 +1672,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T04:11:31.088054+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T04:16:31.457911+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2561,9 +2552,19 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-10-27T12:41:15.864844+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261027-143419-7292321e86",
+        "task_id": "b0a7ce01-c03d-4396-844e-945c7db0f216"
+      }
     }
   ],
-  "updated_at": "2026-10-27T12:36:18.086972+00:00",
+  "updated_at": "2026-10-27T12:41:15.864851+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2589,18 +2590,36 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40504689301,
-    "processed_run_id": null,
-    "provider_id": null,
+    "processed_run_id": 40504689301,
+    "provider_id": "b0a7ce01-c03d-4396-844e-945c7db0f216",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-10-27T12:33:27.011891+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "last_run_conclusion": "success",
+    "item_id": "video-20261027-143419-7292321e86",
+    "source_slug": "kindergarten-adjustment-difficulties",
+    "source_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
+    "content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
+    "source_id": "4ff57812-3ba2-4a98-9cfb-828e2d85d836",
+    "task_id": "b0a7ce01-c03d-4396-844e-945c7db0f216",
+    "artifact_id": "b0a7ce01-c03d-4396-844e-945c7db0f216",
+    "provider_status": "pending",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:kindergarten-adjustment-difficulties:7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a:video-20261027-143419-7292321e86",
+      "hard_started_at": "2026-10-27T12:34:29.965888+00:00",
+      "last_progress_at": "2026-10-27T12:40:55.483783+00:00",
+      "last_fingerprint": "e93dcd3ac1476a44f70b908291672c08c1de85855f8b532e6f6567ebbc4c51dc",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
