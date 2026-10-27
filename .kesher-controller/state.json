@@ -48,7 +48,9 @@
         "session_failed_reason": ""
       }
     },
-    "last_jules_session_id": "sessions/14158694164084550662"
+    "last_jules_session_id": "sessions/14158694164084550662",
+    "deploy_run_id": 40551603768,
+    "next_deploy_retry_at": "2026-10-27T17:45:19.935532+00:00"
   },
   "backlog": [
     {
@@ -1662,15 +1664,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T10:26:34.020224+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T10:31:15.183699+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2513,9 +2506,18 @@
       "details": {
         "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-10-27T17:40:32.982765+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-27T17:38:23.384819+00:00",
+  "updated_at": "2026-10-27T17:40:32.982772+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2924,10 +2926,10 @@
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 40520255935,
+    "workflow": "Deploy to Cloudflare Pages",
+    "run_id": 40551603768,
     "conclusion": "success",
-    "source_slug": "kindergarten-adjustment-difficulties",
+    "source_slug": null,
     "slot": "2026-10-27"
   },
   "processed_child_notifications": [],
@@ -2935,7 +2937,7 @@
     "stage": "controller",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts",
-    "at": "2026-10-27T17:38:23.384809+00:00"
+    "at": "2026-10-27T17:40:32.982761+00:00"
   },
   "interventions": {
     "v5|kindergarten-adjustment-difficulties|7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a|long_video": {
