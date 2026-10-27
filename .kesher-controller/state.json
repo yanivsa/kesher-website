@@ -43,7 +43,8 @@
     "deferred_auto_merge_refund_count": 1,
     "normalized_head_sha": "f99d45d357600ab156de7caad1b3bf619f8c326c",
     "image_head_sha": "f99d45d357600ab156de7caad1b3bf619f8c326c",
-    "merge_candidate_sha": "f99d45d357600ab156de7caad1b3bf619f8c326c"
+    "merge_candidate_sha": "f99d45d357600ab156de7caad1b3bf619f8c326c",
+    "last_error": null
   },
   "backlog": [
     {
