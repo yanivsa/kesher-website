@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "long_video_watchdog_recovery",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1672,15 +1672,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T05:21:46.531743+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T05:26:25.975241+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2567,9 +2558,19 @@
         "slug": "kindergarten-adjustment-difficulties",
         "content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a"
       }
+    },
+    {
+      "at": "2026-10-27T13:37:16.114076+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261027-150726-7292321e86-a2",
+        "task_id": "aa1be162-7879-45cb-9933-52d4a28b09ef"
+      }
     }
   ],
-  "updated_at": "2026-10-27T13:36:09.978678+00:00",
+  "updated_at": "2026-10-27T13:37:16.114085+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2595,7 +2596,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-10-27T13:19:17.759254+00:00",
     "run_id": 40513458741,
