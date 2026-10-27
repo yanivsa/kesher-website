@@ -3,8 +3,8 @@
   "cycle": "2026-10-27",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "next_retry_at": null,
     "run_id": 40413728115,
     "processed_run_id": null,
@@ -12,7 +12,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-26T22:36:29.031574+00:00",
@@ -46,7 +46,14 @@
     "deploy_run_id": 40492426489,
     "next_deploy_retry_at": "2026-10-27T11:08:36.885592+00:00",
     "image_head_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
-    "merge_candidate_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2"
+    "merge_candidate_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
+    "slug": "kindergarten-adjustment-difficulties",
+    "title": "קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?",
+    "url": "https://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties",
+    "published_date": "2026-10-27",
+    "quality_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
+    "reconciled_existing_article": true,
+    "live": false
   },
   "backlog": [
     {
@@ -2579,7 +2586,8 @@
     "run_id": 40424206418,
     "evidence_rebind_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8",
     "evidence_rebind_dispatched_at": "2026-10-27T12:19:52.246828+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
+    "image_path": "/images/generated/blog/kindergarten-adjustment-difficulties.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2965,6 +2973,16 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-26T22:35:51.687881+00:00"
+    },
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-10-27",
+      "inputs": {},
+      "intent_at": "2026-10-27T12:25:45.892655+00:00",
+      "status": "intent",
+      "previous_run_id": 40492426489,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "820f7aefc15aeffe5eab8e9af772532e468acb9c"
     }
   },
   "last_child_notification": {
@@ -2986,5 +3004,17 @@
     "Deploy to Cloudflare Pages:40492426489",
     "Kesher Trusted Article Image:40502903080"
   ],
-  "last_error": null
+  "last_error": null,
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
