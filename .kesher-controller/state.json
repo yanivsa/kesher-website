@@ -3000,6 +3000,20 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-26T22:35:51.687881+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-27",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "kindergarten-adjustment-difficulties",
+        "derive_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
+        "derive_long_item_id": "video-20261027-150726-7292321e86-a2"
+      },
+      "intent_at": "2026-10-27T14:20:44.209811+00:00",
+      "status": "intent",
+      "previous_run_id": 40514562849,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3041,6 +3055,20 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-10-27T13:35:45.796626+00:00"
+    },
+    "v5|kindergarten-adjustment-difficulties|7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a|short": {
+      "pipeline_id": "v5",
+      "slug": "kindergarten-adjustment-difficulties",
+      "content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-10-27T16",
+      "last_fingerprint": "a3d899befd138f19b115d8d2507271aee6ffc7c2840740f182bdcc14aac1ae87",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-27T14:20:44.209811+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   }
 }
