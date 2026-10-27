@@ -49,7 +49,7 @@
       }
     },
     "last_jules_session_id": "sessions/14158694164084550662",
-    "deploy_run_id": 40551603768,
+    "deploy_run_id": 40572014050,
     "next_deploy_retry_at": "2026-10-27T17:45:19.935532+00:00"
   },
   "backlog": [
@@ -1664,16 +1664,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T12:51:10.353576+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261027-143419-7292321e86",
-        "task_id": "b0a7ce01-c03d-4396-844e-945c7db0f216"
-      }
-    },
-    {
       "at": "2026-10-27T12:59:48.818669+00:00",
       "from": "long_video_watchdog_wait",
       "to": "long_video_watchdog_wait",
@@ -2523,9 +2513,18 @@
       "details": {
         "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-10-27T19:52:44.418969+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-27T19:51:19.962148+00:00",
+  "updated_at": "2026-10-27T19:52:44.418974+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2935,7 +2934,7 @@
   },
   "last_child_notification": {
     "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 40551603768,
+    "run_id": 40572014050,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-27"
@@ -2945,7 +2944,7 @@
     "stage": "controller",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts",
-    "at": "2026-10-27T19:51:19.962140+00:00"
+    "at": "2026-10-27T19:52:44.418965+00:00"
   },
   "interventions": {
     "v5|kindergarten-adjustment-difficulties|7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a|long_video": {
