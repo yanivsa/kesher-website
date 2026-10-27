@@ -1,25 +1,25 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-27T15:45:56.896823+00:00",
     "run_id": 40528432589,
-    "processed_run_id": 40524669391,
+    "processed_run_id": 40528432589,
     "provider_id": null,
     "failure_fingerprint": "ARTICLE_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
+    "same_failure_streak": 2,
     "failure_count_by_type": {
-      "ARTICLE_WORKFLOW_FAILED": 1
+      "ARTICLE_WORKFLOW_FAILED": 2
     },
     "attempts": 2,
     "deploy_attempts": 0,
     "last_dispatch_at": "2026-10-27T15:11:03.342460+00:00",
     "last_run_conclusion": "cancelled",
-    "last_failed_run_id": 40524669391
+    "last_failed_run_id": 40528432589
   },
   "backlog": [
     {
@@ -1633,15 +1633,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T08:11:40.652256+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T08:16:46.720330+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2475,9 +2466,22 @@
       "details": {
         "publication_slot": "2026-10-27"
       }
+    },
+    {
+      "at": "2026-10-27T15:30:56.896849+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "ARTICLE_WORKFLOW_FAILED",
+      "details": {
+        "message": "article run 40528432589 completed with conclusion=cancelled but no structured result was available",
+        "retry_at": "2026-10-27T15:45:56.896823+00:00",
+        "failure_streak": 2,
+        "run_id": 40528432589,
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-27T15:25:58.876827+00:00",
+  "updated_at": "2026-10-27T15:30:56.896855+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2893,7 +2897,14 @@
     "slot": "2026-10-27"
   },
   "processed_child_notifications": [],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_WORKFLOW_FAILED",
+    "message": "article run 40528432589 completed with conclusion=cancelled but no structured result was available",
+    "retryable": true,
+    "retry_at": "2026-10-27T15:45:56.896823+00:00",
+    "at": "2026-10-27T15:30:56.896844+00:00"
+  },
   "interventions": {
     "v5|kindergarten-adjustment-difficulties|7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a|long_video": {
       "pipeline_id": "v5",
