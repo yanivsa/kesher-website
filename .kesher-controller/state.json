@@ -44,7 +44,7 @@
     "last_error": null,
     "normalized_head_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
     "deploy_run_id": 40503715111,
-    "next_deploy_retry_at": "2026-10-27T12:37:59.801424+00:00",
+    "next_deploy_retry_at": null,
     "image_head_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
     "merge_candidate_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
     "slug": "kindergarten-adjustment-difficulties",
@@ -58,7 +58,7 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-10-27T12:33:02.162243+00:00",
     "quality_violations": [],
-    "live_verified_at": "2026-10-27T12:33:03.265958+00:00"
+    "live_verified_at": "2026-10-27T12:33:20.388402+00:00"
   },
   "backlog": [
     {
@@ -2568,7 +2568,7 @@
       "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-27T12:33:03.265994+00:00",
+  "updated_at": "2026-10-27T12:33:20.388428+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2977,6 +2977,19 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-26T22:35:51.687881+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-27",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "kindergarten-adjustment-difficulties",
+        "target_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a"
+      },
+      "intent_at": "2026-10-27T12:32:59.801424+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2998,5 +3011,18 @@
     "Deploy to Cloudflare Pages:40492426489",
     "Kesher Trusted Article Image:40502903080"
   ],
-  "last_error": null
+  "last_error": null,
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
+  }
 }
