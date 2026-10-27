@@ -2576,7 +2576,7 @@
     "source_id": "local-editorial://kindergarten-adjustment-difficulties/5",
     "last_run_conclusion": "success",
     "last_failed_run_id": 40424206418,
-    "run_id": 40502903080,
+    "run_id": 40424206418,
     "evidence_rebind_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8",
     "evidence_rebind_dispatched_at": "2026-10-27T12:19:52.246828+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact"
