@@ -1633,15 +1633,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T08:16:46.720330+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T08:21:49.252609+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2479,9 +2470,18 @@
         "run_id": 40528432589,
         "session_id": null
       }
+    },
+    {
+      "at": "2026-10-27T15:36:05.144438+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "owner run-now article retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-27T15:45:56.896823+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-27T15:30:56.896855+00:00",
+  "updated_at": "2026-10-27T15:36:05.144455+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2897,14 +2897,7 @@
     "slot": "2026-10-27"
   },
   "processed_child_notifications": [],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_WORKFLOW_FAILED",
-    "message": "article run 40528432589 completed with conclusion=cancelled but no structured result was available",
-    "retryable": true,
-    "retry_at": "2026-10-27T15:45:56.896823+00:00",
-    "at": "2026-10-27T15:30:56.896844+00:00"
-  },
+  "last_error": null,
   "interventions": {
     "v5|kindergarten-adjustment-difficulties|7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a|long_video": {
       "pipeline_id": "v5",
