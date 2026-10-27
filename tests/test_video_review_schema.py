@@ -4,6 +4,9 @@ from __future__ import annotations
 import importlib.util
 import copy
 import json
+import hashlib
+import os
+import tempfile
 import sys
 import types
 import unittest
@@ -115,6 +118,62 @@ class VideoReviewSchemaTests(unittest.TestCase):
             with self.assertRaisesRegex(reviewer.ReviewError, 'invalid gate'):
                 reviewer.wait_for_message('key', 'sessions/same', 30, decision_validator=reviewer.validate_structured_contract)
         self.assertEqual(posts, ['/sessions/same:sendMessage', '/sessions/same:sendMessage'])
+
+    def _advisory_state_fixture(self, root):
+        adapter = load_reviewer()
+        item = {'id': 'video-20261026-131504-d4ece4f847-a2', 'type': 'video_overview', 'status': 'pending_review', 'fresh_generation_attempt': 2, 'source': {'slug': 'test-article', 'content_sha256': 'a' * 64}, 'frame_paths': [], 'frame_sha256': {}}
+        for index in range(1, 9):
+            name = f'frame-{index}.jpg';data = f'frame {index}'.encode();(root/name).write_bytes(data)
+            item['frame_paths'].append(name);item['frame_sha256'][name] = hashlib.sha256(data).hexdigest()
+        for key in ['manifest_sha256', 'final_sha256', 'transcript_sha256', 'source_file_sha256', 'visual_review_sha256']:
+            item[key] = 'b' * 64
+        state = {'version': 1, 'items': [item]};(root/'state.json').write_text(json.dumps(state))
+        decision = approved_decision(adapter);decision['item_id'] = item['id']
+        decision.update(adapter.legacy.expected_hashes(root, item))
+        return adapter, item, decision
+
+    def test_advisory_records_quality_without_calling_retired_publication_command(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory);adapter,item,decision = self._advisory_state_fixture(root)
+            args = ['review', '--state-dir', str(root), '--target-slug', 'test-article', '--target-content-sha256', 'a' * 64, '--item-id', item['id'], '--review-branch', 'kesher-video-review-123', '--evidence-root', 'evidence']
+            with mock.patch('sys.argv', args), mock.patch.dict(os.environ, {'JULES_API_KEY': 'test-key'}), mock.patch.object(adapter.legacy, 'obtain_validated_decision', return_value=(decision, 'sessions/123')), mock.patch.object(adapter.legacy.subprocess, 'run', side_effect=AssertionError('retired publication path must not be invoked')):
+                self.assertEqual(adapter.main(), 0)
+            recorded = json.loads((root/'state.json').read_text())['items'][0]
+            self.assertEqual(recorded['status'], 'pending_review')
+            self.assertEqual(recorded['jules_advisory_review']['decision'], decision)
+            self.assertEqual({k:v for k,v in recorded.items() if k != 'jules_advisory_review'}, item)
+
+    def test_advisory_rejection_is_persisted_idempotently_without_publication_changes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory);adapter,item,decision = self._advisory_state_fixture(root)
+            decision.update(decision='rejected', visual_status='rejected', blocking_issues=[{'gate':'visual','code':'REPEATED_FRAMES','message':'הפריימים חוזרים על עצמם ללא התפתחות חזותית'}])
+            with mock.patch.dict(os.environ, {'TARGET_SLUG': 'test-article', 'TARGET_CONTENT_SHA256': 'a' * 64}):
+                adapter.record_advisory_decision(root, decision, 'sessions/123', copy.deepcopy(item))
+                first = (root/'state.json').read_bytes()
+                adapter.record_advisory_decision(root, decision, 'sessions/123', copy.deepcopy(item))
+            self.assertEqual((root/'state.json').read_bytes(), first)
+            result = json.loads(first)['items'][0]
+            self.assertFalse(result['jules_advisory_review']['publication_authority'])
+            self.assertEqual(result['jules_advisory_review']['decision']['decision'], 'rejected')
+            self.assertEqual({k:v for k,v in result.items() if k != 'jules_advisory_review'}, item)
+
+    def test_advisory_evidence_mismatch_refuses_record_without_writing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory);adapter,item,decision = self._advisory_state_fixture(root)
+            decision['final_sha256'] = 'c' * 64
+            original = (root/'state.json').read_bytes()
+            with mock.patch.dict(os.environ, {'TARGET_SLUG': 'test-article', 'TARGET_CONTENT_SHA256': 'a' * 64}), self.assertRaisesRegex(adapter.ReviewError, 'evidence mismatch'):
+                adapter.record_advisory_decision(root, decision, 'sessions/123', item)
+            self.assertEqual((root/'state.json').read_bytes(), original)
+
+    def test_existing_review_session_is_resumed_without_creating_another(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory);adapter,item,decision = self._advisory_state_fixture(root)
+            args = ['review', '--state-dir', str(root), '--target-slug', 'test-article', '--target-content-sha256', 'a' * 64, '--item-id', item['id'], '--review-branch', 'kesher-video-review-123', '--evidence-root', 'evidence', '--review-session', 'sessions/123']
+            message = adapter.FINAL_MARKER + '\n' + json.dumps(decision, ensure_ascii=False)
+            with mock.patch('sys.argv', args), mock.patch.dict(os.environ, {'JULES_API_KEY': 'test-key'}), mock.patch.object(adapter.legacy, 'create_session', side_effect=AssertionError('do not duplicate review')), mock.patch.object(adapter.legacy, 'request_json', return_value={'state':'COMPLETED'}), mock.patch.object(adapter.legacy, 'list_activities', return_value=[{'agentMessaged': {'agentMessage':message}}]), mock.patch.object(adapter.legacy.subprocess, 'run', side_effect=AssertionError('do not publish')):
+                self.assertEqual(adapter.main(), 0)
+            self.assertEqual(json.loads((root/'state.json').read_text())['items'][0]['jules_advisory_review']['session'], 'sessions/123')
 
     def test_policy_has_exact_machine_version(self):
         reviewer = load_reviewer()

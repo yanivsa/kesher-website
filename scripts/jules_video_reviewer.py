@@ -406,9 +406,12 @@ def obtain_validated_decision(
     hashes: dict[str, Any],
     review_branch: str,
     timeout_seconds: int,
+    review_session: str | None = None,
 ) -> tuple[dict[str, Any], str]:
+    if review_session and not re.fullmatch(r"sessions/[0-9]+", review_session):
+        raise ReviewError("Invalid existing Jules review session")
     for attempt in range(MAX_REVIEW_SESSION_ATTEMPTS):
-        session = create_session(api_key, prompt, item["id"], review_branch)
+        session = review_session or create_session(api_key, prompt, item["id"], review_branch)
         try:
             message = wait_for_message(
                 api_key, session, timeout_seconds,
@@ -420,6 +423,7 @@ def obtain_validated_decision(
         except ReviewError as exc:
             if (
                 "timed out" in str(exc).lower()
+                and not review_session
                 and attempt + 1 < MAX_REVIEW_SESSION_ATTEMPTS
             ):
                 print(
@@ -462,7 +466,7 @@ def record_decision(state_dir: Path, decision: dict[str, Any], session: str,
         raise ReviewError("Official pipeline rejected the Jules review decision")
 
 
-def main() -> int:
+def main(*, record_decision_fn=None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--state-dir", type=Path, required=True)
     parser.add_argument("--item-id", required=True)
@@ -471,6 +475,7 @@ def main() -> int:
     parser.add_argument("--review-branch", required=True)
     parser.add_argument("--evidence-root", required=True)
     parser.add_argument("--timeout-seconds", type=int, default=3600)
+    parser.add_argument("--review-session", default="")
     args = parser.parse_args()
     if not args.target_slug.strip() or not args.target_content_sha256.strip():
         parser.error("Exact nonempty target slug and content SHA-256 required")
@@ -489,8 +494,9 @@ def main() -> int:
         hashes,
         args.review_branch,
         args.timeout_seconds,
+        args.review_session or None,
     )
-    record_decision(args.state_dir, decision, session, item)
+    (record_decision_fn or record_decision)(args.state_dir, decision, session, item)
     print(f"JULES_REVIEW_RECORDED session={session} item={item['id']} decision={decision['decision']}")
     return 0
 

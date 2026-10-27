@@ -10,6 +10,9 @@ from __future__ import annotations
 
 import json
 import re
+import os
+import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -130,11 +133,48 @@ You may complete the review only after doing the actual file reads and image ins
 """
 
 
+def record_advisory_decision(state_dir: Path, decision: dict[str, Any], session: str,
+                             reviewed_item: dict[str, Any] | None = None) -> None:
+    """Persist quality findings in the evidence artifact, without publication effects."""
+    if not re.fullmatch(r"sessions/[0-9]+", session):
+        raise ReviewError("Invalid Jules advisory session")
+    path = state_dir / "state.json"
+    original = path.read_bytes()
+    state, current = legacy.load_pending(state_dir, decision["item_id"])
+    if reviewed_item is not None and any(current.get(key) != reviewed_item.get(key)
+                                        for key in ("id", "source", "type", "fresh_generation_attempt")):
+        raise ReviewError("Exact reviewed identity changed before recording")
+    validate_decision(decision, current, legacy.expected_hashes(state_dir, current), strict_schema=True)
+    previous = current.get("jules_advisory_review") or {}
+    if previous.get("session") == session and previous.get("decision") == decision:
+        return
+    current["jules_advisory_review"] = {
+        "session": session,
+        "recorded_at": datetime.now(timezone.utc).isoformat(),
+        "publication_authority": False,
+        "decision": decision,
+    }
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=state_dir, delete=False) as handle:
+            temporary = Path(handle.name)
+            json.dump(state, handle, ensure_ascii=False, indent=2)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        if path.read_bytes() != original:
+            raise ReviewError("Advisory evidence changed during recording")
+        os.replace(temporary, path)
+    finally:
+        if temporary is not None and temporary.exists():
+            temporary.unlink()
+
+
 def main() -> int:
     legacy.REMOTION_POLICY_PATH = REMOTION_POLICY_PATH
     legacy.load_remotion_policy = load_remotion_policy
     legacy.build_prompt = build_prompt
-    return legacy.main()
+    return legacy.main(record_decision_fn=record_advisory_decision)
 
 
 if __name__ == "__main__":
