@@ -28,7 +28,9 @@
     ],
     "imageProvider": "LocalEditorial",
     "imageSourceUrl": "local-editorial://kindergarten-adjustment-difficulties/5",
-    "imageIsFallback": false
+    "imageIsFallback": false,
+    "image": "/images/generated/blog/kindergarten-adjustment-difficulties.png",
+    "imageAlt": "איור עריכתי מקומי של הורה ופעוט בכניסה למסגרת ילדים, עם דלת פתוחה וקוביות משחק, ברגע פרידה תומך."
   },
   {
     "id": "municipal-kindergarten-adjustment",
