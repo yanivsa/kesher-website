@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "image_retry_wait",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1656,12 +1656,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-26T18:47:02.142072+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-26T18:47:03.480434+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2397,12 +2391,21 @@
       "details": {
         "retry_at": "2026-10-27T00:28:06.631333+00:00"
       }
+    },
+    {
+      "at": "2026-10-27T00:31:25.751492+00:00",
+      "from": "image_retry_wait",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-27T00:26:25.076146+00:00",
+  "updated_at": "2026-10-27T00:31:25.751497+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "complete",
+    "status": "exhausted",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 40424206418 completed with conclusion=success but no validated image is present",
@@ -2828,5 +2831,10 @@
     "Kesher Trusted Article Image:40424206418",
     "Kesher Normalize Article PR:40425842920"
   ],
-  "last_error": null
+  "last_error": {
+    "stage": "image",
+    "code": "IMAGE_ATTEMPTS_EXHAUSTED",
+    "message": "image exhausted 3 total controller dispatch attempts",
+    "at": "2026-10-27T00:31:25.751476+00:00"
+  }
 }
