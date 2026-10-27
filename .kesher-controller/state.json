@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1672,15 +1672,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T03:56:16.860092+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T04:01:45.596232+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2566,9 +2557,19 @@
       "from": "article_deploying",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-27T12:33:27.011908+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-27T12:33:20.388428+00:00",
+  "updated_at": "2026-10-27T12:33:27.011917+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2593,8 +2594,8 @@
     "image_path": "/images/generated/blog/kindergarten-adjustment-difficulties.png"
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2603,7 +2604,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-10-27T12:33:27.011891+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
@@ -2987,9 +2990,10 @@
         "target_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a"
       },
       "intent_at": "2026-10-27T12:32:59.801424+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40504689301,
+      "dispatched_at": "2026-10-27T12:32:59.801424+00:00"
     }
   },
   "last_child_notification": {
@@ -3011,18 +3015,5 @@
     "Deploy to Cloudflare Pages:40492426489",
     "Kesher Trusted Article Image:40502903080"
   ],
-  "last_error": null,
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true
-  }
+  "last_error": null
 }
