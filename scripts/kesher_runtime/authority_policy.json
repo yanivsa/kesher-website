@@ -707,7 +707,7 @@
           "scripts/oci_openclaw_helper_run_command_v2.py": "901b6c244d54a53075c981411354b31f17352441730ec504ff28659145efa3af",
           "scripts/oci_openclaw_offline_repair_v2.py": "6c9f5a95a1efe82a37854ba4e3544602f5b6e2b0da512c2310882ae273430080",
           "scripts/oci_openclaw_offline_repair_v3.py": "d9460f275f42c92b7cc8e0e18cadf6468af48add26e092f5418730bda38bfdfd",
-          "scripts/openclaw_enable_cloudflare_tunnel.sh": "f7580c6988a6e31ec48ee40ea280273b8f4d60b3828da6146bda3cec0145dbf3",
+          "scripts/openclaw_enable_cloudflare_tunnel.sh": "6fcc95dbf530acd2762ee8c7d0195d46ef97518c7655e0d54631b9764deb6742",
           "scripts/openclaw_extract_ready_url.sh": "47655c872f3d502abf52bd5c68e611c49b4ccef48dd7a358f3a588a374202bcc",
           "scripts/openclaw_local_proof.sh": "7160a1ed33555f5bad7d4ebf4847557928603b8ddf1c64d5628109ec500a4a3c",
           "scripts/openclaw_offline_mount_repair_base.sh": "95a92eaeb637654877a7fea62e34a6f61c354af50e9f6ca2090ba3ef6f8522fd",
@@ -850,7 +850,7 @@
           "scripts/kesher_article_contract.py": "92f8f6c9e0ca2340cbb3a27178521eb6c9eee80e2edc57017ccba81311b3feec",
           "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
-          "scripts/kesher_publication_manifest.py": "3c594337afe9d57bfcf2d7c4bee4ba3ad7c14b957bd8913d84b8c3776d07a24f",
+          "scripts/kesher_publication_manifest.py": "733eea18c989bf24277694f73465c765ceb4713cccd22996b293346c65fa5afb",
           "scripts/kesher_runtime/article_verification.py": "5f16c8ed232505c8bcb12e4249631eccc7fc8e845c781cf075030357dbc53987",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
           "scripts/kesher_runtime/cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
@@ -1155,7 +1155,7 @@
           "scripts/kesher_article_contract.py": "92f8f6c9e0ca2340cbb3a27178521eb6c9eee80e2edc57017ccba81311b3feec",
           "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
-          "scripts/kesher_publication_manifest.py": "3c594337afe9d57bfcf2d7c4bee4ba3ad7c14b957bd8913d84b8c3776d07a24f",
+          "scripts/kesher_publication_manifest.py": "733eea18c989bf24277694f73465c765ceb4713cccd22996b293346c65fa5afb",
           "scripts/kesher_runtime/__init__.py": "87abad5c98b1cc707accd87163d96a30b945e8057b5d798eacaebbe07da99cef",
           "scripts/kesher_runtime/article_deploy.py": "44478ec6881ca4e5b6ae766bf33a2dc4bfb8b333ec7957063ab3da8ba208b760",
           "scripts/kesher_runtime/article_verification.py": "5f16c8ed232505c8bcb12e4249631eccc7fc8e845c781cf075030357dbc53987",
@@ -1751,7 +1751,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "c76e5ead6915fd3c80608580bddd3a35ed26aef4e0f042e9b22c393e13e6c9d4",
+      "definition_sha256": "b5626aa7a1e1c0785ba106b4fed7ece5eb08d5a51c556aaab2ae873f4f96ad0a",
       "resources": [
         "cloudflare.account",
         "github.dispatch",
@@ -1783,7 +1783,7 @@
           "scripts/kesher_content_controller_v5_runtime_base.py": "eb4292d4429bfc7f816221acc814532d0da998a11436d792f89d8a5a23022c11",
           "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
-          "scripts/kesher_publication_manifest.py": "3c594337afe9d57bfcf2d7c4bee4ba3ad7c14b957bd8913d84b8c3776d07a24f",
+          "scripts/kesher_publication_manifest.py": "733eea18c989bf24277694f73465c765ceb4713cccd22996b293346c65fa5afb",
           "scripts/kesher_runtime/__init__.py": "87abad5c98b1cc707accd87163d96a30b945e8057b5d798eacaebbe07da99cef",
           "scripts/kesher_runtime/article_deploy.py": "44478ec6881ca4e5b6ae766bf33a2dc4bfb8b333ec7957063ab3da8ba208b760",
           "scripts/kesher_runtime/article_image_worker.py": "4175edd11be879ecd698802bbc9a119060a74afef3302e96f985ea1ae995a284",
@@ -3150,7 +3150,7 @@
           "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
-          "scripts/kesher_publication_manifest.py": "3c594337afe9d57bfcf2d7c4bee4ba3ad7c14b957bd8913d84b8c3776d07a24f",
+          "scripts/kesher_publication_manifest.py": "733eea18c989bf24277694f73465c765ceb4713cccd22996b293346c65fa5afb",
           "scripts/kesher_runtime/__init__.py": "87abad5c98b1cc707accd87163d96a30b945e8057b5d798eacaebbe07da99cef",
           "scripts/kesher_runtime/article_deploy.py": "44478ec6881ca4e5b6ae766bf33a2dc4bfb8b333ec7957063ab3da8ba208b760",
           "scripts/kesher_runtime/article_image_worker.py": "4175edd11be879ecd698802bbc9a119060a74afef3302e96f985ea1ae995a284",
@@ -3247,7 +3247,7 @@
           "tests/test_kesher_output_artifacts.py": "89cd90e4d483a94e4b08e10ddbc9c2eea6080d4c870d5dbfc79312706e80408e",
           "tests/test_kesher_provider_recovery.py": "98d4b49f4815b56b5ab4d6880543463ddc69a4dbcc347bb3a9d7b72102b301f3",
           "tests/test_kesher_public_delivery.py": "865b95eb166069d4b0a701f371f31ab78c2bf688bd6d23cc38402cdef56e5cc3",
-          "tests/test_kesher_publication_manifest.py": "9366b4dfd6c4da3bed3c6fcce49b9c6ca4fdbe367fe26f2ff09cce43e0a2950c",
+          "tests/test_kesher_publication_manifest.py": "ead92ee643b527e1f074a659f18e77c32dcd666e17a17d87735fd4a4cd9b110f",
           "tests/test_kesher_runtime_migration.py": "f900de0d2f33b710277cda0887890f514996709d4829868fcf8ad065986be510",
           "tests/test_kesher_state_write_safety.py": "1f23f3915cf1f1851ad77b84765efd2825bc5bd9862dba22a9f20046c72aac33",
           "tests/test_kesher_v5_backlog_priority.py": "d534ee995e932c8b194652d52003093c807411af1c2fb6aa3f34bb37c3a5d648",
@@ -3646,7 +3646,7 @@
         "oci_write",
         "read"
       ],
-      "definition_sha256": "8e9ab8ff9c431515982c4d68269580c63d0a5b5a4c6644ca21537fed80466837",
+      "definition_sha256": "10db47e7fef5dffca7f2e217b706d1a9c4a25a28ce9d0f616f26f563a6d60c0f",
       "resources": [
         "cloudflare.account",
         "oci.resources"
@@ -3654,7 +3654,7 @@
       "review": {
         "call_chain": {
           "scripts/oci_openclaw_agent_diagnostic.py": "2e4007b55382ddf740e7f18227d90b48f957bf14def45e414ac88e60c3953975",
-          "scripts/openclaw_readonly_diagnostic.sh": "b60134fc3a477b993f07030efca0113064b5237a6ef59e4eb76f93676ce1776e"
+          "scripts/openclaw_readonly_diagnostic.sh": "7b2f047110e9edf86d394aae767692c204f654c0e369dab33cf25f6e61039ac0"
         },
         "credential_services": {
           "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
@@ -3740,7 +3740,7 @@
       "review": {
         "call_chain": {
           "scripts/oci_openclaw_agent_command.py": "5a04b2cfb1359d5307b549ac037a6b7a0ffd04a30dc2d60ba8fbb7cbd1031fd0",
-          "scripts/openclaw_enable_cloudflare_tunnel.sh": "f7580c6988a6e31ec48ee40ea280273b8f4d60b3828da6146bda3cec0145dbf3"
+          "scripts/openclaw_enable_cloudflare_tunnel.sh": "6fcc95dbf530acd2762ee8c7d0195d46ef97518c7655e0d54631b9764deb6742"
         },
         "credential_services": {
           "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
