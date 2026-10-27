@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import faqs from '../../data/faqs';
 import styles from './FAQ.module.css';
 
-const categories = ['הכל', 'ייעוץ זוגי', 'הכנה לנישואים והשנה הראשונה', 'זוגיות בעלייה ורילוקיישן', 'רווקות מאוחרת', 'מציאת זוגיות', 'הדרכת הורים', 'תחומי התמחות', 'כללי'];
+const categories = ['הכל', 'ייעוץ זוגי', 'גישור', 'הכנה לנישואים והשנה הראשונה', 'זוגיות בעלייה ורילוקיישן', 'רווקות מאוחרת', 'מציאת זוגיות', 'הדרכת הורים', 'תחומי התמחות', 'כללי'];
 
 // FAQPage Schema for SEO/GEO
 const faqSchema = {
@@ -106,6 +107,11 @@ const FAQ: React.FC = () => {
               </button>
               <div className={styles.answerWrapper}>
                 <p className={styles.answer}>{faq.answer}</p>
+                {faq.slug && (
+                  <Link className={styles.moreLink} to={`/faq/${faq.slug}`}>
+                    לתשובה המורחבת ←
+                  </Link>
+                )}
               </div>
             </div>
           ))}
