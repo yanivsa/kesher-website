@@ -44,7 +44,7 @@
     "last_error": null,
     "normalized_head_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
     "deploy_run_id": 40503715111,
-    "next_deploy_retry_at": null,
+    "next_deploy_retry_at": "2026-10-27T12:37:59.801424+00:00",
     "image_head_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
     "merge_candidate_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
     "slug": "kindergarten-adjustment-difficulties",
