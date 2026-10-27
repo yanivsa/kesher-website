@@ -41,6 +41,7 @@ jobs:
         run: |
           python3 -m unittest \
             tests.test_ci_profile \
+            tests.test_trusted_image_recovery_boundary \
             tests.test_kesher_article_contract \
             tests.test_kesher_article_normalizer \
             tests.test_kesher_explicit_test_mode \

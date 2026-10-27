@@ -635,7 +635,7 @@
         "read",
         "status_write"
       ],
-      "definition_sha256": "576d106788bbb3784e7aa7711987c1c9a9dffd44134ae1c403f8b24e19dbe72e",
+      "definition_sha256": "b9de061eafacdc0f35470174eb31ca4c5aac0b0a6ace7fd301492b7113bdbd8c",
       "resources": [
         "github.statuses"
       ],
@@ -3120,7 +3120,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "65049a831550be705c2aad87cc3333a3d527a2ee771390d5a0a47a172319ff19",
+      "definition_sha256": "0fea60cbe72dad596fa4b0e97b6da48d43fb31ccae628a35758fa0788ecd2ecc",
       "resources": [],
       "review": {
         "call_chain": {
