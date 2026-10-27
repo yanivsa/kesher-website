@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "long_video_complete",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1672,15 +1672,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T05:41:08.093388+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T05:46:43.033003+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2563,9 +2554,15 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-27T13:43:25.838748+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-10-27T13:43:16.240763+00:00",
+  "updated_at": "2026-10-27T13:43:25.838757+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2638,16 +2635,20 @@
     "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "aa1be162-7879-45cb-9933-52d4a28b09ef",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-10-27T13:43:25.838716+00:00",
+    "artifact_id": "aa1be162-7879-45cb-9933-52d4a28b09ef",
+    "source_id": "75fbbbc1-0205-4098-a8a6-5b87e2a3ef44",
+    "adopted_from_long_item_id": "video-20261027-150726-7292321e86-a2"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3020,9 +3021,10 @@
         "derive_long_item_id": "video-20261027-150726-7292321e86-a2"
       },
       "intent_at": "2026-10-27T13:42:39.029033+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40514562849,
+      "dispatched_at": "2026-10-27T13:42:39.029033+00:00"
     }
   },
   "last_child_notification": {
