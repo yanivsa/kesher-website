@@ -1672,15 +1672,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T04:25:33.767142+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T04:29:36.796020+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2563,9 +2554,19 @@
         "item_id": "video-20261027-143419-7292321e86",
         "task_id": "b0a7ce01-c03d-4396-844e-945c7db0f216"
       }
+    },
+    {
+      "at": "2026-10-27T12:59:48.818669+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261027-143419-7292321e86",
+        "task_id": "b0a7ce01-c03d-4396-844e-945c7db0f216"
+      }
     }
   ],
-  "updated_at": "2026-10-27T12:51:10.353585+00:00",
+  "updated_at": "2026-10-27T12:59:48.818677+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
