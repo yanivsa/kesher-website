@@ -707,7 +707,7 @@
           "scripts/oci_openclaw_helper_run_command_v2.py": "901b6c244d54a53075c981411354b31f17352441730ec504ff28659145efa3af",
           "scripts/oci_openclaw_offline_repair_v2.py": "6c9f5a95a1efe82a37854ba4e3544602f5b6e2b0da512c2310882ae273430080",
           "scripts/oci_openclaw_offline_repair_v3.py": "d9460f275f42c92b7cc8e0e18cadf6468af48add26e092f5418730bda38bfdfd",
-          "scripts/openclaw_enable_cloudflare_tunnel.sh": "f7580c6988a6e31ec48ee40ea280273b8f4d60b3828da6146bda3cec0145dbf3",
+          "scripts/openclaw_enable_cloudflare_tunnel.sh": "6fcc95dbf530acd2762ee8c7d0195d46ef97518c7655e0d54631b9764deb6742",
           "scripts/openclaw_extract_ready_url.sh": "47655c872f3d502abf52bd5c68e611c49b4ccef48dd7a358f3a588a374202bcc",
           "scripts/openclaw_local_proof.sh": "7160a1ed33555f5bad7d4ebf4847557928603b8ddf1c64d5628109ec500a4a3c",
           "scripts/openclaw_offline_mount_repair_base.sh": "95a92eaeb637654877a7fea62e34a6f61c354af50e9f6ca2090ba3ef6f8522fd",
@@ -3646,7 +3646,7 @@
         "oci_write",
         "read"
       ],
-      "definition_sha256": "8e9ab8ff9c431515982c4d68269580c63d0a5b5a4c6644ca21537fed80466837",
+      "definition_sha256": "10db47e7fef5dffca7f2e217b706d1a9c4a25a28ce9d0f616f26f563a6d60c0f",
       "resources": [
         "cloudflare.account",
         "oci.resources"
@@ -3654,7 +3654,7 @@
       "review": {
         "call_chain": {
           "scripts/oci_openclaw_agent_diagnostic.py": "2e4007b55382ddf740e7f18227d90b48f957bf14def45e414ac88e60c3953975",
-          "scripts/openclaw_readonly_diagnostic.sh": "b60134fc3a477b993f07030efca0113064b5237a6ef59e4eb76f93676ce1776e"
+          "scripts/openclaw_readonly_diagnostic.sh": "7b2f047110e9edf86d394aae767692c204f654c0e369dab33cf25f6e61039ac0"
         },
         "credential_services": {
           "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
@@ -3740,7 +3740,7 @@
       "review": {
         "call_chain": {
           "scripts/oci_openclaw_agent_command.py": "5a04b2cfb1359d5307b549ac037a6b7a0ffd04a30dc2d60ba8fbb7cbd1031fd0",
-          "scripts/openclaw_enable_cloudflare_tunnel.sh": "f7580c6988a6e31ec48ee40ea280273b8f4d60b3828da6146bda3cec0145dbf3"
+          "scripts/openclaw_enable_cloudflare_tunnel.sh": "6fcc95dbf530acd2762ee8c7d0195d46ef97518c7655e0d54631b9764deb6742"
         },
         "credential_services": {
           "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
