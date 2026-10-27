@@ -635,7 +635,7 @@
         "read",
         "status_write"
       ],
-      "definition_sha256": "b9de061eafacdc0f35470174eb31ca4c5aac0b0a6ace7fd301492b7113bdbd8c",
+      "definition_sha256": "c79ab2ab54a82da91664d98b191de8123ca2f1d210e6729bfb8933438ad07e73",
       "resources": [
         "github.statuses"
       ],
@@ -719,8 +719,6 @@
           "tests/test_master_supervisor_shadow.py": "6cfd8dd67c92c153ce93f9c74785b386b73810c0d9daeffba03d0d536ad84e49",
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
           "tests/test_media_voice_policy_contract.py": "f0acf97611450ff1870a6fb1d93439c3f60e3fab8a279d809e7476c2a43ab4fc",
-          "tests/test_openclaw_cloudflare_primary.py": "b10f7830ca4c6204f1042585f4a7cf42633bbffd54cf89a441280c57492b8ece",
-          "tests/test_openclaw_oci_agent_self_heal.py": "ebbf27f53143f87d1b3197a365531634717e524e6bd37390d97d06145fef5d90",
           "tests/test_pipeline_v4.py": "d2e315c85f441bc93a0914d6a56ceb6236947e5aa2ad4cab54a003f2e786b25f",
           "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
           "tests/test_v4_runtime_activation.py": "98b614126a9f1df68acd252ebf56de11472be8b38267e60430b1c7191fd7845e",
