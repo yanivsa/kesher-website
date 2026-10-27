@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "article_needed",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,8 +13,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
-    "deploy_attempts": 0
+    "attempts": 1,
+    "deploy_attempts": 0,
+    "last_dispatch_at": "2026-10-27T14:48:20.598561+00:00"
   },
   "backlog": [
     {
@@ -1628,15 +1629,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T07:21:23.602701+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T07:27:47.488980+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2464,9 +2456,19 @@
         "idea_id": "parenting-p1-changing-kindergarten-midyear",
         "publication_slot": "2026-10-27"
       }
+    },
+    {
+      "at": "2026-10-27T14:48:20.598584+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 1,
+        "publication_slot": "2026-10-27"
+      }
     }
   ],
-  "updated_at": "2026-10-27T14:46:30.203897+00:00",
+  "updated_at": "2026-10-27T14:48:20.598592+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2868,9 +2870,10 @@
         "topic_brief": "אשכול מעון לגן. נושא/כאב: ילד שעוזב צוות, חברים ושגרה מוכרת ונכנס לגן חדש באמצע השנה; הורה שמתלבט אם המעבר יפגע בו ומרגיש אשמה או חוסר ודאות. להתמקד בפרידה, הכנה והתחלה מחדש. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: changing-kindergarten-midyear. כותרת עבודה: מעבר גן באמצע שנה: איך לעזור לילד להיפרד ולהתחיל מחדש? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-changing-kindergarten-midyear\nRequired Primary Keyword: מעבר גן באמצע שנה"
       },
       "intent_at": "2026-10-27T14:48:08.056138+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-27T14:48:08.056138+00:00"
     }
   },
   "last_child_notification": {
