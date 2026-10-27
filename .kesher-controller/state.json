@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "article_image_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "blocked",
     "next_retry_at": null,
     "run_id": 40413728115,
     "processed_run_id": null,
@@ -29,13 +29,13 @@
     },
     "pr_number": 1227,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1227",
-    "current_pr_head_sha": "9c479c95ef0f4868302292b3ff7fcfbf895cee07",
+    "current_pr_head_sha": "f99d45d357600ab156de7caad1b3bf619f8c326c",
     "jules_head_sha": "83f03f857ea48f0712dc32d753f58cabead1e781",
     "normalization_slot": "2026-10-27",
     "normalization_dispatched_at": "2026-10-26T23:55:54.534061+00:00",
     "normalization_run_id": 40423060078,
-    "normalization_drift_count": 3,
-    "last_normalization_drift_head_sha": "9c479c95ef0f4868302292b3ff7fcfbf895cee07",
+    "normalization_drift_count": 4,
+    "last_normalization_drift_head_sha": "f99d45d357600ab156de7caad1b3bf619f8c326c",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 40420921104,
@@ -1656,12 +1656,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-26T18:36:30.164774+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-10-26T18:41:04.048035+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2381,9 +2375,18 @@
         "attempt": 3,
         "pr_number": 1227
       }
+    },
+    {
+      "at": "2026-10-27T00:07:55.530336+00:00",
+      "from": "article_image_running",
+      "to": "blocked",
+      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
+      "details": {
+        "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed"
+      }
     }
   ],
-  "updated_at": "2026-10-27T00:06:17.285772+00:00",
+  "updated_at": "2026-10-27T00:07:55.530384+00:00",
   "image": {
     "attempt_count": 3,
     "status": "running",
@@ -2810,5 +2813,10 @@
     "Auto-merge Kesher article PRs:40420921104",
     "Kesher Normalize Article PR:40423060078"
   ],
-  "last_error": null
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_JULES_UNSTABLE_MUTATION",
+    "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed",
+    "at": "2026-10-27T00:07:55.530319+00:00"
+  }
 }
