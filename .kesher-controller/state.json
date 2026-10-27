@@ -3000,15 +3000,15 @@
       "workflow": "kesher-daily-video.yml",
       "cycle": "2026-10-27",
       "inputs": {
-        "operation": "full",
+        "operation": "recovery",
         "target_slug": "kindergarten-adjustment-difficulties",
-        "target_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a"
+        "target_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
+        "target_item_id": "video-20261027-143419-7292321e86"
       },
-      "intent_at": "2026-10-27T12:32:59.801424+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 40504689301,
-      "dispatched_at": "2026-10-27T12:32:59.801424+00:00"
+      "intent_at": "2026-10-27T13:00:58.295801+00:00",
+      "status": "intent",
+      "previous_run_id": 40504689301,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3031,5 +3031,21 @@
     "Kesher Trusted Article Image:40502903080",
     "Deploy to Cloudflare Pages:40503715111"
   ],
-  "last_error": null
+  "last_error": null,
+  "interventions": {
+    "v5|kindergarten-adjustment-difficulties|7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a|long_video": {
+      "pipeline_id": "v5",
+      "slug": "kindergarten-adjustment-difficulties",
+      "content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-10-27T15",
+      "last_fingerprint": "d6f8bd70c8f3e31352de40f87ba3690db3b89b6662f479c010eac50cf0ed8dfe",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-27T13:00:58.295801+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
