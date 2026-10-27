@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-27T23:21:00.630987+00:00",
+    "next_retry_at": null,
     "run_id": 40596118530,
     "processed_run_id": 40596118530,
     "provider_id": null,
@@ -15,10 +15,10 @@
     "failure_count_by_type": {
       "COMPLETED_WITHOUT_PR": 1
     },
-    "attempts": 1,
+    "attempts": 2,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-10-27T22:36:33.955344+00:00",
+    "last_dispatch_at": "2026-10-27T23:26:24.320379+00:00",
     "watchdog": {
       "identity": "2026-10-28",
       "session_id": null,
@@ -2595,9 +2595,18 @@
       "details": {
         "retry_at": "2026-10-27T23:21:00.630987+00:00"
       }
+    },
+    {
+      "at": "2026-10-27T23:26:24.320392+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 2
+      }
     }
   ],
-  "updated_at": "2026-10-27T23:21:17.972976+00:00",
+  "updated_at": "2026-10-27T23:26:24.320398+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2999,21 +3008,10 @@
         "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: הורה שמתלבט אם הילד בשל מספיק לעלות לכיתה א או שצריך עוד זמן. להתייחס להיבטים רגשיים, חברתיים, תפקודיים ושפתיים בלי להפוך את המאמר לאבחון או לרשימת תנאי סף. להבדיל מ\"מוכנות לכיתה א\" שכבר קיים: כאן הפוקוס הוא התלבטות סביב בשלות והחלטה. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-maturity. כותרת עבודה: בשלות לכיתה א׳: מה בודקים לפני שמחליטים שהילד מוכן? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/הסתגלות סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-first-grade-maturity\nRequired Primary Keyword: בשלות לכיתה א"
       },
       "intent_at": "2026-10-27T23:25:52.175544+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40596118530,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-27T23:25:52.175544+00:00"
     }
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
