@@ -123,7 +123,11 @@ def _apply_backfill(posts: list[dict], root: Path) -> list[dict]:
             continue
         if isinstance(loaded, list):
             rules.extend(loaded)
-    rule_map = {r['source']: r for r in rules if isinstance(r, dict) and 'source' in r}
+    rule_map: dict[str, list[dict]] = {}
+    for rule in rules:
+        if not isinstance(rule, dict) or 'source' not in rule:
+            continue
+        rule_map.setdefault(str(rule['source']), []).append(rule)
     if not rule_map:
         return posts
 
@@ -141,33 +145,32 @@ def _apply_backfill(posts: list[dict], root: Path) -> list[dict]:
 
     applied = []
     for post in posts:
-        rule = rule_map.get(post.get('id'))
-        if not rule or not isinstance(post.get('content'), str):
+        post_rules = rule_map.get(str(post.get('id') or ''), [])
+        if not post_rules or not isinstance(post.get('content'), str):
             applied.append(post)
             continue
-        content = post['content']
-        missing = [it for it in rule.get('items', []) if not has_internal_target(content, it.get('target', ''))]
-        if not missing:
-            applied.append(post)
-            continue
-        needle = str(rule.get('afterHeadingIncludes') or '').strip()
-        offset = None
-        for m in re.finditer(r'<h3\b[^>]*>([\s\S]*?)<\/h3>', content, re.I):
-            if needle in decode_heading_text(m.group(1)):
-                offset = m.end()
-                break
-        if offset is None:
-            applied.append(post)
-            continue
-        rendered_items = [
-            f"{escape_text(it.get('before', ''))}<a href=\"/blog/{it.get('target', '')}\">{escape_text(it.get('anchor', ''))}</a>{escape_text(it.get('after', ''))}"
-            for it in missing
-        ]
-        post_id = post["id"]
-        paragraph = f'<p data-kesher-internal-link-backfill="{post_id}">' + " ".join(rendered_items) + '</p>'
-        p_copy = dict(post)
-        p_copy['content'] = content[:offset] + paragraph + content[offset:]
-        applied.append(p_copy)
+        current = dict(post)
+        for rule in post_rules:
+            content = current['content']
+            missing = [it for it in rule.get('items', []) if not has_internal_target(content, it.get('target', ''))]
+            if not missing:
+                continue
+            needle = str(rule.get('afterHeadingIncludes') or '').strip()
+            offset = None
+            for m in re.finditer(r'<h3\b[^>]*>([\s\S]*?)<\/h3>', content, re.I):
+                if needle in decode_heading_text(m.group(1)):
+                    offset = m.end()
+                    break
+            if offset is None:
+                continue
+            rendered_items = [
+                f"{escape_text(it.get('before', ''))}<a href=\"/blog/{it.get('target', '')}\">{escape_text(it.get('anchor', ''))}</a>{escape_text(it.get('after', ''))}"
+                for it in missing
+            ]
+            post_id = current["id"]
+            paragraph = f'<p data-kesher-internal-link-backfill="{post_id}">' + " ".join(rendered_items) + '</p>'
+            current['content'] = content[:offset] + paragraph + content[offset:]
+        applied.append(current)
     return applied
 
 
