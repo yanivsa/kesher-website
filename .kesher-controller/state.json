@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "article_deploying",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -43,8 +43,8 @@
     "deferred_auto_merge_refund_count": 1,
     "last_error": null,
     "normalized_head_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
-    "deploy_run_id": 40492426489,
-    "next_deploy_retry_at": "2026-10-27T12:31:07.015065+00:00",
+    "deploy_run_id": 40503715111,
+    "next_deploy_retry_at": null,
     "image_head_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
     "merge_candidate_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
     "slug": "kindergarten-adjustment-difficulties",
@@ -53,11 +53,12 @@
     "published_date": "2026-10-27",
     "quality_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
     "reconciled_existing_article": true,
-    "live": false,
+    "live": true,
     "last_deploy_dispatch_at": "2026-10-27T12:26:07.015051+00:00",
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-27T12:31:04.479598+00:00",
-    "quality_violations": []
+    "quality_checked_at": "2026-10-27T12:33:02.162243+00:00",
+    "quality_violations": [],
+    "live_verified_at": "2026-10-27T12:33:03.265958+00:00"
   },
   "backlog": [
     {
@@ -1671,15 +1672,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T03:51:24.822002+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T03:56:16.860092+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2568,9 +2560,15 @@
         "http_status": 404,
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-10-27T12:33:03.265987+00:00",
+      "from": "article_deploying",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-27T12:31:06.959892+00:00",
+  "updated_at": "2026-10-27T12:33:03.265994+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2604,7 +2602,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
   },
   "short": {
     "attempt_count": 0,
@@ -2978,22 +2977,11 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-26T22:35:51.687881+00:00"
-    },
-    "deploy.yml": {
-      "workflow": "deploy.yml",
-      "cycle": "2026-10-27",
-      "inputs": {},
-      "intent_at": "2026-10-27T12:25:45.892655+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40492426489,
-      "observed_active_run_id": 40503715111,
-      "dispatch_head_sha": "820f7aefc15aeffe5eab8e9af772532e468acb9c",
-      "dispatched_at": "2026-10-27T12:25:45.892655+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 40503134607,
+    "workflow": "Deploy to Cloudflare Pages",
+    "run_id": 40503715111,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-27"
