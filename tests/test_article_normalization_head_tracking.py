@@ -582,5 +582,73 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
         self.assertEqual(state["history"][-1]["reason"], "successful_deferred_auto_merge_refunded")
 
 
+    def test_trusted_image_commit_head_is_not_treated_as_jules_normalization_drift(self) -> None:
+        github = mock.MagicMock()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            now=datetime(2026, 10, 27, 2, 8, tzinfo=ISRAEL_TZ),
+            github=github,
+            site=mock.MagicMock(),
+        )
+        normalized_head = "1" * 40
+        image_head = "2" * 40
+        state = {
+            "cycle": "2026-10-27",
+            "status": "article_pr_open",
+            "schema_version": 5,
+            "article": {
+                "pr_number": 1227,
+                "status": "running",
+                "current_pr_head_sha": normalized_head,
+                "normalized_head_sha": normalized_head,
+                "normalization_status": "complete",
+                "normalization_drift_count": 3,
+            },
+            "image": {
+                "status": "running",
+                "attempt_count": 3,
+                "run_id": 40424206418,
+            },
+            "history": [],
+            "pending_dispatches": {},
+        }
+        pr = {
+            "number": 1227,
+            "state": "open",
+            "html_url": "https://github.com/yanivsa/kesher-website/pull/1227",
+            "head": {"sha": image_head},
+            "body": "\n".join([
+                "Image Provider: LocalEditorial",
+                "Image SHA-256: " + "a" * 64,
+                "Image Source URL: local-editorial://kindergarten-adjustment-difficulties/5",
+                "Image Evidence Head: " + image_head,
+            ]),
+        }
+        evidence = {
+            "provider": "LocalEditorial",
+            "sha256": "a" * 64,
+            "source": "local-editorial://kindergarten-adjustment-difficulties/5",
+        }
+        github.article_pr_image_ready.return_value = (True, evidence)
+        github.article_pr_normalization_required.return_value = (True, "2026-10-27")
+        github.active_normalizer_run.return_value = None
+        github.request.return_value = {"parents": [{"sha": "3" * 40}]}
+
+        with mock.patch.object(controller, "_pr_repair_status", return_value=(0, set())), \
+             mock.patch.object(controller, "_pr_content_structure_errors", return_value=[]), \
+             mock.patch.object(controller, "_dispatch_auto_merge_v4") as merge_gate:
+            action = controller._handle_open_article_pr(state, pr)
+
+        self.assertEqual(action.kind, "wait")
+        self.assertEqual(state["article"]["normalized_head_sha"], image_head)
+        self.assertEqual(state["article"]["image_head_sha"], image_head)
+        self.assertEqual(state["article"]["merge_candidate_sha"], image_head)
+        self.assertEqual(state["article"]["normalization_drift_count"], 0)
+        self.assertEqual(state["image"]["attempt_count"], 3)
+        self.assertEqual(state["image"]["status"], "complete")
+        self.assertNotEqual(state["status"], "article_normalizing")
+        github.dispatch.assert_not_called()
+        merge_gate.assert_called_once()
+
+
 if __name__ == "__main__":
     unittest.main()
