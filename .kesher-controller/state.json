@@ -1,98 +1,23 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-27",
-  "status": "complete",
+  "cycle": "2026-10-28",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 3,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
-    "next_retry_at": "2026-10-27T16:16:12.907599+00:00",
-    "run_id": 40534301493,
-    "processed_run_id": 40534301493,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
-    "failure_fingerprint": "COMPLETED_WITHOUT_PR",
-    "same_failure_streak": 1,
-    "failure_count_by_type": {
-      "ARTICLE_WORKFLOW_FAILED": 2,
-      "COMPLETED_WITHOUT_PR": 1
-    },
-    "attempts": 3,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "attempts": 0,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-10-27T15:46:26.975580+00:00",
-    "last_run_conclusion": "failure",
-    "last_failed_run_id": 40534301493,
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-10-27",
-      "outcome": "COMPLETED_WITHOUT_PR",
-      "retryable": true,
-      "message": "Jules completed without creating a pull request; Jules diagnostic: The task has been successfully halted without making any edits because an open pull request/branch (`changing-kindergarten-midyear`) for the requested primary keyword already exists. As per the policy, we stop cleanly in this scenario to prevent duplicate articles or conflicting PRs. All repository tests passed successfully on the clean state before concluding.",
-      "session_id": "sessions/14158694164084550662",
-      "pr_url": "",
-      "github_run_id": "40534301493",
-      "completed_at": "2026-10-27T16:07:50.857716+00:00",
-      "diagnostic": {
-        "source": {
-          "name": "sources/github/yanivsa/kesher-website",
-          "owner": "yanivsa",
-          "repo": "kesher-website",
-          "default_branch": "main",
-          "main_available": true
-        },
-        "activity_count": 18,
-        "change_set_count": 14,
-        "change_set_fingerprints": [],
-        "last_agent_message": "The task has been successfully halted without making any edits because an open pull request/branch (`changing-kindergarten-midyear`) for the requested primary keyword already exists. As per the policy, we stop cleanly in this scenario to prevent duplicate articles or conflicting PRs. All repository tests passed successfully on the clean state before concluding.",
-        "last_progress": "Halted cleanly without making any edits due to existing PR.",
-        "last_description": "",
-        "session_failed_reason": ""
-      }
-    },
-    "last_jules_session_id": "sessions/14158694164084550662",
-    "deploy_run_id": 40575158497,
-    "next_deploy_retry_at": "2026-10-27T17:45:19.935532+00:00"
+    "normalization_status": "pending"
   },
   "backlog": [
-    {
-      "cycle": "2026-09-13",
-      "status": "image_retry_wait",
-      "article": {
-        "attempt_count": 1,
-        "status": "running",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 34724265199,
-        "processed_run_id": null,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "attempts": 1,
-        "deploy_attempts": 0,
-        "normalization_status": "complete",
-        "last_dispatch_at": "2026-09-12T23:00:45.700446+00:00",
-        "pr_number": 804,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/804"
-      },
-      "archived_at": "2026-09-13T21:42:56.574301+00:00",
-      "media": {
-        "source_slug": "child-starting-school-high-cognition",
-        "source_content_sha256": "761ddbece9a09fa643aacba9e52f140585d15ec0a5f7cd4cdc5a10bb78f3a7ff",
-        "article_url": "https://kesher.saharoni.com/blog/child-starting-school-high-cognition",
-        "article_live": true,
-        "long_status": "complete",
-        "seed_dispatch_count": 1,
-        "long_last_dispatch_at": "2026-09-24T19:33:35.552273+00:00",
-        "long_resume_count": 1,
-        "long_item_id": "video-20260924-211339-761ddbece9",
-        "long_youtube_url": "https://youtu.be/4BRlQBhv3dM",
-        "long_youtube_id": "4BRlQBhv3dM",
-        "short_status": "exhausted",
-        "short_dispatch_count": 4,
-        "short_last_dispatch_at": "2026-09-25T00:58:01.531612+00:00",
-        "last_error": "BACKLOG_SHORT_ATTEMPTS_EXHAUSTED"
-      }
-    },
     {
       "cycle": "2026-09-14",
       "status": "article_deploying",
@@ -1660,189 +1585,107 @@
         "complete": true,
         "completed_at": "2026-10-26T22:06:14.841824+00:00"
       }
+    },
+    {
+      "cycle": "2026-10-27",
+      "status": "complete",
+      "exact_slug": null,
+      "content_sha256": null,
+      "article": {
+        "attempt_count": 3,
+        "status": "running",
+        "last_error": null,
+        "next_retry_at": "2026-10-27T16:16:12.907599+00:00",
+        "run_id": 40534301493,
+        "processed_run_id": 40534301493,
+        "provider_id": null,
+        "failure_fingerprint": "COMPLETED_WITHOUT_PR",
+        "same_failure_streak": 1,
+        "failure_count_by_type": {
+          "ARTICLE_WORKFLOW_FAILED": 2,
+          "COMPLETED_WITHOUT_PR": 1
+        },
+        "attempts": 3,
+        "deploy_attempts": 0,
+        "last_dispatch_at": "2026-10-27T15:46:26.975580+00:00",
+        "last_run_conclusion": "failure",
+        "last_failed_run_id": 40534301493,
+        "last_worker_result": {
+          "schema_version": 1,
+          "slot": "2026-10-27",
+          "outcome": "COMPLETED_WITHOUT_PR",
+          "retryable": true,
+          "message": "Jules completed without creating a pull request; Jules diagnostic: The task has been successfully halted without making any edits because an open pull request/branch (`changing-kindergarten-midyear`) for the requested primary keyword already exists. As per the policy, we stop cleanly in this scenario to prevent duplicate articles or conflicting PRs. All repository tests passed successfully on the clean state before concluding.",
+          "session_id": "sessions/14158694164084550662",
+          "pr_url": "",
+          "github_run_id": "40534301493",
+          "completed_at": "2026-10-27T16:07:50.857716+00:00",
+          "diagnostic": {
+            "source": {
+              "name": "sources/github/yanivsa/kesher-website",
+              "owner": "yanivsa",
+              "repo": "kesher-website",
+              "default_branch": "main",
+              "main_available": true
+            },
+            "activity_count": 18,
+            "change_set_count": 14,
+            "change_set_fingerprints": [],
+            "last_agent_message": "The task has been successfully halted without making any edits because an open pull request/branch (`changing-kindergarten-midyear`) for the requested primary keyword already exists. As per the policy, we stop cleanly in this scenario to prevent duplicate articles or conflicting PRs. All repository tests passed successfully on the clean state before concluding.",
+            "last_progress": "Halted cleanly without making any edits due to existing PR.",
+            "last_description": "",
+            "session_failed_reason": ""
+          }
+        },
+        "last_jules_session_id": "sessions/14158694164084550662",
+        "deploy_run_id": 40575158497,
+        "next_deploy_retry_at": "2026-10-27T17:45:19.935532+00:00"
+      },
+      "long_video": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": null,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {}
+      },
+      "short": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": null,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {}
+      },
+      "media_identities": {
+        "long_video_id": null,
+        "short_video_id": null
+      },
+      "counters": {
+        "article_attempts": 3,
+        "article_generation_attempts": 0,
+        "merge_dispatch_count": 0,
+        "deploy_attempts": 0,
+        "long_attempts": 0,
+        "short_attempts": 0
+      },
+      "terminal_state": {
+        "blocked": false,
+        "article_exhausted": false
+      },
+      "archived_at": "2026-10-27T22:05:41.654855+00:00"
     }
   ],
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-27T14:41:36.206810+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-27T14:46:27.565989+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-27T14:46:28.876332+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-27T14:46:30.203877+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-27T14:48:10.366355+00:00",
-      "from": "complete",
-      "to": "article_needed",
-      "reason": "owner_run_now_cycle_started",
-      "details": {
-        "idea_id": "parenting-p1-changing-kindergarten-midyear",
-        "publication_slot": "2026-10-27"
-      }
-    },
-    {
-      "at": "2026-10-27T14:48:20.598584+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "owner run-now article dispatched immediately",
-      "details": {
-        "attempt": 1,
-        "publication_slot": "2026-10-27"
-      }
-    },
-    {
-      "at": "2026-10-27T14:51:05.227129+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-27"
-      }
-    },
-    {
-      "at": "2026-10-27T14:56:08.974948+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-27"
-      }
-    },
-    {
-      "at": "2026-10-27T15:00:59.513075+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "ARTICLE_WORKFLOW_FAILED",
-      "details": {
-        "message": "article run 40524669391 completed with conclusion=cancelled but no structured result was available",
-        "retry_at": "2026-10-27T15:05:59.513045+00:00",
-        "failure_streak": 1,
-        "run_id": 40524669391,
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-10-27T15:05:55.191622+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "owner run-now article retry backoff is active",
-      "details": {
-        "retry_at": "2026-10-27T15:05:59.513045+00:00"
-      }
-    },
-    {
-      "at": "2026-10-27T15:11:03.342490+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "owner run-now article dispatched immediately",
-      "details": {
-        "attempt": 2,
-        "publication_slot": "2026-10-27"
-      }
-    },
-    {
-      "at": "2026-10-27T15:15:57.204923+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-27"
-      }
-    },
-    {
-      "at": "2026-10-27T15:20:54.428949+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-27"
-      }
-    },
-    {
-      "at": "2026-10-27T15:25:58.876800+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-27"
-      }
-    },
-    {
-      "at": "2026-10-27T15:30:56.896849+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "ARTICLE_WORKFLOW_FAILED",
-      "details": {
-        "message": "article run 40528432589 completed with conclusion=cancelled but no structured result was available",
-        "retry_at": "2026-10-27T15:45:56.896823+00:00",
-        "failure_streak": 2,
-        "run_id": 40528432589,
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-10-27T15:36:05.144438+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "owner run-now article retry backoff is active",
-      "details": {
-        "retry_at": "2026-10-27T15:45:56.896823+00:00"
-      }
-    },
-    {
-      "at": "2026-10-27T15:42:03.882104+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "owner run-now article retry backoff is active",
-      "details": {
-        "retry_at": "2026-10-27T15:45:56.896823+00:00"
-      }
-    },
-    {
-      "at": "2026-10-27T15:46:26.975615+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "owner run-now article dispatched immediately",
-      "details": {
-        "attempt": 3,
-        "publication_slot": "2026-10-27"
-      }
-    },
-    {
-      "at": "2026-10-27T15:51:13.928973+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-27"
-      }
-    },
-    {
-      "at": "2026-10-27T15:56:03.118269+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-27"
-      }
-    },
     {
       "at": "2026-10-27T16:01:02.066280+00:00",
       "from": "article_generating",
@@ -2569,9 +2412,27 @@
           "kindergarten-adjustment-difficulties"
         ]
       }
+    },
+    {
+      "at": "2026-10-27T22:05:41.654888+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-10-27T22:05:41.654892+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-10-27T22:05:41.655542+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-10-27T21:57:37.960916+00:00",
+  "updated_at": "2026-10-27T22:05:41.654876+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2953,326 +2814,5 @@
       }
     }
   ],
-  "active_idea": null,
-  "deliverables": {
-    "article_url": null,
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
-  },
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-10-27",
-      "inputs": {
-        "slot": "2026-10-27",
-        "topic_brief": "אשכול מעון לגן. נושא/כאב: ילד שעוזב צוות, חברים ושגרה מוכרת ונכנס לגן חדש באמצע השנה; הורה שמתלבט אם המעבר יפגע בו ומרגיש אשמה או חוסר ודאות. להתמקד בפרידה, הכנה והתחלה מחדש. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: changing-kindergarten-midyear. כותרת עבודה: מעבר גן באמצע שנה: איך לעזור לילד להיפרד ולהתחיל מחדש? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-changing-kindergarten-midyear\nRequired Primary Keyword: מעבר גן באמצע שנה"
-      },
-      "intent_at": "2026-10-27T15:46:10.831456+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40528432589,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-27T15:46:10.831456+00:00"
-    }
-  },
-  "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 40575158497,
-    "conclusion": "success",
-    "source_slug": null,
-    "slot": "2026-10-27"
-  },
-  "processed_child_notifications": [],
-  "last_error": null,
-  "interventions": {
-    "v5|kindergarten-adjustment-difficulties|7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a|long_video": {
-      "pipeline_id": "v5",
-      "slug": "kindergarten-adjustment-difficulties",
-      "content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
-      "stage": "long_video",
-      "strike_count": 0,
-      "last_check_token": "2026-10-27T15",
-      "last_fingerprint": "95a394f1cf1f41d69526467144b9dcbc0f34bcbde48d7c6463157a2b1a40df14",
-      "last_controller_action_token": "recovery:1:2026-10-27T13:35:45.796626+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-10-27T13:14:17.759254+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-27T13:35:45.796626+00:00"
-    },
-    "v5|kindergarten-adjustment-difficulties|7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a|short": {
-      "pipeline_id": "v5",
-      "slug": "kindergarten-adjustment-difficulties",
-      "content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-10-27T16",
-      "last_fingerprint": "a3d899befd138f19b115d8d2507271aee6ffc7c2840740f182bdcc14aac1ae87",
-      "last_controller_action_token": "recovery:1:2026-10-27T14:20:44.209811+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-10-27T14:20:44.209811+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-27T14:20:44.209811+00:00"
-    }
-  },
-  "owner_cycle_archive": [
-    {
-      "cycle": "2026-10-27",
-      "status": "complete",
-      "article": {
-        "attempt_count": 0,
-        "status": "complete",
-        "next_retry_at": null,
-        "run_id": 40413728115,
-        "processed_run_id": null,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "attempts": 0,
-        "deploy_attempts": 1,
-        "normalization_status": "complete",
-        "last_dispatch_at": "2026-10-26T22:36:29.031574+00:00",
-        "watchdog": {
-          "identity": "2026-10-27",
-          "session_id": null,
-          "last_progress_at": "2026-10-26T22:36:27+00:00",
-          "last_fingerprint": null,
-          "last_nudge_at": null,
-          "nudge_count": 0,
-          "worker_restart_count": 0,
-          "last_restart_at": null,
-          "last_restart_run_id": null
-        },
-        "pr_number": 1227,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1227",
-        "current_pr_head_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
-        "jules_head_sha": "83f03f857ea48f0712dc32d753f58cabead1e781",
-        "normalization_slot": "2026-10-27",
-        "normalization_dispatched_at": "2026-10-27T00:21:12.749279+00:00",
-        "normalization_run_id": 40425842920,
-        "normalization_drift_count": 0,
-        "last_normalization_drift_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8",
-        "merge_dispatch_count": 0,
-        "merge_dispatch_at": null,
-        "merge_run_id": 40503134607,
-        "last_refunded_auto_merge_run_id": 40420921104,
-        "deferred_auto_merge_refund_count": 1,
-        "last_error": null,
-        "normalized_head_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
-        "deploy_run_id": 40503715111,
-        "next_deploy_retry_at": null,
-        "image_head_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
-        "merge_candidate_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
-        "slug": "kindergarten-adjustment-difficulties",
-        "title": "קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?",
-        "url": "https://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties",
-        "published_date": "2026-10-27",
-        "quality_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
-        "reconciled_existing_article": true,
-        "live": true,
-        "last_deploy_dispatch_at": "2026-10-27T12:26:07.015051+00:00",
-        "quality_status": "passed",
-        "quality_checked_at": "2026-10-27T14:45:54.770912+00:00",
-        "quality_violations": [],
-        "live_verified_at": "2026-10-27T14:46:27.565962+00:00"
-      },
-      "long_video": {
-        "attempt_count": 2,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 40513458741,
-        "processed_run_id": 40509176951,
-        "provider_id": "aa1be162-7879-45cb-9933-52d4a28b09ef",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "overview_evidence_required": true,
-        "last_dispatch_at": "2026-10-27T13:36:09.978648+00:00",
-        "attempts": 1,
-        "last_run_conclusion": "success",
-        "item_id": "video-20261027-150726-7292321e86-a2",
-        "source_slug": "kindergarten-adjustment-difficulties",
-        "source_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
-        "content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
-        "source_id": "75fbbbc1-0205-4098-a8a6-5b87e2a3ef44",
-        "task_id": "aa1be162-7879-45cb-9933-52d4a28b09ef",
-        "artifact_id": "aa1be162-7879-45cb-9933-52d4a28b09ef",
-        "provider_status": "pending",
-        "verified": true,
-        "watchdog": {
-          "identity": "long_video:kindergarten-adjustment-difficulties:7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a:video-20261027-150726-7292321e86-a2",
-          "hard_started_at": "2026-10-27T13:07:39.076988+00:00",
-          "last_progress_at": "2026-10-27T13:14:17.759254+00:00",
-          "last_fingerprint": "7f6b2d42e408d40cd19077038d33f957079eb42005cc844fad22553dbdc32b1d",
-          "recovery_count": 1,
-          "last_recovery_at": "2026-10-27T13:35:45.796626+00:00"
-        },
-        "pending_resume_ready": false,
-        "resume_dispatches": 3,
-        "youtube_id": "_j8COQIxEqU",
-        "youtube_url": "https://youtu.be/_j8COQIxEqU",
-        "technical_verified": true,
-        "visual_pipeline": "remotion-v1-notebooklm-audio",
-        "codec": "h264",
-        "width": 1280,
-        "height": 720,
-        "duration": 103.067,
-        "content_duration_seconds": 103.083,
-        "signature_duration_seconds": 3.0,
-        "signature_overlay": true,
-        "signature_fullscreen": true,
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
-      },
-      "short": {
-        "attempt_count": 2,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 40520255935,
-        "processed_run_id": null,
-        "provider_id": "4d204b50-93d0-4a13-a865-3b8580b329aa",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "last_dispatch_at": "2026-10-27T14:20:59.253977+00:00",
-        "artifact_id": "4d204b50-93d0-4a13-a865-3b8580b329aa",
-        "source_id": "4a9c3459-78ae-4dbd-b608-d1fbc4739e1e",
-        "adopted_from_long_item_id": null,
-        "watchdog": {
-          "identity": "short:kindergarten-adjustment-difficulties:7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a:video-20261027-154855-7292321e86",
-          "hard_started_at": "2026-10-27T13:49:07.894976+00:00",
-          "last_progress_at": "2026-10-27T13:56:06.193385+00:00",
-          "last_fingerprint": "66e6b88ff4ba20b36120a48b51172503501847ff9293ba4cc082b32b229490d6",
-          "recovery_count": 1,
-          "last_recovery_at": "2026-10-27T14:20:44.209811+00:00"
-        },
-        "source": {
-          "id": "kindergarten-adjustment-difficulties",
-          "slug": "kindergarten-adjustment-difficulties",
-          "title": "קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?",
-          "date": "2026-10-27",
-          "category": "הדרכת הורים",
-          "subcategory": "גיל הרך",
-          "excerpt": "ילדים רבים מפגינים בכי, היצמדות ורגרסיה לא רק בימים הראשונים, אלא דווקא אחרי תקופת התלהבות ראשונית. איך להבחין בין קושי חולף לבין נורות אזהרה שמחייבות פנייה לצוות, ומה אפשר לעשות בבית כדי להקל?",
-          "canonical_url": "https://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties",
-          "content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
-          "video_title": "קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?",
-          "short_title": "קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?",
-          "short_hook": "",
-          "youtube_metadata": {
-            "title": "קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?",
-            "description": "ילדים רבים מפגינים בכי, היצמדות ורגרסיה לא רק בימים הראשונים, אלא דווקא אחרי תקופת התלהבות ראשונית. איך להבחין בין קושי חולף לבין נורות אזהרה שמחייבות פנייה לצוות, ומה אפשר לעשות בבית כדי להקל?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים",
-              "גיל הרך"
-            ]
-          },
-          "short_youtube_metadata": {
-            "title": "בקצרה: קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?",
-            "description": "ילדים רבים מפגינים בכי, היצמדות ורגרסיה לא רק בימים הראשונים, אלא דווקא אחרי תקופת התלהבות ראשונית. איך להבחין בין קושי חולף לבין נורות אזהרה שמחייבות פנייה לצוות, ומה אפשר לעשות בבית כדי להקל?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים",
-              "גיל הרך"
-            ]
-          }
-        },
-        "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-        "task_id": "4d204b50-93d0-4a13-a865-3b8580b329aa",
-        "raw_sha256": "04f677ba9eda9ab07974943d2967b010d9d2eeecfa39dd5587e4307deac61e6e",
-        "final_sha256": "65ec3a914a6d8bcadb1368251010c37041cb83ab6eb4b39969dbeafb629a09de",
-        "provider_raw_media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 720,
-          "height": 1280,
-          "duration": 78.9,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 1080,
-          "height": 1920,
-          "duration": 78.9,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "provider_video_format": "short",
-        "provider_native_short": true,
-        "provider_native_short_verified": true,
-        "provider_short_fallback_used": false,
-        "fresh_generation_attempt": 1,
-        "overview_provider_identity": {
-          "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-          "source_id": "75fbbbc1-0205-4098-a8a6-5b87e2a3ef44",
-          "task_id": "aa1be162-7879-45cb-9933-52d4a28b09ef",
-          "artifact_id": "aa1be162-7879-45cb-9933-52d4a28b09ef",
-          "raw_sha256": "00d6cec73b30c23d80df8c6195105140016b7aa5fa020e5806253d7602c920c2"
-        },
-        "shared_provider_identity": null,
-        "short_start_seconds": 0.0,
-        "short_duration_seconds": 78.9,
-        "audio_provenance": {
-          "schema_version": 1,
-          "mode": "stream_copy",
-          "raw_sha256": "04f677ba9eda9ab07974943d2967b010d9d2eeecfa39dd5587e4307deac61e6e",
-          "final_sha256": "65ec3a914a6d8bcadb1368251010c37041cb83ab6eb4b39969dbeafb629a09de",
-          "raw_audio_sha256": "f3dd79cae9aa398b3a42f8a28eed047ce6c1bbc727d1e1b97df574049c5ec4ce",
-          "final_audio_sha256": "f3dd79cae9aa398b3a42f8a28eed047ce6c1bbc727d1e1b97df574049c5ec4ce",
-          "raw_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 78.947846
-          },
-          "final_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 78.947846
-          }
-        },
-        "signature_overlay": true,
-        "signature_provenance": {
-          "schema_version": 1,
-          "final_sha256": "65ec3a914a6d8bcadb1368251010c37041cb83ab6eb4b39969dbeafb629a09de",
-          "raw_sha256": "04f677ba9eda9ab07974943d2967b010d9d2eeecfa39dd5587e4307deac61e6e",
-          "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-          "segment_sha256": "db0a83ddbd4fcf39e6e8f937b7c419343a6fd22157a33a8c951bd834e3646dc6",
-          "source_duration_seconds": 78.9,
-          "final_duration_seconds": 78.9,
-          "start_seconds": 75.9,
-          "end_seconds": 78.9,
-          "audio_source_sha256": "04f677ba9eda9ab07974943d2967b010d9d2eeecfa39dd5587e4307deac61e6e"
-        },
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "item_id": "video-20261027-154855-7292321e86",
-        "type": "article_short",
-        "youtube_id": "z2Z1xqWeGik",
-        "youtube_url": "https://youtu.be/z2Z1xqWeGik",
-        "verified": true,
-        "portrait_verified": true,
-        "signature_verified": true,
-        "signature_asset": "signature-mask.svg",
-        "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-        "technical_verified": true,
-        "signature_duration_seconds": 3.0,
-        "signature_fullscreen": true,
-        "signature_video_sha256": "db0a83ddbd4fcf39e6e8f937b7c419343a6fd22157a33a8c951bd834e3646dc6",
-        "source_mode": "direct-short",
-        "width": 1080,
-        "height": 1920
-      },
-      "archived_at": "2026-10-27T14:48:10.366312+00:00",
-      "reason": "owner_run_now_cycle_started"
-    }
-  ]
+  "active_idea": null
 }
