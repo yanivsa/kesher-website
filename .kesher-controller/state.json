@@ -1664,12 +1664,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T12:36:18.086946+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
       "at": "2026-10-27T12:41:15.864844+00:00",
       "from": "long_video_running",
       "to": "long_video_watchdog_wait",
@@ -2521,9 +2515,18 @@
       "details": {
         "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-10-27T19:46:08.425729+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-27T19:41:12.500112+00:00",
+  "updated_at": "2026-10-27T19:46:08.425735+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2943,7 +2946,7 @@
     "stage": "controller",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts",
-    "at": "2026-10-27T19:41:12.500103+00:00"
+    "at": "2026-10-27T19:46:08.425725+00:00"
   },
   "interventions": {
     "v5|kindergarten-adjustment-difficulties|7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a|long_video": {
