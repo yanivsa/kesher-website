@@ -2985,7 +2985,8 @@
     "Auto-merge Kesher article PRs:40420921104",
     "Kesher Normalize Article PR:40423060078",
     "Kesher Trusted Article Image:40424206418",
-    "Kesher Normalize Article PR:40425842920"
+    "Kesher Normalize Article PR:40425842920",
+    "Deploy to Cloudflare Pages:40492426489"
   ],
   "last_error": {
     "stage": "image",
