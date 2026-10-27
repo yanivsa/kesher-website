@@ -1656,19 +1656,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-26T23:38:53.383969+00:00",
-      "from": "article_pr_open",
-      "to": "article_pr_open",
-      "reason": "successful_deferred_auto_merge_refunded",
-      "details": {
-        "run_id": 40420921104,
-        "pr_number": 1227,
-        "head_sha": "c0a288e59c45efdbfaf95bed46efad4d5ef46456",
-        "merge_dispatch_count": 0,
-        "refund_count": 1
-      }
-    },
-    {
       "at": "2026-10-26T23:38:53.606672+00:00",
       "from": "article_pr_open",
       "to": "blocked",
@@ -2569,9 +2556,18 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-27T07:36:45.206705+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-27T07:31:25.452248+00:00",
+  "updated_at": "2026-10-27T07:36:45.206712+00:00",
   "image": {
     "attempt_count": 3,
     "status": "exhausted",
@@ -3004,6 +3000,6 @@
     "stage": "image",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
     "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-27T07:31:25.452225+00:00"
+    "at": "2026-10-27T07:36:45.206691+00:00"
   }
 }
