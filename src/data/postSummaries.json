@@ -1,5 +1,14 @@
 [
   {
+    "id": "kindergarten-adjustment-difficulties",
+    "title": "קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?",
+    "date": "2026-10-27",
+    "category": "הדרכת הורים",
+    "subcategory": "גיל הרך",
+    "excerpt": "ילדים רבים מפגינים בכי, היצמדות ורגרסיה לא רק בימים הראשונים, אלא דווקא אחרי תקופת התלהבות ראשונית. איך להבחין בין קושי חולף לבין נורות אזהרה שמחייבות פנייה לצוות, ומה אפשר לעשות בבית כדי להקל?",
+    "image": "/images/generated/blog/kindergarten-adjustment-difficulties.png"
+  },
+  {
     "id": "municipal-kindergarten-adjustment",
     "title": "הסתגלות לגן עירייה: מתי הבכי טבעי ומתי כדאי להתערב?",
     "date": "2026-10-26",
@@ -176,7 +185,7 @@
     "category": "הנחיית הורים",
     "subcategory": "שגרה ולמידה",
     "excerpt": "כל יום אותו סיפור: המחברת על השולחן, הילד מורח זמן ואתם כבר מאבדים סבלנות. לפני שמגבירים לחץ, כדאי לבדוק מה באמת עוצר אותו — ואיך עוזרים בלי לעשות את שיעורי הבית במקומו.",
-    "image": "/images/generated/services/parenting-room.jpg"
+    "image": "/images/generated/blog/child-refuses-homework.png"
   },
   {
     "id": "jealousy-in-relationships",
@@ -888,7 +897,7 @@
     "category": "זוגיות",
     "subcategory": "הכנה לחתונה",
     "excerpt": "החתונה יכולה לעורר אצל מי שגדל עם הורים שנפרדו פחדים ושאלות שלא תמיד מדברים עליהן. הכנה זוגית עוזרת להפוך את הסיפור המשפחתי למקור להבנה ולא לנבואה.",
-    "image": "/images/generated/services/couples-room.jpg"
+    "image": "/images/generated/blog/premarital-counseling-divorced-parents.png"
   },
   {
     "id": "couples-adhd-partner",
