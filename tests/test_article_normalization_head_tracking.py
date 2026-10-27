@@ -5,6 +5,7 @@ from datetime import datetime
 from unittest import mock
 
 import scripts.kesher_content_controller_v4 as v4
+import scripts.kesher_content_controller_v5 as v5
 import scripts.kesher_content_controller_stabilized as stabilized
 import scripts.kesher_content_controller as core
 from zoneinfo import ZoneInfo
@@ -757,7 +758,7 @@ class RunNowOwnerPrRehomeRegressionTests(unittest.TestCase):
     def test_run_now_adopts_exact_owner_pr_from_prior_slot_instead_of_dispatching_jules(self) -> None:
         github = mock.MagicMock()
         site = mock.MagicMock()
-        controller = stabilized.StabilizedRuntimeV5Controller(
+        controller = v5.owner_pr_rehome_controller(stabilized.StabilizedRuntimeV5Controller)(
             now=datetime(2026, 10, 27, 17, 0, tzinfo=ISRAEL_TZ),
             github=github,
             site=site,
@@ -819,6 +820,53 @@ class RunNowOwnerPrRehomeRegressionTests(unittest.TestCase):
         self.assertEqual(state["article"]["normalization_slot"], "2026-10-27")
         self.assertEqual(state["article"]["owner_rehome_source_slot"], "2026-10-26")
         self.assertEqual(state["article"]["attempt_count"], 0)
+
+    def test_normalizer_rehome_rejects_same_or_future_source_slot(self) -> None:
+        from scripts import kesher_article_normalizer as normalizer
+        base: list[dict] = []
+        head = [{"id": "x", "slug": "x", "title": "x", "date": "2026-10-27", "controllerManaged": True}]
+        for source_slot in ("2026-10-27", "2026-10-28"):
+            with self.subTest(source_slot=source_slot), self.assertRaises(normalizer.ArticleNormalizationError):
+                normalizer.extract_target_article(base, head, "2026-10-27", source_slot=source_slot)
+
+    def test_run_now_owner_pr_identity_mismatch_fails_closed_without_dispatch(self) -> None:
+        for mismatch in ("keyword", "canonical"):
+            with self.subTest(mismatch=mismatch):
+                github = mock.MagicMock()
+                controller_cls = v5.owner_pr_rehome_controller(stabilized.StabilizedRuntimeV5Controller)
+                controller = controller_cls(
+                    now=datetime(2026, 10, 27, 17, 0, tzinfo=ISRAEL_TZ), github=github, site=mock.MagicMock()
+                )
+                pr = {
+                    "number": 1226,
+                    "state": "open",
+                    "html_url": "https://github.com/yanivsa/kesher-website/pull/1226",
+                    "title": "Publish Kesher article: changing-kindergarten-midyear",
+                    "body": "Primary Keyword: " + ("מילת מפתח אחרת" if mismatch == "keyword" else "מעבר גן באמצע שנה"),
+                    "base": {"ref": "main"},
+                    "head": {"sha": "e" * 40, "repo": {"full_name": "yanivsa/kesher-website"}},
+                }
+                state = {
+                    "schema_version": 5, "cycle": "2026-10-27", "status": "article_needed",
+                    "active_idea": {
+                        "idea_id": "parenting-p1-changing-kindergarten-midyear", "status": "claimed",
+                        "run_now": True, "publication_slot": "2026-10-27",
+                        "required_primary_keyword": "מעבר גן באמצע שנה",
+                        "topic_brief": "Canonical ID נדרש: changing-kindergarten-midyear",
+                    },
+                    "article": {"attempt_count": 0, "attempts": 0, "status": "pending", "next_retry_at": None},
+                    "image": {"status": "pending"}, "long_video": {"status": "pending"}, "short": {"status": "pending"},
+                    "pending_dispatches": {}, "history": [],
+                }
+                github.request.return_value = [pr]
+                github.contents_json.return_value = [{
+                    "id": "wrong-id" if mismatch == "canonical" else "changing-kindergarten-midyear",
+                    "slug": "wrong-id" if mismatch == "canonical" else "changing-kindergarten-midyear",
+                    "title": "article", "date": "2026-10-26", "controllerManaged": True,
+                }]
+                action = controller._run_now_article_phase(state)
+                self.assertEqual(action.kind, "blocked")
+                github.dispatch.assert_not_called()
 
 
 if __name__ == "__main__":

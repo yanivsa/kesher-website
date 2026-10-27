@@ -728,12 +728,163 @@ def v5_adopt_latest(github: Any, state: dict[str, Any] | None, cycle: str) -> bo
     return changed
 
 
+
+def owner_pr_rehome_controller(base_controller):
+    """Wrap the stabilized run-now phase with exact prior-slot owner-PR adoption."""
+    if not hasattr(base_controller, "_run_now_article_phase"):
+        return base_controller
+
+    class OwnerPrRehomeController(base_controller):
+        @staticmethod
+        def _owner_canonical_id(state: dict[str, Any] | None) -> str:
+            active = (state or {}).get("active_idea") if isinstance(state, dict) else None
+            if not isinstance(active, dict):
+                return ""
+            brief = str(active.get("topic_brief") or "")
+            match = re.search(r"Canonical ID\s+נדרש\s*:\s*([A-Za-z0-9][A-Za-z0-9_-]*)", brief)
+            return match.group(1) if match else ""
+
+        def _exact_owner_open_article_prs(self, state: dict[str, Any]) -> list[tuple[dict[str, Any], str]]:
+            from scripts import kesher_article_contract as article_contract
+
+            active = state.get("active_idea") if isinstance(state, dict) else None
+            if not isinstance(active, dict):
+                return []
+            keyword = str(active.get("required_primary_keyword") or "").strip()
+            canonical_id = self._owner_canonical_id(state)
+            if not keyword or not canonical_id:
+                return []
+
+            api = str(getattr(self.github, "api", "") or "").strip()
+            if not api:
+                api = "https://api.github.com/repos/yanivsa/kesher-website"
+            try:
+                rows = self.github.request("GET", f"{api}/pulls?state=open&per_page=100")
+            except Exception as exc:
+                raise core.ControllerError("OWNER_ARTICLE_PR_INVENTORY_UNAVAILABLE") from exc
+            if not isinstance(rows, list):
+                raise core.ControllerError("OWNER_ARTICLE_PR_INVENTORY_INVALID")
+
+            expected_title = f"Publish Kesher article: {canonical_id}"
+            matches: list[tuple[dict[str, Any], str]] = []
+            for pr in rows:
+                if not isinstance(pr, dict) or str(pr.get("title") or "").strip() != expected_title:
+                    continue
+                if str((pr.get("base") or {}).get("ref") or "") != "main":
+                    raise core.ControllerError("OWNER_ARTICLE_PR_BASE_INVALID")
+                head = pr.get("head") or {}
+                if str((head.get("repo") or {}).get("full_name") or "") != "yanivsa/kesher-website":
+                    raise core.ControllerError("OWNER_ARTICLE_PR_REPOSITORY_INVALID")
+                head_sha = str(head.get("sha") or "").strip().lower()
+                if not re.fullmatch(r"[a-f0-9]{40}", head_sha):
+                    raise core.ControllerError("OWNER_ARTICLE_PR_HEAD_INVALID")
+                body_keyword = str(
+                    article_contract.exact_field(str(pr.get("body") or ""), "Primary Keyword") or ""
+                ).strip()
+                if body_keyword != keyword:
+                    raise core.ControllerError("OWNER_ARTICLE_PR_KEYWORD_MISMATCH")
+                try:
+                    head_posts = self.github.contents_json("src/data/posts.json", head_sha)
+                except Exception as exc:
+                    raise core.ControllerError("OWNER_ARTICLE_PR_IDENTITY_UNVERIFIED") from exc
+                if not isinstance(head_posts, list):
+                    raise core.ControllerError("OWNER_ARTICLE_PR_IDENTITY_UNVERIFIED")
+                candidates = [
+                    post for post in head_posts
+                    if isinstance(post, dict)
+                    and core.canonical_slug(post) == canonical_id
+                    and core.is_controller_adoptable_post(post)
+                ]
+                if len(candidates) != 1:
+                    raise core.ControllerError("OWNER_ARTICLE_PR_IDENTITY_MISMATCH")
+                source_slot = str(candidates[0].get("date") or "").strip()
+                try:
+                    from datetime import date
+                    date.fromisoformat(source_slot)
+                except ValueError as exc:
+                    raise core.ControllerError("OWNER_ARTICLE_PR_SOURCE_SLOT_INVALID") from exc
+                matches.append((pr, source_slot))
+            return matches
+
+        def _run_now_article_phase(self, state: dict[str, Any]):
+            if not self._run_now_active(state):
+                return super()._run_now_article_phase(state)
+            slot = self._run_now_slot(state)
+            if not slot:
+                raise core.ControllerError("IDEA_RUN_NOW_SLOT_INVALID")
+            try:
+                owner_prs = self._exact_owner_open_article_prs(state)
+            except core.ControllerError as exc:
+                code = str(exc).split(":", 1)[0]
+                core.block(state, "article", code, str(exc))
+                return core.Action("blocked", str(exc))
+            if len(owner_prs) > 1:
+                core.block(
+                    state, "article", "DUPLICATE_OWNER_ARTICLE_PRS",
+                    f"{len(owner_prs)} open article PRs match the exact run-now owner identity",
+                )
+                return core.Action("blocked", "duplicate exact owner article PRs")
+            if not owner_prs:
+                return super()._run_now_article_phase(state)
+
+            owner_pr, source_slot = owner_prs[0]
+            if source_slot == slot:
+                return self._handle_open_article_pr(state, owner_pr)
+            from datetime import date
+            if date.fromisoformat(source_slot) > date.fromisoformat(slot):
+                core.block(
+                    state, "article", "OWNER_ARTICLE_PR_SOURCE_SLOT_INVALID",
+                    f"owner article PR source slot {source_slot} is after target slot {slot}",
+                )
+                return core.Action("blocked", "owner article PR source slot is after target slot")
+
+            number = int(owner_pr.get("number") or 0)
+            head_sha = str((owner_pr.get("head") or {}).get("sha") or "").strip().lower()
+            article = state.setdefault("article", {})
+            article.update({
+                "pr_number": number,
+                "pr_url": owner_pr.get("html_url"),
+                "current_pr_head_sha": head_sha,
+                "normalization_slot": slot,
+                "owner_rehome_source_slot": source_slot,
+                "next_retry_at": None,
+                "status": "running",
+            })
+            active_normalizer = self.github.active_normalizer_run(number)
+            if active_normalizer:
+                article["normalization_status"] = "running"
+                article["normalization_run_id"] = active_normalizer.get("id")
+                core.transition(
+                    state, "article_normalizing", "exact owner PR rehome normalization already active",
+                    pr_number=number, source_slot=source_slot, publication_slot=slot,
+                )
+                return core.Action("wait", "exact owner PR rehome normalization active")
+
+            payload = {"pr_number": str(number), "slot": slot, "source_slot": source_slot}
+            self.github.dispatch("normalize-article-pr.yml", payload)
+            article.update({
+                "normalization_status": "running",
+                "normalization_dispatched_at": core.utc_now(),
+            })
+            core.transition(
+                state, "article_normalizing", "exact prior-slot owner PR dispatched for trusted rehome",
+                pr_number=number, source_slot=source_slot, publication_slot=slot,
+            )
+            return core.Action(
+                "dispatch_normalize", "exact owner PR rehomed instead of starting another Jules article", payload
+            )
+
+    OwnerPrRehomeController.__name__ = base_controller.__name__
+    OwnerPrRehomeController.__qualname__ = base_controller.__qualname__
+    return OwnerPrRehomeController
+
+
 def main() -> int:
     from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
     retired_entrypoint()
     core.STATE_SCHEMA_VERSION = STATE_SCHEMA_VERSION
     core.GitHubClient = V5GitHubClient
-    core.Controller = V5Controller
+    core.Controller = owner_pr_rehome_controller(V5Controller)
     v3.entry._trigger_stage = v5_trigger_stage
     v3.entry.adopt_latest_dispatched_children = v5_adopt_latest
     return v3.entry.main()
