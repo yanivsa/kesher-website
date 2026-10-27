@@ -1656,16 +1656,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-26T22:06:14.841853+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
-      "details": {
-        "backlog_cycle": "2026-10-26",
-        "source_slug": "municipal-kindergarten-adjustment"
-      }
-    },
-    {
       "at": "2026-10-26T22:36:29.031586+00:00",
       "from": "waiting_for_article_window",
       "to": "article_generating",
@@ -2574,9 +2564,18 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-27T06:21:39.192218+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-27T06:16:44.850136+00:00",
+  "updated_at": "2026-10-27T06:21:39.192225+00:00",
   "image": {
     "attempt_count": 3,
     "status": "exhausted",
@@ -3009,6 +3008,6 @@
     "stage": "image",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
     "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-27T06:16:44.850115+00:00"
+    "at": "2026-10-27T06:21:39.192203+00:00"
   }
 }
