@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "image_retry_wait",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1656,12 +1656,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-26T18:36:28.959175+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-26T18:36:30.164774+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2377,12 +2371,22 @@
       "details": {
         "retry_at": "2026-10-27T00:02:30.087878+00:00"
       }
+    },
+    {
+      "at": "2026-10-27T00:06:17.285764+00:00",
+      "from": "image_retry_wait",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 3,
+        "pr_number": 1227
+      }
     }
   ],
-  "updated_at": "2026-10-27T00:01:46.932050+00:00",
+  "updated_at": "2026-10-27T00:06:17.285772+00:00",
   "image": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 3,
+    "status": "running",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 40420329446 completed with conclusion=success but no validated image is present",
@@ -2390,7 +2394,7 @@
       "retry_at": "2026-10-27T00:02:30.087878+00:00",
       "at": "2026-10-26T23:57:30.087905+00:00"
     },
-    "next_retry_at": "2026-10-27T00:02:30.087878+00:00",
+    "next_retry_at": null,
     "processed_run_id": 40420329446,
     "provider_id": "LocalEditorial",
     "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
@@ -2398,7 +2402,7 @@
     "failure_count_by_type": {
       "IMAGE_OUTPUT_MISSING": 2
     },
-    "last_dispatch_at": "2026-10-26T23:31:23.753026+00:00",
+    "last_dispatch_at": "2026-10-27T00:06:17.285733+00:00",
     "artifact_sha256": "12d58b57fd0347bb3699ffd4373bea24bcda85a74343f3383d27416ccf244782",
     "source_id": "local-editorial://kindergarten-adjustment-difficulties/5",
     "last_run_conclusion": "success",
@@ -2797,9 +2801,10 @@
         "pr_number": "1227"
       },
       "intent_at": "2026-10-27T00:05:48.170182+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40420329446,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40424206418,
+      "dispatched_at": "2026-10-27T00:05:48.170182+00:00"
     }
   },
   "last_child_notification": {
@@ -2817,17 +2822,5 @@
     "Auto-merge Kesher article PRs:40420921104",
     "Kesher Normalize Article PR:40423060078"
   ],
-  "last_error": null,
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  "last_error": null
 }
