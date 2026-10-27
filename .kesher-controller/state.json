@@ -58,7 +58,7 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-10-27T14:45:54.770912+00:00",
     "quality_violations": [],
-    "live_verified_at": "2026-10-27T14:45:56.717864+00:00"
+    "live_verified_at": "2026-10-27T14:46:27.565962+00:00"
   },
   "backlog": [
     {
@@ -1672,33 +1672,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T07:06:25.787585+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-27T07:08:54.698027+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-27T07:11:19.058435+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T07:16:18.970988+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2516,9 +2489,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-27T14:46:27.565989+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-27T14:46:28.876332+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-27T14:46:30.203877+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-27T14:41:36.206827+00:00",
+  "updated_at": "2026-10-27T14:46:30.203897+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
