@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 2,
+    "attempt_count": 3,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-27T15:45:56.896823+00:00",
+    "next_retry_at": null,
     "run_id": 40528432589,
     "processed_run_id": 40528432589,
     "provider_id": null,
@@ -15,9 +15,9 @@
     "failure_count_by_type": {
       "ARTICLE_WORKFLOW_FAILED": 2
     },
-    "attempts": 2,
+    "attempts": 3,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-10-27T15:11:03.342460+00:00",
+    "last_dispatch_at": "2026-10-27T15:46:26.975580+00:00",
     "last_run_conclusion": "cancelled",
     "last_failed_run_id": 40528432589
   },
@@ -1633,15 +1633,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T08:26:45.804915+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T08:31:46.248352+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2479,9 +2470,19 @@
       "details": {
         "retry_at": "2026-10-27T15:45:56.896823+00:00"
       }
+    },
+    {
+      "at": "2026-10-27T15:46:26.975615+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 3,
+        "publication_slot": "2026-10-27"
+      }
     }
   ],
-  "updated_at": "2026-10-27T15:42:03.882123+00:00",
+  "updated_at": "2026-10-27T15:46:26.975625+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2883,9 +2884,10 @@
         "topic_brief": "אשכול מעון לגן. נושא/כאב: ילד שעוזב צוות, חברים ושגרה מוכרת ונכנס לגן חדש באמצע השנה; הורה שמתלבט אם המעבר יפגע בו ומרגיש אשמה או חוסר ודאות. להתמקד בפרידה, הכנה והתחלה מחדש. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: changing-kindergarten-midyear. כותרת עבודה: מעבר גן באמצע שנה: איך לעזור לילד להיפרד ולהתחיל מחדש? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-changing-kindergarten-midyear\nRequired Primary Keyword: מעבר גן באמצע שנה"
       },
       "intent_at": "2026-10-27T15:46:10.831456+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40528432589,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-27T15:46:10.831456+00:00"
     }
   },
   "last_child_notification": {
