@@ -1629,15 +1629,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T07:27:47.488980+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T07:31:25.452241+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2466,9 +2457,18 @@
         "attempt": 1,
         "publication_slot": "2026-10-27"
       }
+    },
+    {
+      "at": "2026-10-27T14:51:05.227129+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "owner run-now article workflow already active",
+      "details": {
+        "publication_slot": "2026-10-27"
+      }
     }
   ],
-  "updated_at": "2026-10-27T14:48:20.598592+00:00",
+  "updated_at": "2026-10-27T14:51:05.227148+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
