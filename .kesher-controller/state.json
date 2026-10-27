@@ -1656,15 +1656,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-26T23:08:14.468182+00:00",
-      "from": "article_pr_open",
-      "to": "blocked",
-      "reason": "GITHUB_MUTATION_UNCERTAIN",
-      "details": {
-        "message": "GITHUB_MUTATION_UNCERTAIN: PUT https://api.github.com/repos/yanivsa/kesher-website/contents/.kesher-controller/state.json HTTP 500; reconcile before retry"
-      }
-    },
-    {
       "at": "2026-10-26T23:21:39.625960+00:00",
       "from": "blocked",
       "to": "article_normalizing",
@@ -2574,9 +2565,18 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-27T07:08:54.698027+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-27T07:06:25.787592+00:00",
+  "updated_at": "2026-10-27T07:08:54.698033+00:00",
   "image": {
     "attempt_count": 3,
     "status": "exhausted",
@@ -3009,6 +3009,6 @@
     "stage": "image",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
     "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-27T07:06:25.787571+00:00"
+    "at": "2026-10-27T07:08:54.698012+00:00"
   }
 }
