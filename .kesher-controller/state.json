@@ -1,18 +1,20 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-27T23:21:00.630987+00:00",
     "run_id": 40596118530,
-    "processed_run_id": null,
+    "processed_run_id": 40596118530,
     "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "COMPLETED_WITHOUT_PR",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "COMPLETED_WITHOUT_PR": 1
+    },
     "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "pending",
@@ -27,7 +29,37 @@
       "worker_restart_count": 0,
       "last_restart_at": null,
       "last_restart_run_id": null
-    }
+    },
+    "last_run_conclusion": "failure",
+    "last_worker_result": {
+      "schema_version": 1,
+      "slot": "2026-10-28",
+      "outcome": "COMPLETED_WITHOUT_PR",
+      "retryable": true,
+      "message": "Jules completed without creating a pull request; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to run an autonomous publication task to draft and publish a new Hebrew article about \"first-grade maturity\" for the `2026-10-28` slot, correctly adhering to the schema and omitting image generation. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates an appropriate article adhering to the provided topic brief. It correctly identifies the required Primary Keyword (\"בשלות לכיתה א\"), uses it in the title, opening paragraph, and URL slug. In compliance with the V3 image-stage override, it rig…",
+      "session_id": "sessions/13254194464638107348",
+      "pr_url": "",
+      "github_run_id": "40596118530",
+      "completed_at": "2026-10-27T23:14:11.326394+00:00",
+      "diagnostic": {
+        "source": {
+          "name": "sources/github/yanivsa/kesher-website",
+          "owner": "yanivsa",
+          "repo": "kesher-website",
+          "default_branch": "main",
+          "main_available": true
+        },
+        "activity_count": 34,
+        "change_set_count": 30,
+        "change_set_fingerprints": [],
+        "last_agent_message": "",
+        "last_progress": "Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to run an autonomous publication task to draft and publish a new Hebrew article about \"first-grade maturity\" for the `2026-10-28` slot, correctly adhering to the schema and omitting image generation. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates an appropriate article adhering to the provided topic brief. It correctly identifies the required Primary Keyword (\"בשלות לכיתה א\"), uses it in the title, opening paragraph, and URL slug. In compliance with the V3 image-stage override, it rig…",
+        "last_description": "",
+        "session_failed_reason": ""
+      }
+    },
+    "last_jules_session_id": "sessions/13254194464638107348",
+    "last_failed_run_id": 40596118530
   },
   "backlog": [
     {
@@ -1716,7 +1748,14 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "COMPLETED_WITHOUT_PR",
+    "message": "Jules completed without creating a pull request; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to run an autonomous publication task to draft and publish a new Hebrew article about \"first-grade maturity\" for the `2026-10-28` slot, correctly adhering to the schema and omitting image generation. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates an appropriate article adhering to the provided topic brief. It correctly identifies the required Primary Keyword (\"בשלות לכיתה א\"), uses it in the title, opening paragraph, and URL slug. In compliance with the V3 image-stage override, it rig…",
+    "retryable": true,
+    "retry_at": "2026-10-27T23:21:00.630987+00:00",
+    "at": "2026-10-27T23:16:00.631007+00:00"
+  },
   "history": [
     {
       "at": "2026-10-27T16:01:02.066280+00:00",
@@ -2541,9 +2580,22 @@
       "details": {
         "session_id": null
       }
+    },
+    {
+      "at": "2026-10-27T23:16:00.631011+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "COMPLETED_WITHOUT_PR",
+      "details": {
+        "message": "Jules completed without creating a pull request; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to run an autonomous publication task to draft and publish a new Hebrew article about \"first-grade maturity\" for the `2026-10-28` slot, correctly adhering to the schema and omitting image generation. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates an appropriate article adhering to the provided topic brief. It correctly identifies the required Primary Keyword (\"בשלות לכיתה א\"), uses it in the title, opening paragraph, and URL slug. In compliance with the V3 image-stage override, it rig…",
+        "retry_at": "2026-10-27T23:21:00.630987+00:00",
+        "failure_streak": 1,
+        "run_id": 40596118530,
+        "session_id": "sessions/13254194464638107348"
+      }
     }
   ],
-  "updated_at": "2026-10-27T23:13:09.152680+00:00",
+  "updated_at": "2026-10-27T23:16:00.631017+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
