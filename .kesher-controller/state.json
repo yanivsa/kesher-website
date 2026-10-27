@@ -1664,16 +1664,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T12:19:52.246855+00:00",
-      "from": "blocked",
-      "to": "article_image_rebinding",
-      "reason": "prior trusted image artifact proved against current normalized article and must be reattached",
-      "details": {
-        "pr_number": 1227,
-        "head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8"
-      }
-    },
-    {
       "at": "2026-10-27T12:21:34.938040+00:00",
       "from": "article_image_rebinding",
       "to": "article_pr_open",
@@ -2515,9 +2505,18 @@
       "details": {
         "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-10-27T19:16:34.880030+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-27T19:12:04.820530+00:00",
+  "updated_at": "2026-10-27T19:16:34.880037+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2937,7 +2936,7 @@
     "stage": "controller",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts",
-    "at": "2026-10-27T19:12:04.820520+00:00"
+    "at": "2026-10-27T19:16:34.880026+00:00"
   },
   "interventions": {
     "v5|kindergarten-adjustment-difficulties|7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a|long_video": {
