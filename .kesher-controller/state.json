@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1672,15 +1672,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T04:29:36.796020+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T04:31:11.973697+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2564,9 +2555,21 @@
         "item_id": "video-20261027-143419-7292321e86",
         "task_id": "b0a7ce01-c03d-4396-844e-945c7db0f216"
       }
+    },
+    {
+      "at": "2026-10-27T13:01:35.622483+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_recovery",
+      "reason": "long-form provider stalled; resumed the same durable provider identity",
+      "details": {
+        "item_id": "video-20261027-143419-7292321e86",
+        "task_id": "b0a7ce01-c03d-4396-844e-945c7db0f216",
+        "slug": "kindergarten-adjustment-difficulties",
+        "content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a"
+      }
     }
   ],
-  "updated_at": "2026-10-27T12:59:48.818677+00:00",
+  "updated_at": "2026-10-27T13:01:35.622492+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2592,7 +2595,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "generating",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40504689301,
@@ -2602,7 +2605,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-27T12:33:27.011891+00:00",
+    "last_dispatch_at": "2026-10-27T13:01:35.622460+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
     "item_id": "video-20261027-143419-7292321e86",
@@ -2619,9 +2622,11 @@
       "hard_started_at": "2026-10-27T12:34:29.965888+00:00",
       "last_progress_at": "2026-10-27T12:40:55.483783+00:00",
       "last_fingerprint": "e93dcd3ac1476a44f70b908291672c08c1de85855f8b532e6f6567ebbc4c51dc",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    }
+      "recovery_count": 1,
+      "last_recovery_at": "2026-10-27T13:00:58.295801+00:00"
+    },
+    "pending_resume_ready": false,
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
@@ -3006,9 +3011,10 @@
         "target_item_id": "video-20261027-143419-7292321e86"
       },
       "intent_at": "2026-10-27T13:00:58.295801+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40504689301,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40508472078,
+      "dispatched_at": "2026-10-27T13:00:58.295801+00:00"
     }
   },
   "last_child_notification": {
@@ -3041,11 +3047,12 @@
       "strike_count": 1,
       "last_check_token": "2026-10-27T15",
       "last_fingerprint": "d6f8bd70c8f3e31352de40f87ba3690db3b89b6662f479c010eac50cf0ed8dfe",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
+      "last_controller_action_token": "recovery:1:2026-10-27T13:00:58.295801+00:00",
+      "controller_action_observed": true,
       "last_observed_at": "2026-10-27T13:00:58.295801+00:00",
-      "last_action": "observe_controller",
-      "direct_takeover_required": false
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-10-27T13:00:58.295801+00:00"
     }
   }
 }
