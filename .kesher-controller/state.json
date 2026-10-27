@@ -1664,16 +1664,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T13:37:16.114076+00:00",
-      "from": "long_video_watchdog_recovery",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261027-150726-7292321e86-a2",
-        "task_id": "aa1be162-7879-45cb-9933-52d4a28b09ef"
-      }
-    },
-    {
       "at": "2026-10-27T13:41:15.439243+00:00",
       "from": "long_video_watchdog_wait",
       "to": "long_video_watchdog_wait",
@@ -2518,9 +2508,18 @@
       "details": {
         "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-10-27T20:35:56.544910+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-27T20:31:11.454417+00:00",
+  "updated_at": "2026-10-27T20:35:56.544916+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2940,7 +2939,7 @@
     "stage": "controller",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts",
-    "at": "2026-10-27T20:31:11.454409+00:00"
+    "at": "2026-10-27T20:35:56.544906+00:00"
   },
   "interventions": {
     "v5|kindergarten-adjustment-difficulties|7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a|long_video": {
