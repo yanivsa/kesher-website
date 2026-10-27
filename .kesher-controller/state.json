@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "next_retry_at": null,
     "run_id": 40413728115,
     "processed_run_id": null,
@@ -58,7 +58,7 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-10-27T14:33:33.173752+00:00",
     "quality_violations": [],
-    "live_verified_at": "2026-10-27T14:33:34.252694+00:00"
+    "live_verified_at": "2026-10-27T14:34:00.364496+00:00"
   },
   "backlog": [
     {
@@ -1672,33 +1672,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T06:16:44.850129+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-27T06:21:39.192218+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-27T06:26:47.208383+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T06:31:25.644406+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2543,9 +2516,27 @@
         "item_id": "video-20261027-154855-7292321e86",
         "long_item_id": "video-20261027-150726-7292321e86-a2"
       }
+    },
+    {
+      "at": "2026-10-27T14:34:00.364520+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-27T14:34:01.633528+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-27T14:34:03.165724+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-27T14:20:59.254001+00:00",
+  "updated_at": "2026-10-27T14:34:03.165741+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2619,19 +2610,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40520255935,
     "processed_run_id": null,
-    "provider_id": "aa1be162-7879-45cb-9933-52d4a28b09ef",
+    "provider_id": "4d204b50-93d0-4a13-a865-3b8580b329aa",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-27T14:20:59.253977+00:00",
-    "artifact_id": "aa1be162-7879-45cb-9933-52d4a28b09ef",
-    "source_id": "75fbbbc1-0205-4098-a8a6-5b87e2a3ef44",
-    "adopted_from_long_item_id": "video-20261027-150726-7292321e86-a2",
+    "artifact_id": "4d204b50-93d0-4a13-a865-3b8580b329aa",
+    "source_id": "4a9c3459-78ae-4dbd-b608-d1fbc4739e1e",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:kindergarten-adjustment-difficulties:7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a:video-20261027-154855-7292321e86",
       "hard_started_at": "2026-10-27T13:49:07.894976+00:00",
@@ -2639,7 +2630,125 @@
       "last_fingerprint": "66e6b88ff4ba20b36120a48b51172503501847ff9293ba4cc082b32b229490d6",
       "recovery_count": 1,
       "last_recovery_at": "2026-10-27T14:20:44.209811+00:00"
-    }
+    },
+    "source": {
+      "id": "kindergarten-adjustment-difficulties",
+      "slug": "kindergarten-adjustment-difficulties",
+      "title": "קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?",
+      "date": "2026-10-27",
+      "category": "הדרכת הורים",
+      "subcategory": "גיל הרך",
+      "excerpt": "ילדים רבים מפגינים בכי, היצמדות ורגרסיה לא רק בימים הראשונים, אלא דווקא אחרי תקופת התלהבות ראשונית. איך להבחין בין קושי חולף לבין נורות אזהרה שמחייבות פנייה לצוות, ומה אפשר לעשות בבית כדי להקל?",
+      "canonical_url": "https://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties",
+      "content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
+      "video_title": "קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?",
+      "short_title": "קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?",
+        "description": "ילדים רבים מפגינים בכי, היצמדות ורגרסיה לא רק בימים הראשונים, אלא דווקא אחרי תקופת התלהבות ראשונית. איך להבחין בין קושי חולף לבין נורות אזהרה שמחייבות פנייה לצוות, ומה אפשר לעשות בבית כדי להקל?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "גיל הרך"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?",
+        "description": "ילדים רבים מפגינים בכי, היצמדות ורגרסיה לא רק בימים הראשונים, אלא דווקא אחרי תקופת התלהבות ראשונית. איך להבחין בין קושי חולף לבין נורות אזהרה שמחייבות פנייה לצוות, ומה אפשר לעשות בבית כדי להקל?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "גיל הרך"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "4d204b50-93d0-4a13-a865-3b8580b329aa",
+    "raw_sha256": "04f677ba9eda9ab07974943d2967b010d9d2eeecfa39dd5587e4307deac61e6e",
+    "final_sha256": "65ec3a914a6d8bcadb1368251010c37041cb83ab6eb4b39969dbeafb629a09de",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 78.9,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 78.9,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "75fbbbc1-0205-4098-a8a6-5b87e2a3ef44",
+      "task_id": "aa1be162-7879-45cb-9933-52d4a28b09ef",
+      "artifact_id": "aa1be162-7879-45cb-9933-52d4a28b09ef",
+      "raw_sha256": "00d6cec73b30c23d80df8c6195105140016b7aa5fa020e5806253d7602c920c2"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 78.9,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "04f677ba9eda9ab07974943d2967b010d9d2eeecfa39dd5587e4307deac61e6e",
+      "final_sha256": "65ec3a914a6d8bcadb1368251010c37041cb83ab6eb4b39969dbeafb629a09de",
+      "raw_audio_sha256": "f3dd79cae9aa398b3a42f8a28eed047ce6c1bbc727d1e1b97df574049c5ec4ce",
+      "final_audio_sha256": "f3dd79cae9aa398b3a42f8a28eed047ce6c1bbc727d1e1b97df574049c5ec4ce",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 78.947846
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 78.947846
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "65ec3a914a6d8bcadb1368251010c37041cb83ab6eb4b39969dbeafb629a09de",
+      "raw_sha256": "04f677ba9eda9ab07974943d2967b010d9d2eeecfa39dd5587e4307deac61e6e",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "db0a83ddbd4fcf39e6e8f937b7c419343a6fd22157a33a8c951bd834e3646dc6",
+      "source_duration_seconds": 78.9,
+      "final_duration_seconds": 78.9,
+      "start_seconds": 75.9,
+      "end_seconds": 78.9,
+      "audio_source_sha256": "04f677ba9eda9ab07974943d2967b010d9d2eeecfa39dd5587e4307deac61e6e"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261027-154855-7292321e86",
+    "type": "article_short",
+    "youtube_id": "z2Z1xqWeGik",
+    "youtube_url": "https://youtu.be/z2Z1xqWeGik",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "db0a83ddbd4fcf39e6e8f937b7c419343a6fd22157a33a8c951bd834e3646dc6",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
