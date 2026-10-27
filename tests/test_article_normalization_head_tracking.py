@@ -721,5 +721,20 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
         dispatch.assert_called_once_with(github, v4.v3.IMAGE_WORKFLOW, {"pr_number": "1227", "recovery_only": "true", "expected_head_sha": current_head})
 
 
+    def test_run_now_adopts_exact_matching_open_pr_from_prior_slot_instead_of_redispatching_jules(self) -> None:
+        github = mock.MagicMock()
+        controller = stabilized.StabilizedRuntimeV5Controller(now=datetime(2026, 10, 27, 21, 45, tzinfo=ISRAEL_TZ), github=github, site=mock.MagicMock())
+        pr = {"number": 1226, "title": "Publish Kesher article: changing-kindergarten-midyear", "body": "- Primary Keyword: מעבר גן באמצע שנה\n", "head": {"sha": "e" * 40}}
+        state = {"cycle": "2026-10-27", "status": "article_retry_wait", "schema_version": 5, "article": {"attempts": 3, "attempt_count": 3, "status": "retry_wait", "next_retry_at": None}, "active_idea": {"idea_id": "parenting-p1-changing-kindergarten-midyear", "run_now": True, "status": "claimed", "publication_slot": "2026-10-27", "required_primary_keyword": "מעבר גן באמצע שנה", "topic_brief": "Canonical ID נדרש: changing-kindergarten-midyear. כותרת עבודה"}, "history": []}
+        github.open_article_prs.side_effect = [[], [pr]]
+        with mock.patch.object(controller, "posts_on_main", return_value=[]), mock.patch.object(controller, "_reconcile_completed_article_run", return_value=None), mock.patch.object(controller, "_handle_open_article_pr", return_value=core.Action("wait", "adopted")) as handle:
+            action = controller._run_now_article_phase(state)
+        self.assertEqual(action.kind, "wait")
+        self.assertEqual(github.open_article_prs.call_args_list, [mock.call("2026-10-27"), mock.call(None)])
+        handle.assert_called_once_with(state, pr)
+        github.dispatch.assert_not_called()
+
+
+
 if __name__ == "__main__":
     unittest.main()
