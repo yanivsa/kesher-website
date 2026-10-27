@@ -1658,15 +1658,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T03:16:12.110563+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T03:21:29.674347+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2556,9 +2547,18 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-27T11:56:24.496761+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-27T11:51:40.375166+00:00",
+  "updated_at": "2026-10-27T11:56:24.496768+00:00",
   "image": {
     "attempt_count": 3,
     "status": "exhausted",
@@ -2992,6 +2992,6 @@
     "stage": "image",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
     "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-27T11:51:40.375144+00:00"
+    "at": "2026-10-27T11:56:24.496745+00:00"
   }
 }
