@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "article_image_rebinding",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -29,12 +29,12 @@
     },
     "pr_number": 1227,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1227",
-    "current_pr_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8",
+    "current_pr_head_sha": "2cdbca0f4a120fb1007cfb90a4cd5dce1df26eed",
     "jules_head_sha": "83f03f857ea48f0712dc32d753f58cabead1e781",
     "normalization_slot": "2026-10-27",
     "normalization_dispatched_at": "2026-10-27T00:21:12.749279+00:00",
     "normalization_run_id": 40425842920,
-    "normalization_drift_count": 3,
+    "normalization_drift_count": 0,
     "last_normalization_drift_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
@@ -42,9 +42,11 @@
     "last_refunded_auto_merge_run_id": 40420921104,
     "deferred_auto_merge_refund_count": 1,
     "last_error": null,
-    "normalized_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8",
+    "normalized_head_sha": "2cdbca0f4a120fb1007cfb90a4cd5dce1df26eed",
     "deploy_run_id": 40492426489,
-    "next_deploy_retry_at": "2026-10-27T11:08:36.885592+00:00"
+    "next_deploy_retry_at": "2026-10-27T11:08:36.885592+00:00",
+    "image_head_sha": "2cdbca0f4a120fb1007cfb90a4cd5dce1df26eed",
+    "merge_candidate_sha": "2cdbca0f4a120fb1007cfb90a4cd5dce1df26eed"
   },
   "backlog": [
     {
@@ -1658,15 +1660,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T03:41:19.967573+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T03:46:10.757034+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2557,24 +2550,24 @@
         "pr_number": 1227,
         "head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8"
       }
+    },
+    {
+      "at": "2026-10-27T12:21:34.938040+00:00",
+      "from": "article_image_rebinding",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-27T12:19:52.246862+00:00",
+  "updated_at": "2026-10-27T12:21:34.938061+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "running",
-    "last_error": {
-      "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 40424206418 completed with conclusion=success but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-10-27T00:28:06.631333+00:00",
-      "at": "2026-10-27T00:23:06.631360+00:00"
-    },
+    "status": "complete",
+    "last_error": null,
     "next_retry_at": null,
     "processed_run_id": 40424206418,
     "provider_id": "LocalEditorial",
-    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "IMAGE_OUTPUT_MISSING": 3
     },
@@ -2986,6 +2979,18 @@
       "previous_run_id": 40424206418,
       "observed_active_run_id": 40502903080,
       "dispatched_at": "2026-10-27T12:19:13.865821+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-27",
+      "inputs": {
+        "pr_number": "1227",
+        "slot": "2026-10-27"
+      },
+      "intent_at": "2026-10-27T12:20:56.932017+00:00",
+      "status": "intent",
+      "previous_run_id": 40420921104,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3006,5 +3011,17 @@
     "Kesher Normalize Article PR:40425842920",
     "Deploy to Cloudflare Pages:40492426489"
   ],
-  "last_error": null
+  "last_error": null,
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
