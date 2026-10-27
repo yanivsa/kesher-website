@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "blocked",
+  "status": "complete",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -1664,12 +1664,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T14:41:34.949774+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-27T14:41:36.206810+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2563,6 +2557,18 @@
       "details": {
         "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-10-27T22:00:47.468172+00:00",
+      "from": "blocked",
+      "to": "complete",
+      "reason": "run_now_slot_occupied_after_rollover",
+      "details": {
+        "publication_slot": "2026-10-27",
+        "occupied_slugs": [
+          "kindergarten-adjustment-difficulties"
+        ]
+      }
     }
   ],
   "updated_at": "2026-10-27T21:57:37.960916+00:00",
@@ -2715,6 +2721,17 @@
       "requested_at": "2026-10-19T17:58:50.524738+00:00",
       "deferred_reason": "RUN_NOW_SLOT_OCCUPIED_AFTER_ROLLOVER",
       "deferred_at": "2026-10-20T09:18:28.030064+00:00"
+    },
+    {
+      "idea_id": "parenting-p1-changing-kindergarten-midyear",
+      "fingerprint": "0e497f8a781bfbe4d254d7604e790bfbee67ff1bb9b2158daa054db387fbb399",
+      "topic_brief": "אשכול מעון לגן. נושא/כאב: ילד שעוזב צוות, חברים ושגרה מוכרת ונכנס לגן חדש באמצע השנה; הורה שמתלבט אם המעבר יפגע בו ומרגיש אשמה או חוסר ודאות. להתמקד בפרידה, הכנה והתחלה מחדש. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: changing-kindergarten-midyear. כותרת עבודה: מעבר גן באמצע שנה: איך לעזור לילד להיפרד ולהתחיל מחדש? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
+      "required_primary_keyword": "מעבר גן באמצע שנה",
+      "run_now": false,
+      "status": "queued",
+      "requested_at": "2026-10-19T10:13:42.169596+00:00",
+      "deferred_reason": "RUN_NOW_SLOT_OCCUPIED_AFTER_ROLLOVER",
+      "deferred_at": "2026-10-27T22:00:47.468150+00:00"
     }
   ],
   "idea_history": [
@@ -2936,19 +2953,7 @@
       }
     }
   ],
-  "active_idea": {
-    "idea_id": "parenting-p1-changing-kindergarten-midyear",
-    "fingerprint": "0e497f8a781bfbe4d254d7604e790bfbee67ff1bb9b2158daa054db387fbb399",
-    "topic_brief": "אשכול מעון לגן. נושא/כאב: ילד שעוזב צוות, חברים ושגרה מוכרת ונכנס לגן חדש באמצע השנה; הורה שמתלבט אם המעבר יפגע בו ומרגיש אשמה או חוסר ודאות. להתמקד בפרידה, הכנה והתחלה מחדש. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: changing-kindergarten-midyear. כותרת עבודה: מעבר גן באמצע שנה: איך לעזור לילד להיפרד ולהתחיל מחדש? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
-    "required_primary_keyword": "מעבר גן באמצע שנה",
-    "run_now": true,
-    "status": "claimed",
-    "requested_at": "2026-10-19T10:13:42.169596+00:00",
-    "deferred_reason": "RUN_NOW_SLOT_OCCUPIED_AFTER_ROLLOVER",
-    "deferred_at": "2026-10-26T22:00:51.292515+00:00",
-    "publication_slot": "2026-10-27",
-    "claimed_at": "2026-10-27T14:48:10.366325+00:00"
-  },
+  "active_idea": null,
   "deliverables": {
     "article_url": null,
     "overview_youtube_url": null,
@@ -2981,12 +2986,7 @@
     "slot": "2026-10-27"
   },
   "processed_child_notifications": [],
-  "last_error": {
-    "stage": "controller",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts",
-    "at": "2026-10-27T21:57:37.960907+00:00"
-  },
+  "last_error": null,
   "interventions": {
     "v5|kindergarten-adjustment-difficulties|7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a|long_video": {
       "pipeline_id": "v5",
