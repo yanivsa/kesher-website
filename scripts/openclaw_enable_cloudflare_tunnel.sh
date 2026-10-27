@@ -4,6 +4,7 @@ export HOME=/root
 export OPENCLAW_NO_PROMPT=1
 
 PUBLIC_HOSTNAME="${PUBLIC_HOSTNAME:-openclaw.saharoni.com}"
+CLOUDFLARED_MIN_VERSION="2026.10.2"
 
 B="$(command -v openclaw || find /root -type f -name openclaw -perm -111 2>/dev/null | head -1)"
 test -n "$B"
@@ -91,13 +92,66 @@ if [ -n "$non_loopback_listener" ]; then
   exit 43
 fi
 
-# The Cloudflare API token available to CI does not have permission to mint a
-# tunnel token. Reuse the already-installed service and its on-host credentials
-# instead of weakening permissions or exposing the origin directly.
+# Reuse the existing tunnel credentials, but upgrade the cloudflared binary
+# before reconnecting. Cloudflare requires 2026.10.2+ for the October 2026
+# eMudhra certificate incident.
 if ! systemctl list-unit-files cloudflared.service --no-legend 2>/dev/null | grep -q '^cloudflared.service'; then
   echo OPENCLAW_CLOUDFLARE_FAILED=CLOUDFLARED_SERVICE_MISSING
   exit 47
 fi
+CLOUDFLARED_BIN="$(command -v cloudflared || true)"
+if [ -z "$CLOUDFLARED_BIN" ]; then
+  echo OPENCLAW_CLOUDFLARE_FAILED=CLOUDFLARED_BINARY_MISSING
+  exit 50
+fi
+
+cloudflared_version() {
+  "$CLOUDFLARED_BIN" --version 2>/dev/null | sed -nE 's/^cloudflared version ([0-9]+\.[0-9]+\.[0-9]+).*/\1/p' | head -1
+}
+version_at_least() {
+  local have="$1" need="$2"
+  [ -n "$have" ] || return 1
+  if command -v dpkg >/dev/null 2>&1; then
+    dpkg --compare-versions "$have" ge "$need"
+  else
+    [ "$(printf '%s\n%s\n' "$need" "$have" | sort -V | head -1)" = "$need" ]
+  fi
+}
+
+before="$(cloudflared_version)"
+echo "CLOUDFLARED_VERSION_BEFORE=${before:-unknown}"
+if ! version_at_least "$before" "$CLOUDFLARED_MIN_VERSION"; then
+  echo "CLOUDFLARED_SECURITY_UPGRADE_REQUIRED=true"
+  if command -v apt-get >/dev/null 2>&1 && dpkg-query -W -f='${Status}' cloudflared 2>/dev/null | grep -q 'install ok installed'; then
+    apt-get update
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --only-upgrade cloudflared
+  elif command -v yum >/dev/null 2>&1 && rpm -q cloudflared >/dev/null 2>&1; then
+    yum update -y cloudflared
+  else
+    "$CLOUDFLARED_BIN" update
+  fi
+
+  # Some package repositories can lag behind a security release. On Debian/
+  # Ubuntu, fall back to Cloudflare's official latest .deb if still vulnerable.
+  after_first="$(cloudflared_version)"
+  if ! version_at_least "$after_first" "$CLOUDFLARED_MIN_VERSION" && command -v dpkg >/dev/null 2>&1; then
+    arch="$(dpkg --print-architecture)"
+    curl -fsSL --retry 3 --retry-delay 2 \
+      -o /tmp/cloudflared.deb \
+      "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-${arch}.deb"
+    dpkg -i /tmp/cloudflared.deb
+    rm -f /tmp/cloudflared.deb
+  fi
+fi
+
+after="$(cloudflared_version)"
+echo "CLOUDFLARED_VERSION_AFTER=${after:-unknown}"
+if ! version_at_least "$after" "$CLOUDFLARED_MIN_VERSION"; then
+  echo "OPENCLAW_CLOUDFLARE_FAILED=CLOUDFLARED_VERSION_TOO_OLD_${after:-unknown}"
+  exit 51
+fi
+echo CLOUDFLARED_SECURITY_MINIMUM_OK=true
+
 systemctl daemon-reload
 systemctl reset-failed cloudflared.service >/dev/null 2>&1 || true
 if ! systemctl restart cloudflared.service; then

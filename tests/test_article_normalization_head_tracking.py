@@ -582,5 +582,144 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
         self.assertEqual(state["history"][-1]["reason"], "successful_deferred_auto_merge_refunded")
 
 
+    def test_trusted_image_commit_head_is_not_treated_as_jules_normalization_drift(self) -> None:
+        github = mock.MagicMock()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            now=datetime(2026, 10, 27, 2, 8, tzinfo=ISRAEL_TZ),
+            github=github,
+            site=mock.MagicMock(),
+        )
+        normalized_head = "1" * 40
+        image_head = "2" * 40
+        state = {
+            "cycle": "2026-10-27",
+            "status": "article_pr_open",
+            "schema_version": 5,
+            "article": {
+                "pr_number": 1227,
+                "status": "running",
+                "current_pr_head_sha": normalized_head,
+                "normalized_head_sha": normalized_head,
+                "normalization_status": "complete",
+                "normalization_drift_count": 3,
+            },
+            "image": {
+                "status": "running",
+                "attempt_count": 3,
+                "run_id": 40424206418,
+            },
+            "history": [],
+            "pending_dispatches": {},
+        }
+        pr = {
+            "number": 1227,
+            "state": "open",
+            "html_url": "https://github.com/yanivsa/kesher-website/pull/1227",
+            "head": {"sha": image_head},
+            "body": "\n".join([
+                "Image Provider: LocalEditorial",
+                "Image SHA-256: " + "a" * 64,
+                "Image Source URL: local-editorial://kindergarten-adjustment-difficulties/5",
+                "Image Evidence Head: " + image_head,
+            ]),
+        }
+        evidence = {
+            "provider": "LocalEditorial",
+            "sha256": "a" * 64,
+            "source": "local-editorial://kindergarten-adjustment-difficulties/5",
+        }
+        github.article_pr_image_ready.return_value = (True, evidence)
+        github.article_pr_normalization_required.return_value = (False, "2026-10-27")
+        github.active_normalizer_run.return_value = None
+        github.request.return_value = {"parents": [{"sha": "3" * 40}]}
+
+        with mock.patch.object(controller, "_pr_repair_status", return_value=(0, set())), \
+             mock.patch.object(controller, "_pr_content_structure_errors", return_value=[]), \
+             mock.patch.object(controller, "_dispatch_auto_merge_v4") as merge_gate:
+            action = controller._handle_open_article_pr(state, pr)
+
+        self.assertEqual(action.kind, "wait")
+        self.assertEqual(state["article"]["normalized_head_sha"], image_head)
+        self.assertEqual(state["article"]["image_head_sha"], image_head)
+        self.assertEqual(state["article"]["merge_candidate_sha"], image_head)
+        self.assertEqual(state["article"]["normalization_drift_count"], 0)
+        self.assertEqual(state["image"]["attempt_count"], 3)
+        self.assertEqual(state["image"]["status"], "complete")
+        self.assertNotEqual(state["status"], "article_normalizing")
+        github.dispatch.assert_not_called()
+        merge_gate.assert_called_once()
+
+
+    def test_exhausted_image_budget_reattaches_prior_trusted_artifact_after_normalizer_removed_pixels(self) -> None:
+        self._exercise_recovery_only_dispatch(False)
+
+    def test_existing_head_only_rebind_also_forbids_replacement_generation(self) -> None:
+        self._exercise_recovery_only_dispatch(True)
+
+    def _exercise_recovery_only_dispatch(self, rebindable: bool) -> None:
+        github = mock.MagicMock()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            now=datetime(2026, 10, 27, 14, 0, tzinfo=ISRAEL_TZ),
+            github=github,
+            site=mock.MagicMock(),
+        )
+        prior_image_head = "3" * 40
+        current_head = "4" * 40
+        state = {
+            "cycle": "2026-10-27",
+            "status": "article_pr_open",
+            "schema_version": 5,
+            "article": {
+                "pr_number": 1227,
+                "status": "running",
+                "current_pr_head_sha": current_head,
+                "normalized_head_sha": current_head,
+                "normalization_status": "complete",
+            },
+            "image": {
+                "status": "exhausted",
+                "attempt_count": 3,
+                "attempts": 3,
+                "run_id": 40424206418,
+                "last_error": "IMAGE_OUTPUT_MISSING",
+            },
+            "history": [],
+            "pending_dispatches": {},
+        }
+        pr = {
+            "number": 1227,
+            "state": "open",
+            "html_url": "https://github.com/yanivsa/kesher-website/pull/1227",
+            "head": {"sha": current_head},
+            "body": "\n".join([
+                "Image Provider: LocalEditorial",
+                "Image SHA-256: " + "a" * 64,
+                "Image Source URL: local-editorial://kindergarten-adjustment-difficulties/5",
+                "Image Evidence Head: " + prior_image_head,
+            ]),
+        }
+        github.article_pr_normalization_required.return_value = (False, "2026-10-27")
+        github.article_pr_image_ready.return_value = (False, {})
+        github.article_pr_image_rebindable.return_value = (rebindable, {})
+        github.article_pr_prior_image_recoverable.return_value = (
+            True,
+            {"provider": "LocalEditorial", "sha256": "a" * 64, "source": "local-editorial://kindergarten-adjustment-difficulties/5"},
+        )
+        github.active_image_run.return_value = None
+
+        with mock.patch.object(controller, "_pr_repair_status", return_value=(0, set())), \
+             mock.patch.object(controller, "_pr_content_structure_errors", return_value=[]), \
+             mock.patch.object(v4.core.GitHubClient, "dispatch") as dispatch:
+            action = controller._handle_open_article_pr(state, pr)
+
+        self.assertEqual(action.kind, "dispatch_image_rebind")
+        self.assertEqual(state["status"], "article_image_rebinding")
+        self.assertEqual(state["image"]["attempt_count"], 3)
+        self.assertEqual(state["image"]["attempts"], 3)
+        self.assertEqual(state["image"]["evidence_rebind_head_sha"], current_head)
+        self.assertEqual(state["image"]["status"], "running")
+        dispatch.assert_called_once_with(github, v4.v3.IMAGE_WORKFLOW, {"pr_number": "1227", "recovery_only": "true", "expected_head_sha": current_head})
+
+
 if __name__ == "__main__":
     unittest.main()

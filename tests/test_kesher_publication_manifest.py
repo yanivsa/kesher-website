@@ -113,6 +113,55 @@ class PublicationManifestTests(unittest.TestCase):
             'Wave 2 related-post additions must still be present',
         )
 
+    def test_effective_publication_source_applies_all_backfill_rules_for_same_post(self):
+        from scripts import kesher_publication_manifest as manifest
+
+        post = {
+            **post_fixture(),
+            'id': 'multi-backfill-source',
+            'slug': 'multi-backfill-source',
+            'content': '<h3>כותרת ראשונה</h3><p>פתיחה.</p><h3>כותרת שנייה</h3><p>המשך.</p>',
+        }
+        automatic_rule = {
+            'source': post['id'],
+            'afterHeadingIncludes': '',
+            'items': [{
+                'target': 'automatic-target',
+                'anchor': 'קישור אוטומטי',
+                'before': 'אוטומטי: ',
+                'after': '.',
+            }],
+        }
+        manual_rule = {
+            'source': post['id'],
+            'afterHeadingIncludes': 'כותרת שנייה',
+            'items': [{
+                'target': 'manual-target',
+                'anchor': 'קישור ידני',
+                'before': 'ידני: ',
+                'after': '.',
+            }],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data = root / 'src' / 'data'
+            data.mkdir(parents=True)
+            (data / 'internalLinkBackfill.json').write_text(
+                json.dumps([automatic_rule], ensure_ascii=False),
+                encoding='utf-8',
+            )
+            (data / 'internalLinkBackfillManual.json').write_text(
+                json.dumps([manual_rule], ensure_ascii=False),
+                encoding='utf-8',
+            )
+
+            effective = manifest._apply_backfill([post], root)
+
+        content = effective[0]['content']
+        self.assertIn('/blog/automatic-target', content)
+        self.assertIn('/blog/manual-target', content)
+        self.assertLess(content.index('/blog/automatic-target'), content.index('/blog/manual-target'))
+
     def test_effective_publication_source_applies_manual_internal_link_backfill(self):
         from scripts import kesher_publication_manifest as manifest
 

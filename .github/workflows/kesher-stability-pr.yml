@@ -2,21 +2,27 @@ name: Kesher Stability PR Validation
 
 on:
   pull_request:
+  workflow_run:
+    workflows: ["Kesher Article Normalizer"]
+    types: [completed]
 
 permissions:
   contents: read
 
 concurrency:
-  group: kesher-stability-${{ github.ref }}
+  group: kesher-stability-${{ github.event.workflow_run.head_sha || github.ref }}
   cancel-in-progress: true
 
 jobs:
   validate:
+    if: github.event_name == 'pull_request' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout pull-request merge commit
+      - name: Checkout exact candidate
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Set up Python 3.12
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
@@ -31,6 +37,7 @@ jobs:
           set -euo pipefail
           python -m unittest \
             tests.test_article_image_contract \
+            tests.test_trusted_image_recovery_boundary \
             tests.test_kesher_article_public \
             tests.test_kesher_publication_manifest \
             tests.test_kesher_autonomous_controller \
@@ -91,12 +98,14 @@ jobs:
             -v
 
   render-proof:
+    if: github.event_name == 'pull_request' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - name: Checkout exact pull-request merge candidate
+      - name: Checkout exact candidate
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
           persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97

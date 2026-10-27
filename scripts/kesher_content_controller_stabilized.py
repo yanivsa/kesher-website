@@ -1800,7 +1800,18 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         elif workflow == v5.v3.IMAGE_WORKFLOW:
             img_state = active_state.get("image") if isinstance(active_state.get("image"), dict) else {}
             count = int(img_state.get("attempt_count") or 0)
-            if count >= v5.v3.MAX_STAGE_ATTEMPTS and active_state.get("status") != "article_image_rebinding":
+            article = active_state.get("article") or {}
+            expected_head = str((inputs or {}).get("expected_head_sha") or "")
+            recovery_only = (
+                str((inputs or {}).get("recovery_only") or "").lower() == "true"
+                and re.fullmatch(r"[a-f0-9]{40}", expected_head) is not None
+                and expected_head == str(article.get("current_pr_head_sha") or "")
+                and re.fullmatch(r"[1-9][0-9]*", str(article.get("pr_number") or "")) is not None
+                and str((inputs or {}).get("pr_number") or "") == str(article.get("pr_number"))
+            )
+            # Recovery is authorized by worker-enforced no-generation inputs,
+            # not by a state label which is only set after the dispatch returns.
+            if count >= v5.v3.MAX_STAGE_ATTEMPTS and not recovery_only:
                 raise v5.core.ControllerError(
                     f"IMAGE_ATTEMPTS_EXHAUSTED: Image exhausted {v5.v3.MAX_STAGE_ATTEMPTS} fresh generation attempts"
                 )
@@ -2260,6 +2271,28 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         ).strip().lower()
         if not normalized_head_sha and evidence_head:
             normalized_head_sha = evidence_head
+
+        # The trusted image worker advances the normalized branch itself. Only
+        # its full exact-head article/bytes/pixels proof can authorize adopting
+        # that commit; a PR-body marker alone must never suppress normalization.
+        if normalized_head_sha and normalized_head_sha != head_sha and evidence_head == head_sha:
+            image_ready, image_evidence = self.github.article_pr_image_ready(pr)
+            if image_ready:
+                normalized_head_sha = head_sha
+                state["article"].update({
+                    "normalized_head_sha": head_sha,
+                    "image_head_sha": head_sha,
+                    "merge_candidate_sha": head_sha,
+                    "normalization_drift_count": 0,
+                    "merge_dispatch_count": 0,
+                    "merge_dispatch_at": None,
+                })
+                state.setdefault("image", {}).update({
+                    "status": "complete",
+                    "provider_id": image_evidence.get("provider"),
+                    "artifact_sha256": image_evidence.get("sha256"),
+                    "source_id": image_evidence.get("source"),
+                })
 
         if normalized_head_sha and normalized_head_sha != head_sha:
             is_auto_sync_merge = False

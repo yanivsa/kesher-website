@@ -8,6 +8,14 @@ on:
         description: Article PR number
         required: true
         type: string
+      recovery_only:
+        description: Restore the proven artifact without replacement generation
+        default: false
+        type: boolean
+      expected_head_sha:
+        description: Exact current PR head required for recovery-only execution
+        default: ''
+        type: string
 
 permissions:
   contents: write
@@ -49,6 +57,8 @@ jobs:
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ inputs.pr_number }}
+          KESHER_IMAGE_RECOVERY_ONLY: ${{ inputs.recovery_only }}
+          KESHER_IMAGE_EXPECTED_HEAD: ${{ inputs.expected_head_sha }}
         run: |
           set -euo pipefail
           python3 .github/scripts/article-image-worker-v5.py "${REPO}" "${PR_NUMBER}" 2>&1 | tee image-worker.log
