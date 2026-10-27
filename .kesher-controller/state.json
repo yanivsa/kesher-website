@@ -56,7 +56,7 @@
     "live": false,
     "last_deploy_dispatch_at": "2026-10-27T12:26:07.015051+00:00",
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-27T12:26:43.806922+00:00",
+    "quality_checked_at": "2026-10-27T12:31:04.479598+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -2570,7 +2570,7 @@
       }
     }
   ],
-  "updated_at": "2026-10-27T12:26:46.590742+00:00",
+  "updated_at": "2026-10-27T12:31:06.959892+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
