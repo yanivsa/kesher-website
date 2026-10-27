@@ -2968,6 +2968,19 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-26T22:35:51.687881+00:00"
+    },
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
+      "cycle": "2026-10-27",
+      "inputs": {
+        "pr_number": "1227",
+        "recovery_only": "true",
+        "expected_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8"
+      },
+      "intent_at": "2026-10-27T12:19:13.865821+00:00",
+      "status": "intent",
+      "previous_run_id": 40424206418,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2993,5 +3006,17 @@
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
     "message": "IMAGE_ATTEMPTS_EXHAUSTED: Image exhausted 3 fresh generation attempts",
     "at": "2026-10-27T12:11:52.487043+00:00"
+  },
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   }
 }
