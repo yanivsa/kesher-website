@@ -3075,19 +3075,27 @@
         "long_url": "https://youtu.be/FzAzvOP15Mo",
         "short_url": "https://youtu.be/xkLKquTygoQ"
       }
+    },
+    {
+      "idea_id": "parenting-p1-kindergarten-adjustment-difficulties",
+      "fingerprint": "707ea589f9a918ff1b2ed12636b2d46f0545b3bc51538387764f9204bdde8ed6",
+      "topic_brief": "אשכול מעון לגן. נושא/כאב: קושי שנמשך מעבר לימים הראשונים: בכי, היצמדות, ירידה בתפקוד או התנגדות; ההורה לא יודע אם לחכות, לדבר עם הצוות או לפנות להתייעצות. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: kindergarten-adjustment-difficulties. כותרת עבודה: קשיי הסתגלות לגן: מתי לחכות ומתי לערב את הצוות או איש מקצוע? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
+      "required_primary_keyword": "קשיי הסתגלות לגן",
+      "run_now": false,
+      "status": "complete",
+      "requested_at": "2026-10-19T10:14:23.232427+00:00",
+      "publication_slot": "2026-10-27",
+      "claimed_at": "2026-10-26T22:36:25.752544+00:00",
+      "completed_at": "2026-10-27T14:34:11.032525+00:00",
+      "outputs": {
+        "slug": "kindergarten-adjustment-difficulties",
+        "article_url": "https://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties",
+        "long_url": "https://youtu.be/_j8COQIxEqU",
+        "short_url": "https://youtu.be/z2Z1xqWeGik"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "parenting-p1-kindergarten-adjustment-difficulties",
-    "fingerprint": "707ea589f9a918ff1b2ed12636b2d46f0545b3bc51538387764f9204bdde8ed6",
-    "topic_brief": "אשכול מעון לגן. נושא/כאב: קושי שנמשך מעבר לימים הראשונים: בכי, היצמדות, ירידה בתפקוד או התנגדות; ההורה לא יודע אם לחכות, לדבר עם הצוות או לפנות להתייעצות. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: kindergarten-adjustment-difficulties. כותרת עבודה: קשיי הסתגלות לגן: מתי לחכות ומתי לערב את הצוות או איש מקצוע? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
-    "required_primary_keyword": "קשיי הסתגלות לגן",
-    "run_now": false,
-    "status": "claimed",
-    "requested_at": "2026-10-19T10:14:23.232427+00:00",
-    "publication_slot": "2026-10-27",
-    "claimed_at": "2026-10-26T22:36:25.752544+00:00"
-  },
+  "active_idea": null,
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties",
     "overview_youtube_url": "https://youtu.be/_j8COQIxEqU",
