@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "article_retry_wait",
+  "status": "blocked",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -1662,15 +1662,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T09:06:56.625382+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T09:11:31.381370+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2513,9 +2504,18 @@
       "details": {
         "retry_at": "2026-10-27T16:16:12.907599+00:00"
       }
+    },
+    {
+      "at": "2026-10-27T16:21:45.621592+00:00",
+      "from": "article_retry_wait",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-27T16:15:56.330380+00:00",
+  "updated_at": "2026-10-27T16:21:45.621599+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2900,13 +2900,13 @@
     "claimed_at": "2026-10-27T14:48:10.366325+00:00"
   },
   "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties",
-    "overview_youtube_url": "https://youtu.be/_j8COQIxEqU",
-    "short_youtube_url": "https://youtu.be/z2Z1xqWeGik",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
+    "article_url": null,
+    "overview_youtube_url": null,
+    "short_youtube_url": null,
+    "overview_edit_verified": false,
+    "short_portrait_verified": false,
+    "short_signature_verified": false,
+    "short_origin_verified": false
   },
   "pending_dispatches": {
     "kesher-article-generation.yml": {
@@ -2931,7 +2931,12 @@
     "slot": "2026-10-27"
   },
   "processed_child_notifications": [],
-  "last_error": null,
+  "last_error": {
+    "stage": "controller",
+    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+    "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts",
+    "at": "2026-10-27T16:21:45.621589+00:00"
+  },
   "interventions": {
     "v5|kindergarten-adjustment-difficulties|7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a|long_video": {
       "pipeline_id": "v5",
