@@ -357,6 +357,54 @@ def commit_files(
     return str(new_commit["sha"])
 
 
+def restore_prior_trusted_image(repo, pr, post, head_posts, base_posts, token) -> bool:
+    """Reattach proven immutable pixels only when normalization removed image fields."""
+    prior = str(exact_field(str(pr.get("body") or ""), "Image Evidence Head") or "").strip()
+    if not re.fullmatch(r"[a-f0-9]{40}", prior) or prior == pr["head"]["sha"]:
+        return False
+    if post.get("image") or post.get("imageAlt"):
+        return False
+    historical_posts = core.posts_at(repo, prior, token)
+    matches = [row for row in historical_posts if isinstance(row, dict) and row.get("id") == post.get("id")]
+    if len(matches) != 1:
+        return False
+    historical = matches[0]
+    def editorial(row):
+        return {key: value for key, value in row.items() if key not in {"image", "imageAlt"}}
+    if editorial(post) != editorial(historical):
+        return False
+    historical_pr = {**pr, "head": {**pr["head"], "sha": prior}}
+    if not trusted_image_present(repo, historical_pr, historical, token):
+        return False
+    image_path = "public" + historical["image"]
+    data = core.decode_content(core.github_content(repo, image_path, prior, token))
+    if image_proof_errors(historical, str(pr.get("body") or ""), prior, data):
+        return False
+    # Preserve existing publication uniqueness barriers, including decoded pixels.
+    for published in base_posts:
+        image = str(published.get("image") or "")
+        if not image:
+            continue
+        if image == historical["image"]:
+            return False
+        published_data = core.decode_content(core.github_content(repo, "public" + image, pr["base"]["sha"], token))
+        from scripts.kesher_article_contract import image_pixel_sha256
+        if hashlib.sha256(published_data).digest() == hashlib.sha256(data).digest() or image_pixel_sha256(published_data) == image_pixel_sha256(data):
+            return False
+    restored = [historical if row is post else row for row in head_posts]
+    files = {
+        image_path: (data, True),
+        "src/data/posts.json": ((json.dumps(restored, ensure_ascii=False, indent=2) + "\n").encode(), False),
+        "src/data/postSummaries.json": ((json.dumps(summaries(restored), ensure_ascii=False, indent=2) + "\n").encode(), False),
+    }
+    new_sha = commit_files(repo, pr, token, files, [])
+    evidence = {label: exact_field(str(pr.get("body") or ""), label) or "" for label in IMAGE_EVIDENCE_FIELDS}
+    evidence["Image Evidence Head"] = new_sha
+    core.patch_pr_body(repo, int(pr["number"]), replace_image_evidence(pr.get("body") or "", evidence), token)
+    print(f"ARTICLE_IMAGE_COMMITTED id={post['id']} provider={evidence['Image Provider']} sha={new_sha} recovery=same-artifact")
+    return True
+
+
 def ensure_image(repo: str, pr: dict[str, Any], token: str) -> bool:
     if pr.get("state") != "open" or pr.get("draft"):
         return False
@@ -386,6 +434,12 @@ def ensure_image(repo: str, pr: dict[str, Any], token: str) -> bool:
         core.patch_pr_body(repo, int(pr["number"]), replace_image_evidence(pr.get("body") or "", evidence), token)
         print(f"ARTICLE_IMAGE_PRESENT id={post.get('id')} trusted=yes evidence_refreshed=yes")
         return False
+
+    if restore_prior_trusted_image(repo, pr, post, head_posts, base_posts, token):
+        return True
+
+    if os.environ.get("KESHER_IMAGE_RECOVERY_ONLY", "").lower() == "true":
+        raise RuntimeError("IMAGE_RECOVERY_PROOF_INVALID: replacement generation forbidden")
 
     candidate = choose_candidate(repo, post, pr["head"]["sha"], token)
     if candidate is None:
@@ -463,6 +517,10 @@ def main() -> int:
     repo, number = sys.argv[1], int(sys.argv[2])
     token = os.environ["GITHUB_TOKEN"]
     pr = core.request_json("GET", f"https://api.github.com/repos/{repo}/pulls/{number}", token)
+    if os.environ.get("KESHER_IMAGE_RECOVERY_ONLY", "").lower() == "true":
+        expected = os.environ.get("KESHER_IMAGE_EXPECTED_HEAD", "")
+        if not re.fullmatch(r"[a-f0-9]{40}", expected) or pr.get("head", {}).get("sha") != expected:
+            raise RuntimeError("IMAGE_RECOVERY_HEAD_CHANGED")
     ensure_image(repo, pr, token)
     return 0
 

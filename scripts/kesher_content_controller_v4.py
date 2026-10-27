@@ -383,7 +383,7 @@ class V4Controller(legacy.BestEffortController):
             core.GitHubClient.dispatch(
                 self.github,
                 v3.IMAGE_WORKFLOW,
-                {"pr_number": str(number)},
+                {"pr_number": str(number), "recovery_only": "true", "expected_head_sha": head_sha},
             )
             image.update({
                 "evidence_rebind_head_sha": head_sha,
@@ -433,7 +433,7 @@ class V4Controller(legacy.BestEffortController):
             core.GitHubClient.dispatch(
                 self.github,
                 v3.IMAGE_WORKFLOW,
-                {"pr_number": str(number)},
+                {"pr_number": str(number), "recovery_only": "true", "expected_head_sha": head_sha},
             )
             image.update({
                 "evidence_rebind_head_sha": head_sha,

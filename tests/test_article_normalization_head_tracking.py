@@ -629,7 +629,7 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
             "source": "local-editorial://kindergarten-adjustment-difficulties/5",
         }
         github.article_pr_image_ready.return_value = (True, evidence)
-        github.article_pr_normalization_required.return_value = (True, "2026-10-27")
+        github.article_pr_normalization_required.return_value = (False, "2026-10-27")
         github.active_normalizer_run.return_value = None
         github.request.return_value = {"parents": [{"sha": "3" * 40}]}
 
@@ -651,6 +651,12 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
 
 
     def test_exhausted_image_budget_reattaches_prior_trusted_artifact_after_normalizer_removed_pixels(self) -> None:
+        self._exercise_recovery_only_dispatch(False)
+
+    def test_existing_head_only_rebind_also_forbids_replacement_generation(self) -> None:
+        self._exercise_recovery_only_dispatch(True)
+
+    def _exercise_recovery_only_dispatch(self, rebindable: bool) -> None:
         github = mock.MagicMock()
         controller = stabilized.StabilizedRuntimeV5Controller(
             now=datetime(2026, 10, 27, 14, 0, tzinfo=ISRAEL_TZ),
@@ -694,7 +700,7 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
         }
         github.article_pr_normalization_required.return_value = (False, "2026-10-27")
         github.article_pr_image_ready.return_value = (False, {})
-        github.article_pr_image_rebindable.return_value = (False, {})
+        github.article_pr_image_rebindable.return_value = (rebindable, {})
         github.article_pr_prior_image_recoverable.return_value = (
             True,
             {"provider": "LocalEditorial", "sha256": "a" * 64, "source": "local-editorial://kindergarten-adjustment-difficulties/5"},
@@ -712,7 +718,7 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
         self.assertEqual(state["image"]["attempts"], 3)
         self.assertEqual(state["image"]["evidence_rebind_head_sha"], current_head)
         self.assertEqual(state["image"]["status"], "running")
-        dispatch.assert_called_once_with(github, v4.v3.IMAGE_WORKFLOW, {"pr_number": "1227"})
+        dispatch.assert_called_once_with(github, v4.v3.IMAGE_WORKFLOW, {"pr_number": "1227", "recovery_only": "true", "expected_head_sha": current_head})
 
 
 if __name__ == "__main__":

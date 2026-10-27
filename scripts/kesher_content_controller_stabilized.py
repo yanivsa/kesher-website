@@ -2261,6 +2261,28 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if not normalized_head_sha and evidence_head:
             normalized_head_sha = evidence_head
 
+        # The trusted image worker advances the normalized branch itself. Only
+        # its full exact-head article/bytes/pixels proof can authorize adopting
+        # that commit; a PR-body marker alone must never suppress normalization.
+        if normalized_head_sha and normalized_head_sha != head_sha and evidence_head == head_sha:
+            image_ready, image_evidence = self.github.article_pr_image_ready(pr)
+            if image_ready:
+                normalized_head_sha = head_sha
+                state["article"].update({
+                    "normalized_head_sha": head_sha,
+                    "image_head_sha": head_sha,
+                    "merge_candidate_sha": head_sha,
+                    "normalization_drift_count": 0,
+                    "merge_dispatch_count": 0,
+                    "merge_dispatch_at": None,
+                })
+                state.setdefault("image", {}).update({
+                    "status": "complete",
+                    "provider_id": image_evidence.get("provider"),
+                    "artifact_sha256": image_evidence.get("sha256"),
+                    "source_id": image_evidence.get("source"),
+                })
+
         if normalized_head_sha and normalized_head_sha != head_sha:
             is_auto_sync_merge = False
             curr = head_sha
