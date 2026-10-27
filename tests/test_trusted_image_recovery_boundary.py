@@ -4,10 +4,13 @@ import hashlib
 import json
 import os
 import unittest
+from datetime import datetime, timezone
 from unittest import mock
 from tests import test_article_image_contract as fixtures
 load = fixtures.load
 from scripts.kesher_content_controller_v4 import V4GitHubClient
+from scripts import kesher_content_controller_stabilized as stabilized
+from scripts import kesher_content_controller as core
 
 
 class TrustedImageRecoveryBoundaryTests(unittest.TestCase):
@@ -39,6 +42,35 @@ class TrustedImageRecoveryBoundaryTests(unittest.TestCase):
             self.files.pop()
             posts[-1] = {**self.base[0], 'title': 'unauthorized old article change'}
             self.assertTrue(client.article_pr_normalization_required(self.pr)[0])
+
+    def test_real_dispatch_guard_allows_bound_recovery_after_three_attempts(self):
+        gh = mock.Mock()
+        gh.active_workflow_run.return_value = None
+        gh._controller_state_loaded = True
+        ctrl = stabilized.StabilizedRuntimeV5Controller(gh, mock.Mock(), now=datetime(2026, 10, 27, 12, tzinfo=timezone.utc))
+        state = {'cycle': '2026-10-27', 'status': 'article_pr_open', 'article': {'pr_number': 1227, 'current_pr_head_sha': 'd' * 40}, 'image': {'attempt_count': 3}, 'pending_dispatches': {}}
+        sent = []
+        inputs = {'pr_number': '1227', 'recovery_only': 'true', 'expected_head_sha': 'd' * 40}
+        ctrl._guarded_dispatch(state, 'kesher-article-image.yml', inputs, lambda workflow, payload: sent.append((workflow, payload)))
+        self.assertEqual(sent, [('kesher-article-image.yml', inputs)])
+        self.assertEqual(state['image']['attempt_count'], 3)
+        self.assertEqual(state['pending_dispatches']['kesher-article-image.yml']['status'], 'dispatched')
+
+    def test_rebinding_status_does_not_authorize_fresh_or_unbound_generation(self):
+        gh = mock.Mock()
+        ctrl = stabilized.StabilizedRuntimeV5Controller(gh, mock.Mock(), now=datetime(2026, 10, 27, 12, tzinfo=timezone.utc))
+        for inputs in [{'pr_number': '1227'}, {'pr_number': '1227', 'recovery_only': 'true', 'expected_head_sha': 'e' * 40}, {'pr_number': '1228', 'recovery_only': 'true', 'expected_head_sha': 'd' * 40}]:
+            with self.subTest(inputs=inputs):
+                state = {'cycle': '2026-10-27', 'status': 'article_image_rebinding', 'article': {'pr_number': 1227, 'current_pr_head_sha': 'd' * 40}, 'image': {'attempt_count': 3}, 'pending_dispatches': {}}
+                with self.assertRaisesRegex(core.ControllerError, 'IMAGE_ATTEMPTS_EXHAUSTED'):
+                    ctrl._guarded_dispatch(state, 'kesher-article-image.yml', inputs, lambda *_: self.fail('must refuse dispatch'))
+
+    def test_recovery_dispatch_requires_a_positive_pr_identity(self):
+        ctrl = stabilized.StabilizedRuntimeV5Controller(mock.Mock(), mock.Mock(), now=datetime(2026, 10, 27, 12, tzinfo=timezone.utc))
+        for invalid in ['-1', 'abc', '0']:
+            state = {'article': {'pr_number': invalid, 'current_pr_head_sha': 'd' * 40}, 'image': {'attempt_count': 3}}
+            with self.subTest(pr=invalid), self.assertRaisesRegex(core.ControllerError, 'IMAGE_ATTEMPTS_EXHAUSTED'):
+                ctrl._guarded_dispatch(state, 'kesher-article-image.yml', {'pr_number': invalid, 'recovery_only': 'true', 'expected_head_sha': 'd' * 40}, lambda *_: self.fail('must refuse malformed identity'))
 
     def test_worker_startup_refuses_a_moved_recovery_head(self):
         worker = load('article-image-worker-v3')
