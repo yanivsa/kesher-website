@@ -426,6 +426,118 @@
       "id": 360831498,
       "observed_state": "active",
       "reason": "Reviewed inert workflow definition deleted from the minimal integration. Missing YAML is not live retirement proof; retained executions and credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/oci-a1-capacity-watch.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 333278814,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/oci-openclaw-plan-b-e2.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 334165848,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/oci-openclaw-provision-v2.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 333275018,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/oci-openclaw-provision.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 333272481,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-agent-diagnostic.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 354763985,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-clean-rebuild.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 354683396,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-cloudflare-preflight-diagnostic.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 347517048,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-cloudflare-tunnel.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 340424915,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-finalize-tailscale-serve.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 335556453,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-inspect-tailnet-console.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 335566780,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-offline-boot-repair.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 335576768,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-preserve-tailnet-recovery.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 335562900,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-recovery-controller.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 338370770,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-recovery-lint.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 350236025,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
     }
   },
   "resource_separation_contract": "Absent exact service-enforced resource separation, shared-resource infrastructure is a retired writer. Definitions, registered activation, retained old executions and surviving credentials are separate facts.",
@@ -635,7 +747,7 @@
         "read",
         "status_write"
       ],
-      "definition_sha256": "b9de061eafacdc0f35470174eb31ca4c5aac0b0a6ace7fd301492b7113bdbd8c",
+      "definition_sha256": "c79ab2ab54a82da91664d98b191de8123ca2f1d210e6729bfb8933438ad07e73",
       "resources": [
         "github.statuses"
       ],
@@ -700,21 +812,6 @@
           "scripts/kesher_video_reconcile.py": "a0ab203e618b95996c071eb15a31f4e81d135f01c5e1a53832271e694af57e4f",
           "scripts/kesher_video_upload_guard.py": "6bcd5fedeaa339d2d213cb4a957497b202c095ef77e9fa57a09a614df12b6ce7",
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
-          "scripts/oci_openclaw_agent_command.py": "5a04b2cfb1359d5307b549ac037a6b7a0ffd04a30dc2d60ba8fbb7cbd1031fd0",
-          "scripts/oci_openclaw_bootstrap.py": "ad1d41927c2190eec7eff0e12d3d4dcfe708aef57464b48bb5261bca04965cb3",
-          "scripts/oci_openclaw_helper_local_proof.py": "1a052b41bef59800e16b41eb08207b316ae8ea00a73219837188ffca8cdcc362",
-          "scripts/oci_openclaw_helper_run_command.py": "91935c22c1282655b9c586200783de4c388a6191d80fcffb97cf39d2375bbacc",
-          "scripts/oci_openclaw_helper_run_command_v2.py": "901b6c244d54a53075c981411354b31f17352441730ec504ff28659145efa3af",
-          "scripts/oci_openclaw_offline_repair_v2.py": "6c9f5a95a1efe82a37854ba4e3544602f5b6e2b0da512c2310882ae273430080",
-          "scripts/oci_openclaw_offline_repair_v3.py": "d9460f275f42c92b7cc8e0e18cadf6468af48add26e092f5418730bda38bfdfd",
-          "scripts/openclaw_enable_cloudflare_tunnel.sh": "6fcc95dbf530acd2762ee8c7d0195d46ef97518c7655e0d54631b9764deb6742",
-          "scripts/openclaw_extract_ready_url.sh": "47655c872f3d502abf52bd5c68e611c49b4ccef48dd7a358f3a588a374202bcc",
-          "scripts/openclaw_local_proof.sh": "7160a1ed33555f5bad7d4ebf4847557928603b8ddf1c64d5628109ec500a4a3c",
-          "scripts/openclaw_offline_mount_repair_base.sh": "95a92eaeb637654877a7fea62e34a6f61c354af50e9f6ca2090ba3ef6f8522fd",
-          "scripts/openclaw_offline_mount_repair_cloudflare.sh": "6551f920b3ec937f97fb0c70155896fb0f41cfa031de13ee4c83844de8849c25",
-          "scripts/openclaw_offline_mount_repair_early.sh": "90fa33113f51f0e156b3b1901ffcfc53f6ac1d190afba60d536efb6f14acb51e",
-          "scripts/openclaw_publish_status.sh": "9dc042f0a2cabc8565027c3c1e8e365729dab60c282d53bf81cb784b01f40c40",
-          "scripts/openclaw_recovery_controller.sh": "65ce7e33da3a8460d641e886b1b270c63d51f80098fa209a81b9ee344c4b33ac",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "scripts/requirements-article.txt": "8c620822e39bbd1233c03fd0296879f1f58dbc5a1f4366f6650c3d3c7cb32a77",
           "tests/automation-gates.test.cjs": "caf4a120237ec0ab66efac3a162621ef83dff1f1256784557b7d4d4a25bb2280",
@@ -734,22 +831,20 @@
           "tests/test_master_supervisor_shadow.py": "6cfd8dd67c92c153ce93f9c74785b386b73810c0d9daeffba03d0d536ad84e49",
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
           "tests/test_media_voice_policy_contract.py": "f0acf97611450ff1870a6fb1d93439c3f60e3fab8a279d809e7476c2a43ab4fc",
-          "tests/test_openclaw_cloudflare_primary.py": "b10f7830ca4c6204f1042585f4a7cf42633bbffd54cf89a441280c57492b8ece",
-          "tests/test_openclaw_oci_agent_self_heal.py": "ebbf27f53143f87d1b3197a365531634717e524e6bd37390d97d06145fef5d90",
           "tests/test_pipeline_v4.py": "d2e315c85f441bc93a0914d6a56ceb6236947e5aa2ad4cab54a003f2e786b25f",
           "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
           "tests/test_v4_runtime_activation.py": "98b614126a9f1df68acd252ebf56de11472be8b38267e60430b1c7191fd7845e",
           "tests/test_v5_delivery_watchdog_contract.py": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631",
           "tests/test_v5_shared_video_controller.py": "4dbb68ecea34ef9e408691b704b0fb15e5a7aa1c9bbaca25b6a418a27400c8a6",
           "tests/test_v5_video_source_binding.py": "cef18902a72d505fc3b8da671a706b866890e058ba490a99a3998f96dd5c78cf",
-          "tests/test_kesher_production_cutover.py": "43e1511c5b1d51913fa8a511cfbd0f37bc94944b316e76ae0e255bd0a2d3681a",
+          "tests/test_kesher_production_cutover.py": "afecf60fe10750613f6cb9460aaaf1b5ac0c3bd8360bcb8056d0f60d219b8a2c",
           "tests/test_kesher_external_exclusion.py": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
           "tests/test_kesher_git_exclusion.py": "60ad776c6da6b084512be14730e73a0ff83676a4ed0cdb8c5cdf03044fb575d4",
           "tests/test_kesher_handover.py": "791fb6de96325644762840b71f02ef44c585a15bbc8e004c271935bf1ff44eb7",
           "tests/test_kesher_handover_github.py": "20d6875341d64f16bb2b8b393ac9936dbe3dbc59d5384254fd1014a6116cc948",
           "tests/test_kesher_authority_digest.py": "34fb37c2f013af25a0b25446003b0b45b6d92de0a132cf39bcc66137a41db29d",
-          "tests/test_kesher_authority_topology.py": "882c5772fb41833e7693cfcd84978a9429b02e17db2a4843fa95d17c52609231",
+          "tests/test_kesher_authority_topology.py": "1128f630884e19c03a2d5608ab1136a1a6fe69d284c71d3d6d1650514aa8d9e0",
           "tests/test_kesher_runtime_migration.py": "f900de0d2f33b710277cda0887890f514996709d4829868fcf8ad065986be510",
           "tests/test_kesher_worker_entry.py": "f48055276b51e264ef35b5d0bb7d3952918fbc39aa1ff09a93e1a09b73365fde",
           "tests/test_kesher_content_controller.py": "39dfd6ea04f9968837b016670e0ab43b1800651e8735614eded7f33c958cfcb5",
@@ -3414,35 +3509,6 @@
       "role": "emergency_bridge",
       "registration_id": 349250484
     },
-    ".github/workflows/oci-a1-capacity-watch.yml": {
-      "capabilities": [
-        "cloudflare_write",
-        "oci_write",
-        "read",
-        "workflow_dispatch"
-      ],
-      "definition_sha256": "b776a617a055a4ef8b84f43fa2b785567f0c830c4984afd1057182c81f464219",
-      "resources": [
-        "cloudflare.account",
-        "github.dispatch",
-        "oci.resources"
-      ],
-      "review": {
-        "call_chain": {},
-        "credential_services": {
-          "GITHUB_TOKEN": "github"
-        },
-        "credentials": [
-          "GITHUB_TOKEN"
-        ],
-        "dispatches": [
-          ".github/workflows/oci-openclaw-provision.yml"
-        ],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
-      },
-      "role": "separate_infrastructure",
-      "registration_id": 333278814
-    },
     ".github/workflows/oci-bridge-repair-beta-20260901.yml": {
       "capabilities": [
         "cloudflare_write",
@@ -3524,95 +3590,6 @@
       "role": "separate_infrastructure",
       "registration_id": 347443805
     },
-    ".github/workflows/oci-openclaw-plan-b-e2.yml": {
-      "capabilities": [
-        "cloudflare_write",
-        "oci_write",
-        "read"
-      ],
-      "definition_sha256": "5068cd70738badfd55721439cc37bcb737680fdf9df5aff3de75a816e391bef4",
-      "resources": [
-        "cloudflare.account",
-        "oci.resources"
-      ],
-      "review": {
-        "call_chain": {
-          "scripts/oci_openclaw_bootstrap.py": "ad1d41927c2190eec7eff0e12d3d4dcfe708aef57464b48bb5261bca04965cb3",
-          "scripts/oci_openclaw_plan_b_e2.py": "e03513a4eecf83e7feadd6200689de9c69463cdf9f35ce9fe3811b992eae6b2a",
-          "scripts/oci_openclaw_rebuild_ssh.py": "aa76c40fc070d979b8a34b9747b025c868be8787dd390d65e530f2503f6590f7"
-        },
-        "credential_services": {
-          "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
-          "CLOUDFLARE_API_TOKEN": "cloudflare"
-        },
-        "credentials": [
-          "CLOUDFLARE_ACCOUNT_ID",
-          "CLOUDFLARE_API_TOKEN"
-        ],
-        "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
-      },
-      "role": "separate_infrastructure",
-      "registration_id": 334165848
-    },
-    ".github/workflows/oci-openclaw-provision-v2.yml": {
-      "capabilities": [
-        "cloudflare_write",
-        "oci_write",
-        "read"
-      ],
-      "definition_sha256": "cc03a1a59659fd6fe35f7a5ddd690197147f473dd6c1d175404b292bad493ea1",
-      "resources": [
-        "cloudflare.account",
-        "oci.resources"
-      ],
-      "review": {
-        "call_chain": {
-          "scripts/oci_openclaw_bootstrap.py": "ad1d41927c2190eec7eff0e12d3d4dcfe708aef57464b48bb5261bca04965cb3"
-        },
-        "credential_services": {
-          "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
-          "CLOUDFLARE_API_TOKEN": "cloudflare"
-        },
-        "credentials": [
-          "CLOUDFLARE_ACCOUNT_ID",
-          "CLOUDFLARE_API_TOKEN"
-        ],
-        "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
-      },
-      "role": "separate_infrastructure",
-      "registration_id": 333275018
-    },
-    ".github/workflows/oci-openclaw-provision.yml": {
-      "capabilities": [
-        "cloudflare_write",
-        "oci_write",
-        "read"
-      ],
-      "definition_sha256": "39685f86a81d9e36ce0d47d7361820b1722455e66673c002dd0cd9aad4d4b012",
-      "resources": [
-        "cloudflare.account",
-        "oci.resources"
-      ],
-      "review": {
-        "call_chain": {
-          "scripts/oci_openclaw_bootstrap.py": "ad1d41927c2190eec7eff0e12d3d4dcfe708aef57464b48bb5261bca04965cb3"
-        },
-        "credential_services": {
-          "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
-          "CLOUDFLARE_API_TOKEN": "cloudflare"
-        },
-        "credentials": [
-          "CLOUDFLARE_ACCOUNT_ID",
-          "CLOUDFLARE_API_TOKEN"
-        ],
-        "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
-      },
-      "role": "separate_infrastructure",
-      "registration_id": 333272481
-    },
     ".github/workflows/oci-secure-bridge-bootstrap.yml": {
       "capabilities": [
         "cloudflare_write",
@@ -3639,328 +3616,6 @@
       },
       "role": "separate_infrastructure",
       "registration_id": 333268727
-    },
-    ".github/workflows/openclaw-agent-diagnostic.yml": {
-      "capabilities": [
-        "cloudflare_write",
-        "oci_write",
-        "read"
-      ],
-      "definition_sha256": "10db47e7fef5dffca7f2e217b706d1a9c4a25a28ce9d0f616f26f563a6d60c0f",
-      "resources": [
-        "cloudflare.account",
-        "oci.resources"
-      ],
-      "review": {
-        "call_chain": {
-          "scripts/oci_openclaw_agent_diagnostic.py": "2e4007b55382ddf740e7f18227d90b48f957bf14def45e414ac88e60c3953975",
-          "scripts/openclaw_readonly_diagnostic.sh": "7b2f047110e9edf86d394aae767692c204f654c0e369dab33cf25f6e61039ac0"
-        },
-        "credential_services": {
-          "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
-          "CLOUDFLARE_API_TOKEN": "cloudflare"
-        },
-        "credentials": [
-          "CLOUDFLARE_ACCOUNT_ID",
-          "CLOUDFLARE_API_TOKEN"
-        ],
-        "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
-      },
-      "role": "separate_infrastructure",
-      "registration_id": 354763985
-    },
-    ".github/workflows/openclaw-clean-rebuild.yml": {
-      "capabilities": [
-        "cloudflare_write",
-        "oci_write",
-        "read"
-      ],
-      "definition_sha256": "bd724052c5492894a98e7fd642431757271c2fd6bd0ca19cb0fe3c8fc9ae023b",
-      "resources": [
-        "cloudflare.account",
-        "oci.resources"
-      ],
-      "review": {
-        "call_chain": {
-          "scripts/oci_openclaw_bootstrap.py": "ad1d41927c2190eec7eff0e12d3d4dcfe708aef57464b48bb5261bca04965cb3",
-          "scripts/oci_openclaw_clean_rebuild.py": "8c8f22b394d01965828b8123c8030d41a75c690b2060404fe8aab0ed23ab8c4c",
-          "scripts/openclaw_clean_finalize.sh": "2ad350ff1a426b462a470b450e281c6edf98985270e2f1799b3f8673d0e98f5b"
-        },
-        "credential_services": {
-          "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
-          "CLOUDFLARE_API_TOKEN": "cloudflare"
-        },
-        "credentials": [
-          "CLOUDFLARE_ACCOUNT_ID",
-          "CLOUDFLARE_API_TOKEN"
-        ],
-        "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
-      },
-      "role": "separate_infrastructure",
-      "registration_id": 354683396
-    },
-    ".github/workflows/openclaw-cloudflare-preflight-diagnostic.yml": {
-      "capabilities": [
-        "cloudflare_write",
-        "read"
-      ],
-      "definition_sha256": "c255e186bf8eb1a12b50c7ad1fa55f81b9631447a7c38a618491cf7bf9c07569",
-      "resources": [
-        "cloudflare.account"
-      ],
-      "review": {
-        "call_chain": {},
-        "credential_services": {
-          "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
-          "CLOUDFLARE_API_TOKEN": "cloudflare"
-        },
-        "credentials": [
-          "CLOUDFLARE_ACCOUNT_ID",
-          "CLOUDFLARE_API_TOKEN"
-        ],
-        "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
-      },
-      "role": "separate_infrastructure",
-      "registration_id": 347517048
-    },
-    ".github/workflows/openclaw-cloudflare-tunnel.yml": {
-      "capabilities": [
-        "cloudflare_write",
-        "oci_write",
-        "read"
-      ],
-      "definition_sha256": "34521e86393df63345518cc61af4dffec522066c095fa15fb39e48cea573fa2f",
-      "resources": [
-        "cloudflare.account",
-        "oci.resources"
-      ],
-      "review": {
-        "call_chain": {
-          "scripts/oci_openclaw_agent_command.py": "5a04b2cfb1359d5307b549ac037a6b7a0ffd04a30dc2d60ba8fbb7cbd1031fd0",
-          "scripts/openclaw_enable_cloudflare_tunnel.sh": "6fcc95dbf530acd2762ee8c7d0195d46ef97518c7655e0d54631b9764deb6742"
-        },
-        "credential_services": {
-          "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
-          "CLOUDFLARE_API_TOKEN": "cloudflare"
-        },
-        "credentials": [
-          "CLOUDFLARE_ACCOUNT_ID",
-          "CLOUDFLARE_API_TOKEN"
-        ],
-        "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
-      },
-      "role": "separate_infrastructure",
-      "registration_id": 340424915
-    },
-    ".github/workflows/openclaw-finalize-tailscale-serve.yml": {
-      "capabilities": [
-        "cloudflare_write",
-        "oci_write",
-        "read"
-      ],
-      "definition_sha256": "a27be7c134cc78fb5974cade2456c4915b3d3545e6d5fb37c2d75038c48919cc",
-      "resources": [
-        "cloudflare.account",
-        "oci.resources"
-      ],
-      "review": {
-        "call_chain": {
-          "scripts/oci_openclaw_agent_command.py": "5a04b2cfb1359d5307b549ac037a6b7a0ffd04a30dc2d60ba8fbb7cbd1031fd0",
-          "scripts/openclaw_finalize_tailscale_serve.sh": "de121af91542d52eb7f57cf2a01022b4414fe897e3b4e4e0f8d48c9d1c14e11c"
-        },
-        "credential_services": {
-          "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
-          "CLOUDFLARE_API_TOKEN": "cloudflare"
-        },
-        "credentials": [
-          "CLOUDFLARE_ACCOUNT_ID",
-          "CLOUDFLARE_API_TOKEN"
-        ],
-        "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
-      },
-      "role": "separate_infrastructure",
-      "registration_id": 335556453
-    },
-    ".github/workflows/openclaw-inspect-tailnet-console.yml": {
-      "capabilities": [
-        "cloudflare_write",
-        "oci_write",
-        "read"
-      ],
-      "definition_sha256": "244803042ad3a3c8090bb1b7ada74298d9797133ca2c8480f9aa8a993ee3a0e9",
-      "resources": [
-        "cloudflare.account",
-        "oci.resources"
-      ],
-      "review": {
-        "call_chain": {},
-        "credential_services": {
-          "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
-          "CLOUDFLARE_API_TOKEN": "cloudflare"
-        },
-        "credentials": [
-          "CLOUDFLARE_ACCOUNT_ID",
-          "CLOUDFLARE_API_TOKEN"
-        ],
-        "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
-      },
-      "role": "separate_infrastructure",
-      "registration_id": 335566780
-    },
-    ".github/workflows/openclaw-offline-boot-repair.yml": {
-      "capabilities": [
-        "branch_write",
-        "cloudflare_write",
-        "issue_write",
-        "oci_write",
-        "read",
-        "status_write",
-        "workflow_dispatch"
-      ],
-      "definition_sha256": "65f3da1432e46fd3b51d970ea2088c54a418adf282772009f9a0e31ab61e2dc5",
-      "resources": [
-        "cloudflare.account",
-        "github.dispatch",
-        "github.issues",
-        "github.refs",
-        "github.statuses",
-        "oci.resources"
-      ],
-      "review": {
-        "call_chain": {
-          "scripts/oci_openclaw_bootstrap.py": "ad1d41927c2190eec7eff0e12d3d4dcfe708aef57464b48bb5261bca04965cb3",
-          "scripts/oci_openclaw_cleanup_unverified.py": "73bbb22fc224382c08a929d20999a632369eb460935c6bc5da727ac459fa2ecf",
-          "scripts/oci_openclaw_helper_local_proof.py": "1a052b41bef59800e16b41eb08207b316ae8ea00a73219837188ffca8cdcc362",
-          "scripts/oci_openclaw_helper_run_command.py": "91935c22c1282655b9c586200783de4c388a6191d80fcffb97cf39d2375bbacc",
-          "scripts/oci_openclaw_helper_run_command_v2.py": "901b6c244d54a53075c981411354b31f17352441730ec504ff28659145efa3af",
-          "scripts/oci_openclaw_offline_repair_v2.py": "6c9f5a95a1efe82a37854ba4e3544602f5b6e2b0da512c2310882ae273430080",
-          "scripts/oci_openclaw_offline_repair_v3.py": "d9460f275f42c92b7cc8e0e18cadf6468af48add26e092f5418730bda38bfdfd",
-          "scripts/oci_openclaw_run_command_iam.py": "aa8b4cfc5cb9fc7d2961df524692d29d00655d4697386e938edbe8d481219162",
-          "scripts/openclaw_local_proof.sh": "7160a1ed33555f5bad7d4ebf4847557928603b8ddf1c64d5628109ec500a4a3c",
-          "scripts/openclaw_offline_mount_repair_base.sh": "95a92eaeb637654877a7fea62e34a6f61c354af50e9f6ca2090ba3ef6f8522fd",
-          "scripts/openclaw_offline_mount_repair_cloudflare.sh": "6551f920b3ec937f97fb0c70155896fb0f41cfa031de13ee4c83844de8849c25",
-          "scripts/openclaw_offline_mount_repair_early.sh": "90fa33113f51f0e156b3b1901ffcfc53f6ac1d190afba60d536efb6f14acb51e",
-          "scripts/openclaw_publish_status.sh": "9dc042f0a2cabc8565027c3c1e8e365729dab60c282d53bf81cb784b01f40c40"
-        },
-        "credential_services": {
-          "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
-          "CLOUDFLARE_API_TOKEN": "cloudflare",
-          "GITHUB_TOKEN": "github"
-        },
-        "credentials": [
-          "CLOUDFLARE_ACCOUNT_ID",
-          "CLOUDFLARE_API_TOKEN",
-          "GITHUB_TOKEN"
-        ],
-        "dispatches": [
-          ".github/workflows/openclaw-cloudflare-tunnel.yml"
-        ],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
-      },
-      "role": "separate_infrastructure",
-      "registration_id": 335576768
-    },
-    ".github/workflows/openclaw-preserve-tailnet-recovery.yml": {
-      "capabilities": [
-        "cloudflare_write",
-        "oci_write",
-        "read"
-      ],
-      "definition_sha256": "b0134c06881bf6c90dce956bc3baa4dbc87d330cd499bce2f8dd737eec225e7b",
-      "resources": [
-        "cloudflare.account",
-        "oci.resources"
-      ],
-      "review": {
-        "call_chain": {
-          "scripts/oci_openclaw_bootstrap.py": "ad1d41927c2190eec7eff0e12d3d4dcfe708aef57464b48bb5261bca04965cb3",
-          "scripts/oci_openclaw_preserve_tailnet_rebuild.py": "928cced6fd993236e65a88f0346610922c1fc739a3b5e023e49f48c71a2a225d",
-          "scripts/openclaw_finalize_tailscale_serve_ssh.sh": "08c38c218a809c007fa7b2bfcc1c76fc2b28d9c57d6398c706b3d07fd75f90cd"
-        },
-        "credential_services": {
-          "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
-          "CLOUDFLARE_API_TOKEN": "cloudflare"
-        },
-        "credentials": [
-          "CLOUDFLARE_ACCOUNT_ID",
-          "CLOUDFLARE_API_TOKEN"
-        ],
-        "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
-      },
-      "role": "separate_infrastructure",
-      "registration_id": 335562900
-    },
-    ".github/workflows/openclaw-recovery-controller.yml": {
-      "capabilities": [
-        "branch_write",
-        "cloudflare_write",
-        "issue_write",
-        "oci_write",
-        "read",
-        "status_write",
-        "workflow_dispatch"
-      ],
-      "definition_sha256": "697d24c20da5c59d9f19409be38491f107dfb60309362b1fb57f9001df1bddbe",
-      "resources": [
-        "cloudflare.account",
-        "github.dispatch",
-        "github.issues",
-        "github.refs",
-        "github.statuses",
-        "oci.resources"
-      ],
-      "review": {
-        "call_chain": {
-          "scripts/oci_openclaw_bootstrap.py": "ad1d41927c2190eec7eff0e12d3d4dcfe708aef57464b48bb5261bca04965cb3",
-          "scripts/oci_openclaw_helper_local_proof.py": "1a052b41bef59800e16b41eb08207b316ae8ea00a73219837188ffca8cdcc362",
-          "scripts/oci_openclaw_helper_run_command.py": "91935c22c1282655b9c586200783de4c388a6191d80fcffb97cf39d2375bbacc",
-          "scripts/oci_openclaw_helper_run_command_v2.py": "901b6c244d54a53075c981411354b31f17352441730ec504ff28659145efa3af",
-          "scripts/oci_openclaw_offline_repair_v2.py": "6c9f5a95a1efe82a37854ba4e3544602f5b6e2b0da512c2310882ae273430080",
-          "scripts/oci_openclaw_offline_repair_v3.py": "d9460f275f42c92b7cc8e0e18cadf6468af48add26e092f5418730bda38bfdfd",
-          "scripts/openclaw_extract_ready_url.sh": "47655c872f3d502abf52bd5c68e611c49b4ccef48dd7a358f3a588a374202bcc",
-          "scripts/openclaw_local_proof.sh": "7160a1ed33555f5bad7d4ebf4847557928603b8ddf1c64d5628109ec500a4a3c",
-          "scripts/openclaw_offline_mount_repair_base.sh": "95a92eaeb637654877a7fea62e34a6f61c354af50e9f6ca2090ba3ef6f8522fd",
-          "scripts/openclaw_offline_mount_repair_cloudflare.sh": "6551f920b3ec937f97fb0c70155896fb0f41cfa031de13ee4c83844de8849c25",
-          "scripts/openclaw_offline_mount_repair_early.sh": "90fa33113f51f0e156b3b1901ffcfc53f6ac1d190afba60d536efb6f14acb51e",
-          "scripts/openclaw_publish_status.sh": "9dc042f0a2cabc8565027c3c1e8e365729dab60c282d53bf81cb784b01f40c40",
-          "scripts/openclaw_recovery_controller.sh": "65ce7e33da3a8460d641e886b1b270c63d51f80098fa209a81b9ee344c4b33ac"
-        },
-        "credential_services": {
-          "GITHUB_TOKEN": "github"
-        },
-        "credentials": [
-          "GITHUB_TOKEN"
-        ],
-        "dispatches": [
-          ".github/workflows/openclaw-offline-boot-repair.yml"
-        ],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
-      },
-      "role": "separate_infrastructure",
-      "registration_id": 338370770
-    },
-    ".github/workflows/openclaw-recovery-lint.yml": {
-      "capabilities": [
-        "read"
-      ],
-      "definition_sha256": "86cd0e6337d4de4516ddbc078a0d5003b85f3686197736d90c327dd708539a82",
-      "resources": [],
-      "review": {
-        "call_chain": {},
-        "credential_services": {},
-        "credentials": [],
-        "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Pinned diagnostic/test execution receives no protected mutation credential or GitHub write permission."
-      },
-      "role": "diagnostic",
-      "registration_id": 350236025
     },
     ".github/workflows/repair-article-images.yml": {
       "capabilities": [

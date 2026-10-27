@@ -40,8 +40,8 @@ def _queued_idea(index: int) -> dict:
 def _run_now_env() -> dict[str, str]:
     return {
         "KESHER_IDEA_ID": "separate-room-transition-20261019-v1",
-        "KESHER_IDEA_TOPIC_BRIEF": "כתוב מאמר עברי מקצועי ומעשי להורים בנושא מעבר לחדר נפרד.",
-        "KESHER_IDEA_REQUIRED_PRIMARY_KEYWORD": "מעבר לחדר נפרד",
+        "KESHER_IDEA_TOPIC_BRIEF": "××ª×× ××××¨ ×¢××¨× ××§×¦××¢× ×××¢×©× ××××¨×× ×× ××©× ××¢××¨ ××××¨ × ×¤×¨×.",
+        "KESHER_IDEA_REQUIRED_PRIMARY_KEYWORD": "××¢××¨ ××××¨ × ×¤×¨×",
         "KESHER_IDEA_RUN_NOW": "true",
     }
 
@@ -86,6 +86,25 @@ class CiRegressionSuiteCoverageTests(unittest.TestCase):
                 test_controller_cmd,
                 f"Mandatory production-safety test {mod} is omitted from package.json 'test:controller'",
             )
+
+    def test_retired_openclaw_contract_tests_are_not_left_behind(self) -> None:
+        retired_modules = [
+            "tests.test_openclaw_agent_diagnostic_contract",
+            "tests.test_openclaw_clean_rebuild_contract",
+            "tests.test_openclaw_cloudflare_primary",
+            "tests.test_openclaw_console_diagnostic_contract",
+            "tests.test_openclaw_gateway_journal_diagnostics",
+            "tests.test_openclaw_oci_agent_self_heal",
+            "tests.test_openclaw_offline_proof_contract",
+            "tests.test_openclaw_ready_url_extraction",
+        ]
+        ci_content = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+        for mod in retired_modules:
+            self.assertFalse(
+                (ROOT / (mod.replace(".", "/") + ".py")).exists(),
+                f"Retired OpenClaw contract test still exists: {mod}",
+            )
+            self.assertNotIn(mod, ci_content, f"CI still invokes retired OpenClaw test: {mod}")
 
 
 class IdeaQueueRequestSafetyTests(unittest.TestCase):

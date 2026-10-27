@@ -57,8 +57,6 @@ jobs:
             tests.test_v5_delivery_watchdog_contract \
             tests.test_kesher_optional_video_enrichment \
             tests.test_media_voice_policy_contract \
-            tests.test_openclaw_cloudflare_primary \
-            tests.test_openclaw_oci_agent_self_heal \
             tests.test_master_supervisor_foundation \
             tests.test_master_supervisor_shadow \
             tests.test_master_supervisor_live \
