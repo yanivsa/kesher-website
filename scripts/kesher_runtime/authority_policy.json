@@ -1751,7 +1751,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "c76e5ead6915fd3c80608580bddd3a35ed26aef4e0f042e9b22c393e13e6c9d4",
+      "definition_sha256": "b5626aa7a1e1c0785ba106b4fed7ece5eb08d5a51c556aaab2ae873f4f96ad0a",
       "resources": [
         "cloudflare.account",
         "github.dispatch",
@@ -3120,7 +3120,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "481a21b38a98c95fd13d65b84bd3266d7eaac236d40c91230282719b359a63d0",
+      "definition_sha256": "65049a831550be705c2aad87cc3333a3d527a2ee771390d5a0a47a172319ff19",
       "resources": [],
       "review": {
         "call_chain": {
