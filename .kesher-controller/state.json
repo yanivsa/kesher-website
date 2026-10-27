@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -58,7 +58,7 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-10-27T13:42:43.559136+00:00",
     "quality_violations": [],
-    "live_verified_at": "2026-10-27T13:42:45.375125+00:00"
+    "live_verified_at": "2026-10-27T13:43:14.982145+00:00"
   },
   "backlog": [
     {
@@ -1672,24 +1672,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T05:31:43.119475+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-27T05:36:10.017923+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T05:41:08.093388+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2569,9 +2551,21 @@
         "item_id": "video-20261027-150726-7292321e86-a2",
         "task_id": "aa1be162-7879-45cb-9933-52d4a28b09ef"
       }
+    },
+    {
+      "at": "2026-10-27T13:43:14.982175+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-27T13:43:16.240741+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-10-27T13:41:15.439254+00:00",
+  "updated_at": "2026-10-27T13:43:16.240763+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2597,9 +2591,9 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "generating",
+    "status": "complete",
     "last_error": null,
-    "next_retry_at": "2026-10-27T13:19:17.759254+00:00",
+    "next_retry_at": null,
     "run_id": 40513458741,
     "processed_run_id": 40509176951,
     "provider_id": "aa1be162-7879-45cb-9933-52d4a28b09ef",
@@ -3015,6 +3009,20 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-26T22:35:51.687881+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-27",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "kindergarten-adjustment-difficulties",
+        "derive_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
+        "derive_long_item_id": "video-20261027-150726-7292321e86-a2"
+      },
+      "intent_at": "2026-10-27T13:42:39.029033+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
