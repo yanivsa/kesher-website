@@ -2576,7 +2576,7 @@
     "source_id": "local-editorial://kindergarten-adjustment-difficulties/5",
     "last_run_conclusion": "success",
     "last_failed_run_id": 40424206418,
-    "run_id": 40424206418,
+    "run_id": 40502903080,
     "evidence_rebind_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8",
     "evidence_rebind_dispatched_at": "2026-10-27T12:19:52.246828+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact"
@@ -2966,20 +2966,6 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-26T22:35:51.687881+00:00"
     },
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
-      "cycle": "2026-10-27",
-      "inputs": {
-        "pr_number": "1227",
-        "recovery_only": "true",
-        "expected_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8"
-      },
-      "intent_at": "2026-10-27T12:19:13.865821+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40424206418,
-      "observed_active_run_id": 40502903080,
-      "dispatched_at": "2026-10-27T12:19:13.865821+00:00"
-    },
     "auto-merge-article-prs.yml": {
       "workflow": "auto-merge-article-prs.yml",
       "cycle": "2026-10-27",
@@ -2995,8 +2981,8 @@
     }
   },
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 40492426489,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 40502903080,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-27"
