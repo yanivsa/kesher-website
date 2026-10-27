@@ -56,9 +56,9 @@
     "live": true,
     "last_deploy_dispatch_at": "2026-10-27T12:26:07.015051+00:00",
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-27T13:40:56.381978+00:00",
+    "quality_checked_at": "2026-10-27T13:42:43.559136+00:00",
     "quality_violations": [],
-    "live_verified_at": "2026-10-27T13:40:57.390031+00:00"
+    "live_verified_at": "2026-10-27T13:42:45.375125+00:00"
   },
   "backlog": [
     {
@@ -2618,7 +2618,7 @@
     "task_id": "aa1be162-7879-45cb-9933-52d4a28b09ef",
     "artifact_id": "aa1be162-7879-45cb-9933-52d4a28b09ef",
     "provider_status": "pending",
-    "verified": false,
+    "verified": true,
     "watchdog": {
       "identity": "long_video:kindergarten-adjustment-difficulties:7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a:video-20261027-150726-7292321e86-a2",
       "hard_started_at": "2026-10-27T13:07:39.076988+00:00",
@@ -2628,7 +2628,20 @@
       "last_recovery_at": "2026-10-27T13:35:45.796626+00:00"
     },
     "pending_resume_ready": false,
-    "resume_dispatches": 3
+    "resume_dispatches": 3,
+    "youtube_id": "_j8COQIxEqU",
+    "youtube_url": "https://youtu.be/_j8COQIxEqU",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 103.067,
+    "content_duration_seconds": 103.083,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
@@ -3002,26 +3015,11 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-26T22:35:51.687881+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-27",
-      "inputs": {
-        "operation": "recovery",
-        "target_slug": "kindergarten-adjustment-difficulties",
-        "target_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
-        "target_item_id": "video-20261027-150726-7292321e86-a2"
-      },
-      "intent_at": "2026-10-27T13:35:45.796626+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40509176951,
-      "observed_active_run_id": 40513458741,
-      "dispatched_at": "2026-10-27T13:35:45.796626+00:00"
     }
   },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 40509176951,
+    "run_id": 40513458741,
     "conclusion": "success",
     "source_slug": "kindergarten-adjustment-difficulties",
     "slot": "2026-10-27"
