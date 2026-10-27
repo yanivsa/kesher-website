@@ -1658,15 +1658,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T03:26:45.076594+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T03:31:11.213174+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2556,12 +2547,21 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-27T12:06:19.675774+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "IMAGE_ATTEMPTS_EXHAUSTED: Image exhausted 3 fresh generation attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-27T12:01:21.735513+00:00",
+  "updated_at": "2026-10-27T12:06:19.675781+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "exhausted",
+    "status": "complete",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 40424206418 completed with conclusion=success but no validated image is present",
@@ -2989,9 +2989,9 @@
     "Deploy to Cloudflare Pages:40492426489"
   ],
   "last_error": {
-    "stage": "image",
+    "stage": "controller",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
-    "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-27T12:01:21.735491+00:00"
+    "message": "IMAGE_ATTEMPTS_EXHAUSTED: Image exhausted 3 fresh generation attempts",
+    "at": "2026-10-27T12:06:19.675756+00:00"
   }
 }
