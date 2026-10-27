@@ -29,24 +29,24 @@
     },
     "pr_number": 1227,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1227",
-    "current_pr_head_sha": "2cdbca0f4a120fb1007cfb90a4cd5dce1df26eed",
+    "current_pr_head_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
     "jules_head_sha": "83f03f857ea48f0712dc32d753f58cabead1e781",
     "normalization_slot": "2026-10-27",
     "normalization_dispatched_at": "2026-10-27T00:21:12.749279+00:00",
     "normalization_run_id": 40425842920,
     "normalization_drift_count": 0,
     "last_normalization_drift_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8",
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-10-27T12:21:38.830067+00:00",
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
     "merge_run_id": 40420921104,
     "last_refunded_auto_merge_run_id": 40420921104,
     "deferred_auto_merge_refund_count": 1,
     "last_error": null,
-    "normalized_head_sha": "2cdbca0f4a120fb1007cfb90a4cd5dce1df26eed",
+    "normalized_head_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
     "deploy_run_id": 40492426489,
     "next_deploy_retry_at": "2026-10-27T11:08:36.885592+00:00",
-    "image_head_sha": "2cdbca0f4a120fb1007cfb90a4cd5dce1df26eed",
-    "merge_candidate_sha": "2cdbca0f4a120fb1007cfb90a4cd5dce1df26eed"
+    "image_head_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2",
+    "merge_candidate_sha": "26403a03d4a097ca29be082ae0b22d8fbe9ef1e2"
   },
   "backlog": [
     {
@@ -2558,7 +2558,7 @@
       "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-27T12:21:34.938061+00:00",
+  "updated_at": "2026-10-27T12:22:41.358538+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2965,19 +2965,6 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-26T22:35:51.687881+00:00"
-    },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
-      "cycle": "2026-10-27",
-      "inputs": {
-        "pr_number": "1227",
-        "slot": "2026-10-27"
-      },
-      "intent_at": "2026-10-27T12:20:56.932017+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40420921104,
-      "observed_active_run_id": 40503134607,
-      "dispatched_at": "2026-10-27T12:20:56.932017+00:00"
     }
   },
   "last_child_notification": {
