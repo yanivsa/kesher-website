@@ -2997,6 +2997,20 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-26T22:35:51.687881+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-27",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "kindergarten-adjustment-difficulties",
+        "target_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
+        "target_item_id": "video-20261027-150726-7292321e86-a2"
+      },
+      "intent_at": "2026-10-27T13:35:45.796626+00:00",
+      "status": "intent",
+      "previous_run_id": 40509176951,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
