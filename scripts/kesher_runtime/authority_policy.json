@@ -426,6 +426,118 @@
       "id": 360831498,
       "observed_state": "active",
       "reason": "Reviewed inert workflow definition deleted from the minimal integration. Missing YAML is not live retirement proof; retained executions and credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/oci-a1-capacity-watch.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 333278814,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/oci-openclaw-plan-b-e2.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 334165848,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/oci-openclaw-provision-v2.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 333275018,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/oci-openclaw-provision.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 333272481,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-agent-diagnostic.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 354763985,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-clean-rebuild.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 354683396,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-cloudflare-preflight-diagnostic.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 347517048,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-cloudflare-tunnel.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 340424915,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-finalize-tailscale-serve.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 335556453,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-inspect-tailnet-console.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 335566780,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-offline-boot-repair.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 335576768,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-preserve-tailnet-recovery.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 335562900,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-recovery-controller.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 338370770,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
+    },
+    ".github/workflows/openclaw-recovery-lint.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "5432c3cb0c2d10464fbd3a8d6f95e58ce6dd2267",
+      "id": 350236025,
+      "observed_state": "active",
+      "reason": "Workflow YAML was removed from current main, but deletion is not retirement proof. The historical GitHub workflow identity, retained executions and surviving credentials remain unresolved and denied until independently drained and fenced."
     }
   },
   "resource_separation_contract": "Absent exact service-enforced resource separation, shared-resource infrastructure is a retired writer. Definitions, registered activation, retained old executions and surviving credentials are separate facts.",

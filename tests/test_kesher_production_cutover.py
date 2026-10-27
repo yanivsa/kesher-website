@@ -152,7 +152,7 @@ class ProductionCutoverTests(unittest.TestCase):
         del rules['workflows']['.github/workflows/kesher-video-advisory-review.yml']
         rows = reconcile_registrations(evidence['workflows'], rules)
         self.assertEqual(len(rows), 111)
-        self.assertEqual(len(rules['registrations']), 43)
+        self.assertEqual(len(rules['registrations']), 57)
         for changed in (rows[:-1], rows + [{'id':999999999,'path':'.github/workflows/unknown.yml','state':'active'}]):
             with self.assertRaises(StateInvalid): reconcile_registrations(changed, rules)
         changed = copy.deepcopy(rows); changed[0]['id'] = 999999999
