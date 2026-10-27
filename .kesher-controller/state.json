@@ -36,8 +36,8 @@
     "normalization_run_id": 40425842920,
     "normalization_drift_count": 0,
     "last_normalization_drift_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8",
-    "merge_dispatch_count": 0,
-    "merge_dispatch_at": null,
+    "merge_dispatch_count": 1,
+    "merge_dispatch_at": "2026-10-27T12:21:38.830067+00:00",
     "merge_run_id": 40420921104,
     "last_refunded_auto_merge_run_id": 40420921104,
     "deferred_auto_merge_refund_count": 1,
@@ -2988,9 +2988,10 @@
         "slot": "2026-10-27"
       },
       "intent_at": "2026-10-27T12:20:56.932017+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40420921104,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40503134607,
+      "dispatched_at": "2026-10-27T12:20:56.932017+00:00"
     }
   },
   "last_child_notification": {
@@ -3011,17 +3012,5 @@
     "Kesher Normalize Article PR:40425842920",
     "Deploy to Cloudflare Pages:40492426489"
   ],
-  "last_error": null,
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  "last_error": null
 }
