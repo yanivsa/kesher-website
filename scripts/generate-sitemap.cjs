@@ -5,7 +5,7 @@ const { loadPosts } = require('./load-posts.cjs');
 
 const legalRoutes = new Set(['/accessibility', '/privacy', '/terms']);
 const serviceRoutes = new Set([
-  '/about','/now','/friends','/lectures','/contact','/appointment','/services/couples','/services/parenting','/services/mediation','/services/gifted-parenting','/services/aliyah-families','/services/couples-aliyah-relocation','/services/premarital-first-year','/services/late-singleness','/services/finding-relationship','/couples-counseling-ashdod','/parenting-guidance-ashdod','/couples-mediation-ashdod','/parenting-adhd-ashdod','/services/couples/crisis','/services/couples/before-separation','/faq',
+  '/about','/now','/friends','/lectures','/contact','/appointment','/services/couples','/services/parenting','/services/mediation','/services/gifted-parenting','/services/aliyah-families','/services/couples-aliyah-relocation','/services/premarital-first-year','/services/late-singleness','/services/finding-relationship','/couples-counseling-ashdod','/parenting-guidance-ashdod','/couples-mediation-ashdod','/parenting-adhd-ashdod','/services/couples/crisis','/services/couples/before-separation','/faq','/faq/when-to-start-couples-counseling','/faq/how-many-couples-counseling-sessions','/faq/does-partner-have-to-come-couples-counseling','/faq/what-to-expect-couples-counseling','/faq/is-couples-counseling-only-for-crisis','/faq/can-trust-be-rebuilt-after-infidelity','/faq/couples-mediation-vs-couples-counseling','/faq/parent-guidance-vs-child-therapy','/faq/what-age-parent-guidance','/faq/parent-guidance-adhd-child',
 ]);
 const conversionLandingRoutes = new Set([
   '/couples-counseling-ashdod','/parenting-guidance-ashdod','/couples-mediation-ashdod','/parenting-adhd-ashdod',
