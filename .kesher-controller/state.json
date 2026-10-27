@@ -1681,7 +1681,27 @@
         "blocked": false,
         "article_exhausted": false
       },
-      "archived_at": "2026-10-27T22:05:41.654855+00:00"
+      "archived_at": "2026-10-27T22:05:41.654855+00:00",
+      "media": {
+        "source_slug": "kindergarten-adjustment-difficulties",
+        "source_content_sha256": "7292321e866ac4950243bf75a6c8fac028ea7f3119efbd468cec6f26eea2bb5a",
+        "article_title": "קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?",
+        "article_url": "https://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties",
+        "article_live": true,
+        "article_deploy_status": "complete",
+        "long_status": "complete",
+        "long_item_id": "video-20261027-150726-7292321e86-a2",
+        "long_youtube_url": "https://youtu.be/_j8COQIxEqU",
+        "long_youtube_id": "_j8COQIxEqU",
+        "short_status": "complete",
+        "short_item_id": "video-20261027-154855-7292321e86",
+        "short_youtube_url": "https://youtu.be/z2Z1xqWeGik",
+        "short_youtube_id": "z2Z1xqWeGik",
+        "short_width": 1080,
+        "short_height": 1920,
+        "complete": true,
+        "completed_at": "2026-10-27T22:06:09.074025+00:00"
+      }
     }
   ],
   "last_error": null,
@@ -2436,9 +2456,19 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-10-27T22:06:09.074052+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
+      "details": {
+        "backlog_cycle": "2026-10-27",
+        "source_slug": "kindergarten-adjustment-difficulties"
+      }
     }
   ],
-  "updated_at": "2026-10-27T22:06:03.145508+00:00",
+  "updated_at": "2026-10-27T22:06:09.074057+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
