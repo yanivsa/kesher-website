@@ -170,7 +170,7 @@ Open `{evidence_root}/state.json` and locate the exact item. Open and visually i
 
 IMPORTANT: Jules is the MANDATORY publication reviewer for this exact MP4. Upload is allowed only when visual, semantic and metadata statuses are all `approved` and every supplied evidence hash matches. If any material defect exists, return `rejected` with concrete blocking issues. Do not soften a finding to keep the daily schedule moving.
 
-Machine contract: return `schema_version={REVIEW_SCHEMA_VERSION}` and `policy_version={REMOTION_POLICY_VERSION}` exactly. `decision` MUST be `approved` only when visual, semantic and metadata statuses are all approved; otherwise it MUST be `rejected`. A rejected decision MUST contain at least one concrete `blocking_issues` object with `gate`, stable uppercase `code`, and factual Hebrew `message`. An approved decision MUST have an empty `blocking_issues` list. `recommendations` are optional non-blocking Hebrew improvements.
+Machine contract: return `schema_version={REVIEW_SCHEMA_VERSION}` and `policy_version={REMOTION_POLICY_VERSION}` exactly. `decision` MUST be `approved` only when visual, semantic and metadata statuses are all approved; otherwise it MUST be `rejected`. A rejected decision MUST contain at least one concrete `blocking_issues` object with `gate` exactly one of `visual`, `semantic`, or `metadata` (no other gate values), stable uppercase `code`, and factual Hebrew `message`. An approved decision MUST have an empty `blocking_issues` list. `recommendations` are optional non-blocking Hebrew improvements.
 
 Apply these mandatory review dimensions:
 1. Technical is already machine-verified. Independently confirm the manifest identifies a 16:9 H.264 video lasting 90-180 seconds. Recompute every checked-out file hash. The MP4 is deliberately excluded; confirm its expected final SHA-256 is identical in state.json, the manifest and the expected hashes above.
@@ -215,11 +215,12 @@ def list_activities(api_key: str, session: str) -> list[dict[str, Any]]:
             return activities
 
 
-def wait_for_message(api_key: str, session: str, timeout_seconds: int) -> str:
+def wait_for_message(api_key: str, session: str, timeout_seconds: int, *, decision_validator=None) -> str:
     deadline = time.monotonic() + timeout_seconds
     continued = False
     structured_output_repairs = 0
     next_structured_output_repair_at = 0.0
+    locked_statuses = None
     while time.monotonic() < deadline:
         current = request_json("GET", f"/{session}", api_key)
         state = str(current.get("state", "UNKNOWN")).upper()
@@ -230,17 +231,34 @@ def wait_for_message(api_key: str, session: str, timeout_seconds: int) -> str:
                 if isinstance(message, str):
                     messages.append(message)
             marked = [message for message in messages if FINAL_MARKER in message]
+            validation_error = ""
             for message in reversed(marked):
                 try:
-                    parse_decision(message)
+                    decision = parse_decision(message)
                 except ReviewError:
                     continue
+                if decision_validator is not None:
+                    statuses = tuple(decision.get(f"{gate}_status") for gate in ("visual", "semantic", "metadata"))
+                    if locked_statuses is not None and any(statuses[index] != value for index, value in locked_statuses.items()):
+                        raise ReviewError("Jules schema repair changed quality decision")
+                    try:
+                        decision_validator(decision)
+                    except ReviewError as exc:
+                        if "wrong item" in str(exc) or "evidence mismatch" in str(exc):
+                            raise
+                        validation_error = str(exc)
+                        locked_statuses = {index: value for index, value in enumerate(statuses) if value in {"approved", "rejected"}}
+                        # A newer schema-invalid decision must not fall back to
+                        # an older approval in the same activity history.
+                        break
                 return message
             error = (
                 "Jules completed without structured review JSON"
                 if not marked
                 else "Jules completed without parseable structured review JSON"
             )
+            if validation_error:
+                error = validation_error
             now = time.monotonic()
             if structured_output_repairs < MAX_STRUCTURED_OUTPUT_REPAIRS:
                 if now < next_structured_output_repair_at:
@@ -255,6 +273,9 @@ def wait_for_message(api_key: str, session: str, timeout_seconds: int) -> str:
                         f"Reuse only the evidence you already inspected. Reply with {FINAL_MARKER} "
                         "on its own line followed by exactly one valid JSON object matching the requested schema, "
                         "with no Markdown fence or trailing prose. Do not edit files or invent evidence."
+                        " Each blocking_issues gate must be exactly visual, semantic or metadata."
+                        " Correct only schema/format; preserve all quality gate statuses and factual findings."
+                        f" Validation failure: {error}"
                     )},
                 )
                 structured_output_repairs += 1
@@ -389,7 +410,10 @@ def obtain_validated_decision(
     for attempt in range(MAX_REVIEW_SESSION_ATTEMPTS):
         session = create_session(api_key, prompt, item["id"], review_branch)
         try:
-            message = wait_for_message(api_key, session, timeout_seconds)
+            message = wait_for_message(
+                api_key, session, timeout_seconds,
+                decision_validator=lambda decision: validate_decision(decision, item, hashes, strict_schema=True),
+            )
             decision = parse_decision(message)
             validate_decision(decision, item, hashes, strict_schema=True)
             return decision, session
