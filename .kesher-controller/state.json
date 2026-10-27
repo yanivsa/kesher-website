@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "article_pr_open",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -14,7 +14,7 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "last_dispatch_at": "2026-10-26T22:36:29.031574+00:00",
     "watchdog": {
       "identity": "2026-10-27",
@@ -32,7 +32,7 @@
     "current_pr_head_sha": "ef169523d4029b5dd8164d53df03a1f66bb4b102",
     "jules_head_sha": "83f03f857ea48f0712dc32d753f58cabead1e781",
     "normalization_slot": "2026-10-27",
-    "normalization_dispatched_at": "2026-10-26T23:55:54.534061+00:00",
+    "normalization_dispatched_at": "2026-10-27T00:21:12.749279+00:00",
     "normalization_run_id": 40423060078,
     "normalization_drift_count": 2,
     "last_normalization_drift_head_sha": "ef169523d4029b5dd8164d53df03a1f66bb4b102",
@@ -1655,12 +1655,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-26T18:41:04.048035+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-26T18:41:04.560719+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2383,9 +2377,19 @@
       "details": {
         "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed"
       }
+    },
+    {
+      "at": "2026-10-27T00:21:12.749305+00:00",
+      "from": "article_pr_open",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1227,
+        "slot": "2026-10-27"
+      }
     }
   ],
-  "updated_at": "2026-10-27T00:16:26.376356+00:00",
+  "updated_at": "2026-10-27T00:21:12.749312+00:00",
   "image": {
     "attempt_count": 3,
     "status": "pending",
@@ -2797,9 +2801,10 @@
         "slot": "2026-10-27"
       },
       "intent_at": "2026-10-27T00:20:47.029550+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40423060078,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40425842920,
+      "dispatched_at": "2026-10-27T00:20:47.029550+00:00"
     }
   },
   "last_child_notification": {
@@ -2818,17 +2823,5 @@
     "Kesher Normalize Article PR:40423060078",
     "Kesher Trusted Article Image:40424206418"
   ],
-  "last_error": null,
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  "last_error": null
 }
