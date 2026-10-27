@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-27",
-  "status": "blocked",
+  "status": "article_image_rebinding",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1658,15 +1658,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-27T03:36:43.443856+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-27T03:41:19.967573+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2556,12 +2547,22 @@
       "details": {
         "message": "IMAGE_ATTEMPTS_EXHAUSTED: Image exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-10-27T12:19:52.246855+00:00",
+      "from": "blocked",
+      "to": "article_image_rebinding",
+      "reason": "prior trusted image artifact proved against current normalized article and must be reattached",
+      "details": {
+        "pr_number": 1227,
+        "head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8"
+      }
     }
   ],
-  "updated_at": "2026-10-27T12:11:52.487072+00:00",
+  "updated_at": "2026-10-27T12:19:52.246862+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "complete",
+    "status": "running",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 40424206418 completed with conclusion=success but no validated image is present",
@@ -2569,7 +2570,7 @@
       "retry_at": "2026-10-27T00:28:06.631333+00:00",
       "at": "2026-10-27T00:23:06.631360+00:00"
     },
-    "next_retry_at": "2026-10-27T00:28:06.631333+00:00",
+    "next_retry_at": null,
     "processed_run_id": 40424206418,
     "provider_id": "LocalEditorial",
     "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
@@ -2582,7 +2583,10 @@
     "source_id": "local-editorial://kindergarten-adjustment-difficulties/5",
     "last_run_conclusion": "success",
     "last_failed_run_id": 40424206418,
-    "run_id": 40424206418
+    "run_id": 40424206418,
+    "evidence_rebind_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8",
+    "evidence_rebind_dispatched_at": "2026-10-27T12:19:52.246828+00:00",
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2978,9 +2982,10 @@
         "expected_head_sha": "db6bf36cc9b611cc3f82f8d0d33ae337f3d56cf8"
       },
       "intent_at": "2026-10-27T12:19:13.865821+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40424206418,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40502903080,
+      "dispatched_at": "2026-10-27T12:19:13.865821+00:00"
     }
   },
   "last_child_notification": {
@@ -3001,22 +3006,5 @@
     "Kesher Normalize Article PR:40425842920",
     "Deploy to Cloudflare Pages:40492426489"
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "IMAGE_ATTEMPTS_EXHAUSTED",
-    "message": "IMAGE_ATTEMPTS_EXHAUSTED: Image exhausted 3 fresh generation attempts",
-    "at": "2026-10-27T12:11:52.487043+00:00"
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  "last_error": null
 }
