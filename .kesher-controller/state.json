@@ -3086,23 +3086,10 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
-      "cycle": "2026-10-28",
-      "inputs": {
-        "pr_number": "1244"
-      },
-      "intent_at": "2026-10-28T17:55:56.511560+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40640858903,
-      "observed_active_run_id": 40740531507,
-      "dispatched_at": "2026-10-28T17:55:56.511560+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 40696399137,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 40740531507,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-28"
