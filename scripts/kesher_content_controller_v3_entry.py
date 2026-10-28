@@ -289,10 +289,7 @@ class V3GitHubClient(core.GitHubClient):
         if str(current_post.get("image") or "").strip() or str(current_post.get("imageAlt") or "").strip():
             return False, {}
 
-        def editorial_identity(post: dict[str, Any]) -> dict[str, Any]:
-            return {key: value for key, value in post.items() if key not in {"image", "imageAlt"}}
-
-        if editorial_identity(current_post) != editorial_identity(historical_post):
+        if article_contract.image_visual_identity(current_post) != article_contract.image_visual_identity(historical_post):
             return False, {}
 
         base_ids = {core.canonical_slug(row) for row in base_posts if isinstance(row, dict)}

@@ -28,7 +28,7 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from scripts.kesher_article_contract import (
     IMAGE_EVIDENCE_FIELDS, IMAGE_PROVIDER_RULES, article_sha256, exact_field,
-    image_proof_errors, replace_image_evidence,
+    image_proof_errors, image_visual_identity, replace_image_evidence,
 )
 
 CORE_PATH = Path(__file__).with_name("article-image-worker.py")
@@ -369,9 +369,7 @@ def restore_prior_trusted_image(repo, pr, post, head_posts, base_posts, token) -
     if len(matches) != 1:
         return False
     historical = matches[0]
-    def editorial(row):
-        return {key: value for key, value in row.items() if key not in {"image", "imageAlt"}}
-    if editorial(post) != editorial(historical):
+    if image_visual_identity(post) != image_visual_identity(historical):
         return False
     historical_pr = {**pr, "head": {**pr["head"], "sha": prior}}
     if not trusted_image_present(repo, historical_pr, historical, token):
@@ -391,7 +389,13 @@ def restore_prior_trusted_image(repo, pr, post, head_posts, base_posts, token) -
         from scripts.kesher_article_contract import image_pixel_sha256
         if hashlib.sha256(published_data).digest() == hashlib.sha256(data).digest() or image_pixel_sha256(published_data) == image_pixel_sha256(data):
             return False
-    restored = [historical if row is post else row for row in head_posts]
+    restored_post = dict(post)
+    for field in ("image", "imageAlt", "imageProvider", "imageSourceUrl", "imageIsFallback", "imageCredit", "imageCreditUrl"):
+        if field in historical:
+            restored_post[field] = historical[field]
+        else:
+            restored_post.pop(field, None)
+    restored = [restored_post if row is post else row for row in head_posts]
     files = {
         image_path: (data, True),
         "src/data/posts.json": ((json.dumps(restored, ensure_ascii=False, indent=2) + "\n").encode(), False),
@@ -399,6 +403,7 @@ def restore_prior_trusted_image(repo, pr, post, head_posts, base_posts, token) -
     }
     new_sha = commit_files(repo, pr, token, files, [])
     evidence = {label: exact_field(str(pr.get("body") or ""), label) or "" for label in IMAGE_EVIDENCE_FIELDS}
+    evidence["Image Article SHA-256"] = article_sha256(restored_post)
     evidence["Image Evidence Head"] = new_sha
     core.patch_pr_body(repo, int(pr["number"]), replace_image_evidence(pr.get("body") or "", evidence), token)
     print(f"ARTICLE_IMAGE_COMMITTED id={post['id']} provider={evidence['Image Provider']} sha={new_sha} recovery=same-artifact")

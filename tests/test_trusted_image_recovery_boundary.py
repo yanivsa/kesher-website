@@ -43,6 +43,31 @@ class TrustedImageRecoveryBoundaryTests(unittest.TestCase):
             posts[-1] = {**self.base[0], 'title': 'unauthorized old article change'}
             self.assertTrue(client.article_pr_normalization_required(self.pr)[0])
 
+    def test_prior_image_recovery_allows_content_only_repair_with_same_visual_identity(self):
+        client = V4GitHubClient('test/repo', 'test-token')
+        prior = self.pr['head']['sha']
+        current = 'd' * 40
+        pr = copy.deepcopy(self.pr)
+        pr['head']['sha'] = current
+        current_post = {k: copy.deepcopy(v) for k, v in self.post.items() if k not in {'image', 'imageAlt'}}
+        current_post['content'] = str(current_post.get('content') or '') + '<p>Bounded internal-link repair only.</p>'
+
+        def contents(path, ref):
+            self.assertEqual(path, 'src/data/posts.json')
+            if ref == pr['base']['sha']:
+                return copy.deepcopy(self.base)
+            if ref == current:
+                return [copy.deepcopy(current_post), *copy.deepcopy(self.base)]
+            if ref == prior:
+                return [copy.deepcopy(self.post), *copy.deepcopy(self.base)]
+            raise AssertionError(ref)
+
+        with mock.patch.object(client, '_article_pr_image_proof', return_value=(True, {'article_id': self.post['id']})), \
+             mock.patch.object(client, 'contents_json', side_effect=contents):
+            recoverable, _ = client.article_pr_prior_image_recoverable(pr)
+
+        self.assertTrue(recoverable)
+
     def test_real_dispatch_guard_allows_bound_recovery_after_three_attempts(self):
         gh = mock.Mock()
         gh.active_workflow_run.return_value = None
@@ -81,17 +106,22 @@ class TrustedImageRecoveryBoundaryTests(unittest.TestCase):
     def test_worker_restores_exact_prior_pixels_without_calling_generation(self):
         self._run_worker_recovery()
 
+    def test_worker_restores_prior_pixels_after_content_only_repair_without_generation(self):
+        self._run_worker_recovery(content_changed=True)
+
     def test_recovery_only_refuses_changed_editorial_without_generation(self):
         with self.assertRaisesRegex(RuntimeError, "IMAGE_RECOVERY_PROOF_INVALID"):
             self._run_worker_recovery(changed=True)
 
-    def _run_worker_recovery(self, changed=False):
+    def _run_worker_recovery(self, changed=False, content_changed=False):
         worker = load('article-image-worker-v3')
         prior = self.pr['head']['sha']
         current = 'd' * 40
         stripped = {k: v for k, v in self.post.items() if k not in {'image', 'imageAlt'}}
         if changed:
             stripped['title'] = 'Different editorial article'
+        if content_changed:
+            stripped['content'] = str(stripped.get('content') or '') + '<p>Bounded internal-link repair only.</p>'
         pr = copy.deepcopy(self.pr)
         pr['head']['sha'] = current
         def posts_at(repo, ref, token):
@@ -101,11 +131,21 @@ class TrustedImageRecoveryBoundaryTests(unittest.TestCase):
                 return {'encoding': 'base64', 'content': base64.b64encode(self.image).decode()}
             raise RuntimeError('not found')
         commits = []
+        patched_bodies = []
         def commit(repo, candidate_pr, token, files, deletes):
             commits.append(files)
             return 'e' * 40
-        with mock.patch.dict(os.environ, {'KESHER_IMAGE_RECOVERY_ONLY': 'true'}), mock.patch.object(worker.core, 'posts_at', side_effect=posts_at), mock.patch.object(worker.core, 'github_content', side_effect=content), mock.patch.object(worker, 'choose_candidate', side_effect=AssertionError('must not generate replacement pixels')), mock.patch.object(worker.core, 'patch_pr_body'), mock.patch.object(worker.core, 'request_json', return_value=[]), mock.patch.object(worker, 'commit_files', side_effect=commit):
+        def patch_body(repo, number, body, token):
+            patched_bodies.append(body)
+        with mock.patch.dict(os.environ, {'KESHER_IMAGE_RECOVERY_ONLY': 'true'}), mock.patch.object(worker.core, 'posts_at', side_effect=posts_at), mock.patch.object(worker.core, 'github_content', side_effect=content), mock.patch.object(worker, 'choose_candidate', side_effect=AssertionError('must not generate replacement pixels')), mock.patch.object(worker.core, 'patch_pr_body', side_effect=patch_body), mock.patch.object(worker.core, 'request_json', return_value=[]), mock.patch.object(worker, 'commit_files', side_effect=commit):
             self.assertTrue(worker.ensure_image('test/repo', pr, 'test-token'))
         self.assertEqual(commits[0]['public' + self.post['image']][0], self.image)
         restored = json.loads(commits[0]['src/data/posts.json'][0])[0]
-        self.assertEqual(restored, self.post)
+        expected = copy.deepcopy(stripped)
+        for field in ('image', 'imageAlt', 'imageProvider', 'imageSourceUrl', 'imageIsFallback', 'imageCredit', 'imageCreditUrl'):
+            if field in self.post:
+                expected[field] = self.post[field]
+        self.assertEqual(restored, expected)
+        self.assertTrue(patched_bodies)
+        self.assertEqual(worker.exact_field(patched_bodies[-1], 'Image Article SHA-256'), worker.article_sha256(expected))
+        self.assertEqual(worker.exact_field(patched_bodies[-1], 'Image Evidence Head'), 'e' * 40)
