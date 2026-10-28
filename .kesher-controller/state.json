@@ -1771,22 +1771,9 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-28T11:11:26.196805+00:00"
+    "at": "2026-10-28T11:16:28.408988+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-27T23:16:00.631011+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "COMPLETED_WITHOUT_PR",
-      "details": {
-        "message": "Jules completed without creating a pull request; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to run an autonomous publication task to draft and publish a new Hebrew article about \"first-grade maturity\" for the `2026-10-28` slot, correctly adhering to the schema and omitting image generation. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates an appropriate article adhering to the provided topic brief. It correctly identifies the required Primary Keyword (\"בשלות לכיתה א\"), uses it in the title, opening paragraph, and URL slug. In compliance with the V3 image-stage override, it rig…",
-        "retry_at": "2026-10-27T23:21:00.630987+00:00",
-        "failure_streak": 1,
-        "run_id": 40596118530,
-        "session_id": "sessions/13254194464638107348"
-      }
-    },
     {
       "at": "2026-10-27T23:21:17.972966+00:00",
       "from": "article_retry_wait",
@@ -2695,9 +2682,18 @@
       "details": {
         "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-10-28T11:16:28.409004+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
+      }
     }
   ],
-  "updated_at": "2026-10-28T11:11:26.196826+00:00",
+  "updated_at": "2026-10-28T11:16:28.409009+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
