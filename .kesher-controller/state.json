@@ -1753,15 +1753,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-27T16:41:38.982346+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
-      }
-    },
-    {
       "at": "2026-10-27T16:45:53.214374+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2652,9 +2643,18 @@
       "details": {
         "session_id": null
       }
+    },
+    {
+      "at": "2026-10-28T00:33:30.121835+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-28T00:28:13.687103+00:00",
+  "updated_at": "2026-10-28T00:33:30.121844+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
