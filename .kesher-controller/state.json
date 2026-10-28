@@ -1771,19 +1771,9 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-28T12:06:23.154393+00:00"
+    "at": "2026-10-28T12:11:43.494442+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-28T00:06:40.352186+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "timed-out Jules session preserved; same-session recovery dispatched immediately",
-      "details": {
-        "run_id": 40602133674,
-        "session_id": "sessions/14848436556523580886"
-      }
-    },
     {
       "at": "2026-10-28T00:13:58.861000+00:00",
       "from": "article_generating",
@@ -2687,9 +2677,18 @@
       "details": {
         "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-10-28T12:11:43.494458+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
+      }
     }
   ],
-  "updated_at": "2026-10-28T12:06:23.154419+00:00",
+  "updated_at": "2026-10-28T12:11:43.494464+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
