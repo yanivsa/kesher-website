@@ -67,7 +67,7 @@
     "current_pr_head_sha": "4156052390953d79d74a4a4c89627c5119492c38",
     "jules_head_sha": "70f56fd135354c096fa97d6c6e4ad6566ac2cf11",
     "normalization_slot": "2026-10-28",
-    "normalization_dispatched_at": "2026-10-28T02:46:09.920658+00:00",
+    "normalization_dispatched_at": "2026-10-28T03:01:25.400403+00:00",
     "normalization_run_id": 40622861281
   },
   "backlog": [
@@ -1760,15 +1760,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-27T16:56:34.744713+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
-      }
-    },
-    {
       "at": "2026-10-27T17:03:51.927935+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2661,9 +2652,19 @@
         "pr_number": 1244,
         "slot": "2026-10-28"
       }
+    },
+    {
+      "at": "2026-10-28T03:01:25.400429+00:00",
+      "from": "article_normalizing",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1244,
+        "slot": "2026-10-28"
+      }
     }
   ],
-  "updated_at": "2026-10-28T02:46:09.920691+00:00",
+  "updated_at": "2026-10-28T03:01:25.400437+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -3065,9 +3066,10 @@
         "slot": "2026-10-28"
       },
       "intent_at": "2026-10-28T03:00:48.284988+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40622861281,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40624290482,
+      "dispatched_at": "2026-10-28T03:00:48.284988+00:00"
     }
   },
   "last_child_notification": {
@@ -3076,17 +3078,5 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-28"
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
