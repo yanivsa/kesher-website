@@ -1,19 +1,20 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-28T00:11:35.735010+00:00",
     "run_id": 40602133674,
-    "processed_run_id": 40596118530,
+    "processed_run_id": 40602133674,
     "provider_id": null,
-    "failure_fingerprint": "COMPLETED_WITHOUT_PR",
+    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
     "same_failure_streak": 1,
     "failure_count_by_type": {
-      "COMPLETED_WITHOUT_PR": 1
+      "COMPLETED_WITHOUT_PR": 1,
+      "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
     "attempts": 2,
     "deploy_attempts": 0,
@@ -34,13 +35,13 @@
     "last_worker_result": {
       "schema_version": 1,
       "slot": "2026-10-28",
-      "outcome": "COMPLETED_WITHOUT_PR",
+      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
       "retryable": true,
-      "message": "Jules completed without creating a pull request; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to run an autonomous publication task to draft and publish a new Hebrew article about \"first-grade maturity\" for the `2026-10-28` slot, correctly adhering to the schema and omitting image generation. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates an appropriate article adhering to the provided topic brief. It correctly identifies the required Primary Keyword (\"בשלות לכיתה א\"), uses it in the title, opening paragraph, and URL slug. In compliance with the V3 image-stage override, it rig…",
-      "session_id": "sessions/13254194464638107348",
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
+      "session_id": "sessions/14848436556523580886",
       "pr_url": "",
-      "github_run_id": "40596118530",
-      "completed_at": "2026-10-27T23:14:11.326394+00:00",
+      "github_run_id": "40602133674",
+      "completed_at": "2026-10-28T00:05:23.374274+00:00",
       "diagnostic": {
         "source": {
           "name": "sources/github/yanivsa/kesher-website",
@@ -49,17 +50,17 @@
           "default_branch": "main",
           "main_available": true
         },
-        "activity_count": 34,
-        "change_set_count": 30,
+        "activity_count": 2,
+        "change_set_count": 0,
         "change_set_fingerprints": [],
         "last_agent_message": "",
-        "last_progress": "Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to run an autonomous publication task to draft and publish a new Hebrew article about \"first-grade maturity\" for the `2026-10-28` slot, correctly adhering to the schema and omitting image generation. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates an appropriate article adhering to the provided topic brief. It correctly identifies the required Primary Keyword (\"בשלות לכיתה א\"), uses it in the title, opening paragraph, and URL slug. In compliance with the V3 image-stage override, it rig…",
+        "last_progress": "",
         "last_description": "",
         "session_failed_reason": ""
       }
     },
-    "last_jules_session_id": "sessions/13254194464638107348",
-    "last_failed_run_id": 40596118530
+    "last_jules_session_id": "sessions/14848436556523580886",
+    "last_failed_run_id": 40602133674
   },
   "backlog": [
     {
@@ -1748,21 +1749,15 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
+    "retryable": true,
+    "retry_at": "2026-10-28T00:11:35.735010+00:00",
+    "at": "2026-10-28T00:06:35.735029+00:00"
+  },
   "history": [
-    {
-      "at": "2026-10-27T16:11:12.907624+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "COMPLETED_WITHOUT_PR",
-      "details": {
-        "message": "Jules completed without creating a pull request; Jules diagnostic: The task has been successfully halted without making any edits because an open pull request/branch (`changing-kindergarten-midyear`) for the requested primary keyword already exists. As per the policy, we stop cleanly in this scenario to prevent duplicate articles or conflicting PRs. All repository tests passed successfully on the clean state before concluding.",
-        "retry_at": "2026-10-27T16:16:12.907599+00:00",
-        "failure_streak": 1,
-        "run_id": 40534301493,
-        "session_id": "sessions/14158694164084550662"
-      }
-    },
     {
       "at": "2026-10-27T16:15:56.330364+00:00",
       "from": "article_retry_wait",
@@ -2649,9 +2644,22 @@
       "details": {
         "session_id": null
       }
+    },
+    {
+      "at": "2026-10-28T00:06:35.735034+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "details": {
+        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
+        "retry_at": "2026-10-28T00:11:35.735010+00:00",
+        "failure_streak": 1,
+        "run_id": 40602133674,
+        "session_id": "sessions/14848436556523580886"
+      }
     }
   ],
-  "updated_at": "2026-10-28T00:03:08.704580+00:00",
+  "updated_at": "2026-10-28T00:06:35.735039+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -3052,11 +3060,22 @@
         "slot": "2026-10-28",
         "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: הורה שמתלבט אם הילד בשל מספיק לעלות לכיתה א או שצריך עוד זמן. להתייחס להיבטים רגשיים, חברתיים, תפקודיים ושפתיים בלי להפוך את המאמר לאבחון או לרשימת תנאי סף. להבדיל מ\"מוכנות לכיתה א\" שכבר קיים: כאן הפוקוס הוא התלבטות סביב בשלות והחלטה. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-maturity. כותרת עבודה: בשלות לכיתה א׳: מה בודקים לפני שמחליטים שהילד מוכן? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/הסתגלות סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-first-grade-maturity\nRequired Primary Keyword: בשלות לכיתה א"
       },
-      "intent_at": "2026-10-27T23:25:52.175544+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40596118530,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-27T23:25:52.175544+00:00"
+      "intent_at": "2026-10-28T00:06:07.269113+00:00",
+      "status": "intent",
+      "previous_run_id": 40602133674,
+      "observed_active_run_id": null
     }
+  },
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   }
 }
