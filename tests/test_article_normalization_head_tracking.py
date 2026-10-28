@@ -5,6 +5,7 @@ from datetime import datetime
 from unittest import mock
 
 import scripts.kesher_content_controller_v4 as v4
+import scripts.kesher_content_controller_v5 as v5
 import scripts.kesher_content_controller_stabilized as stabilized
 import scripts.kesher_content_controller as core
 from zoneinfo import ZoneInfo
@@ -719,6 +720,108 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
         self.assertEqual(state["image"]["evidence_rebind_head_sha"], current_head)
         self.assertEqual(state["image"]["status"], "running")
         dispatch.assert_called_once_with(github, v4.v3.IMAGE_WORKFLOW, {"pr_number": "1227", "recovery_only": "true", "expected_head_sha": current_head})
+
+
+    def test_run_now_adopts_exact_matching_open_pr_from_prior_slot_instead_of_redispatching_jules(self) -> None:
+        github = mock.MagicMock()
+        github.api = "https://api.github.com/repos/yanivsa/kesher-website"
+        controller_cls = v5.owner_pr_rehome_controller(stabilized.StabilizedRuntimeV5Controller)
+        controller = controller_cls(
+            now=datetime(2026, 10, 27, 21, 45, tzinfo=ISRAEL_TZ),
+            github=github,
+            site=mock.MagicMock(),
+        )
+        head_sha = "e" * 40
+        pr = {
+            "number": 1226,
+            "title": "Publish Kesher article: changing-kindergarten-midyear",
+            "html_url": "https://github.com/yanivsa/kesher-website/pull/1226",
+            "body": "Primary Keyword: מעבר גן באמצע שנה\n",
+            "base": {"ref": "main"},
+            "head": {
+                "sha": head_sha,
+                "repo": {"full_name": "yanivsa/kesher-website"},
+            },
+        }
+        state = {
+            "cycle": "2026-10-27",
+            "status": "article_retry_wait",
+            "schema_version": 5,
+            "article": {
+                "attempts": 3,
+                "attempt_count": 3,
+                "status": "retry_wait",
+                "next_retry_at": None,
+            },
+            "active_idea": {
+                "idea_id": "parenting-p1-changing-kindergarten-midyear",
+                "run_now": True,
+                "status": "claimed",
+                "publication_slot": "2026-10-27",
+                "required_primary_keyword": "מעבר גן באמצע שנה",
+                "topic_brief": "Canonical ID נדרש: changing-kindergarten-midyear. כותרת עבודה",
+            },
+            "history": [],
+        }
+        github.request.return_value = [pr]
+        github.contents_json.return_value = [{
+            "id": "changing-kindergarten-midyear",
+            "date": "2026-10-26",
+            "title": "מעבר גן באמצע שנה",
+        }]
+        github.active_normalizer_run.return_value = None
+
+        action = controller._run_now_article_phase(state)
+
+        self.assertEqual(action.kind, "dispatch_normalize")
+        self.assertEqual(state["article"]["pr_number"], 1226)
+        self.assertEqual(state["article"]["owner_rehome_source_slot"], "2026-10-26")
+        self.assertEqual(state["article"]["normalization_slot"], "2026-10-27")
+        self.assertEqual(state["article"]["attempt_count"], 3)
+        github.dispatch.assert_called_once_with(
+            "normalize-article-pr.yml",
+            {"pr_number": "1226", "slot": "2026-10-27", "source_slot": "2026-10-26"},
+        )
+
+
+    def test_successful_deferred_auto_merge_is_refunded_after_three_prior_deferrals(self) -> None:
+        github = mock.MagicMock()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            now=datetime(2026, 10, 28, 19, 0, tzinfo=ISRAEL_TZ),
+            github=github,
+            site=mock.MagicMock(),
+        )
+        state = {
+            "cycle": "2026-10-28",
+            "status": "article_pr_open",
+            "article": {
+                "pr_number": 1244,
+                "current_pr_head_sha": "a" * 40,
+                "merge_candidate_sha": "a" * 40,
+                "merge_dispatch_count": 3,
+                "deferred_auto_merge_refund_count": 3,
+                "last_refunded_auto_merge_run_id": 40637034405,
+            },
+            "history": [],
+        }
+        pr = {"number": 1244, "state": "open", "head": {"sha": "a" * 40}}
+        notification = {
+            "workflow": "Auto-merge Kesher article PRs",
+            "run_id": "40696399137",
+            "conclusion": "success",
+            "source_slug": "",
+            "slot": "2026-10-28",
+            "source_sha": "",
+        }
+
+        with mock.patch.object(controller, "_child_notification_env", return_value=notification):
+            refunded = controller._refund_deferred_auto_merge_success(state, pr)
+
+        self.assertTrue(refunded)
+        self.assertEqual(state["article"]["merge_dispatch_count"], 2)
+        self.assertEqual(state["article"]["deferred_auto_merge_refund_count"], 4)
+        self.assertEqual(state["article"]["last_refunded_auto_merge_run_id"], 40696399137)
+
 
 
 if __name__ == "__main__":

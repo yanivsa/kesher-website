@@ -2224,8 +2224,9 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return False
 
         refund_count = int(article.get("deferred_auto_merge_refund_count") or 0)
-        if refund_count >= 3:
-            return False
+        # This counter is observability, not an attempt budget. A successful
+        # auto-merge child that deliberately deferred did not spend a merge
+        # attempt; capping refunds can turn healthy deferrals into exhaustion.
         dispatch_count = int(article.get("merge_dispatch_count") or 0)
         if dispatch_count <= 0:
             return False

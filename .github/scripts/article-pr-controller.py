@@ -419,6 +419,19 @@ def process(repo: str, number: int, github_token: str, jules_key: str) -> int:
     print(f"PR #{number} failed article gate: " + " | ".join(errors))
     verify = verify_check(checks)
     if not verify or verify.get("status") != "completed":
+        # A deterministic publication error (for example an invented internal link)
+        # is independent of the pending verify result. Ask the bounded same-PR
+        # repair owner to fix it now instead of repeatedly deferring auto-merge.
+        # A verify-only failure still waits, and image-only errors remain owned by
+        # the trusted image worker because the V3 adapter declines those repairs.
+        verify_only_marker = "Fresh successful verify check is required on the current head"
+        deterministic_errors = [error for error in errors if error != verify_only_marker]
+        if deterministic_errors:
+            repaired = send_jules_repair(
+                repo, pr, deterministic_errors, verify, github_token, jules_key
+            )
+            if repaired:
+                return 0
         print("Fresh verify is not terminal yet; waiting for CI instead of spending a repair attempt.")
         return 0
 
