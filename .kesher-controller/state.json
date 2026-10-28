@@ -73,9 +73,11 @@
     "image_head_sha": "b9cab0ce339a8331df6ee8c30f6dde78113b20b8",
     "merge_candidate_sha": "b9cab0ce339a8331df6ee8c30f6dde78113b20b8",
     "normalization_drift_count": 0,
-    "merge_dispatch_count": 1,
+    "merge_dispatch_count": 0,
     "merge_dispatch_at": "2026-10-28T04:48:32.850471+00:00",
-    "merge_run_id": 40634390526
+    "merge_run_id": 40634390526,
+    "last_refunded_auto_merge_run_id": 40634390526,
+    "deferred_auto_merge_refund_count": 1
   },
   "backlog": [
     {
@@ -1767,15 +1769,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-27T17:15:56.675675+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
-      }
-    },
-    {
       "at": "2026-10-27T17:20:52.273345+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2668,9 +2661,22 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-28T04:50:17.090950+00:00",
+      "from": "article_pr_open",
+      "to": "article_pr_open",
+      "reason": "successful_deferred_auto_merge_refunded",
+      "details": {
+        "run_id": 40634390526,
+        "pr_number": 1244,
+        "head_sha": "b9cab0ce339a8331df6ee8c30f6dde78113b20b8",
+        "merge_dispatch_count": 0,
+        "refund_count": 1
+      }
     }
   ],
-  "updated_at": "2026-10-28T04:48:28.594986+00:00",
+  "updated_at": "2026-10-28T04:50:30.650529+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
