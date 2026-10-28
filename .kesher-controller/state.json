@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "article_pr_open",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -1768,15 +1768,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-27T18:26:19.827968+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
-      }
-    },
-    {
       "at": "2026-10-27T18:31:12.604930+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2682,12 +2673,22 @@
         "previous_head_sha": "aa3aebda52dc12153a713beb33f9ae4e0eca44fe",
         "current_head_sha": "85652aba5c9cbb9c229910c3fce4eacfd9ddc153"
       }
+    },
+    {
+      "at": "2026-10-28T05:56:17.775035+00:00",
+      "from": "article_pr_open",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 2,
+        "pr_number": 1244
+      }
     }
   ],
-  "updated_at": "2026-10-28T05:51:15.066627+00:00",
+  "updated_at": "2026-10-28T05:56:17.775042+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "pending",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2695,7 +2696,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-28T04:46:11.560512+00:00",
+    "last_dispatch_at": "2026-10-28T05:56:17.774986+00:00",
     "artifact_sha256": "c4de7aeb88152b9b4e40eac7ae482ba2b1232748d2e418905d16372dbf0cc9aa",
     "source_id": "local-editorial://first-grade-maturity/0",
     "evidence_rebind_head_sha": "90ee98c0665da38228668c61582582cfae2072ad",
@@ -3090,9 +3091,10 @@
         "pr_number": "1244"
       },
       "intent_at": "2026-10-28T05:55:45.041805+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40640858903,
+      "dispatched_at": "2026-10-28T05:55:45.041805+00:00"
     }
   },
   "last_child_notification": {
