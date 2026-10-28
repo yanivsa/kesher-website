@@ -18,7 +18,7 @@
     },
     "attempts": 2,
     "deploy_attempts": 0,
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "last_dispatch_at": "2026-10-28T00:06:40.352149+00:00",
     "watchdog": {
       "identity": "2026-10-28",
@@ -64,18 +64,19 @@
     "resume_dispatches": 1,
     "pr_number": 1244,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1244",
-    "current_pr_head_sha": "a26e0d3aa97652c1d96f732355385d582bfd3a65",
+    "current_pr_head_sha": "5c60030761a54195a69ffc012ab4f1fe20e23fe3",
     "jules_head_sha": "70f56fd135354c096fa97d6c6e4ad6566ac2cf11",
     "normalization_slot": "2026-10-28",
     "normalization_dispatched_at": "2026-10-28T13:20:59.831622+00:00",
     "normalization_run_id": 40695601787,
-    "normalization_drift_count": 1,
+    "normalization_drift_count": 2,
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 40641033599,
     "last_refunded_auto_merge_run_id": 40637034405,
     "deferred_auto_merge_refund_count": 3,
-    "last_normalization_drift_head_sha": "a26e0d3aa97652c1d96f732355385d582bfd3a65"
+    "last_normalization_drift_head_sha": "5c60030761a54195a69ffc012ab4f1fe20e23fe3",
+    "normalized_head_sha": "5c60030761a54195a69ffc012ab4f1fe20e23fe3"
   },
   "backlog": [
     {
@@ -3070,7 +3071,21 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
+      "cycle": "2026-10-28",
+      "inputs": {
+        "pr_number": "1244",
+        "recovery_only": "true",
+        "expected_head_sha": "5c60030761a54195a69ffc012ab4f1fe20e23fe3"
+      },
+      "intent_at": "2026-10-28T13:22:22.386087+00:00",
+      "status": "intent",
+      "previous_run_id": 40640858903,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Normalize Article PR",
     "run_id": 40695601787,
@@ -3089,5 +3104,17 @@
     "Auto-merge Kesher article PRs:40637539050",
     "Kesher Trusted Article Image:40640858903",
     "Auto-merge Kesher article PRs:40641033599"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
