@@ -1767,15 +1767,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-28T09:46:02.002401+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-28T09:51:06.215552+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2678,12 +2669,21 @@
         "failure_streak": 2,
         "run_id": 40740531507
       }
+    },
+    {
+      "at": "2026-10-28T18:11:39.267749+00:00",
+      "from": "image_retry_wait",
+      "to": "image_retry_wait",
+      "reason": "trusted image retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-28T18:21:56.003674+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-28T18:06:56.003710+00:00",
+  "updated_at": "2026-10-28T18:11:39.267765+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "retry_wait",
+    "status": "complete",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 40740531507 completed with conclusion=success but no validated image is present",
@@ -3114,12 +3114,5 @@
     "Kesher Trusted Article Image:40740531507",
     "Kesher Normalize Article PR:40741237215"
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 40740531507 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-10-28T18:21:56.003674+00:00",
-    "at": "2026-10-28T18:06:56.003699+00:00"
-  }
+  "last_error": null
 }
