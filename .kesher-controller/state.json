@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -64,12 +64,17 @@
     "resume_dispatches": 1,
     "pr_number": 1244,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1244",
-    "current_pr_head_sha": "fa25f7f817479a10635ea88e8f913b8b0254fb6d",
+    "current_pr_head_sha": "b9cab0ce339a8331df6ee8c30f6dde78113b20b8",
     "jules_head_sha": "70f56fd135354c096fa97d6c6e4ad6566ac2cf11",
     "normalization_slot": "2026-10-28",
     "normalization_dispatched_at": "2026-10-28T04:16:06.644488+00:00",
     "normalization_run_id": 40631359241,
-    "normalized_head_sha": "fa25f7f817479a10635ea88e8f913b8b0254fb6d"
+    "normalized_head_sha": "b9cab0ce339a8331df6ee8c30f6dde78113b20b8",
+    "image_head_sha": "b9cab0ce339a8331df6ee8c30f6dde78113b20b8",
+    "merge_candidate_sha": "b9cab0ce339a8331df6ee8c30f6dde78113b20b8",
+    "normalization_drift_count": 0,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null
   },
   "backlog": [
     {
@@ -1761,15 +1766,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-27T17:10:50.121255+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
-      }
-    },
-    {
       "at": "2026-10-27T17:15:56.675675+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2665,21 +2661,29 @@
         "attempt": 1,
         "pr_number": 1244
       }
+    },
+    {
+      "at": "2026-10-28T04:48:28.594964+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-28T04:46:11.560553+00:00",
+  "updated_at": "2026-10-28T04:48:28.594986+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40634171711,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "LocalEditorial",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-28T04:46:11.560512+00:00"
+    "last_dispatch_at": "2026-10-28T04:46:11.560512+00:00",
+    "artifact_sha256": "c4de7aeb88152b9b4e40eac7ae482ba2b1232748d2e418905d16372dbf0cc9aa",
+    "source_id": "local-editorial://first-grade-maturity/0"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3061,12 +3065,37 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-28",
+      "inputs": {
+        "pr_number": "1244",
+        "slot": "2026-10-28"
+      },
+      "intent_at": "2026-10-28T04:47:37.037194+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Trusted Article Image",
     "run_id": 40634171711,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-28"
+  },
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   }
 }
