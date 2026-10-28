@@ -7,7 +7,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 40606620660,
+    "run_id": 40596118530,
     "processed_run_id": 40602133674,
     "provider_id": null,
     "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
@@ -3055,24 +3055,10 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-10-28",
-      "inputs": {
-        "slot": "2026-10-28",
-        "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: הורה שמתלבט אם הילד בשל מספיק לעלות לכיתה א או שצריך עוד זמן. להתייחס להיבטים רגשיים, חברתיים, תפקודיים ושפתיים בלי להפוך את המאמר לאבחון או לרשימת תנאי סף. להבדיל מ\"מוכנות לכיתה א\" שכבר קיים: כאן הפוקוס הוא התלבטות סביב בשלות והחלטה. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-maturity. כותרת עבודה: בשלות לכיתה א׳: מה בודקים לפני שמחליטים שהילד מוכן? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/הסתגלות סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-first-grade-maturity\nRequired Primary Keyword: בשלות לכיתה א"
-      },
-      "intent_at": "2026-10-28T00:06:07.269113+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40602133674,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-28T00:06:07.269113+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
-    "workflow": "Kesher Normalize Article PR",
-    "run_id": 40610367135,
+    "workflow": "Kesher Article Generation",
+    "run_id": 40596118530,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-28"
