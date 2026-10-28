@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "article_normalizing",
+  "status": "blocked",
   "article": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "blocked",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40606620660,
@@ -64,18 +64,18 @@
     "resume_dispatches": 1,
     "pr_number": 1244,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1244",
-    "current_pr_head_sha": "3bda67e1c93711f3b9664a578920dffdc16fa948",
+    "current_pr_head_sha": "2905f360ecc62ad2204252f3e38836dcf694c250",
     "jules_head_sha": "70f56fd135354c096fa97d6c6e4ad6566ac2cf11",
     "normalization_slot": "2026-10-28",
     "normalization_dispatched_at": "2026-10-28T18:01:37.557507+00:00",
     "normalization_run_id": 40741237215,
-    "normalization_drift_count": 3,
+    "normalization_drift_count": 4,
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 40696399137,
     "last_refunded_auto_merge_run_id": 40637034405,
     "deferred_auto_merge_refund_count": 3,
-    "last_normalization_drift_head_sha": "3bda67e1c93711f3b9664a578920dffdc16fa948"
+    "last_normalization_drift_head_sha": "2905f360ecc62ad2204252f3e38836dcf694c250"
   },
   "backlog": [
     {
@@ -1764,17 +1764,13 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_JULES_UNSTABLE_MUTATION",
+    "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed",
+    "at": "2026-10-28T18:03:51.036760+00:00"
+  },
   "history": [
-    {
-      "at": "2026-10-28T09:36:28.393540+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
     {
       "at": "2026-10-28T09:41:01.843911+00:00",
       "from": "blocked",
@@ -2675,9 +2671,18 @@
         "pr_number": 1244,
         "slot": "2026-10-28"
       }
+    },
+    {
+      "at": "2026-10-28T18:03:51.036777+00:00",
+      "from": "article_normalizing",
+      "to": "blocked",
+      "reason": "ARTICLE_JULES_UNSTABLE_MUTATION",
+      "details": {
+        "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed"
+      }
     }
   ],
-  "updated_at": "2026-10-28T18:01:37.557544+00:00",
+  "updated_at": "2026-10-28T18:03:51.036785+00:00",
   "image": {
     "attempt_count": 3,
     "status": "pending",
