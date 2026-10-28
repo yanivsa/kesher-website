@@ -30,7 +30,9 @@
     "controllerManaged": true,
     "imageProvider": "LocalEditorial",
     "imageSourceUrl": "local-editorial://first-grade-maturity/0",
-    "imageIsFallback": false
+    "imageIsFallback": false,
+    "image": "/images/generated/blog/first-grade-maturity.png",
+    "imageAlt": "איור עריכתי מקומי של הורה וילד בסביבה ביתית לקראת בית הספר, לצד ילקוט וספרים, באווירה רגועה ומעודדת."
   },
   {
     "id": "kindergarten-adjustment-difficulties",
