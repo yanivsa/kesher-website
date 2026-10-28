@@ -70,11 +70,11 @@
     "normalization_dispatched_at": "2026-10-28T05:11:27.480161+00:00",
     "normalization_run_id": 40636523240,
     "normalization_drift_count": 0,
-    "merge_dispatch_count": 2,
+    "merge_dispatch_count": 1,
     "merge_dispatch_at": "2026-10-28T05:17:43.507470+00:00",
     "merge_run_id": 40637034405,
-    "last_refunded_auto_merge_run_id": 40635136738,
-    "deferred_auto_merge_refund_count": 2,
+    "last_refunded_auto_merge_run_id": 40637034405,
+    "deferred_auto_merge_refund_count": 3,
     "last_normalization_drift_head_sha": "90ee98c0665da38228668c61582582cfae2072ad",
     "normalized_head_sha": "aa3aebda52dc12153a713beb33f9ae4e0eca44fe",
     "image_head_sha": "aa3aebda52dc12153a713beb33f9ae4e0eca44fe",
@@ -1770,15 +1770,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-27T17:42:18.859108+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
-      }
-    },
-    {
       "at": "2026-10-27T17:48:18.284642+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2678,9 +2669,22 @@
       "from": "article_image_rebinding",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-28T05:18:46.796476+00:00",
+      "from": "article_pr_open",
+      "to": "article_pr_open",
+      "reason": "successful_deferred_auto_merge_refunded",
+      "details": {
+        "run_id": 40637034405,
+        "pr_number": 1244,
+        "head_sha": "aa3aebda52dc12153a713beb33f9ae4e0eca44fe",
+        "merge_dispatch_count": 1,
+        "refund_count": 3
+      }
     }
   ],
-  "updated_at": "2026-10-28T05:17:37.150446+00:00",
+  "updated_at": "2026-10-28T05:18:58.014075+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
