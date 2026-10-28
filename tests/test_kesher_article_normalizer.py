@@ -138,5 +138,36 @@ class ArticleNormalizerTests(unittest.TestCase):
         )
 
 
+    def test_prior_slot_rehome_changes_only_publication_date(self):
+        base = []
+        head = [{
+            "id": "changing-kindergarten-midyear",
+            "title": "מעבר גן באמצע שנה",
+            "date": "2026-10-26",
+            "content": "<p>תוכן</p>",
+            "excerpt": "תקציר",
+        }]
+        article = extract_target_article(
+            base, head, "2026-10-27", source_slot="2026-10-26"
+        )
+        self.assertEqual(article["id"], "changing-kindergarten-midyear")
+        self.assertEqual(article["date"], "2026-10-27")
+        self.assertEqual(article["title"], "מעבר גן באמצע שנה")
+
+    def test_prior_slot_rehome_rejects_same_or_future_source_slot(self):
+        head = [{
+            "id": "changing-kindergarten-midyear",
+            "title": "מעבר גן באמצע שנה",
+            "date": "2026-10-27",
+            "content": "<p>תוכן</p>",
+            "excerpt": "תקציר",
+        }]
+        with self.assertRaises(ArticleNormalizationError):
+            extract_target_article([], head, "2026-10-27", source_slot="2026-10-27")
+        with self.assertRaises(ArticleNormalizationError):
+            extract_target_article([], head, "2026-10-27", source_slot="2026-10-28")
+
+
+
 if __name__ == "__main__":
     unittest.main()
