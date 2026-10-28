@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "image_retry_wait",
+  "status": "blocked",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -1767,15 +1767,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-28T09:56:44.627635+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-28T10:01:04.067279+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2678,12 +2669,21 @@
       "details": {
         "retry_at": "2026-10-28T18:21:56.003674+00:00"
       }
+    },
+    {
+      "at": "2026-10-28T18:26:43.162794+00:00",
+      "from": "image_retry_wait",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-28T18:18:07.148906+00:00",
+  "updated_at": "2026-10-28T18:26:43.162800+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "complete",
+    "status": "exhausted",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 40740531507 completed with conclusion=success but no validated image is present",
@@ -3114,5 +3114,10 @@
     "Kesher Trusted Article Image:40740531507",
     "Kesher Normalize Article PR:40741237215"
   ],
-  "last_error": null
+  "last_error": {
+    "stage": "image",
+    "code": "IMAGE_ATTEMPTS_EXHAUSTED",
+    "message": "image exhausted 3 total controller dispatch attempts",
+    "at": "2026-10-28T18:26:43.162780+00:00"
+  }
 }
