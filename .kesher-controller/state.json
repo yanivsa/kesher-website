@@ -75,7 +75,8 @@
     "last_refunded_auto_merge_run_id": 40637034405,
     "deferred_auto_merge_refund_count": 3,
     "last_normalization_drift_head_sha": "2905f360ecc62ad2204252f3e38836dcf694c250",
-    "normalized_head_sha": "2905f360ecc62ad2204252f3e38836dcf694c250"
+    "normalized_head_sha": "2905f360ecc62ad2204252f3e38836dcf694c250",
+    "last_error": null
   },
   "backlog": [
     {
