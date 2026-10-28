@@ -1771,22 +1771,9 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-28T12:01:07.880607+00:00"
+    "at": "2026-10-28T12:06:23.154393+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-28T00:06:35.735034+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
-        "retry_at": "2026-10-28T00:11:35.735010+00:00",
-        "failure_streak": 1,
-        "run_id": 40602133674,
-        "session_id": "sessions/14848436556523580886"
-      }
-    },
     {
       "at": "2026-10-28T00:06:40.352186+00:00",
       "from": "article_retry_wait",
@@ -2691,9 +2678,18 @@
       "details": {
         "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-10-28T12:06:23.154414+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
+      }
     }
   ],
-  "updated_at": "2026-10-28T12:01:07.880635+00:00",
+  "updated_at": "2026-10-28T12:06:23.154419+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
