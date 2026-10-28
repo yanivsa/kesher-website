@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "article_image_rebinding",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -64,19 +64,21 @@
     "resume_dispatches": 1,
     "pr_number": 1244,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1244",
-    "current_pr_head_sha": "5c60030761a54195a69ffc012ab4f1fe20e23fe3",
+    "current_pr_head_sha": "0215e07417f885b808a7ef2c8e8ce9e1c2cdf9df",
     "jules_head_sha": "70f56fd135354c096fa97d6c6e4ad6566ac2cf11",
     "normalization_slot": "2026-10-28",
     "normalization_dispatched_at": "2026-10-28T13:20:59.831622+00:00",
     "normalization_run_id": 40695601787,
-    "normalization_drift_count": 2,
+    "normalization_drift_count": 0,
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 40641033599,
     "last_refunded_auto_merge_run_id": 40637034405,
     "deferred_auto_merge_refund_count": 3,
     "last_normalization_drift_head_sha": "5c60030761a54195a69ffc012ab4f1fe20e23fe3",
-    "normalized_head_sha": "5c60030761a54195a69ffc012ab4f1fe20e23fe3"
+    "normalized_head_sha": "0215e07417f885b808a7ef2c8e8ce9e1c2cdf9df",
+    "image_head_sha": "0215e07417f885b808a7ef2c8e8ce9e1c2cdf9df",
+    "merge_candidate_sha": "0215e07417f885b808a7ef2c8e8ce9e1c2cdf9df"
   },
   "backlog": [
     {
@@ -1768,19 +1770,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-28T05:18:46.796476+00:00",
-      "from": "article_pr_open",
-      "to": "article_pr_open",
-      "reason": "successful_deferred_auto_merge_refunded",
-      "details": {
-        "run_id": 40637034405,
-        "pr_number": 1244,
-        "head_sha": "aa3aebda52dc12153a713beb33f9ae4e0eca44fe",
-        "merge_dispatch_count": 1,
-        "refund_count": 3
-      }
-    },
-    {
       "at": "2026-10-28T05:23:19.629432+00:00",
       "from": "article_pr_open",
       "to": "blocked",
@@ -2674,12 +2663,18 @@
         "pr_number": 1244,
         "head_sha": "5c60030761a54195a69ffc012ab4f1fe20e23fe3"
       }
+    },
+    {
+      "at": "2026-10-28T13:26:10.642507+00:00",
+      "from": "article_image_rebinding",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-28T13:23:02.058922+00:00",
+  "updated_at": "2026-10-28T13:26:10.642527+00:00",
   "image": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -3075,7 +3070,20 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-28",
+      "inputs": {
+        "pr_number": "1244",
+        "slot": "2026-10-28"
+      },
+      "intent_at": "2026-10-28T13:25:25.386364+00:00",
+      "status": "intent",
+      "previous_run_id": 40641033599,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Trusted Article Image",
     "run_id": 40695910127,
@@ -3095,5 +3103,17 @@
     "Kesher Trusted Article Image:40640858903",
     "Auto-merge Kesher article PRs:40641033599",
     "Kesher Normalize Article PR:40695601787"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
