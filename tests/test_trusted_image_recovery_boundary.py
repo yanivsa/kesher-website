@@ -43,6 +43,31 @@ class TrustedImageRecoveryBoundaryTests(unittest.TestCase):
             posts[-1] = {**self.base[0], 'title': 'unauthorized old article change'}
             self.assertTrue(client.article_pr_normalization_required(self.pr)[0])
 
+    def test_prior_image_recovery_allows_content_only_repair_with_same_visual_identity(self):
+        client = V4GitHubClient('test/repo', 'test-token')
+        prior = self.pr['head']['sha']
+        current = 'd' * 40
+        pr = copy.deepcopy(self.pr)
+        pr['head']['sha'] = current
+        current_post = {k: copy.deepcopy(v) for k, v in self.post.items() if k not in {'image', 'imageAlt'}}
+        current_post['content'] = str(current_post.get('content') or '') + '<p>Bounded internal-link repair only.</p>'
+
+        def contents(path, ref):
+            self.assertEqual(path, 'src/data/posts.json')
+            if ref == pr['base']['sha']:
+                return copy.deepcopy(self.base)
+            if ref == current:
+                return [copy.deepcopy(current_post), *copy.deepcopy(self.base)]
+            if ref == prior:
+                return [copy.deepcopy(self.post), *copy.deepcopy(self.base)]
+            raise AssertionError(ref)
+
+        with mock.patch.object(client, '_article_pr_image_proof', return_value=(True, {'article_id': self.post['id']})), \
+             mock.patch.object(client, 'contents_json', side_effect=contents):
+            recoverable, _ = client.article_pr_prior_image_recoverable(pr)
+
+        self.assertTrue(recoverable)
+
     def test_real_dispatch_guard_allows_bound_recovery_after_three_attempts(self):
         gh = mock.Mock()
         gh.active_workflow_run.return_value = None
@@ -81,17 +106,22 @@ class TrustedImageRecoveryBoundaryTests(unittest.TestCase):
     def test_worker_restores_exact_prior_pixels_without_calling_generation(self):
         self._run_worker_recovery()
 
+    def test_worker_restores_prior_pixels_after_content_only_repair_without_generation(self):
+        self._run_worker_recovery(content_changed=True)
+
     def test_recovery_only_refuses_changed_editorial_without_generation(self):
         with self.assertRaisesRegex(RuntimeError, "IMAGE_RECOVERY_PROOF_INVALID"):
             self._run_worker_recovery(changed=True)
 
-    def _run_worker_recovery(self, changed=False):
+    def _run_worker_recovery(self, changed=False, content_changed=False):
         worker = load('article-image-worker-v3')
         prior = self.pr['head']['sha']
         current = 'd' * 40
         stripped = {k: v for k, v in self.post.items() if k not in {'image', 'imageAlt'}}
         if changed:
             stripped['title'] = 'Different editorial article'
+        if content_changed:
+            stripped['content'] = str(stripped.get('content') or '') + '<p>Bounded internal-link repair only.</p>'
         pr = copy.deepcopy(self.pr)
         pr['head']['sha'] = current
         def posts_at(repo, ref, token):
