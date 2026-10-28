@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 2,
+    "attempt_count": 3,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-28T00:11:35.735010+00:00",
+    "next_retry_at": null,
     "run_id": 40602133674,
     "processed_run_id": 40602133674,
     "provider_id": null,
@@ -19,7 +19,7 @@
     "attempts": 2,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-10-27T23:26:24.320379+00:00",
+    "last_dispatch_at": "2026-10-28T00:06:40.352149+00:00",
     "watchdog": {
       "identity": "2026-10-28",
       "session_id": null,
@@ -60,7 +60,8 @@
       }
     },
     "last_jules_session_id": "sessions/14848436556523580886",
-    "last_failed_run_id": 40602133674
+    "last_failed_run_id": 40602133674,
+    "resume_dispatches": 1
   },
   "backlog": [
     {
@@ -1749,24 +1750,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
-    "retryable": true,
-    "retry_at": "2026-10-28T00:11:35.735010+00:00",
-    "at": "2026-10-28T00:06:35.735029+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-27T16:15:56.330364+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "owner run-now article retry backoff is active",
-      "details": {
-        "retry_at": "2026-10-27T16:16:12.907599+00:00"
-      }
-    },
     {
       "at": "2026-10-27T16:21:45.621592+00:00",
       "from": "article_retry_wait",
@@ -2657,9 +2642,19 @@
         "run_id": 40602133674,
         "session_id": "sessions/14848436556523580886"
       }
+    },
+    {
+      "at": "2026-10-28T00:06:40.352186+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "timed-out Jules session preserved; same-session recovery dispatched immediately",
+      "details": {
+        "run_id": 40602133674,
+        "session_id": "sessions/14848436556523580886"
+      }
     }
   ],
-  "updated_at": "2026-10-28T00:06:35.735039+00:00",
+  "updated_at": "2026-10-28T00:06:40.352194+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -3061,21 +3056,10 @@
         "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: הורה שמתלבט אם הילד בשל מספיק לעלות לכיתה א או שצריך עוד זמן. להתייחס להיבטים רגשיים, חברתיים, תפקודיים ושפתיים בלי להפוך את המאמר לאבחון או לרשימת תנאי סף. להבדיל מ\"מוכנות לכיתה א\" שכבר קיים: כאן הפוקוס הוא התלבטות סביב בשלות והחלטה. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-maturity. כותרת עבודה: בשלות לכיתה א׳: מה בודקים לפני שמחליטים שהילד מוכן? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/הסתגלות סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-first-grade-maturity\nRequired Primary Keyword: בשלות לכיתה א"
       },
       "intent_at": "2026-10-28T00:06:07.269113+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40602133674,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-28T00:06:07.269113+00:00"
     }
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
