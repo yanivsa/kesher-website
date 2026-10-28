@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "article_image_running",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -18,7 +18,7 @@
     },
     "attempts": 2,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "last_dispatch_at": "2026-10-28T00:06:40.352149+00:00",
     "watchdog": {
       "identity": "2026-10-28",
@@ -67,7 +67,7 @@
     "current_pr_head_sha": "3bda67e1c93711f3b9664a578920dffdc16fa948",
     "jules_head_sha": "70f56fd135354c096fa97d6c6e4ad6566ac2cf11",
     "normalization_slot": "2026-10-28",
-    "normalization_dispatched_at": "2026-10-28T13:20:59.831622+00:00",
+    "normalization_dispatched_at": "2026-10-28T18:01:37.557507+00:00",
     "normalization_run_id": 40695601787,
     "normalization_drift_count": 3,
     "merge_dispatch_count": 0,
@@ -1767,15 +1767,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-28T09:31:15.319654+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-28T09:36:28.393540+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2674,9 +2665,19 @@
         "attempt": 3,
         "pr_number": 1244
       }
+    },
+    {
+      "at": "2026-10-28T18:01:37.557535+00:00",
+      "from": "article_image_running",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1244,
+        "slot": "2026-10-28"
+      }
     }
   ],
-  "updated_at": "2026-10-28T17:57:06.660956+00:00",
+  "updated_at": "2026-10-28T18:01:37.557544+00:00",
   "image": {
     "attempt_count": 3,
     "status": "pending",
@@ -3093,9 +3094,10 @@
         "slot": "2026-10-28"
       },
       "intent_at": "2026-10-28T18:00:51.003504+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40695601787,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40741237215,
+      "dispatched_at": "2026-10-28T18:00:51.003504+00:00"
     }
   },
   "last_child_notification": {
@@ -3119,17 +3121,5 @@
     "Kesher Normalize Article PR:40695601787",
     "Kesher Trusted Article Image:40695910127",
     "Auto-merge Kesher article PRs:40696399137"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  ]
 }
