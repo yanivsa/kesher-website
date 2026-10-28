@@ -131,11 +131,21 @@ class TrustedImageRecoveryBoundaryTests(unittest.TestCase):
                 return {'encoding': 'base64', 'content': base64.b64encode(self.image).decode()}
             raise RuntimeError('not found')
         commits = []
+        patched_bodies = []
         def commit(repo, candidate_pr, token, files, deletes):
             commits.append(files)
             return 'e' * 40
-        with mock.patch.dict(os.environ, {'KESHER_IMAGE_RECOVERY_ONLY': 'true'}), mock.patch.object(worker.core, 'posts_at', side_effect=posts_at), mock.patch.object(worker.core, 'github_content', side_effect=content), mock.patch.object(worker, 'choose_candidate', side_effect=AssertionError('must not generate replacement pixels')), mock.patch.object(worker.core, 'patch_pr_body'), mock.patch.object(worker.core, 'request_json', return_value=[]), mock.patch.object(worker, 'commit_files', side_effect=commit):
+        def patch_body(repo, number, body, token):
+            patched_bodies.append(body)
+        with mock.patch.dict(os.environ, {'KESHER_IMAGE_RECOVERY_ONLY': 'true'}), mock.patch.object(worker.core, 'posts_at', side_effect=posts_at), mock.patch.object(worker.core, 'github_content', side_effect=content), mock.patch.object(worker, 'choose_candidate', side_effect=AssertionError('must not generate replacement pixels')), mock.patch.object(worker.core, 'patch_pr_body', side_effect=patch_body), mock.patch.object(worker.core, 'request_json', return_value=[]), mock.patch.object(worker, 'commit_files', side_effect=commit):
             self.assertTrue(worker.ensure_image('test/repo', pr, 'test-token'))
         self.assertEqual(commits[0]['public' + self.post['image']][0], self.image)
         restored = json.loads(commits[0]['src/data/posts.json'][0])[0]
-        self.assertEqual(restored, self.post)
+        expected = copy.deepcopy(stripped)
+        for field in ('image', 'imageAlt', 'imageProvider', 'imageSourceUrl', 'imageIsFallback', 'imageCredit', 'imageCreditUrl'):
+            if field in self.post:
+                expected[field] = self.post[field]
+        self.assertEqual(restored, expected)
+        self.assertTrue(patched_bodies)
+        self.assertEqual(worker.exact_field(patched_bodies[-1], 'Image Article SHA-256'), worker.article_sha256(expected))
+        self.assertEqual(worker.exact_field(patched_bodies[-1], 'Image Evidence Head'), 'e' * 40)
