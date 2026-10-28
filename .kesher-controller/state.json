@@ -2683,7 +2683,7 @@
   "updated_at": "2026-10-28T19:36:43.837663+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "exhausted",
+    "status": "complete",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 40740531507 completed with conclusion=success but no validated image is present",
@@ -3089,7 +3089,21 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
+      "cycle": "2026-10-28",
+      "inputs": {
+        "pr_number": "1244",
+        "recovery_only": "true",
+        "expected_head_sha": "2905f360ecc62ad2204252f3e38836dcf694c250"
+      },
+      "intent_at": "2026-10-28T19:53:16.369187+00:00",
+      "status": "intent",
+      "previous_run_id": 40740531507,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Normalize Article PR",
     "run_id": 40741237215,
@@ -3119,5 +3133,17 @@
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
     "message": "image exhausted 3 total controller dispatch attempts",
     "at": "2026-10-28T19:36:43.837644+00:00"
+  },
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   }
 }
