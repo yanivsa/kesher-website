@@ -2701,7 +2701,8 @@
     "source_id": "local-editorial://first-grade-maturity/0",
     "evidence_rebind_head_sha": "90ee98c0665da38228668c61582582cfae2072ad",
     "evidence_rebind_dispatched_at": "2026-10-28T05:13:56.530553+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
+    "run_id": 40640858903
   },
   "long_video": {
     "attempt_count": 0,
