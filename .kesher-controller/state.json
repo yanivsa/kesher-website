@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "article_normalizing",
+  "status": "article_image_rebinding",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -1768,15 +1768,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-27T17:38:23.384814+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
-      }
-    },
-    {
       "at": "2026-10-27T17:40:32.982765+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2678,12 +2669,22 @@
         "pr_number": 1244,
         "slot": "2026-10-28"
       }
+    },
+    {
+      "at": "2026-10-28T05:13:56.530581+00:00",
+      "from": "article_normalizing",
+      "to": "article_image_rebinding",
+      "reason": "prior trusted image artifact proved against current normalized article and must be reattached",
+      "details": {
+        "pr_number": 1244,
+        "head_sha": "90ee98c0665da38228668c61582582cfae2072ad"
+      }
     }
   ],
-  "updated_at": "2026-10-28T05:11:27.480198+00:00",
+  "updated_at": "2026-10-28T05:13:56.530590+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "pending",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2694,7 +2695,10 @@
     "last_dispatch_at": "2026-10-28T04:46:11.560512+00:00",
     "artifact_sha256": "c4de7aeb88152b9b4e40eac7ae482ba2b1232748d2e418905d16372dbf0cc9aa",
     "source_id": "local-editorial://first-grade-maturity/0",
-    "run_id": 40634171711
+    "run_id": 40634171711,
+    "evidence_rebind_head_sha": "90ee98c0665da38228668c61582582cfae2072ad",
+    "evidence_rebind_dispatched_at": "2026-10-28T05:13:56.530553+00:00",
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3086,9 +3090,10 @@
         "expected_head_sha": "90ee98c0665da38228668c61582582cfae2072ad"
       },
       "intent_at": "2026-10-28T05:13:08.999701+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40634171711,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40636764076,
+      "dispatched_at": "2026-10-28T05:13:08.999701+00:00"
     }
   },
   "last_child_notification": {
@@ -3102,17 +3107,5 @@
     "Kesher Trusted Article Image:40634171711",
     "Auto-merge Kesher article PRs:40634390526",
     "Auto-merge Kesher article PRs:40635136738"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  ]
 }
