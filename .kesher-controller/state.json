@@ -1765,24 +1765,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 40640858903 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-10-28T17:52:41.410199+00:00",
-    "at": "2026-10-28T17:47:41.410227+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-28T09:21:17.279431+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
     {
       "at": "2026-10-28T09:26:16.000761+00:00",
       "from": "blocked",
@@ -2681,12 +2665,21 @@
         "failure_streak": 1,
         "run_id": 40640858903
       }
+    },
+    {
+      "at": "2026-10-28T17:51:37.948923+00:00",
+      "from": "image_retry_wait",
+      "to": "image_retry_wait",
+      "reason": "trusted image retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-28T17:52:41.410199+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-28T17:47:41.410238+00:00",
+  "updated_at": "2026-10-28T17:51:37.948939+00:00",
   "image": {
     "attempt_count": 2,
-    "status": "retry_wait",
+    "status": "complete",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 40640858903 completed with conclusion=success but no validated image is present",
