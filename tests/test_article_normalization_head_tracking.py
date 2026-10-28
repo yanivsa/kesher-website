@@ -823,6 +823,53 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
         self.assertEqual(state["article"]["last_refunded_auto_merge_run_id"], 40696399137)
 
 
+    def test_content_preflight_rejects_blog_target_absent_from_public_catalog(self) -> None:
+        github = mock.MagicMock()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            now=datetime(2026, 10, 28, 20, 0, tzinfo=ISRAEL_TZ),
+            github=github,
+            site=mock.MagicMock(),
+        )
+        base_sha = "a" * 40
+        head_sha = "b" * 40
+        base_post = {"id": "published-one", "slug": "published-one", "date": "2026-10-27"}
+        content = (
+            "<h3>א</h3><h3>ב</h3><h3>ג</h3><h3>ד</h3><h3>ה</h3>"
+            + ("מילה " * 700)
+            + '<a href="/blog/published-one">אחד</a>'
+            + '<a href="/blog/published-two">שתיים</a>'
+            + '<a href="/blog/retired-target">שלוש</a>'
+        )
+        target = {
+            "id": "first-grade-maturity",
+            "slug": "first-grade-maturity",
+            "date": "2026-10-28",
+            "content": content,
+        }
+        published = [
+            {"id": "published-one", "slug": "published-one"},
+            {"id": "published-two", "slug": "published-two"},
+        ]
+
+        def contents(path, ref):
+            if path == "src/data/posts.json" and ref == head_sha:
+                return [target, base_post]
+            if path == "src/data/posts.json" and ref == base_sha:
+                return [base_post]
+            if path == "src/data/postSummaries.json" and ref == base_sha:
+                return published
+            raise AssertionError((path, ref))
+
+        github.contents_json.side_effect = contents
+        pr = {"head": {"sha": head_sha}, "base": {"sha": base_sha}}
+        with mock.patch.object(stabilized.quality, "full_article_violations", return_value=[]):
+            errors = controller._pr_content_structure_errors(pr)
+
+        self.assertIn("internal_blog_link_missing: /blog/retired-target", errors)
+        self.assertNotIn("internal_blog_link_missing: /blog/published-one", errors)
+        self.assertNotIn("internal_blog_link_missing: /blog/published-two", errors)
+
+
 
 if __name__ == "__main__":
     unittest.main()
