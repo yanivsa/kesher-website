@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "image_retry_wait",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -1768,15 +1768,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-28T09:26:16.000761+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-28T09:31:15.319654+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2674,12 +2665,22 @@
       "details": {
         "retry_at": "2026-10-28T17:52:41.410199+00:00"
       }
+    },
+    {
+      "at": "2026-10-28T17:57:06.660947+00:00",
+      "from": "image_retry_wait",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 3,
+        "pr_number": 1244
+      }
     }
   ],
-  "updated_at": "2026-10-28T17:51:37.948939+00:00",
+  "updated_at": "2026-10-28T17:57:06.660956+00:00",
   "image": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 3,
+    "status": "running",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 40640858903 completed with conclusion=success but no validated image is present",
@@ -2687,7 +2688,7 @@
       "retry_at": "2026-10-28T17:52:41.410199+00:00",
       "at": "2026-10-28T17:47:41.410227+00:00"
     },
-    "next_retry_at": "2026-10-28T17:52:41.410199+00:00",
+    "next_retry_at": null,
     "processed_run_id": 40640858903,
     "provider_id": "LocalEditorial",
     "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
@@ -2695,7 +2696,7 @@
     "failure_count_by_type": {
       "IMAGE_OUTPUT_MISSING": 1
     },
-    "last_dispatch_at": "2026-10-28T05:56:17.774986+00:00",
+    "last_dispatch_at": "2026-10-28T17:57:06.660917+00:00",
     "artifact_sha256": "c4de7aeb88152b9b4e40eac7ae482ba2b1232748d2e418905d16372dbf0cc9aa",
     "source_id": "local-editorial://first-grade-maturity/0",
     "evidence_rebind_head_sha": "5c60030761a54195a69ffc012ab4f1fe20e23fe3",
@@ -3093,9 +3094,10 @@
         "pr_number": "1244"
       },
       "intent_at": "2026-10-28T17:55:56.511560+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40640858903,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40740531507,
+      "dispatched_at": "2026-10-28T17:55:56.511560+00:00"
     }
   },
   "last_child_notification": {
@@ -3119,17 +3121,5 @@
     "Kesher Normalize Article PR:40695601787",
     "Kesher Trusted Article Image:40695910127",
     "Auto-merge Kesher article PRs:40696399137"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  ]
 }
