@@ -64,6 +64,26 @@ IMAGE_EVIDENCE_FIELDS = (
 )
 
 
+
+IMAGE_VISUAL_IDENTITY_FIELDS = (
+    "id",
+    "slug",
+    "title",
+    "category",
+    "subcategory",
+    "excerpt",
+)
+
+
+def image_visual_identity(post: dict) -> tuple[object, ...]:
+    """Stable identity for reusing already-proven hero pixels after text-only repairs.
+
+    These are the article fields used by the trusted image worker to choose or
+    verify hero imagery. Full article HTML is deliberately excluded so bounded
+    link/prose repairs do not force replacement pixels.
+    """
+    return tuple(post.get(field) for field in IMAGE_VISUAL_IDENTITY_FIELDS)
+
 def exact_field(body: str, label: str) -> str | None:
     pattern = re.compile(rf"^\s*(?:[-*]\s*)?{re.escape(label)}\s*:\s*(.*?)\s*$", re.I)
     values = [match.group(1).strip() for line in (body or "").splitlines()
