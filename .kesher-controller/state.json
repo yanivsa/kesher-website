@@ -2684,7 +2684,7 @@
       "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-28T06:01:38.548274+00:00",
+  "updated_at": "2026-10-28T06:06:47.004690+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -3091,11 +3091,10 @@
         "pr_number": "1244",
         "slot": "2026-10-28"
       },
-      "intent_at": "2026-10-28T06:00:46.810978+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-28T06:05:54.356248+00:00",
+      "status": "intent",
       "previous_run_id": 40641033599,
-      "observed_active_run_id": 40641378688,
-      "dispatched_at": "2026-10-28T06:00:46.810978+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3116,5 +3115,17 @@
     "Auto-merge Kesher article PRs:40637539050",
     "Kesher Trusted Article Image:40640858903",
     "Auto-merge Kesher article PRs:40641033599"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
