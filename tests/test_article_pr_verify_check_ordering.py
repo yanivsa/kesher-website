@@ -423,5 +423,56 @@ Image Evidence Head: {self.head_sha}"""
         self.assertEqual(urlopen.call_count, 2)
 
 
+    def test_content_error_requests_repair_even_while_verify_is_in_progress(self) -> None:
+        controller_path = ROOT / ".github" / "scripts" / "article-pr-controller.py"
+        spec = importlib.util.spec_from_file_location("article_pr_controller_pending_verify_repair_test", controller_path)
+        assert spec and spec.loader
+        controller = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = controller
+        spec.loader.exec_module(controller)
+
+        pr = {
+            "number": 1244,
+            "state": "open",
+            "draft": False,
+            "head": {"sha": self.head_sha, "ref": "jules-article"},
+            "base": {"sha": self.base_sha},
+            "body": "https://jules.google.com/task/14848436556523580886",
+        }
+        files = [{"filename": "src/data/posts.json"}]
+        checks = {"check_runs": [{
+            "name": "verify",
+            "head_sha": self.head_sha,
+            "status": "in_progress",
+            "conclusion": None,
+            "id": 200,
+            "started_at": "2026-10-28T13:26:00Z",
+            "completed_at": None,
+        }]}
+        fake_validator = unittest.mock.MagicMock()
+        fake_validator.fetch_posts.side_effect = [[], []]
+        fake_validator.fetch_repo_json.return_value = []
+        fake_validator.evaluate.return_value = [
+            "internal_blog_link_missing: /blog/quiet-resignation",
+            "Fresh successful verify check is required on the current head",
+        ]
+
+        with unittest.mock.patch.object(controller, "request_json", side_effect=[pr, files]), \
+             unittest.mock.patch.object(controller, "is_article_scope", return_value=True), \
+             unittest.mock.patch.object(controller, "normalize_pr_body"), \
+             unittest.mock.patch.object(controller, "forbidden_paths", return_value=[]), \
+             unittest.mock.patch.object(controller, "clean_forbidden_files", return_value=False), \
+             unittest.mock.patch.object(controller, "fetch_checks", return_value=checks), \
+             unittest.mock.patch.object(controller, "load_validator", return_value=fake_validator), \
+             unittest.mock.patch.object(controller, "send_jules_repair", return_value=True) as repair, \
+             unittest.mock.patch.object(controller, "merge_and_deploy") as merge:
+            result = controller.process("yanivsa/kesher-website", 1244, "token", "jules-key")
+
+        self.assertEqual(result, 0)
+        repair.assert_called_once()
+        merge.assert_not_called()
+
+
+
 if __name__ == "__main__":
     unittest.main()
