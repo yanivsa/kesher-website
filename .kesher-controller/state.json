@@ -72,7 +72,7 @@
     "normalization_drift_count": 0,
     "merge_dispatch_count": 1,
     "merge_dispatch_at": "2026-10-28T13:26:15.219579+00:00",
-    "merge_run_id": 40641033599,
+    "merge_run_id": 40696399137,
     "last_refunded_auto_merge_run_id": 40637034405,
     "deferred_auto_merge_refund_count": 3,
     "last_normalization_drift_head_sha": "5c60030761a54195a69ffc012ab4f1fe20e23fe3",
@@ -3070,24 +3070,10 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
-      "cycle": "2026-10-28",
-      "inputs": {
-        "pr_number": "1244",
-        "slot": "2026-10-28"
-      },
-      "intent_at": "2026-10-28T13:25:25.386364+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40641033599,
-      "observed_active_run_id": 40696399137,
-      "dispatched_at": "2026-10-28T13:25:25.386364+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
-    "workflow": "Kesher Trusted Article Image",
-    "run_id": 40695910127,
+    "workflow": "Auto-merge Kesher article PRs",
+    "run_id": 40696399137,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-28"
