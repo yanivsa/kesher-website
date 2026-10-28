@@ -1771,19 +1771,9 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-28T10:31:21.129109+00:00"
+    "at": "2026-10-28T10:36:03.247897+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-27T22:06:09.074052+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
-      "details": {
-        "backlog_cycle": "2026-10-27",
-        "source_slug": "kindergarten-adjustment-difficulties"
-      }
-    },
     {
       "at": "2026-10-27T22:36:33.955359+00:00",
       "from": "waiting_for_article_window",
@@ -2696,9 +2686,18 @@
       "details": {
         "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-10-28T10:36:03.247914+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
+      }
     }
   ],
-  "updated_at": "2026-10-28T10:31:21.129133+00:00",
+  "updated_at": "2026-10-28T10:36:03.247921+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
