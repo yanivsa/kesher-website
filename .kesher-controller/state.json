@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1739,12 +1739,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T12:41:02.009882+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-29T12:41:02.508494+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2587,9 +2581,19 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-10-29T19:15:58.234025+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261029-210835-7326680648",
+        "task_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d"
+      }
     }
   ],
-  "updated_at": "2026-10-29T19:11:07.921227+00:00",
+  "updated_at": "2026-10-29T19:15:58.234035+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2611,18 +2615,36 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-10-29T19:20:25.603844+00:00",
     "run_id": 40937218928,
-    "processed_run_id": null,
-    "provider_id": null,
+    "processed_run_id": 40937218928,
+    "provider_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-10-29T19:07:39.799791+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "last_run_conclusion": "success",
+    "item_id": "video-20261029-210835-7326680648",
+    "source_slug": "toilet-fear-children",
+    "source_content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
+    "content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
+    "source_id": "d45ab1ba-1d2e-4f89-8a01-c8425c37abcd",
+    "task_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
+    "artifact_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
+    "provider_status": "pending",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:toilet-fear-children:7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb:video-20261029-210835-7326680648",
+      "hard_started_at": "2026-10-29T19:08:42.963082+00:00",
+      "last_progress_at": "2026-10-29T19:15:25.603844+00:00",
+      "last_fingerprint": "34dc491419216d3e975ac9b2e9166d277a0e98c51dc8798e12af838f8a155623",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
