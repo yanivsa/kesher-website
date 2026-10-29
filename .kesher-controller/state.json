@@ -2483,7 +2483,7 @@
       }
     }
   ],
-  "updated_at": "2026-10-29T16:44:43.559612+00:00",
+  "updated_at": "2026-10-29T16:46:11.474683+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2913,6 +2913,18 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-29T13:22:45.670201+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-29",
+      "inputs": {
+        "pr_number": "1252",
+        "slot": "2026-10-29"
+      },
+      "intent_at": "2026-10-29T16:45:48.607448+00:00",
+      "status": "intent",
+      "previous_run_id": 40914052132,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
