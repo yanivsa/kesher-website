@@ -1,98 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-28",
-  "status": "complete",
+  "cycle": "2026-10-29",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
+    "last_error": null,
     "next_retry_at": null,
-    "run_id": 40606620660,
-    "processed_run_id": 40602133674,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "COMPLETED_WITHOUT_PR": 1,
-      "JULES_TIMEOUT_SESSION_ACTIVE": 1
-    },
+    "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 1,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-10-28T00:06:40.352149+00:00",
-    "watchdog": {
-      "identity": "2026-10-28",
-      "session_id": null,
-      "last_progress_at": "2026-10-27T22:36:32+00:00",
-      "last_fingerprint": null,
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-10-28",
-      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "retryable": true,
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
-      "session_id": "sessions/14848436556523580886",
-      "pr_url": "",
-      "github_run_id": "40602133674",
-      "completed_at": "2026-10-28T00:05:23.374274+00:00",
-      "diagnostic": {
-        "source": {
-          "name": "sources/github/yanivsa/kesher-website",
-          "owner": "yanivsa",
-          "repo": "kesher-website",
-          "default_branch": "main",
-          "main_available": true
-        },
-        "activity_count": 2,
-        "change_set_count": 0,
-        "change_set_fingerprints": [],
-        "last_agent_message": "",
-        "last_progress": "",
-        "last_description": "",
-        "session_failed_reason": ""
-      }
-    },
-    "last_jules_session_id": "sessions/14848436556523580886",
-    "last_failed_run_id": 40602133674,
-    "resume_dispatches": 1,
-    "pr_number": 1244,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1244",
-    "current_pr_head_sha": "e17f4e3eed813b34aa3f228ad02972db0acbabd9",
-    "jules_head_sha": "70f56fd135354c096fa97d6c6e4ad6566ac2cf11",
-    "normalization_slot": "2026-10-28",
-    "normalization_dispatched_at": "2026-10-28T18:01:37.557507+00:00",
-    "normalization_run_id": 40741237215,
-    "normalization_drift_count": 0,
-    "merge_dispatch_count": 0,
-    "merge_dispatch_at": null,
-    "merge_run_id": 40825372478,
-    "last_refunded_auto_merge_run_id": 40637034405,
-    "deferred_auto_merge_refund_count": 3,
-    "last_normalization_drift_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44",
-    "last_error": null,
-    "normalized_head_sha": "e17f4e3eed813b34aa3f228ad02972db0acbabd9",
-    "image_head_sha": "e17f4e3eed813b34aa3f228ad02972db0acbabd9",
-    "merge_candidate_sha": "e17f4e3eed813b34aa3f228ad02972db0acbabd9",
-    "slug": "first-grade-maturity",
-    "title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
-    "url": "https://kesher.saharoni.com/blog/first-grade-maturity",
-    "published_date": "2026-10-28",
-    "quality_content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
-    "reconciled_existing_article": true,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-10-29T07:10:34.485169+00:00",
-    "quality_violations": [],
-    "live": true,
-    "last_deploy_dispatch_at": "2026-10-29T05:53:20.349289+00:00",
-    "next_deploy_retry_at": null,
-    "deploy_run_id": 40825956939,
-    "live_verified_at": "2026-10-29T07:10:50.470994+00:00"
+    "deploy_attempts": 0,
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -1781,187 +1704,8 @@
       }
     }
   ],
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-29T00:36:13.160274+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T00:41:12.097747+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T00:46:07.995322+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T00:51:08.817876+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T00:56:03.313408+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T01:01:04.160040+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T01:06:17.467115+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T01:11:07.913032+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T01:16:05.658779+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T01:21:18.034358+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T01:26:14.510493+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T01:31:03.429653+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T01:36:25.656166+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T01:41:08.978062+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T01:46:01.441667+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T01:51:11.473399+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T01:56:10.612245+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T02:01:03.596002+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T02:06:11.189880+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T02:11:20.573406+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
     {
       "at": "2026-10-29T02:16:15.238527+00:00",
       "from": "blocked",
@@ -2616,213 +2360,62 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-29T07:15:42.047264+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-10-29T07:15:42.047270+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-10-29T07:15:42.048488+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-10-29T07:10:51.458575+00:00",
+  "updated_at": "2026-10-29T07:15:42.047243+00:00",
   "image": {
-    "attempt_count": 3,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "processed_run_id": 40740531507,
-    "provider_id": "LocalEditorial",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 2
-    },
-    "last_dispatch_at": "2026-10-28T17:57:06.660917+00:00",
-    "artifact_sha256": "c4de7aeb88152b9b4e40eac7ae482ba2b1232748d2e418905d16372dbf0cc9aa",
-    "source_id": "local-editorial://first-grade-maturity/0",
-    "evidence_rebind_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44",
-    "evidence_rebind_dispatched_at": "2026-10-29T05:44:50.453931+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 40740531507,
-    "run_id": 40825155532,
-    "image_path": "/images/generated/blog/first-grade-maturity.png"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 3,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 40831732148,
-    "processed_run_id": 40828904272,
-    "provider_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-29T06:51:16.235915+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261029-082416-de086b0499-a3",
-    "resume_dispatches": 3,
-    "source_slug": "first-grade-maturity",
-    "source_content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
-    "content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
-    "source_id": "41301c26-ed1e-4d75-9b3e-f7c48e17abde",
-    "task_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
-    "artifact_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
-    "provider_status": "pending",
-    "verified": true,
-    "watchdog": {
-      "identity": "long_video:first-grade-maturity:de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7:video-20261029-082416-de086b0499-a3",
-      "hard_started_at": "2026-10-29T06:24:23.256499+00:00",
-      "last_progress_at": "2026-10-29T06:30:40.993823+00:00",
-      "last_fingerprint": "11f02490d2ddabf8babe5eec1123546ec65747f41bf07cfb43fa8e352e92e9da",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-10-29T06:50:43.510373+00:00"
-    },
-    "pending_resume_ready": false,
-    "youtube_id": "9JQ_jdASSkM",
-    "youtube_url": "https://youtu.be/9JQ_jdASSkM",
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 109.933,
-    "content_duration_seconds": 109.917,
-    "signature_duration_seconds": 3.0,
-    "signature_overlay": true,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 40832515468,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "3844a1dd-a66f-4150-b50f-8c84c2b832ad",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-29T06:59:02.696701+00:00",
-    "artifact_id": "3844a1dd-a66f-4150-b50f-8c84c2b832ad",
-    "source_id": "84b7ed1b-55bb-4d87-85c2-84a543a1ab8a",
-    "adopted_from_long_item_id": null,
-    "source": {
-      "id": "first-grade-maturity",
-      "slug": "first-grade-maturity",
-      "title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
-      "date": "2026-10-28",
-      "category": "הדרכת הורים",
-      "subcategory": "הכנה לכיתה א",
-      "excerpt": "ההתלבטות אם הילד מוכן לעלות לכיתה א מלווה הורים רבים. מהם הסימנים הרגשיים, החברתיים והתפקודיים שכדאי לשים לב אליהם, ומתי כדאי להתייעץ כדי לקבל החלטה שקולה שלא מבוססת רק על גיל או ציפיות הסביבה?",
-      "canonical_url": "https://kesher.saharoni.com/blog/first-grade-maturity",
-      "content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
-      "video_title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
-      "short_title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
-      "short_hook": "",
-      "youtube_metadata": {
-        "title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
-        "description": "ההתלבטות אם הילד מוכן לעלות לכיתה א מלווה הורים רבים. מהם הסימנים הרגשיים, החברתיים והתפקודיים שכדאי לשים לב אליהם, ומתי כדאי להתייעץ כדי לקבל החלטה שקולה שלא מבוססת רק על גיל או ציפיות הסביבה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-maturity\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "הכנה לכיתה א"
-        ]
-      },
-      "short_youtube_metadata": {
-        "title": "בקצרה: בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
-        "description": "ההתלבטות אם הילד מוכן לעלות לכיתה א מלווה הורים רבים. מהם הסימנים הרגשיים, החברתיים והתפקודיים שכדאי לשים לב אליהם, ומתי כדאי להתייעץ כדי לקבל החלטה שקולה שלא מבוססת רק על גיל או ציפיות הסביבה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-maturity\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "הכנה לכיתה א"
-        ]
-      }
-    },
-    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-    "task_id": "3844a1dd-a66f-4150-b50f-8c84c2b832ad",
-    "raw_sha256": "6fcb34aa3a7b053edc34b46efa584651a21825bd661ca1077d1fa22fa8c45212",
-    "final_sha256": "c617c5de501f3aed3640152ab0174d894641b01ac4ebdea830061bb3001273bf",
-    "provider_raw_media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 720,
-      "height": 1280,
-      "duration": 76.167,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 1080,
-      "height": 1920,
-      "duration": 76.167,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "provider_video_format": "short",
-    "provider_native_short": true,
-    "provider_native_short_verified": true,
-    "provider_short_fallback_used": false,
-    "fresh_generation_attempt": 1,
-    "overview_provider_identity": {
-      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-      "source_id": "41301c26-ed1e-4d75-9b3e-f7c48e17abde",
-      "task_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
-      "artifact_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
-      "raw_sha256": "c76e9569e4794400e35190f8abea5906595cfc1e9877cdc4189262c88fe84616"
-    },
-    "shared_provider_identity": null,
-    "short_start_seconds": 0.0,
-    "short_duration_seconds": 76.167,
-    "audio_provenance": {
-      "schema_version": 1,
-      "mode": "stream_copy",
-      "raw_sha256": "6fcb34aa3a7b053edc34b46efa584651a21825bd661ca1077d1fa22fa8c45212",
-      "final_sha256": "c617c5de501f3aed3640152ab0174d894641b01ac4ebdea830061bb3001273bf",
-      "raw_audio_sha256": "c24adec7ccd570a994967266ed0391e913430c82a0c96d134dd8b92b1e6b7a2b",
-      "final_audio_sha256": "c24adec7ccd570a994967266ed0391e913430c82a0c96d134dd8b92b1e6b7a2b",
-      "raw_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 76.231111
-      },
-      "final_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 76.231111
-      }
-    },
-    "signature_overlay": true,
-    "signature_provenance": {
-      "schema_version": 1,
-      "final_sha256": "c617c5de501f3aed3640152ab0174d894641b01ac4ebdea830061bb3001273bf",
-      "raw_sha256": "6fcb34aa3a7b053edc34b46efa584651a21825bd661ca1077d1fa22fa8c45212",
-      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-      "segment_sha256": "b59857013e1fb1649dbad4b2cb3d303ef126994b254d7678eface425328fe76c",
-      "source_duration_seconds": 76.167,
-      "final_duration_seconds": 76.167,
-      "start_seconds": 73.167,
-      "end_seconds": 76.167,
-      "audio_source_sha256": "6fcb34aa3a7b053edc34b46efa584651a21825bd661ca1077d1fa22fa8c45212"
-    },
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "item_id": "video-20261029-090048-de086b0499",
-    "type": "article_short",
-    "youtube_id": "LBLs5606wc8",
-    "youtube_url": "https://youtu.be/LBLs5606wc8",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "b59857013e1fb1649dbad4b2cb3d303ef126994b254d7678eface425328fe76c",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3178,62 +2771,5 @@
       }
     }
   ],
-  "active_idea": null,
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/first-grade-maturity",
-    "overview_youtube_url": "https://youtu.be/9JQ_jdASSkM",
-    "short_youtube_url": "https://youtu.be/LBLs5606wc8",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
-  },
-  "pending_dispatches": {},
-  "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 40832515468,
-    "conclusion": "success",
-    "source_slug": "first-grade-maturity",
-    "slot": "2026-10-28"
-  },
-  "processed_child_notifications": [
-    "Kesher Trusted Article Image:40634171711",
-    "Auto-merge Kesher article PRs:40634390526",
-    "Auto-merge Kesher article PRs:40635136738",
-    "Kesher Normalize Article PR:40636523240",
-    "Kesher Trusted Article Image:40636764076",
-    "Auto-merge Kesher article PRs:40637034405",
-    "Auto-merge Kesher article PRs:40637145796",
-    "Auto-merge Kesher article PRs:40637539050",
-    "Kesher Trusted Article Image:40640858903",
-    "Auto-merge Kesher article PRs:40641033599",
-    "Kesher Normalize Article PR:40695601787",
-    "Kesher Trusted Article Image:40695910127",
-    "Auto-merge Kesher article PRs:40696399137",
-    "Kesher Trusted Article Image:40740531507",
-    "Kesher Normalize Article PR:40741237215",
-    "Kesher Trusted Article Image:40758438404",
-    "Deploy to Cloudflare Pages:40825956939",
-    "Kesher Daily NotebookLM Video Overview:40827742021",
-    "Kesher Daily NotebookLM Video Overview:40831732148",
-    "Kesher Daily Article Short V4:40832515468"
-  ],
-  "last_error": null,
-  "interventions": {
-    "v5|first-grade-maturity|de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7|long_video": {
-      "pipeline_id": "v5",
-      "slug": "first-grade-maturity",
-      "content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
-      "stage": "long_video",
-      "strike_count": 1,
-      "last_check_token": "2026-10-29T08",
-      "last_fingerprint": "7eb4c332583f2cc8cc9d3f3b5c74c552f1e6bc2b5f12f3b23580685a809a6428",
-      "last_controller_action_token": "recovery:1:2026-10-29T06:50:43.510373+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-10-29T06:50:43.510373+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-29T06:50:43.510373+00:00"
-    }
-  }
+  "active_idea": null
 }
