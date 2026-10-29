@@ -286,8 +286,6 @@ class V3GitHubClient(core.GitHubClient):
             return False, {}
         current_post = current_matches[0]
         historical_post = historical_matches[0]
-        if str(current_post.get("image") or "").strip() or str(current_post.get("imageAlt") or "").strip():
-            return False, {}
 
         if article_contract.image_visual_identity(current_post) != article_contract.image_visual_identity(historical_post):
             return False, {}
@@ -296,7 +294,41 @@ class V3GitHubClient(core.GitHubClient):
         current_new = [row for row in current_posts if isinstance(row, dict) and core.canonical_slug(row) not in base_ids]
         if len(current_new) != 1 or str(current_new[0].get("id") or "").strip() != article_id:
             return False, {}
-        return True, evidence
+
+        # A bounded editorial repair may change the article SHA while preserving
+        # the exact already-proven hero. In that case permit only an evidence
+        # refresh: every image metadata field must still match the historical
+        # artifact, and the current-head bytes must independently satisfy the
+        # complete image proof after rebinding only article/head evidence.
+        image_fields = (
+            "image", "imageAlt", "imageProvider", "imageSourceUrl",
+            "imageIsFallback", "imageCredit", "imageCreditUrl",
+        )
+        current_has_image = bool(
+            str(current_post.get("image") or "").strip()
+            or str(current_post.get("imageAlt") or "").strip()
+        )
+        if current_has_image:
+            if not str(current_post.get("image") or "").strip() or not str(current_post.get("imageAlt") or "").strip():
+                return False, {}
+            if any(current_post.get(field) != historical_post.get(field) for field in image_fields):
+                return False, {}
+            refreshed_evidence = {
+                label: article_contract.exact_field(body, label) or ""
+                for label in article_contract.IMAGE_EVIDENCE_FIELDS
+            }
+            refreshed_evidence["Image Article SHA-256"] = article_contract.article_sha256(current_post)
+            refreshed_evidence["Image Evidence Head"] = current_head
+            refreshed_pr = dict(pr)
+            refreshed_pr["body"] = article_contract.replace_image_evidence(body, refreshed_evidence)
+            current_proven, _ = self._article_pr_image_proof(refreshed_pr, require_head=True)
+            if not current_proven:
+                return False, {}
+            return True, {**evidence, "recovery_mode": "refresh_prior_trusted_evidence"}
+
+        # Existing recovery path: normalization removed the image fields entirely,
+        # so the worker may reattach the exact historical artifact.
+        return True, {**evidence, "recovery_mode": "reattach_prior_trusted_artifact"}
 
     def active_image_run(self, pr_number: int) -> dict[str, Any] | None:
         expected = f"Kesher Image PR {pr_number}"
