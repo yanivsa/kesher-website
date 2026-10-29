@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "article_deploying",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -49,12 +49,14 @@
     "url": "https://kesher.saharoni.com/blog/first-grade-adjustment",
     "published_date": "2026-10-29",
     "quality_content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
-    "live": false,
+    "live": true,
     "last_deploy_dispatch_at": "2026-10-29T08:52:31.037520+00:00",
-    "next_deploy_retry_at": "2026-10-29T08:57:12.858538+00:00",
+    "next_deploy_retry_at": null,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-29T08:55:50.209840+00:00",
-    "quality_violations": []
+    "quality_checked_at": "2026-10-29T08:59:16.916530+00:00",
+    "quality_violations": [],
+    "deploy_run_id": 40845300310,
+    "live_verified_at": "2026-10-29T08:59:18.516197+00:00"
   },
   "backlog": [
     {
@@ -1746,15 +1748,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T02:21:23.574320+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-29T02:26:13.864104+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2586,9 +2579,15 @@
         "http_status": 404,
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-10-29T08:59:18.516228+00:00",
+      "from": "article_deploying",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-29T08:55:52.508471+00:00",
+  "updated_at": "2026-10-29T08:59:18.516235+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2617,7 +2616,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
   },
   "short": {
     "attempt_count": 0,
@@ -3008,17 +3008,6 @@
       "status": "intent",
       "previous_run_id": null,
       "observed_active_run_id": null
-    },
-    "deploy.yml": {
-      "workflow": "deploy.yml",
-      "cycle": "2026-10-29",
-      "inputs": {},
-      "intent_at": "2026-10-29T08:52:12.858538+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 40845300310,
-      "dispatch_head_sha": "702f5f47083f356b4bfe0e5ace75fdc03554a25e",
-      "dispatched_at": "2026-10-29T08:52:12.858538+00:00"
     }
   },
   "deliverables": {
@@ -3031,8 +3020,8 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 40845152401,
+    "workflow": "Deploy to Cloudflare Pages",
+    "run_id": 40845300310,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-29"
