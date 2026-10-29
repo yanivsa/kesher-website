@@ -92,7 +92,7 @@
     "last_deploy_dispatch_at": "2026-10-29T05:53:20.349289+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40825956939,
-    "live_verified_at": "2026-10-29T06:00:46.682358+00:00"
+    "live_verified_at": "2026-10-29T06:01:14.944067+00:00"
   },
   "backlog": [
     {
@@ -1783,24 +1783,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-28T22:05:56.330235+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-28T22:10:48.271650+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-28T22:15:52.904311+00:00",
       "from": "blocked",
       "to": "article_pr_open",
@@ -2680,9 +2662,21 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-10-29T06:01:14.944092+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T06:01:16.778914+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-10-29T05:59:57.848195+00:00",
+  "updated_at": "2026-10-29T06:01:16.778940+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2711,7 +2705,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 40826566510,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
