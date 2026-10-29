@@ -2408,7 +2408,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-29T14:52:41.124738+00:00",
     "artifact_sha256": "9fa965f89be43b736f02c1f11d3281650b2b379d4e2d213a3419c0717c32d386",
-    "source_id": "local-editorial://toilet-fear-children/7"
+    "source_id": "local-editorial://toilet-fear-children/7",
+    "run_id": 40895865256
   },
   "long_video": {
     "attempt_count": 0,
