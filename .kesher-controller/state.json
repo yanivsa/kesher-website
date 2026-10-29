@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40881413510,
@@ -47,7 +47,7 @@
     "last_deploy_dispatch_at": "2026-10-29T18:59:57.861833+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40936002971,
-    "live_verified_at": "2026-10-29T20:26:00.310127+00:00"
+    "live_verified_at": "2026-10-29T20:26:25.060701+00:00"
   },
   "backlog": [
     {
@@ -1739,24 +1739,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T13:06:13.408273+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-29T13:11:10.896068+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-29T13:11:11.868447+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-29T13:11:12.910783+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2617,9 +2599,27 @@
         "item_id": "video-20261029-214500-7326680648",
         "long_item_id": "video-20261029-210835-7326680648"
       }
+    },
+    {
+      "at": "2026-10-29T20:26:25.060727+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T20:26:26.327643+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-29T20:26:27.721912+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-29T20:16:12.197209+00:00",
+  "updated_at": "2026-10-29T20:26:27.721929+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2689,19 +2689,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40947504792,
     "processed_run_id": null,
-    "provider_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
+    "provider_id": "fe867a57-ed43-4bf8-ad43-17a9c1269569",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-29T20:16:12.197182+00:00",
-    "artifact_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
-    "source_id": "d45ab1ba-1d2e-4f89-8a01-c8425c37abcd",
-    "adopted_from_long_item_id": "video-20261029-210835-7326680648",
+    "artifact_id": "fe867a57-ed43-4bf8-ad43-17a9c1269569",
+    "source_id": "c338129f-a5c7-4a04-b9b6-076a12e2e091",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:toilet-fear-children:7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb:video-20261029-214500-7326680648",
       "hard_started_at": "2026-10-29T19:45:11.708205+00:00",
@@ -2709,7 +2709,125 @@
       "last_fingerprint": "0ff855fe3dcbcb1f9030702947df8e4368a6042b4954abcd4bc65020fbe0ac70",
       "recovery_count": 1,
       "last_recovery_at": "2026-10-29T20:15:46.668113+00:00"
-    }
+    },
+    "source": {
+      "id": "toilet-fear-children",
+      "slug": "toilet-fear-children",
+      "title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
+      "date": "2026-10-29",
+      "category": "הדרכת הורים",
+      "subcategory": "גמילה מחיתולים",
+      "excerpt": "הילד בוכה, מסרב להתקרב לאסלה, ואתם מוצאים את עצמכם במאבק יומיומי. פחד מאסלה אצל ילדים הוא שלב שעלול לתקוע את הגמילה ולתסכל את כולם. איך מזהים שמדובר בחשש אמיתי, למה לחץ רק מחמיר את המצב, ואיך אפשר לעזור להם לעשות את זה ברוגע ובהדרגתיות בלי להפוך את השירותים לזירת קרב?",
+      "canonical_url": "https://kesher.saharoni.com/blog/toilet-fear-children",
+      "content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
+      "video_title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
+      "short_title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
+        "description": "הילד בוכה, מסרב להתקרב לאסלה, ואתם מוצאים את עצמכם במאבק יומיומי. פחד מאסלה אצל ילדים הוא שלב שעלול לתקוע את הגמילה ולתסכל את כולם. איך מזהים שמדובר בחשש אמיתי, למה לחץ רק מחמיר את המצב, ואיך אפשר לעזור להם לעשות את זה ברוגע ובהדרגתיות בלי להפוך את השירותים לזירת קרב?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/toilet-fear-children\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "גמילה מחיתולים"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
+        "description": "הילד בוכה, מסרב להתקרב לאסלה, ואתם מוצאים את עצמכם במאבק יומיומי. פחד מאסלה אצל ילדים הוא שלב שעלול לתקוע את הגמילה ולתסכל את כולם. איך מזהים שמדובר בחשש אמיתי, למה לחץ רק מחמיר את המצב, ואיך אפשר לעזור להם לעשות את זה ברוגע ובהדרגתיות בלי להפוך את השירותים לזירת קרב?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/toilet-fear-children\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "גמילה מחיתולים"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "fe867a57-ed43-4bf8-ad43-17a9c1269569",
+    "raw_sha256": "78a01e93afbd344c0689e275f527ad7a8b0122091358c7ababa191762e29f771",
+    "final_sha256": "64654c51a89286d39606179bac4f655eb8aa1e107858a87cdc0fdeda3ec79906",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 73.167,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 73.167,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "d45ab1ba-1d2e-4f89-8a01-c8425c37abcd",
+      "task_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
+      "artifact_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
+      "raw_sha256": "e268911a2f466db849e4a479efe76101c2d5c6a2c9f97d4a6742669b2d7b0dde"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 73.167,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "78a01e93afbd344c0689e275f527ad7a8b0122091358c7ababa191762e29f771",
+      "final_sha256": "64654c51a89286d39606179bac4f655eb8aa1e107858a87cdc0fdeda3ec79906",
+      "raw_audio_sha256": "b28acf00e69fc440b7dd9df39c25280bc75c5c7381fdc2c0992fa43d8eab670e",
+      "final_audio_sha256": "b28acf00e69fc440b7dd9df39c25280bc75c5c7381fdc2c0992fa43d8eab670e",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 73.235737
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 73.235737
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "64654c51a89286d39606179bac4f655eb8aa1e107858a87cdc0fdeda3ec79906",
+      "raw_sha256": "78a01e93afbd344c0689e275f527ad7a8b0122091358c7ababa191762e29f771",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "fdf2cce8875fe521223e71071c427cd0d138c811dfca7f8f4afb2902ef3e599a",
+      "source_duration_seconds": 73.167,
+      "final_duration_seconds": 73.167,
+      "start_seconds": 70.167,
+      "end_seconds": 73.167,
+      "audio_source_sha256": "78a01e93afbd344c0689e275f527ad7a8b0122091358c7ababa191762e29f771"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261029-214500-7326680648",
+    "type": "article_short",
+    "youtube_id": "EzIILKiQj3Q",
+    "youtube_url": "https://youtu.be/EzIILKiQj3Q",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "fdf2cce8875fe521223e71071c427cd0d138c811dfca7f8f4afb2902ef3e599a",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
