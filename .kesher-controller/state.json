@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "article_normalizing",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1716,12 +1716,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T11:01:04.627343+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-29T11:01:05.263798+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2358,12 +2352,22 @@
         "pr_number": 1252,
         "slot": "2026-10-29"
       }
+    },
+    {
+      "at": "2026-10-29T14:52:41.124767+00:00",
+      "from": "article_normalizing",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 1,
+        "pr_number": 1252
+      }
     }
   ],
-  "updated_at": "2026-10-29T14:51:13.194745+00:00",
+  "updated_at": "2026-10-29T14:52:41.124776+00:00",
   "image": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2371,7 +2375,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-10-29T14:52:41.124738+00:00"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2792,9 +2797,10 @@
         "pr_number": "1252"
       },
       "intent_at": "2026-10-29T14:52:20.375963+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40895865256,
+      "dispatched_at": "2026-10-29T14:52:20.375963+00:00"
     }
   },
   "deliverables": {
