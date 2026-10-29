@@ -3022,6 +3022,20 @@
       "status": "intent",
       "previous_run_id": null,
       "observed_active_run_id": null
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-29",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "first-grade-adjustment",
+        "target_content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
+        "target_item_id": "video-20261029-110045-e78209a3fe"
+      },
+      "intent_at": "2026-10-29T09:30:48.715288+00:00",
+      "status": "intent",
+      "previous_run_id": 40846185199,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -3048,5 +3062,21 @@
     "Auto-merge Kesher article PRs:40844284792",
     "Deploy to Cloudflare Pages:40845300310",
     "Kesher Daily NotebookLM Video Overview:40846185199"
-  ]
+  ],
+  "interventions": {
+    "v5|first-grade-adjustment|e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e|long_video": {
+      "pipeline_id": "v5",
+      "slug": "first-grade-adjustment",
+      "content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-10-29T11",
+      "last_fingerprint": "f48d9aea8c33f450a437137b9ebd18bd2e876e33f11af4393cb66b50537c5cdf",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-29T09:30:48.715288+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
