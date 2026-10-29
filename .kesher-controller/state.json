@@ -3174,11 +3174,11 @@
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/first-grade-maturity",
     "overview_youtube_url": "https://youtu.be/9JQ_jdASSkM",
-    "short_youtube_url": null,
+    "short_youtube_url": "https://youtu.be/LBLs5606wc8",
     "overview_edit_verified": true,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
+    "short_portrait_verified": true,
+    "short_signature_verified": true,
+    "short_origin_verified": true
   },
   "pending_dispatches": {},
   "last_child_notification": {
