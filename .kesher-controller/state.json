@@ -3,8 +3,8 @@
   "cycle": "2026-10-29",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40881413510,
@@ -13,7 +13,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
     "last_dispatch_at": "2026-10-29T13:23:02.260850+00:00",
     "pr_number": 1252,
@@ -33,7 +33,17 @@
     "last_normalization_drift_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac",
     "normalized_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac",
     "image_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac",
-    "merge_candidate_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac"
+    "merge_candidate_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac",
+    "slug": "toilet-fear-children",
+    "title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
+    "url": "https://kesher.saharoni.com/blog/toilet-fear-children",
+    "published_date": "2026-10-29",
+    "quality_content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-10-29T18:59:51.685951+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2584,7 +2594,8 @@
     "evidence_rebind_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac",
     "evidence_rebind_dispatched_at": "2026-10-29T18:56:10.946322+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 40895865256
+    "run_id": 40895865256,
+    "image_path": "/images/generated/blog/toilet-fear-children.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2997,6 +3008,16 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-29T13:22:45.670201+00:00"
+    },
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-10-29",
+      "inputs": {},
+      "intent_at": "2026-10-29T18:59:46.972419+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "68871ab45901830cc3b8c8f47eea206fb40bbd45"
     }
   },
   "deliverables": {
