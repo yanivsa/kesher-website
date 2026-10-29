@@ -28,8 +28,8 @@
     "image_head_sha": "400bb290c1005c01355b6b17025121e18bb21d87",
     "merge_candidate_sha": "400bb290c1005c01355b6b17025121e18bb21d87",
     "normalization_drift_count": 0,
-    "merge_dispatch_count": 2,
-    "merge_dispatch_at": "2026-10-29T15:11:23.048977+00:00",
+    "merge_dispatch_count": 3,
+    "merge_dispatch_at": "2026-10-29T15:16:27.884827+00:00",
     "merge_run_id": 40896176713,
     "last_refunded_auto_merge_run_id": 40896176713,
     "deferred_auto_merge_refund_count": 1
@@ -2815,9 +2815,10 @@
         "slot": "2026-10-29"
       },
       "intent_at": "2026-10-29T15:15:48.680568+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40896176713,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40899872486,
+      "dispatched_at": "2026-10-29T15:15:48.680568+00:00"
     }
   },
   "deliverables": {
