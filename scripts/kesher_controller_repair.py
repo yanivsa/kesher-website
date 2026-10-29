@@ -131,14 +131,32 @@ def diagnose(state, *, controller_failed=False):
     return {"stage": stage, "failure_class": code, "exact": exact}
 
 
-def _delivered(state, exact):
+def _media_matches_article(media, article):
+    source = media.get("source") or {}
+    slug = str(article.get("slug") or "").strip()
+    sha = article.get("quality_content_sha256") or article.get("content_sha256")
+    if not slug or not re.fullmatch(r"[a-f0-9]{64}", str(sha or "")):
+        return False
+    slug_claims = [source.get("slug") or source.get("id"), media.get("source_slug")]
+    sha_claims = [source.get("content_sha256"), media.get("source_content_sha256"), media.get("content_sha256")]
+    slugs = [value for value in slug_claims if value]
+    hashes = [value for value in sha_claims if value]
+    return bool(slugs and hashes and all(value == slug for value in slugs) and all(value == sha for value in hashes))
+
+
+def _delivered(state, exact, *, stage=None):
     # A date alone cannot distinguish multiple owner ideas published that day.
     if not any(exact.get(k) for k in ("slug", "pr_number", "idea_id", "article_session_id", "article_run_id")):
         return None
-    candidates = [state] + list(state.get("backlog") or [])
+    candidates = ([state] + list(state.get("backlog") or [])
+                  + list(state.get("owner_cycle_archive") or [])
+                  + list(state.get("completed_cycle_archive") or []))
     for candidate in candidates:
+        if not isinstance(candidate, dict):
+            continue
         article = candidate.get("article") or {}
-        if candidate.get("cycle") != exact["cycle"]:
+        stable_binding = any(exact.get(k) for k in ("slug", "pr_number", "idea_id"))
+        if candidate.get("cycle") != exact["cycle"] and not stable_binding:
             continue
         if exact.get("pr_number") and str(article.get("pr_number")) != str(exact["pr_number"]):
             continue
@@ -146,9 +164,8 @@ def _delivered(state, exact):
             matching = [idea for idea in state.get("idea_history", [])
                         if idea.get("idea_id") == exact["idea_id"] and idea.get("status") == "complete"
                         and (idea.get("outputs") or {}).get("slug") == article.get("slug")]
-            if not matching:
+            if not matching and exact["idea_id"] not in (candidate.get("owner_idea_ids") or []):
                 continue
-        stable_binding = any(exact.get(k) for k in ("slug", "pr_number", "idea_id"))
         if exact.get("article_session_id") and not stable_binding:
             known = {(article.get("watchdog") or {}).get("session_id"), article.get("last_jules_session_id")}
             if exact["article_session_id"] not in known:
@@ -158,8 +175,15 @@ def _delivered(state, exact):
             continue
         if exact.get("slug") and article.get("slug") != exact["slug"]:
             continue
-        if exact.get("content_sha256") and article.get("quality_content_sha256") != exact["content_sha256"]:
+        if exact.get("content_sha256") and (article.get("quality_content_sha256") or article.get("content_sha256")) != exact["content_sha256"]:
             continue
+        if not all(_media_matches_article(candidate.get(name) or {}, article) for name in ("long_video", "short")):
+            continue
+        if stage in {"long_video", "video", "short"}:
+            media = candidate.get("long_video" if stage == "video" else stage) or {}
+            if any(exact.get(key) and exact[key] != (media.get(key) or (media.get("id") if key == "item_id" else None))
+                   for key in ("item_id", "task_id", "artifact_id", "source_id")):
+                continue
         from scripts.kesher_e2e_delivery_guard import delivery_contract
         complete, urls = delivery_contract(candidate)
         if complete:
@@ -203,6 +227,7 @@ def reconcile(state, *, store, jules, api, now=None, controller_failed=False, ad
     incidents = ledger["incidents"]
     observed = diagnose(state, controller_failed=controller_failed)
     current_key = None
+    intake_dirty = False
     if observed:
         # Share one root-cause repair across affected content identities.
         current_key = _hash([observed["stage"], observed["failure_class"]])
@@ -211,19 +236,30 @@ def reconcile(state, *, store, jules, api, now=None, controller_failed=False, ad
                 return {"status": "human_blocker", "reason": "repair_ledger_capacity"}
             incidents[current_key] = {**observed, "status": "intent", "created_at": now.isoformat(),
                                       "fingerprint": _hash([current_key, now.isoformat()]), "affected": []}
+            intake_dirty = True
         record = incidents[current_key]
         if observed["exact"] not in record["affected"]:
             if len(record["affected"]) >= MAX_INCIDENTS:
                 return {"status": "human_blocker", "reason": "affected_identity_capacity"}
             record["affected"].append(observed["exact"])
+            intake_dirty = True
         if record["status"] == "verified":
             record.update(status="human_blocker", reason="verified_failure_recurred")
+            intake_dirty = True
 
     def persist():
         nonlocal sha
         # Re-check the durable authority immediately before every external write.
         admit()
         sha = store.save(ledger, expected_sha=sha)
+
+    if intake_dirty:
+        try:
+            persist()
+        except SupervisorCasConflict:
+            return {"status": "cas_conflict"}
+        except Exception as exc:
+            return {"status": "uncertain", "error_type": type(exc).__name__}
 
     results = []
     for key, record in incidents.items():
@@ -247,7 +283,7 @@ def reconcile(state, *, store, jules, api, now=None, controller_failed=False, ad
                 elif pr.get("merged") is True and not api.contains_commit(pr.get("merge_commit_sha"), deployed_revision):
                     record["status"] = "awaiting_deployment"
                 elif pr.get("merged") is True:
-                    proofs = [_delivered(state, exact) for exact in record["affected"]]
+                    proofs = [_delivered(state, exact, stage=record["stage"]) for exact in record["affected"]]
                     record["status"] = "verified" if all(proofs) else "awaiting_recovery"
                     record["delivery_proofs"] = proofs
                 elif pr.get("state") == "closed":
@@ -279,7 +315,33 @@ def reconcile(state, *, store, jules, api, now=None, controller_failed=False, ad
                     record.update(status="awaiting_executor", reason="repair_executor_credential_missing")
                     persist()
                 else:
-                    existing = jules.list_exact(record["fingerprint"])
+                    if not record.get("discovery_started_at"):
+                        record["discovery_started_at"] = now.isoformat()
+                        persist()
+                    discovery_start = datetime.fromisoformat(record["discovery_started_at"])
+                    if record.get("discovery_failures") and (record["discovery_failures"] >= 3 or now - discovery_start >= UNCERTAIN_LIMIT):
+                        record.update(status="human_blocker", reason="executor_discovery_budget_exhausted")
+                        persist()
+                        results.append({"incident": key, "status": record["status"], "reason": record["reason"]})
+                        continue
+                    retry_at = record.get("next_discovery_at")
+                    if retry_at and now < datetime.fromisoformat(retry_at):
+                        results.append({"incident": key, "status": record["status"], "next_retry_at": retry_at})
+                        continue
+                    try:
+                        existing = jules.list_exact(record["fingerprint"])
+                    except Exception as exc:
+                        failures = int(record.get("discovery_failures") or 0) + 1
+                        record.update(discovery_failures=failures, last_discovery_error_type=type(exc).__name__,
+                                      status="uncertain" if record.get("acquisition_started_at") else "discovery_retry",
+                                      reason="executor_discovery_failed",
+                                      next_discovery_at=(now + timedelta(minutes=2 if failures == 1 else 10)).isoformat())
+                        if failures >= 3 or now - discovery_start >= UNCERTAIN_LIMIT:
+                            record.update(status="human_blocker", reason="executor_discovery_budget_exhausted")
+                        persist()
+                        results.append({"incident": key, "status": record["status"], "reason": record["reason"]})
+                        continue
+                    record.pop("next_discovery_at", None)
                     if len(existing) == 1:
                         name = str(existing[0].get("name") or "")
                         if not name.startswith("sessions/"):
@@ -289,7 +351,7 @@ def reconcile(state, *, store, jules, api, now=None, controller_failed=False, ad
                     elif existing:
                         record.update(status="human_blocker", reason="duplicate_repair_sessions")
                         persist()
-                    elif record["status"] not in {"intent", "awaiting_executor"}:
+                    elif record["status"] not in {"intent", "awaiting_executor", "discovery_retry"} or record.get("acquisition_started_at"):
                         if now - datetime.fromisoformat(record.get("acquisition_started_at") or record["created_at"]) >= UNCERTAIN_LIMIT:
                             record.update(status="human_blocker", reason="uncertain_create_not_discoverable")
                             persist()
@@ -319,7 +381,7 @@ def reconcile(state, *, store, jules, api, now=None, controller_failed=False, ad
             continue
         results.append({"incident": key, "status": record["status"], "pr_url": record.get("pr_url"),
                         "reason": record.get("reason")})
-    priority = {"human_blocker": 10, "uncertain": 9, "awaiting_executor": 8,
+    priority = {"human_blocker": 10, "uncertain": 9, "discovery_retry": 9, "awaiting_executor": 8,
                 "awaiting_review": 6, "awaiting_deployment": 5, "awaiting_recovery": 4, "running": 3, "verified": 0}
     return max(results, key=lambda row: priority.get(row["status"], 7)) | {"incidents": results} if results else {"status": "idle"}
 
@@ -346,7 +408,7 @@ def main():
     if summary:
         with Path(summary).open("a") as handle:
             handle.write("\n### Controller repair\n\n```json\n" + json.dumps(result, indent=2) + "\n```\n")
-    return 0 if result["status"] not in {"human_blocker", "authority_refused", "uncertain", "awaiting_executor"} else 1
+    return 0 if result["status"] not in {"human_blocker", "authority_refused", "uncertain", "discovery_retry", "awaiting_executor"} else 1
 
 
 if __name__ == "__main__":
