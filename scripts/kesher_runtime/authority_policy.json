@@ -747,7 +747,7 @@
         "read",
         "status_write"
       ],
-      "definition_sha256": "c79ab2ab54a82da91664d98b191de8123ca2f1d210e6729bfb8933438ad07e73",
+      "definition_sha256": "955d56f33255ca781fdd7afbf285b8dc2b8e506b64907b6e39a3cb19c1fdc465",
       "resources": [
         "github.statuses"
       ],
@@ -756,7 +756,7 @@
           ".github/scripts/select-ci-profile.py": "6e9c8676df8cf50b32645887019eb86e0ed8cc82b57d7244da18347723a4537f",
           ".github/scripts/validate-article-images.py": "b3e510c703049a56a1fc8d43d6f6ac5e79bbd524c255c621982c5a1309b39851",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "playwright.config.ts": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c",
           "scripts/article_claim_quality.py": "c5bf5977c2ec432e58d6c3d14e4ab75714bcbc701f34b880630fd4e72662f585",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
@@ -777,7 +777,7 @@
           "scripts/kesher_content_controller_v5_runtime.py": "56d0c3e7ecba8778812352f21499e50e717c522c1b6e7d24bc1ac666bed48608",
           "scripts/kesher_content_controller_v5_runtime_base.py": "eb4292d4429bfc7f816221acc814532d0da998a11436d792f89d8a5a23022c11",
           "scripts/kesher_content_watchdog.py": "94964decde96d244685645186133898d9de7a431d43f228d2e784c09f7b5c2fc",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
           "scripts/kesher_master_supervisor.py": "368f00b850acbb92b9421732462fe466fa2be47057c3c601d2a8ad9cc7d2a8b1",
@@ -939,11 +939,11 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "playwright.config.ts": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_publication_manifest.py": "733eea18c989bf24277694f73465c765ceb4713cccd22996b293346c65fa5afb",
           "scripts/kesher_runtime/article_verification.py": "5f16c8ed232505c8bcb12e4249631eccc7fc8e845c781cf075030357dbc53987",
@@ -1045,7 +1045,7 @@
         "call_chain": {
           ".github/scripts/watch-jules-session.py": "6b631f0779fc658934ca00d55d278fcbaee67d4d547b8e503b5adadaa6c6c6d8",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -1082,7 +1082,7 @@
         "call_chain": {
           ".github/scripts/watch-jules-session.py": "6b631f0779fc658934ca00d55d278fcbaee67d4d547b8e503b5adadaa6c6c6d8",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -1119,7 +1119,7 @@
         "call_chain": {
           ".github/scripts/watch-jules-session.py": "6b631f0779fc658934ca00d55d278fcbaee67d4d547b8e503b5adadaa6c6c6d8",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -1156,7 +1156,7 @@
         "call_chain": {
           ".github/scripts/watch-jules-session.py": "6b631f0779fc658934ca00d55d278fcbaee67d4d547b8e503b5adadaa6c6c6d8",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -1190,7 +1190,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -1244,11 +1244,11 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "playwright.config.ts": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_publication_manifest.py": "733eea18c989bf24277694f73465c765ceb4713cccd22996b293346c65fa5afb",
           "scripts/kesher_runtime/__init__.py": "87abad5c98b1cc707accd87163d96a30b945e8057b5d798eacaebbe07da99cef",
@@ -1338,7 +1338,7 @@
           "scripts/kesher_runtime/legacy_retirement.py": "90555d274327debeac3e16adb50ac5e011f38cf353f78e888f228040a3027d4c",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
           "tests/test_jules_article_runner.py": "0e835465783dd94e33ddcf7c9ac8de40f91ec2e367ed72d1d50e175b352196ce",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841"
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
@@ -1489,7 +1489,7 @@
           ".github/scripts/validate-article-images.py": "b3e510c703049a56a1fc8d43d6f6ac5e79bbd524c255c621982c5a1309b39851",
           ".github/scripts/validate-article-pr.py": "2f175c5a6067b039755409a19bf1858f2fc56c922413ff94d6052d8ad4572ff3",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "playwright.config.ts": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c",
           "remotion-kesher/package-lock.json": "055b1708e3255442c84bdf5f27553059e5652a412a2d5d9f6966a95467d2de2c",
           "remotion-kesher/package.json": "3d5f0bb968dd34bb46f6abb03fa83dd91939fd768f0fd46d66be4558c7d61c4d",
@@ -1500,7 +1500,7 @@
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
           "scripts/kesher_article_normalizer.py": "1b27b1b4d77370684bdca98915d875a46034387423af75c310a10b241332a2c1",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/article_image_worker.py": "4175edd11be879ecd698802bbc9a119060a74afef3302e96f985ea1ae995a284",
           "scripts/kesher_runtime/article_normalize_worker.py": "1f6f2426e64af0d8917370f57fd2019b4d4f9c5505f553fcb372e7cb601bdc8d",
@@ -1597,7 +1597,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_diagnostics.py": "af9e1479a94410c028bae0404e8596852e01cf12634c513b33b27dd29f998854",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
@@ -1605,7 +1605,7 @@
           "scripts/jules_article_runner_v4.py": "e2a269b8809a6c21c91ca713df4ebba6f122302a45ca9f86802495b47cee9e49",
           "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
           "scripts/kesher_article_normalizer.py": "1b27b1b4d77370684bdca98915d875a46034387423af75c310a10b241332a2c1",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/article_image_worker.py": "4175edd11be879ecd698802bbc9a119060a74afef3302e96f985ea1ae995a284",
           "scripts/kesher_runtime/article_images.py": "e88601a2f01cfd44999d8a5c0815325cb977464eeedc376784978a5771187fd0",
@@ -1687,7 +1687,7 @@
       ],
       "review": {
         "call_chain": {
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_exact_video_target.py": "35c9bdb2d4367de4785bcde6558cc6374de8c38370c3d47e1737f67c20c2d123",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
@@ -1775,7 +1775,7 @@
           "scripts/kesher_content_controller_v5_runtime_base.py": "eb4292d4429bfc7f816221acc814532d0da998a11436d792f89d8a5a23022c11",
           "scripts/kesher_content_controller_v6_runtime.py": "e2751fb28c4c31246ef91b94f8d57ca2c0e906e6ee73363c28e69bd8a26d9fa2",
           "scripts/kesher_content_watchdog.py": "94964decde96d244685645186133898d9de7a431d43f228d2e784c09f7b5c2fc",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
@@ -1846,7 +1846,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "b5626aa7a1e1c0785ba106b4fed7ece5eb08d5a51c556aaab2ae873f4f96ad0a",
+      "definition_sha256": "4dc2fd31392ab25b567c53a4101f0149941380a2757a3a6087b5d3c20233f428",
       "resources": [
         "cloudflare.account",
         "github.dispatch",
@@ -1876,7 +1876,7 @@
           "scripts/kesher_content_controller_v5.py": "4f5d493842370881877b9489836e172824b0ebafa57e3e398baf57cd3f2ac493",
           "scripts/kesher_content_controller_v5_runtime.py": "56d0c3e7ecba8778812352f21499e50e717c522c1b6e7d24bc1ac666bed48608",
           "scripts/kesher_content_controller_v5_runtime_base.py": "eb4292d4429bfc7f816221acc814532d0da998a11436d792f89d8a5a23022c11",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_publication_manifest.py": "733eea18c989bf24277694f73465c765ceb4713cccd22996b293346c65fa5afb",
           "scripts/kesher_runtime/__init__.py": "87abad5c98b1cc707accd87163d96a30b945e8057b5d798eacaebbe07da99cef",
@@ -1931,7 +1931,12 @@
           "scripts/kesher_runtime/cutover_auth.py": "27dbbd703912499e0ca553d774bca027844f3e7db116a22d787e54f4ba007a80",
           "scripts/kesher_runtime/cutover_service.py": "7b5bcc7af5391111ccd7a491ca427e7244edb32a438c5fcd81f196a13df898de",
           "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
-          "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93"
+          "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
+          "scripts/kesher_controller_repair.py": "1633fff2e4efe3b28e3625fcdd19fc4b1c3c666404da5da78d1983512cf50796",
+          "scripts/kesher_master_supervisor_live.py": "badb4b46a8915f0944fe1995558e592f675b297737711813a65d4a28fe3f4cc8",
+          "scripts/kesher_master_supervisor_shadow.py": "21e9c69cb0c03bc7d6b67b985ed1e1a660716ab39d0725aa99d1f91d6f60b8e7",
+          "scripts/kesher_master_supervisor.py": "368f00b850acbb92b9421732462fe466fa2be47057c3c601d2a8ad9cc7d2a8b1",
+          "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0"
         },
         "credential_services": {
           "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
@@ -1967,7 +1972,7 @@
           ".github/workflows/kesher-short-v4.yml",
           ".github/workflows/normalize-article-pr.yml"
         ],
-        "note": "Sole pre-cutover Schema-5 daily controller authority on main; read-only protected-state admission before provider/mutation credentials; automatically fails closed once canonical state becomes Schema 6."
+        "note": "Sole pre-cutover Schema-5 daily controller authority on main; read-only protected-state admission before provider/mutation credentials; automatically fails closed once canonical state becomes Schema 6. 2026-10-29: admitted controller invokes bounded repair coordination using existing Jules and CAS transport; no new workflow, credential, dispatch target or merge authority. Content PRs are evidence only. Repair PRs await existing review/merge authority; exact delivery contract proves resolution."
       },
       "role": "controller",
       "registration_id": 337960554
@@ -2035,10 +2040,10 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
@@ -2126,10 +2131,10 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
@@ -2241,7 +2246,7 @@
       "review": {
         "call_chain": {
           "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
@@ -2305,7 +2310,7 @@
       "review": {
         "call_chain": {
           "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
@@ -2476,7 +2481,7 @@
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-goal-dispatch-20261001.yml.txt": "c0cae4082dad55da1fbe9587069fffe5e380b99946ff0812febda43ceac6bf07",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-short-v4-20261001.yml.txt": "3700c60bcf1c1470998492afdc035e9641903b6f1e122bd7a23a7e28ab5a2e9b",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/article_claim_quality.py": "c5bf5977c2ec432e58d6c3d14e4ab75714bcbc701f34b880630fd4e72662f585",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
@@ -2496,7 +2501,7 @@
           "scripts/kesher_content_controller_v5_runtime.py": "56d0c3e7ecba8778812352f21499e50e717c522c1b6e7d24bc1ac666bed48608",
           "scripts/kesher_content_controller_v5_runtime_base.py": "eb4292d4429bfc7f816221acc814532d0da998a11436d792f89d8a5a23022c11",
           "scripts/kesher_content_watchdog.py": "94964decde96d244685645186133898d9de7a431d43f228d2e784c09f7b5c2fc",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
@@ -2668,11 +2673,11 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/article_claim_quality.py": "c5bf5977c2ec432e58d6c3d14e4ab75714bcbc701f34b880630fd4e72662f585",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
@@ -2784,7 +2789,7 @@
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_short_policy.py": "82ec1902ee7e8245f7a795ca3a685384169e4cdeec9706de4c343b08d3ba3ac9",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_v6_production_shadow.py": "4bc5480124bd96e5da496853363a7e2d23a61729c7d981ee7db2cee1646b2200",
           "tests/test_v6_production_shadow.py": "4a6f0759eef4c3d527ef7db39e6c4838c24e36f455e06367f30b8de301e5abd0",
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93"
@@ -2825,14 +2830,14 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "remotion-kesher/package-lock.json": "055b1708e3255442c84bdf5f27553059e5652a412a2d5d9f6966a95467d2de2c",
           "remotion-kesher/package.json": "3d5f0bb968dd34bb46f6abb03fa83dd91939fd768f0fd46d66be4558c7d61c4d",
           "remotion-kesher/src/KesherVideo.tsx": "f00672be16e10ba890f24adb282c9d8bc4843a18a2a7ed267aa6fe3912ed13f9",
           "remotion-kesher/src/Root.tsx": "79ca213b77e2a58d0ba72c61830215de2501bd80617d93e0ac3414a709bcb8ed",
           "remotion-kesher/src/index.ts": "5462d3268136731ce43bfd7c5072ea1ba48b51fec94fa30076f5044f4b39e4a2",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
@@ -2988,7 +2993,7 @@
           ".github/workflows/kesher-daily-video.yml": "cac7622c51396b9cd521dd551e2e2d038000624746dfc20058f84565f74d04f3",
           ".github/workflows/kesher-short-v4.yml": "a0566d23b3c3563bd9973fcb4b42b9063a3a5b48fb199cf585a0a9461de4629a",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/article_claim_quality.py": "c5bf5977c2ec432e58d6c3d14e4ab75714bcbc701f34b880630fd4e72662f585",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
@@ -3008,7 +3013,7 @@
           "scripts/kesher_content_controller_v5_runtime.py": "56d0c3e7ecba8778812352f21499e50e717c522c1b6e7d24bc1ac666bed48608",
           "scripts/kesher_content_controller_v5_runtime_base.py": "eb4292d4429bfc7f816221acc814532d0da998a11436d792f89d8a5a23022c11",
           "scripts/kesher_content_watchdog.py": "94964decde96d244685645186133898d9de7a431d43f228d2e784c09f7b5c2fc",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
@@ -3122,7 +3127,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/article_claim_quality.py": "c5bf5977c2ec432e58d6c3d14e4ab75714bcbc701f34b880630fd4e72662f585",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
@@ -3140,7 +3145,7 @@
           "scripts/kesher_content_controller_v5_runtime.py": "56d0c3e7ecba8778812352f21499e50e717c522c1b6e7d24bc1ac666bed48608",
           "scripts/kesher_content_controller_v5_runtime_base.py": "eb4292d4429bfc7f816221acc814532d0da998a11436d792f89d8a5a23022c11",
           "scripts/kesher_content_watchdog.py": "94964decde96d244685645186133898d9de7a431d43f228d2e784c09f7b5c2fc",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
@@ -3215,13 +3220,13 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "0a1e9113a3235429064a123aafa9c93168f809b0aea5923c6d31dc6d954c720c",
+      "definition_sha256": "c0dc755268eb5512d18bfd853c6d1a1cb374d4b5a5877fb5f5176b18ac67e88c",
       "resources": [],
       "review": {
         "call_chain": {
           ".github/scripts/validate-article-pr.py": "2f175c5a6067b039755409a19bf1858f2fc56c922413ff94d6052d8ad4572ff3",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_diagnostics.py": "af9e1479a94410c028bae0404e8596852e01cf12634c513b33b27dd29f998854",
           "scripts/jules_article_runner.py": "e9ac2e1d3125184965a05f531751b3108aba0df3720feed5ea3abef4d7caaeae",
@@ -3242,7 +3247,7 @@
           "scripts/kesher_content_controller_v5_runtime.py": "56d0c3e7ecba8778812352f21499e50e717c522c1b6e7d24bc1ac666bed48608",
           "scripts/kesher_content_controller_v5_runtime_base.py": "eb4292d4429bfc7f816221acc814532d0da998a11436d792f89d8a5a23022c11",
           "scripts/kesher_content_watchdog.py": "94964decde96d244685645186133898d9de7a431d43f228d2e784c09f7b5c2fc",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
           "scripts/kesher_publication_manifest.py": "733eea18c989bf24277694f73465c765ceb4713cccd22996b293346c65fa5afb",
@@ -3383,7 +3388,7 @@
       "review": {
         "call_chain": {
           "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
@@ -3484,7 +3489,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
           "scripts/kesher_article_normalizer.py": "1b27b1b4d77370684bdca98915d875a46034387423af75c310a10b241332a2c1",
@@ -3683,7 +3688,7 @@
           ".github/scripts/article-image-worker-v4.py": "658ebf8fc94ffaf73e6eb7bc215b359b347bf0eeeee367edf275bed3a7e31683",
           ".github/scripts/validate-article-images.py": "b3e510c703049a56a1fc8d43d6f6ac5e79bbd524c255c621982c5a1309b39851",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
@@ -3812,12 +3817,12 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "6e47780fed8a8f8a35f5e711d8096f647bb20c96ea254185272ace5af225f4bd",
+          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_video_reviewer.py": "c0609d4f9075ab3095dfd19d3729ee03126f35f6c0c48dad5a2e466d9e6c50f9",
           "scripts/jules_video_reviewer_v3.py": "abc9b5071dc2c9aeb78403cfc4802bdf6969ae342f8477c9afafbb2175e0ef08",
           "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
@@ -4007,7 +4012,7 @@
         "call_chain": {
           "scripts/jules_video_reviewer.py": "c0609d4f9075ab3095dfd19d3729ee03126f35f6c0c48dad5a2e466d9e6c50f9",
           "scripts/jules_video_reviewer_v3.py": "abc9b5071dc2c9aeb78403cfc4802bdf6969ae342f8477c9afafbb2175e0ef08",
-          "scripts/kesher_daily_pipeline.py": "8f79ed01367ef19de8822a4222603c85af9d22f15482187c5e840456feeb3841",
+          "scripts/kesher_daily_pipeline.py": "4a5472edf751e93938590e1a2947e0c0fdd8dbdedd2a480ddc3792f32e1fa5e0",
           "scripts/requirements-video-cloud.txt": "682a6c18a81ae81f328fc3f91b0b58d77a3a494c14577e6b681c2f1a1a95f1ec",
           "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
           "tests/test_video_review_schema.py": "5f31d330ffce90b2b243b48a2ea0b4982b1ab7f2a64acf70f1420fd664b6187f"

@@ -3,6 +3,8 @@ name: Kesher Content Controller
 on:
   schedule:
     - cron: "4,9,14,19,24,29,34,39,44,49,54,59 * * * *"
+    # Both Israel UTC offsets; local-window/idempotency guards select one slot.
+    - cron: "35 21,22 * * *"
   workflow_run:
     workflows:
       - Kesher Article Generation
@@ -112,6 +114,9 @@ jobs:
         run: python3 -m pip install -r scripts/requirements-article.txt
 
       - name: Run Kesher Content Controller
+        id: content_controller
+        # Leave time for the always() repair step if the content tick stalls.
+        timeout-minutes: 6
         env:
           GITHUB_TOKEN: ${{ github.token }}
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
@@ -128,3 +133,14 @@ jobs:
           KESHER_IDEA_REQUIRED_PRIMARY_KEYWORD: ${{ inputs.required_primary_keyword || '' }}
           KESHER_IDEA_RUN_NOW: ${{ inputs.run_now || false }}
         run: PYTHONPATH=. python3 -u scripts/kesher_content_controller_stabilized.py --report-json
+
+      - name: Reconcile bounded controller code repair
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' }}
+        timeout-minutes: 3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+          KESHER_PRE_CUTOVER_DAILY_AUTHORITY: "true"
+          KESHER_CHILD_WORKFLOW: ${{ github.event.workflow_run.name || inputs.child_workflow || '' }}
+          KESHER_CONTROLLER_OUTCOME: ${{ steps.content_controller.outcome }}
+        run: PYTHONPATH=. python3 -u -m scripts.kesher_controller_repair
