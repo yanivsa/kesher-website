@@ -92,7 +92,7 @@
     "last_deploy_dispatch_at": "2026-10-29T05:53:20.349289+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40825956939,
-    "live_verified_at": "2026-10-29T07:00:52.745301+00:00"
+    "live_verified_at": "2026-10-29T07:01:24.055582+00:00"
   },
   "backlog": [
     {
@@ -1783,33 +1783,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-28T23:51:20.745107+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-28T23:56:03.374347+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T00:01:05.317083+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-29T00:06:03.273824+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2643,9 +2616,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-10-29T07:01:24.055609+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T07:01:25.517300+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-29T07:01:30.423663+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-10-29T06:59:02.696740+00:00",
+  "updated_at": "2026-10-29T07:01:30.423683+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2722,7 +2713,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 40832515468,
     "processed_run_id": null,
     "provider_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
     "failure_fingerprint": null,
