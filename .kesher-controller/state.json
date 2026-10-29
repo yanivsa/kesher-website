@@ -1767,15 +1767,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-28T16:24:10.408952+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-28T16:26:07.576642+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2677,12 +2668,21 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-29T01:26:14.510493+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "image exhausted 3 total controller dispatch attempts",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-29T01:21:18.034365+00:00",
+  "updated_at": "2026-10-29T01:26:14.510500+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": 40740531507,
@@ -2699,7 +2699,8 @@
     "evidence_rebind_dispatched_at": "2026-10-28T19:54:07.589036+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
     "last_run_conclusion": "success",
-    "last_failed_run_id": 40740531507
+    "last_failed_run_id": 40740531507,
+    "run_id": null
   },
   "long_video": {
     "attempt_count": 0,
@@ -3111,6 +3112,6 @@
     "stage": "controller",
     "code": "image exhausted 3 total controller dispatch attempts",
     "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-29T01:21:18.034339+00:00"
+    "at": "2026-10-29T01:26:14.510475+00:00"
   }
 }
