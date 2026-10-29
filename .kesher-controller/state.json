@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "article_pr_open",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -20,9 +20,9 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1252",
     "current_pr_head_sha": "e227ceff53bbec4533478cd512480d46223a101b",
     "jules_head_sha": "d6189b18925bcc0cbb449268537f805df931b8b2",
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "normalization_slot": "2026-10-29",
-    "normalization_dispatched_at": "2026-10-29T16:06:01.012280+00:00",
+    "normalization_dispatched_at": "2026-10-29T16:21:36.632648+00:00",
     "normalization_run_id": 40908195339,
     "normalization_drift_count": 1,
     "merge_dispatch_count": 0,
@@ -1722,12 +1722,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T11:31:20.622608+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-10-29T11:36:18.709567+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2434,9 +2428,19 @@
         "merge_dispatch_count": 0,
         "refund_count": 4
       }
+    },
+    {
+      "at": "2026-10-29T16:21:36.632699+00:00",
+      "from": "article_pr_open",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1252,
+        "slot": "2026-10-29"
+      }
     }
   ],
-  "updated_at": "2026-10-29T16:16:18.051759+00:00",
+  "updated_at": "2026-10-29T16:21:36.632711+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
@@ -2874,9 +2878,10 @@
         "slot": "2026-10-29"
       },
       "intent_at": "2026-10-29T16:21:11.540965+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40908195339,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40910780588,
+      "dispatched_at": "2026-10-29T16:21:11.540965+00:00"
     }
   },
   "deliverables": {
