@@ -550,6 +550,8 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
 
         class FakeGitHub:
             def contents_json(self, path, ref="main"):
+                if path == "src/data/postSummaries.json":
+                    return [base_article]
                 self.assertEqual(path, "src/data/posts.json")
                 return [base_article, candidate] if ref == "head-sha" else [base_article]
 
