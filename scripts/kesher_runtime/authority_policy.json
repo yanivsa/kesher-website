@@ -1846,7 +1846,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "5a7b708ab14b38cf5073aecbc3c00ca0656a6193e80796a7a81f8366cd1d18b3",
+      "definition_sha256": "4dc2fd31392ab25b567c53a4101f0149941380a2757a3a6087b5d3c20233f428",
       "resources": [
         "cloudflare.account",
         "github.dispatch",

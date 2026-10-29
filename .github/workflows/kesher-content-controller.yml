@@ -115,6 +115,8 @@ jobs:
 
       - name: Run Kesher Content Controller
         id: content_controller
+        # Leave time for the always() repair step if the content tick stalls.
+        timeout-minutes: 6
         env:
           GITHUB_TOKEN: ${{ github.token }}
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}

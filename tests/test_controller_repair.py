@@ -345,6 +345,10 @@ class ControllerRepairTests(unittest.TestCase):
         coordinator = next(s for s in steps if "scripts.kesher_controller_repair" in s.get("run", ""))
         self.assertIn("always()", coordinator["if"])
         self.assertIn("bridge_admission.outcome == 'success'", coordinator["if"])
+        controller = next(s for s in steps if s.get("id") == "content_controller")
+        # A stuck controller must time out before the entire job expires so the
+        # always() repair step actually gets its execution window.
+        self.assertLess(controller.get("timeout-minutes", 10), 10 - coordinator["timeout-minutes"])
 
 
 if __name__ == "__main__":
