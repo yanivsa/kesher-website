@@ -1707,16 +1707,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T16:31:40.704252+00:00",
-      "from": "article_pr_open",
-      "to": "article_image_rebinding",
-      "reason": "prior trusted image artifact proved against current normalized article and must be reattached",
-      "details": {
-        "pr_number": 1252,
-        "head_sha": "ec29652550270794304da509357fe2d797442ea4"
-      }
-    },
-    {
       "at": "2026-10-29T16:34:50.416492+00:00",
       "from": "article_image_rebinding",
       "to": "article_pr_open",
@@ -2491,9 +2481,18 @@
       "details": {
         "publication_slot": "2026-10-29"
       }
+    },
+    {
+      "at": "2026-10-29T21:55:49.980530+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "owner run-now article workflow already active",
+      "details": {
+        "publication_slot": "2026-10-29"
+      }
     }
   ],
-  "updated_at": "2026-10-29T21:50:47.299423+00:00",
+  "updated_at": "2026-10-29T21:55:49.980552+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
