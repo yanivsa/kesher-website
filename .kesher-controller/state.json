@@ -86,13 +86,13 @@
     "quality_content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-29T06:55:51.696078+00:00",
+    "quality_checked_at": "2026-10-29T06:58:25.793364+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-29T05:53:20.349289+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40825956939,
-    "live_verified_at": "2026-10-29T06:55:53.154871+00:00"
+    "live_verified_at": "2026-10-29T06:58:26.923174+00:00"
   },
   "backlog": [
     {
@@ -2682,8 +2682,8 @@
     "attempt_count": 3,
     "status": "generating",
     "last_error": null,
-    "next_retry_at": null,
-    "run_id": 40828904272,
+    "next_retry_at": "2026-10-29T07:03:21.701812+00:00",
+    "run_id": 40831732148,
     "processed_run_id": 40828904272,
     "provider_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
     "failure_fingerprint": null,
@@ -2702,7 +2702,7 @@
     "task_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
     "artifact_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
     "provider_status": "pending",
-    "verified": false,
+    "verified": true,
     "watchdog": {
       "identity": "long_video:first-grade-maturity:de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7:video-20261029-082416-de086b0499-a3",
       "hard_started_at": "2026-10-29T06:24:23.256499+00:00",
@@ -2711,7 +2711,20 @@
       "recovery_count": 1,
       "last_recovery_at": "2026-10-29T06:50:43.510373+00:00"
     },
-    "pending_resume_ready": false
+    "pending_resume_ready": false,
+    "youtube_id": "9JQ_jdASSkM",
+    "youtube_url": "https://youtu.be/9JQ_jdASSkM",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 109.933,
+    "content_duration_seconds": 109.917,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
@@ -3081,26 +3094,10 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-28",
-      "inputs": {
-        "operation": "recovery",
-        "target_slug": "first-grade-maturity",
-        "target_content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
-        "target_item_id": "video-20261029-082416-de086b0499-a3"
-      },
-      "intent_at": "2026-10-29T06:50:43.510373+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40828904272,
-      "observed_active_run_id": 40831732148,
-      "dispatched_at": "2026-10-29T06:50:43.510373+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 40827742021,
+    "run_id": 40831732148,
     "conclusion": "success",
     "source_slug": "first-grade-maturity",
     "slot": "2026-10-28"
