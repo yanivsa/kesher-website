@@ -75,6 +75,16 @@ class API:
         return self.deployed
 
 
+def complete_cycle(slug="recovery-test-article"):
+    from tests.test_kesher_recovery_e2e import sample_source, make_valid_long_item, make_valid_short_item
+    source = sample_source(slug=slug, day="2026-10-29")
+    overview = make_valid_long_item(source) | {"signature_fullscreen": True}
+    return {"schema_version": 5, "cycle": "2026-10-29", "status": "complete",
+            "article": {"slug": slug, "pr_number": 1249, "quality_content_sha256": source["content_sha256"],
+                        "url": source["canonical_url"], "live": True},
+            "long_video": overview, "short": make_valid_short_item(source, overview)}
+
+
 class ControllerRepairTests(unittest.TestCase):
     def setUp(self):
         self.store = Store()
@@ -161,6 +171,135 @@ class ControllerRepairTests(unittest.TestCase):
         self.assertEqual(result["status"], "idle")
         self.assertFalse(self.jules.creates)
 
+    def test_discovery_failure_is_durable_and_bounded(self):
+        attempts = []
+        def unavailable(fingerprint):
+            attempts.append(fingerprint)
+            raise RuntimeError("JULES_AUTH_ERROR")
+        self.jules.list_exact = unavailable
+        self.run_repair()
+        self.assertEqual(len(self.store.value["incidents"]), 1)
+        original = next(iter(self.store.value["incidents"].values()))["fingerprint"]
+        self.run_repair(now=NOW + timedelta(minutes=2))
+        result = self.run_repair(now=NOW + timedelta(days=1))
+        self.assertEqual(result["status"], "human_blocker")
+        self.assertEqual(set(attempts), {original})
+        self.assertLessEqual(len(attempts), 3)
+        self.assertFalse(self.jules.creates)
+
+    def test_transient_discovery_failure_recovers_without_new_incident(self):
+        actual = self.jules.list_exact
+        self.jules.list_exact = lambda fingerprint: (_ for _ in ()).throw(TimeoutError())
+        self.run_repair()
+        self.assertEqual(len(self.store.value["incidents"]), 1)
+        fingerprint = next(iter(self.store.value["incidents"].values()))["fingerprint"]
+        self.jules.list_exact = actual
+        self.assertEqual(self.run_repair(now=NOW + timedelta(minutes=5))["status"], "running")
+        self.assertEqual(self.jules.creates[0]["fingerprint"], fingerprint)
+
+    def test_discovery_deadline_starts_when_executor_becomes_available(self):
+        repair.reconcile(blocked(), store=self.store, jules=None, api=self.api, now=NOW)
+        self.jules.list_exact = lambda fingerprint: (_ for _ in ()).throw(TimeoutError())
+        result = self.run_repair(now=NOW + timedelta(hours=2))
+        self.assertEqual(result["status"], "discovery_retry")
+
+    def test_delivery_proof_rejects_wrong_article_media(self):
+        state = complete_cycle()
+        exact = {"cycle": state["cycle"], "slug": state["article"]["slug"],
+                 "content_sha256": state["article"]["quality_content_sha256"], "pr_number": 1249}
+        for stage in ("long_video", "short"):
+            for field, value in (("slug", "unrelated-article"), ("content_sha256", "a" * 64)):
+                with self.subTest(stage=stage, field=field):
+                    corrupted = copy.deepcopy(state)
+                    corrupted[stage]["source"][field] = value
+                    self.assertIsNone(repair._delivered(corrupted, exact))
+
+    def test_delivery_proof_understands_real_flattened_overview_stage(self):
+        state = complete_cycle()
+        source = state["long_video"].pop("source")
+        state["long_video"].update(source_slug=source["slug"], source_content_sha256=source["content_sha256"], content_sha256=source["content_sha256"])
+        exact = {"cycle": state["cycle"], "pr_number": 1249}
+        self.assertIsNotNone(repair._delivered(state, exact))
+        state["long_video"]["source_slug"] = "unrelated-article"
+        self.assertIsNone(repair._delivered(state, exact))
+
+    def test_completed_owner_archive_remains_verifiable(self):
+        state = complete_cycle()
+        exact = {"cycle": state["cycle"], "pr_number": 1249}
+        archived = {"cycle": "2026-10-30", "article": {}, "owner_cycle_archive": [state]}
+        self.assertIsNotNone(repair._delivered(archived, exact))
+
+    def test_actual_daily_rollover_retains_complete_delivery_proof(self):
+        from datetime import date
+        from scripts.kesher_content_controller import new_cycle_state
+        state = complete_cycle()
+        exact = {"cycle": state["cycle"], "pr_number": 1249}
+        rolled = new_cycle_state(date(2026, 10, 30), state)
+        self.assertFalse(rolled["backlog"])
+        self.assertIsNotNone(repair._delivered(rolled, exact))
+
+    def test_recorded_media_item_identity_is_required_for_resolution(self):
+        state = complete_cycle()
+        exact = {"cycle": state["cycle"], "pr_number": 1249, "item_id": "another-provider-item"}
+        self.assertIsNone(repair._delivered(state, exact, stage="long_video"))
+
+    def test_manual_topic_active_worker_reaches_real_stall_watchdog(self):
+        from scripts.kesher_content_controller_stabilized import StabilizedRuntimeV5Controller
+        from tests.test_kesher_three_strike_runtime import _FakeGitHub
+        github = _FakeGitHub(NOW - timedelta(hours=2))
+        controller = StabilizedRuntimeV5Controller(github=github, site=None, now=NOW)
+        controller.posts_on_main = lambda ref="main": []
+        state = blocked() | {"status": "article_generating", "last_error": None,
+                             "article": {"status": "running", "attempts": 1},
+                             "active_idea": {"idea_id": "manual-topic", "run_now": True,
+                                             "publication_slot": "2026-10-29", "status": "claimed"}}
+        action = controller._run_now_article_phase(state)
+        self.assertEqual(action.kind, "article_watchdog_nudge")
+        self.assertEqual(github.nudges, ["sessions/article-1"])
+        self.assertFalse(github.dispatches)
+
+    def test_scheduled_topic_after_midnight_supervises_original_slot(self):
+        from scripts.kesher_content_controller_stabilized import StabilizedRuntimeV5Controller
+        from tests.test_kesher_three_strike_runtime import _FakeGitHub
+        github = _FakeGitHub(NOW - timedelta(hours=2))
+        slots = []
+        original = github.article_session_snapshot
+        def snapshot(slot):
+            slots.append(slot)
+            return original(slot)
+        github.article_session_snapshot = snapshot
+        controller = StabilizedRuntimeV5Controller(github=github, site=None, now=NOW)
+        controller.posts_on_main = lambda ref="main": []
+        state = blocked() | {"status": "article_generating", "last_error": None,
+                             "article": {"status": "running", "attempts": 1},
+                             "active_idea": {"idea_id": "old-topic", "run_now": False,
+                                             "publication_slot": "2026-10-28", "status": "claimed"}}
+        action = controller._scheduled_active_article_phase(state)
+        self.assertEqual(action.kind, "article_watchdog_nudge")
+        self.assertEqual(slots, ["2026-10-28"])
+        self.assertEqual(state["article"]["watchdog"]["identity"], "2026-10-28")
+
+    def test_real_jules_lookup_uses_the_workers_keyword_session_title(self):
+        import hashlib, os
+        from unittest import mock
+        from scripts import kesher_content_controller_v5 as v5
+        from scripts import jules_article_runner_core as jules
+        keyword = "פחד מאסלה אצל ילדים"
+        owner_title = "Kesher article 2026-10-29 kw-" + hashlib.sha256(keyword.encode()).hexdigest()[:10]
+        sessions = [{"name": "sessions/daily-other-topic", "title": "Kesher article 2026-10-29", "state": "IN_PROGRESS"},
+                    {"name": "sessions/exact-owner-topic", "title": owner_title, "state": "IN_PROGRESS"}]
+        def response(method, url, headers, *args, **kwargs):
+            if "/sessions?" in url:
+                return {"sessions": sessions}
+            self.assertTrue(url.endswith("sessions/exact-owner-topic"))
+            return sessions[1]
+        client = v5.V5GitHubClient(repair.REPOSITORY, "fake-token")
+        state = {"active_idea": {"required_primary_keyword": keyword}}
+        from scripts import kesher_content_watchdog as watchdog
+        with mock.patch.dict(os.environ, {"JULES_API_KEY": "test-key"}), mock.patch.object(jules, "request_json", side_effect=response):
+            snapshot = watchdog.article_snapshot(client, state, "2026-10-29")
+        self.assertEqual(snapshot["session_id"], "sessions/exact-owner-topic")
+
     def test_missing_executor_can_resume_after_credential_is_restored(self):
         result = repair.reconcile(blocked(), store=self.store, jules=None, api=self.api, now=NOW)
         self.assertEqual(result["status"], "awaiting_executor")
@@ -226,7 +365,8 @@ class ControllerRepairTests(unittest.TestCase):
         self.jules.urls = ["https://github.com/yanivsa/kesher-website/pull/1250"]
         self.run_repair(state)
         state.update(status="complete", last_error=None,
-                     article={"pr_number": 1249, "url": "https://kesher.saharoni.com/blog/topic", "live": True},
+                     article={"pr_number": 1249, "slug": source["slug"], "quality_content_sha256": source["content_sha256"],
+                              "url": source["canonical_url"], "live": True},
                      long_video=overview, short=make_valid_short_item(source, overview))
         ready, _ = delivery_contract(state)
         self.assertTrue(ready)
@@ -275,7 +415,8 @@ class ControllerRepairTests(unittest.TestCase):
         overview = make_valid_long_item(source) | {"signature_fullscreen": True}
         state.update(status="complete", last_error=None, active_idea=None,
                      idea_history=[{"idea_id": "owner-idea-1", "status": "complete", "outputs": {"slug": source["slug"]}}],
-                     article={"run_id": 222, "slug": source["slug"], "url": "https://kesher.saharoni.com/blog/" + source["slug"], "live": True},
+                     article={"run_id": 222, "slug": source["slug"], "quality_content_sha256": source["content_sha256"],
+                              "url": source["canonical_url"], "live": True},
                      long_video=overview, short=make_valid_short_item(source, overview))
         self.api.merged = True
         self.api.deployed = False

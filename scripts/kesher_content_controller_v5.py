@@ -172,10 +172,17 @@ class V5GitHubClient(v4.V4GitHubClient):
         )
 
     def article_session_snapshot(self, slot: str) -> dict[str, Any] | None:
+        return self._article_session_snapshot(slot)
+
+    def owner_article_session_snapshot(self, slot: str, keyword: str) -> dict[str, Any] | None:
+        return self._article_session_snapshot(slot, exact_title=jules.owner_slot_session_title(slot, keyword))
+
+    def _article_session_snapshot(self, slot: str, *, exact_title: str | None = None) -> dict[str, Any] | None:
         api_key = os.environ.get("JULES_API_KEY", "").strip()
         if not api_key:
             return None
-        recovered = jules.recover_active_slot_session(api_key, slot)
+        recovered = (jules.recover_active_slot_session(api_key, slot, exact_title=exact_title)
+                     if exact_title is not None else jules.recover_active_slot_session(api_key, slot))
         if not recovered:
             return None
         session_name, _ = recovered
@@ -273,8 +280,7 @@ class V5Controller(v4.V4Controller):
         if not active:
             return None
 
-        snapshot_getter = getattr(self.github, "article_session_snapshot", None)
-        snapshot = snapshot_getter(slot) if snapshot_getter is not None else None
+        snapshot = watchdog.article_snapshot(self.github, state, slot)
         session_id = str((snapshot or {}).get("session_id") or "").strip() or None
         fingerprint = str((snapshot or {}).get("fingerprint") or "").strip() or None
         watchdog.observe_article(

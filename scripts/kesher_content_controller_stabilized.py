@@ -254,6 +254,9 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         active_run = self.github.active_workflow_run(v5.core.ARTICLE_WORKFLOW)
         if active_run:
             state["article"]["run_id"] = active_run.get("id")
+            recovery = self._article_watchdog(state)
+            if recovery is not None:
+                return recovery
             v5.core.transition(state, "article_generating", "owner run-now article workflow already active", publication_slot=slot)
             return v5.core.Action("wait", "owner run-now article workflow active")
         reconciled = self._reconcile_completed_article_run(state)
@@ -317,6 +320,9 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         active_run = self.github.active_workflow_run(v5.core.ARTICLE_WORKFLOW)
         if active_run:
             state.setdefault("article", {})["run_id"] = active_run.get("id")
+            recovery = self._article_watchdog(state)
+            if recovery is not None:
+                return recovery
             v5.core.transition(
                 state,
                 "article_generating",

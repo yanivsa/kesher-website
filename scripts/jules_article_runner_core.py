@@ -248,10 +248,15 @@ def normalize_session_name(payload: dict[str, Any]) -> str:
     return name
 
 
-def list_active_slot_sessions(api_key: str, slot: str) -> list[dict[str, Any]]:
+def owner_slot_session_title(slot: str, primary_keyword: str) -> str:
+    digest = hashlib.sha256(primary_keyword.encode("utf-8")).hexdigest()[:10]
+    return f"Kesher article {slot} kw-{digest}"
+
+
+def list_active_slot_sessions(api_key: str, slot: str, *, exact_title: str | None = None) -> list[dict[str, Any]]:
     """List every active Jules session for the exact slot, across all pages."""
 
-    title = slot_session_title(slot)
+    title = exact_title if exact_title is not None else slot_session_title(slot)
     active: list[dict[str, Any]] = []
     page_token = ""
     seen_tokens: set[str] = set()
@@ -295,7 +300,7 @@ def list_active_slot_sessions(api_key: str, slot: str) -> list[dict[str, Any]]:
     return active
 
 
-def recover_active_slot_session(api_key: str, slot: str) -> tuple[str, str] | None:
+def recover_active_slot_session(api_key: str, slot: str, *, exact_title: str | None = None) -> tuple[str, str] | None:
     """Reuse exactly one live slot session; fail closed on ambiguous duplicates.
 
     Jules' documented v1alpha Session API has create/get/list/sendMessage and
@@ -305,7 +310,8 @@ def recover_active_slot_session(api_key: str, slot: str) -> tuple[str, str] | No
     GitHub preflight prevents a new session from being created.
     """
 
-    active = list_active_slot_sessions(api_key, slot)
+    active = (list_active_slot_sessions(api_key, slot, exact_title=exact_title)
+              if exact_title is not None else list_active_slot_sessions(api_key, slot))
     if not active:
         return None
     if len(active) > 1:

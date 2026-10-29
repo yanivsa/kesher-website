@@ -1,5 +1,5 @@
 from __future__ import annotations
-import copy, os, unittest
+import copy, os, unittest, tempfile
 from pathlib import Path
 from datetime import datetime
 from unittest import mock
@@ -34,7 +34,21 @@ class FakeGitHub:
 class FakeSite:
     def get(self,url): return 404,""
 
-class IdeaQueueTests(unittest.TestCase):
+class _IsolatedPublicationCatalog(unittest.TestCase):
+    def setUp(self):
+        super().setUp()
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        catalog = Path(directory.name) / "posts.json"
+        catalog.write_text("[]", encoding="utf-8")
+        # These cases exercise queue ownership/dispatch, not today's changing
+        # production SEO catalog. Dedicated conflict suites cover that boundary.
+        patcher = mock.patch.object(ideas, "_PUBLISHED_POST_FILES", (str(catalog),))
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+
+class IdeaQueueTests(_IsolatedPublicationCatalog):
     def env(self): return {"KESHER_IDEA_ID":"potty-training-20261018-v1","KESHER_IDEA_TOPIC_BRIEF":"כתוב מאמר על גמילה מטיטול להורים לפעוטות.","KESHER_IDEA_REQUIRED_PRIMARY_KEYWORD":"גמילה מטיטול"}
     def test_ingest_idempotent_and_conflict_fails(self):
         st={"cycle":"2026-10-18","status":"complete"}
@@ -72,7 +86,7 @@ class IdeaQueueTests(unittest.TestCase):
             ctrl._guarded_dispatch(state,core.ARTICLE_WORKFLOW,{"slot":"2026-10-19"},lambda w,i: raw.append((w,i)))
         self.assertEqual(len(raw),1); self.assertIn("Required Primary Keyword: גמילה מטיטול",raw[0][1]["topic_brief"]); self.assertEqual(state["active_idea"]["idea_id"],"potty")
 
-class ScheduledIdeaRolloverTests(unittest.TestCase):
+class ScheduledIdeaRolloverTests(_IsolatedPublicationCatalog):
     def stage(self, *, status="pending"):
         return {
             "attempt_count": 0,
@@ -242,7 +256,7 @@ class ScheduledIdeaRolloverTests(unittest.TestCase):
         handler.assert_called_once_with(state, pr)
 
 
-class IdeaRunNowTests(unittest.TestCase):
+class IdeaRunNowTests(_IsolatedPublicationCatalog):
     def pacifier_env(self):
         return {
             "KESHER_IDEA_ID": "pacifier-weaning-20261018-v1",

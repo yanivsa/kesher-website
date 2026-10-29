@@ -458,6 +458,25 @@ def _stage_defaults() -> dict[str, Any]:
 def new_cycle_state(day: date, old: dict[str, Any] | None = None) -> dict[str, Any]:
     history = list((old or {}).get("history") or [])[-80:]
     backlog = list((old or {}).get("backlog") or [])
+    completed_archive = copy.deepcopy(list((old or {}).get("completed_cycle_archive") or []))
+    # Completed cycles need not remain runnable backlog, but their exact public
+    # media proof must survive while an independent code correction is reviewed.
+    for completed in list((old or {}).get("owner_cycle_archive") or []) + ([old] if isinstance(old, dict) else []):
+        if not isinstance(completed, dict) or completed.get("status") != "complete" or not completed.get("cycle"):
+            continue
+        article = completed.get("article") or {}
+        snapshot = {key: copy.deepcopy(completed.get(key) or {}) for key in ("article", "long_video", "short")}
+        snapshot.update(cycle=completed["cycle"], status="complete", archived_at=utc_now())
+        snapshot["owner_idea_ids"] = sorted(set(completed.get("owner_idea_ids") or []) | {
+            row["idea_id"] for row in (old or {}).get("idea_history", [])
+            if isinstance(row, dict) and row.get("idea_id") and row.get("status") == "complete"
+            and (row.get("outputs") or {}).get("slug") == article.get("slug")
+        })
+        identity = lambda row: (row.get("cycle"), (row.get("article") or {}).get("slug"),
+                                (row.get("article") or {}).get("quality_content_sha256"),
+                                (row.get("article") or {}).get("pr_number"))
+        completed_archive = [row for row in completed_archive if identity(row) != identity(snapshot)]
+        completed_archive.append(snapshot)
     if isinstance(old, dict) and old.get("cycle") and old.get("cycle") != day.isoformat():
         prev_article = old.get("article") if isinstance(old.get("article"), dict) else {}
         prev_long = old.get("long_video") if isinstance(old.get("long_video"), dict) else (old.get("video") if isinstance(old.get("video"), dict) else {})
@@ -540,6 +559,7 @@ def new_cycle_state(day: date, old: dict[str, Any] | None = None) -> dict[str, A
             **_stage_defaults(),
         },
         "backlog": backlog[-20:],
+        "completed_cycle_archive": completed_archive[-20:],
         "last_error": None,
         "history": history,
         "updated_at": utc_now(),
