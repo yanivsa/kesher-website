@@ -38,6 +38,7 @@
       "status": "human_blocker"
     },
     "a55e72df1cc6537a972077115734392a28b2dd15eb9fd5f051adf8639bae9fb0": {
+      "acquisition_started_at": "2026-10-29T15:20:53.070156+00:00",
       "affected": [
         {
           "article_run_id": 40881413510,
@@ -70,7 +71,7 @@
       "failure_class": "ARTICLE_ATTEMPTS_EXHAUSTED",
       "fingerprint": "7b184611ad2919c9cd988b24c9c2d2f4f7bc22b51126ff652db76c1f2b28b4d5",
       "stage": "article",
-      "status": "intent"
+      "status": "uncertain"
     }
   },
   "version": 1
