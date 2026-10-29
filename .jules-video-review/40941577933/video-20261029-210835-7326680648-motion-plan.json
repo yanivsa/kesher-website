@@ -1,0 +1,247 @@
+{
+  "version": 1,
+  "video_sha256": "e268911a2f466db849e4a479efe76101c2d5c6a2c9f97d4a6742669b2d7b0dde",
+  "durationInFrames": 3016,
+  "fps": 30.0,
+  "segments": [
+    {
+      "startFrame": 0,
+      "endFrame": 328,
+      "transformType": "pan_left",
+      "scaleStart": 1.06,
+      "scaleEnd": 1.06,
+      "panXStart": 10.96,
+      "panXEnd": -10.96,
+      "panYStart": 0.81,
+      "panYEnd": 0.81,
+      "originX": 52.4,
+      "originY": 47.3,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 328,
+      "endFrame": 686,
+      "transformType": "tracked_reframe",
+      "scaleStart": 1.0,
+      "scaleEnd": 1.22,
+      "panXStart": -0.36,
+      "panXEnd": -0.73,
+      "panYStart": 0.72,
+      "panYEnd": 1.44,
+      "originX": 51.8,
+      "originY": 45.2,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 686,
+      "endFrame": 1075,
+      "transformType": "tracked_reframe",
+      "scaleStart": 1.0,
+      "scaleEnd": 1.22,
+      "panXStart": -0.17,
+      "panXEnd": -0.34,
+      "panYStart": 0.21,
+      "panYEnd": 0.42,
+      "originX": 50.9,
+      "originY": 48.6,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 1075,
+      "endFrame": 1522,
+      "transformType": "pan_right",
+      "scaleStart": 1.06,
+      "scaleEnd": 1.06,
+      "panXStart": -10.68,
+      "panXEnd": 10.68,
+      "panYStart": -3.15,
+      "panYEnd": -3.15,
+      "originX": 51.7,
+      "originY": 60.5,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 1522,
+      "endFrame": 1851,
+      "transformType": "pan_right",
+      "scaleStart": 1.06,
+      "scaleEnd": 1.06,
+      "panXStart": -13.04,
+      "panXEnd": 13.04,
+      "panYStart": 0.18,
+      "panYEnd": 0.18,
+      "originX": 57.6,
+      "originY": 49.4,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 1851,
+      "endFrame": 2150,
+      "transformType": "pan_right",
+      "scaleStart": 1.06,
+      "scaleEnd": 1.06,
+      "panXStart": -11.56,
+      "panXEnd": 11.56,
+      "panYStart": -0.6,
+      "panYEnd": -0.6,
+      "originX": 46.1,
+      "originY": 52.0,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 2150,
+      "endFrame": 2538,
+      "transformType": "spring_emphasis",
+      "scaleStart": 1.0,
+      "scaleEnd": 1.08,
+      "panXStart": 0.0,
+      "panXEnd": -1.08,
+      "panYStart": 0.0,
+      "panYEnd": -2.46,
+      "originX": 52.7,
+      "originY": 58.2,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 2538,
+      "endFrame": 2926,
+      "transformType": "tracked_reframe",
+      "scaleStart": 1.0,
+      "scaleEnd": 1.22,
+      "panXStart": -0.08,
+      "panXEnd": -0.16,
+      "panYStart": 0.0,
+      "panYEnd": 0.0,
+      "originX": 50.4,
+      "originY": 50.0,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 2926,
+      "endFrame": 3016,
+      "transformType": "pan_right",
+      "scaleStart": 1.06,
+      "scaleEnd": 1.06,
+      "panXStart": -11.73,
+      "panXEnd": 11.73,
+      "panYStart": -0.15,
+      "panYEnd": -0.15,
+      "originX": 54.3,
+      "originY": 50.5,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    }
+  ],
+  "enhancement_schema_version": 1,
+  "source_identity": "video-20261029-210835-7326680648:toilet-fear-children:7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb:video_overview:7c14e047-0000-4e2f-9fbe-6316a41e263d",
+  "profile": "overview_16_9",
+  "product": "overview",
+  "output": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30
+  },
+  "render_mode": "full",
+  "timeline": [
+    {
+      "start": 0.0,
+      "end": 10.933,
+      "type": "pan",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 10.933,
+      "end": 22.867,
+      "type": "reframe",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 22.867,
+      "end": 35.833,
+      "type": "reframe",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 35.833,
+      "end": 50.733,
+      "type": "pan",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 50.733,
+      "end": 61.7,
+      "type": "pan",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 61.7,
+      "end": 71.667,
+      "type": "pan",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 71.667,
+      "end": 84.6,
+      "type": "push_in",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 84.6,
+      "end": 97.533,
+      "type": "reframe",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 97.533,
+      "end": 100.533,
+      "type": "pan",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 18.098,
+      "end": 23.098,
+      "type": "image",
+      "intent": "reinforce the exact article topic with its approved hero visual",
+      "asset_ref": "enhancement-9fa965f89be43b73.png",
+      "fallback": "source_video",
+      "provenance": "repo-owned exact article hero image",
+      "source": "repo:public/images/generated/blog/toilet-fear-children.png",
+      "usage_status": "approved",
+      "semantic_fit": 1.0,
+      "sha256": "9fa965f89be43b736f02c1f11d3281650b2b379d4e2d213a3419c0717c32d386"
+    }
+  ],
+  "assets_used": [
+    {
+      "asset_ref": "enhancement-9fa965f89be43b73.png",
+      "type": "image",
+      "source": "repo:public/images/generated/blog/toilet-fear-children.png",
+      "provenance": "repo-owned exact article hero image",
+      "usage_status": "approved",
+      "semantic_fit": 1.0,
+      "sha256": "9fa965f89be43b736f02c1f11d3281650b2b379d4e2d213a3419c0717c32d386",
+      "start": 18.098,
+      "end": 23.098,
+      "intent": "reinforce the exact article topic with its approved hero visual"
+    }
+  ],
+  "assets_dropped": [],
+  "enhancement_status": "enhancement_complete"
+}

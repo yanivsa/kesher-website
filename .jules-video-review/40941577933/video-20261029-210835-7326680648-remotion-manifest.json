@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "item_id": "video-20261029-210835-7326680648",
+  "created_at": "2026-10-29T19:40:40.393256+00:00",
+  "source": {
+    "id": "toilet-fear-children",
+    "slug": "toilet-fear-children",
+    "title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
+    "date": "2026-10-29",
+    "category": "הדרכת הורים",
+    "subcategory": "גמילה מחיתולים",
+    "excerpt": "הילד בוכה, מסרב להתקרב לאסלה, ואתם מוצאים את עצמכם במאבק יומיומי. פחד מאסלה אצל ילדים הוא שלב שעלול לתקוע את הגמילה ולתסכל את כולם. איך מזהים שמדובר בחשש אמיתי, למה לחץ רק מחמיר את המצב, ואיך אפשר לעזור להם לעשות את זה ברוגע ובהדרגתיות בלי להפוך את השירותים לזירת קרב?",
+    "canonical_url": "https://kesher.saharoni.com/blog/toilet-fear-children",
+    "content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
+    "video_title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
+    "short_title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
+    "short_hook": "",
+    "youtube_metadata": {
+      "title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
+      "description": "הילד בוכה, מסרב להתקרב לאסלה, ואתם מוצאים את עצמכם במאבק יומיומי. פחד מאסלה אצל ילדים הוא שלב שעלול לתקוע את הגמילה ולתסכל את כולם. איך מזהים שמדובר בחשש אמיתי, למה לחץ רק מחמיר את המצב, ואיך אפשר לעזור להם לעשות את זה ברוגע ובהדרגתיות בלי להפוך את השירותים לזירת קרב?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/toilet-fear-children\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+      "tags": [
+        "הדרכת הורים",
+        "גמילה מחיתולים"
+      ]
+    },
+    "short_youtube_metadata": {
+      "title": "בקצרה: פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
+      "description": "הילד בוכה, מסרב להתקרב לאסלה, ואתם מוצאים את עצמכם במאבק יומיומי. פחד מאסלה אצל ילדים הוא שלב שעלול לתקוע את הגמילה ולתסכל את כולם. איך מזהים שמדובר בחשש אמיתי, למה לחץ רק מחמיר את המצב, ואיך אפשר לעזור להם לעשות את זה ברוגע ובהדרגתיות בלי להפוך את השירותים לזירת קרב?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/toilet-fear-children\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+      "tags": [
+        "הדרכת הורים",
+        "גמילה מחיתולים"
+      ]
+    }
+  },
+  "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+  "source_id": "d45ab1ba-1d2e-4f89-8a01-c8425c37abcd",
+  "task_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
+  "artifact_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
+  "generation_prompt": "חובה: כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד. אין להשתמש בקול גברי, אין להחליף בין דוברים, ואין להשתמש בקול ניטרלי או דו-קולי. הקול צריך להישמע כאישה ישראלית בוגרת, טבעית, חמה, ברורה ומקצועית. אם אין אפשרות להבטיח קול נשי — אל תפיק תוצר. צור סקירת וידאו מסוג הסבר, בעברית טבעית בלבד, המבוססת אך ורק על המקור שנבחר. אורך היעד הוא בין תשעים למאה ושמונים שניות, ביחס אופקי טבעי של שש עשרה לתשע. תזכורת מחייבת: הקריינות כולה בקול נשי ישראלי בלבד. הקריינות כולה תהיה תמציתית ותכיל לכל היותר מאתיים ושישים מילים. הצג רעיון מרכזי אחד, דוגמה ביתית מוחשית ופעולה אחת שאפשר לנסות. אל תערבב בין הורות לזוגיות אם המקור עוסק רק באחד מהם. אין להוסיף טענות, תארים מקצועיים, אבחנות או הבטחות שאינם כתובים במקור. כל קריינות או טקסט חזותי יהיו בעברית תקינה. אין להשתמש באנגלית, בג׳יבריש, בשקופיות, בכרטיסיות מידע, בטבלאות או בתרשימים. העדף סיפור חזותי רציף וברור. אין ליצור כותרת ליוטיוב, תיאור ליוטיוב או תגיות בתוך הסרטון. הנושא המדויק הוא: פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
+  "generation_prompt_sha256": "5cbeb9f0a527f176543571870250b2be3516907583a110a5739c9c5eb4b127cc",
+  "voice_constraint_version": "female-he-v2",
+  "failure_signature": null,
+  "failure_fingerprint": null,
+  "raw_mp4": "video-20261029-210835-7326680648-notebooklm.mp4",
+  "raw_sha256": "e268911a2f466db849e4a479efe76101c2d5c6a2c9f97d4a6742669b2d7b0dde",
+  "final_mp4": "video-20261029-210835-7326680648-remotion-final.mp4",
+  "final_sha256": "7a21dbc37dc267d0e3a8e0e2705561f30f3aa919ea6ab1c0320b1fdbebdf37da",
+  "visual_pipeline": "remotion-v1-notebooklm-audio",
+  "content_duration_seconds": 100.542,
+  "signature_duration_seconds": 3.0,
+  "signature_fullscreen": true,
+  "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+  "signature_asset": "signature-mask.svg",
+  "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+  "signature_video_path": "video-20261029-210835-7326680648-signature-segment.mp4",
+  "signature_video_sha256": "6c73cdce0e3a3c93d28cc8162c83c38fae45b42703423212bdf62e353c5be00f",
+  "signature_overlay": true,
+  "signature_verified": true,
+  "signature_provenance": {
+    "schema_version": 1,
+    "final_sha256": "7a21dbc37dc267d0e3a8e0e2705561f30f3aa919ea6ab1c0320b1fdbebdf37da",
+    "raw_sha256": "e268911a2f466db849e4a479efe76101c2d5c6a2c9f97d4a6742669b2d7b0dde",
+    "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "segment_sha256": "6c73cdce0e3a3c93d28cc8162c83c38fae45b42703423212bdf62e353c5be00f",
+    "source_duration_seconds": 100.542,
+    "final_duration_seconds": 100.533,
+    "start_seconds": 97.533,
+    "end_seconds": 100.533,
+    "audio_source_sha256": "e268911a2f466db849e4a479efe76101c2d5c6a2c9f97d4a6742669b2d7b0dde"
+  },
+  "audio_provenance": {
+    "schema_version": 1,
+    "mode": "stream_copy",
+    "raw_sha256": "e268911a2f466db849e4a479efe76101c2d5c6a2c9f97d4a6742669b2d7b0dde",
+    "final_sha256": "7a21dbc37dc267d0e3a8e0e2705561f30f3aa919ea6ab1c0320b1fdbebdf37da",
+    "raw_audio_sha256": "dd4564424c5d7f2018b887e705425ff95fff924e8571cb5ef33c55aa58f9a874",
+    "final_audio_sha256": "dd4564424c5d7f2018b887e705425ff95fff924e8571cb5ef33c55aa58f9a874",
+    "raw_timing": {
+      "codec": "aac",
+      "sample_rate": 44100,
+      "channels": 1,
+      "start_seconds": 0.0,
+      "duration_seconds": 100.588844
+    },
+    "final_timing": {
+      "codec": "aac",
+      "sample_rate": 44100,
+      "channels": 1,
+      "start_seconds": 0.0,
+      "duration_seconds": 100.588844
+    }
+  },
+  "provider_raw_media": {
+    "codec": "h264",
+    "audio_codec": "aac",
+    "width": 1280,
+    "height": 720,
+    "duration": 100.542,
+    "format": "mov,mp4,m4a,3gp,3g2,mj2"
+  },
+  "render_input_sha256": "0da0686b6499ae9b935c470edc5dc083341800dd9cbd1a7ce4706cbaf32c97ec",
+  "remotion_props_path": "video-20261029-210835-7326680648-remotion-props.json",
+  "remotion_props_sha256": "eabd46a68bd00ae5a0b1bb2e7419c2396fa05dde3b0673a580454a9080c18ef4",
+  "motion_plan_path": "video-20261029-210835-7326680648-motion-plan.json",
+  "motion_plan_sha256": "b8a23f3b00bbf08d649a1215d989b1e4f576942646b5bde0bf774de90a5f6f82",
+  "media": {
+    "codec": "h264",
+    "audio_codec": "aac",
+    "width": 1280,
+    "height": 720,
+    "duration": 100.533,
+    "format": "mov,mp4,m4a,3gp,3g2,mj2"
+  },
+  "youtube_metadata": {
+    "title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
+    "description": "הילד בוכה, מסרב להתקרב לאסלה, ואתם מוצאים את עצמכם במאבק יומיומי. פחד מאסלה אצל ילדים הוא שלב שעלול לתקוע את הגמילה ולתסכל את כולם. איך מזהים שמדובר בחשש אמיתי, למה לחץ רק מחמיר את המצב, ואיך אפשר לעזור להם לעשות את זה ברוגע ובהדרגתיות בלי להפוך את השירותים לזירת קרב?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/toilet-fear-children\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+    "tags": [
+      "הדרכת הורים",
+      "גמילה מחיתולים"
+    ]
+  },
+  "frame_paths": [
+    "video-20261029-210835-7326680648-remotion-frames/frame-1.png",
+    "video-20261029-210835-7326680648-remotion-frames/frame-2.png",
+    "video-20261029-210835-7326680648-remotion-frames/frame-3.png",
+    "video-20261029-210835-7326680648-remotion-frames/frame-4.png",
+    "video-20261029-210835-7326680648-remotion-frames/frame-5.png",
+    "video-20261029-210835-7326680648-remotion-frames/frame-6.png",
+    "video-20261029-210835-7326680648-remotion-frames/frame-7.png",
+    "video-20261029-210835-7326680648-remotion-frames/frame-8.png"
+  ],
+  "frame_sha256": {
+    "video-20261029-210835-7326680648-remotion-frames/frame-1.png": "639a86f895dbf673b39a08cb6625a905c57a15bd9251d321abca9ff90454dbbb",
+    "video-20261029-210835-7326680648-remotion-frames/frame-2.png": "cfb9af1672e53056d67f23ed5c4aa9bf369345869721135cf794f2d51eb13191",
+    "video-20261029-210835-7326680648-remotion-frames/frame-3.png": "e71f260f444b0448196651e460e6e609fdd975bb6f3fba9645d3eae4672c668a",
+    "video-20261029-210835-7326680648-remotion-frames/frame-4.png": "edb938d2bf9e45537e8fd43e5b16e3968eac988cc00ddf5f07596f8824c74019",
+    "video-20261029-210835-7326680648-remotion-frames/frame-5.png": "43e143e22a2e3bb4becc5293d85030ed3b9e6dcb4c4b3e2d3f25a27b4cd3ac56",
+    "video-20261029-210835-7326680648-remotion-frames/frame-6.png": "a253e1e46e7bf2678b06128a1eb5560fc19bc8b0958f07811ee2128051193b21",
+    "video-20261029-210835-7326680648-remotion-frames/frame-7.png": "96e00dc1b9ed61634f4d3a3e985042bb6f48a7e2f5925973c7256b28b03686af",
+    "video-20261029-210835-7326680648-remotion-frames/frame-8.png": "bd3244da2d2a15a4b9a60ecb51513b99326935f5e476132e380a350a836ad6fa"
+  },
+  "visual_review_path": "video-20261029-210835-7326680648-remotion-visual-review.png",
+  "visual_review_sha256": "6c013a7128dda1f9ae700a6083af3ebaaac6002fc4d968b0baa1f865c4302e93",
+  "enhancement": {
+    "enhancement_schema_version": 1,
+    "source_sha256": "e268911a2f466db849e4a479efe76101c2d5c6a2c9f97d4a6742669b2d7b0dde",
+    "final_sha256": "7a21dbc37dc267d0e3a8e0e2705561f30f3aa919ea6ab1c0320b1fdbebdf37da",
+    "edit_plan_sha256": "b8a23f3b00bbf08d649a1215d989b1e4f576942646b5bde0bf774de90a5f6f82",
+    "enhancement_status": "enhancement_complete",
+    "assets_used": [
+      {
+        "asset_ref": "enhancement-9fa965f89be43b73.png",
+        "type": "image",
+        "source": "repo:public/images/generated/blog/toilet-fear-children.png",
+        "provenance": "repo-owned exact article hero image",
+        "usage_status": "approved",
+        "semantic_fit": 1.0,
+        "sha256": "9fa965f89be43b736f02c1f11d3281650b2b379d4e2d213a3419c0717c32d386",
+        "start": 18.098,
+        "end": 23.098,
+        "intent": "reinforce the exact article topic with its approved hero visual"
+      }
+    ],
+    "assets_dropped": [],
+    "fallback_reason": null
+  },
+  "transcript_path": "video-20261029-210835-7326680648-transcript-he.txt",
+  "transcript_sha256": "0037969423f51d6b5cd888cab7c7d94ab0e2269c4a321e228dae9a4db367af21",
+  "source_path": "video-20261029-210835-7326680648-source-he.txt",
+  "source_file_sha256": "0ccbef24f8552ef2c03b655528a677898f0261207e5421afc5b00dd65d88c533"
+}
