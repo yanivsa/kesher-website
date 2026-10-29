@@ -3,19 +3,19 @@
   "cycle": "2026-10-28",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 3,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "next_retry_at": null,
     "run_id": 40606620660,
     "processed_run_id": 40602133674,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "COMPLETED_WITHOUT_PR": 1,
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
-    "attempts": 2,
+    "attempts": 0,
     "deploy_attempts": 0,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-28T00:06:40.352149+00:00",
@@ -71,14 +71,24 @@
     "normalization_drift_count": 0,
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
-    "merge_run_id": 40696399137,
+    "merge_run_id": 40825372478,
     "last_refunded_auto_merge_run_id": 40637034405,
     "deferred_auto_merge_refund_count": 3,
     "last_normalization_drift_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44",
     "last_error": null,
     "normalized_head_sha": "e17f4e3eed813b34aa3f228ad02972db0acbabd9",
     "image_head_sha": "e17f4e3eed813b34aa3f228ad02972db0acbabd9",
-    "merge_candidate_sha": "e17f4e3eed813b34aa3f228ad02972db0acbabd9"
+    "merge_candidate_sha": "e17f4e3eed813b34aa3f228ad02972db0acbabd9",
+    "slug": "first-grade-maturity",
+    "title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
+    "url": "https://kesher.saharoni.com/blog/first-grade-maturity",
+    "published_date": "2026-10-28",
+    "quality_content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-10-29T05:53:13.691927+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2690,7 +2700,8 @@
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
     "last_run_conclusion": "success",
     "last_failed_run_id": 40740531507,
-    "run_id": 40825155532
+    "run_id": 40825155532,
+    "image_path": "/images/generated/blog/first-grade-maturity.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3072,10 +3083,21 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-10-28",
+      "inputs": {},
+      "intent_at": "2026-10-29T05:53:08.630843+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "e33edeb84408aaadc1ee3d91fd3ce1c5b7cc6cac"
+    }
+  },
   "last_child_notification": {
-    "workflow": "Kesher Trusted Article Image",
-    "run_id": 40825155532,
+    "workflow": "Auto-merge Kesher article PRs",
+    "run_id": 40825372478,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-28"
