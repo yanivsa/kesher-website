@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "article_needed",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,8 +13,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
-    "deploy_attempts": 0
+    "attempts": 1,
+    "deploy_attempts": 0,
+    "last_dispatch_at": "2026-10-29T21:07:41.916224+00:00"
   },
   "backlog": [
     {
@@ -1706,12 +1707,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T15:52:02.992900+00:00",
-      "from": "article_image_running",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
       "at": "2026-10-29T15:53:22.753602+00:00",
       "from": "article_pr_open",
       "to": "article_pr_open",
@@ -2496,9 +2491,19 @@
         "idea_id": "good-news-relationship-acr",
         "publication_slot": "2026-10-29"
       }
+    },
+    {
+      "at": "2026-10-29T21:07:41.916249+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 1,
+        "publication_slot": "2026-10-29"
+      }
     }
   ],
-  "updated_at": "2026-10-29T21:06:50.076123+00:00",
+  "updated_at": "2026-10-29T21:07:41.916256+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2936,9 +2941,10 @@
         "topic_brief": "זוגיות: המבחן האמיתי של הקשר אינו רק בזמן ריב אלא גם באופן שבו בני זוג מגיבים לבשורות טובות. לבסס את המאמר על מחקרי capitalization של Shelly Gable ועמיתיה, במיוחד JPSP 2004 ו-2006. להסביר את ארבעת דפוסי התגובה: active-constructive — התלהבות כנה, שאלות המשך והרחבת הרגע; passive-constructive — תגובה חיובית אך קצרה/פושרת; active-destructive — הצבעה על חסרונות, דאגות או הקטנת ההצלחה; passive-destructive — התעלמות/החלפת נושא. להדגיש שרק active-constructive נקשר בעקביות לאינטימיות, שביעות רצון ואמון גבוהים יותר. הניסוח המדעי חייב להיות מדויק: מחקר 2006 על 79 זוגות מצא שתגובות לאירועים חיוביים היו קשורות יותר לרווחת הקשר ולפרידה כעבור חודשיים מאשר תגובות לדיונים באירועים שליליים; אין לטעון 'פי שניים' או סיבתיות שלא הוכחה. זווית קצרה: אותו משפט 'קיבלתי קידום בעבודה' וארבע תגובות שונות; להראות למה 'יופי מותק' מפספס הזדמנות לקירבה. טיפ מעשי: לעצור, להביע שמחה אמיתית ולשאול שתי שאלות המשך, למשל 'איך הרגשת כשסיפרו לך?' ו'מה הכי מרגש אותך בזה?'. להימנע מייחוס ציטוט מומצא ל-Gable; אפשר לנסח כרעיון מסכם בלבד. מקורות מחקריים: Gable et al., JPSP 2004 DOI 10.1037/0022-3514.87.2.228; Gable, Gonzaga & Strachman, JPSP 2006 DOI 10.1037/0022-3514.91.5.904; Reis et al., JPSP 2010 DOI 10.1037/a0018344.\n\nIdea Request ID: good-news-relationship-acr\nRequired Primary Keyword: תגובה לבשורות טובות בזוגיות"
       },
       "intent_at": "2026-10-29T21:07:30.143989+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-29T21:07:30.143989+00:00"
     }
   },
   "deliverables": {
