@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -76,7 +76,9 @@
     "deferred_auto_merge_refund_count": 3,
     "last_normalization_drift_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44",
     "last_error": null,
-    "normalized_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44"
+    "normalized_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44",
+    "image_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44",
+    "merge_candidate_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44"
   },
   "backlog": [
     {
@@ -1767,15 +1769,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-28T21:46:03.822028+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-28T21:51:20.658655+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2668,9 +2661,15 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-29T05:47:00.129176+00:00",
+      "from": "blocked",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-29T05:46:19.765135+00:00",
+  "updated_at": "2026-10-29T05:47:00.129194+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2691,7 +2690,7 @@
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
     "last_run_conclusion": "success",
     "last_failed_run_id": 40740531507,
-    "run_id": null
+    "run_id": 40825155532
   },
   "long_video": {
     "attempt_count": 0,
@@ -3074,24 +3073,22 @@
     "short_origin_verified": false
   },
   "pending_dispatches": {
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
       "cycle": "2026-10-28",
       "inputs": {
         "pr_number": "1244",
-        "recovery_only": "true",
-        "expected_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44"
+        "slot": "2026-10-28"
       },
-      "intent_at": "2026-10-29T05:44:22.025847+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 40825155532,
-      "dispatched_at": "2026-10-29T05:44:22.025847+00:00"
+      "intent_at": "2026-10-29T05:46:45.169467+00:00",
+      "status": "intent",
+      "previous_run_id": 40696399137,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
     "workflow": "Kesher Trusted Article Image",
-    "run_id": 40758438404,
+    "run_id": 40825155532,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-28"
@@ -3114,10 +3111,5 @@
     "Kesher Normalize Article PR:40741237215",
     "Kesher Trusted Article Image:40758438404"
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "image exhausted 3 total controller dispatch attempts",
-    "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-29T05:46:19.765113+00:00"
-  }
+  "last_error": null
 }
