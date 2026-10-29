@@ -3190,19 +3190,27 @@
         "long_url": "https://youtu.be/1DCFXnfx2NQ",
         "short_url": "https://youtu.be/KomnBuCHiLk"
       }
+    },
+    {
+      "idea_id": "parenting-p2-toilet-fear-children",
+      "fingerprint": "1a04cd46411d1a3ffd0546d19a2e63573f1cf5f85b6268cd56be0c1fa7bbac16",
+      "topic_brief": "אשכול גמילה שהסתבכה. נושא/כאב: ילד שמפחד לשבת על האסלה/ישבנון, בוכה או נמנע; ההורה מתחיל ללחוץ והפחד מחמיר. להתייחס בהדרגה ובזהירות, ולהבדיל מכאב/עצירות שמצריכים בדיקה רפואית. אות ביקוש: Observed query signal: Google autocomplete/SERP proxy. Canonical ID נדרש: toilet-fear-children. כותרת עבודה: פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לרופא/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
+      "required_primary_keyword": "פחד מאסלה אצל ילדים",
+      "run_now": true,
+      "status": "complete",
+      "requested_at": "2026-10-19T10:20:29.448044+00:00",
+      "publication_slot": "2026-10-29",
+      "claimed_at": "2026-10-29T13:22:49.535003+00:00",
+      "completed_at": "2026-10-29T20:26:35.205915+00:00",
+      "outputs": {
+        "slug": "toilet-fear-children",
+        "article_url": "https://kesher.saharoni.com/blog/toilet-fear-children",
+        "long_url": "https://youtu.be/kVTVZKButig",
+        "short_url": "https://youtu.be/EzIILKiQj3Q"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "parenting-p2-toilet-fear-children",
-    "fingerprint": "1a04cd46411d1a3ffd0546d19a2e63573f1cf5f85b6268cd56be0c1fa7bbac16",
-    "topic_brief": "אשכול גמילה שהסתבכה. נושא/כאב: ילד שמפחד לשבת על האסלה/ישבנון, בוכה או נמנע; ההורה מתחיל ללחוץ והפחד מחמיר. להתייחס בהדרגה ובזהירות, ולהבדיל מכאב/עצירות שמצריכים בדיקה רפואית. אות ביקוש: Observed query signal: Google autocomplete/SERP proxy. Canonical ID נדרש: toilet-fear-children. כותרת עבודה: פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לרופא/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
-    "required_primary_keyword": "פחד מאסלה אצל ילדים",
-    "run_now": true,
-    "status": "claimed",
-    "requested_at": "2026-10-19T10:20:29.448044+00:00",
-    "publication_slot": "2026-10-29",
-    "claimed_at": "2026-10-29T13:22:49.535003+00:00"
-  },
+  "active_idea": null,
   "pending_dispatches": {
     "kesher-article-generation.yml": {
       "workflow": "kesher-article-generation.yml",
