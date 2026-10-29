@@ -2476,7 +2476,7 @@
       "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-29T16:41:25.492010+00:00",
+  "updated_at": "2026-10-29T16:42:21.316613+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2493,7 +2493,7 @@
     "evidence_rebind_head_sha": "e32cf82fe8d36c598380c5bb7b99cb3c953bd3ef",
     "evidence_rebind_dispatched_at": "2026-10-29T16:38:51.597226+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 40895865256
+    "run_id": 40913625740
   },
   "long_video": {
     "attempt_count": 0,
@@ -2907,20 +2907,6 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-29T13:22:45.670201+00:00"
     },
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
-      "cycle": "2026-10-29",
-      "inputs": {
-        "pr_number": "1252",
-        "recovery_only": "true",
-        "expected_head_sha": "e32cf82fe8d36c598380c5bb7b99cb3c953bd3ef"
-      },
-      "intent_at": "2026-10-29T16:38:10.132332+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 40913625740,
-      "dispatched_at": "2026-10-29T16:38:10.132332+00:00"
-    },
     "auto-merge-article-prs.yml": {
       "workflow": "auto-merge-article-prs.yml",
       "cycle": "2026-10-29",
@@ -2945,8 +2931,8 @@
     "short_origin_verified": true
   },
   "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 40913219414,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 40913625740,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-29"
