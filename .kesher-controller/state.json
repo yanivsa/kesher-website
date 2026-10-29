@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "article_needed",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,8 +13,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
-    "deploy_attempts": 0
+    "attempts": 1,
+    "deploy_attempts": 0,
+    "last_dispatch_at": "2026-10-29T13:23:02.260850+00:00"
   },
   "backlog": [
     {
@@ -1706,12 +1707,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T10:41:22.379785+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-29T10:41:23.545512+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2308,9 +2303,19 @@
         "idea_id": "parenting-p2-toilet-fear-children",
         "publication_slot": "2026-10-29"
       }
+    },
+    {
+      "at": "2026-10-29T13:23:02.260882+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 1,
+        "publication_slot": "2026-10-29"
+      }
     }
   ],
-  "updated_at": "2026-10-29T13:21:28.787240+00:00",
+  "updated_at": "2026-10-29T13:23:02.260890+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2730,9 +2735,10 @@
         "topic_brief": "אשכול גמילה שהסתבכה. נושא/כאב: ילד שמפחד לשבת על האסלה/ישבנון, בוכה או נמנע; ההורה מתחיל ללחוץ והפחד מחמיר. להתייחס בהדרגה ובזהירות, ולהבדיל מכאב/עצירות שמצריכים בדיקה רפואית. אות ביקוש: Observed query signal: Google autocomplete/SERP proxy. Canonical ID נדרש: toilet-fear-children. כותרת עבודה: פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לרופא/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p2-toilet-fear-children\nRequired Primary Keyword: פחד מאסלה אצל ילדים"
       },
       "intent_at": "2026-10-29T13:22:45.670201+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-29T13:22:45.670201+00:00"
     }
   },
   "deliverables": {
