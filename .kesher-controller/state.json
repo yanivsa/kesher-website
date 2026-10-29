@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1783,15 +1783,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-28T22:56:09.459233+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-28T23:01:10.882683+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2649,9 +2640,19 @@
       "from": "long_video_running",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T06:23:25.348259+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 2
+      }
     }
   ],
-  "updated_at": "2026-10-29T06:23:16.433618+00:00",
+  "updated_at": "2026-10-29T06:23:25.348266+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2676,8 +2677,8 @@
     "image_path": "/images/generated/blog/first-grade-maturity.png"
   },
   "long_video": {
-    "attempt_count": 2,
-    "status": "rejected",
+    "attempt_count": 3,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40827742021,
@@ -2687,11 +2688,11 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-29T06:11:41.020499+00:00",
+    "last_dispatch_at": "2026-10-29T06:23:25.348247+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
     "item_id": "video-20261029-081232-de086b0499-a2",
-    "resume_dispatches": 1
+    "resume_dispatches": 2
   },
   "short": {
     "attempt_count": 0,
@@ -3072,9 +3073,10 @@
         "target_item_id": "video-20261029-081232-de086b0499-a2"
       },
       "intent_at": "2026-10-29T06:22:32.752188+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40827742021,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40828904272,
+      "dispatched_at": "2026-10-29T06:22:32.752188+00:00"
     }
   },
   "last_child_notification": {
@@ -3103,23 +3105,5 @@
     "Kesher Trusted Article Image:40758438404",
     "Deploy to Cloudflare Pages:40825956939"
   ],
-  "last_error": null,
-  "video": {
-    "attempt_count": 2,
-    "status": "rejected",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": 40827742021,
-    "processed_run_id": 40827742021,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-29T06:11:41.020499+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261029-081232-de086b0499-a2",
-    "resume_dispatches": 1
-  }
+  "last_error": null
 }
