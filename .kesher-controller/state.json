@@ -3072,7 +3072,21 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
+      "cycle": "2026-10-28",
+      "inputs": {
+        "pr_number": "1244",
+        "recovery_only": "true",
+        "expected_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44"
+      },
+      "intent_at": "2026-10-29T05:44:22.025847+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Trusted Article Image",
     "run_id": 40758438404,
