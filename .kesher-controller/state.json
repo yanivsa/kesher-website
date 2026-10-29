@@ -53,10 +53,10 @@
     "last_deploy_dispatch_at": "2026-10-29T08:52:31.037520+00:00",
     "next_deploy_retry_at": null,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-29T09:35:52.084800+00:00",
+    "quality_checked_at": "2026-10-29T09:37:22.106498+00:00",
     "quality_violations": [],
     "deploy_run_id": 40845300310,
-    "live_verified_at": "2026-10-29T09:35:53.967771+00:00"
+    "live_verified_at": "2026-10-29T09:37:23.140789+00:00"
   },
   "backlog": [
     {
@@ -2627,7 +2627,7 @@
     "task_id": "16e746b0-4234-497a-9a1f-5e261dee6037",
     "artifact_id": "16e746b0-4234-497a-9a1f-5e261dee6037",
     "provider_status": "pending",
-    "verified": false,
+    "verified": true,
     "watchdog": {
       "identity": "long_video:first-grade-adjustment:e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e:video-20261029-110045-e78209a3fe",
       "hard_started_at": "2026-10-29T09:00:51.207106+00:00",
@@ -2637,7 +2637,20 @@
       "last_recovery_at": "2026-10-29T09:30:48.715288+00:00"
     },
     "pending_resume_ready": false,
-    "resume_dispatches": 1
+    "resume_dispatches": 1,
+    "youtube_id": "1DCFXnfx2NQ",
+    "youtube_url": "https://youtu.be/1DCFXnfx2NQ",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 109.633,
+    "content_duration_seconds": 109.625,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
@@ -3028,21 +3041,6 @@
       "status": "intent",
       "previous_run_id": null,
       "observed_active_run_id": null
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-29",
-      "inputs": {
-        "operation": "recovery",
-        "target_slug": "first-grade-adjustment",
-        "target_content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
-        "target_item_id": "video-20261029-110045-e78209a3fe"
-      },
-      "intent_at": "2026-10-29T09:30:48.715288+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40846185199,
-      "observed_active_run_id": 40850285644,
-      "dispatched_at": "2026-10-29T09:30:48.715288+00:00"
     }
   },
   "deliverables": {
@@ -3056,7 +3054,7 @@
   },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 40846185199,
+    "run_id": 40850285644,
     "conclusion": "success",
     "source_slug": "first-grade-adjustment",
     "slot": "2026-10-29"
