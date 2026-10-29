@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1748,15 +1748,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T02:26:13.864104+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-29T02:31:06.841368+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2585,9 +2576,19 @@
       "from": "article_deploying",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T08:59:53.452545+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-29T08:59:45.515490+00:00",
+  "updated_at": "2026-10-29T08:59:53.452553+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2607,8 +2608,8 @@
     "run_id": 40841150112
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2617,7 +2618,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-10-29T08:59:53.452531+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
@@ -3018,9 +3021,10 @@
         "target_content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e"
       },
       "intent_at": "2026-10-29T08:59:12.921067+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40846185199,
+      "dispatched_at": "2026-10-29T08:59:12.921067+00:00"
     }
   },
   "deliverables": {
@@ -3045,18 +3049,5 @@
     "Auto-merge Kesher article PRs:40841410018",
     "Kesher Trusted Article Image:40843996941",
     "Auto-merge Kesher article PRs:40844284792"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true
-  }
+  ]
 }
