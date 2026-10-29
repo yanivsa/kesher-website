@@ -1649,7 +1649,7 @@
     },
     {
       "cycle": "2026-10-29",
-      "status": "complete",
+      "status": "quarantined_ambiguous_identity",
       "exact_slug": null,
       "content_sha256": null,
       "article": {
@@ -1707,7 +1707,22 @@
         "blocked": false,
         "article_exhausted": false
       },
-      "archived_at": "2026-10-29T22:03:02.285279+00:00"
+      "archived_at": "2026-10-29T22:03:02.285279+00:00",
+      "media": {
+        "status": "quarantined_ambiguous_identity",
+        "long_status": "quarantined_ambiguous_identity",
+        "quarantined": true,
+        "quarantined_at": "2026-10-29T22:03:20.074012+00:00",
+        "quarantine_reason": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS",
+        "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29",
+        "ambiguous_candidate_slugs": [
+          "first-grade-adjustment",
+          "toilet-fear-children"
+        ],
+        "ambiguous_candidate_count": 2
+      },
+      "quarantined": true,
+      "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
   "last_error": null,
@@ -2332,6 +2347,19 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-10-29T22:03:20.074033+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "backlog_quarantined_ambiguous_identity",
+      "details": {
+        "cycle": "2026-10-29",
+        "candidate_slugs": [
+          "first-grade-adjustment",
+          "toilet-fear-children"
+        ]
+      }
     }
   ],
   "updated_at": "2026-10-29T22:03:16.851855+00:00",
