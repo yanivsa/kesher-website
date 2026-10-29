@@ -3026,6 +3026,20 @@
       "status": "intent",
       "previous_run_id": null,
       "observed_active_run_id": null
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-29",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "first-grade-adjustment",
+        "derive_content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
+        "derive_long_item_id": "video-20261029-110045-e78209a3fe"
+      },
+      "intent_at": "2026-10-29T10:10:47.657596+00:00",
+      "status": "intent",
+      "previous_run_id": 40851128059,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -3070,6 +3084,20 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-10-29T09:30:48.715288+00:00"
+    },
+    "v5|first-grade-adjustment|e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e|short": {
+      "pipeline_id": "v5",
+      "slug": "first-grade-adjustment",
+      "content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-10-29T12",
+      "last_fingerprint": "1f9648fe10b50d31b904416f83210a64019fa4218b6a98a3fa7307a7cc641759",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-29T10:10:47.657596+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   }
 }
