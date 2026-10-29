@@ -47,7 +47,7 @@
     "last_deploy_dispatch_at": "2026-10-29T18:59:57.861833+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40936002971,
-    "live_verified_at": "2026-10-29T20:45:56.008623+00:00"
+    "live_verified_at": "2026-10-29T20:46:27.413627+00:00"
   },
   "backlog": [
     {
@@ -1739,34 +1739,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T13:55:52.360136+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-29"
-      }
-    },
-    {
-      "at": "2026-10-29T14:00:52.605348+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-29"
-      }
-    },
-    {
-      "at": "2026-10-29T14:06:03.901060+00:00",
-      "from": "article_generating",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1252,
-        "slot": "2026-10-29"
-      }
-    },
-    {
       "at": "2026-10-29T14:41:12.353322+00:00",
       "from": "article_normalizing",
       "to": "article_normalizing",
@@ -2591,9 +2563,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-29T20:46:27.413655+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T20:46:28.702157+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-29T20:46:30.067619+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-29T20:42:40.447136+00:00",
+  "updated_at": "2026-10-29T20:46:30.067640+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
