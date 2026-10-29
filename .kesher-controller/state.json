@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1783,15 +1783,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-28T23:11:08.669867+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-28T23:14:37.573196+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2644,9 +2635,19 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-10-29T06:31:07.599970+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261029-082416-de086b0499-a3",
+        "task_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f"
+      }
     }
   ],
-  "updated_at": "2026-10-29T06:26:07.744676+00:00",
+  "updated_at": "2026-10-29T06:31:07.599980+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2672,12 +2673,12 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "rejected",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40828904272,
-    "processed_run_id": 40827742021,
-    "provider_id": null,
+    "processed_run_id": 40828904272,
+    "provider_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
@@ -2685,8 +2686,24 @@
     "last_dispatch_at": "2026-10-29T06:23:25.348247+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
-    "item_id": "video-20261029-081232-de086b0499-a2",
-    "resume_dispatches": 2
+    "item_id": "video-20261029-082416-de086b0499-a3",
+    "resume_dispatches": 2,
+    "source_slug": "first-grade-maturity",
+    "source_content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
+    "content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
+    "source_id": "41301c26-ed1e-4d75-9b3e-f7c48e17abde",
+    "task_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
+    "artifact_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
+    "provider_status": "pending",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:first-grade-maturity:de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7:video-20261029-082416-de086b0499-a3",
+      "hard_started_at": "2026-10-29T06:24:23.256499+00:00",
+      "last_progress_at": "2026-10-29T06:30:40.993823+00:00",
+      "last_fingerprint": "11f02490d2ddabf8babe5eec1123546ec65747f41bf07cfb43fa8e352e92e9da",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
