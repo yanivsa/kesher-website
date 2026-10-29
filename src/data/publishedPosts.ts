@@ -8,19 +8,25 @@ import manualPostsOct2026 from './manualPostsOct2026';
 import { applyInternalLinkBackfill } from './internalLinkBackfill';
 
 type BasePost = (typeof posts)[number];
+type PostOverride = Record<string, unknown>;
 
 const topicPosts = [
   ...(giftedParentPosts as unknown as BasePost[]),
   ...(giftedParentPostsWave2 as unknown as BasePost[]),
 ];
 const manualPosts = manualPostsOct2026 as unknown as BasePost[];
-const topicOverrides = giftedParentOverrides as unknown as Record<string, Partial<BasePost>>;
-const wave2TopicOverrides = giftedParentWave2Overrides as unknown as Record<string, Partial<BasePost>>;
+const topicOverrides = giftedParentOverrides as unknown as Record<string, PostOverride>;
+const wave2TopicOverrides = giftedParentWave2Overrides as unknown as Record<string, PostOverride>;
 
 const applyTopicOverride = (post: BasePost): BasePost => {
   const override = topicOverrides[post.id];
   const wave2Override = wave2TopicOverrides[post.id];
-  return ({ ...post, ...(override ?? {}), ...(wave2Override ?? {}) } as BasePost);
+  return Object.assign(
+    {},
+    post as unknown as Record<string, unknown>,
+    override ?? {},
+    wave2Override ?? {},
+  ) as unknown as BasePost;
 };
 
 const allPosts = [
