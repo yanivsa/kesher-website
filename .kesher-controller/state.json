@@ -56,7 +56,7 @@
     "quality_checked_at": "2026-10-29T10:40:52.191257+00:00",
     "quality_violations": [],
     "deploy_run_id": 40845300310,
-    "live_verified_at": "2026-10-29T10:40:54.058433+00:00"
+    "live_verified_at": "2026-10-29T10:41:22.379758+00:00"
   },
   "backlog": [
     {
@@ -1748,33 +1748,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T05:16:21.205652+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T05:21:12.825637+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T05:26:17.304576+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-29T05:31:23.762380+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2521,9 +2494,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-29T10:41:22.379785+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T10:41:23.545512+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-29T10:41:24.783788+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-29T10:36:20.236439+00:00",
+  "updated_at": "2026-10-29T10:41:24.783806+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
