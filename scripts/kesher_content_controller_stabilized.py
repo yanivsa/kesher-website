@@ -6,6 +6,7 @@ from __future__ import annotations
 import copy
 import importlib.util
 import json
+from html.parser import HTMLParser
 import os
 import re
 import sys
@@ -2145,13 +2146,18 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         try:
             head_posts = self.github.contents_json("src/data/posts.json", head_sha)
             base_posts = self.github.contents_json("src/data/posts.json", base_sha)
+            published_catalog = self.github.contents_json("src/data/postSummaries.json", base_sha)
         except Exception as exc:
             raise v5.core.ControllerError(
-                f"CONTENT_PREFLIGHT_CATALOG_UNREADABLE: failed to load src/data/posts.json for PR: {exc}"
+                f"CONTENT_PREFLIGHT_CATALOG_UNREADABLE: failed to load article/public catalogs for PR: {exc}"
             ) from exc
-        if not isinstance(head_posts, list) or not isinstance(base_posts, list):
+        if (
+            not isinstance(head_posts, list)
+            or not isinstance(base_posts, list)
+            or not isinstance(published_catalog, list)
+        ):
             raise v5.core.ControllerError(
-                "CONTENT_PREFLIGHT_CATALOG_INVALID: head or base src/data/posts.json is not a list"
+                "CONTENT_PREFLIGHT_CATALOG_INVALID: article/public catalogs must be lists"
             )
         base_ids = {v5.core.canonical_slug(row) for row in base_posts if isinstance(row, dict)}
         new_posts = [row for row in head_posts if isinstance(row, dict) and v5.core.canonical_slug(row) not in base_ids]
@@ -2166,6 +2172,37 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         post = new_posts[0]
         raw_content = str(post.get("content") or "")
         errors = []
+
+        known_public_slugs = {
+            str(row.get(key) or "").strip()
+            for row in published_catalog
+            if isinstance(row, dict)
+            for key in ("id", "slug")
+            if row.get(key)
+        }
+        hrefs: list[str] = []
+
+        class _ArticleLinks(HTMLParser):
+            def handle_starttag(self, tag, attrs):
+                if tag.lower() == "a":
+                    hrefs.extend(
+                        value
+                        for key, value in attrs
+                        if key.lower() == "href" and value
+                    )
+
+        _ArticleLinks().feed(raw_content)
+        missing_blog_links: set[str] = set()
+        for href in hrefs:
+            parts = urllib.parse.urlsplit(href)
+            if parts.netloc and parts.netloc.lower() != "kesher.saharoni.com":
+                continue
+            path = urllib.parse.unquote(parts.path)
+            target_slug = path.removeprefix("/blog/").strip("/")
+            if path.startswith("/blog/") and target_slug not in known_public_slugs:
+                missing_blog_links.add(f"internal_blog_link_missing: {path}")
+        errors.extend(sorted(missing_blog_links))
+
         h3_count = len(re.findall(r"<h3(?:\s|>)", raw_content, re.I))
         if h3_count < 5:
             errors.append(f"New article must contain at least five H3 sections (found {h3_count})")
