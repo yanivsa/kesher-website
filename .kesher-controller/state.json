@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "blocked",
+  "status": "article_image_rebinding",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -1767,15 +1767,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-28T21:36:37.715295+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-28T21:41:02.481920+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2667,12 +2658,22 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-29T05:44:50.453961+00:00",
+      "from": "blocked",
+      "to": "article_image_rebinding",
+      "reason": "prior trusted image artifact proved against current normalized article and must be reattached",
+      "details": {
+        "pr_number": 1244,
+        "head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44"
+      }
     }
   ],
-  "updated_at": "2026-10-29T05:41:27.239793+00:00",
+  "updated_at": "2026-10-29T05:44:50.453970+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "complete",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": 40740531507,
@@ -2685,8 +2686,8 @@
     "last_dispatch_at": "2026-10-28T17:57:06.660917+00:00",
     "artifact_sha256": "c4de7aeb88152b9b4e40eac7ae482ba2b1232748d2e418905d16372dbf0cc9aa",
     "source_id": "local-editorial://first-grade-maturity/0",
-    "evidence_rebind_head_sha": "2905f360ecc62ad2204252f3e38836dcf694c250",
-    "evidence_rebind_dispatched_at": "2026-10-28T19:54:07.589036+00:00",
+    "evidence_rebind_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44",
+    "evidence_rebind_dispatched_at": "2026-10-29T05:44:50.453931+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
     "last_run_conclusion": "success",
     "last_failed_run_id": 40740531507,
@@ -3082,9 +3083,10 @@
         "expected_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44"
       },
       "intent_at": "2026-10-29T05:44:22.025847+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40825155532,
+      "dispatched_at": "2026-10-29T05:44:22.025847+00:00"
     }
   },
   "last_child_notification": {
@@ -3112,10 +3114,5 @@
     "Kesher Normalize Article PR:40741237215",
     "Kesher Trusted Article Image:40758438404"
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "image exhausted 3 total controller dispatch attempts",
-    "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-29T05:41:27.239765+00:00"
-  }
+  "last_error": null
 }
