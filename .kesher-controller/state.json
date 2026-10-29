@@ -18,19 +18,20 @@
     "last_dispatch_at": "2026-10-29T13:23:02.260850+00:00",
     "pr_number": 1252,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1252",
-    "current_pr_head_sha": "67ed0efdaab4d0af9b1f9e2762bcebabc9e1440c",
+    "current_pr_head_sha": "13f3bf76106e6d0b8a72ef6827533e6df6407019",
     "jules_head_sha": "d6189b18925bcc0cbb449268537f805df931b8b2",
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "normalization_slot": "2026-10-29",
     "normalization_dispatched_at": "2026-10-29T16:06:01.012280+00:00",
-    "normalization_run_id": 40905116636,
-    "normalization_drift_count": 1,
+    "normalization_run_id": 40908195339,
+    "normalization_drift_count": 2,
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 40905871713,
     "last_refunded_auto_merge_run_id": 40905871713,
     "deferred_auto_merge_refund_count": 3,
-    "last_normalization_drift_head_sha": "67ed0efdaab4d0af9b1f9e2762bcebabc9e1440c"
+    "last_normalization_drift_head_sha": "13f3bf76106e6d0b8a72ef6827533e6df6407019",
+    "normalized_head_sha": "13f3bf76106e6d0b8a72ef6827533e6df6407019"
   },
   "backlog": [
     {
@@ -2856,18 +2857,18 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-29T13:22:45.670201+00:00"
     },
-    "normalize-article-pr.yml": {
-      "workflow": "normalize-article-pr.yml",
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
       "cycle": "2026-10-29",
       "inputs": {
         "pr_number": "1252",
-        "slot": "2026-10-29"
+        "recovery_only": "true",
+        "expected_head_sha": "13f3bf76106e6d0b8a72ef6827533e6df6407019"
       },
-      "intent_at": "2026-10-29T16:05:46.605779+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40905116636,
-      "observed_active_run_id": 40908195339,
-      "dispatched_at": "2026-10-29T16:05:46.605779+00:00"
+      "intent_at": "2026-10-29T16:07:22.777228+00:00",
+      "status": "intent",
+      "previous_run_id": 40895865256,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -2880,8 +2881,8 @@
     "short_origin_verified": true
   },
   "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 40905871713,
+    "workflow": "Kesher Normalize Article PR",
+    "run_id": 40908195339,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-29"
