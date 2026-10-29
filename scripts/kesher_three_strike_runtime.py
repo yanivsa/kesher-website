@@ -156,8 +156,7 @@ class ThreeStrikeMediaInterventionMixin:
         if not active:
             return None
 
-        snapshot_getter = getattr(self.github, "article_session_snapshot", None)
-        snapshot = snapshot_getter(slot) if snapshot_getter is not None else None
+        snapshot = watchdog.article_snapshot(self.github, state, slot)
         session_id = str((snapshot or {}).get("session_id") or "").strip() or None
         fingerprint = str((snapshot or {}).get("fingerprint") or "").strip() or None
         watchdog.observe_article(

@@ -279,6 +279,27 @@ class ControllerRepairTests(unittest.TestCase):
         self.assertEqual(slots, ["2026-10-28"])
         self.assertEqual(state["article"]["watchdog"]["identity"], "2026-10-28")
 
+    def test_real_jules_lookup_uses_the_workers_keyword_session_title(self):
+        import hashlib, os
+        from unittest import mock
+        from scripts import kesher_content_controller_v5 as v5
+        from scripts import jules_article_runner_core as jules
+        keyword = "פחד מאסלה אצל ילדים"
+        owner_title = "Kesher article 2026-10-29 kw-" + hashlib.sha256(keyword.encode()).hexdigest()[:10]
+        sessions = [{"name": "sessions/daily-other-topic", "title": "Kesher article 2026-10-29", "state": "IN_PROGRESS"},
+                    {"name": "sessions/exact-owner-topic", "title": owner_title, "state": "IN_PROGRESS"}]
+        def response(method, url, headers, *args, **kwargs):
+            if "/sessions?" in url:
+                return {"sessions": sessions}
+            self.assertTrue(url.endswith("sessions/exact-owner-topic"))
+            return sessions[1]
+        client = v5.V5GitHubClient(repair.REPOSITORY, "fake-token")
+        state = {"active_idea": {"required_primary_keyword": keyword}}
+        from scripts import kesher_content_watchdog as watchdog
+        with mock.patch.dict(os.environ, {"JULES_API_KEY": "test-key"}), mock.patch.object(jules, "request_json", side_effect=response):
+            snapshot = watchdog.article_snapshot(client, state, "2026-10-29")
+        self.assertEqual(snapshot["session_id"], "sessions/exact-owner-topic")
+
     def test_missing_executor_can_resume_after_credential_is_restored(self):
         result = repair.reconcile(blocked(), store=self.store, jules=None, api=self.api, now=NOW)
         self.assertEqual(result["status"], "awaiting_executor")

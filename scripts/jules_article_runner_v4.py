@@ -311,10 +311,8 @@ def configure_session_identity(slot: str) -> None:
     brief = load_owner_topic_brief()
     required = parse_owner_required_keyword(brief) if brief else None
     if required:
-        kw_hash = hashlib.sha256(required.encode("utf-8")).hexdigest()[:10]
-
         def _owner_title(candidate_slot: str) -> str:
-            return f"Kesher article {candidate_slot} kw-{kw_hash}"
+            return v3.core.owner_slot_session_title(candidate_slot, required)
 
         v3.core.slot_session_title = _owner_title
     else:

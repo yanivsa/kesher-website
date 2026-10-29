@@ -190,3 +190,14 @@ def mark_media_recovery(stage: dict[str, Any], *, now: datetime) -> None:
     current = stage["watchdog"]
     current["recovery_count"] = int(current.get("recovery_count") or 0) + 1
     current["last_recovery_at"] = _iso(now.astimezone(timezone.utc))
+
+
+def article_snapshot(github: Any, state: dict[str, Any], slot: str) -> dict[str, Any] | None:
+    """Observe the same exact session identity used by the article worker."""
+    idea = state.get("active_idea") or {}
+    keyword = str(idea.get("required_primary_keyword") or "").strip()
+    owner_getter = getattr(github, "owner_article_session_snapshot", None)
+    if keyword and callable(owner_getter):
+        return owner_getter(slot, keyword)
+    getter = getattr(github, "article_session_snapshot", None)
+    return getter(slot) if callable(getter) else None
