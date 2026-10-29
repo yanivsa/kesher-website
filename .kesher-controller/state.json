@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "article_generating",
+  "status": "complete",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1707,12 +1707,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T16:34:50.416492+00:00",
-      "from": "article_image_rebinding",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
       "at": "2026-10-29T16:37:18.442774+00:00",
       "from": "article_pr_open",
       "to": "article_pr_open",
@@ -2490,6 +2484,19 @@
       "details": {
         "publication_slot": "2026-10-29"
       }
+    },
+    {
+      "at": "2026-10-29T22:00:47.395492+00:00",
+      "from": "article_generating",
+      "to": "complete",
+      "reason": "run_now_slot_occupied_after_rollover",
+      "details": {
+        "publication_slot": "2026-10-29",
+        "occupied_slugs": [
+          "first-grade-adjustment",
+          "toilet-fear-children"
+        ]
+      }
     }
   ],
   "updated_at": "2026-10-29T21:55:49.980552+00:00",
@@ -2617,6 +2624,17 @@
       "requested_at": "2026-10-19T10:13:42.169596+00:00",
       "deferred_reason": "RUN_NOW_SLOT_OCCUPIED_AFTER_ROLLOVER",
       "deferred_at": "2026-10-27T22:00:47.468150+00:00"
+    },
+    {
+      "idea_id": "good-news-relationship-acr",
+      "fingerprint": "c0cc2eb7a444407b5d01e584bd023dc79ed6dc5f5704d31feb9db2d29f2f56d3",
+      "topic_brief": "זוגיות: המבחן האמיתי של הקשר אינו רק בזמן ריב אלא גם באופן שבו בני זוג מגיבים לבשורות טובות. לבסס את המאמר על מחקרי capitalization של Shelly Gable ועמיתיה, במיוחד JPSP 2004 ו-2006. להסביר את ארבעת דפוסי התגובה: active-constructive — התלהבות כנה, שאלות המשך והרחבת הרגע; passive-constructive — תגובה חיובית אך קצרה/פושרת; active-destructive — הצבעה על חסרונות, דאגות או הקטנת ההצלחה; passive-destructive — התעלמות/החלפת נושא. להדגיש שרק active-constructive נקשר בעקביות לאינטימיות, שביעות רצון ואמון גבוהים יותר. הניסוח המדעי חייב להיות מדויק: מחקר 2006 על 79 זוגות מצא שתגובות לאירועים חיוביים היו קשורות יותר לרווחת הקשר ולפרידה כעבור חודשיים מאשר תגובות לדיונים באירועים שליליים; אין לטעון 'פי שניים' או סיבתיות שלא הוכחה. זווית קצרה: אותו משפט 'קיבלתי קידום בעבודה' וארבע תגובות שונות; להראות למה 'יופי מותק' מפספס הזדמנות לקירבה. טיפ מעשי: לעצור, להביע שמחה אמיתית ולשאול שתי שאלות המשך, למשל 'איך הרגשת כשסיפרו לך?' ו'מה הכי מרגש אותך בזה?'. להימנע מייחוס ציטוט מומצא ל-Gable; אפשר לנסח כרעיון מסכם בלבד. מקורות מחקריים: Gable et al., JPSP 2004 DOI 10.1037/0022-3514.87.2.228; Gable, Gonzaga & Strachman, JPSP 2006 DOI 10.1037/0022-3514.91.5.904; Reis et al., JPSP 2010 DOI 10.1037/a0018344.",
+      "required_primary_keyword": "תגובה לבשורות טובות בזוגיות",
+      "run_now": false,
+      "status": "queued",
+      "requested_at": "2026-10-29T21:07:31.779238+00:00",
+      "deferred_reason": "RUN_NOW_SLOT_OCCUPIED_AFTER_ROLLOVER",
+      "deferred_at": "2026-10-29T22:00:47.395464+00:00"
     }
   ],
   "idea_history": [
@@ -2910,17 +2928,7 @@
       }
     }
   ],
-  "active_idea": {
-    "idea_id": "good-news-relationship-acr",
-    "fingerprint": "c0cc2eb7a444407b5d01e584bd023dc79ed6dc5f5704d31feb9db2d29f2f56d3",
-    "topic_brief": "זוגיות: המבחן האמיתי של הקשר אינו רק בזמן ריב אלא גם באופן שבו בני זוג מגיבים לבשורות טובות. לבסס את המאמר על מחקרי capitalization של Shelly Gable ועמיתיה, במיוחד JPSP 2004 ו-2006. להסביר את ארבעת דפוסי התגובה: active-constructive — התלהבות כנה, שאלות המשך והרחבת הרגע; passive-constructive — תגובה חיובית אך קצרה/פושרת; active-destructive — הצבעה על חסרונות, דאגות או הקטנת ההצלחה; passive-destructive — התעלמות/החלפת נושא. להדגיש שרק active-constructive נקשר בעקביות לאינטימיות, שביעות רצון ואמון גבוהים יותר. הניסוח המדעי חייב להיות מדויק: מחקר 2006 על 79 זוגות מצא שתגובות לאירועים חיוביים היו קשורות יותר לרווחת הקשר ולפרידה כעבור חודשיים מאשר תגובות לדיונים באירועים שליליים; אין לטעון 'פי שניים' או סיבתיות שלא הוכחה. זווית קצרה: אותו משפט 'קיבלתי קידום בעבודה' וארבע תגובות שונות; להראות למה 'יופי מותק' מפספס הזדמנות לקירבה. טיפ מעשי: לעצור, להביע שמחה אמיתית ולשאול שתי שאלות המשך, למשל 'איך הרגשת כשסיפרו לך?' ו'מה הכי מרגש אותך בזה?'. להימנע מייחוס ציטוט מומצא ל-Gable; אפשר לנסח כרעיון מסכם בלבד. מקורות מחקריים: Gable et al., JPSP 2004 DOI 10.1037/0022-3514.87.2.228; Gable, Gonzaga & Strachman, JPSP 2006 DOI 10.1037/0022-3514.91.5.904; Reis et al., JPSP 2010 DOI 10.1037/a0018344.",
-    "required_primary_keyword": "תגובה לבשורות טובות בזוגיות",
-    "run_now": true,
-    "status": "claimed",
-    "requested_at": "2026-10-29T21:07:31.779238+00:00",
-    "publication_slot": "2026-10-29",
-    "claimed_at": "2026-10-29T21:07:32.533692+00:00"
-  },
+  "active_idea": null,
   "pending_dispatches": {
     "kesher-article-generation.yml": {
       "workflow": "kesher-article-generation.yml",
