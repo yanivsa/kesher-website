@@ -2639,7 +2639,15 @@
     "last_dispatch_at": "2026-10-29T09:37:45.016077+00:00",
     "artifact_id": "16e746b0-4234-497a-9a1f-5e261dee6037",
     "source_id": "2dc12127-24aa-43de-adc5-135483f5441c",
-    "adopted_from_long_item_id": "video-20261029-110045-e78209a3fe"
+    "adopted_from_long_item_id": "video-20261029-110045-e78209a3fe",
+    "watchdog": {
+      "identity": "short:first-grade-adjustment:e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e:video-20261029-114041-e78209a3fe",
+      "hard_started_at": "2026-10-29T09:40:53.595147+00:00",
+      "last_progress_at": "2026-10-29T09:48:27.178347+00:00",
+      "last_fingerprint": "6c3fd1c0ee1b4c736d5cb50350422551f386d67051987edefd0beefccf90fb2f",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
