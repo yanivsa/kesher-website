@@ -15,7 +15,11 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-10-29T13:23:02.260850+00:00"
+    "last_dispatch_at": "2026-10-29T13:23:02.260850+00:00",
+    "pr_number": 1252,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1252",
+    "current_pr_head_sha": "d6189b18925bcc0cbb449268537f805df931b8b2",
+    "jules_head_sha": "d6189b18925bcc0cbb449268537f805df931b8b2"
   },
   "backlog": [
     {
@@ -2763,6 +2767,18 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-29T13:22:45.670201+00:00"
+    },
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
+      "cycle": "2026-10-29",
+      "inputs": {
+        "pr_number": "1252",
+        "slot": "2026-10-29"
+      },
+      "intent_at": "2026-10-29T14:05:44.799267+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
