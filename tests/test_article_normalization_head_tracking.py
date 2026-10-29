@@ -839,6 +839,7 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
             + '<a href="/blog/published-one">אחד</a>'
             + '<a href="/blog/published-two">שתיים</a>'
             + '<a href="/blog/retired-target">שלוש</a>'
+            + '<a href="/blog/first-grade-maturity">עצמי</a>'
         )
         target = {
             "id": "first-grade-maturity",
@@ -866,6 +867,7 @@ class ArticleNormalizationHeadTrackingTests(unittest.TestCase):
             errors = controller._pr_content_structure_errors(pr)
 
         self.assertIn("internal_blog_link_missing: /blog/retired-target", errors)
+        self.assertIn("internal_blog_link_missing: /blog/first-grade-maturity", errors)
         self.assertNotIn("internal_blog_link_missing: /blog/published-one", errors)
         self.assertNotIn("internal_blog_link_missing: /blog/published-two", errors)
 
