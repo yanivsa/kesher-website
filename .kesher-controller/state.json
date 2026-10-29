@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -28,13 +28,18 @@
     },
     "pr_number": 1249,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1249",
-    "current_pr_head_sha": "760406952d520b78a4b4819177f71c6d5d8425e1",
+    "current_pr_head_sha": "4ff44d318f1e67790cbde4192ec6554f7ac1889a",
     "jules_head_sha": "412323ed698749c3707292200b70081006852fdb",
     "normalization_status": "complete",
     "normalization_slot": "2026-10-29",
     "normalization_dispatched_at": "2026-10-29T08:16:12.763945+00:00",
     "normalization_run_id": 40840930021,
-    "normalized_head_sha": "760406952d520b78a4b4819177f71c6d5d8425e1"
+    "normalized_head_sha": "4ff44d318f1e67790cbde4192ec6554f7ac1889a",
+    "image_head_sha": "4ff44d318f1e67790cbde4192ec6554f7ac1889a",
+    "merge_candidate_sha": "4ff44d318f1e67790cbde4192ec6554f7ac1889a",
+    "normalization_drift_count": 0,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null
   },
   "backlog": [
     {
@@ -2517,21 +2522,29 @@
         "attempt": 1,
         "pr_number": 1249
       }
+    },
+    {
+      "at": "2026-10-29T08:20:15.639599+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-29T08:18:06.826351+00:00",
+  "updated_at": "2026-10-29T08:20:15.639617+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40841150112,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "LocalEditorial",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-29T08:18:06.826322+00:00"
+    "last_dispatch_at": "2026-10-29T08:18:06.826322+00:00",
+    "artifact_sha256": "c7e25458bf9d733da51ee891a1e1a7b13d355d43954fc0ab77e065659fe6dea6",
+    "source_id": "local-editorial://first-grade-adjustment/5"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2934,6 +2947,18 @@
       "status": "intent",
       "previous_run_id": null,
       "observed_active_run_id": null
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-29",
+      "inputs": {
+        "pr_number": "1249",
+        "slot": "2026-10-29"
+      },
+      "intent_at": "2026-10-29T08:19:13.937695+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -2954,5 +2979,17 @@
   },
   "processed_child_notifications": [
     "Kesher Normalize Article PR:40840930021"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
