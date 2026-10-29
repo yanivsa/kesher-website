@@ -86,13 +86,13 @@
     "quality_content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-29T06:20:47.362037+00:00",
+    "quality_checked_at": "2026-10-29T06:22:39.159502+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-29T05:53:20.349289+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40825956939,
-    "live_verified_at": "2026-10-29T06:21:19.106825+00:00"
+    "live_verified_at": "2026-10-29T06:22:41.001699+00:00"
   },
   "backlog": [
     {
@@ -2682,7 +2682,7 @@
     "attempt_count": 2,
     "status": "rejected",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-29T06:27:32.752188+00:00",
     "run_id": 40827742021,
     "processed_run_id": 40826566510,
     "provider_id": null,
@@ -3064,28 +3064,12 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-28",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "first-grade-maturity",
-        "target_content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
-        "target_item_id": "video-20261029-080057-de086b0499"
-      },
-      "intent_at": "2026-10-29T06:10:47.428368+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40826566510,
-      "observed_active_run_id": 40827742021,
-      "dispatched_at": "2026-10-29T06:10:47.428368+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 40825956939,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 40827742021,
     "conclusion": "success",
-    "source_slug": null,
+    "source_slug": "first-grade-maturity",
     "slot": "2026-10-28"
   },
   "processed_child_notifications": [
