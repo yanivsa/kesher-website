@@ -2697,7 +2697,15 @@
     "last_dispatch_at": "2026-10-29T19:43:09.881274+00:00",
     "artifact_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
     "source_id": "d45ab1ba-1d2e-4f89-8a01-c8425c37abcd",
-    "adopted_from_long_item_id": "video-20261029-210835-7326680648"
+    "adopted_from_long_item_id": "video-20261029-210835-7326680648",
+    "watchdog": {
+      "identity": "short:toilet-fear-children:7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb:video-20261029-214500-7326680648",
+      "hard_started_at": "2026-10-29T19:45:11.708205+00:00",
+      "last_progress_at": "2026-10-29T19:52:11.391002+00:00",
+      "last_fingerprint": "0ff855fe3dcbcb1f9030702947df8e4368a6042b4954abcd4bc65020fbe0ac70",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
