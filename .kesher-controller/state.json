@@ -47,7 +47,7 @@
     "last_deploy_dispatch_at": "2026-10-29T18:59:57.861833+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40936002971,
-    "live_verified_at": "2026-10-29T20:36:10.581225+00:00"
+    "live_verified_at": "2026-10-29T20:36:35.773954+00:00"
   },
   "backlog": [
     {
@@ -1739,32 +1739,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T13:21:28.787219+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-29T13:22:49.535017+00:00",
-      "from": "complete",
-      "to": "article_needed",
-      "reason": "owner_run_now_cycle_started",
-      "details": {
-        "idea_id": "parenting-p2-toilet-fear-children",
-        "publication_slot": "2026-10-29"
-      }
-    },
-    {
-      "at": "2026-10-29T13:23:02.260882+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "owner run-now article dispatched immediately",
-      "details": {
-        "attempt": 1,
-        "publication_slot": "2026-10-29"
-      }
-    },
-    {
       "at": "2026-10-29T13:26:14.645330+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2617,9 +2591,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-29T20:36:35.773985+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T20:36:37.036858+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-29T20:36:38.322517+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-29T20:31:22.290214+00:00",
+  "updated_at": "2026-10-29T20:36:38.322534+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
