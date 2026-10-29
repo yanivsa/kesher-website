@@ -86,13 +86,13 @@
     "quality_content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-29T07:05:54.880314+00:00",
+    "quality_checked_at": "2026-10-29T07:10:34.485169+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-29T05:53:20.349289+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40825956939,
-    "live_verified_at": "2026-10-29T07:06:27.097616+00:00"
+    "live_verified_at": "2026-10-29T07:10:35.463441+00:00"
   },
   "backlog": [
     {
@@ -3071,26 +3071,10 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-10-28",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "first-grade-maturity",
-        "derive_content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
-        "derive_long_item_id": "video-20261029-082416-de086b0499-a3"
-      },
-      "intent_at": "2026-10-29T06:58:21.701812+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 40832515468,
-      "dispatched_at": "2026-10-29T06:58:21.701812+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
-    "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 40831732148,
+    "workflow": "Kesher Daily Article Short V4",
+    "run_id": 40832515468,
     "conclusion": "success",
     "source_slug": "first-grade-maturity",
     "slot": "2026-10-28"
