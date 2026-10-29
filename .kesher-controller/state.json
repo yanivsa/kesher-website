@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -18,13 +18,18 @@
     "last_dispatch_at": "2026-10-29T13:23:02.260850+00:00",
     "pr_number": 1252,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1252",
-    "current_pr_head_sha": "a4773bc0916771bb02da1ff624058dbc5f03fdf4",
+    "current_pr_head_sha": "400bb290c1005c01355b6b17025121e18bb21d87",
     "jules_head_sha": "d6189b18925bcc0cbb449268537f805df931b8b2",
     "normalization_status": "complete",
     "normalization_slot": "2026-10-29",
     "normalization_dispatched_at": "2026-10-29T14:51:13.194707+00:00",
     "normalization_run_id": 40895623357,
-    "normalized_head_sha": "a4773bc0916771bb02da1ff624058dbc5f03fdf4"
+    "normalized_head_sha": "400bb290c1005c01355b6b17025121e18bb21d87",
+    "image_head_sha": "400bb290c1005c01355b6b17025121e18bb21d87",
+    "merge_candidate_sha": "400bb290c1005c01355b6b17025121e18bb21d87",
+    "normalization_drift_count": 0,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null
   },
   "backlog": [
     {
@@ -1716,12 +1721,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T11:01:05.263798+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-29T11:01:05.814669+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2362,21 +2361,29 @@
         "attempt": 1,
         "pr_number": 1252
       }
+    },
+    {
+      "at": "2026-10-29T14:54:28.324724+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-29T14:52:41.124776+00:00",
+  "updated_at": "2026-10-29T14:54:28.324742+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40895865256,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "LocalEditorial",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-29T14:52:41.124738+00:00"
+    "last_dispatch_at": "2026-10-29T14:52:41.124738+00:00",
+    "artifact_sha256": "9fa965f89be43b736f02c1f11d3281650b2b379d4e2d213a3419c0717c32d386",
+    "source_id": "local-editorial://toilet-fear-children/7"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2790,17 +2797,17 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-29T13:22:45.670201+00:00"
     },
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
       "cycle": "2026-10-29",
       "inputs": {
-        "pr_number": "1252"
+        "pr_number": "1252",
+        "slot": "2026-10-29"
       },
-      "intent_at": "2026-10-29T14:52:20.375963+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-29T14:53:51.856252+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": 40895865256,
-      "dispatched_at": "2026-10-29T14:52:20.375963+00:00"
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -2813,8 +2820,8 @@
     "short_origin_verified": true
   },
   "last_child_notification": {
-    "workflow": "Kesher Normalize Article PR",
-    "run_id": 40895623357,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 40895865256,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-29"
