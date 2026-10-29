@@ -33,8 +33,9 @@
       },
       "failure_class": "CONTROLLER_WORKFLOW_FAILED",
       "fingerprint": "c99449fd00c79b3070d2264d31c0468f60a8101121f700afff3294424fdd97a3",
+      "reason": "uncertain_create_not_discoverable",
       "stage": "controller",
-      "status": "uncertain"
+      "status": "human_blocker"
     }
   },
   "version": 1
