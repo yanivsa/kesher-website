@@ -41,13 +41,13 @@
     "quality_content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-29T19:50:49.876798+00:00",
+    "quality_checked_at": "2026-10-29T19:52:18.278218+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-29T18:59:57.861833+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40936002971,
-    "live_verified_at": "2026-10-29T19:51:05.082792+00:00"
+    "live_verified_at": "2026-10-29T19:52:19.998162+00:00"
   },
   "backlog": [
     {
@@ -3086,21 +3086,6 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-29T13:22:45.670201+00:00"
-    },
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-10-29",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "toilet-fear-children",
-        "derive_content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
-        "derive_long_item_id": "video-20261029-210835-7326680648"
-      },
-      "intent_at": "2026-10-29T19:42:43.181067+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 40942594513,
-      "dispatched_at": "2026-10-29T19:42:43.181067+00:00"
     }
   },
   "deliverables": {
@@ -3113,8 +3098,8 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 40941577933,
+    "workflow": "Kesher Daily Article Short V4",
+    "run_id": 40942594513,
     "conclusion": "success",
     "source_slug": "toilet-fear-children",
     "slot": "2026-10-29"
