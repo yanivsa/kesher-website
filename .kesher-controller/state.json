@@ -56,7 +56,7 @@
     "quality_checked_at": "2026-10-29T09:40:49.672626+00:00",
     "quality_violations": [],
     "deploy_run_id": 40845300310,
-    "live_verified_at": "2026-10-29T09:40:51.163375+00:00"
+    "live_verified_at": "2026-10-29T09:41:15.613157+00:00"
   },
   "backlog": [
     {
@@ -1748,33 +1748,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T03:41:09.251920+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T03:46:01.726324+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T03:51:18.333106+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-29T03:56:01.611762+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2574,9 +2547,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-10-29T09:41:15.613187+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T09:41:16.721117+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-29T09:41:20.419153+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-10-29T09:37:45.016115+00:00",
+  "updated_at": "2026-10-29T09:41:20.419178+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
