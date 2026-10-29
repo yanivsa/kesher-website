@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "article_image_rebinding",
+  "status": "blocked",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -1767,15 +1767,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-28T21:41:02.481920+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-28T21:46:03.822028+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2668,12 +2659,21 @@
         "pr_number": 1244,
         "head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44"
       }
+    },
+    {
+      "at": "2026-10-29T05:46:19.765128+00:00",
+      "from": "article_image_rebinding",
+      "to": "blocked",
+      "reason": "image exhausted 3 total controller dispatch attempts",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-29T05:44:50.453970+00:00",
+  "updated_at": "2026-10-29T05:46:19.765135+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": 40740531507,
@@ -3114,5 +3114,10 @@
     "Kesher Normalize Article PR:40741237215",
     "Kesher Trusted Article Image:40758438404"
   ],
-  "last_error": null
+  "last_error": {
+    "stage": "controller",
+    "code": "image exhausted 3 total controller dispatch attempts",
+    "message": "image exhausted 3 total controller dispatch attempts",
+    "at": "2026-10-29T05:46:19.765113+00:00"
+  }
 }
