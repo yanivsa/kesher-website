@@ -53,10 +53,10 @@
     "last_deploy_dispatch_at": "2026-10-29T08:52:31.037520+00:00",
     "next_deploy_retry_at": null,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-29T10:30:45.715605+00:00",
+    "quality_checked_at": "2026-10-29T10:35:53.261406+00:00",
     "quality_violations": [],
     "deploy_run_id": 40845300310,
-    "live_verified_at": "2026-10-29T10:31:00.200020+00:00"
+    "live_verified_at": "2026-10-29T10:35:54.722605+00:00"
   },
   "backlog": [
     {
