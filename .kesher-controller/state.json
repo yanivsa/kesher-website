@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "article_image_rebinding",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -41,7 +41,9 @@
     "last_refunded_auto_merge_run_id": 40841410018,
     "deferred_auto_merge_refund_count": 1,
     "last_normalization_drift_head_sha": "c161729200dac9d84237e9865065b5e1e859f146",
-    "normalized_head_sha": "c161729200dac9d84237e9865065b5e1e859f146"
+    "normalized_head_sha": "c161729200dac9d84237e9865065b5e1e859f146",
+    "image_head_sha": "c161729200dac9d84237e9865065b5e1e859f146",
+    "merge_candidate_sha": "c161729200dac9d84237e9865065b5e1e859f146"
   },
   "backlog": [
     {
@@ -2553,12 +2555,18 @@
         "pr_number": 1249,
         "head_sha": "c161729200dac9d84237e9865065b5e1e859f146"
       }
+    },
+    {
+      "at": "2026-10-29T08:44:06.251730+00:00",
+      "from": "article_image_rebinding",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-29T08:41:47.368872+00:00",
+  "updated_at": "2026-10-29T08:44:06.251747+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2975,6 +2983,18 @@
       "status": "intent",
       "previous_run_id": null,
       "observed_active_run_id": null
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-29",
+      "inputs": {
+        "pr_number": "1249",
+        "slot": "2026-10-29"
+      },
+      "intent_at": "2026-10-29T08:43:20.122552+00:00",
+      "status": "intent",
+      "previous_run_id": 40841410018,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -2997,5 +3017,17 @@
     "Kesher Normalize Article PR:40840930021",
     "Kesher Trusted Article Image:40841150112",
     "Auto-merge Kesher article PRs:40841410018"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
