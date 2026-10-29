@@ -53,7 +53,7 @@
     "last_deploy_dispatch_at": "2026-10-29T08:52:31.037520+00:00",
     "next_deploy_retry_at": "2026-10-29T08:57:12.858538+00:00",
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-29T08:53:02.977434+00:00",
+    "quality_checked_at": "2026-10-29T08:55:50.209840+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -2588,7 +2588,7 @@
       }
     }
   ],
-  "updated_at": "2026-10-29T08:53:04.583423+00:00",
+  "updated_at": "2026-10-29T08:55:52.508471+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
