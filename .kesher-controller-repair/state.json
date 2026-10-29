@@ -36,6 +36,41 @@
       "reason": "uncertain_create_not_discoverable",
       "stage": "controller",
       "status": "human_blocker"
+    },
+    "a55e72df1cc6537a972077115734392a28b2dd15eb9fd5f051adf8639bae9fb0": {
+      "affected": [
+        {
+          "article_run_id": 40881413510,
+          "article_session_id": null,
+          "artifact_id": null,
+          "content_sha256": null,
+          "cycle": "2026-10-29",
+          "idea_id": "parenting-p2-toilet-fear-children",
+          "item_id": null,
+          "pr_number": 1252,
+          "slug": null,
+          "source_id": null,
+          "task_id": null
+        }
+      ],
+      "created_at": "2026-10-29T15:20:53.070156+00:00",
+      "exact": {
+        "article_run_id": 40881413510,
+        "article_session_id": null,
+        "artifact_id": null,
+        "content_sha256": null,
+        "cycle": "2026-10-29",
+        "idea_id": "parenting-p2-toilet-fear-children",
+        "item_id": null,
+        "pr_number": 1252,
+        "slug": null,
+        "source_id": null,
+        "task_id": null
+      },
+      "failure_class": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "fingerprint": "7b184611ad2919c9cd988b24c9c2d2f4f7bc22b51126ff652db76c1f2b28b4d5",
+      "stage": "article",
+      "status": "intent"
     }
   },
   "version": 1
