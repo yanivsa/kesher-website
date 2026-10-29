@@ -3221,11 +3221,11 @@
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/toilet-fear-children",
     "overview_youtube_url": "https://youtu.be/kVTVZKButig",
-    "short_youtube_url": null,
+    "short_youtube_url": "https://youtu.be/EzIILKiQj3Q",
     "overview_edit_verified": true,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
+    "short_portrait_verified": true,
+    "short_signature_verified": true,
+    "short_origin_verified": true
   },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
