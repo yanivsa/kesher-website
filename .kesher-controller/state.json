@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "article_normalizing",
+  "status": "article_image_rebinding",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1723,12 +1723,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T11:11:26.543883+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-10-29T11:16:11.874107+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2394,12 +2388,22 @@
         "pr_number": 1252,
         "slot": "2026-10-29"
       }
+    },
+    {
+      "at": "2026-10-29T15:40:32.472551+00:00",
+      "from": "article_normalizing",
+      "to": "article_image_rebinding",
+      "reason": "prior trusted image artifact proved against current normalized article and must be reattached",
+      "details": {
+        "pr_number": 1252,
+        "head_sha": "08ee50e8ee7c43973faff055ce47041be83f0253"
+      }
     }
   ],
-  "updated_at": "2026-10-29T15:35:59.018390+00:00",
+  "updated_at": "2026-10-29T15:40:32.472560+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "pending",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2410,7 +2414,10 @@
     "last_dispatch_at": "2026-10-29T14:52:41.124738+00:00",
     "artifact_sha256": "9fa965f89be43b736f02c1f11d3281650b2b379d4e2d213a3419c0717c32d386",
     "source_id": "local-editorial://toilet-fear-children/7",
-    "run_id": 40895865256
+    "run_id": 40895865256,
+    "evidence_rebind_head_sha": "08ee50e8ee7c43973faff055ce47041be83f0253",
+    "evidence_rebind_dispatched_at": "2026-10-29T15:40:32.472523+00:00",
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2833,9 +2840,10 @@
         "expected_head_sha": "08ee50e8ee7c43973faff055ce47041be83f0253"
       },
       "intent_at": "2026-10-29T15:39:48.855565+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40895865256,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40903955100,
+      "dispatched_at": "2026-10-29T15:39:48.855565+00:00"
     }
   },
   "deliverables": {
