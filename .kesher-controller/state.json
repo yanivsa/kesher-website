@@ -14,8 +14,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 0,
-    "normalization_status": "pending"
+    "deploy_attempts": 0
   },
   "backlog": [
     {
@@ -2378,9 +2377,27 @@
       "from": "article_needed",
       "to": "v5_migrated",
       "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
+    },
+    {
+      "at": "2026-10-29T07:16:04.883332Z",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "primary_keyword_conflict_advanced",
+      "details": {
+        "rejected_idea_id": "parenting-p1-emotional-preparation-first-grade",
+        "required_primary_keyword": "הכנה רגשית לכיתה א",
+        "conflicting_slugs": [
+          "school-entry-readiness-emotional-regulation-skills"
+        ],
+        "prior_article_attempts": 0,
+        "previous_error": null,
+        "replacement_idea_id": "parenting-p1-first-grade-adjustment",
+        "replacement_primary_keyword": "הסתגלות לכיתה א",
+        "publication_slot": "2026-10-29"
+      }
     }
   ],
-  "updated_at": "2026-10-29T07:15:42.047243+00:00",
+  "updated_at": "2026-10-29T07:16:04.883332Z",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2421,24 +2438,6 @@
     "v4_short_controller_state": null
   },
   "idea_queue": [
-    {
-      "idea_id": "parenting-p1-emotional-preparation-first-grade",
-      "fingerprint": "6b2b3e6a475a479ba04ddadc05bd4c6e268ef2f84ec154c869a9a5c5717d5057",
-      "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: פחד מהלא-נודע, פרידה, ביטחון עצמי, בקשת עזרה, תסכול והסתגלות לציפיות חדשות לפני היום הראשון. הכותרת מבטיחה 7 דברים ולכן המאמר חייב לכלול בדיוק 7 נקודות/תרגולים מובחנים. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: emotional-preparation-first-grade. כותרת עבודה: הכנה רגשית לכיתה א׳: 7 דברים שכדאי לתרגל לפני היום הראשון כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/הסתגלות סמוכים ואל תיצור URL מתחרה.",
-      "required_primary_keyword": "הכנה רגשית לכיתה א",
-      "run_now": false,
-      "status": "queued",
-      "requested_at": "2026-10-19T10:16:12.331363+00:00"
-    },
-    {
-      "idea_id": "parenting-p1-first-grade-adjustment",
-      "fingerprint": "0c2f4d5f7dc511be6c2d2ff4390dc72d931a43bcd5f647bdb550ff21409a4cbd",
-      "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: השבועות הראשונים בבית הספר: עייפות, פחות שיתוף, רגישות או התפרקות בבית. להסביר מה יכול להיות חלק מהסתגלות רגילה ומה כדאי לעשות בבית ובקשר עם המחנכת. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-adjustment. כותרת עבודה: הסתגלות לכיתה א׳: מה נורמלי בשבועות הראשונים ומה צריך תשומת לב? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/בשלות סמוכים ואל תיצור URL מתחרה.",
-      "required_primary_keyword": "הסתגלות לכיתה א",
-      "run_now": false,
-      "status": "queued",
-      "requested_at": "2026-10-19T10:17:20.898363+00:00"
-    },
     {
       "idea_id": "parenting-p1-first-grade-adjustment-difficulties",
       "fingerprint": "666437c8593308ec74ad552ed3bd404c0637e6db009919b208ac599f849feea3",
@@ -2769,7 +2768,49 @@
         "long_url": "https://youtu.be/9JQ_jdASSkM",
         "short_url": "https://youtu.be/LBLs5606wc8"
       }
+    },
+    {
+      "idea_id": "parenting-p1-emotional-preparation-first-grade",
+      "fingerprint": "6b2b3e6a475a479ba04ddadc05bd4c6e268ef2f84ec154c869a9a5c5717d5057",
+      "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: פחד מהלא-נודע, פרידה, ביטחון עצמי, בקשת עזרה, תסכול והסתגלות לציפיות חדשות לפני היום הראשון. הכותרת מבטיחה 7 דברים ולכן המאמר חייב לכלול בדיוק 7 נקודות/תרגולים מובחנים. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: emotional-preparation-first-grade. כותרת עבודה: הכנה רגשית לכיתה א׳: 7 דברים שכדאי לתרגל לפני היום הראשון כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/הסתגלות סמוכים ואל תיצור URL מתחרה.",
+      "required_primary_keyword": "הכנה רגשית לכיתה א",
+      "run_now": false,
+      "status": "rejected",
+      "requested_at": "2026-10-19T10:16:12.331363+00:00",
+      "publication_slot": "2026-10-29",
+      "claimed_at": "2026-10-29T07:16:04.883270+00:00",
+      "rejected_at": "2026-10-29T07:16:04.883332Z",
+      "rejection_code": "PRIMARY_KEYWORD_CONFLICT",
+      "rejection_message": "Primary Keyword already owned by published article(s): school-entry-readiness-emotional-regulation-skills",
+      "conflicting_slugs": [
+        "school-entry-readiness-emotional-regulation-skills"
+      ],
+      "prior_article_attempts": 0
     }
   ],
-  "active_idea": null
+  "active_idea": {
+    "idea_id": "parenting-p1-first-grade-adjustment",
+    "fingerprint": "0c2f4d5f7dc511be6c2d2ff4390dc72d931a43bcd5f647bdb550ff21409a4cbd",
+    "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: השבועות הראשונים בבית הספר: עייפות, פחות שיתוף, רגישות או התפרקות בבית. להסביר מה יכול להיות חלק מהסתגלות רגילה ומה כדאי לעשות בבית ובקשר עם המחנכת. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-adjustment. כותרת עבודה: הסתגלות לכיתה א׳: מה נורמלי בשבועות הראשונים ומה צריך תשומת לב? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/בשלות סמוכים ואל תיצור URL מתחרה.",
+    "required_primary_keyword": "הסתגלות לכיתה א",
+    "run_now": false,
+    "status": "claimed",
+    "requested_at": "2026-10-19T10:17:20.898363+00:00",
+    "publication_slot": "2026-10-29",
+    "claimed_at": "2026-10-29T07:16:04.883332Z"
+  },
+  "pending_dispatches": {
+    "kesher-article-generation.yml": {
+      "workflow": "kesher-article-generation.yml",
+      "cycle": "2026-10-29",
+      "inputs": {
+        "slot": "2026-10-29",
+        "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: השבועות הראשונים בבית הספר: עייפות, פחות שיתוף, רגישות או התפרקות בבית. להסביר מה יכול להיות חלק מהסתגלות רגילה ומה כדאי לעשות בבית ובקשר עם המחנכת. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-adjustment. כותרת עבודה: הסתגלות לכיתה א׳: מה נורמלי בשבועות הראשונים ומה צריך תשומת לב? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/בשלות סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-first-grade-adjustment\nRequired Primary Keyword: הסתגלות לכיתה א"
+      },
+      "intent_at": "2026-10-29T07:15:40.881966+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  }
 }
