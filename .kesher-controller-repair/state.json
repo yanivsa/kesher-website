@@ -70,8 +70,9 @@
       },
       "failure_class": "ARTICLE_ATTEMPTS_EXHAUSTED",
       "fingerprint": "7b184611ad2919c9cd988b24c9c2d2f4f7bc22b51126ff652db76c1f2b28b4d5",
+      "reason": "uncertain_create_not_discoverable",
       "stage": "article",
-      "status": "uncertain"
+      "status": "human_blocker"
     }
   },
   "version": 1
