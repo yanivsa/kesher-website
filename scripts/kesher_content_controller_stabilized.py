@@ -2175,7 +2175,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
         known_public_slugs = {
             str(row.get(key) or "").strip()
-            for row in [*published_catalog, post]
+            for row in published_catalog
             if isinstance(row, dict)
             for key in ("id", "slug")
             if row.get(key)
