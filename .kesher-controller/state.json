@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40834340298,
@@ -56,7 +56,7 @@
     "quality_checked_at": "2026-10-29T10:22:15.402058+00:00",
     "quality_violations": [],
     "deploy_run_id": 40845300310,
-    "live_verified_at": "2026-10-29T10:22:16.392317+00:00"
+    "live_verified_at": "2026-10-29T10:22:37.293790+00:00"
   },
   "backlog": [
     {
@@ -1748,33 +1748,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T04:16:50.658882+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T04:21:10.923800+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T04:26:03.265034+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-29T04:31:10.501970+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2557,9 +2530,27 @@
         "item_id": "video-20261029-114041-e78209a3fe",
         "long_item_id": "video-20261029-110045-e78209a3fe"
       }
+    },
+    {
+      "at": "2026-10-29T10:22:37.293810+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T10:22:40.105548+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-29T10:22:41.297351+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-29T10:11:14.255122+00:00",
+  "updated_at": "2026-10-29T10:22:41.297367+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2628,19 +2619,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40855535843,
     "processed_run_id": null,
-    "provider_id": "16e746b0-4234-497a-9a1f-5e261dee6037",
+    "provider_id": "c393db76-98d4-4d54-bdcc-4dd093101192",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-29T10:11:14.255094+00:00",
-    "artifact_id": "16e746b0-4234-497a-9a1f-5e261dee6037",
-    "source_id": "2dc12127-24aa-43de-adc5-135483f5441c",
-    "adopted_from_long_item_id": "video-20261029-110045-e78209a3fe",
+    "artifact_id": "c393db76-98d4-4d54-bdcc-4dd093101192",
+    "source_id": "128c40b3-637f-4f3f-b90c-29d6db45c7e5",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:first-grade-adjustment:e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e:video-20261029-114041-e78209a3fe",
       "hard_started_at": "2026-10-29T09:40:53.595147+00:00",
@@ -2648,7 +2639,123 @@
       "last_fingerprint": "6c3fd1c0ee1b4c736d5cb50350422551f386d67051987edefd0beefccf90fb2f",
       "recovery_count": 1,
       "last_recovery_at": "2026-10-29T10:10:47.657596+00:00"
-    }
+    },
+    "source": {
+      "id": "first-grade-adjustment",
+      "slug": "first-grade-adjustment",
+      "title": "למה הסתגלות לכיתה א׳ קשה לפעמים ומה עושים כשהילד בוכה?",
+      "date": "2026-10-29",
+      "category": "הדרכת הורים",
+      "subcategory": "",
+      "excerpt": "המעבר למסגרת בית הספר עשוי לעורר עייפות ושינויים בהתנהגות. נבחן מה יכול להיות חלק מתהליך הסתגלות טבעי ואיך כדאי לתמוך בילדים בשבועות הראשונים, בבית ומול הצוות החינוכי.",
+      "canonical_url": "https://kesher.saharoni.com/blog/first-grade-adjustment",
+      "content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
+      "video_title": "למה הסתגלות לכיתה א׳ קשה לפעמים ומה עושים כשהילד בוכה?",
+      "short_title": "למה הסתגלות לכיתה א׳ קשה לפעמים ומה עושים כשהילד בוכה?",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "למה הסתגלות לכיתה א׳ קשה לפעמים ומה עושים כשהילד בוכה?",
+        "description": "המעבר למסגרת בית הספר עשוי לעורר עייפות ושינויים בהתנהגות. נבחן מה יכול להיות חלק מתהליך הסתגלות טבעי ואיך כדאי לתמוך בילדים בשבועות הראשונים, בבית ומול הצוות החינוכי.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-adjustment\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: למה הסתגלות לכיתה א׳ קשה לפעמים ומה עושים כשהילד בוכה?",
+        "description": "המעבר למסגרת בית הספר עשוי לעורר עייפות ושינויים בהתנהגות. נבחן מה יכול להיות חלק מתהליך הסתגלות טבעי ואיך כדאי לתמוך בילדים בשבועות הראשונים, בבית ומול הצוות החינוכי.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-adjustment\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "c393db76-98d4-4d54-bdcc-4dd093101192",
+    "raw_sha256": "fa95156f04e9e0f4103390eab7380063ac079ffc8ab9808600e5956b16cc341d",
+    "final_sha256": "03c7535198727c0d7c7a816363b893e57ff0833703f4c4abd0aba0cb715e80eb",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 77.767,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 77.767,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "2dc12127-24aa-43de-adc5-135483f5441c",
+      "task_id": "16e746b0-4234-497a-9a1f-5e261dee6037",
+      "artifact_id": "16e746b0-4234-497a-9a1f-5e261dee6037",
+      "raw_sha256": "97e65d86356e0b78935f3c074d7ecb1be29028a259fd8f18bace49979a30c0fd"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 77.767,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "fa95156f04e9e0f4103390eab7380063ac079ffc8ab9808600e5956b16cc341d",
+      "final_sha256": "03c7535198727c0d7c7a816363b893e57ff0833703f4c4abd0aba0cb715e80eb",
+      "raw_audio_sha256": "1af5eb6670aea1e50ed48b5ee629728a576eb2e6f36b5051a7ab001b7bd238e0",
+      "final_audio_sha256": "1af5eb6670aea1e50ed48b5ee629728a576eb2e6f36b5051a7ab001b7bd238e0",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 77.833288
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 77.833288
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "03c7535198727c0d7c7a816363b893e57ff0833703f4c4abd0aba0cb715e80eb",
+      "raw_sha256": "fa95156f04e9e0f4103390eab7380063ac079ffc8ab9808600e5956b16cc341d",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "964755d09b2fe0c90f2575ff26acd71e0d0c2adcb9b9c59c3a0ebfadc6c1980b",
+      "source_duration_seconds": 77.767,
+      "final_duration_seconds": 77.767,
+      "start_seconds": 74.767,
+      "end_seconds": 77.767,
+      "audio_source_sha256": "fa95156f04e9e0f4103390eab7380063ac079ffc8ab9808600e5956b16cc341d"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261029-114041-e78209a3fe",
+    "type": "article_short",
+    "youtube_id": "KomnBuCHiLk",
+    "youtube_url": "https://youtu.be/KomnBuCHiLk",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "964755d09b2fe0c90f2575ff26acd71e0d0c2adcb9b9c59c3a0ebfadc6c1980b",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
