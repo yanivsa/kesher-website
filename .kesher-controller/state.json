@@ -43,7 +43,13 @@
     "last_normalization_drift_head_sha": "c161729200dac9d84237e9865065b5e1e859f146",
     "normalized_head_sha": "c161729200dac9d84237e9865065b5e1e859f146",
     "image_head_sha": "c161729200dac9d84237e9865065b5e1e859f146",
-    "merge_candidate_sha": "c161729200dac9d84237e9865065b5e1e859f146"
+    "merge_candidate_sha": "c161729200dac9d84237e9865065b5e1e859f146",
+    "slug": "first-grade-adjustment",
+    "title": "למה הסתגלות לכיתה א׳ קשה לפעמים ומה עושים כשהילד בוכה?",
+    "url": "https://kesher.saharoni.com/blog/first-grade-adjustment",
+    "published_date": "2026-10-29",
+    "quality_content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
+    "live": false
   },
   "backlog": [
     {
@@ -3009,6 +3015,16 @@
       "previous_run_id": 40844284792,
       "observed_active_run_id": 40845152401,
       "dispatched_at": "2026-10-29T08:50:43.190876+00:00"
+    },
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-10-29",
+      "inputs": {},
+      "intent_at": "2026-10-29T08:52:12.858538+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "702f5f47083f356b4bfe0e5ace75fdc03554a25e"
     }
   },
   "deliverables": {
