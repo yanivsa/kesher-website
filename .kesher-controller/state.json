@@ -1707,12 +1707,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T16:26:02.938672+00:00",
-      "from": "article_image_rebinding",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
       "at": "2026-10-29T16:27:31.561476+00:00",
       "from": "article_pr_open",
       "to": "article_pr_open",
@@ -2492,9 +2486,18 @@
       "details": {
         "publication_slot": "2026-10-29"
       }
+    },
+    {
+      "at": "2026-10-29T21:45:56.981271+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "owner run-now article workflow already active",
+      "details": {
+        "publication_slot": "2026-10-29"
+      }
     }
   ],
-  "updated_at": "2026-10-29T21:40:59.910995+00:00",
+  "updated_at": "2026-10-29T21:45:56.981297+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
