@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "article_pr_open",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -16,7 +16,7 @@
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-28T00:06:40.352149+00:00",
     "watchdog": {
@@ -88,7 +88,9 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-10-29T05:53:13.691927+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-10-29T05:53:20.349289+00:00",
+    "next_deploy_retry_at": "2026-10-29T05:58:08.630843+00:00"
   },
   "backlog": [
     {
@@ -1779,15 +1781,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-28T21:51:20.658655+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1244 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-28T21:56:23.223968+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2677,9 +2670,19 @@
       "from": "blocked",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-29T05:53:20.349329+00:00",
+      "from": "article_pr_open",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-29T05:51:04.427293+00:00",
+  "updated_at": "2026-10-29T05:53:20.349337+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -3075,7 +3078,7 @@
     "claimed_at": "2026-10-27T22:36:30.192968+00:00"
   },
   "deliverables": {
-    "article_url": null,
+    "article_url": "https://kesher.saharoni.com/blog/first-grade-maturity",
     "overview_youtube_url": null,
     "short_youtube_url": null,
     "overview_edit_verified": false,
@@ -3089,10 +3092,11 @@
       "cycle": "2026-10-28",
       "inputs": {},
       "intent_at": "2026-10-29T05:53:08.630843+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "e33edeb84408aaadc1ee3d91fd3ce1c5b7cc6cac"
+      "observed_active_run_id": 40825956939,
+      "dispatch_head_sha": "e33edeb84408aaadc1ee3d91fd3ce1c5b7cc6cac",
+      "dispatched_at": "2026-10-29T05:53:08.630843+00:00"
     }
   },
   "last_child_notification": {
