@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
-    "status": "exhausted",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40881413510,
@@ -18,22 +18,20 @@
     "last_dispatch_at": "2026-10-29T13:23:02.260850+00:00",
     "pr_number": 1252,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1252",
-    "current_pr_head_sha": "69a17fdbe69cce9d30fc64ff572afbe608bef246",
+    "current_pr_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac",
     "jules_head_sha": "d6189b18925bcc0cbb449268537f805df931b8b2",
     "normalization_status": "complete",
     "normalization_slot": "2026-10-29",
     "normalization_dispatched_at": "2026-10-29T17:21:18.443333+00:00",
     "normalization_run_id": 40920515111,
-    "normalization_drift_count": 0,
-    "merge_dispatch_count": 3,
-    "merge_dispatch_at": "2026-10-29T17:41:11.748029+00:00",
+    "normalization_drift_count": 1,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
     "merge_run_id": 40921312115,
     "last_refunded_auto_merge_run_id": 40921312115,
     "deferred_auto_merge_refund_count": 10,
-    "last_normalization_drift_head_sha": "58db4579ac6bf29a5f5ba7189867a14e4e508b72",
-    "normalized_head_sha": "69a17fdbe69cce9d30fc64ff572afbe608bef246",
-    "image_head_sha": "69a17fdbe69cce9d30fc64ff572afbe608bef246",
-    "merge_candidate_sha": "69a17fdbe69cce9d30fc64ff572afbe608bef246"
+    "last_normalization_drift_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac",
+    "normalized_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac"
   },
   "backlog": [
     {
@@ -1722,19 +1720,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "PR #1252 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-10-29T18:50:51.903453+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-29T12:26:18.399157+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-10-29T12:26:19.635298+00:00",
       "from": "long_video_complete",
@@ -2554,12 +2541,23 @@
       "details": {
         "message": "PR #1252 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-10-29T18:55:49.569309+00:00",
+      "from": "blocked",
+      "to": "article_pr_open",
+      "reason": "late_article_head_after_merge_exhaustion_recovery",
+      "details": {
+        "pr_number": 1252,
+        "previous_head_sha": "69a17fdbe69cce9d30fc64ff572afbe608bef246",
+        "current_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac"
+      }
     }
   ],
   "updated_at": "2026-10-29T18:50:51.903474+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2572,8 +2570,7 @@
     "source_id": "local-editorial://toilet-fear-children/7",
     "evidence_rebind_head_sha": "58db4579ac6bf29a5f5ba7189867a14e4e508b72",
     "evidence_rebind_dispatched_at": "2026-10-29T17:23:27.732799+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 40895865256
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2987,18 +2984,18 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-29T13:22:45.670201+00:00"
     },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
       "cycle": "2026-10-29",
       "inputs": {
         "pr_number": "1252",
-        "slot": "2026-10-29"
+        "recovery_only": "true",
+        "expected_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac"
       },
-      "intent_at": "2026-10-29T17:40:44.340719+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40921312115,
-      "observed_active_run_id": 40923680503,
-      "dispatched_at": "2026-10-29T17:40:44.340719+00:00"
+      "intent_at": "2026-10-29T18:55:46.586965+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
