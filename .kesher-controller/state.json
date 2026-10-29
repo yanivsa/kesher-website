@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -56,7 +56,7 @@
     "quality_checked_at": "2026-10-29T09:37:22.106498+00:00",
     "quality_violations": [],
     "deploy_run_id": 40845300310,
-    "live_verified_at": "2026-10-29T09:37:23.140789+00:00"
+    "live_verified_at": "2026-10-29T09:37:38.468362+00:00"
   },
   "backlog": [
     {
@@ -1748,24 +1748,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T03:26:09.767033+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T03:31:44.613278+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-29T03:36:11.093297+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2583,9 +2565,21 @@
         "item_id": "video-20261029-110045-e78209a3fe",
         "task_id": "16e746b0-4234-497a-9a1f-5e261dee6037"
       }
+    },
+    {
+      "at": "2026-10-29T09:37:38.468387+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T09:37:38.971847+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-10-29T09:36:15.253736+00:00",
+  "updated_at": "2026-10-29T09:37:38.971865+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2606,9 +2600,9 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "generating",
+    "status": "complete",
     "last_error": null,
-    "next_retry_at": "2026-10-29T09:12:31.590879+00:00",
+    "next_retry_at": null,
     "run_id": 40850285644,
     "processed_run_id": 40846185199,
     "provider_id": "16e746b0-4234-497a-9a1f-5e261dee6037",
@@ -3038,6 +3032,20 @@
         "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: השבועות הראשונים בבית הספר: עייפות, פחות שיתוף, רגישות או התפרקות בבית. להסביר מה יכול להיות חלק מהסתגלות רגילה ומה כדאי לעשות בבית ובקשר עם המחנכת. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-adjustment. כותרת עבודה: הסתגלות לכיתה א׳: מה נורמלי בשבועות הראשונים ומה צריך תשומת לב? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/בשלות סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-first-grade-adjustment\nRequired Primary Keyword: הסתגלות לכיתה א"
       },
       "intent_at": "2026-10-29T07:15:40.881966+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-29",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "first-grade-adjustment",
+        "derive_content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
+        "derive_long_item_id": "video-20261029-110045-e78209a3fe"
+      },
+      "intent_at": "2026-10-29T09:37:19.703788+00:00",
       "status": "intent",
       "previous_run_id": null,
       "observed_active_run_id": null
