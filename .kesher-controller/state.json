@@ -28,8 +28,8 @@
     "image_head_sha": "400bb290c1005c01355b6b17025121e18bb21d87",
     "merge_candidate_sha": "400bb290c1005c01355b6b17025121e18bb21d87",
     "normalization_drift_count": 0,
-    "merge_dispatch_count": 0,
-    "merge_dispatch_at": null
+    "merge_dispatch_count": 1,
+    "merge_dispatch_at": "2026-10-29T14:54:33.819221+00:00"
   },
   "backlog": [
     {
@@ -2805,9 +2805,10 @@
         "slot": "2026-10-29"
       },
       "intent_at": "2026-10-29T14:53:51.856252+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40896176713,
+      "dispatched_at": "2026-10-29T14:53:51.856252+00:00"
     }
   },
   "deliverables": {
