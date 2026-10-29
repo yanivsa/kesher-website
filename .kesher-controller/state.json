@@ -63,22 +63,22 @@
     "resume_dispatches": 1,
     "pr_number": 1244,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1244",
-    "current_pr_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44",
+    "current_pr_head_sha": "e17f4e3eed813b34aa3f228ad02972db0acbabd9",
     "jules_head_sha": "70f56fd135354c096fa97d6c6e4ad6566ac2cf11",
     "normalization_slot": "2026-10-28",
     "normalization_dispatched_at": "2026-10-28T18:01:37.557507+00:00",
     "normalization_run_id": 40741237215,
-    "normalization_drift_count": 2,
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-10-29T05:47:04.199931+00:00",
+    "normalization_drift_count": 0,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
     "merge_run_id": 40696399137,
     "last_refunded_auto_merge_run_id": 40637034405,
     "deferred_auto_merge_refund_count": 3,
     "last_normalization_drift_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44",
     "last_error": null,
-    "normalized_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44",
-    "image_head_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44",
-    "merge_candidate_sha": "53e3ddc071d4d7823f7ce3319cb16d1564802e44"
+    "normalized_head_sha": "e17f4e3eed813b34aa3f228ad02972db0acbabd9",
+    "image_head_sha": "e17f4e3eed813b34aa3f228ad02972db0acbabd9",
+    "merge_candidate_sha": "e17f4e3eed813b34aa3f228ad02972db0acbabd9"
   },
   "backlog": [
     {
@@ -2669,7 +2669,7 @@
       "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-29T05:47:00.129194+00:00",
+  "updated_at": "2026-10-29T05:51:04.427293+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -3072,21 +3072,7 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
-      "cycle": "2026-10-28",
-      "inputs": {
-        "pr_number": "1244",
-        "slot": "2026-10-28"
-      },
-      "intent_at": "2026-10-29T05:46:45.169467+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40696399137,
-      "observed_active_run_id": 40825372478,
-      "dispatched_at": "2026-10-29T05:46:45.169467+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
     "workflow": "Kesher Trusted Article Image",
     "run_id": 40825155532,
