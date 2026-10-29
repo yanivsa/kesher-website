@@ -44,7 +44,9 @@
     "slug": "toilet-fear-children",
     "imageProvider": "LocalEditorial",
     "imageSourceUrl": "local-editorial://toilet-fear-children/7",
-    "imageIsFallback": false
+    "imageIsFallback": false,
+    "image": "/images/generated/blog/toilet-fear-children.png",
+    "imageAlt": "איור עריכתי מקומי של הורה וילד בחדר רחצה ביתי, לצד אסלה ושרפרף, באווירה רגועה ותומכת."
   },
   {
     "id": "first-grade-maturity",
