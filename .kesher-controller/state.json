@@ -2927,7 +2927,20 @@
     "publication_slot": "2026-10-29",
     "claimed_at": "2026-10-29T21:07:32.533692+00:00"
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-article-generation.yml": {
+      "workflow": "kesher-article-generation.yml",
+      "cycle": "2026-10-29",
+      "inputs": {
+        "slot": "2026-10-29",
+        "topic_brief": "זוגיות: המבחן האמיתי של הקשר אינו רק בזמן ריב אלא גם באופן שבו בני זוג מגיבים לבשורות טובות. לבסס את המאמר על מחקרי capitalization של Shelly Gable ועמיתיה, במיוחד JPSP 2004 ו-2006. להסביר את ארבעת דפוסי התגובה: active-constructive — התלהבות כנה, שאלות המשך והרחבת הרגע; passive-constructive — תגובה חיובית אך קצרה/פושרת; active-destructive — הצבעה על חסרונות, דאגות או הקטנת ההצלחה; passive-destructive — התעלמות/החלפת נושא. להדגיש שרק active-constructive נקשר בעקביות לאינטימיות, שביעות רצון ואמון גבוהים יותר. הניסוח המדעי חייב להיות מדויק: מחקר 2006 על 79 זוגות מצא שתגובות לאירועים חיוביים היו קשורות יותר לרווחת הקשר ולפרידה כעבור חודשיים מאשר תגובות לדיונים באירועים שליליים; אין לטעון 'פי שניים' או סיבתיות שלא הוכחה. זווית קצרה: אותו משפט 'קיבלתי קידום בעבודה' וארבע תגובות שונות; להראות למה 'יופי מותק' מפספס הזדמנות לקירבה. טיפ מעשי: לעצור, להביע שמחה אמיתית ולשאול שתי שאלות המשך, למשל 'איך הרגשת כשסיפרו לך?' ו'מה הכי מרגש אותך בזה?'. להימנע מייחוס ציטוט מומצא ל-Gable; אפשר לנסח כרעיון מסכם בלבד. מקורות מחקריים: Gable et al., JPSP 2004 DOI 10.1037/0022-3514.87.2.228; Gable, Gonzaga & Strachman, JPSP 2006 DOI 10.1037/0022-3514.91.5.904; Reis et al., JPSP 2010 DOI 10.1037/a0018344.\n\nIdea Request ID: good-news-relationship-acr\nRequired Primary Keyword: תגובה לבשורות טובות בזוגיות"
+      },
+      "intent_at": "2026-10-29T21:07:30.143989+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/toilet-fear-children",
     "overview_youtube_url": "https://youtu.be/kVTVZKButig",
