@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "article_pr_open",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -20,9 +20,9 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1252",
     "current_pr_head_sha": "d17a35ffbdf4d1bd78500b64c9734cbda7ca5a82",
     "jules_head_sha": "d6189b18925bcc0cbb449268537f805df931b8b2",
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "normalization_slot": "2026-10-29",
-    "normalization_dispatched_at": "2026-10-29T14:51:13.194707+00:00",
+    "normalization_dispatched_at": "2026-10-29T15:35:59.018347+00:00",
     "normalization_run_id": 40895623357,
     "normalization_drift_count": 1,
     "merge_dispatch_count": 0,
@@ -1722,12 +1722,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T11:11:25.262435+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-29T11:11:26.543883+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2389,9 +2383,19 @@
         "previous_head_sha": "400bb290c1005c01355b6b17025121e18bb21d87",
         "current_head_sha": "d17a35ffbdf4d1bd78500b64c9734cbda7ca5a82"
       }
+    },
+    {
+      "at": "2026-10-29T15:35:59.018382+00:00",
+      "from": "article_pr_open",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1252,
+        "slot": "2026-10-29"
+      }
     }
   ],
-  "updated_at": "2026-10-29T15:30:52.339653+00:00",
+  "updated_at": "2026-10-29T15:35:59.018390+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
@@ -2826,9 +2830,10 @@
         "slot": "2026-10-29"
       },
       "intent_at": "2026-10-29T15:35:45.602510+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40895623357,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40903195657,
+      "dispatched_at": "2026-10-29T15:35:45.602510+00:00"
     }
   },
   "deliverables": {
