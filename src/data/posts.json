@@ -14,7 +14,12 @@
       }
     ],
     "controllerManaged": true,
-    "slug": "first-grade-adjustment"
+    "slug": "first-grade-adjustment",
+    "image": "/images/generated/blog/first-grade-adjustment.png",
+    "imageAlt": "איור עריכתי מקומי של הורה וילד בסביבה ביתית לקראת בית הספר, לצד ילקוט וספרים, באווירה רגועה ומעודדת.",
+    "imageProvider": "LocalEditorial",
+    "imageSourceUrl": "local-editorial://first-grade-adjustment/5",
+    "imageIsFallback": false
   },
   {
     "id": "first-grade-maturity",
