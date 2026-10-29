@@ -1,79 +1,23 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-29",
-  "status": "complete",
+  "cycle": "2026-10-30",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 40955077447,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-10-29T21:07:41.916224+00:00"
+    "normalization_status": "pending"
   },
   "backlog": [
-    {
-      "cycle": "2026-09-14",
-      "status": "article_deploying",
-      "article": {
-        "attempt_count": 1,
-        "status": "running",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 34784666283,
-        "processed_run_id": null,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "attempts": 1,
-        "deploy_attempts": 3,
-        "normalization_status": "complete",
-        "last_dispatch_at": "2026-09-13T21:43:22.550487+00:00",
-        "watchdog": {
-          "identity": "2026-09-14",
-          "session_id": "sessions/5588490773158455576",
-          "last_progress_at": "2026-09-13T21:43:22+00:00",
-          "last_fingerprint": "b47484452dede9e8e8dd1fae1754d5aab2ad6e58f40c4300b08bd878f8e9489a",
-          "last_nudge_at": "2026-09-13T22:11:35.929723+00:00",
-          "nudge_count": 1,
-          "worker_restart_count": 0,
-          "last_restart_at": null,
-          "last_restart_run_id": null
-        },
-        "pr_number": 808,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/808",
-        "normalization_slot": "2026-09-14",
-        "normalization_dispatched_at": "2026-09-14T10:08:20.628334+00:00",
-        "normalization_run_id": 34818285803,
-        "quality_status": "passed",
-        "quality_content_sha256": "74040d54b52a8c0567f3ba329e23c872f082ec56bcae60d29330a0b58d0f5434",
-        "quality_checked_at": "2026-09-14T20:35:40.656020+00:00",
-        "quality_violations": [],
-        "slug": "מוכנות-לכיתה-א-עצמאות-ושגרה",
-        "title": "מוכנות לכיתה א: איך בונים עצמאות ושגרה לפני הצלצול הראשון",
-        "url": "https://kesher.saharoni.com/blog/מוכנות-לכיתה-א-עצמאות-ושגרה",
-        "published_date": "2026-09-14",
-        "last_deploy_dispatch_at": "2026-09-14T20:39:15.296201+00:00",
-        "next_deploy_retry_at": "2026-09-14T20:44:15.296216+00:00"
-      },
-      "archived_at": "2026-09-14T21:30:17.751891+00:00",
-      "media": {
-        "source_slug": "מוכנות-לכיתה-א-עצמאות-ושגרה",
-        "source_content_sha256": "74040d54b52a8c0567f3ba329e23c872f082ec56bcae60d29330a0b58d0f5434",
-        "article_title": "מוכנות לכיתה א: איך בונים עצמאות ושגרה לפני הצלצול הראשון",
-        "article_url": "https://kesher.saharoni.com/blog/מוכנות-לכיתה-א-עצמאות-ושגרה",
-        "article_live": false,
-        "article_deploy_status": "exhausted",
-        "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED"
-      }
-    },
     {
       "cycle": "2026-09-15",
       "status": "blocked",
@@ -1702,205 +1646,72 @@
         "complete": true,
         "completed_at": "2026-10-27T22:06:09.074025+00:00"
       }
+    },
+    {
+      "cycle": "2026-10-29",
+      "status": "complete",
+      "exact_slug": null,
+      "content_sha256": null,
+      "article": {
+        "attempt_count": 1,
+        "status": "running",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 40955077447,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 1,
+        "deploy_attempts": 0,
+        "last_dispatch_at": "2026-10-29T21:07:41.916224+00:00"
+      },
+      "long_video": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": null,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {}
+      },
+      "short": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": null,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {}
+      },
+      "media_identities": {
+        "long_video_id": null,
+        "short_video_id": null
+      },
+      "counters": {
+        "article_attempts": 1,
+        "article_generation_attempts": 0,
+        "merge_dispatch_count": 0,
+        "deploy_attempts": 0,
+        "long_attempts": 0,
+        "short_attempts": 0
+      },
+      "terminal_state": {
+        "blocked": false,
+        "article_exhausted": false
+      },
+      "archived_at": "2026-10-29T22:03:02.285279+00:00"
     }
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-10-29T16:37:18.442774+00:00",
-      "from": "article_pr_open",
-      "to": "article_pr_open",
-      "reason": "successful_deferred_auto_merge_refunded",
-      "details": {
-        "run_id": 40912984827,
-        "pr_number": 1252,
-        "head_sha": "747ce771e8228a27bfa093815e1e0bd2b8373596",
-        "merge_dispatch_count": 1,
-        "refund_count": 6
-      }
-    },
-    {
-      "at": "2026-10-29T16:38:23.912676+00:00",
-      "from": "article_pr_open",
-      "to": "article_pr_open",
-      "reason": "successful_deferred_auto_merge_refunded",
-      "details": {
-        "run_id": 40913219414,
-        "pr_number": 1252,
-        "head_sha": "e32cf82fe8d36c598380c5bb7b99cb3c953bd3ef",
-        "merge_dispatch_count": 0,
-        "refund_count": 7
-      }
-    },
-    {
-      "at": "2026-10-29T16:38:51.597260+00:00",
-      "from": "article_pr_open",
-      "to": "article_image_rebinding",
-      "reason": "prior trusted image artifact proved against current normalized article and must be reattached",
-      "details": {
-        "pr_number": 1252,
-        "head_sha": "e32cf82fe8d36c598380c5bb7b99cb3c953bd3ef"
-      }
-    },
-    {
-      "at": "2026-10-29T16:41:25.491992+00:00",
-      "from": "article_image_rebinding",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
-      "at": "2026-10-29T16:44:28.833628+00:00",
-      "from": "article_pr_open",
-      "to": "article_pr_open",
-      "reason": "successful_deferred_auto_merge_refunded",
-      "details": {
-        "run_id": 40914052132,
-        "pr_number": 1252,
-        "head_sha": "b83da41a03ed112fe894eccbbfaf6366dae5f1d5",
-        "merge_dispatch_count": 0,
-        "refund_count": 8
-      }
-    },
-    {
-      "at": "2026-10-29T16:56:19.536571+00:00",
-      "from": "article_pr_open",
-      "to": "article_image_rebinding",
-      "reason": "prior trusted image artifact proved against current normalized article and must be reattached",
-      "details": {
-        "pr_number": 1252,
-        "head_sha": "f77b773ef981106e2af6932faaf3d4363416bc4e"
-      }
-    },
-    {
-      "at": "2026-10-29T16:58:39.911798+00:00",
-      "from": "article_image_rebinding",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
-      "at": "2026-10-29T17:00:20.100748+00:00",
-      "from": "article_pr_open",
-      "to": "article_pr_open",
-      "reason": "successful_deferred_auto_merge_refunded",
-      "details": {
-        "run_id": 40916832838,
-        "pr_number": 1252,
-        "head_sha": "e0f38b7d89efd06a08e041e908ee10a7405ad870",
-        "merge_dispatch_count": 0,
-        "refund_count": 9
-      }
-    },
-    {
-      "at": "2026-10-29T17:21:18.443365+00:00",
-      "from": "article_pr_open",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1252,
-        "slot": "2026-10-29"
-      }
-    },
-    {
-      "at": "2026-10-29T17:23:27.732830+00:00",
-      "from": "article_normalizing",
-      "to": "article_image_rebinding",
-      "reason": "prior trusted image artifact proved against current normalized article and must be reattached",
-      "details": {
-        "pr_number": 1252,
-        "head_sha": "58db4579ac6bf29a5f5ba7189867a14e4e508b72"
-      }
-    },
-    {
-      "at": "2026-10-29T17:26:12.145921+00:00",
-      "from": "article_image_rebinding",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
-      "at": "2026-10-29T17:27:36.441037+00:00",
-      "from": "article_pr_open",
-      "to": "article_pr_open",
-      "reason": "successful_deferred_auto_merge_refunded",
-      "details": {
-        "run_id": 40921312115,
-        "pr_number": 1252,
-        "head_sha": "69a17fdbe69cce9d30fc64ff572afbe608bef246",
-        "merge_dispatch_count": 0,
-        "refund_count": 10
-      }
-    },
-    {
-      "at": "2026-10-29T17:45:49.955076+00:00",
-      "from": "article_pr_open",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1252 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-29T17:51:00.735053+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1252 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-29T17:55:53.762677+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1252 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-29T18:01:06.648068+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1252 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-29T18:06:08.804357+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1252 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-29T18:10:54.981213+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1252 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-29T18:16:03.796892+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1252 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-29T18:20:55.500981+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1252 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
     {
       "at": "2026-10-29T18:26:00.865232+00:00",
       "from": "blocked",
@@ -2497,9 +2308,27 @@
           "toilet-fear-children"
         ]
       }
+    },
+    {
+      "at": "2026-10-29T22:03:02.285316+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-10-29T22:03:02.285321+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-10-29T22:03:02.286531+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-10-29T21:55:49.980552+00:00",
+  "updated_at": "2026-10-29T22:03:02.285301+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2928,594 +2757,5 @@
       }
     }
   ],
-  "active_idea": null,
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-10-29",
-      "inputs": {
-        "slot": "2026-10-29",
-        "topic_brief": "זוגיות: המבחן האמיתי של הקשר אינו רק בזמן ריב אלא גם באופן שבו בני זוג מגיבים לבשורות טובות. לבסס את המאמר על מחקרי capitalization של Shelly Gable ועמיתיה, במיוחד JPSP 2004 ו-2006. להסביר את ארבעת דפוסי התגובה: active-constructive — התלהבות כנה, שאלות המשך והרחבת הרגע; passive-constructive — תגובה חיובית אך קצרה/פושרת; active-destructive — הצבעה על חסרונות, דאגות או הקטנת ההצלחה; passive-destructive — התעלמות/החלפת נושא. להדגיש שרק active-constructive נקשר בעקביות לאינטימיות, שביעות רצון ואמון גבוהים יותר. הניסוח המדעי חייב להיות מדויק: מחקר 2006 על 79 זוגות מצא שתגובות לאירועים חיוביים היו קשורות יותר לרווחת הקשר ולפרידה כעבור חודשיים מאשר תגובות לדיונים באירועים שליליים; אין לטעון 'פי שניים' או סיבתיות שלא הוכחה. זווית קצרה: אותו משפט 'קיבלתי קידום בעבודה' וארבע תגובות שונות; להראות למה 'יופי מותק' מפספס הזדמנות לקירבה. טיפ מעשי: לעצור, להביע שמחה אמיתית ולשאול שתי שאלות המשך, למשל 'איך הרגשת כשסיפרו לך?' ו'מה הכי מרגש אותך בזה?'. להימנע מייחוס ציטוט מומצא ל-Gable; אפשר לנסח כרעיון מסכם בלבד. מקורות מחקריים: Gable et al., JPSP 2004 DOI 10.1037/0022-3514.87.2.228; Gable, Gonzaga & Strachman, JPSP 2006 DOI 10.1037/0022-3514.91.5.904; Reis et al., JPSP 2010 DOI 10.1037/a0018344.\n\nIdea Request ID: good-news-relationship-acr\nRequired Primary Keyword: תגובה לבשורות טובות בזוגיות"
-      },
-      "intent_at": "2026-10-29T21:07:30.143989+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-29T21:07:30.143989+00:00"
-    }
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/toilet-fear-children",
-    "overview_youtube_url": "https://youtu.be/kVTVZKButig",
-    "short_youtube_url": "https://youtu.be/EzIILKiQj3Q",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
-  },
-  "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 40947504792,
-    "conclusion": "success",
-    "source_slug": "toilet-fear-children",
-    "slot": "2026-10-29"
-  },
-  "processed_child_notifications": [],
-  "interventions": {
-    "v5|first-grade-adjustment|e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e|long_video": {
-      "pipeline_id": "v5",
-      "slug": "first-grade-adjustment",
-      "content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
-      "stage": "long_video",
-      "strike_count": 1,
-      "last_check_token": "2026-10-29T11",
-      "last_fingerprint": "f48d9aea8c33f450a437137b9ebd18bd2e876e33f11af4393cb66b50537c5cdf",
-      "last_controller_action_token": "recovery:1:2026-10-29T09:30:48.715288+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-10-29T09:30:48.715288+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-29T09:30:48.715288+00:00"
-    },
-    "v5|first-grade-adjustment|e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e|short": {
-      "pipeline_id": "v5",
-      "slug": "first-grade-adjustment",
-      "content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-10-29T12",
-      "last_fingerprint": "1f9648fe10b50d31b904416f83210a64019fa4218b6a98a3fa7307a7cc641759",
-      "last_controller_action_token": "recovery:1:2026-10-29T10:10:47.657596+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-10-29T10:10:47.657596+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-29T10:10:47.657596+00:00"
-    },
-    "v5|toilet-fear-children|7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb|long_video": {
-      "pipeline_id": "v5",
-      "slug": "toilet-fear-children",
-      "content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
-      "stage": "long_video",
-      "strike_count": 1,
-      "last_check_token": "2026-10-29T21",
-      "last_fingerprint": "cdf49db9f931e4b864953bb27606b92c8a2bbf283246c8f740159f83d7ad7db5",
-      "last_controller_action_token": "recovery:1:2026-10-29T19:35:49.599905+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-10-29T19:35:49.599905+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-29T19:35:49.599905+00:00"
-    },
-    "v5|toilet-fear-children|7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb|short": {
-      "pipeline_id": "v5",
-      "slug": "toilet-fear-children",
-      "content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-10-29T22",
-      "last_fingerprint": "07b4bb693b76935929b8a32cd846aeb41f6e36d13425c482dde08f6b127715b1",
-      "last_controller_action_token": "recovery:1:2026-10-29T20:15:46.668113+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-10-29T20:15:46.668113+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-29T20:15:46.668113+00:00"
-    }
-  },
-  "owner_cycle_archive": [
-    {
-      "cycle": "2026-10-29",
-      "status": "complete",
-      "article": {
-        "attempt_count": 0,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 40834340298,
-        "processed_run_id": null,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "attempts": 0,
-        "deploy_attempts": 1,
-        "watchdog": {
-          "identity": "2026-10-29",
-          "session_id": null,
-          "last_progress_at": "2026-10-29T07:16:07+00:00",
-          "last_fingerprint": null,
-          "last_nudge_at": null,
-          "nudge_count": 0,
-          "worker_restart_count": 0,
-          "last_restart_at": null,
-          "last_restart_run_id": null
-        },
-        "pr_number": 1249,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1249",
-        "current_pr_head_sha": "c161729200dac9d84237e9865065b5e1e859f146",
-        "jules_head_sha": "412323ed698749c3707292200b70081006852fdb",
-        "normalization_status": "complete",
-        "normalization_slot": "2026-10-29",
-        "normalization_dispatched_at": "2026-10-29T08:16:12.763945+00:00",
-        "normalization_run_id": 40840930021,
-        "normalization_drift_count": 1,
-        "merge_dispatch_count": 1,
-        "merge_dispatch_at": "2026-10-29T08:51:17.026687+00:00",
-        "merge_run_id": 40845152401,
-        "last_refunded_auto_merge_run_id": 40844284792,
-        "deferred_auto_merge_refund_count": 2,
-        "last_normalization_drift_head_sha": "c161729200dac9d84237e9865065b5e1e859f146",
-        "normalized_head_sha": "c161729200dac9d84237e9865065b5e1e859f146",
-        "image_head_sha": "c161729200dac9d84237e9865065b5e1e859f146",
-        "merge_candidate_sha": "c161729200dac9d84237e9865065b5e1e859f146",
-        "slug": "first-grade-adjustment",
-        "title": "למה הסתגלות לכיתה א׳ קשה לפעמים ומה עושים כשהילד בוכה?",
-        "url": "https://kesher.saharoni.com/blog/first-grade-adjustment",
-        "published_date": "2026-10-29",
-        "quality_content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
-        "live": true,
-        "last_deploy_dispatch_at": "2026-10-29T08:52:31.037520+00:00",
-        "next_deploy_retry_at": null,
-        "quality_status": "passed",
-        "quality_checked_at": "2026-10-29T13:20:54.051764+00:00",
-        "quality_violations": [],
-        "deploy_run_id": 40845300310,
-        "live_verified_at": "2026-10-29T13:21:26.163853+00:00"
-      },
-      "long_video": {
-        "attempt_count": 1,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 40850285644,
-        "processed_run_id": 40846185199,
-        "provider_id": "16e746b0-4234-497a-9a1f-5e261dee6037",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "overview_evidence_required": true,
-        "last_dispatch_at": "2026-10-29T09:31:21.958956+00:00",
-        "attempts": 1,
-        "last_run_conclusion": "success",
-        "item_id": "video-20261029-110045-e78209a3fe",
-        "source_slug": "first-grade-adjustment",
-        "source_content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
-        "content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
-        "source_id": "2dc12127-24aa-43de-adc5-135483f5441c",
-        "task_id": "16e746b0-4234-497a-9a1f-5e261dee6037",
-        "artifact_id": "16e746b0-4234-497a-9a1f-5e261dee6037",
-        "provider_status": "pending",
-        "verified": true,
-        "watchdog": {
-          "identity": "long_video:first-grade-adjustment:e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e:video-20261029-110045-e78209a3fe",
-          "hard_started_at": "2026-10-29T09:00:51.207106+00:00",
-          "last_progress_at": "2026-10-29T09:07:31.590879+00:00",
-          "last_fingerprint": "e0928dd3975b254b5c7b3856226b3fe5916a6cd42a344927287b3b66911ba2aa",
-          "recovery_count": 1,
-          "last_recovery_at": "2026-10-29T09:30:48.715288+00:00"
-        },
-        "pending_resume_ready": false,
-        "resume_dispatches": 1,
-        "youtube_id": "1DCFXnfx2NQ",
-        "youtube_url": "https://youtu.be/1DCFXnfx2NQ",
-        "technical_verified": true,
-        "visual_pipeline": "remotion-v1-notebooklm-audio",
-        "codec": "h264",
-        "width": 1280,
-        "height": 720,
-        "duration": 109.633,
-        "content_duration_seconds": 109.625,
-        "signature_duration_seconds": 3.0,
-        "signature_overlay": true,
-        "signature_fullscreen": true,
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
-      },
-      "short": {
-        "attempt_count": 2,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 40855535843,
-        "processed_run_id": null,
-        "provider_id": "c393db76-98d4-4d54-bdcc-4dd093101192",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "last_dispatch_at": "2026-10-29T10:11:14.255094+00:00",
-        "artifact_id": "c393db76-98d4-4d54-bdcc-4dd093101192",
-        "source_id": "128c40b3-637f-4f3f-b90c-29d6db45c7e5",
-        "adopted_from_long_item_id": null,
-        "watchdog": {
-          "identity": "short:first-grade-adjustment:e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e:video-20261029-114041-e78209a3fe",
-          "hard_started_at": "2026-10-29T09:40:53.595147+00:00",
-          "last_progress_at": "2026-10-29T09:48:27.178347+00:00",
-          "last_fingerprint": "6c3fd1c0ee1b4c736d5cb50350422551f386d67051987edefd0beefccf90fb2f",
-          "recovery_count": 1,
-          "last_recovery_at": "2026-10-29T10:10:47.657596+00:00"
-        },
-        "source": {
-          "id": "first-grade-adjustment",
-          "slug": "first-grade-adjustment",
-          "title": "למה הסתגלות לכיתה א׳ קשה לפעמים ומה עושים כשהילד בוכה?",
-          "date": "2026-10-29",
-          "category": "הדרכת הורים",
-          "subcategory": "",
-          "excerpt": "המעבר למסגרת בית הספר עשוי לעורר עייפות ושינויים בהתנהגות. נבחן מה יכול להיות חלק מתהליך הסתגלות טבעי ואיך כדאי לתמוך בילדים בשבועות הראשונים, בבית ומול הצוות החינוכי.",
-          "canonical_url": "https://kesher.saharoni.com/blog/first-grade-adjustment",
-          "content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e",
-          "video_title": "למה הסתגלות לכיתה א׳ קשה לפעמים ומה עושים כשהילד בוכה?",
-          "short_title": "למה הסתגלות לכיתה א׳ קשה לפעמים ומה עושים כשהילד בוכה?",
-          "short_hook": "",
-          "youtube_metadata": {
-            "title": "למה הסתגלות לכיתה א׳ קשה לפעמים ומה עושים כשהילד בוכה?",
-            "description": "המעבר למסגרת בית הספר עשוי לעורר עייפות ושינויים בהתנהגות. נבחן מה יכול להיות חלק מתהליך הסתגלות טבעי ואיך כדאי לתמוך בילדים בשבועות הראשונים, בבית ומול הצוות החינוכי.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-adjustment\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים"
-            ]
-          },
-          "short_youtube_metadata": {
-            "title": "בקצרה: למה הסתגלות לכיתה א׳ קשה לפעמים ומה עושים כשהילד בוכה?",
-            "description": "המעבר למסגרת בית הספר עשוי לעורר עייפות ושינויים בהתנהגות. נבחן מה יכול להיות חלק מתהליך הסתגלות טבעי ואיך כדאי לתמוך בילדים בשבועות הראשונים, בבית ומול הצוות החינוכי.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-adjustment\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים"
-            ]
-          }
-        },
-        "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-        "task_id": "c393db76-98d4-4d54-bdcc-4dd093101192",
-        "raw_sha256": "fa95156f04e9e0f4103390eab7380063ac079ffc8ab9808600e5956b16cc341d",
-        "final_sha256": "03c7535198727c0d7c7a816363b893e57ff0833703f4c4abd0aba0cb715e80eb",
-        "provider_raw_media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 720,
-          "height": 1280,
-          "duration": 77.767,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 1080,
-          "height": 1920,
-          "duration": 77.767,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "provider_video_format": "short",
-        "provider_native_short": true,
-        "provider_native_short_verified": true,
-        "provider_short_fallback_used": false,
-        "fresh_generation_attempt": 1,
-        "overview_provider_identity": {
-          "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-          "source_id": "2dc12127-24aa-43de-adc5-135483f5441c",
-          "task_id": "16e746b0-4234-497a-9a1f-5e261dee6037",
-          "artifact_id": "16e746b0-4234-497a-9a1f-5e261dee6037",
-          "raw_sha256": "97e65d86356e0b78935f3c074d7ecb1be29028a259fd8f18bace49979a30c0fd"
-        },
-        "shared_provider_identity": null,
-        "short_start_seconds": 0.0,
-        "short_duration_seconds": 77.767,
-        "audio_provenance": {
-          "schema_version": 1,
-          "mode": "stream_copy",
-          "raw_sha256": "fa95156f04e9e0f4103390eab7380063ac079ffc8ab9808600e5956b16cc341d",
-          "final_sha256": "03c7535198727c0d7c7a816363b893e57ff0833703f4c4abd0aba0cb715e80eb",
-          "raw_audio_sha256": "1af5eb6670aea1e50ed48b5ee629728a576eb2e6f36b5051a7ab001b7bd238e0",
-          "final_audio_sha256": "1af5eb6670aea1e50ed48b5ee629728a576eb2e6f36b5051a7ab001b7bd238e0",
-          "raw_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 77.833288
-          },
-          "final_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 77.833288
-          }
-        },
-        "signature_overlay": true,
-        "signature_provenance": {
-          "schema_version": 1,
-          "final_sha256": "03c7535198727c0d7c7a816363b893e57ff0833703f4c4abd0aba0cb715e80eb",
-          "raw_sha256": "fa95156f04e9e0f4103390eab7380063ac079ffc8ab9808600e5956b16cc341d",
-          "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-          "segment_sha256": "964755d09b2fe0c90f2575ff26acd71e0d0c2adcb9b9c59c3a0ebfadc6c1980b",
-          "source_duration_seconds": 77.767,
-          "final_duration_seconds": 77.767,
-          "start_seconds": 74.767,
-          "end_seconds": 77.767,
-          "audio_source_sha256": "fa95156f04e9e0f4103390eab7380063ac079ffc8ab9808600e5956b16cc341d"
-        },
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "item_id": "video-20261029-114041-e78209a3fe",
-        "type": "article_short",
-        "youtube_id": "KomnBuCHiLk",
-        "youtube_url": "https://youtu.be/KomnBuCHiLk",
-        "verified": true,
-        "portrait_verified": true,
-        "signature_verified": true,
-        "signature_asset": "signature-mask.svg",
-        "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-        "technical_verified": true,
-        "signature_duration_seconds": 3.0,
-        "signature_fullscreen": true,
-        "signature_video_sha256": "964755d09b2fe0c90f2575ff26acd71e0d0c2adcb9b9c59c3a0ebfadc6c1980b",
-        "source_mode": "direct-short",
-        "width": 1080,
-        "height": 1920
-      },
-      "archived_at": "2026-10-29T13:22:49.534988+00:00",
-      "reason": "owner_run_now_cycle_started"
-    },
-    {
-      "cycle": "2026-10-29",
-      "status": "complete",
-      "article": {
-        "attempt_count": 0,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 40881413510,
-        "processed_run_id": null,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "attempts": 0,
-        "deploy_attempts": 1,
-        "last_dispatch_at": "2026-10-29T13:23:02.260850+00:00",
-        "pr_number": 1252,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1252",
-        "current_pr_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac",
-        "jules_head_sha": "d6189b18925bcc0cbb449268537f805df931b8b2",
-        "normalization_status": "complete",
-        "normalization_slot": "2026-10-29",
-        "normalization_dispatched_at": "2026-10-29T17:21:18.443333+00:00",
-        "normalization_run_id": 40920515111,
-        "normalization_drift_count": 1,
-        "merge_dispatch_count": 0,
-        "merge_dispatch_at": "2026-10-29T18:57:44.452841+00:00",
-        "merge_run_id": 40935672919,
-        "last_refunded_auto_merge_run_id": 40935672919,
-        "deferred_auto_merge_refund_count": 11,
-        "last_normalization_drift_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac",
-        "normalized_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac",
-        "image_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac",
-        "merge_candidate_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac",
-        "slug": "toilet-fear-children",
-        "title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
-        "url": "https://kesher.saharoni.com/blog/toilet-fear-children",
-        "published_date": "2026-10-29",
-        "quality_content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
-        "reconciled_existing_article": true,
-        "quality_status": "passed",
-        "quality_checked_at": "2026-10-29T21:06:25.883078+00:00",
-        "quality_violations": [],
-        "live": true,
-        "last_deploy_dispatch_at": "2026-10-29T18:59:57.861833+00:00",
-        "next_deploy_retry_at": null,
-        "deploy_run_id": 40936002971,
-        "live_verified_at": "2026-10-29T21:06:48.239157+00:00"
-      },
-      "long_video": {
-        "attempt_count": 1,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 40941577933,
-        "processed_run_id": 40937218928,
-        "provider_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "overview_evidence_required": true,
-        "last_dispatch_at": "2026-10-29T19:36:13.104026+00:00",
-        "attempts": 1,
-        "last_run_conclusion": "success",
-        "item_id": "video-20261029-210835-7326680648",
-        "source_slug": "toilet-fear-children",
-        "source_content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
-        "content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
-        "source_id": "d45ab1ba-1d2e-4f89-8a01-c8425c37abcd",
-        "task_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
-        "artifact_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
-        "provider_status": "pending",
-        "verified": true,
-        "watchdog": {
-          "identity": "long_video:toilet-fear-children:7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb:video-20261029-210835-7326680648",
-          "hard_started_at": "2026-10-29T19:08:42.963082+00:00",
-          "last_progress_at": "2026-10-29T19:15:25.603844+00:00",
-          "last_fingerprint": "34dc491419216d3e975ac9b2e9166d277a0e98c51dc8798e12af838f8a155623",
-          "recovery_count": 1,
-          "last_recovery_at": "2026-10-29T19:35:49.599905+00:00"
-        },
-        "pending_resume_ready": false,
-        "resume_dispatches": 1,
-        "youtube_id": "kVTVZKButig",
-        "youtube_url": "https://youtu.be/kVTVZKButig",
-        "technical_verified": true,
-        "visual_pipeline": "remotion-v1-notebooklm-audio",
-        "codec": "h264",
-        "width": 1280,
-        "height": 720,
-        "duration": 100.533,
-        "content_duration_seconds": 100.542,
-        "signature_duration_seconds": 3.0,
-        "signature_overlay": true,
-        "signature_fullscreen": true,
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
-      },
-      "short": {
-        "attempt_count": 2,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 40947504792,
-        "processed_run_id": null,
-        "provider_id": "fe867a57-ed43-4bf8-ad43-17a9c1269569",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "last_dispatch_at": "2026-10-29T20:16:12.197182+00:00",
-        "artifact_id": "fe867a57-ed43-4bf8-ad43-17a9c1269569",
-        "source_id": "c338129f-a5c7-4a04-b9b6-076a12e2e091",
-        "adopted_from_long_item_id": null,
-        "watchdog": {
-          "identity": "short:toilet-fear-children:7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb:video-20261029-214500-7326680648",
-          "hard_started_at": "2026-10-29T19:45:11.708205+00:00",
-          "last_progress_at": "2026-10-29T19:52:11.391002+00:00",
-          "last_fingerprint": "0ff855fe3dcbcb1f9030702947df8e4368a6042b4954abcd4bc65020fbe0ac70",
-          "recovery_count": 1,
-          "last_recovery_at": "2026-10-29T20:15:46.668113+00:00"
-        },
-        "source": {
-          "id": "toilet-fear-children",
-          "slug": "toilet-fear-children",
-          "title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
-          "date": "2026-10-29",
-          "category": "הדרכת הורים",
-          "subcategory": "גמילה מחיתולים",
-          "excerpt": "הילד בוכה, מסרב להתקרב לאסלה, ואתם מוצאים את עצמכם במאבק יומיומי. פחד מאסלה אצל ילדים הוא שלב שעלול לתקוע את הגמילה ולתסכל את כולם. איך מזהים שמדובר בחשש אמיתי, למה לחץ רק מחמיר את המצב, ואיך אפשר לעזור להם לעשות את זה ברוגע ובהדרגתיות בלי להפוך את השירותים לזירת קרב?",
-          "canonical_url": "https://kesher.saharoni.com/blog/toilet-fear-children",
-          "content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
-          "video_title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
-          "short_title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
-          "short_hook": "",
-          "youtube_metadata": {
-            "title": "פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
-            "description": "הילד בוכה, מסרב להתקרב לאסלה, ואתם מוצאים את עצמכם במאבק יומיומי. פחד מאסלה אצל ילדים הוא שלב שעלול לתקוע את הגמילה ולתסכל את כולם. איך מזהים שמדובר בחשש אמיתי, למה לחץ רק מחמיר את המצב, ואיך אפשר לעזור להם לעשות את זה ברוגע ובהדרגתיות בלי להפוך את השירותים לזירת קרב?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/toilet-fear-children\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים",
-              "גמילה מחיתולים"
-            ]
-          },
-          "short_youtube_metadata": {
-            "title": "בקצרה: פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?",
-            "description": "הילד בוכה, מסרב להתקרב לאסלה, ואתם מוצאים את עצמכם במאבק יומיומי. פחד מאסלה אצל ילדים הוא שלב שעלול לתקוע את הגמילה ולתסכל את כולם. איך מזהים שמדובר בחשש אמיתי, למה לחץ רק מחמיר את המצב, ואיך אפשר לעזור להם לעשות את זה ברוגע ובהדרגתיות בלי להפוך את השירותים לזירת קרב?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/toilet-fear-children\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים",
-              "גמילה מחיתולים"
-            ]
-          }
-        },
-        "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-        "task_id": "fe867a57-ed43-4bf8-ad43-17a9c1269569",
-        "raw_sha256": "78a01e93afbd344c0689e275f527ad7a8b0122091358c7ababa191762e29f771",
-        "final_sha256": "64654c51a89286d39606179bac4f655eb8aa1e107858a87cdc0fdeda3ec79906",
-        "provider_raw_media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 720,
-          "height": 1280,
-          "duration": 73.167,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 1080,
-          "height": 1920,
-          "duration": 73.167,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "provider_video_format": "short",
-        "provider_native_short": true,
-        "provider_native_short_verified": true,
-        "provider_short_fallback_used": false,
-        "fresh_generation_attempt": 1,
-        "overview_provider_identity": {
-          "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-          "source_id": "d45ab1ba-1d2e-4f89-8a01-c8425c37abcd",
-          "task_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
-          "artifact_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d",
-          "raw_sha256": "e268911a2f466db849e4a479efe76101c2d5c6a2c9f97d4a6742669b2d7b0dde"
-        },
-        "shared_provider_identity": null,
-        "short_start_seconds": 0.0,
-        "short_duration_seconds": 73.167,
-        "audio_provenance": {
-          "schema_version": 1,
-          "mode": "stream_copy",
-          "raw_sha256": "78a01e93afbd344c0689e275f527ad7a8b0122091358c7ababa191762e29f771",
-          "final_sha256": "64654c51a89286d39606179bac4f655eb8aa1e107858a87cdc0fdeda3ec79906",
-          "raw_audio_sha256": "b28acf00e69fc440b7dd9df39c25280bc75c5c7381fdc2c0992fa43d8eab670e",
-          "final_audio_sha256": "b28acf00e69fc440b7dd9df39c25280bc75c5c7381fdc2c0992fa43d8eab670e",
-          "raw_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 73.235737
-          },
-          "final_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 73.235737
-          }
-        },
-        "signature_overlay": true,
-        "signature_provenance": {
-          "schema_version": 1,
-          "final_sha256": "64654c51a89286d39606179bac4f655eb8aa1e107858a87cdc0fdeda3ec79906",
-          "raw_sha256": "78a01e93afbd344c0689e275f527ad7a8b0122091358c7ababa191762e29f771",
-          "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-          "segment_sha256": "fdf2cce8875fe521223e71071c427cd0d138c811dfca7f8f4afb2902ef3e599a",
-          "source_duration_seconds": 73.167,
-          "final_duration_seconds": 73.167,
-          "start_seconds": 70.167,
-          "end_seconds": 73.167,
-          "audio_source_sha256": "78a01e93afbd344c0689e275f527ad7a8b0122091358c7ababa191762e29f771"
-        },
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "item_id": "video-20261029-214500-7326680648",
-        "type": "article_short",
-        "youtube_id": "EzIILKiQj3Q",
-        "youtube_url": "https://youtu.be/EzIILKiQj3Q",
-        "verified": true,
-        "portrait_verified": true,
-        "signature_verified": true,
-        "signature_asset": "signature-mask.svg",
-        "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-        "technical_verified": true,
-        "signature_duration_seconds": 3.0,
-        "signature_fullscreen": true,
-        "signature_video_sha256": "fdf2cce8875fe521223e71071c427cd0d138c811dfca7f8f4afb2902ef3e599a",
-        "source_mode": "direct-short",
-        "width": 1080,
-        "height": 1920
-      },
-      "archived_at": "2026-10-29T21:07:32.533680+00:00",
-      "reason": "owner_run_now_cycle_started"
-    }
-  ]
+  "active_idea": null
 }
