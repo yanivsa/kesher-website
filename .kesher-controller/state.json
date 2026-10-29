@@ -18,22 +18,19 @@
     "last_dispatch_at": "2026-10-29T13:23:02.260850+00:00",
     "pr_number": 1252,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1252",
-    "current_pr_head_sha": "6f1de29707080d222c0d0517ed414ec37b4bc3de",
+    "current_pr_head_sha": "7caec40a49e89885e330f0b089287cb5e6c2a727",
     "jules_head_sha": "d6189b18925bcc0cbb449268537f805df931b8b2",
-    "normalization_status": "complete",
+    "normalization_status": "pending",
     "normalization_slot": "2026-10-29",
     "normalization_dispatched_at": "2026-10-29T15:35:59.018347+00:00",
     "normalization_run_id": 40903195657,
-    "normalization_drift_count": 0,
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-10-29T15:44:57.826228+00:00",
-    "merge_run_id": 40896176713,
-    "last_refunded_auto_merge_run_id": 40896176713,
-    "deferred_auto_merge_refund_count": 1,
-    "last_normalization_drift_head_sha": "08ee50e8ee7c43973faff055ce47041be83f0253",
-    "normalized_head_sha": "6f1de29707080d222c0d0517ed414ec37b4bc3de",
-    "image_head_sha": "6f1de29707080d222c0d0517ed414ec37b4bc3de",
-    "merge_candidate_sha": "6f1de29707080d222c0d0517ed414ec37b4bc3de"
+    "normalization_drift_count": 1,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
+    "merge_run_id": 40904686770,
+    "last_refunded_auto_merge_run_id": 40904686770,
+    "deferred_auto_merge_refund_count": 2,
+    "last_normalization_drift_head_sha": "7caec40a49e89885e330f0b089287cb5e6c2a727"
   },
   "backlog": [
     {
@@ -1725,12 +1722,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T11:16:12.764680+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-29T11:16:13.673599+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2400,12 +2391,25 @@
       "from": "article_image_rebinding",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-29T15:47:26.318668+00:00",
+      "from": "article_pr_open",
+      "to": "article_pr_open",
+      "reason": "successful_deferred_auto_merge_refunded",
+      "details": {
+        "run_id": 40904686770,
+        "pr_number": 1252,
+        "head_sha": "7caec40a49e89885e330f0b089287cb5e6c2a727",
+        "merge_dispatch_count": 0,
+        "refund_count": 2
+      }
     }
   ],
   "updated_at": "2026-10-29T15:44:52.941952+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2416,7 +2420,6 @@
     "last_dispatch_at": "2026-10-29T14:52:41.124738+00:00",
     "artifact_sha256": "9fa965f89be43b736f02c1f11d3281650b2b379d4e2d213a3419c0717c32d386",
     "source_id": "local-editorial://toilet-fear-children/7",
-    "run_id": 40895865256,
     "evidence_rebind_head_sha": "08ee50e8ee7c43973faff055ce47041be83f0253",
     "evidence_rebind_dispatched_at": "2026-10-29T15:40:32.472523+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact"
@@ -2833,18 +2836,17 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-29T13:22:45.670201+00:00"
     },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
       "cycle": "2026-10-29",
       "inputs": {
         "pr_number": "1252",
         "slot": "2026-10-29"
       },
-      "intent_at": "2026-10-29T15:44:26.530373+00:00",
-      "status": "dispatched",
-      "previous_run_id": 40896176713,
-      "observed_active_run_id": 40904686770,
-      "dispatched_at": "2026-10-29T15:44:26.530373+00:00"
+      "intent_at": "2026-10-29T15:47:18.744527+00:00",
+      "status": "intent",
+      "previous_run_id": 40903195657,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -2857,8 +2859,8 @@
     "short_origin_verified": true
   },
   "last_child_notification": {
-    "workflow": "Kesher Trusted Article Image",
-    "run_id": 40903955100,
+    "workflow": "Auto-merge Kesher article PRs",
+    "run_id": 40904686770,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-29"
