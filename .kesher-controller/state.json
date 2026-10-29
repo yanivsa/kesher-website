@@ -3109,19 +3109,27 @@
         "school-entry-readiness-emotional-regulation-skills"
       ],
       "prior_article_attempts": 0
+    },
+    {
+      "idea_id": "parenting-p1-first-grade-adjustment",
+      "fingerprint": "0c2f4d5f7dc511be6c2d2ff4390dc72d931a43bcd5f647bdb550ff21409a4cbd",
+      "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: השבועות הראשונים בבית הספר: עייפות, פחות שיתוף, רגישות או התפרקות בבית. להסביר מה יכול להיות חלק מהסתגלות רגילה ומה כדאי לעשות בבית ובקשר עם המחנכת. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-adjustment. כותרת עבודה: הסתגלות לכיתה א׳: מה נורמלי בשבועות הראשונים ומה צריך תשומת לב? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/בשלות סמוכים ואל תיצור URL מתחרה.",
+      "required_primary_keyword": "הסתגלות לכיתה א",
+      "run_now": false,
+      "status": "complete",
+      "requested_at": "2026-10-19T10:17:20.898363+00:00",
+      "publication_slot": "2026-10-29",
+      "claimed_at": "2026-10-29T07:16:04.883332Z",
+      "completed_at": "2026-10-29T10:22:49.828440+00:00",
+      "outputs": {
+        "slug": "first-grade-adjustment",
+        "article_url": "https://kesher.saharoni.com/blog/first-grade-adjustment",
+        "long_url": "https://youtu.be/1DCFXnfx2NQ",
+        "short_url": "https://youtu.be/KomnBuCHiLk"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "parenting-p1-first-grade-adjustment",
-    "fingerprint": "0c2f4d5f7dc511be6c2d2ff4390dc72d931a43bcd5f647bdb550ff21409a4cbd",
-    "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: השבועות הראשונים בבית הספר: עייפות, פחות שיתוף, רגישות או התפרקות בבית. להסביר מה יכול להיות חלק מהסתגלות רגילה ומה כדאי לעשות בבית ובקשר עם המחנכת. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-adjustment. כותרת עבודה: הסתגלות לכיתה א׳: מה נורמלי בשבועות הראשונים ומה צריך תשומת לב? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/בשלות סמוכים ואל תיצור URL מתחרה.",
-    "required_primary_keyword": "הסתגלות לכיתה א",
-    "run_now": false,
-    "status": "claimed",
-    "requested_at": "2026-10-19T10:17:20.898363+00:00",
-    "publication_slot": "2026-10-29",
-    "claimed_at": "2026-10-29T07:16:04.883332Z"
-  },
+  "active_idea": null,
   "pending_dispatches": {
     "kesher-article-generation.yml": {
       "workflow": "kesher-article-generation.yml",
