@@ -148,7 +148,8 @@ class ThreeStrikeMediaInterventionMixin:
         )
         if todays:
             return None
-        slot = self.now.date().isoformat()
+        slot_getter = getattr(self, "_active_idea_slot", None)
+        slot = (slot_getter(state) if callable(slot_getter) else "") or self.now.date().isoformat()
         if self.github.open_article_prs(slot):
             return None
         active = self.github.active_workflow_run(v5.core.ARTICLE_WORKFLOW)

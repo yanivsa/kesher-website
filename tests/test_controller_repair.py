@@ -243,6 +243,42 @@ class ControllerRepairTests(unittest.TestCase):
         exact = {"cycle": state["cycle"], "pr_number": 1249, "item_id": "another-provider-item"}
         self.assertIsNone(repair._delivered(state, exact, stage="long_video"))
 
+    def test_manual_topic_active_worker_reaches_real_stall_watchdog(self):
+        from scripts.kesher_content_controller_stabilized import StabilizedRuntimeV5Controller
+        from tests.test_kesher_three_strike_runtime import _FakeGitHub
+        github = _FakeGitHub(NOW - timedelta(hours=2))
+        controller = StabilizedRuntimeV5Controller(github=github, site=None, now=NOW)
+        controller.posts_on_main = lambda ref="main": []
+        state = blocked() | {"status": "article_generating", "last_error": None,
+                             "article": {"status": "running", "attempts": 1},
+                             "active_idea": {"idea_id": "manual-topic", "run_now": True,
+                                             "publication_slot": "2026-10-29", "status": "claimed"}}
+        action = controller._run_now_article_phase(state)
+        self.assertEqual(action.kind, "article_watchdog_nudge")
+        self.assertEqual(github.nudges, ["sessions/article-1"])
+        self.assertFalse(github.dispatches)
+
+    def test_scheduled_topic_after_midnight_supervises_original_slot(self):
+        from scripts.kesher_content_controller_stabilized import StabilizedRuntimeV5Controller
+        from tests.test_kesher_three_strike_runtime import _FakeGitHub
+        github = _FakeGitHub(NOW - timedelta(hours=2))
+        slots = []
+        original = github.article_session_snapshot
+        def snapshot(slot):
+            slots.append(slot)
+            return original(slot)
+        github.article_session_snapshot = snapshot
+        controller = StabilizedRuntimeV5Controller(github=github, site=None, now=NOW)
+        controller.posts_on_main = lambda ref="main": []
+        state = blocked() | {"status": "article_generating", "last_error": None,
+                             "article": {"status": "running", "attempts": 1},
+                             "active_idea": {"idea_id": "old-topic", "run_now": False,
+                                             "publication_slot": "2026-10-28", "status": "claimed"}}
+        action = controller._scheduled_active_article_phase(state)
+        self.assertEqual(action.kind, "article_watchdog_nudge")
+        self.assertEqual(slots, ["2026-10-28"])
+        self.assertEqual(state["article"]["watchdog"]["identity"], "2026-10-28")
+
     def test_missing_executor_can_resume_after_credential_is_restored(self):
         result = repair.reconcile(blocked(), store=self.store, jules=None, api=self.api, now=NOW)
         self.assertEqual(result["status"], "awaiting_executor")
