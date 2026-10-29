@@ -81,6 +81,94 @@ class TrustedImageRecoveryBoundaryTests(unittest.TestCase):
         self.assertEqual(state['image']['attempt_count'], 3)
         self.assertEqual(state['pending_dispatches']['kesher-article-image.yml']['status'], 'dispatched')
 
+    def test_open_pr_routes_exhausted_image_budget_to_exact_bound_recovery(self):
+        gh = mock.Mock()
+        head = 'd' * 40
+        pr = copy.deepcopy(self.pr)
+        pr.update({'number': 1227, 'state': 'open', 'html_url': 'https://github.com/test/repo/pull/1227'})
+        pr['head']['sha'] = head
+        gh.article_pr_normalization_required.return_value = (False, '2026-10-27')
+        gh.article_pr_image_ready.return_value = (False, {})
+        gh.active_image_run.return_value = None
+        gh.article_pr_prior_image_recoverable.return_value = (True, {'prior_head_sha': self.pr['head']['sha']})
+
+        ctrl = stabilized.StabilizedRuntimeV5Controller(
+            gh, mock.Mock(), now=datetime(2026, 10, 27, 12, tzinfo=timezone.utc)
+        )
+        state = {
+            'cycle': '2026-10-27',
+            'status': 'article_pr_open',
+            'article': {
+                'pr_number': 1227,
+                'current_pr_head_sha': head,
+                'jules_head_sha': head,
+                'normalized_head_sha': head,
+                'merge_dispatch_count': 0,
+            },
+            'image': {
+                'attempt_count': 3,
+                'status': 'complete',
+                'evidence_rebind_head_sha': 'c' * 40,
+            },
+            'pending_dispatches': {},
+        }
+
+        with mock.patch.object(ctrl, '_refund_deferred_auto_merge_success', return_value=False), \
+             mock.patch.object(ctrl, '_pr_repair_status', return_value=(0, set())), \
+             mock.patch.object(ctrl, '_pr_content_structure_errors', return_value=[]):
+            action = ctrl._handle_open_article_pr(state, pr)
+
+        expected = {
+            'pr_number': '1227',
+            'recovery_only': 'true',
+            'expected_head_sha': head,
+        }
+        gh.dispatch.assert_called_once_with('kesher-article-image.yml', expected)
+        self.assertEqual(state['image']['attempt_count'], 3)
+        self.assertEqual(state['image']['evidence_rebind_head_sha'], head)
+        self.assertEqual(state['image']['evidence_rebind_mode'], 'reattach_prior_trusted_artifact')
+        self.assertEqual(action.kind, 'dispatch_image_recovery')
+
+    def test_open_pr_does_not_repeat_bound_recovery_for_same_head(self):
+        gh = mock.Mock()
+        head = 'd' * 40
+        pr = copy.deepcopy(self.pr)
+        pr.update({'number': 1227, 'state': 'open', 'html_url': 'https://github.com/test/repo/pull/1227'})
+        pr['head']['sha'] = head
+        gh.article_pr_normalization_required.return_value = (False, '2026-10-27')
+        gh.article_pr_image_ready.return_value = (False, {})
+        gh.active_image_run.return_value = None
+        gh.article_pr_prior_image_recoverable.return_value = (True, {'prior_head_sha': self.pr['head']['sha']})
+
+        ctrl = stabilized.StabilizedRuntimeV5Controller(
+            gh, mock.Mock(), now=datetime(2026, 10, 27, 12, tzinfo=timezone.utc)
+        )
+        state = {
+            'cycle': '2026-10-27',
+            'status': 'article_pr_open',
+            'article': {
+                'pr_number': 1227,
+                'current_pr_head_sha': head,
+                'jules_head_sha': head,
+                'normalized_head_sha': head,
+                'merge_dispatch_count': 0,
+            },
+            'image': {
+                'attempt_count': 3,
+                'status': 'complete',
+                'evidence_rebind_head_sha': head,
+            },
+            'pending_dispatches': {},
+        }
+
+        with mock.patch.object(ctrl, '_refund_deferred_auto_merge_success', return_value=False), \
+             mock.patch.object(ctrl, '_pr_repair_status', return_value=(0, set())), \
+             mock.patch.object(ctrl, '_pr_content_structure_errors', return_value=[]), \
+             self.assertRaisesRegex(core.ControllerError, 'IMAGE_ATTEMPTS_EXHAUSTED'):
+            ctrl._handle_open_article_pr(state, pr)
+
+        gh.dispatch.assert_not_called()
+
     def test_rebinding_status_does_not_authorize_fresh_or_unbound_generation(self):
         gh = mock.Mock()
         ctrl = stabilized.StabilizedRuntimeV5Controller(gh, mock.Mock(), now=datetime(2026, 10, 27, 12, tzinfo=timezone.utc))
