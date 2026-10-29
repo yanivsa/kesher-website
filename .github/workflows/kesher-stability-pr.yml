@@ -95,6 +95,8 @@ jobs:
             tests.test_article_normalization_head_tracking \
             tests.test_article_image_fallback_pool_and_cascade \
             tests.test_controller_child_failure_recovery \
+            tests.test_controller_repair \
+            tests.test_kesher_recovery_e2e \
             tests.test_ci_regression_suite_coverage \
             -v
 

@@ -2431,7 +2431,6 @@ def verify_single_upload_authority(
 
 
 def upload_only(slug: str | None = None, item_id: str | None = None, *, state: dict | None = None) -> int:
-    state_provided = state is not None
     state = load_state() if state is None else state
     item = existing_item(state, item_id, slug)
     target_slug = slug or str((item.get("source") or {}).get("slug") or "")
@@ -2445,7 +2444,7 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
     is_long = item_type in {"video_overview", None}
 
     if is_long:
-        if not state_provided and STATE_FILE.is_file() and item.get("id"):
+        if STATE_FILE.is_file() and item.get("id"):
             auth_state = load_state()
             state = auth_state
             auth_items_by_id = {str(r.get("id")): r for r in auth_state.get("items", []) if isinstance(r, dict)}

@@ -152,7 +152,8 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         self.assertEqual(set(events), {"schedule", "workflow_run", "push", "workflow_dispatch"})
         self.assertEqual(
             events["schedule"],
-            [{"cron": "4,9,14,19,24,29,34,39,44,49,54,59 * * * *"}],
+            [{"cron": "4,9,14,19,24,29,34,39,44,49,54,59 * * * *"},
+             {"cron": "35 21,22 * * *"}],
         )
         self.assertEqual(
             controller_data["concurrency"],
