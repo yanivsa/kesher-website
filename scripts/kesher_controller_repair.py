@@ -148,11 +148,13 @@ def _delivered(state, exact):
                         and (idea.get("outputs") or {}).get("slug") == article.get("slug")]
             if not matching:
                 continue
-        if exact.get("article_session_id"):
+        stable_binding = any(exact.get(k) for k in ("slug", "pr_number", "idea_id"))
+        if exact.get("article_session_id") and not stable_binding:
             known = {(article.get("watchdog") or {}).get("session_id"), article.get("last_jules_session_id")}
             if exact["article_session_id"] not in known:
                 continue
-        if exact.get("article_run_id") and str(article.get("run_id")) != str(exact["article_run_id"]):
+        if (exact.get("article_run_id") and not stable_binding and not exact.get("article_session_id")
+                and str(article.get("run_id")) != str(exact["article_run_id"])):
             continue
         if exact.get("slug") and article.get("slug") != exact["slug"]:
             continue

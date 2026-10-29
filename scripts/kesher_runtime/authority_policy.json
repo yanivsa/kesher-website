@@ -1932,7 +1932,7 @@
           "scripts/kesher_runtime/cutover_service.py": "7b5bcc7af5391111ccd7a491ca427e7244edb32a438c5fcd81f196a13df898de",
           "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
-          "scripts/kesher_controller_repair.py": "9474d7c581e6272910b105665528913b7d3e15f59a940602b393ac860888c669",
+          "scripts/kesher_controller_repair.py": "1633fff2e4efe3b28e3625fcdd19fc4b1c3c666404da5da78d1983512cf50796",
           "scripts/kesher_master_supervisor_live.py": "badb4b46a8915f0944fe1995558e592f675b297737711813a65d4a28fe3f4cc8",
           "scripts/kesher_master_supervisor_shadow.py": "21e9c69cb0c03bc7d6b67b985ed1e1a660716ab39d0725aa99d1f91d6f60b8e7",
           "scripts/kesher_master_supervisor.py": "368f00b850acbb92b9421732462fe466fa2be47057c3c601d2a8ad9cc7d2a8b1",

@@ -266,7 +266,7 @@ class ControllerRepairTests(unittest.TestCase):
 
     def test_owner_identity_matures_into_exact_public_delivery(self):
         from tests.test_kesher_recovery_e2e import sample_source, make_valid_long_item, make_valid_short_item
-        state = blocked() | {"article": {}, "active_idea": {"idea_id": "owner-idea-1"}}
+        state = blocked() | {"article": {"run_id": 111}, "active_idea": {"idea_id": "owner-idea-1"}}
         self.run_repair(state)
         self.jules.state = "COMPLETED"
         self.jules.urls = ["https://github.com/yanivsa/kesher-website/pull/1250"]
@@ -275,7 +275,7 @@ class ControllerRepairTests(unittest.TestCase):
         overview = make_valid_long_item(source) | {"signature_fullscreen": True}
         state.update(status="complete", last_error=None, active_idea=None,
                      idea_history=[{"idea_id": "owner-idea-1", "status": "complete", "outputs": {"slug": source["slug"]}}],
-                     article={"slug": source["slug"], "url": "https://kesher.saharoni.com/blog/" + source["slug"], "live": True},
+                     article={"run_id": 222, "slug": source["slug"], "url": "https://kesher.saharoni.com/blog/" + source["slug"], "live": True},
                      long_video=overview, short=make_valid_short_item(source, overview))
         self.api.merged = True
         self.api.deployed = False
