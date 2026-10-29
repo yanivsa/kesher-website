@@ -53,10 +53,10 @@
     "last_deploy_dispatch_at": "2026-10-29T08:52:31.037520+00:00",
     "next_deploy_retry_at": null,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-29T09:05:44.891035+00:00",
+    "quality_checked_at": "2026-10-29T09:07:33.938794+00:00",
     "quality_violations": [],
     "deploy_run_id": 40845300310,
-    "live_verified_at": "2026-10-29T09:06:01.344555+00:00"
+    "live_verified_at": "2026-10-29T09:07:34.955792+00:00"
   },
   "backlog": [
     {
@@ -2599,7 +2599,7 @@
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-29T09:12:31.590879+00:00",
     "run_id": 40846185199,
     "processed_run_id": null,
     "provider_id": null,
@@ -2999,20 +2999,6 @@
       "status": "intent",
       "previous_run_id": null,
       "observed_active_run_id": null
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-29",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "first-grade-adjustment",
-        "target_content_sha256": "e78209a3fe03a49f569731fad39c6764235a1c5df7b893c2aaa1a6ebc3b00f8e"
-      },
-      "intent_at": "2026-10-29T08:59:12.921067+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 40846185199,
-      "dispatched_at": "2026-10-29T08:59:12.921067+00:00"
     }
   },
   "deliverables": {
@@ -3025,10 +3011,10 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 40845300310,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 40846185199,
     "conclusion": "success",
-    "source_slug": null,
+    "source_slug": "first-grade-adjustment",
     "slot": "2026-10-29"
   },
   "processed_child_notifications": [
