@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1739,12 +1739,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T12:36:01.303661+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-29T12:36:01.810909+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2583,9 +2577,19 @@
       "from": "article_deploying",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T19:07:39.799811+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-29T19:07:32.684199+00:00",
+  "updated_at": "2026-10-29T19:07:39.799820+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2606,8 +2610,8 @@
     "image_path": "/images/generated/blog/toilet-fear-children.png"
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2616,7 +2620,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-10-29T19:07:39.799791+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
@@ -3027,9 +3033,10 @@
         "target_content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb"
       },
       "intent_at": "2026-10-29T19:07:04.357601+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40937218928,
+      "dispatched_at": "2026-10-29T19:07:04.357601+00:00"
     }
   },
   "deliverables": {
@@ -3332,18 +3339,5 @@
       "archived_at": "2026-10-29T13:22:49.534988+00:00",
       "reason": "owner_run_now_cycle_started"
     }
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true
-  }
+  ]
 }
