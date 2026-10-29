@@ -38,9 +38,11 @@
     "image_head_sha": "4ff44d318f1e67790cbde4192ec6554f7ac1889a",
     "merge_candidate_sha": "4ff44d318f1e67790cbde4192ec6554f7ac1889a",
     "normalization_drift_count": 0,
-    "merge_dispatch_count": 1,
+    "merge_dispatch_count": 0,
     "merge_dispatch_at": "2026-10-29T08:20:20.804420+00:00",
-    "merge_run_id": 40841410018
+    "merge_run_id": 40841410018,
+    "last_refunded_auto_merge_run_id": 40841410018,
+    "deferred_auto_merge_refund_count": 1
   },
   "backlog": [
     {
@@ -2529,6 +2531,19 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-29T08:22:12.100579+00:00",
+      "from": "article_pr_open",
+      "to": "article_pr_open",
+      "reason": "successful_deferred_auto_merge_refunded",
+      "details": {
+        "run_id": 40841410018,
+        "pr_number": 1249,
+        "head_sha": "4ff44d318f1e67790cbde4192ec6554f7ac1889a",
+        "merge_dispatch_count": 0,
+        "refund_count": 1
+      }
     }
   ],
   "updated_at": "2026-10-29T08:20:15.639617+00:00",
