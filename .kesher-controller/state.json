@@ -3094,6 +3094,20 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-29T13:22:45.670201+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-29",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "toilet-fear-children",
+        "derive_content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
+        "derive_long_item_id": "video-20261029-210835-7326680648"
+      },
+      "intent_at": "2026-10-29T20:15:46.668113+00:00",
+      "status": "intent",
+      "previous_run_id": 40942594513,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -3163,6 +3177,20 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-10-29T19:35:49.599905+00:00"
+    },
+    "v5|toilet-fear-children|7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb|short": {
+      "pipeline_id": "v5",
+      "slug": "toilet-fear-children",
+      "content_sha256": "7326680648dbcde73a035e6e45f7526c92fa90c0b521649c91a2eb92817fb0bb",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-10-29T22",
+      "last_fingerprint": "07b4bb693b76935929b8a32cd846aeb41f6e36d13425c482dde08f6b127715b1",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-29T20:15:46.668113+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   },
   "owner_cycle_archive": [
