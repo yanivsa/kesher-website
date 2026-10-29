@@ -358,11 +358,11 @@ def commit_files(
 
 
 def restore_prior_trusted_image(repo, pr, post, head_posts, base_posts, token) -> bool:
-    """Reattach proven immutable pixels only when normalization removed image fields."""
-    prior = str(exact_field(str(pr.get("body") or ""), "Image Evidence Head") or "").strip()
-    if not re.fullmatch(r"[a-f0-9]{40}", prior) or prior == pr["head"]["sha"]:
-        return False
-    if post.get("image") or post.get("imageAlt"):
+    """Recover one exact proven artifact without authorizing replacement generation."""
+    body = str(pr.get("body") or "")
+    prior = str(exact_field(body, "Image Evidence Head") or "").strip()
+    current_head = str(pr["head"]["sha"])
+    if not re.fullmatch(r"[a-f0-9]{40}", prior) or prior == current_head:
         return False
     historical_posts = core.posts_at(repo, prior, token)
     matches = [row for row in historical_posts if isinstance(row, dict) and row.get("id") == post.get("id")]
@@ -376,7 +376,7 @@ def restore_prior_trusted_image(repo, pr, post, head_posts, base_posts, token) -
         return False
     image_path = "public" + historical["image"]
     data = core.decode_content(core.github_content(repo, image_path, prior, token))
-    if image_proof_errors(historical, str(pr.get("body") or ""), prior, data):
+    if image_proof_errors(historical, body, prior, data):
         return False
     # Preserve existing publication uniqueness barriers, including decoded pixels.
     for published in base_posts:
@@ -389,8 +389,32 @@ def restore_prior_trusted_image(repo, pr, post, head_posts, base_posts, token) -
         from scripts.kesher_article_contract import image_pixel_sha256
         if hashlib.sha256(published_data).digest() == hashlib.sha256(data).digest() or image_pixel_sha256(published_data) == image_pixel_sha256(data):
             return False
+
+    image_fields = (
+        "image", "imageAlt", "imageProvider", "imageSourceUrl",
+        "imageIsFallback", "imageCredit", "imageCreditUrl",
+    )
+    current_has_image = bool(str(post.get("image") or "").strip() or str(post.get("imageAlt") or "").strip())
+    if current_has_image:
+        if not str(post.get("image") or "").strip() or not str(post.get("imageAlt") or "").strip():
+            return False
+        if any(post.get(field) != historical.get(field) for field in image_fields):
+            return False
+        evidence = {label: exact_field(body, label) or "" for label in IMAGE_EVIDENCE_FIELDS}
+        evidence["Image Article SHA-256"] = article_sha256(post)
+        evidence["Image Evidence Head"] = current_head
+        refreshed_body = replace_image_evidence(body, evidence)
+        refreshed_pr = {**pr, "body": refreshed_body}
+        if not trusted_image_present(repo, refreshed_pr, post, token):
+            return False
+        core.patch_pr_body(repo, int(pr["number"]), refreshed_body, token)
+        # The workflow treats this marker as a successful image-stage mutation and
+        # dispatches fresh CI. No branch/file commit or provider generation occurred.
+        print(f"ARTICLE_IMAGE_COMMITTED id={post['id']} provider={evidence['Image Provider']} sha={current_head} recovery=evidence-refresh")
+        return True
+
     restored_post = dict(post)
-    for field in ("image", "imageAlt", "imageProvider", "imageSourceUrl", "imageIsFallback", "imageCredit", "imageCreditUrl"):
+    for field in image_fields:
         if field in historical:
             restored_post[field] = historical[field]
         else:
@@ -402,10 +426,10 @@ def restore_prior_trusted_image(repo, pr, post, head_posts, base_posts, token) -
         "src/data/postSummaries.json": ((json.dumps(summaries(restored), ensure_ascii=False, indent=2) + "\n").encode(), False),
     }
     new_sha = commit_files(repo, pr, token, files, [])
-    evidence = {label: exact_field(str(pr.get("body") or ""), label) or "" for label in IMAGE_EVIDENCE_FIELDS}
+    evidence = {label: exact_field(body, label) or "" for label in IMAGE_EVIDENCE_FIELDS}
     evidence["Image Article SHA-256"] = article_sha256(restored_post)
     evidence["Image Evidence Head"] = new_sha
-    core.patch_pr_body(repo, int(pr["number"]), replace_image_evidence(pr.get("body") or "", evidence), token)
+    core.patch_pr_body(repo, int(pr["number"]), replace_image_evidence(body, evidence), token)
     print(f"ARTICLE_IMAGE_COMMITTED id={post['id']} provider={evidence['Image Provider']} sha={new_sha} recovery=same-artifact")
     return True
 
