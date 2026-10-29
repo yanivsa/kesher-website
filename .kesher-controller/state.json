@@ -2574,7 +2574,8 @@
     "source_id": "local-editorial://toilet-fear-children/7",
     "evidence_rebind_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac",
     "evidence_rebind_dispatched_at": "2026-10-29T18:56:10.946322+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
+    "run_id": 40895865256
   },
   "long_video": {
     "attempt_count": 0,
