@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -92,7 +92,7 @@
     "last_deploy_dispatch_at": "2026-10-29T05:53:20.349289+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40825956939,
-    "live_verified_at": "2026-10-29T06:58:26.923174+00:00"
+    "live_verified_at": "2026-10-29T06:58:52.160267+00:00"
   },
   "backlog": [
     {
@@ -1783,24 +1783,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-28T23:36:02.064243+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-28T23:41:16.537545+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-28T23:46:01.194172+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2652,9 +2634,21 @@
         "item_id": "video-20261029-082416-de086b0499-a3",
         "task_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f"
       }
+    },
+    {
+      "at": "2026-10-29T06:58:52.160295+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T06:58:53.310769+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-10-29T06:56:13.260951+00:00",
+  "updated_at": "2026-10-29T06:58:53.310792+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2680,9 +2674,9 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "generating",
+    "status": "complete",
     "last_error": null,
-    "next_retry_at": "2026-10-29T07:03:21.701812+00:00",
+    "next_retry_at": null,
     "run_id": 40831732148,
     "processed_run_id": 40828904272,
     "provider_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
@@ -3094,7 +3088,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-28",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "first-grade-maturity",
+        "derive_content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
+        "derive_long_item_id": "video-20261029-082416-de086b0499-a3"
+      },
+      "intent_at": "2026-10-29T06:58:21.701812+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
     "run_id": 40831732148,
