@@ -92,7 +92,7 @@
     "last_deploy_dispatch_at": "2026-10-29T05:53:20.349289+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40825956939,
-    "live_verified_at": "2026-10-29T06:05:45.789340+00:00"
+    "live_verified_at": "2026-10-29T06:06:01.997481+00:00"
   },
   "backlog": [
     {
@@ -1783,26 +1783,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-28T22:15:52.904311+00:00",
-      "from": "blocked",
-      "to": "article_pr_open",
-      "reason": "late_article_head_after_merge_exhaustion_recovery",
-      "details": {
-        "pr_number": 1244,
-        "previous_head_sha": "8ab5cbfef9c5040e212c0d83e0ffa91287a9a848",
-        "current_head_sha": "dddee622ecee1701fc5fb1422fe3f90d98b5b9ed"
-      }
-    },
-    {
-      "at": "2026-10-28T22:16:09.359214+00:00",
-      "from": "article_pr_open",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-28T22:21:05.492968+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2674,9 +2654,21 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-10-29T06:06:01.997505+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T06:06:03.037287+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-10-29T06:01:16.778940+00:00",
+  "updated_at": "2026-10-29T06:06:03.037306+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
