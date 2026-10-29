@@ -1707,19 +1707,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T16:12:15.453884+00:00",
-      "from": "article_pr_open",
-      "to": "article_pr_open",
-      "reason": "successful_deferred_auto_merge_refunded",
-      "details": {
-        "run_id": 40908991785,
-        "pr_number": 1252,
-        "head_sha": "dcf57b88fb843f87f9ee6dfaf589d4c6c90571b6",
-        "merge_dispatch_count": 0,
-        "refund_count": 4
-      }
-    },
-    {
       "at": "2026-10-29T16:21:36.632699+00:00",
       "from": "article_pr_open",
       "to": "article_normalizing",
@@ -2498,9 +2485,18 @@
       "details": {
         "publication_slot": "2026-10-29"
       }
+    },
+    {
+      "at": "2026-10-29T21:30:49.496383+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "owner run-now article workflow already active",
+      "details": {
+        "publication_slot": "2026-10-29"
+      }
     }
   ],
-  "updated_at": "2026-10-29T21:25:57.800271+00:00",
+  "updated_at": "2026-10-29T21:30:49.496402+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
