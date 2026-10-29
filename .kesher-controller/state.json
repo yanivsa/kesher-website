@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-28",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "next_retry_at": null,
     "run_id": 40606620660,
     "processed_run_id": 40602133674,
@@ -92,7 +92,7 @@
     "last_deploy_dispatch_at": "2026-10-29T05:53:20.349289+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 40825956939,
-    "live_verified_at": "2026-10-29T07:10:35.463441+00:00"
+    "live_verified_at": "2026-10-29T07:10:50.470994+00:00"
   },
   "backlog": [
     {
@@ -1783,33 +1783,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-29T00:21:14.448571+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T00:26:20.026428+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-29T00:31:12.956836+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "image exhausted 3 total controller dispatch attempts",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-10-29T00:36:13.160274+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2625,9 +2598,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-10-29T07:10:50.471021+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-29T07:10:50.983212+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-29T07:10:51.458558+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-29T07:06:32.914185+00:00",
+  "updated_at": "2026-10-29T07:10:51.458575+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2701,19 +2692,137 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 40832515468,
     "processed_run_id": null,
-    "provider_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
+    "provider_id": "3844a1dd-a66f-4150-b50f-8c84c2b832ad",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-29T06:59:02.696701+00:00",
-    "artifact_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
-    "source_id": "41301c26-ed1e-4d75-9b3e-f7c48e17abde",
-    "adopted_from_long_item_id": "video-20261029-082416-de086b0499-a3"
+    "artifact_id": "3844a1dd-a66f-4150-b50f-8c84c2b832ad",
+    "source_id": "84b7ed1b-55bb-4d87-85c2-84a543a1ab8a",
+    "adopted_from_long_item_id": null,
+    "source": {
+      "id": "first-grade-maturity",
+      "slug": "first-grade-maturity",
+      "title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
+      "date": "2026-10-28",
+      "category": "הדרכת הורים",
+      "subcategory": "הכנה לכיתה א",
+      "excerpt": "ההתלבטות אם הילד מוכן לעלות לכיתה א מלווה הורים רבים. מהם הסימנים הרגשיים, החברתיים והתפקודיים שכדאי לשים לב אליהם, ומתי כדאי להתייעץ כדי לקבל החלטה שקולה שלא מבוססת רק על גיל או ציפיות הסביבה?",
+      "canonical_url": "https://kesher.saharoni.com/blog/first-grade-maturity",
+      "content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
+      "video_title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
+      "short_title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
+        "description": "ההתלבטות אם הילד מוכן לעלות לכיתה א מלווה הורים רבים. מהם הסימנים הרגשיים, החברתיים והתפקודיים שכדאי לשים לב אליהם, ומתי כדאי להתייעץ כדי לקבל החלטה שקולה שלא מבוססת רק על גיל או ציפיות הסביבה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-maturity\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "הכנה לכיתה א"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
+        "description": "ההתלבטות אם הילד מוכן לעלות לכיתה א מלווה הורים רבים. מהם הסימנים הרגשיים, החברתיים והתפקודיים שכדאי לשים לב אליהם, ומתי כדאי להתייעץ כדי לקבל החלטה שקולה שלא מבוססת רק על גיל או ציפיות הסביבה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-maturity\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "הכנה לכיתה א"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "3844a1dd-a66f-4150-b50f-8c84c2b832ad",
+    "raw_sha256": "6fcb34aa3a7b053edc34b46efa584651a21825bd661ca1077d1fa22fa8c45212",
+    "final_sha256": "c617c5de501f3aed3640152ab0174d894641b01ac4ebdea830061bb3001273bf",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 76.167,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 76.167,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "41301c26-ed1e-4d75-9b3e-f7c48e17abde",
+      "task_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
+      "artifact_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
+      "raw_sha256": "c76e9569e4794400e35190f8abea5906595cfc1e9877cdc4189262c88fe84616"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 76.167,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "6fcb34aa3a7b053edc34b46efa584651a21825bd661ca1077d1fa22fa8c45212",
+      "final_sha256": "c617c5de501f3aed3640152ab0174d894641b01ac4ebdea830061bb3001273bf",
+      "raw_audio_sha256": "c24adec7ccd570a994967266ed0391e913430c82a0c96d134dd8b92b1e6b7a2b",
+      "final_audio_sha256": "c24adec7ccd570a994967266ed0391e913430c82a0c96d134dd8b92b1e6b7a2b",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 76.231111
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 76.231111
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "c617c5de501f3aed3640152ab0174d894641b01ac4ebdea830061bb3001273bf",
+      "raw_sha256": "6fcb34aa3a7b053edc34b46efa584651a21825bd661ca1077d1fa22fa8c45212",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "b59857013e1fb1649dbad4b2cb3d303ef126994b254d7678eface425328fe76c",
+      "source_duration_seconds": 76.167,
+      "final_duration_seconds": 76.167,
+      "start_seconds": 73.167,
+      "end_seconds": 76.167,
+      "audio_source_sha256": "6fcb34aa3a7b053edc34b46efa584651a21825bd661ca1077d1fa22fa8c45212"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261029-090048-de086b0499",
+    "type": "article_short",
+    "youtube_id": "LBLs5606wc8",
+    "youtube_url": "https://youtu.be/LBLs5606wc8",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "b59857013e1fb1649dbad4b2cb3d303ef126994b254d7678eface425328fe76c",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
