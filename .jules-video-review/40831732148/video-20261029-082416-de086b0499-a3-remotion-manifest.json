@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "item_id": "video-20261029-082416-de086b0499-a3",
+  "created_at": "2026-10-29T06:56:00.094272+00:00",
+  "source": {
+    "id": "first-grade-maturity",
+    "slug": "first-grade-maturity",
+    "title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
+    "date": "2026-10-28",
+    "category": "הדרכת הורים",
+    "subcategory": "הכנה לכיתה א",
+    "excerpt": "ההתלבטות אם הילד מוכן לעלות לכיתה א מלווה הורים רבים. מהם הסימנים הרגשיים, החברתיים והתפקודיים שכדאי לשים לב אליהם, ומתי כדאי להתייעץ כדי לקבל החלטה שקולה שלא מבוססת רק על גיל או ציפיות הסביבה?",
+    "canonical_url": "https://kesher.saharoni.com/blog/first-grade-maturity",
+    "content_sha256": "de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7",
+    "video_title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
+    "short_title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
+    "short_hook": "",
+    "youtube_metadata": {
+      "title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
+      "description": "ההתלבטות אם הילד מוכן לעלות לכיתה א מלווה הורים רבים. מהם הסימנים הרגשיים, החברתיים והתפקודיים שכדאי לשים לב אליהם, ומתי כדאי להתייעץ כדי לקבל החלטה שקולה שלא מבוססת רק על גיל או ציפיות הסביבה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-maturity\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+      "tags": [
+        "הדרכת הורים",
+        "הכנה לכיתה א"
+      ]
+    },
+    "short_youtube_metadata": {
+      "title": "בקצרה: בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
+      "description": "ההתלבטות אם הילד מוכן לעלות לכיתה א מלווה הורים רבים. מהם הסימנים הרגשיים, החברתיים והתפקודיים שכדאי לשים לב אליהם, ומתי כדאי להתייעץ כדי לקבל החלטה שקולה שלא מבוססת רק על גיל או ציפיות הסביבה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-maturity\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+      "tags": [
+        "הדרכת הורים",
+        "הכנה לכיתה א"
+      ]
+    }
+  },
+  "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+  "source_id": "41301c26-ed1e-4d75-9b3e-f7c48e17abde",
+  "task_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
+  "artifact_id": "0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
+  "generation_prompt": "חובה: כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד. אין להשתמש בקול גברי, אין להחליף בין דוברים, ואין להשתמש בקול ניטרלי או דו-קולי. הקול צריך להישמע כאישה ישראלית בוגרת, טבעית, חמה, ברורה ומקצועית. אם אין אפשרות להבטיח קול נשי — אל תפיק תוצר. צור סקירת וידאו מסוג הסבר, בעברית טבעית בלבד, המבוססת אך ורק על המקור שנבחר. אורך היעד הוא בין תשעים למאה ושמונים שניות, ביחס אופקי טבעי של שש עשרה לתשע. תזכורת מחייבת: הקריינות כולה בקול נשי ישראלי בלבד. הקריינות כולה תהיה תמציתית ותכיל לכל היותר מאתיים ושישים מילים. הצג רעיון מרכזי אחד, דוגמה ביתית מוחשית ופעולה אחת שאפשר לנסות. אל תערבב בין הורות לזוגיות אם המקור עוסק רק באחד מהם. אין להוסיף טענות, תארים מקצועיים, אבחנות או הבטחות שאינם כתובים במקור. כל קריינות או טקסט חזותי יהיו בעברית תקינה. אין להשתמש באנגלית, בג׳יבריש, בשקופיות, בכרטיסיות מידע, בטבלאות או בתרשימים. העדף סיפור חזותי רציף וברור. אין ליצור כותרת ליוטיוב, תיאור ליוטיוב או תגיות בתוך הסרטון. הנושא המדויק הוא: בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
+  "generation_prompt_sha256": "a3fdcdd433f2e7a2d64802ffa24042f482e2d6c542b064d6d0dc5666e43b49ec",
+  "voice_constraint_version": "female-he-v2",
+  "failure_signature": null,
+  "failure_fingerprint": null,
+  "raw_mp4": "video-20261029-082416-de086b0499-a3-notebooklm.mp4",
+  "raw_sha256": "c76e9569e4794400e35190f8abea5906595cfc1e9877cdc4189262c88fe84616",
+  "final_mp4": "video-20261029-082416-de086b0499-a3-remotion-final.mp4",
+  "final_sha256": "c4d45e3c4d95216a9566d72109c76b6a779a8baf81d67952347a686b6192d6e0",
+  "visual_pipeline": "remotion-v1-notebooklm-audio",
+  "content_duration_seconds": 109.917,
+  "signature_duration_seconds": 3.0,
+  "signature_fullscreen": true,
+  "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+  "signature_asset": "signature-mask.svg",
+  "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+  "signature_video_path": "video-20261029-082416-de086b0499-a3-signature-segment.mp4",
+  "signature_video_sha256": "5c605f81ca92b9fdb4503c417e48f5a6f944f83e47ca5093fc5a5c93be46f4ec",
+  "signature_overlay": true,
+  "signature_verified": true,
+  "signature_provenance": {
+    "schema_version": 1,
+    "final_sha256": "c4d45e3c4d95216a9566d72109c76b6a779a8baf81d67952347a686b6192d6e0",
+    "raw_sha256": "c76e9569e4794400e35190f8abea5906595cfc1e9877cdc4189262c88fe84616",
+    "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "segment_sha256": "5c605f81ca92b9fdb4503c417e48f5a6f944f83e47ca5093fc5a5c93be46f4ec",
+    "source_duration_seconds": 109.917,
+    "final_duration_seconds": 109.933,
+    "start_seconds": 106.933,
+    "end_seconds": 109.933,
+    "audio_source_sha256": "c76e9569e4794400e35190f8abea5906595cfc1e9877cdc4189262c88fe84616"
+  },
+  "audio_provenance": {
+    "schema_version": 1,
+    "mode": "stream_copy",
+    "raw_sha256": "c76e9569e4794400e35190f8abea5906595cfc1e9877cdc4189262c88fe84616",
+    "final_sha256": "c4d45e3c4d95216a9566d72109c76b6a779a8baf81d67952347a686b6192d6e0",
+    "raw_audio_sha256": "059acddb39f715d282378a8be891dc076ab98006ba9ff86f779744b64f690d12",
+    "final_audio_sha256": "059acddb39f715d282378a8be891dc076ab98006ba9ff86f779744b64f690d12",
+    "raw_timing": {
+      "codec": "aac",
+      "sample_rate": 44100,
+      "channels": 1,
+      "start_seconds": 0.0,
+      "duration_seconds": 109.992925
+    },
+    "final_timing": {
+      "codec": "aac",
+      "sample_rate": 44100,
+      "channels": 1,
+      "start_seconds": 0.0,
+      "duration_seconds": 109.992925
+    }
+  },
+  "provider_raw_media": {
+    "codec": "h264",
+    "audio_codec": "aac",
+    "width": 1280,
+    "height": 720,
+    "duration": 109.917,
+    "format": "mov,mp4,m4a,3gp,3g2,mj2"
+  },
+  "render_input_sha256": "a56e269d8f3815a951721fcbe750b26808871c75960ad729ef092e11c776f2df",
+  "remotion_props_path": "video-20261029-082416-de086b0499-a3-remotion-props.json",
+  "remotion_props_sha256": "0f8476e6f896149fe8a27d3794d2e2040633cb10177fdd7961856d9548acf174",
+  "motion_plan_path": "video-20261029-082416-de086b0499-a3-motion-plan.json",
+  "motion_plan_sha256": "f70dd9418b24b2dfc96ddcdad405f3a438af2d13c006855f1a0bafa9f7dfb8cc",
+  "media": {
+    "codec": "h264",
+    "audio_codec": "aac",
+    "width": 1280,
+    "height": 720,
+    "duration": 109.933,
+    "format": "mov,mp4,m4a,3gp,3g2,mj2"
+  },
+  "youtube_metadata": {
+    "title": "בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?",
+    "description": "ההתלבטות אם הילד מוכן לעלות לכיתה א מלווה הורים רבים. מהם הסימנים הרגשיים, החברתיים והתפקודיים שכדאי לשים לב אליהם, ומתי כדאי להתייעץ כדי לקבל החלטה שקולה שלא מבוססת רק על גיל או ציפיות הסביבה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-maturity\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+    "tags": [
+      "הדרכת הורים",
+      "הכנה לכיתה א"
+    ]
+  },
+  "frame_paths": [
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-1.png",
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-2.png",
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-3.png",
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-4.png",
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-5.png",
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-6.png",
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-7.png",
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-8.png"
+  ],
+  "frame_sha256": {
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-1.png": "7bb7401870609d92e07d5ae5c5ace66b26b73233a597575a13e3b51a69d07f11",
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-2.png": "060f77f8d4ef68d383ff8dd7c051efb6740e3cb15f4d5e2a04c2f0030188102a",
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-3.png": "e6b690ad2026bb1a57c9b24fe0d6644b91e900a14d8811dfb072a5a475f322d5",
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-4.png": "302bf0b2f8f35d27505cbea3af084337928817fee0d3db9046f73be23c722e26",
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-5.png": "1d773b34831ecaae7062d020087930b9d40b0a1dd098d1ef3e05658cde5cd487",
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-6.png": "b844af79c5028e1579afb002f9727cb2873e9f8ddb06fb4ead86cbb01a5f83bb",
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-7.png": "45df367c3681e60195ea9b9a7348f50219b04f2c9b4ea4a40fd67e31a127ed96",
+    "video-20261029-082416-de086b0499-a3-remotion-frames/frame-8.png": "c7e7436c8f7c061cc5e184035de6caab186528165c9e9605d81d2914de53bca9"
+  },
+  "visual_review_path": "video-20261029-082416-de086b0499-a3-remotion-visual-review.png",
+  "visual_review_sha256": "9ca2443c7482b786420098bd3f68973a8bfd39818449b9c6b3f241b7d38c7956",
+  "enhancement": {
+    "enhancement_schema_version": 1,
+    "source_sha256": "c76e9569e4794400e35190f8abea5906595cfc1e9877cdc4189262c88fe84616",
+    "final_sha256": "c4d45e3c4d95216a9566d72109c76b6a779a8baf81d67952347a686b6192d6e0",
+    "edit_plan_sha256": "f70dd9418b24b2dfc96ddcdad405f3a438af2d13c006855f1a0bafa9f7dfb8cc",
+    "enhancement_status": "enhancement_complete",
+    "assets_used": [
+      {
+        "asset_ref": "enhancement-c4de7aeb88152b9b.png",
+        "type": "image",
+        "source": "repo:public/images/generated/blog/first-grade-maturity.png",
+        "provenance": "repo-owned exact article hero image",
+        "usage_status": "approved",
+        "semantic_fit": 1.0,
+        "sha256": "c4de7aeb88152b9b4e40eac7ae482ba2b1232748d2e418905d16372dbf0cc9aa",
+        "start": 19.785,
+        "end": 24.785,
+        "intent": "reinforce the exact article topic with its approved hero visual"
+      }
+    ],
+    "assets_dropped": [],
+    "fallback_reason": null
+  },
+  "transcript_path": "video-20261029-082416-de086b0499-a3-transcript-he.txt",
+  "transcript_sha256": "a4cb7819b1d0ae993b55437de81021509dc1b574e00936bea5da713cab38394a",
+  "source_path": "video-20261029-082416-de086b0499-a3-source-he.txt",
+  "source_file_sha256": "068eb665c60cd485576048f79416e3adeae8cff8d0e9f9325bdbd6f4d1f6b880"
+}

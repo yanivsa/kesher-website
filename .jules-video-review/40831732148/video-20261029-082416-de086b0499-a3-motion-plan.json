@@ -1,0 +1,247 @@
+{
+  "version": 1,
+  "video_sha256": "c76e9569e4794400e35190f8abea5906595cfc1e9877cdc4189262c88fe84616",
+  "durationInFrames": 3297,
+  "fps": 30.0,
+  "segments": [
+    {
+      "startFrame": 0,
+      "endFrame": 359,
+      "transformType": "spring_emphasis",
+      "scaleStart": 1.0,
+      "scaleEnd": 1.08,
+      "panXStart": 0.0,
+      "panXEnd": -0.52,
+      "panYStart": 0.0,
+      "panYEnd": 2.57,
+      "originX": 51.3,
+      "originY": 41.4,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 359,
+      "endFrame": 779,
+      "transformType": "pan_left",
+      "scaleStart": 1.06,
+      "scaleEnd": 1.06,
+      "panXStart": 11.8,
+      "panXEnd": -11.8,
+      "panYStart": 0.27,
+      "panYEnd": 0.27,
+      "originX": 45.5,
+      "originY": 49.1,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 779,
+      "endFrame": 1019,
+      "transformType": "tracked_reframe",
+      "scaleStart": 1.0,
+      "scaleEnd": 1.22,
+      "panXStart": 0.78,
+      "panXEnd": 1.56,
+      "panYStart": -0.2,
+      "panYEnd": -0.39,
+      "originX": 46.1,
+      "originY": 51.3,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 1019,
+      "endFrame": 1438,
+      "transformType": "tracked_reframe",
+      "scaleStart": 1.0,
+      "scaleEnd": 1.186,
+      "panXStart": -1.91,
+      "panXEnd": -3.82,
+      "panYStart": 0.34,
+      "panYEnd": 0.67,
+      "originX": 59.6,
+      "originY": 47.8,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 1438,
+      "endFrame": 1708,
+      "transformType": "scale_up",
+      "scaleStart": 1.02,
+      "scaleEnd": 1.19,
+      "panXStart": 0.0,
+      "panXEnd": 0.2,
+      "panYStart": 0.0,
+      "panYEnd": 0.06,
+      "originX": 49.5,
+      "originY": 49.8,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 1708,
+      "endFrame": 2158,
+      "transformType": "pan_left",
+      "scaleStart": 1.06,
+      "scaleEnd": 1.06,
+      "panXStart": 10.6,
+      "panXEnd": -10.6,
+      "panYStart": -0.52,
+      "panYEnd": -0.52,
+      "originX": 51.5,
+      "originY": 51.7,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 2158,
+      "endFrame": 2397,
+      "transformType": "pan_right",
+      "scaleStart": 1.06,
+      "scaleEnd": 1.06,
+      "panXStart": -11.76,
+      "panXEnd": 11.76,
+      "panYStart": 0.06,
+      "panYEnd": 0.06,
+      "originX": 54.4,
+      "originY": 49.8,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 2397,
+      "endFrame": 2727,
+      "transformType": "scale_up",
+      "scaleStart": 1.02,
+      "scaleEnd": 1.169,
+      "panXStart": 0.0,
+      "panXEnd": 0.51,
+      "panYStart": 0.0,
+      "panYEnd": -1.14,
+      "originX": 48.7,
+      "originY": 53.8,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    },
+    {
+      "startFrame": 2727,
+      "endFrame": 3297,
+      "transformType": "pan_left",
+      "scaleStart": 1.06,
+      "scaleEnd": 1.06,
+      "panXStart": 11.05,
+      "panXEnd": -11.05,
+      "panYStart": -0.13,
+      "panYEnd": -0.13,
+      "originX": 52.6,
+      "originY": 50.4,
+      "springDamping": 12.0,
+      "springStiffness": 80.0
+    }
+  ],
+  "enhancement_schema_version": 1,
+  "source_identity": "video-20261029-082416-de086b0499-a3:first-grade-maturity:de086b0499c367bf11ec273ef74d159a055a1636330a88ef920780c005be32a7:video_overview:0f6b12a7-98ce-4de2-9781-bc4c57ce430f",
+  "profile": "overview_16_9",
+  "product": "overview",
+  "output": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30
+  },
+  "render_mode": "full",
+  "timeline": [
+    {
+      "start": 0.0,
+      "end": 11.967,
+      "type": "push_in",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 11.967,
+      "end": 25.967,
+      "type": "pan",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 25.967,
+      "end": 33.967,
+      "type": "reframe",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 33.967,
+      "end": 47.933,
+      "type": "reframe",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 47.933,
+      "end": 56.933,
+      "type": "push_in",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 56.933,
+      "end": 71.933,
+      "type": "pan",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 71.933,
+      "end": 79.9,
+      "type": "pan",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 79.9,
+      "end": 90.9,
+      "type": "push_in",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 90.9,
+      "end": 109.9,
+      "type": "pan",
+      "intent": "source-derived camera motion from pixel saliency",
+      "fallback": "source_video"
+    },
+    {
+      "start": 19.785,
+      "end": 24.785,
+      "type": "image",
+      "intent": "reinforce the exact article topic with its approved hero visual",
+      "asset_ref": "enhancement-c4de7aeb88152b9b.png",
+      "fallback": "source_video",
+      "provenance": "repo-owned exact article hero image",
+      "source": "repo:public/images/generated/blog/first-grade-maturity.png",
+      "usage_status": "approved",
+      "semantic_fit": 1.0,
+      "sha256": "c4de7aeb88152b9b4e40eac7ae482ba2b1232748d2e418905d16372dbf0cc9aa"
+    }
+  ],
+  "assets_used": [
+    {
+      "asset_ref": "enhancement-c4de7aeb88152b9b.png",
+      "type": "image",
+      "source": "repo:public/images/generated/blog/first-grade-maturity.png",
+      "provenance": "repo-owned exact article hero image",
+      "usage_status": "approved",
+      "semantic_fit": 1.0,
+      "sha256": "c4de7aeb88152b9b4e40eac7ae482ba2b1232748d2e418905d16372dbf0cc9aa",
+      "start": 19.785,
+      "end": 24.785,
+      "intent": "reinforce the exact article topic with its approved hero visual"
+    }
+  ],
+  "assets_dropped": [],
+  "enhancement_status": "enhancement_complete"
+}
