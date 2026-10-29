@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-29",
-  "status": "article_pr_open",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -20,9 +20,9 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1252",
     "current_pr_head_sha": "f216b284a39488624260167b63816f10bc8e1cbc",
     "jules_head_sha": "d6189b18925bcc0cbb449268537f805df931b8b2",
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "normalization_slot": "2026-10-29",
-    "normalization_dispatched_at": "2026-10-29T16:21:36.632648+00:00",
+    "normalization_dispatched_at": "2026-10-29T17:21:18.443333+00:00",
     "normalization_run_id": 40910780588,
     "normalization_drift_count": 1,
     "merge_dispatch_count": 0,
@@ -1722,12 +1722,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T11:56:07.663284+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-29T11:56:08.483888+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2489,9 +2483,19 @@
         "merge_dispatch_count": 0,
         "refund_count": 9
       }
+    },
+    {
+      "at": "2026-10-29T17:21:18.443365+00:00",
+      "from": "article_pr_open",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1252,
+        "slot": "2026-10-29"
+      }
     }
   ],
-  "updated_at": "2026-10-29T17:16:13.760340+00:00",
+  "updated_at": "2026-10-29T17:21:18.443372+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
@@ -2929,9 +2933,10 @@
         "slot": "2026-10-29"
       },
       "intent_at": "2026-10-29T17:20:55.435506+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 40910780588,
-      "observed_active_run_id": null
+      "observed_active_run_id": 40920515111,
+      "dispatched_at": "2026-10-29T17:20:55.435506+00:00"
     }
   },
   "deliverables": {
