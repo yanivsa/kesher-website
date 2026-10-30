@@ -451,12 +451,13 @@ def prepare_generation(target_slug: str = "") -> int:
 
             export_target(item)
             # Recovery mode semantics for exact existing item:
+            # source_selected / source_added -> continue provider generation for the SAME item (skip_generation=false)
             # generating -> poll existing provider task only (skip_generation=false)
             # downloaded -> continue local post-processing/render/validation for SAME item (skip_generation=false)
             # approved / pending_review / verified -> proceed toward exact upload (skip_generation=true)
             # uploaded -> reconciliation only; never upload again (skip_generation=true)
             # rejected -> obey explicit final fallback/recovery policy; never silently fresh-generate (skip_generation=true)
-            if item.get("status") in {"generating", "downloaded"}:
+            if item.get("status") in PROVIDER_PROGRESS_STATUSES:
                 workflow_output("skip_generation", "false")
                 print(
                     "VIDEO_RECONCILED_GENERATION "
