@@ -35,9 +35,10 @@
       },
       "failure_class": "DURABLE_PROGRESS_EXHAUSTED",
       "fingerprint": "331b6a9f15cc5ee2ddd203802090fb0c2f63c683dfb05e9e68346280315dd8f5",
+      "reason": "repair_executor_timeout",
       "session_id": "sessions/3869985841951022469",
       "stage": "long_video",
-      "status": "running"
+      "status": "human_blocker"
     },
     "681f5fe840efab0439bbc6b41b81d104fe9f3d1c0d0730097d63b564d693d58b": {
       "acquisition_started_at": "2026-10-29T14:07:27.103967+00:00",
