@@ -90,7 +90,7 @@
     "last_deploy_dispatch_at": "2026-10-30T07:53:21.542229+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41022839833,
-    "live_verified_at": "2026-10-30T08:50:48.552352+00:00"
+    "live_verified_at": "2026-10-30T08:51:01.010071+00:00"
   },
   "backlog": [
     {
@@ -1803,36 +1803,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T19:15:58.234025+00:00",
-      "from": "long_video_running",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261029-210835-7326680648",
-        "task_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d"
-      }
-    },
-    {
-      "at": "2026-10-29T19:21:09.500929+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261029-210835-7326680648",
-        "task_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d"
-      }
-    },
-    {
-      "at": "2026-10-29T19:25:57.219109+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261029-210835-7326680648",
-        "task_id": "7c14e047-0000-4e2f-9fbe-6316a41e263d"
-      }
-    },
-    {
       "at": "2026-10-29T19:31:09.215463+00:00",
       "from": "long_video_watchdog_wait",
       "to": "long_video_watchdog_wait",
@@ -2542,9 +2512,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-10-30T08:51:01.010100+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-30T08:51:01.531016+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-30T08:51:03.837826+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-10-30T08:46:34.413553+00:00",
+  "updated_at": "2026-10-30T08:51:03.837846+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
