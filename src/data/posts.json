@@ -77,7 +77,12 @@
       "אינטימיות",
       "ייעוץ זוגי"
     ],
-    "shortHook": "מתי בפעם האחרונה צחקתם יחד באותו רגע? מחקר על זוגות מצא שהסנכרון הקטן הזה קשור לקרבה ולאיכות הקשר."
+    "shortHook": "מתי בפעם האחרונה צחקתם יחד באותו רגע? מחקר על זוגות מצא שהסנכרון הקטן הזה קשור לקרבה ולאיכות הקשר.",
+    "image": "/images/generated/blog/shared-laughter-couples-intimacy.png",
+    "imageAlt": "איור עריכתי מקומי של שני בני זוג יושבים זה מול זה בשיחה רגועה בבית, עם שפת גוף פתוחה וקשובה.",
+    "imageProvider": "LocalEditorial",
+    "imageSourceUrl": "local-editorial://shared-laughter-couples-intimacy/4",
+    "imageIsFallback": false
   },
   {
     "id": "first-grade-adjustment",
