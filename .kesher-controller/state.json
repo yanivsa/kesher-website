@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1758,15 +1758,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-30T06:30:07.232272+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
       "at": "2026-10-30T06:38:00.162706+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2441,9 +2432,19 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-10-30T11:11:03.862140+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261030-130605-860a1ecbaa",
+        "task_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-30T11:05:14.928579+00:00",
+  "updated_at": "2026-10-30T11:11:03.862149+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2464,18 +2465,36 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41045496070,
-    "processed_run_id": null,
+    "processed_run_id": 41045496070,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-10-30T11:05:14.928557+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "last_run_conclusion": "failure",
+    "item_id": "video-20261030-130605-860a1ecbaa",
+    "source_slug": "shared-laughter-couples-intimacy",
+    "source_content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
+    "content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
+    "source_id": null,
+    "task_id": null,
+    "artifact_id": null,
+    "provider_status": "source_selected",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:shared-laughter-couples-intimacy:860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947:video-20261030-130605-860a1ecbaa",
+      "hard_started_at": "2026-10-30T11:06:05.559920+00:00",
+      "last_progress_at": "2026-10-30T11:10:43.586803+00:00",
+      "last_fingerprint": "fd1261116f532bc5494f711824504b32cf3f5e25eb4a4dcd0a780ee71f765656",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
