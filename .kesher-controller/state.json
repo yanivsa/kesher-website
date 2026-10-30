@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "article_image_rebinding",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -30,7 +30,9 @@
     "last_refunded_auto_merge_run_id": 41043264964,
     "deferred_auto_merge_refund_count": 1,
     "last_normalization_drift_head_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591",
-    "normalized_head_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591"
+    "normalized_head_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591",
+    "image_head_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591",
+    "merge_candidate_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591"
   },
   "backlog": [
     {
@@ -1743,19 +1745,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T22:03:20.074033+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "backlog_quarantined_ambiguous_identity",
-      "details": {
-        "cycle": "2026-10-29",
-        "candidate_slugs": [
-          "first-grade-adjustment",
-          "toilet-fear-children"
-        ]
-      }
-    },
-    {
       "at": "2026-10-30T06:01:40.772733+00:00",
       "from": "waiting_for_article_window",
       "to": "article_generating",
@@ -2430,12 +2419,18 @@
         "pr_number": 1256,
         "head_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591"
       }
+    },
+    {
+      "at": "2026-10-30T10:53:57.581303+00:00",
+      "from": "article_image_rebinding",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-30T10:51:26.381775+00:00",
+  "updated_at": "2026-10-30T10:53:57.581322+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2449,7 +2444,7 @@
     "evidence_rebind_head_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591",
     "evidence_rebind_dispatched_at": "2026-10-30T10:51:26.381739+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 41043048749
+    "run_id": 41043803873
   },
   "long_video": {
     "attempt_count": 0,
@@ -2897,24 +2892,22 @@
     "short_origin_verified": true
   },
   "pending_dispatches": {
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
       "cycle": "2026-10-30",
       "inputs": {
         "pr_number": "1256",
-        "recovery_only": "true",
-        "expected_head_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591"
+        "slot": "2026-10-30"
       },
-      "intent_at": "2026-10-30T10:50:43.614917+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41043803873,
-      "dispatched_at": "2026-10-30T10:50:43.614917+00:00"
+      "intent_at": "2026-10-30T10:53:42.201988+00:00",
+      "status": "intent",
+      "previous_run_id": 41043264964,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 41043264964,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 41043803873,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-30"
