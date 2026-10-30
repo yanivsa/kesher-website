@@ -1758,15 +1758,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-30T06:38:00.162706+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
       "at": "2026-10-30T06:46:41.331951+00:00",
       "from": "article_generating",
       "to": "article_retry_wait",
@@ -2442,9 +2433,19 @@
         "item_id": "video-20261030-130605-860a1ecbaa",
         "task_id": null
       }
+    },
+    {
+      "at": "2026-10-30T11:14:32.252353+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261030-130605-860a1ecbaa",
+        "task_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-30T11:11:03.862149+00:00",
+  "updated_at": "2026-10-30T11:14:32.252362+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2469,7 +2470,7 @@
     "last_error": null,
     "next_retry_at": "2026-10-30T11:19:09.364815+00:00",
     "run_id": 41046414587,
-    "processed_run_id": 41045496070,
+    "processed_run_id": 41046414587,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
@@ -2477,7 +2478,7 @@
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-10-30T11:05:14.928557+00:00",
     "attempts": 1,
-    "last_run_conclusion": "failure",
+    "last_run_conclusion": "success",
     "item_id": "video-20261030-130605-860a1ecbaa",
     "source_slug": "shared-laughter-couples-intimacy",
     "source_content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
