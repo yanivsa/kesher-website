@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -63,12 +63,17 @@
     "resume_dispatches": 1,
     "pr_number": 1255,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1255",
-    "current_pr_head_sha": "a0a7c20dbde12c281101034b8d63fdbe546f8058",
+    "current_pr_head_sha": "322d6b762c3c0bd9db5d4d13ed063294aed3facd",
     "jules_head_sha": "3947d8ec255fe9e0b88a616539a004a04621f769",
     "normalization_slot": "2026-10-30",
     "normalization_dispatched_at": "2026-10-30T07:41:07.760385+00:00",
     "normalization_run_id": 41021590556,
-    "normalized_head_sha": "a0a7c20dbde12c281101034b8d63fdbe546f8058"
+    "normalized_head_sha": "322d6b762c3c0bd9db5d4d13ed063294aed3facd",
+    "image_head_sha": "322d6b762c3c0bd9db5d4d13ed063294aed3facd",
+    "merge_candidate_sha": "322d6b762c3c0bd9db5d4d13ed063294aed3facd",
+    "normalization_drift_count": 0,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null
   },
   "backlog": [
     {
@@ -2529,21 +2534,29 @@
         "attempt": 1,
         "pr_number": 1255
       }
+    },
+    {
+      "at": "2026-10-30T07:45:10.024758+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-30T07:42:49.009729+00:00",
+  "updated_at": "2026-10-30T07:45:10.024779+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41021764393,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "LocalEditorial",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-30T07:42:49.009696+00:00"
+    "last_dispatch_at": "2026-10-30T07:42:49.009696+00:00",
+    "artifact_sha256": "84f528302c8cffdd73a3527475201470f6950090b218a307a72801bd8bbe2403",
+    "source_id": "local-editorial://first-grade-adjustment-difficulties/0"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2985,6 +2998,18 @@
       "previous_run_id": 41011680978,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-30T06:45:50.107755+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-30",
+      "inputs": {
+        "pr_number": "1255",
+        "slot": "2026-10-30"
+      },
+      "intent_at": "2026-10-30T07:44:15.971259+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2996,5 +3021,17 @@
   },
   "processed_child_notifications": [
     "Kesher Normalize Article PR:41021590556"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
