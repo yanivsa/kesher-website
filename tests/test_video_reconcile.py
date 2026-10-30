@@ -913,6 +913,32 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertIn("TARGET_SLUG=relationship-quiescence-test\n", content)
 
 
+    def test_recovery_from_source_selected_continues_exact_item_generation(self) -> None:
+        row = post("shared-laughter-couples-intimacy", day="2026-08-19")
+        self.posts_file.write_text(json.dumps([row], ensure_ascii=False), encoding="utf-8")
+        source = pipeline.source_metadata(row)
+        item = pipeline.new_item(source)
+        item.update({"type": "video_overview", "status": "source_selected"})
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+        output = self.root / "github-output.txt"
+
+        with mock.patch.dict(os.environ, {
+            "KESHER_MEDIA_MODE": "video_overview",
+            "TARGET_ITEM_ID": item["id"],
+            "TARGET_CONTENT_SHA256": source["content_sha256"],
+            "GITHUB_OUTPUT": str(output),
+            "OPERATION": "recovery",
+            "KESHER_RECOVERY_MODE": "true",
+        }, clear=False):
+            self.assertEqual(reconcile.prepare_generation(source["slug"]), 0)
+
+        self.assertIn("skip_generation=false", output.read_text(encoding="utf-8"))
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(len(saved), 1)
+        self.assertEqual(saved[0]["id"], item["id"])
+        self.assertEqual(saved[0]["status"], "source_selected")
+
+
 if __name__ == "__main__":
     unittest.main()
 
