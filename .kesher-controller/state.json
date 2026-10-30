@@ -1758,19 +1758,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-30T06:46:41.331951+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Verified that the article contains 792 words and 5 headings, meeting the poli... — Verified that the article contains 792 words and 5 headings, meeting the policy requirements (700-1100 words, >= 5 headings).",
-        "retry_at": "2026-10-30T06:51:41.331899+00:00",
-        "failure_streak": 1,
-        "run_id": 41011680978,
-        "session_id": "sessions/4793936354490616199"
-      }
-    },
-    {
       "at": "2026-10-30T06:46:45.868626+00:00",
       "from": "article_retry_wait",
       "to": "article_generating",
@@ -2443,9 +2430,19 @@
         "item_id": "video-20261030-130605-860a1ecbaa",
         "task_id": null
       }
+    },
+    {
+      "at": "2026-10-30T11:21:20.165787+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261030-130605-860a1ecbaa",
+        "task_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-30T11:14:32.252362+00:00",
+  "updated_at": "2026-10-30T11:21:20.165797+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2470,7 +2467,7 @@
     "last_error": null,
     "next_retry_at": "2026-10-30T11:19:09.364815+00:00",
     "run_id": 41045496070,
-    "processed_run_id": 41046414587,
+    "processed_run_id": 41045496070,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
@@ -2478,7 +2475,7 @@
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-10-30T11:05:14.928557+00:00",
     "attempts": 1,
-    "last_run_conclusion": "success",
+    "last_run_conclusion": "failure",
     "item_id": "video-20261030-130605-860a1ecbaa",
     "source_slug": "shared-laughter-couples-intimacy",
     "source_content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
