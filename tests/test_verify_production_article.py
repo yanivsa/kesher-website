@@ -48,3 +48,5 @@ class VerifyProductionArticleTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+from tests.test_kesher_master_intent import MasterIntentTests

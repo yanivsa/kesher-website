@@ -8,7 +8,6 @@ from scripts.kesher_runtime.github import GitHubStateStore
 from scripts.kesher_runtime.state import ClaimRejected
 from scripts.kesher_runtime.worker_entry import admit_worker, write_outputs
 from tests.test_kesher_canonical_state import CODE, NOW, ContentsServer, requested
-from tests.test_kesher_master_intent import MasterIntentTests
 
 
 class WorkerEntryTests(unittest.TestCase):
