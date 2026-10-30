@@ -1758,16 +1758,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-30T07:41:07.760412+00:00",
-      "from": "article_normalizing",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1255,
-        "slot": "2026-10-30"
-      }
-    },
-    {
       "at": "2026-10-30T07:42:49.009722+00:00",
       "from": "article_normalizing",
       "to": "article_image_running",
@@ -2443,9 +2433,19 @@
         "item_id": "video-20261030-130605-860a1ecbaa",
         "task_id": null
       }
+    },
+    {
+      "at": "2026-10-30T11:35:56.104876+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261030-130605-860a1ecbaa",
+        "task_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-30T11:33:09.829590+00:00",
+  "updated_at": "2026-10-30T11:35:56.104885+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
