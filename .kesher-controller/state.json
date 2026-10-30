@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-30T06:51:41.331899+00:00",
+    "next_retry_at": null,
     "run_id": 41011680978,
     "processed_run_id": 41011680978,
     "provider_id": null,
@@ -18,7 +18,7 @@
     "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-10-30T06:01:40.772721+00:00",
+    "last_dispatch_at": "2026-10-30T06:46:45.868614+00:00",
     "watchdog": {
       "identity": "2026-10-30",
       "session_id": null,
@@ -59,7 +59,8 @@
       }
     },
     "last_jules_session_id": "sessions/4793936354490616199",
-    "last_failed_run_id": 41011680978
+    "last_failed_run_id": 41011680978,
+    "resume_dispatches": 1
   },
   "backlog": [
     {
@@ -1769,14 +1770,7 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Verified that the article contains 792 words and 5 headings, meeting the poli... — Verified that the article contains 792 words and 5 headings, meeting the policy requirements (700-1100 words, >= 5 headings).",
-    "retryable": true,
-    "retry_at": "2026-10-30T06:51:41.331899+00:00",
-    "at": "2026-10-30T06:46:41.331947+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-29T18:26:00.865232+00:00",
@@ -2478,9 +2472,19 @@
         "run_id": 41011680978,
         "session_id": "sessions/4793936354490616199"
       }
+    },
+    {
+      "at": "2026-10-30T06:46:45.868626+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "timed-out Jules session preserved; same-session recovery dispatched immediately",
+      "details": {
+        "run_id": 41011680978,
+        "session_id": "sessions/4793936354490616199"
+      }
     }
   ],
-  "updated_at": "2026-10-30T06:46:41.331957+00:00",
+  "updated_at": "2026-10-30T06:46:45.868634+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2929,21 +2933,10 @@
         "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: קושי מתמשך אחרי תחילת השנה: בכי, כעס, כאבי בטן, שינויי שינה או סירוב ללכת לבית הספר. להבדיל מהסתגלות רגילה ומהעמוד העתידי על סירוב בית ספר; להציע מיפוי, קשר עם הצוות ונורות אזהרה. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-adjustment-difficulties. כותרת עבודה: קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/בשלות סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-first-grade-adjustment-difficulties\nRequired Primary Keyword: קשיי הסתגלות לכיתה א"
       },
       "intent_at": "2026-10-30T06:45:50.107755+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41011680978,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-30T06:45:50.107755+00:00"
     }
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
