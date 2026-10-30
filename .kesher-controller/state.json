@@ -88,9 +88,9 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-30T07:53:21.542229+00:00",
-    "next_deploy_retry_at": "2026-10-30T08:05:15.327467+00:00",
+    "next_deploy_retry_at": null,
     "deploy_run_id": 41022839833,
-    "live_verified_at": "2026-10-30T08:00:21.919326+00:00"
+    "live_verified_at": "2026-10-30T08:00:57.433520+00:00"
   },
   "backlog": [
     {
@@ -2579,7 +2579,7 @@
       "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-30T08:00:21.919362+00:00",
+  "updated_at": "2026-10-30T08:00:57.433559+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -3037,6 +3037,19 @@
       "previous_run_id": 41011680978,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-30T06:45:50.107755+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-30",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "first-grade-adjustment-difficulties",
+        "target_content_sha256": "9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093"
+      },
+      "intent_at": "2026-10-30T08:00:15.327467+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3050,5 +3063,18 @@
     "Kesher Normalize Article PR:41021590556",
     "Kesher Trusted Article Image:41021764393",
     "Auto-merge Kesher article PRs:41022013016"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
+  }
 }
