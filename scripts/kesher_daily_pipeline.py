@@ -843,9 +843,40 @@ def legacy_external_effect(
     return receipt
 
 
-def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
+def _authorize_exact_recovery_provider_advance(item: dict[str, Any], stage: str) -> None:
+    if not is_recovery_mode():
+        return
+    target_item_id = (os.environ.get("TARGET_ITEM_ID") or "").strip()
+    target_slug = (os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
+    target_sha = (os.environ.get("TARGET_CONTENT_SHA256") or "").strip()
+    source = item.get("source") or {}
+    if not target_item_id or not target_slug or not target_sha:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: exact recovery identity is incomplete")
+    if str(item.get("id") or "").strip() != target_item_id:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: recovery item mismatch")
+    if str(source.get("slug") or "").strip() != target_slug:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: recovery slug mismatch")
+    if str(source.get("content_sha256") or "").strip() != target_sha:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: recovery content hash mismatch")
+    if stage == "source":
+        if item.get("status") != "source_selected":
+            raise PipelineError("RECOVERY_MODE_VIOLATION: source creation requires source_selected")
+        if item.get("source_id") or item.get("task_id") or item.get("artifact_id"):
+            raise PipelineError("RECOVERY_MODE_VIOLATION: provider identifiers already exist before source recovery")
+    elif stage == "generation":
+        if item.get("status") != "source_added" or not item.get("source_id"):
+            raise PipelineError("RECOVERY_MODE_VIOLATION: generation recovery requires one bound source")
+        if item.get("task_id") or item.get("artifact_id"):
+            raise PipelineError("RECOVERY_MODE_VIOLATION: provider generation identifier already exists")
+    else:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: unknown recovery provider stage")
+
+
+def add_source(state: dict[str, Any], item: dict[str, Any], *, allow_exact_recovery: bool = False) -> None:
     if is_recovery_mode():
-        raise PipelineError("RECOVERY_MODE_VIOLATION: add_source forbidden in same-identity recovery mode")
+        if not allow_exact_recovery:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: add_source forbidden without exact recovery authorization")
+        _authorize_exact_recovery_provider_advance(item, "source")
     from scripts.kesher_runtime.media_state import CanonicalMediaState
     from scripts.kesher_runtime.legacy_retirement import media_mutation
     media_mutation(state)
@@ -878,9 +909,11 @@ def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
     print(f"SOURCE_ADDED item={item['id']} source_id={source_id}")
 
 
-def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
+def start_generation(state: dict[str, Any], item: dict[str, Any], *, allow_exact_recovery: bool = False) -> None:
     if is_recovery_mode():
-        raise PipelineError("RECOVERY_MODE_VIOLATION: start_generation forbidden in same-identity recovery mode")
+        if not allow_exact_recovery:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: start_generation forbidden without exact recovery authorization")
+        _authorize_exact_recovery_provider_advance(item, "generation")
     from scripts.kesher_runtime.media_state import CanonicalMediaState
     from scripts.kesher_runtime.legacy_retirement import media_mutation
     media_mutation(state)
@@ -1546,8 +1579,10 @@ def run_generation(
         if item.get("uploaded") is True or item["status"] in {"pending_review", "approved", "rejected", "uploading", "uploaded", "superseded"}:
             print(f"NO_GENERATION recovery mode active_item={item['id']} status={item['status']}")
             return 0
-        if is_recovery_mode() and item["status"] in {"source_selected", "source_added"}:
-            raise PipelineError(f"RECOVERY_MODE_VIOLATION: target item {target_item_id} has invalid status {item['status']} for recovery; provider source creation/generation forbidden")
+        if item["status"] == "source_selected":
+            add_source(state, item, allow_exact_recovery=True)
+        if item["status"] == "source_added":
+            start_generation(state, item, allow_exact_recovery=True)
         if item["status"] == "generating":
             if not item.get("task_id") or not item.get("source_id"):
                 raise PipelineError("RECOVERY_MODE_VIOLATION: generating item missing required task_id or source_id")

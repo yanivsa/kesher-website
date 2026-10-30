@@ -304,12 +304,14 @@ class PipelineTestCase(unittest.TestCase):
         original_id = item["id"]
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
 
-        def fake_add_source(state, current):
+        def fake_add_source(state, current, *, allow_exact_recovery=False):
+            self.assertTrue(allow_exact_recovery)
             self.assertEqual(current["id"], original_id)
             current["source_id"] = "source-exact"
             current["status"] = "source_added"
 
-        def fake_start_generation(state, current):
+        def fake_start_generation(state, current, *, allow_exact_recovery=False):
+            self.assertTrue(allow_exact_recovery)
             self.assertEqual(current["id"], original_id)
             current["task_id"] = "task-exact"
             current["artifact_id"] = "task-exact"
@@ -336,6 +338,36 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(len(saved), 1)
         self.assertEqual(saved[0]["id"], original_id)
         self.assertEqual(saved[0]["source"]["content_sha256"], source["content_sha256"])
+
+    def test_exact_recovery_refuses_source_selected_with_existing_provider_identifier(self) -> None:
+        row = hebrew_post("shared-laughter-couples-intimacy", day="2026-10-30")
+        self.write_posts([row])
+        source = pipeline.source_metadata(row)
+        item = pipeline.new_item(source)
+        item.update({
+            "status": "source_selected",
+            "source_id": None,
+            "task_id": "already-started",
+            "artifact_id": "already-started",
+        })
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+
+        with mock.patch.dict(os.environ, {
+            "TARGET_ITEM_ID": item["id"],
+            "TARGET_SLUG": source["slug"],
+            "TARGET_CONTENT_SHA256": source["content_sha256"],
+            "OPERATION": "recovery",
+            "KESHER_RECOVERY_MODE": "true",
+        }, clear=False), mock.patch.object(pipeline, "auth_preflight"), mock.patch.object(
+            pipeline, "run_notebooklm"
+        ) as provider_call:
+            with self.assertRaisesRegex(pipeline.PipelineError, "provider identifiers already exist"):
+                pipeline.run_generation(0, None, slug=source["slug"], item_id=item["id"])
+
+        provider_call.assert_not_called()
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(len(saved), 1)
+        self.assertEqual(saved[0]["id"], item["id"])
 
     def test_active_item_concurrency_prevention(self) -> None:
         source = pipeline.source_metadata(hebrew_post())
