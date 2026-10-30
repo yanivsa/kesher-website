@@ -3,19 +3,19 @@
   "cycle": "2026-10-30",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 2,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41016077369,
     "processed_run_id": 41011680978,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-30T06:46:45.868614+00:00",
@@ -74,9 +74,19 @@
     "normalization_drift_count": 0,
     "merge_dispatch_count": 1,
     "merge_dispatch_at": "2026-10-30T07:51:19.914791+00:00",
-    "merge_run_id": 41022013016,
+    "merge_run_id": 41022637302,
     "last_refunded_auto_merge_run_id": 41022013016,
-    "deferred_auto_merge_refund_count": 1
+    "deferred_auto_merge_refund_count": 1,
+    "slug": "first-grade-adjustment-difficulties",
+    "title": "קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים?",
+    "url": "https://kesher.saharoni.com/blog/first-grade-adjustment-difficulties",
+    "published_date": "2026-10-30",
+    "quality_content_sha256": "9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-10-30T07:53:16.036400+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2572,7 +2582,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-30T07:42:49.009696+00:00",
     "artifact_sha256": "84f528302c8cffdd73a3527475201470f6950090b218a307a72801bd8bbe2403",
-    "source_id": "local-editorial://first-grade-adjustment-difficulties/0"
+    "source_id": "local-editorial://first-grade-adjustment-difficulties/0",
+    "image_path": "/images/generated/blog/first-grade-adjustment-difficulties.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3015,23 +3026,20 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-30T06:45:50.107755+00:00"
     },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "deploy.yml": {
+      "workflow": "deploy.yml",
       "cycle": "2026-10-30",
-      "inputs": {
-        "pr_number": "1255",
-        "slot": "2026-10-30"
-      },
-      "intent_at": "2026-10-30T07:50:47.097146+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41022013016,
-      "observed_active_run_id": 41022637302,
-      "dispatched_at": "2026-10-30T07:50:47.097146+00:00"
+      "inputs": {},
+      "intent_at": "2026-10-30T07:53:12.953132+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "cfa48abdbed4c0be0b4ab1d7408afd7d4c1ab09a"
     }
   },
   "last_child_notification": {
     "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 41022013016,
+    "run_id": 41022637302,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-30"
