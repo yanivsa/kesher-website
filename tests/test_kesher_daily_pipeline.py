@@ -340,7 +340,7 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(saved[0]["source"]["content_sha256"], source["content_sha256"])
 
     def test_exact_recovery_refuses_source_selected_with_existing_provider_identifier(self) -> None:
-        row = hebrew_post("shared-laughter-couples-intimacy", day="2026-10-30")
+        row = hebrew_post("shared-laughter-couples-intimacy", "2026-10-30")
         self.write_posts([row])
         source = pipeline.source_metadata(row)
         item = pipeline.new_item(source)
