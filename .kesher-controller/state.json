@@ -39,13 +39,13 @@
     "published_date": "2026-10-30",
     "quality_content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-30T11:10:47.633107+00:00",
+    "quality_checked_at": "2026-10-30T11:14:13.338466+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-30T10:58:11.411762+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41044611686,
-    "live_verified_at": "2026-10-30T11:10:48.924200+00:00"
+    "live_verified_at": "2026-10-30T11:14:14.636529+00:00"
   },
   "backlog": [
     {
@@ -2467,8 +2467,8 @@
     "attempt_count": 1,
     "status": "generating",
     "last_error": null,
-    "next_retry_at": null,
-    "run_id": 41045496070,
+    "next_retry_at": "2026-10-30T11:19:09.364815+00:00",
+    "run_id": 41046414587,
     "processed_run_id": 41045496070,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -2929,27 +2929,12 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-30",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "shared-laughter-couples-intimacy",
-        "target_content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947"
-      },
-      "intent_at": "2026-10-30T11:04:51.543051+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41045496070,
-      "dispatched_at": "2026-10-30T11:04:51.543051+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 41044611686,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 41046414587,
     "conclusion": "success",
-    "source_slug": null,
+    "source_slug": "shared-laughter-couples-intimacy",
     "slot": "2026-10-30"
   },
   "processed_child_notifications": [
