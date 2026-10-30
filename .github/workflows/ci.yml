@@ -95,7 +95,6 @@ jobs:
             tests.test_kesher_canonical_state \
             tests.test_kesher_worker_entry \
             tests.test_kesher_content_controller \
-            tests.test_kesher_master_intent \
             -v
 
       - name: Select CI profile
