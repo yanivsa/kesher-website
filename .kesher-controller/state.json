@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "long_video_running",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -90,7 +90,7 @@
     "last_deploy_dispatch_at": "2026-10-30T07:53:21.542229+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41022839833,
-    "live_verified_at": "2026-10-30T08:12:45.972206+00:00"
+    "live_verified_at": "2026-10-30T08:13:13.087230+00:00"
   },
   "backlog": [
     {
@@ -1803,27 +1803,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T18:55:49.569309+00:00",
-      "from": "blocked",
-      "to": "article_pr_open",
-      "reason": "late_article_head_after_merge_exhaustion_recovery",
-      "details": {
-        "pr_number": 1252,
-        "previous_head_sha": "69a17fdbe69cce9d30fc64ff572afbe608bef246",
-        "current_head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac"
-      }
-    },
-    {
-      "at": "2026-10-29T18:56:10.946353+00:00",
-      "from": "article_pr_open",
-      "to": "article_image_rebinding",
-      "reason": "exact trusted image evidence is valid except for PR head binding",
-      "details": {
-        "pr_number": 1252,
-        "head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac"
-      }
-    },
-    {
       "at": "2026-10-29T18:57:39.341988+00:00",
       "from": "article_image_rebinding",
       "to": "article_pr_open",
@@ -2566,9 +2545,21 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-10-30T08:13:13.087249+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-30T08:13:14.111100+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-10-30T08:11:19.475179+00:00",
+  "updated_at": "2026-10-30T08:13:14.111117+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2587,9 +2578,9 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
-    "next_retry_at": "2026-10-30T08:17:40.128989+00:00",
+    "next_retry_at": null,
     "run_id": 41023644026,
     "processed_run_id": null,
     "provider_id": "31cf50d7-b528-479d-93ef-fbf586d808f4",
@@ -3045,6 +3036,20 @@
       "previous_run_id": 41011680978,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-30T06:45:50.107755+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-30",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "first-grade-adjustment-difficulties",
+        "derive_content_sha256": "9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093",
+        "derive_long_item_id": "video-20261030-100202-9f216727f3"
+      },
+      "intent_at": "2026-10-30T08:12:40.128989+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
