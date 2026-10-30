@@ -3091,19 +3091,27 @@
         "long_url": "https://youtu.be/kVTVZKButig",
         "short_url": "https://youtu.be/EzIILKiQj3Q"
       }
+    },
+    {
+      "idea_id": "parenting-p1-first-grade-adjustment-difficulties",
+      "fingerprint": "666437c8593308ec74ad552ed3bd404c0637e6db009919b208ac599f849feea3",
+      "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: קושי מתמשך אחרי תחילת השנה: בכי, כעס, כאבי בטן, שינויי שינה או סירוב ללכת לבית הספר. להבדיל מהסתגלות רגילה ומהעמוד העתידי על סירוב בית ספר; להציע מיפוי, קשר עם הצוות ונורות אזהרה. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-adjustment-difficulties. כותרת עבודה: קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/בשלות סמוכים ואל תיצור URL מתחרה.",
+      "required_primary_keyword": "קשיי הסתגלות לכיתה א",
+      "run_now": false,
+      "status": "complete",
+      "requested_at": "2026-10-19T10:18:00.204729+00:00",
+      "publication_slot": "2026-10-30",
+      "claimed_at": "2026-10-30T06:01:37.063106+00:00",
+      "completed_at": "2026-10-30T09:06:18.382684+00:00",
+      "outputs": {
+        "slug": "first-grade-adjustment-difficulties",
+        "article_url": "https://kesher.saharoni.com/blog/first-grade-adjustment-difficulties",
+        "long_url": "https://youtu.be/jv3m3PC4RMw",
+        "short_url": "https://youtu.be/sXboa-21Wyo"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "parenting-p1-first-grade-adjustment-difficulties",
-    "fingerprint": "666437c8593308ec74ad552ed3bd404c0637e6db009919b208ac599f849feea3",
-    "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: קושי מתמשך אחרי תחילת השנה: בכי, כעס, כאבי בטן, שינויי שינה או סירוב ללכת לבית הספר. להבדיל מהסתגלות רגילה ומהעמוד העתידי על סירוב בית ספר; להציע מיפוי, קשר עם הצוות ונורות אזהרה. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-adjustment-difficulties. כותרת עבודה: קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/בשלות סמוכים ואל תיצור URL מתחרה.",
-    "required_primary_keyword": "קשיי הסתגלות לכיתה א",
-    "run_now": false,
-    "status": "claimed",
-    "requested_at": "2026-10-19T10:18:00.204729+00:00",
-    "publication_slot": "2026-10-30",
-    "claimed_at": "2026-10-30T06:01:37.063106+00:00"
-  },
+  "active_idea": null,
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/first-grade-adjustment-difficulties",
     "overview_youtube_url": "https://youtu.be/jv3m3PC4RMw",
