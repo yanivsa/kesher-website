@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "long_video_complete",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1803,12 +1803,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T19:11:07.921206+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
       "at": "2026-10-29T19:15:58.234025+00:00",
       "from": "long_video_running",
       "to": "long_video_watchdog_wait",
@@ -2542,9 +2536,15 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-30T08:46:34.413544+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-10-30T08:46:24.601813+00:00",
+  "updated_at": "2026-10-30T08:46:34.413553+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2594,7 +2594,7 @@
     "source_id": "fec71b5d-8aeb-4a3f-bc36-ce76e93db961"
   },
   "short": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -2604,7 +2604,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-30T08:13:22.557634+00:00",
+    "last_dispatch_at": "2026-10-30T08:46:34.413514+00:00",
     "artifact_id": "31cf50d7-b528-479d-93ef-fbf586d808f4",
     "source_id": "fec71b5d-8aeb-4a3f-bc36-ce76e93db961",
     "adopted_from_long_item_id": "video-20261030-100202-9f216727f3",
@@ -3045,9 +3045,10 @@
         "derive_long_item_id": "video-20261030-100202-9f216727f3"
       },
       "intent_at": "2026-10-30T08:45:46.756497+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41024997449,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41028723099,
+      "dispatched_at": "2026-10-30T08:45:46.756497+00:00"
     }
   },
   "last_child_notification": {
