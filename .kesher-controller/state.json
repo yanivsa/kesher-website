@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "article_needed",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -18,7 +18,10 @@
     "pr_number": 1256,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1256",
     "current_pr_head_sha": "f3f855fe5456070a1a978cee21ce01a80e5909cb",
-    "jules_head_sha": "f3f855fe5456070a1a978cee21ce01a80e5909cb"
+    "jules_head_sha": "f3f855fe5456070a1a978cee21ce01a80e5909cb",
+    "normalization_status": "running",
+    "normalization_slot": "2026-10-30",
+    "normalization_dispatched_at": "2026-10-30T10:43:56.286239+00:00"
   },
   "backlog": [
     {
@@ -1731,19 +1734,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T22:00:47.395492+00:00",
-      "from": "article_generating",
-      "to": "complete",
-      "reason": "run_now_slot_occupied_after_rollover",
-      "details": {
-        "publication_slot": "2026-10-29",
-        "occupied_slugs": [
-          "first-grade-adjustment",
-          "toilet-fear-children"
-        ]
-      }
-    },
-    {
       "at": "2026-10-29T22:03:02.285316+00:00",
       "from": null,
       "to": "article_needed",
@@ -2406,9 +2396,19 @@
         "idea_id": "shared-laughter-couples-intimacy",
         "publication_slot": "2026-10-30"
       }
+    },
+    {
+      "at": "2026-10-30T10:43:56.286265+00:00",
+      "from": "article_needed",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1256,
+        "slot": "2026-10-30"
+      }
     }
   ],
-  "updated_at": "2026-10-30T10:41:24.371368+00:00",
+  "updated_at": "2026-10-30T10:43:56.286293+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2875,9 +2875,10 @@
         "slot": "2026-10-30"
       },
       "intent_at": "2026-10-30T10:43:31.019548+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41042881887,
+      "dispatched_at": "2026-10-30T10:43:31.019548+00:00"
     }
   },
   "last_child_notification": {
