@@ -1,6 +1,8 @@
 {
   "incidents": {
     "62e88666cabe99b6b64eee72494a2dcb8ab23750bf2482696450fa671f06c1c2": {
+      "acquired_at": "2026-10-30T13:06:06.587446+00:00",
+      "acquisition": "created",
       "acquisition_started_at": "2026-10-30T13:06:06.587446+00:00",
       "affected": [
         {
@@ -33,8 +35,9 @@
       },
       "failure_class": "DURABLE_PROGRESS_EXHAUSTED",
       "fingerprint": "331b6a9f15cc5ee2ddd203802090fb0c2f63c683dfb05e9e68346280315dd8f5",
+      "session_id": "sessions/3869985841951022469",
       "stage": "long_video",
-      "status": "uncertain"
+      "status": "running"
     },
     "681f5fe840efab0439bbc6b41b81d104fe9f3d1c0d0730097d63b564d693d58b": {
       "acquisition_started_at": "2026-10-29T14:07:27.103967+00:00",
