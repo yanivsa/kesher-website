@@ -2482,9 +2482,18 @@
         "run_id": 41011680978,
         "session_id": "sessions/4793936354490616199"
       }
+    },
+    {
+      "at": "2026-10-30T06:55:11.324456+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-30T06:46:45.868634+00:00",
+  "updated_at": "2026-10-30T06:55:11.324464+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
