@@ -2927,7 +2927,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-30",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "shared-laughter-couples-intimacy",
+        "target_content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
+        "target_item_id": "video-20261030-130605-860a1ecbaa"
+      },
+      "intent_at": "2026-10-30T11:30:52.209332+00:00",
+      "status": "intent",
+      "previous_run_id": 41045496070,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
     "run_id": 41046414587,
@@ -2952,6 +2967,20 @@
       "controller_action_observed": false,
       "last_observed_at": "2026-10-30T08:56:26.610605+00:00",
       "last_action": "progress_reset",
+      "direct_takeover_required": false
+    },
+    "v5|shared-laughter-couples-intimacy|860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947|long_video": {
+      "pipeline_id": "v5",
+      "slug": "shared-laughter-couples-intimacy",
+      "content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-10-30T13",
+      "last_fingerprint": "a2a47fda0a2ccbca2a2d27ea4dba1e7d858bd84129d36021d3232bcf67f153c6",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-30T11:30:52.209332+00:00",
+      "last_action": "observe_controller",
       "direct_takeover_required": false
     }
   },
