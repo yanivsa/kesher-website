@@ -262,6 +262,9 @@ function testTechnicalVideoPublicationCannotBeRegressed() {
   assert.strictEqual(contract.video.jules_review, 'advisory');
   assert.strictEqual(contract.video.durable_state_artifacts_to_keep, 3);
   assert.strictEqual(contract.video.max_attempts_per_stage, 3);
+  assert(daily.includes('skip_jules_advisory:'));
+  assert(daily.includes('default: true'));
+  assert(daily.includes('inputs.skip_jules_advisory != true'));
   assert(daily.includes('Dispatch strict advisory Jules review'));
   assert(daily.includes('gh workflow run kesher-video-advisory-review.yml'));
   assert(!daily.includes('Jules performs strict advisory review'));
