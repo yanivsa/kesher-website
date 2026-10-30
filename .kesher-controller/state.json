@@ -90,7 +90,7 @@
     "last_deploy_dispatch_at": "2026-10-30T07:53:21.542229+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41022839833,
-    "live_verified_at": "2026-10-30T10:25:47.485511+00:00"
+    "live_verified_at": "2026-10-30T10:26:01.856068+00:00"
   },
   "backlog": [
     {
@@ -1803,32 +1803,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T21:06:50.076104+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-29T21:07:32.533708+00:00",
-      "from": "complete",
-      "to": "article_needed",
-      "reason": "owner_run_now_cycle_started",
-      "details": {
-        "idea_id": "good-news-relationship-acr",
-        "publication_slot": "2026-10-29"
-      }
-    },
-    {
-      "at": "2026-10-29T21:07:41.916249+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "owner run-now article dispatched immediately",
-      "details": {
-        "attempt": 1,
-        "publication_slot": "2026-10-29"
-      }
-    },
-    {
       "at": "2026-10-29T21:10:54.836124+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2512,9 +2486,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-30T10:26:01.856093+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-30T10:26:02.301153+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-30T10:26:02.765226+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-30T10:21:00.734714+00:00",
+  "updated_at": "2026-10-30T10:26:02.765243+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
