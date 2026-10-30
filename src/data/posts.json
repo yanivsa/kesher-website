@@ -15,7 +15,12 @@
         "title": "Child Development",
         "url": "https://www.psychologytoday.com/us/basics/child-development"
       }
-    ]
+    ],
+    "image": "/images/generated/blog/first-grade-adjustment-difficulties.png",
+    "imageAlt": "איור עריכתי מקומי של הורה וילד בסביבה ביתית לקראת בית הספר, לצד ילקוט וספרים, באווירה רגועה ומעודדת.",
+    "imageProvider": "LocalEditorial",
+    "imageSourceUrl": "local-editorial://first-grade-adjustment-difficulties/0",
+    "imageIsFallback": false
   },
   {
     "id": "first-grade-adjustment",
