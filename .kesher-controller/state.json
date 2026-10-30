@@ -72,8 +72,8 @@
     "image_head_sha": "322d6b762c3c0bd9db5d4d13ed063294aed3facd",
     "merge_candidate_sha": "322d6b762c3c0bd9db5d4d13ed063294aed3facd",
     "normalization_drift_count": 0,
-    "merge_dispatch_count": 0,
-    "merge_dispatch_at": "2026-10-30T07:45:14.688359+00:00",
+    "merge_dispatch_count": 1,
+    "merge_dispatch_at": "2026-10-30T07:51:19.914791+00:00",
     "merge_run_id": 41022013016,
     "last_refunded_auto_merge_run_id": 41022013016,
     "deferred_auto_merge_refund_count": 1
@@ -3023,9 +3023,10 @@
         "slot": "2026-10-30"
       },
       "intent_at": "2026-10-30T07:50:47.097146+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41022013016,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41022637302,
+      "dispatched_at": "2026-10-30T07:50:47.097146+00:00"
     }
   },
   "last_child_notification": {
@@ -3039,17 +3040,5 @@
     "Kesher Normalize Article PR:41021590556",
     "Kesher Trusted Article Image:41021764393",
     "Auto-merge Kesher article PRs:41022013016"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  ]
 }
