@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "article_pr_open",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -14,7 +14,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "pr_number": 1256,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1256",
     "current_pr_head_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591",
@@ -41,7 +41,9 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-10-30T10:58:05.658925+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-10-30T10:58:11.411762+00:00",
+    "next_deploy_retry_at": "2026-10-30T11:03:01.699241+00:00"
   },
   "backlog": [
     {
@@ -1754,15 +1756,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-30T06:07:41.437317+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
       "at": "2026-10-30T06:15:06.634898+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2438,9 +2431,19 @@
         "merge_dispatch_count": 0,
         "refund_count": 2
       }
+    },
+    {
+      "at": "2026-10-30T10:58:11.411805+00:00",
+      "from": "article_pr_open",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-30T10:55:14.855259+00:00",
+  "updated_at": "2026-10-30T10:58:11.411814+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2896,13 +2899,13 @@
     "claimed_at": "2026-10-30T10:43:35.153923+00:00"
   },
   "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/first-grade-adjustment-difficulties",
-    "overview_youtube_url": "https://youtu.be/jv3m3PC4RMw",
-    "short_youtube_url": "https://youtu.be/sXboa-21Wyo",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
+    "article_url": "https://kesher.saharoni.com/blog/shared-laughter-couples-intimacy",
+    "overview_youtube_url": null,
+    "short_youtube_url": null,
+    "overview_edit_verified": false,
+    "short_portrait_verified": false,
+    "short_signature_verified": false,
+    "short_origin_verified": false
   },
   "pending_dispatches": {
     "deploy.yml": {
@@ -2910,10 +2913,11 @@
       "cycle": "2026-10-30",
       "inputs": {},
       "intent_at": "2026-10-30T10:58:01.699241+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "888cc2c882aabd90e65158f3cc1a2667cad412a9"
+      "observed_active_run_id": 41044611686,
+      "dispatch_head_sha": "888cc2c882aabd90e65158f3cc1a2667cad412a9",
+      "dispatched_at": "2026-10-30T10:58:01.699241+00:00"
     }
   },
   "last_child_notification": {
