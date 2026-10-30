@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "short_running",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -90,7 +90,7 @@
     "last_deploy_dispatch_at": "2026-10-30T07:53:21.542229+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41022839833,
-    "live_verified_at": "2026-10-30T08:45:52.727960+00:00"
+    "live_verified_at": "2026-10-30T08:46:23.336010+00:00"
   },
   "backlog": [
     {
@@ -1803,22 +1803,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T19:07:39.799811+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "new video workflow dispatched",
-      "details": {
-        "operation": "full",
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-10-29T19:11:06.667450+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-29T19:11:07.921206+00:00",
       "from": "article_live",
       "to": "video_running",
@@ -2546,9 +2530,21 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-10-30T08:46:23.336039+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-30T08:46:24.601791+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-10-30T08:16:04.200053+00:00",
+  "updated_at": "2026-10-30T08:46:24.601813+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2603,7 +2599,7 @@
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41024997449,
-    "processed_run_id": null,
+    "processed_run_id": 41024997449,
     "provider_id": "31cf50d7-b528-479d-93ef-fbf586d808f4",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
@@ -2619,7 +2615,8 @@
       "last_fingerprint": "a1819cfa82b6ed5eed7b2c26604cca9d956f275179c46feb73cf13a8d23b0e09",
       "recovery_count": 0,
       "last_recovery_at": null
-    }
+    },
+    "last_run_conclusion": "success"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3037,6 +3034,20 @@
       "previous_run_id": 41011680978,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-30T06:45:50.107755+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-30",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "first-grade-adjustment-difficulties",
+        "derive_content_sha256": "9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093",
+        "derive_long_item_id": "video-20261030-100202-9f216727f3"
+      },
+      "intent_at": "2026-10-30T08:45:46.756497+00:00",
+      "status": "intent",
+      "previous_run_id": 41024997449,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
