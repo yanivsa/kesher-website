@@ -1758,16 +1758,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-30T06:46:45.868626+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "timed-out Jules session preserved; same-session recovery dispatched immediately",
-      "details": {
-        "run_id": 41011680978,
-        "session_id": "sessions/4793936354490616199"
-      }
-    },
-    {
       "at": "2026-10-30T06:55:11.324456+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2440,9 +2430,19 @@
         "item_id": "video-20261030-130605-860a1ecbaa",
         "task_id": null
       }
+    },
+    {
+      "at": "2026-10-30T11:26:17.142193+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261030-130605-860a1ecbaa",
+        "task_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-30T11:21:20.165797+00:00",
+  "updated_at": "2026-10-30T11:26:17.142202+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
