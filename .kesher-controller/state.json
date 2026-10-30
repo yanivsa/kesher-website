@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "waiting_for_article_window",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,9 +13,10 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
+    "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "pending"
+    "normalization_status": "pending",
+    "last_dispatch_at": "2026-10-30T06:01:40.772721+00:00"
   },
   "backlog": [
     {
@@ -2360,9 +2361,18 @@
           "toilet-fear-children"
         ]
       }
+    },
+    {
+      "at": "2026-10-30T06:01:40.772733+00:00",
+      "from": "waiting_for_article_window",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-30T05:56:13.291089+00:00",
+  "updated_at": "2026-10-30T06:01:40.772740+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2802,18 +2812,6 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  },
   "pending_dispatches": {
     "kesher-article-generation.yml": {
       "workflow": "kesher-article-generation.yml",
@@ -2823,9 +2821,10 @@
         "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: קושי מתמשך אחרי תחילת השנה: בכי, כעס, כאבי בטן, שינויי שינה או סירוב ללכת לבית הספר. להבדיל מהסתגלות רגילה ומהעמוד העתידי על סירוב בית ספר; להציע מיפוי, קשר עם הצוות ונורות אזהרה. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-adjustment-difficulties. כותרת עבודה: קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/בשלות סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-first-grade-adjustment-difficulties\nRequired Primary Keyword: קשיי הסתגלות לכיתה א"
       },
       "intent_at": "2026-10-30T06:00:42.865790+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-30T06:00:42.865790+00:00"
     }
   }
 }
