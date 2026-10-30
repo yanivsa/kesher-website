@@ -39,13 +39,14 @@
     "published_date": "2026-10-30",
     "quality_content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-30T13:01:00.917603+00:00",
+    "quality_checked_at": "2026-10-30T13:05:48.292465+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-30T10:58:11.411762+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41044611686,
-    "live_verified_at": "2026-10-30T13:01:02.334035+00:00"
+    "live_verified_at": "2026-10-30T13:05:51.381783+00:00",
+    "reconciled_existing_article": true
   },
   "backlog": [
     {
@@ -2473,7 +2474,8 @@
     "evidence_rebind_head_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591",
     "evidence_rebind_dispatched_at": "2026-10-30T10:51:26.381739+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 41043048749
+    "run_id": 41043048749,
+    "image_path": "/images/generated/blog/shared-laughter-couples-intimacy.png"
   },
   "long_video": {
     "attempt_count": 1,
