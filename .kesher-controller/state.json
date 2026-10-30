@@ -24,11 +24,11 @@
     "normalization_dispatched_at": "2026-10-30T10:43:56.286239+00:00",
     "normalization_run_id": 41042881887,
     "normalization_drift_count": 1,
-    "merge_dispatch_count": 1,
+    "merge_dispatch_count": 0,
     "merge_dispatch_at": "2026-10-30T10:54:01.051592+00:00",
-    "merge_run_id": 41043264964,
-    "last_refunded_auto_merge_run_id": 41043264964,
-    "deferred_auto_merge_refund_count": 1,
+    "merge_run_id": 41044115707,
+    "last_refunded_auto_merge_run_id": 41044115707,
+    "deferred_auto_merge_refund_count": 2,
     "last_normalization_drift_head_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591",
     "normalized_head_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591",
     "image_head_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591",
@@ -1745,15 +1745,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-30T06:01:40.772733+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
       "at": "2026-10-30T06:07:41.437317+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2425,9 +2416,22 @@
       "from": "article_image_rebinding",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-30T10:55:06.203559+00:00",
+      "from": "article_pr_open",
+      "to": "article_pr_open",
+      "reason": "successful_deferred_auto_merge_refunded",
+      "details": {
+        "run_id": 41044115707,
+        "pr_number": 1256,
+        "head_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591",
+        "merge_dispatch_count": 0,
+        "refund_count": 2
+      }
     }
   ],
-  "updated_at": "2026-10-30T10:53:57.581322+00:00",
+  "updated_at": "2026-10-30T10:55:14.855259+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2891,24 +2895,10 @@
     "short_signature_verified": true,
     "short_origin_verified": true
   },
-  "pending_dispatches": {
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
-      "cycle": "2026-10-30",
-      "inputs": {
-        "pr_number": "1256",
-        "slot": "2026-10-30"
-      },
-      "intent_at": "2026-10-30T10:53:42.201988+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41043264964,
-      "observed_active_run_id": 41044115707,
-      "dispatched_at": "2026-10-30T10:53:42.201988+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
-    "workflow": "Kesher Trusted Article Image",
-    "run_id": 41043803873,
+    "workflow": "Auto-merge Kesher article PRs",
+    "run_id": 41044115707,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-30"
