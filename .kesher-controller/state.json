@@ -1,96 +1,20 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "complete",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41016077369,
-    "processed_run_id": 41011680978,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 1
-    },
+    "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 1,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-10-30T06:46:45.868614+00:00",
-    "watchdog": {
-      "identity": "2026-10-30",
-      "session_id": null,
-      "last_progress_at": "2026-10-30T06:01:39+00:00",
-      "last_fingerprint": null,
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-10-30",
-      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "retryable": true,
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Verified that the article contains 792 words and 5 headings, meeting the poli... — Verified that the article contains 792 words and 5 headings, meeting the policy requirements (700-1100 words, >= 5 headings).",
-      "session_id": "sessions/4793936354490616199",
-      "pr_url": "",
-      "github_run_id": "41011680978",
-      "completed_at": "2026-10-30T06:39:54.227855+00:00",
-      "diagnostic": {
-        "source": {
-          "name": "sources/github/yanivsa/kesher-website",
-          "owner": "yanivsa",
-          "repo": "kesher-website",
-          "default_branch": "main",
-          "main_available": true
-        },
-        "activity_count": 45,
-        "change_set_count": 43,
-        "change_set_fingerprints": [],
-        "last_agent_message": "",
-        "last_progress": "Verified that the article contains 792 words and 5 headings, meeting the poli... — Verified that the article contains 792 words and 5 headings, meeting the policy requirements (700-1100 words, >= 5 headings).",
-        "last_description": "",
-        "session_failed_reason": ""
-      }
-    },
-    "last_jules_session_id": "sessions/4793936354490616199",
-    "last_failed_run_id": 41011680978,
-    "resume_dispatches": 1,
-    "pr_number": 1255,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1255",
-    "current_pr_head_sha": "322d6b762c3c0bd9db5d4d13ed063294aed3facd",
-    "jules_head_sha": "3947d8ec255fe9e0b88a616539a004a04621f769",
-    "normalization_slot": "2026-10-30",
-    "normalization_dispatched_at": "2026-10-30T07:41:07.760385+00:00",
-    "normalization_run_id": 41021590556,
-    "normalized_head_sha": "322d6b762c3c0bd9db5d4d13ed063294aed3facd",
-    "image_head_sha": "322d6b762c3c0bd9db5d4d13ed063294aed3facd",
-    "merge_candidate_sha": "322d6b762c3c0bd9db5d4d13ed063294aed3facd",
-    "normalization_drift_count": 0,
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-10-30T07:51:19.914791+00:00",
-    "merge_run_id": 41022637302,
-    "last_refunded_auto_merge_run_id": 41022013016,
-    "deferred_auto_merge_refund_count": 1,
-    "slug": "first-grade-adjustment-difficulties",
-    "title": "קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים?",
-    "url": "https://kesher.saharoni.com/blog/first-grade-adjustment-difficulties",
-    "published_date": "2026-10-30",
-    "quality_content_sha256": "9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093",
-    "reconciled_existing_article": true,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-10-30T10:40:57.782144+00:00",
-    "quality_violations": [],
-    "live": true,
-    "last_deploy_dispatch_at": "2026-10-30T07:53:21.542229+00:00",
-    "next_deploy_retry_at": null,
-    "deploy_run_id": 41022839833,
-    "live_verified_at": "2026-10-30T10:41:22.167603+00:00"
+    "deploy_attempts": 0
   },
   "backlog": [
     {
@@ -1803,15 +1727,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T21:55:49.980530+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-10-29"
-      }
-    },
-    {
       "at": "2026-10-29T22:00:47.395492+00:00",
       "from": "article_generating",
       "to": "complete",
@@ -2477,199 +2392,54 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-30T10:43:35.153940+00:00",
+      "from": "complete",
+      "to": "article_needed",
+      "reason": "owner_run_now_cycle_started",
+      "details": {
+        "idea_id": "shared-laughter-couples-intimacy",
+        "publication_slot": "2026-10-30"
+      }
     }
   ],
   "updated_at": "2026-10-30T10:41:24.371368+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41021764393,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "LocalEditorial",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-30T07:42:49.009696+00:00",
-    "artifact_sha256": "84f528302c8cffdd73a3527475201470f6950090b218a307a72801bd8bbe2403",
-    "source_id": "local-editorial://first-grade-adjustment-difficulties/0",
-    "image_path": "/images/generated/blog/first-grade-adjustment-difficulties.png"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41023644026,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "31cf50d7-b528-479d-93ef-fbf586d808f4",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-30T08:01:06.843064+00:00",
-    "attempts": 1,
-    "item_id": "video-20261030-100202-9f216727f3",
-    "youtube_id": "jv3m3PC4RMw",
-    "youtube_url": "https://youtu.be/jv3m3PC4RMw",
-    "verified": true,
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 108.133,
-    "content_duration_seconds": 108.125,
-    "signature_duration_seconds": 3.0,
-    "signature_overlay": true,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "artifact_id": "31cf50d7-b528-479d-93ef-fbf586d808f4",
-    "source_id": "fec71b5d-8aeb-4a3f-bc36-ce76e93db961"
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41028723099,
-    "processed_run_id": 41024997449,
-    "provider_id": "65b14d17-79b5-4dae-8bdb-4f29316c7afa",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-30T08:46:34.413514+00:00",
-    "artifact_id": "65b14d17-79b5-4dae-8bdb-4f29316c7afa",
-    "source_id": "045f9992-ce45-444e-b21d-b941d2a04a32",
-    "adopted_from_long_item_id": null,
-    "watchdog": {
-      "identity": "short:first-grade-adjustment-difficulties:9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093:video-20261030-104910-9f216727f3-a2",
-      "hard_started_at": "2026-10-30T08:49:24.252216+00:00",
-      "last_progress_at": "2026-10-30T08:56:26.610605+00:00",
-      "last_fingerprint": "ba43df015110acf3ed5b3286edb809055b88ddf870a3677db96646af58cd735e",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    },
-    "last_run_conclusion": "success",
-    "source": {
-      "id": "first-grade-adjustment-difficulties",
-      "slug": "first-grade-adjustment-difficulties",
-      "title": "קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים?",
-      "date": "2026-10-30",
-      "category": "הדרכת הורים",
-      "subcategory": "הכנה לכיתה א",
-      "excerpt": "המעבר לכיתה א' יכול להיות מלווה בבכי, כעס או סירוב ללכת לבית הספר. איך נבדיל בין קושי זמני לנורות אזהרה, ומתי כדאי לפנות לצוות החינוכי.",
-      "canonical_url": "https://kesher.saharoni.com/blog/first-grade-adjustment-difficulties",
-      "content_sha256": "9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093",
-      "video_title": "קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים?",
-      "short_title": "קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים?",
-      "short_hook": "",
-      "youtube_metadata": {
-        "title": "קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים?",
-        "description": "המעבר לכיתה א' יכול להיות מלווה בבכי, כעס או סירוב ללכת לבית הספר. איך נבדיל בין קושי זמני לנורות אזהרה, ומתי כדאי לפנות לצוות החינוכי.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-adjustment-difficulties\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "הכנה לכיתה א"
-        ]
-      },
-      "short_youtube_metadata": {
-        "title": "בקצרה: קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים?",
-        "description": "המעבר לכיתה א' יכול להיות מלווה בבכי, כעס או סירוב ללכת לבית הספר. איך נבדיל בין קושי זמני לנורות אזהרה, ומתי כדאי לפנות לצוות החינוכי.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-adjustment-difficulties\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "הכנה לכיתה א"
-        ]
-      }
-    },
-    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-    "task_id": "65b14d17-79b5-4dae-8bdb-4f29316c7afa",
-    "raw_sha256": "0ad0e429e44598aa394d7b4b2c3d79ac3010dee9b45660abc898e8b77acfc791",
-    "final_sha256": "47767f19918a20cb775b6d038cdb5ec8ce1a36eef8bf3a8137b173ebb57df127",
-    "provider_raw_media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 720,
-      "height": 1280,
-      "duration": 79.4,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 1080,
-      "height": 1920,
-      "duration": 79.4,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "provider_video_format": "short",
-    "provider_native_short": true,
-    "provider_native_short_verified": true,
-    "provider_short_fallback_used": false,
-    "fresh_generation_attempt": 2,
-    "overview_provider_identity": {
-      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-      "source_id": "fec71b5d-8aeb-4a3f-bc36-ce76e93db961",
-      "task_id": "31cf50d7-b528-479d-93ef-fbf586d808f4",
-      "artifact_id": "31cf50d7-b528-479d-93ef-fbf586d808f4",
-      "raw_sha256": "9a1e1a15bfadc03397858f3efe383742d38ed864fe006ec508fa503579d9ed46"
-    },
-    "shared_provider_identity": null,
-    "short_start_seconds": 0.0,
-    "short_duration_seconds": 79.4,
-    "audio_provenance": {
-      "schema_version": 1,
-      "mode": "stream_copy",
-      "raw_sha256": "0ad0e429e44598aa394d7b4b2c3d79ac3010dee9b45660abc898e8b77acfc791",
-      "final_sha256": "47767f19918a20cb775b6d038cdb5ec8ce1a36eef8bf3a8137b173ebb57df127",
-      "raw_audio_sha256": "99b742f1448bea0514bd93767e9674627c9f7c4d01914410c958024ecd70aae5",
-      "final_audio_sha256": "99b742f1448bea0514bd93767e9674627c9f7c4d01914410c958024ecd70aae5",
-      "raw_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 79.458685
-      },
-      "final_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 79.458685
-      }
-    },
-    "signature_overlay": true,
-    "signature_provenance": {
-      "schema_version": 1,
-      "final_sha256": "47767f19918a20cb775b6d038cdb5ec8ce1a36eef8bf3a8137b173ebb57df127",
-      "raw_sha256": "0ad0e429e44598aa394d7b4b2c3d79ac3010dee9b45660abc898e8b77acfc791",
-      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-      "segment_sha256": "55991a5bbe13a07a078ec98cb35ddcabba10885bdb1af117da3a9798cbe95d25",
-      "source_duration_seconds": 79.4,
-      "final_duration_seconds": 79.4,
-      "start_seconds": 76.4,
-      "end_seconds": 79.4,
-      "audio_source_sha256": "0ad0e429e44598aa394d7b4b2c3d79ac3010dee9b45660abc898e8b77acfc791"
-    },
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "item_id": "video-20261030-104910-9f216727f3-a2",
-    "type": "article_short",
-    "youtube_id": "sXboa-21Wyo",
-    "youtube_url": "https://youtu.be/sXboa-21Wyo",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "55991a5bbe13a07a078ec98cb35ddcabba10885bdb1af117da3a9798cbe95d25",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3072,7 +2842,17 @@
       }
     }
   ],
-  "active_idea": null,
+  "active_idea": {
+    "idea_id": "shared-laughter-couples-intimacy",
+    "fingerprint": "51908c42600e7503eabaa016ab40076cff1ae306464b134debe49e3d301baa8a",
+    "topic_brief": "Direct owner-authored article already exists in open PR #1256 on branch publish/shared-laughter-couples-intimacy. Adopt and process this exact PR/slug; DO NOT create a new article, Jules session, duplicate PR, or duplicate provider item. Topic: ייעוץ זוגי: צחוק משותף כסנכרון חברתי של אינטימיות. Evidence: Kurtz & Algoe (2015) original 71-couple study, Greater Good Science Center summary, Hall (2017) meta-analysis. Preserve scientific correction: the couples study did not measure endorphins or neural synchrony. Service /services/couples. Continue after publication to same-identity Video Overview and 9:16 Short.",
+    "required_primary_keyword": "צחוק משותף בזוגיות",
+    "run_now": true,
+    "status": "claimed",
+    "requested_at": "2026-10-30T10:43:33.693213+00:00",
+    "publication_slot": "2026-10-30",
+    "claimed_at": "2026-10-30T10:43:35.153923+00:00"
+  },
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/first-grade-adjustment-difficulties",
     "overview_youtube_url": "https://youtu.be/jv3m3PC4RMw",
@@ -3082,21 +2862,7 @@
     "short_signature_verified": true,
     "short_origin_verified": true
   },
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-10-30",
-      "inputs": {
-        "slot": "2026-10-30",
-        "topic_brief": "אשכול מעבר לכיתה א. נושא/כאב: קושי מתמשך אחרי תחילת השנה: בכי, כעס, כאבי בטן, שינויי שינה או סירוב ללכת לבית הספר. להבדיל מהסתגלות רגילה ומהעמוד העתידי על סירוב בית ספר; להציע מיפוי, קשר עם הצוות ונורות אזהרה. אות ביקוש: Google Keyword Planner 17.10: 10–100. Canonical ID נדרש: first-grade-adjustment-difficulties. כותרת עבודה: קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לערב צוות/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודי הכנה/מוכנות/בשלות סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p1-first-grade-adjustment-difficulties\nRequired Primary Keyword: קשיי הסתגלות לכיתה א"
-      },
-      "intent_at": "2026-10-30T06:45:50.107755+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41011680978,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-30T06:45:50.107755+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
     "run_id": 41028723099,
@@ -3104,15 +2870,7 @@
     "source_slug": "first-grade-adjustment-difficulties",
     "slot": "2026-10-30"
   },
-  "processed_child_notifications": [
-    "Kesher Normalize Article PR:41021590556",
-    "Kesher Trusted Article Image:41021764393",
-    "Auto-merge Kesher article PRs:41022013016",
-    "Deploy to Cloudflare Pages:41022839833",
-    "Kesher Daily NotebookLM Video Overview:41023644026",
-    "Kesher Daily Article Short V4:41024997449",
-    "Kesher Daily Article Short V4:41028723099"
-  ],
+  "processed_child_notifications": [],
   "interventions": {
     "v5|first-grade-adjustment-difficulties|9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093|short": {
       "pipeline_id": "v5",
@@ -3128,5 +2886,278 @@
       "last_action": "progress_reset",
       "direct_takeover_required": false
     }
-  }
+  },
+  "owner_cycle_archive": [
+    {
+      "cycle": "2026-10-30",
+      "status": "complete",
+      "article": {
+        "attempt_count": 0,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 41016077369,
+        "processed_run_id": 41011680978,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {
+          "JULES_TIMEOUT_SESSION_ACTIVE": 1
+        },
+        "attempts": 0,
+        "deploy_attempts": 1,
+        "normalization_status": "complete",
+        "last_dispatch_at": "2026-10-30T06:46:45.868614+00:00",
+        "watchdog": {
+          "identity": "2026-10-30",
+          "session_id": null,
+          "last_progress_at": "2026-10-30T06:01:39+00:00",
+          "last_fingerprint": null,
+          "last_nudge_at": null,
+          "nudge_count": 0,
+          "worker_restart_count": 0,
+          "last_restart_at": null,
+          "last_restart_run_id": null
+        },
+        "last_run_conclusion": "failure",
+        "last_worker_result": {
+          "schema_version": 1,
+          "slot": "2026-10-30",
+          "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+          "retryable": true,
+          "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Verified that the article contains 792 words and 5 headings, meeting the poli... — Verified that the article contains 792 words and 5 headings, meeting the policy requirements (700-1100 words, >= 5 headings).",
+          "session_id": "sessions/4793936354490616199",
+          "pr_url": "",
+          "github_run_id": "41011680978",
+          "completed_at": "2026-10-30T06:39:54.227855+00:00",
+          "diagnostic": {
+            "source": {
+              "name": "sources/github/yanivsa/kesher-website",
+              "owner": "yanivsa",
+              "repo": "kesher-website",
+              "default_branch": "main",
+              "main_available": true
+            },
+            "activity_count": 45,
+            "change_set_count": 43,
+            "change_set_fingerprints": [],
+            "last_agent_message": "",
+            "last_progress": "Verified that the article contains 792 words and 5 headings, meeting the poli... — Verified that the article contains 792 words and 5 headings, meeting the policy requirements (700-1100 words, >= 5 headings).",
+            "last_description": "",
+            "session_failed_reason": ""
+          }
+        },
+        "last_jules_session_id": "sessions/4793936354490616199",
+        "last_failed_run_id": 41011680978,
+        "resume_dispatches": 1,
+        "pr_number": 1255,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1255",
+        "current_pr_head_sha": "322d6b762c3c0bd9db5d4d13ed063294aed3facd",
+        "jules_head_sha": "3947d8ec255fe9e0b88a616539a004a04621f769",
+        "normalization_slot": "2026-10-30",
+        "normalization_dispatched_at": "2026-10-30T07:41:07.760385+00:00",
+        "normalization_run_id": 41021590556,
+        "normalized_head_sha": "322d6b762c3c0bd9db5d4d13ed063294aed3facd",
+        "image_head_sha": "322d6b762c3c0bd9db5d4d13ed063294aed3facd",
+        "merge_candidate_sha": "322d6b762c3c0bd9db5d4d13ed063294aed3facd",
+        "normalization_drift_count": 0,
+        "merge_dispatch_count": 1,
+        "merge_dispatch_at": "2026-10-30T07:51:19.914791+00:00",
+        "merge_run_id": 41022637302,
+        "last_refunded_auto_merge_run_id": 41022013016,
+        "deferred_auto_merge_refund_count": 1,
+        "slug": "first-grade-adjustment-difficulties",
+        "title": "קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים?",
+        "url": "https://kesher.saharoni.com/blog/first-grade-adjustment-difficulties",
+        "published_date": "2026-10-30",
+        "quality_content_sha256": "9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093",
+        "reconciled_existing_article": true,
+        "quality_status": "passed",
+        "quality_checked_at": "2026-10-30T10:40:57.782144+00:00",
+        "quality_violations": [],
+        "live": true,
+        "last_deploy_dispatch_at": "2026-10-30T07:53:21.542229+00:00",
+        "next_deploy_retry_at": null,
+        "deploy_run_id": 41022839833,
+        "live_verified_at": "2026-10-30T10:41:22.167603+00:00"
+      },
+      "long_video": {
+        "attempt_count": 1,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 41023644026,
+        "processed_run_id": null,
+        "provider_id": "31cf50d7-b528-479d-93ef-fbf586d808f4",
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "overview_evidence_required": true,
+        "last_dispatch_at": "2026-10-30T08:01:06.843064+00:00",
+        "attempts": 1,
+        "item_id": "video-20261030-100202-9f216727f3",
+        "youtube_id": "jv3m3PC4RMw",
+        "youtube_url": "https://youtu.be/jv3m3PC4RMw",
+        "verified": true,
+        "technical_verified": true,
+        "visual_pipeline": "remotion-v1-notebooklm-audio",
+        "codec": "h264",
+        "width": 1280,
+        "height": 720,
+        "duration": 108.133,
+        "content_duration_seconds": 108.125,
+        "signature_duration_seconds": 3.0,
+        "signature_overlay": true,
+        "signature_fullscreen": true,
+        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+        "artifact_id": "31cf50d7-b528-479d-93ef-fbf586d808f4",
+        "source_id": "fec71b5d-8aeb-4a3f-bc36-ce76e93db961"
+      },
+      "short": {
+        "attempt_count": 2,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 41028723099,
+        "processed_run_id": 41024997449,
+        "provider_id": "65b14d17-79b5-4dae-8bdb-4f29316c7afa",
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "last_dispatch_at": "2026-10-30T08:46:34.413514+00:00",
+        "artifact_id": "65b14d17-79b5-4dae-8bdb-4f29316c7afa",
+        "source_id": "045f9992-ce45-444e-b21d-b941d2a04a32",
+        "adopted_from_long_item_id": null,
+        "watchdog": {
+          "identity": "short:first-grade-adjustment-difficulties:9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093:video-20261030-104910-9f216727f3-a2",
+          "hard_started_at": "2026-10-30T08:49:24.252216+00:00",
+          "last_progress_at": "2026-10-30T08:56:26.610605+00:00",
+          "last_fingerprint": "ba43df015110acf3ed5b3286edb809055b88ddf870a3677db96646af58cd735e",
+          "recovery_count": 0,
+          "last_recovery_at": null
+        },
+        "last_run_conclusion": "success",
+        "source": {
+          "id": "first-grade-adjustment-difficulties",
+          "slug": "first-grade-adjustment-difficulties",
+          "title": "קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים?",
+          "date": "2026-10-30",
+          "category": "הדרכת הורים",
+          "subcategory": "הכנה לכיתה א",
+          "excerpt": "המעבר לכיתה א' יכול להיות מלווה בבכי, כעס או סירוב ללכת לבית הספר. איך נבדיל בין קושי זמני לנורות אזהרה, ומתי כדאי לפנות לצוות החינוכי.",
+          "canonical_url": "https://kesher.saharoni.com/blog/first-grade-adjustment-difficulties",
+          "content_sha256": "9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093",
+          "video_title": "קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים?",
+          "short_title": "קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים?",
+          "short_hook": "",
+          "youtube_metadata": {
+            "title": "קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים?",
+            "description": "המעבר לכיתה א' יכול להיות מלווה בבכי, כעס או סירוב ללכת לבית הספר. איך נבדיל בין קושי זמני לנורות אזהרה, ומתי כדאי לפנות לצוות החינוכי.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-adjustment-difficulties\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+            "tags": [
+              "הדרכת הורים",
+              "הכנה לכיתה א"
+            ]
+          },
+          "short_youtube_metadata": {
+            "title": "בקצרה: קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים?",
+            "description": "המעבר לכיתה א' יכול להיות מלווה בבכי, כעס או סירוב ללכת לבית הספר. איך נבדיל בין קושי זמני לנורות אזהרה, ומתי כדאי לפנות לצוות החינוכי.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/first-grade-adjustment-difficulties\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+            "tags": [
+              "הדרכת הורים",
+              "הכנה לכיתה א"
+            ]
+          }
+        },
+        "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+        "task_id": "65b14d17-79b5-4dae-8bdb-4f29316c7afa",
+        "raw_sha256": "0ad0e429e44598aa394d7b4b2c3d79ac3010dee9b45660abc898e8b77acfc791",
+        "final_sha256": "47767f19918a20cb775b6d038cdb5ec8ce1a36eef8bf3a8137b173ebb57df127",
+        "provider_raw_media": {
+          "codec": "h264",
+          "audio_codec": "aac",
+          "width": 720,
+          "height": 1280,
+          "duration": 79.4,
+          "format": "mov,mp4,m4a,3gp,3g2,mj2"
+        },
+        "media": {
+          "codec": "h264",
+          "audio_codec": "aac",
+          "width": 1080,
+          "height": 1920,
+          "duration": 79.4,
+          "format": "mov,mp4,m4a,3gp,3g2,mj2"
+        },
+        "provider_video_format": "short",
+        "provider_native_short": true,
+        "provider_native_short_verified": true,
+        "provider_short_fallback_used": false,
+        "fresh_generation_attempt": 2,
+        "overview_provider_identity": {
+          "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+          "source_id": "fec71b5d-8aeb-4a3f-bc36-ce76e93db961",
+          "task_id": "31cf50d7-b528-479d-93ef-fbf586d808f4",
+          "artifact_id": "31cf50d7-b528-479d-93ef-fbf586d808f4",
+          "raw_sha256": "9a1e1a15bfadc03397858f3efe383742d38ed864fe006ec508fa503579d9ed46"
+        },
+        "shared_provider_identity": null,
+        "short_start_seconds": 0.0,
+        "short_duration_seconds": 79.4,
+        "audio_provenance": {
+          "schema_version": 1,
+          "mode": "stream_copy",
+          "raw_sha256": "0ad0e429e44598aa394d7b4b2c3d79ac3010dee9b45660abc898e8b77acfc791",
+          "final_sha256": "47767f19918a20cb775b6d038cdb5ec8ce1a36eef8bf3a8137b173ebb57df127",
+          "raw_audio_sha256": "99b742f1448bea0514bd93767e9674627c9f7c4d01914410c958024ecd70aae5",
+          "final_audio_sha256": "99b742f1448bea0514bd93767e9674627c9f7c4d01914410c958024ecd70aae5",
+          "raw_timing": {
+            "codec": "aac",
+            "sample_rate": 44100,
+            "channels": 1,
+            "start_seconds": 0.0,
+            "duration_seconds": 79.458685
+          },
+          "final_timing": {
+            "codec": "aac",
+            "sample_rate": 44100,
+            "channels": 1,
+            "start_seconds": 0.0,
+            "duration_seconds": 79.458685
+          }
+        },
+        "signature_overlay": true,
+        "signature_provenance": {
+          "schema_version": 1,
+          "final_sha256": "47767f19918a20cb775b6d038cdb5ec8ce1a36eef8bf3a8137b173ebb57df127",
+          "raw_sha256": "0ad0e429e44598aa394d7b4b2c3d79ac3010dee9b45660abc898e8b77acfc791",
+          "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+          "segment_sha256": "55991a5bbe13a07a078ec98cb35ddcabba10885bdb1af117da3a9798cbe95d25",
+          "source_duration_seconds": 79.4,
+          "final_duration_seconds": 79.4,
+          "start_seconds": 76.4,
+          "end_seconds": 79.4,
+          "audio_source_sha256": "0ad0e429e44598aa394d7b4b2c3d79ac3010dee9b45660abc898e8b77acfc791"
+        },
+        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+        "item_id": "video-20261030-104910-9f216727f3-a2",
+        "type": "article_short",
+        "youtube_id": "sXboa-21Wyo",
+        "youtube_url": "https://youtu.be/sXboa-21Wyo",
+        "verified": true,
+        "portrait_verified": true,
+        "signature_verified": true,
+        "signature_asset": "signature-mask.svg",
+        "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+        "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+        "technical_verified": true,
+        "signature_duration_seconds": 3.0,
+        "signature_fullscreen": true,
+        "signature_video_sha256": "55991a5bbe13a07a078ec98cb35ddcabba10885bdb1af117da3a9798cbe95d25",
+        "source_mode": "direct-short",
+        "width": 1080,
+        "height": 1920
+      },
+      "archived_at": "2026-10-30T10:43:35.153909+00:00",
+      "reason": "owner_run_now_cycle_started"
+    }
+  ]
 }
