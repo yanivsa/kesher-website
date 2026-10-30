@@ -31,6 +31,11 @@ on:
         description: Exact durable video item ID for upload identity lock
         required: false
         type: string
+      skip_jules_advisory:
+        description: Skip optional Jules advisory review for direct-owner takeover
+        required: false
+        default: true
+        type: boolean
 
 permissions:
   actions: write
@@ -434,7 +439,7 @@ jobs:
           python -u scripts/kesher_daily_pipeline.py --remotion-rebuild-item "${{ inputs.rebuild_item_id }}"
 
       - name: Detect pending advisory Jules review
-        if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' || inputs.operation == 'recovery' }}
+        if: ${{ (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' || inputs.operation == 'recovery') && inputs.skip_jules_advisory != true }}
         id: pending
         continue-on-error: true
         run: |
