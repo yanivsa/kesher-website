@@ -90,7 +90,7 @@
     "last_deploy_dispatch_at": "2026-10-30T07:53:21.542229+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41022839833,
-    "live_verified_at": "2026-10-30T08:15:47.813781+00:00"
+    "live_verified_at": "2026-10-30T08:16:01.812610+00:00"
   },
   "backlog": [
     {
@@ -1803,35 +1803,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T18:59:00.264042+00:00",
-      "from": "article_pr_open",
-      "to": "article_pr_open",
-      "reason": "successful_deferred_auto_merge_refunded",
-      "details": {
-        "run_id": 40935672919,
-        "pr_number": 1252,
-        "head_sha": "cf0b099de36966b3da6db3c002f03ccef630f5ac",
-        "merge_dispatch_count": 0,
-        "refund_count": 11
-      }
-    },
-    {
-      "at": "2026-10-29T18:59:57.861875+00:00",
-      "from": "article_pr_open",
-      "to": "article_deploying",
-      "reason": "public article check failed; recovery deploy dispatched",
-      "details": {
-        "http_status": 404,
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-10-29T19:07:10.186881+00:00",
-      "from": "article_deploying",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-29T19:07:39.799811+00:00",
       "from": "article_live",
       "to": "video_running",
@@ -2557,9 +2528,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-10-30T08:16:01.812649+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-30T08:16:02.254853+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-30T08:16:04.200033+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-10-30T08:13:22.557669+00:00",
+  "updated_at": "2026-10-30T08:16:04.200053+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
