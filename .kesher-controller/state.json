@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "article_pr_open",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -16,7 +16,7 @@
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-30T06:46:45.868614+00:00",
     "watchdog": {
@@ -86,7 +86,9 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-10-30T07:53:16.036400+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-10-30T07:53:21.542229+00:00",
+    "next_deploy_retry_at": "2026-10-30T07:58:12.953132+00:00"
   },
   "backlog": [
     {
@@ -2566,9 +2568,19 @@
         "merge_dispatch_count": 0,
         "refund_count": 1
       }
+    },
+    {
+      "at": "2026-10-30T07:53:21.542271+00:00",
+      "from": "article_pr_open",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-30T07:51:16.251301+00:00",
+  "updated_at": "2026-10-30T07:53:21.542279+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -3004,7 +3016,7 @@
     "claimed_at": "2026-10-30T06:01:37.063106+00:00"
   },
   "deliverables": {
-    "article_url": null,
+    "article_url": "https://kesher.saharoni.com/blog/first-grade-adjustment-difficulties",
     "overview_youtube_url": null,
     "short_youtube_url": null,
     "overview_edit_verified": false,
@@ -3031,10 +3043,11 @@
       "cycle": "2026-10-30",
       "inputs": {},
       "intent_at": "2026-10-30T07:53:12.953132+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "cfa48abdbed4c0be0b4ab1d7408afd7d4c1ab09a"
+      "observed_active_run_id": 41022839833,
+      "dispatch_head_sha": "cfa48abdbed4c0be0b4ab1d7408afd7d4c1ab09a",
+      "dispatched_at": "2026-10-30T07:53:12.953132+00:00"
     }
   },
   "last_child_notification": {
