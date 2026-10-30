@@ -2611,7 +2611,15 @@
     "last_dispatch_at": "2026-10-30T08:13:22.557634+00:00",
     "artifact_id": "31cf50d7-b528-479d-93ef-fbf586d808f4",
     "source_id": "fec71b5d-8aeb-4a3f-bc36-ce76e93db961",
-    "adopted_from_long_item_id": "video-20261030-100202-9f216727f3"
+    "adopted_from_long_item_id": "video-20261030-100202-9f216727f3",
+    "watchdog": {
+      "identity": "short:first-grade-adjustment-difficulties:9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093:video-20261030-101444-9f216727f3",
+      "hard_started_at": "2026-10-30T08:14:53.193740+00:00",
+      "last_progress_at": "2026-10-30T08:20:47.516019+00:00",
+      "last_fingerprint": "a1819cfa82b6ed5eed7b2c26604cca9d956f275179c46feb73cf13a8d23b0e09",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
