@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1758,15 +1758,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-30T06:55:11.324456+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
       "at": "2026-10-30T07:01:32.964645+00:00",
       "from": "article_generating",
       "to": "article_normalizing",
@@ -2440,9 +2431,21 @@
         "item_id": "video-20261030-130605-860a1ecbaa",
         "task_id": null
       }
+    },
+    {
+      "at": "2026-10-30T11:31:19.931940+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_recovery",
+      "reason": "long-form provider stalled; resumed the same durable provider identity",
+      "details": {
+        "item_id": "video-20261030-130605-860a1ecbaa",
+        "task_id": null,
+        "slug": "shared-laughter-couples-intimacy",
+        "content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947"
+      }
     }
   ],
-  "updated_at": "2026-10-30T11:26:17.142202+00:00",
+  "updated_at": "2026-10-30T11:31:19.931946+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2463,7 +2466,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "generating",
+    "status": "running",
     "last_error": null,
     "next_retry_at": "2026-10-30T11:19:09.364815+00:00",
     "run_id": 41045496070,
@@ -2473,7 +2476,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-30T11:05:14.928557+00:00",
+    "last_dispatch_at": "2026-10-30T11:31:19.931920+00:00",
     "attempts": 1,
     "last_run_conclusion": "failure",
     "item_id": "video-20261030-130605-860a1ecbaa",
@@ -2490,9 +2493,11 @@
       "hard_started_at": "2026-10-30T11:06:05.559920+00:00",
       "last_progress_at": "2026-10-30T11:10:43.586803+00:00",
       "last_fingerprint": "fd1261116f532bc5494f711824504b32cf3f5e25eb4a4dcd0a780ee71f765656",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    }
+      "recovery_count": 1,
+      "last_recovery_at": "2026-10-30T11:30:52.209332+00:00"
+    },
+    "pending_resume_ready": false,
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
@@ -2938,9 +2943,10 @@
         "target_item_id": "video-20261030-130605-860a1ecbaa"
       },
       "intent_at": "2026-10-30T11:30:52.209332+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41045496070,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41048663197,
+      "dispatched_at": "2026-10-30T11:30:52.209332+00:00"
     }
   },
   "last_child_notification": {
@@ -2977,11 +2983,12 @@
       "strike_count": 1,
       "last_check_token": "2026-10-30T13",
       "last_fingerprint": "a2a47fda0a2ccbca2a2d27ea4dba1e7d858bd84129d36021d3232bcf67f153c6",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
+      "last_controller_action_token": "recovery:1:2026-10-30T11:30:52.209332+00:00",
+      "controller_action_observed": true,
       "last_observed_at": "2026-10-30T11:30:52.209332+00:00",
-      "last_action": "observe_controller",
-      "direct_takeover_required": false
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-10-30T11:30:52.209332+00:00"
     }
   },
   "owner_cycle_archive": [
