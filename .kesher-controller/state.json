@@ -84,13 +84,13 @@
     "quality_content_sha256": "9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-30T08:10:51.053865+00:00",
+    "quality_checked_at": "2026-10-30T08:12:44.302896+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-30T07:53:21.542229+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41022839833,
-    "live_verified_at": "2026-10-30T08:11:17.698427+00:00"
+    "live_verified_at": "2026-10-30T08:12:45.972206+00:00"
   },
   "backlog": [
     {
@@ -2589,16 +2589,33 @@
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-30T08:17:40.128989+00:00",
     "run_id": 41023644026,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "31cf50d7-b528-479d-93ef-fbf586d808f4",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-10-30T08:01:06.843064+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "item_id": "video-20261030-100202-9f216727f3",
+    "youtube_id": "jv3m3PC4RMw",
+    "youtube_url": "https://youtu.be/jv3m3PC4RMw",
+    "verified": true,
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 108.133,
+    "content_duration_seconds": 108.125,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "artifact_id": "31cf50d7-b528-479d-93ef-fbf586d808f4",
+    "source_id": "fec71b5d-8aeb-4a3f-bc36-ce76e93db961"
   },
   "short": {
     "attempt_count": 0,
@@ -3028,27 +3045,13 @@
       "previous_run_id": 41011680978,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-30T06:45:50.107755+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-30",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "first-grade-adjustment-difficulties",
-        "target_content_sha256": "9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093"
-      },
-      "intent_at": "2026-10-30T08:00:15.327467+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41023644026,
-      "dispatched_at": "2026-10-30T08:00:15.327467+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 41022839833,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 41023644026,
     "conclusion": "success",
-    "source_slug": null,
+    "source_slug": "first-grade-adjustment-difficulties",
     "slot": "2026-10-30"
   },
   "processed_child_notifications": [
