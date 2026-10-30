@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -17,13 +17,18 @@
     "deploy_attempts": 0,
     "pr_number": 1256,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1256",
-    "current_pr_head_sha": "f5269435d44d83750079b793775df4eba5abf44a",
+    "current_pr_head_sha": "e53c9b5f18564de7b3bcf261e27cd6dd2e7c9978",
     "jules_head_sha": "f3f855fe5456070a1a978cee21ce01a80e5909cb",
     "normalization_status": "complete",
     "normalization_slot": "2026-10-30",
     "normalization_dispatched_at": "2026-10-30T10:43:56.286239+00:00",
     "normalization_run_id": 41042881887,
-    "normalized_head_sha": "f5269435d44d83750079b793775df4eba5abf44a"
+    "normalized_head_sha": "e53c9b5f18564de7b3bcf261e27cd6dd2e7c9978",
+    "image_head_sha": "e53c9b5f18564de7b3bcf261e27cd6dd2e7c9978",
+    "merge_candidate_sha": "e53c9b5f18564de7b3bcf261e27cd6dd2e7c9978",
+    "normalization_drift_count": 0,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null
   },
   "backlog": [
     {
@@ -1736,12 +1741,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-29T22:03:02.285321+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
       "at": "2026-10-29T22:03:02.286531+00:00",
       "from": "article_needed",
       "to": "v5_migrated",
@@ -2412,21 +2411,29 @@
         "attempt": 1,
         "pr_number": 1256
       }
+    },
+    {
+      "at": "2026-10-30T10:46:56.942277+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-30T10:45:17.211920+00:00",
+  "updated_at": "2026-10-30T10:46:56.942296+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41043048749,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "LocalEditorial",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-30T10:45:17.211888+00:00"
+    "last_dispatch_at": "2026-10-30T10:45:17.211888+00:00",
+    "artifact_sha256": "86ca34d77adf582cae413bdc6e82b78d900c473c7ae200ec8f80750679548721",
+    "source_id": "local-editorial://shared-laughter-couples-intimacy/4"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2874,22 +2881,22 @@
     "short_origin_verified": true
   },
   "pending_dispatches": {
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
       "cycle": "2026-10-30",
       "inputs": {
-        "pr_number": "1256"
+        "pr_number": "1256",
+        "slot": "2026-10-30"
       },
-      "intent_at": "2026-10-30T10:44:56.917043+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-30T10:46:19.286216+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": 41043048749,
-      "dispatched_at": "2026-10-30T10:44:56.917043+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Normalize Article PR",
-    "run_id": 41042881887,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 41043048749,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-30"
