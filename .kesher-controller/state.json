@@ -39,7 +39,7 @@
     "published_date": "2026-10-30",
     "quality_content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-30T10:58:05.658925+00:00",
+    "quality_checked_at": "2026-10-30T11:00:51.173731+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-10-30T10:58:11.411762+00:00",
@@ -2443,7 +2443,7 @@
       }
     }
   ],
-  "updated_at": "2026-10-30T10:58:11.411814+00:00",
+  "updated_at": "2026-10-30T11:00:53.963126+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
