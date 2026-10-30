@@ -2448,7 +2448,8 @@
     "source_id": "local-editorial://shared-laughter-couples-intimacy/4",
     "evidence_rebind_head_sha": "2437c419092fa4a67bf04a6dc0f83e0bdbac7591",
     "evidence_rebind_dispatched_at": "2026-10-30T10:51:26.381739+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
+    "run_id": 41043048749
   },
   "long_video": {
     "attempt_count": 0,
