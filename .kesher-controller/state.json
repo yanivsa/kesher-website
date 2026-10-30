@@ -3053,5 +3053,21 @@
     "Deploy to Cloudflare Pages:41022839833",
     "Kesher Daily NotebookLM Video Overview:41023644026",
     "Kesher Daily Article Short V4:41024997449"
-  ]
+  ],
+  "interventions": {
+    "v5|first-grade-adjustment-difficulties|9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093|short": {
+      "pipeline_id": "v5",
+      "slug": "first-grade-adjustment-difficulties",
+      "content_sha256": "9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-10-30T10",
+      "last_fingerprint": "c85face2e118bc0e9376dc308b7f9e9c806d1ff8afac9c40694c08cedd10e84b",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-30T08:40:48.869488+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
