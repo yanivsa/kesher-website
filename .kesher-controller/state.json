@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "article_image_rebinding",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -75,7 +75,9 @@
     "last_refunded_auto_merge_run_id": 41237767458,
     "deferred_auto_merge_refund_count": 2,
     "last_normalization_drift_head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1",
-    "normalized_head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1"
+    "normalized_head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1",
+    "image_head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1",
+    "merge_candidate_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1"
   },
   "backlog": [
     {
@@ -1788,15 +1790,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-31T07:16:10.835231+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-31T07:21:08.143669+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2682,12 +2675,18 @@
         "pr_number": 1261,
         "head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1"
       }
+    },
+    {
+      "at": "2026-10-31T20:47:39.465009+00:00",
+      "from": "article_image_rebinding",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-31T20:46:17.908074+00:00",
+  "updated_at": "2026-10-31T20:47:39.465026+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -3170,6 +3169,18 @@
       "previous_run_id": 41217241439,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-31T16:41:01.697169+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-31",
+      "inputs": {
+        "pr_number": "1261",
+        "slot": "2026-10-31"
+      },
+      "intent_at": "2026-10-31T20:47:10.458392+00:00",
+      "status": "intent",
+      "previous_run_id": 41237767458,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3186,5 +3197,17 @@
     "Kesher Normalize Article PR:41237474722",
     "Kesher Trusted Article Image:41237609039",
     "Auto-merge Kesher article PRs:41237767458"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
