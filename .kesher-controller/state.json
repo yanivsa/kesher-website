@@ -1791,18 +1791,9 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1261 exhausted 3 total article content attempts (initial + 2 repairs)",
-    "at": "2026-10-31T20:31:11.675043+00:00"
+    "at": "2026-10-31T20:36:29.038090+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-31T06:56:15.230131+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
     {
       "at": "2026-10-31T07:01:15.595766+00:00",
       "from": "blocked",
@@ -2686,9 +2677,18 @@
       "details": {
         "message": "PR #1261 exhausted 3 total article content attempts (initial + 2 repairs)"
       }
+    },
+    {
+      "at": "2026-10-31T20:36:29.038107+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1261 exhausted 3 total article content attempts (initial + 2 repairs)"
+      }
     }
   ],
-  "updated_at": "2026-10-31T20:31:11.675064+00:00",
+  "updated_at": "2026-10-31T20:36:29.038113+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
