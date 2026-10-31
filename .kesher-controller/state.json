@@ -72,9 +72,11 @@
     "image_head_sha": "b524ab174878f08151c17e42d3be013b7e0ec281",
     "merge_candidate_sha": "b524ab174878f08151c17e42d3be013b7e0ec281",
     "normalization_drift_count": 0,
-    "merge_dispatch_count": 1,
+    "merge_dispatch_count": 0,
     "merge_dispatch_at": "2026-10-31T19:57:42.802957+00:00",
-    "merge_run_id": 41236626056
+    "merge_run_id": 41236626056,
+    "last_refunded_auto_merge_run_id": 41236626056,
+    "deferred_auto_merge_refund_count": 1
   },
   "backlog": [
     {
@@ -1787,15 +1789,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-31T05:56:03.001301+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-31T06:01:05.250967+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2670,6 +2663,19 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-31T19:59:23.090312+00:00",
+      "from": "article_pr_open",
+      "to": "article_pr_open",
+      "reason": "successful_deferred_auto_merge_refunded",
+      "details": {
+        "run_id": 41236626056,
+        "pr_number": 1261,
+        "head_sha": "b524ab174878f08151c17e42d3be013b7e0ec281",
+        "merge_dispatch_count": 0,
+        "refund_count": 1
+      }
     }
   ],
   "updated_at": "2026-10-31T19:57:39.675452+00:00",
