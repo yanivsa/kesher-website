@@ -2738,7 +2738,15 @@
     "last_dispatch_at": "2026-10-31T12:09:23.412122+00:00",
     "artifact_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913",
     "source_id": "7bd3534f-a904-4dea-8a8b-49cbb0a1f63e",
-    "adopted_from_long_item_id": "video-20261030-130605-860a1ecbaa"
+    "adopted_from_long_item_id": "video-20261030-130605-860a1ecbaa",
+    "watchdog": {
+      "identity": "short:shared-laughter-couples-intimacy:860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947:video-20261031-141202-860a1ecbaa",
+      "hard_started_at": "2026-10-31T12:12:10.029126+00:00",
+      "last_progress_at": "2026-10-31T12:19:00.547625+00:00",
+      "last_fingerprint": "f0e4dce03c7db66f97ddb6fb285b7079fd9db40f09c7f891531bcac14278b693",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
