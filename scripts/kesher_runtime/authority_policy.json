@@ -755,8 +755,8 @@
         "call_chain": {
           ".github/scripts/select-ci-profile.py": "6e9c8676df8cf50b32645887019eb86e0ed8cc82b57d7244da18347723a4537f",
           ".github/scripts/validate-article-images.py": "b3e510c703049a56a1fc8d43d6f6ac5e79bbd524c255c621982c5a1309b39851",
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "playwright.config.ts": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c",
           "scripts/article_claim_quality.py": "c5bf5977c2ec432e58d6c3d14e4ab75714bcbc701f34b880630fd4e72662f585",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
@@ -938,8 +938,8 @@
       ],
       "review": {
         "call_chain": {
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "playwright.config.ts": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
@@ -1044,8 +1044,8 @@
       "review": {
         "call_chain": {
           ".github/scripts/watch-jules-session.py": "6b631f0779fc658934ca00d55d278fcbaee67d4d547b8e503b5adadaa6c6c6d8",
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -1081,8 +1081,8 @@
       "review": {
         "call_chain": {
           ".github/scripts/watch-jules-session.py": "6b631f0779fc658934ca00d55d278fcbaee67d4d547b8e503b5adadaa6c6c6d8",
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -1118,8 +1118,8 @@
       "review": {
         "call_chain": {
           ".github/scripts/watch-jules-session.py": "6b631f0779fc658934ca00d55d278fcbaee67d4d547b8e503b5adadaa6c6c6d8",
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -1155,8 +1155,8 @@
       "review": {
         "call_chain": {
           ".github/scripts/watch-jules-session.py": "6b631f0779fc658934ca00d55d278fcbaee67d4d547b8e503b5adadaa6c6c6d8",
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -1189,8 +1189,8 @@
       ],
       "review": {
         "call_chain": {
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -1243,8 +1243,8 @@
       ],
       "review": {
         "call_chain": {
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "playwright.config.ts": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
@@ -1488,8 +1488,8 @@
         "call_chain": {
           ".github/scripts/validate-article-images.py": "b3e510c703049a56a1fc8d43d6f6ac5e79bbd524c255c621982c5a1309b39851",
           ".github/scripts/validate-article-pr.py": "2f175c5a6067b039755409a19bf1858f2fc56c922413ff94d6052d8ad4572ff3",
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "playwright.config.ts": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c",
           "remotion-kesher/package-lock.json": "055b1708e3255442c84bdf5f27553059e5652a412a2d5d9f6966a95467d2de2c",
           "remotion-kesher/package.json": "3d5f0bb968dd34bb46f6abb03fa83dd91939fd768f0fd46d66be4558c7d61c4d",
@@ -1596,8 +1596,8 @@
       ],
       "review": {
         "call_chain": {
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_diagnostics.py": "af9e1479a94410c028bae0404e8596852e01cf12634c513b33b27dd29f998854",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
@@ -2039,8 +2039,8 @@
       ],
       "review": {
         "call_chain": {
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
           "scripts/kesher_daily_pipeline.py": "58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f",
@@ -2130,8 +2130,8 @@
       ],
       "review": {
         "call_chain": {
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
           "scripts/kesher_daily_pipeline.py": "58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f",
@@ -2480,8 +2480,8 @@
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-daily-video-20261001.yml.txt": "afb887dafb213c249a31c6c08bb62b6207f37f8585cae3a9a7cd5c7a691c01e4",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-goal-dispatch-20261001.yml.txt": "c0cae4082dad55da1fbe9587069fffe5e380b99946ff0812febda43ceac6bf07",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-short-v4-20261001.yml.txt": "3700c60bcf1c1470998492afdc035e9641903b6f1e122bd7a23a7e28ab5a2e9b",
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/article_claim_quality.py": "c5bf5977c2ec432e58d6c3d14e4ab75714bcbc701f34b880630fd4e72662f585",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
@@ -2672,8 +2672,8 @@
       ],
       "review": {
         "call_chain": {
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/article_claim_quality.py": "c5bf5977c2ec432e58d6c3d14e4ab75714bcbc701f34b880630fd4e72662f585",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
@@ -2829,8 +2829,8 @@
       ],
       "review": {
         "call_chain": {
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "remotion-kesher/package-lock.json": "055b1708e3255442c84bdf5f27553059e5652a412a2d5d9f6966a95467d2de2c",
           "remotion-kesher/package.json": "3d5f0bb968dd34bb46f6abb03fa83dd91939fd768f0fd46d66be4558c7d61c4d",
           "remotion-kesher/src/KesherVideo.tsx": "f00672be16e10ba890f24adb282c9d8bc4843a18a2a7ed267aa6fe3912ed13f9",
@@ -2992,8 +2992,8 @@
         "call_chain": {
           ".github/workflows/kesher-daily-video.yml": "aad09563022b442f28a5a1818d65be37b3a3a3620a0cdcefdbb68a41eba4949e",
           ".github/workflows/kesher-short-v4.yml": "a0566d23b3c3563bd9973fcb4b42b9063a3a5b48fb199cf585a0a9461de4629a",
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/article_claim_quality.py": "c5bf5977c2ec432e58d6c3d14e4ab75714bcbc701f34b880630fd4e72662f585",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
@@ -3126,8 +3126,8 @@
       ],
       "review": {
         "call_chain": {
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/article_claim_quality.py": "c5bf5977c2ec432e58d6c3d14e4ab75714bcbc701f34b880630fd4e72662f585",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
@@ -3225,8 +3225,8 @@
       "review": {
         "call_chain": {
           ".github/scripts/validate-article-pr.py": "2f175c5a6067b039755409a19bf1858f2fc56c922413ff94d6052d8ad4572ff3",
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_diagnostics.py": "af9e1479a94410c028bae0404e8596852e01cf12634c513b33b27dd29f998854",
           "scripts/jules_article_runner.py": "e9ac2e1d3125184965a05f531751b3108aba0df3720feed5ea3abef4d7caaeae",
@@ -3488,8 +3488,8 @@
       ],
       "review": {
         "call_chain": {
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
           "scripts/kesher_article_normalizer.py": "1b27b1b4d77370684bdca98915d875a46034387423af75c310a10b241332a2c1",
@@ -3687,8 +3687,8 @@
         "call_chain": {
           ".github/scripts/article-image-worker-v4.py": "658ebf8fc94ffaf73e6eb7bc215b359b347bf0eeeee367edf275bed3a7e31683",
           ".github/scripts/validate-article-images.py": "b3e510c703049a56a1fc8d43d6f6ac5e79bbd524c255c621982c5a1309b39851",
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
@@ -3816,8 +3816,8 @@
       ],
       "review": {
         "call_chain": {
-          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "bfa0efe8ff401efa4b5090e4ea5048eeb42b4ec13277879cd05f4a2e354edb60",
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_video_reviewer.py": "c0609d4f9075ab3095dfd19d3729ee03126f35f6c0c48dad5a2e466d9e6c50f9",
           "scripts/jules_video_reviewer_v3.py": "abc9b5071dc2c9aeb78403cfc4802bdf6969ae342f8477c9afafbb2175e0ef08",
