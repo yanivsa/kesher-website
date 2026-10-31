@@ -3,10 +3,12 @@ name: Kesher Master Owner Foundation CI
 on:
   pull_request:
     paths:
+      - 'scripts/kesher_runtime/controller.py'
       - 'scripts/kesher_runtime/master_intent.py'
       - 'scripts/kesher_runtime/master_intent_entry.py'
       - 'scripts/kesher_runtime/article_quiescence.py'
       - 'scripts/kesher_runtime/article_worker.py'
+      - 'tests/test_controller_fact_reconcile.py'
       - 'tests/test_master_intent.py'
       - 'tests/test_master_article_origin.py'
       - 'tests/test_article_worker_lazy_jules.py'
@@ -29,6 +31,6 @@ jobs:
       - name: Install focused runtime dependencies
         run: python -m pip install -r scripts/requirements-article.txt
       - name: Compile changed runtime modules
-        run: python -m py_compile scripts/kesher_runtime/master_intent.py scripts/kesher_runtime/master_intent_entry.py scripts/kesher_runtime/article_quiescence.py scripts/kesher_runtime/article_worker.py
+        run: python -m py_compile scripts/kesher_runtime/controller.py scripts/kesher_runtime/master_intent.py scripts/kesher_runtime/master_intent_entry.py scripts/kesher_runtime/article_quiescence.py scripts/kesher_runtime/article_worker.py
       - name: Run focused Master Owner tests
-        run: python -m unittest tests.test_master_intent tests.test_master_article_origin tests.test_article_worker_lazy_jules -v
+        run: python -m unittest tests.test_controller_fact_reconcile tests.test_master_intent tests.test_master_article_origin tests.test_article_worker_lazy_jules -v
