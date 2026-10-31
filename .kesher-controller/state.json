@@ -1760,18 +1760,9 @@
     "stage": "long_video",
     "code": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
     "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-10-31T09:51:03.397763+00:00"
+    "at": "2026-10-31T09:55:55.083052+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-31T01:41:00.719335+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
     {
       "at": "2026-10-31T01:46:09.456373+00:00",
       "from": "blocked",
@@ -2662,9 +2653,18 @@
       "details": {
         "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-10-31T09:55:55.083058+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
+      "details": {
+        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
+      }
     }
   ],
-  "updated_at": "2026-10-31T09:51:03.397774+00:00",
+  "updated_at": "2026-10-31T09:55:55.083063+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
