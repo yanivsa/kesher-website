@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 2,
-    "status": "exhausted",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41220918541,
@@ -63,21 +63,19 @@
     "resume_dispatches": 1,
     "pr_number": 1261,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1261",
-    "current_pr_head_sha": "389467f265edaf3cb3df609b23f1c8174cef544c",
+    "current_pr_head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1",
     "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
     "normalization_slot": "2026-10-31",
     "normalization_dispatched_at": "2026-10-31T20:08:19.526209+00:00",
     "normalization_run_id": 41237474722,
-    "normalization_drift_count": 0,
+    "normalization_drift_count": 1,
     "merge_dispatch_count": 0,
-    "merge_dispatch_at": "2026-10-31T20:11:55.612846+00:00",
+    "merge_dispatch_at": null,
     "merge_run_id": 41237767458,
     "last_refunded_auto_merge_run_id": 41237767458,
     "deferred_auto_merge_refund_count": 2,
-    "last_normalization_drift_head_sha": "3923de5e2b279b3834df203df319578352028d9a",
-    "normalized_head_sha": "389467f265edaf3cb3df609b23f1c8174cef544c",
-    "image_head_sha": "389467f265edaf3cb3df609b23f1c8174cef544c",
-    "merge_candidate_sha": "389467f265edaf3cb3df609b23f1c8174cef544c"
+    "last_normalization_drift_head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1",
+    "normalized_head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1"
   },
   "backlog": [
     {
@@ -1787,22 +1785,8 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "PR #1261 exhausted 3 total article content attempts (initial + 2 repairs)",
-    "at": "2026-10-31T20:41:34.308086+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-31T07:06:04.099805+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
     {
       "at": "2026-10-31T07:10:59.614530+00:00",
       "from": "blocked",
@@ -2686,12 +2670,23 @@
       "details": {
         "message": "PR #1261 exhausted 3 total article content attempts (initial + 2 repairs)"
       }
+    },
+    {
+      "at": "2026-10-31T20:45:55.590967+00:00",
+      "from": "blocked",
+      "to": "article_pr_open",
+      "reason": "late_article_head_after_merge_exhaustion_recovery",
+      "details": {
+        "pr_number": 1261,
+        "previous_head_sha": "389467f265edaf3cb3df609b23f1c8174cef544c",
+        "current_head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1"
+      }
     }
   ],
   "updated_at": "2026-10-31T20:41:34.308110+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2704,7 +2699,6 @@
     "source_id": "local-editorial://poop-only-in-diaper/7",
     "evidence_rebind_head_sha": "3923de5e2b279b3834df203df319578352028d9a",
     "evidence_rebind_dispatched_at": "2026-10-31T20:10:01.865760+00:00",
-    "run_id": 41236514277,
     "evidence_rebind_mode": "reattach_prior_trusted_artifact"
   },
   "long_video": {
@@ -3174,6 +3168,19 @@
       "previous_run_id": 41217241439,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-31T16:41:01.697169+00:00"
+    },
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
+      "cycle": "2026-10-31",
+      "inputs": {
+        "pr_number": "1261",
+        "recovery_only": "true",
+        "expected_head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1"
+      },
+      "intent_at": "2026-10-31T20:45:52.545960+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
