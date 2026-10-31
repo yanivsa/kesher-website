@@ -123,8 +123,9 @@
       },
       "failure_class": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
       "fingerprint": "e689bba1f0f018cb65c615ea2915f666bde45f7dc74b56acebb1a1f1dd21adb2",
+      "reason": "uncertain_create_not_discoverable",
       "stage": "long_video",
-      "status": "uncertain"
+      "status": "human_blocker"
     },
     "a55e72df1cc6537a972077115734392a28b2dd15eb9fd5f051adf8639bae9fb0": {
       "acquisition_started_at": "2026-10-29T15:20:53.070156+00:00",
