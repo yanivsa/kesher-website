@@ -63,7 +63,7 @@
     "resume_dispatches": 1,
     "pr_number": 1261,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1261",
-    "current_pr_head_sha": "5b462250750d614d574af42ea23610237ab28217",
+    "current_pr_head_sha": "f1bcc5a192be556e4ee2e2b097caa1280b1bf6e2",
     "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
     "normalization_slot": "2026-10-31",
     "normalization_dispatched_at": "2026-10-31T18:01:14.804239+00:00",
@@ -3108,6 +3108,18 @@
       "previous_run_id": 41217241439,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-31T16:41:01.697169+00:00"
+    },
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
+      "cycle": "2026-10-31",
+      "inputs": {
+        "pr_number": "1261",
+        "slot": "2026-10-31"
+      },
+      "intent_at": "2026-10-31T18:15:40.403451+00:00",
+      "status": "intent",
+      "previous_run_id": 41227325029,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3116,5 +3128,17 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-31"
+  },
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   }
 }
