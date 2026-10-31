@@ -908,15 +908,13 @@ def add_source(state: dict[str, Any], item: dict[str, Any], *, allow_exact_recov
         title = f"kesher:{state.context.target.key}:{item.get('fresh_generation_attempt', 1)}"
 
     def create_source():
-        source_file = STATE_DIR / f"{item['id']}-source.txt"
-        source_file.write_text(body, encoding="utf-8")
         try:
             payload = run_notebooklm(
-                ["source", "add", str(source_file), "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
+                ["source", "add", body, "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
                 timeout=180,
             )
         except PipelineError as exc:
-            print(f"WARN: source add via file failed ({exc}), pruning older notebook sources and retrying inline...")
+            print(f"WARN: source add failed ({exc}), pruning older notebook sources and retrying...")
             prune_notebooklm_sources(NOTEBOOK_ID, keep_count=25)
             payload = run_notebooklm(
                 ["source", "add", body, "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
