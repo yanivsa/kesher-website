@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 2,
+    "attempt_count": 3,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-31T22:50:54.255162+00:00",
+    "next_retry_at": null,
     "run_id": 41246615281,
     "processed_run_id": 41246615281,
     "provider_id": null,
@@ -15,10 +15,10 @@
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 2
     },
-    "attempts": 2,
+    "attempts": 3,
     "deploy_attempts": 0,
     "normalization_status": "complete",
-    "last_dispatch_at": "2026-10-31T22:05:56.159221+00:00",
+    "last_dispatch_at": "2026-10-31T22:56:00.035341+00:00",
     "watchdog": {
       "identity": "2026-10-31",
       "session_id": null,
@@ -1790,15 +1790,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-31T08:15:58.511814+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-31T08:21:04.125385+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2688,9 +2679,19 @@
       "details": {
         "retry_at": "2026-10-31T22:50:54.255162+00:00"
       }
+    },
+    {
+      "at": "2026-10-31T22:56:00.035371+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "claimed scheduled article retry dispatched on original publication slot",
+      "details": {
+        "attempt": 3,
+        "publication_slot": "2026-10-31"
+      }
     }
   ],
-  "updated_at": "2026-10-31T22:50:54.305270+00:00",
+  "updated_at": "2026-10-31T22:56:00.035380+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -3185,9 +3186,10 @@
         "topic_brief": "אשכול גמילה שהסתבכה. נושא/כאב: ילד שכבר עושה פיפי בשירותים אבל מבקש חיתול רק בשביל קקי; הורים מרגישים שהתהליך תקוע ונכנסים למאבק. להתייחס לפחד, פרטיות, הרגל, כאב והתאפקות בלי להניח סיבה אחת. אות ביקוש: Observed query signal: SERP + repeated parent questions. Canonical ID נדרש: poop-only-in-diaper. כותרת עבודה: קקי רק בחיתול: למה הילד מסרב לעשות בשירותים ומה אפשר לעשות? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לרופא/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p2-poop-only-in-diaper\nRequired Primary Keyword: קקי רק בחיתול"
       },
       "intent_at": "2026-10-31T22:55:42.826161+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41246615281,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-31T22:55:42.826161+00:00"
     }
   },
   "last_child_notification": {
