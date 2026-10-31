@@ -2232,35 +2232,6 @@
       "role": "retired",
       "registration_id": 351484777
     },
-    ".github/workflows/kesher-exact-short-metadata-recovery-20261006.yml": {
-      "capabilities": [
-        "read",
-        "youtube_metadata"
-      ],
-      "resources": [
-        "youtube.metadata"
-      ],
-      "role": "separate_infrastructure",
-      "registration_id": 376735017,
-      "definition_sha256": "e86663c06966b1bf3af7cf2ebffcd3b333f9905a93ea9ef7ce933a0a40abf1b0",
-      "review": {
-        "call_chain": {
-          ".github/workflows/kesher-exact-short-metadata-recovery-20261006.yml": "e86663c06966b1bf3af7cf2ebffcd3b333f9905a93ea9ef7ce933a0a40abf1b0"
-        },
-        "credential_services": {
-          "YOUTUBE_CLIENT_ID": "youtube",
-          "YOUTUBE_CLIENT_SECRET": "youtube",
-          "YOUTUBE_REFRESH_TOKEN": "youtube"
-        },
-        "credentials": [
-          "YOUTUBE_CLIENT_ID",
-          "YOUTUBE_CLIENT_SECRET",
-          "YOUTUBE_REFRESH_TOKEN"
-        ],
-        "dispatches": [],
-        "note": "Reviewed unchanged current-main inline OAuth exchange, channel/video GET and videos PUT metadata writer. Shared YouTube metadata mutation requires independently enforced resource separation; the frozen governance exception grants no production admission."
-      }
-    },
     ".github/workflows/kesher-final-attempt-fallback.yml": {
       "capabilities": [
         "read",
@@ -2769,199 +2740,6 @@
       "role": "retired",
       "registration_id": 354432081
     },
-    ".github/workflows/kesher-master-intent-shadow.yml": {
-      "capabilities": [
-        "read"
-      ],
-      "definition_sha256": "a0a5dd699c4bfa6b27c23f53518fd3b4efdf46f8eccbaf5d2bec66bb5634c771",
-      "resources": [],
-      "review": {
-        "call_chain": {
-          ".github/scripts/validate-article-pr.py": "2f175c5a6067b039755409a19bf1858f2fc56c922413ff94d6052d8ad4572ff3",
-          "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
-          "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
-          "scripts/kesher_article_normalizer.py": "1b27b1b4d77370684bdca98915d875a46034387423af75c310a10b241332a2c1",
-          "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
-          "scripts/kesher_content_controller.py": "e010910f3c9ae291df592cfc0998971211fe7fb33e430898244e88b5553118a0",
-          "scripts/kesher_content_controller_entry.py": "3fea2a16c15675f1951188d7ba67232c8f5276359170f15f32b344dc3601542a",
-          "scripts/kesher_content_controller_stabilized.py": "7ac68a689435152f36ae8038ef014ad80f6875681680800d0a934da01e2004a4",
-          "scripts/kesher_content_controller_v3_best_effort.py": "f8ef5ca350f4cf20be94aa1c952ae3f64b0ff703d177c16513b974f531db9e72",
-          "scripts/kesher_content_controller_v3_entry.py": "e56c49a7e337317ce5c747a47391c91615a5eec59d98f6aa961c62e4b81db732",
-          "scripts/kesher_content_controller_v4.py": "60bbb27d7263902504676e88d7586fd90a8070942547a721fff9856dec044227",
-          "scripts/kesher_content_controller_v5.py": "4f5d493842370881877b9489836e172824b0ebafa57e3e398baf57cd3f2ac493",
-          "scripts/kesher_content_controller_v5_runtime.py": "56d0c3e7ecba8778812352f21499e50e717c522c1b6e7d24bc1ac666bed48608",
-          "scripts/kesher_content_controller_v5_runtime_base.py": "eb4292d4429bfc7f816221acc814532d0da998a11436d792f89d8a5a23022c11",
-          "scripts/kesher_controller_repair.py": "1633fff2e4efe3b28e3625fcdd19fc4b1c3c666404da5da78d1983512cf50796",
-          "scripts/kesher_daily_pipeline.py": "58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f",
-          "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
-          "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
-          "scripts/kesher_master_supervisor.py": "368f00b850acbb92b9421732462fe466fa2be47057c3c601d2a8ad9cc7d2a8b1",
-          "scripts/kesher_master_supervisor_live.py": "badb4b46a8915f0944fe1995558e592f675b297737711813a65d4a28fe3f4cc8",
-          "scripts/kesher_master_supervisor_shadow.py": "21e9c69cb0c03bc7d6b67b985ed1e1a660716ab39d0725aa99d1f91d6f60b8e7",
-          "scripts/kesher_publication_manifest.py": "733eea18c989bf24277694f73465c765ceb4713cccd22996b293346c65fa5afb",
-          "scripts/kesher_runtime/__init__.py": "87abad5c98b1cc707accd87163d96a30b945e8057b5d798eacaebbe07da99cef",
-          "scripts/kesher_runtime/article_deploy.py": "44478ec6881ca4e5b6ae766bf33a2dc4bfb8b333ec7957063ab3da8ba208b760",
-          "scripts/kesher_runtime/article_image_worker.py": "4175edd11be879ecd698802bbc9a119060a74afef3302e96f985ea1ae995a284",
-          "scripts/kesher_runtime/article_merge.py": "b5c21968aadbbe5cc7184e1d2beed7d9d57b2489c1088fba4d9e95038cfb6fd7",
-          "scripts/kesher_runtime/article_merge_observer.py": "66180a37643ced73e8c28cd8db38294cfe94e296c6a93a509a56dc2afd2c82a1",
-          "scripts/kesher_runtime/article_normalize_worker.py": "1f6f2426e64af0d8917370f57fd2019b4d4f9c5505f553fcb372e7cb601bdc8d",
-          "scripts/kesher_runtime/article_quiescence.py": "51ca2257d97e575187106a341c89bd80fc3d458805c6a902b39fd4742d9a34a7",
-          "scripts/kesher_runtime/article_validation.py": "59a4e8639775f133439c01672a2ead5c484ce62bc00ea61ce30f4676d5ac6227",
-          "scripts/kesher_runtime/article_verification.py": "5f16c8ed232505c8bcb12e4249631eccc7fc8e845c781cf075030357dbc53987",
-          "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
-          "scripts/kesher_runtime/authority_client.py": "2faf396e363269382163aafcb73bc80863e630bff551d3e22f872fc42b779e36",
-          "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc",
-          "scripts/kesher_runtime/cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
-          "scripts/kesher_runtime/controller.py": "e695d6513ea25b0565517e15be5feb8b0205f0b6cdeb37bb7e8e5c1e0d1604fe",
-          "scripts/kesher_runtime/controller_entry.py": "562237507f626c669aba71ecdd9704beab5e6f71bd4f614f2521751c8618bff2",
-          "scripts/kesher_runtime/cutover_auth.py": "27dbbd703912499e0ca553d774bca027844f3e7db116a22d787e54f4ba007a80",
-          "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
-          "scripts/kesher_runtime/cutover_host.py": "9da32d13cd7c8616caeb36160452ba1fcf3981ae611817b6bed72af64b87c99c",
-          "scripts/kesher_runtime/cutover_service.py": "7b5bcc7af5391111ccd7a491ca427e7244edb32a438c5fcd81f196a13df898de",
-          "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
-          "scripts/kesher_runtime/deployment_observer.py": "00ef07c6db2f5c129187833fdb703be659d382186538fcb4d73aff487dd07bf4",
-          "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
-          "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
-          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
-          "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
-          "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858",
-          "scripts/kesher_runtime/legacy_retirement.py": "90555d274327debeac3e16adb50ac5e011f38cf353f78e888f228040a3027d4c",
-          "scripts/kesher_runtime/master_intent.py": "79363a5f941a34520de1bed13e2eb4649e77ba1079597a8fda0cd52750773d2b",
-          "scripts/kesher_runtime/master_intent_entry.py": "df53bf9cfec53bae78cb729bc65efa32ea7bd94bab1cae2018cdfec1692087e4",
-          "scripts/kesher_runtime/media_audit.py": "4d2affee1981ef26f098c209087ac8bcab00cc837883e0fe03e4bab789a1be67",
-          "scripts/kesher_runtime/media_observer.py": "3d4b1e761b3c77296f1fcb2b3ed1a57d04bd590ed68b5e963f22277b2a8d6b26",
-          "scripts/kesher_runtime/media_publication.py": "85004c226175d94264219892dc8806ab9b4fad01b91ef42728c3862421084c6b",
-          "scripts/kesher_runtime/media_state.py": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65",
-          "scripts/kesher_runtime/migration.py": "dffe62f3f56ff66e4afc0e73e15e54b647adb1759d93ceab263a2a0e52b8884c",
-          "scripts/kesher_runtime/observe.py": "8ace67492f9684e3e8a9313c9bcea9f833b40de0f265fbc16a9c8f821f75d35b",
-          "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
-          "scripts/kesher_runtime/output_artifacts.py": "5bd90501e017d00d78f25195800542e7c9f9acf49b2a06b8751ff2f67c7ac5e0",
-          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
-          "scripts/kesher_runtime/provider.py": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f",
-          "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
-          "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
-          "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "1ea3aa350e6283c726b77fd9e1474fd2369ea4c8a0ec7df75e213924953d341e",
-          "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
-          "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
-          "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
-          "scripts/kesher_video_asset_resolver.py": "0de08234ae8a1ef08c79d9d9634f7b04131dc40d8a8cb22d238f831a0c671d8b",
-          "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
-          "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
-          "scripts/requirements-article.txt": "8c620822e39bbd1233c03fd0296879f1f58dbc5a1f4366f6650c3d3c7cb32a77"
-        },
-        "credential_services": {
-          "GITHUB_TOKEN": "github"
-        },
-        "credentials": [
-          "GITHUB_TOKEN"
-        ],
-        "dispatches": [],
-        "note": "Exact workflow permissions, inline API reads and local transitive call chain reviewed. Diagnostic execution is read-only: no protected mutation permission, no dispatch target, no state write, and no provider creation capability."
-      },
-      "role": "diagnostic"
-    },
-    ".github/workflows/kesher-master-owner-foundation-ci.yml": {
-      "capabilities": [
-        "read"
-      ],
-      "definition_sha256": "7e01783dd002ea4a9abc4bd1270bf533e67e80e6fb7221090d53fb037acc997b",
-      "resources": [],
-      "review": {
-        "call_chain": {
-          ".github/scripts/validate-article-pr.py": "2f175c5a6067b039755409a19bf1858f2fc56c922413ff94d6052d8ad4572ff3",
-          "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
-          "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
-          "scripts/kesher_article_normalizer.py": "1b27b1b4d77370684bdca98915d875a46034387423af75c310a10b241332a2c1",
-          "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
-          "scripts/kesher_content_controller.py": "e010910f3c9ae291df592cfc0998971211fe7fb33e430898244e88b5553118a0",
-          "scripts/kesher_content_controller_entry.py": "3fea2a16c15675f1951188d7ba67232c8f5276359170f15f32b344dc3601542a",
-          "scripts/kesher_content_controller_stabilized.py": "7ac68a689435152f36ae8038ef014ad80f6875681680800d0a934da01e2004a4",
-          "scripts/kesher_content_controller_v3_best_effort.py": "f8ef5ca350f4cf20be94aa1c952ae3f64b0ff703d177c16513b974f531db9e72",
-          "scripts/kesher_content_controller_v3_entry.py": "e56c49a7e337317ce5c747a47391c91615a5eec59d98f6aa961c62e4b81db732",
-          "scripts/kesher_content_controller_v4.py": "60bbb27d7263902504676e88d7586fd90a8070942547a721fff9856dec044227",
-          "scripts/kesher_content_controller_v5.py": "4f5d493842370881877b9489836e172824b0ebafa57e3e398baf57cd3f2ac493",
-          "scripts/kesher_content_controller_v5_runtime.py": "56d0c3e7ecba8778812352f21499e50e717c522c1b6e7d24bc1ac666bed48608",
-          "scripts/kesher_content_controller_v5_runtime_base.py": "eb4292d4429bfc7f816221acc814532d0da998a11436d792f89d8a5a23022c11",
-          "scripts/kesher_controller_repair.py": "1633fff2e4efe3b28e3625fcdd19fc4b1c3c666404da5da78d1983512cf50796",
-          "scripts/kesher_daily_pipeline.py": "58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f",
-          "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
-          "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
-          "scripts/kesher_master_supervisor.py": "368f00b850acbb92b9421732462fe466fa2be47057c3c601d2a8ad9cc7d2a8b1",
-          "scripts/kesher_master_supervisor_live.py": "badb4b46a8915f0944fe1995558e592f675b297737711813a65d4a28fe3f4cc8",
-          "scripts/kesher_master_supervisor_shadow.py": "21e9c69cb0c03bc7d6b67b985ed1e1a660716ab39d0725aa99d1f91d6f60b8e7",
-          "scripts/kesher_publication_manifest.py": "733eea18c989bf24277694f73465c765ceb4713cccd22996b293346c65fa5afb",
-          "scripts/kesher_runtime/__init__.py": "87abad5c98b1cc707accd87163d96a30b945e8057b5d798eacaebbe07da99cef",
-          "scripts/kesher_runtime/article_deploy.py": "44478ec6881ca4e5b6ae766bf33a2dc4bfb8b333ec7957063ab3da8ba208b760",
-          "scripts/kesher_runtime/article_image_worker.py": "4175edd11be879ecd698802bbc9a119060a74afef3302e96f985ea1ae995a284",
-          "scripts/kesher_runtime/article_merge.py": "b5c21968aadbbe5cc7184e1d2beed7d9d57b2489c1088fba4d9e95038cfb6fd7",
-          "scripts/kesher_runtime/article_merge_observer.py": "66180a37643ced73e8c28cd8db38294cfe94e296c6a93a509a56dc2afd2c82a1",
-          "scripts/kesher_runtime/article_normalize_worker.py": "1f6f2426e64af0d8917370f57fd2019b4d4f9c5505f553fcb372e7cb601bdc8d",
-          "scripts/kesher_runtime/article_quiescence.py": "51ca2257d97e575187106a341c89bd80fc3d458805c6a902b39fd4742d9a34a7",
-          "scripts/kesher_runtime/article_validation.py": "59a4e8639775f133439c01672a2ead5c484ce62bc00ea61ce30f4676d5ac6227",
-          "scripts/kesher_runtime/article_verification.py": "5f16c8ed232505c8bcb12e4249631eccc7fc8e845c781cf075030357dbc53987",
-          "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
-          "scripts/kesher_runtime/authority_client.py": "2faf396e363269382163aafcb73bc80863e630bff551d3e22f872fc42b779e36",
-          "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc",
-          "scripts/kesher_runtime/cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
-          "scripts/kesher_runtime/controller.py": "e695d6513ea25b0565517e15be5feb8b0205f0b6cdeb37bb7e8e5c1e0d1604fe",
-          "scripts/kesher_runtime/controller_entry.py": "562237507f626c669aba71ecdd9704beab5e6f71bd4f614f2521751c8618bff2",
-          "scripts/kesher_runtime/cutover_auth.py": "27dbbd703912499e0ca553d774bca027844f3e7db116a22d787e54f4ba007a80",
-          "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
-          "scripts/kesher_runtime/cutover_host.py": "9da32d13cd7c8616caeb36160452ba1fcf3981ae611817b6bed72af64b87c99c",
-          "scripts/kesher_runtime/cutover_service.py": "7b5bcc7af5391111ccd7a491ca427e7244edb32a438c5fcd81f196a13df898de",
-          "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
-          "scripts/kesher_runtime/deployment_observer.py": "00ef07c6db2f5c129187833fdb703be659d382186538fcb4d73aff487dd07bf4",
-          "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
-          "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
-          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
-          "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
-          "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858",
-          "scripts/kesher_runtime/legacy_retirement.py": "90555d274327debeac3e16adb50ac5e011f38cf353f78e888f228040a3027d4c",
-          "scripts/kesher_runtime/master_intent.py": "79363a5f941a34520de1bed13e2eb4649e77ba1079597a8fda0cd52750773d2b",
-          "scripts/kesher_runtime/master_intent_entry.py": "df53bf9cfec53bae78cb729bc65efa32ea7bd94bab1cae2018cdfec1692087e4",
-          "scripts/kesher_runtime/media_audit.py": "4d2affee1981ef26f098c209087ac8bcab00cc837883e0fe03e4bab789a1be67",
-          "scripts/kesher_runtime/media_observer.py": "3d4b1e761b3c77296f1fcb2b3ed1a57d04bd590ed68b5e963f22277b2a8d6b26",
-          "scripts/kesher_runtime/media_publication.py": "85004c226175d94264219892dc8806ab9b4fad01b91ef42728c3862421084c6b",
-          "scripts/kesher_runtime/media_state.py": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65",
-          "scripts/kesher_runtime/migration.py": "dffe62f3f56ff66e4afc0e73e15e54b647adb1759d93ceab263a2a0e52b8884c",
-          "scripts/kesher_runtime/observe.py": "8ace67492f9684e3e8a9313c9bcea9f833b40de0f265fbc16a9c8f821f75d35b",
-          "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
-          "scripts/kesher_runtime/output_artifacts.py": "5bd90501e017d00d78f25195800542e7c9f9acf49b2a06b8751ff2f67c7ac5e0",
-          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
-          "scripts/kesher_runtime/provider.py": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f",
-          "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
-          "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
-          "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "1ea3aa350e6283c726b77fd9e1474fd2369ea4c8a0ec7df75e213924953d341e",
-          "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
-          "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
-          "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
-          "scripts/kesher_video_asset_resolver.py": "0de08234ae8a1ef08c79d9d9634f7b04131dc40d8a8cb22d238f831a0c671d8b",
-          "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
-          "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
-          "scripts/requirements-article.txt": "8c620822e39bbd1233c03fd0296879f1f58dbc5a1f4366f6650c3d3c7cb32a77",
-          "tests/test_article_worker_lazy_jules.py": "303ace7839c347112cdd39d5ec8022d7aaca5bc7175cb61b0839e1a4a7a3cb79",
-          "tests/test_controller_fact_reconcile.py": "e034b061e3f26b5a2693c01316caf33aadf30799a2a6cf3a4f87603ccdc893f5",
-          "tests/test_master_article_origin.py": "1a52e4b230e95f7c432281ec2efe0182b9a636c151354fb0fa459cd8f5e7875c",
-          "tests/test_master_intent.py": "c64b3af568a98d09aa64b73259145342f5062465c4e49618f2566a2553a85f40"
-        },
-        "credential_services": {},
-        "credentials": [],
-        "dispatches": [],
-        "note": "Exact workflow permissions, inline API reads and local transitive call chain reviewed. Diagnostic execution is read-only: no protected mutation permission, no dispatch target, no state write, and no provider creation capability."
-      },
-      "role": "diagnostic",
-      "registration_id": 403052684
-    },
     ".github/workflows/kesher-master-supervisor.yml": {
       "capabilities": [
         "branch_write",
@@ -3301,57 +3079,6 @@
         "note": "Exact ID/path retirement target. Direct parent token is github.token; indirect child capabilities/resources and reviewed local child inputs are inherited without claiming parent possesses child secrets. Inert candidate jobs do not retire the active registration or old runs. Require exact disabled registration and all five run statuses drained under persistent resource exclusion."
       },
       "role": "retired"
-    },
-    ".github/workflows/kesher-production-cutover.yml": {
-      "role": "handover",
-      "definition_sha256": "5295fb6326144ec4df95bb1644050c2850da3cf6581764fbb31bd5217c8724af",
-      "capabilities": [
-        "read",
-        "state_write",
-        "workflow_dispatch",
-        "capability_write",
-        "exclusion_write"
-      ],
-      "resources": [
-        "github.state",
-        "github.dispatch",
-        "jules.exclusion",
-        "notebooklm.exclusion",
-        "youtube.exclusion",
-        "cloudflare.exclusion",
-        "image_provider.exclusion"
-      ],
-      "review": {
-        "call_chain": {
-          "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
-          "scripts/kesher_runtime/cutover_auth.py": "27dbbd703912499e0ca553d774bca027844f3e7db116a22d787e54f4ba007a80",
-          "scripts/kesher_runtime/cutover_service.py": "7b5bcc7af5391111ccd7a491ca427e7244edb32a438c5fcd81f196a13df898de",
-          "scripts/kesher_runtime/cutover_gateway.py": "e8812d0d40bea7a8bae6bf23e3b7ea191dab5f05300d5b8ee8b33e6825b34e06",
-          "scripts/kesher_runtime/production_cutover.py": "1f6fdc9cc383f42ec9acb94c0d4baf2615b643ca89d7d0b5a3e13b31fa601a13",
-          "scripts/kesher_runtime/production_ports.py": "fcc4a12a2ed5572ae6930aac03616de9cda3f39a274921d2ecc04fdcba86c23b",
-          "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
-          "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
-          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
-          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
-          "scripts/kesher_runtime/authority_topology.py": "915eee8f050e0bbc9304ec39a88e970c88388506bbc5418fb3cb38327056f80d",
-          "scripts/kesher_runtime/migration.py": "dffe62f3f56ff66e4afc0e73e15e54b647adb1759d93ceab263a2a0e52b8884c",
-          "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
-          "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/legacy_retirement.py": "90555d274327debeac3e16adb50ac5e011f38cf353f78e888f228040a3027d4c",
-          "scripts/kesher_runtime/live_cutover.py": "f664174f6a861a9965e5e9dae2165ea3151ca6a120f0cae96126d9a9d706f4cb",
-          "scripts/kesher_runtime/authority_client.py": "2faf396e363269382163aafcb73bc80863e630bff551d3e22f872fc42b779e36",
-          "scripts/kesher_runtime/cutover_host.py": "9da32d13cd7c8616caeb36160452ba1fcf3981ae611817b6bed72af64b87c99c",
-          "scripts/requirements-cutover.txt": "0668f9baeedef3a43021fe4cbc6a963dd92f0dc10157102f105a073adecf550a",
-          "deploy/kesher-cutover.service": "0ca474ba7f12c8dbbeaed4337b21ee097ce112d70ce24b30ddf6e1a993e3ee9a"
-        },
-        "dispatches": [],
-        "credentials": [],
-        "credential_services": {},
-        "note": "Only manual exact-main epoch/revision-bound OIDC request to independently administered credential-owning cutover gateway. No provider credentials on runner, no generation/publication/activation. New registration ID requires independent post-merge binding before live admission."
-      }
     },
     ".github/workflows/kesher-remotion-evidence-repair.yml": {
       "capabilities": [
@@ -3700,182 +3427,6 @@
       "role": "diagnostic",
       "registration_id": 354686604
     },
-    ".github/workflows/kesher-targeted-media-recovery-dispatch.yml": {
-      "capabilities": [
-        "branch_write",
-        "capability_write",
-        "jules_continue",
-        "jules_create",
-        "provider_continue",
-        "provider_create",
-        "read",
-        "workflow_dispatch",
-        "youtube_metadata",
-        "youtube_upload"
-      ],
-      "definition_sha256": "ef12e7b71a5146700dfa2aef609129539b9461a317a77ac3e85c38ee446690a3",
-      "registration_id": 374765037,
-      "resources": [
-        "github.dispatch",
-        "github.refs",
-        "github.state",
-        "jules.sessions",
-        "notebooklm.jobs",
-        "youtube.metadata",
-        "youtube.objects"
-      ],
-      "review": {
-        "call_chain": {
-          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
-          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
-          "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
-          "scripts/jules_video_reviewer.py": "c0609d4f9075ab3095dfd19d3729ee03126f35f6c0c48dad5a2e466d9e6c50f9",
-          "scripts/jules_video_reviewer_v3.py": "abc9b5071dc2c9aeb78403cfc4802bdf6969ae342f8477c9afafbb2175e0ef08",
-          "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
-          "scripts/kesher_daily_pipeline.py": "58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f",
-          "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
-          "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
-          "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
-          "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
-          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
-          "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
-          "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "90555d274327debeac3e16adb50ac5e011f38cf353f78e888f228040a3027d4c",
-          "scripts/kesher_runtime/media_state.py": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65",
-          "scripts/kesher_runtime/migration.py": "dffe62f3f56ff66e4afc0e73e15e54b647adb1759d93ceab263a2a0e52b8884c",
-          "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
-          "scripts/kesher_runtime/output_artifacts.py": "5bd90501e017d00d78f25195800542e7c9f9acf49b2a06b8751ff2f67c7ac5e0",
-          "scripts/kesher_runtime/provider.py": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f",
-          "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
-          "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
-          "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "1ea3aa350e6283c726b77fd9e1474fd2369ea4c8a0ec7df75e213924953d341e",
-          "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
-          "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
-          "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
-          "scripts/kesher_video_asset_resolver.py": "0de08234ae8a1ef08c79d9d9634f7b04131dc40d8a8cb22d238f831a0c671d8b",
-          "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
-          "scripts/kesher_video_evidence_repair.py": "f7a53588468798a415ac176ee24cac4610f00215c9e1131c0226e6bd855dd531",
-          "scripts/kesher_video_reconcile.py": "ad2f2cca369f3aaf5f7db5c1d7beff9e572d87a4a0f46027b4065aa5355eaadd",
-          "scripts/kesher_video_upload_guard.py": "6bcd5fedeaa339d2d213cb4a957497b202c095ef77e9fa57a09a614df12b6ce7",
-          "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
-          "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
-          "scripts/prepare_jules_video_evidence.py": "54a8ef4ed1d9c082d59e975a08abf833e9fe99aece397c343c66ce675ced1712",
-          "scripts/requirements-video-cloud.txt": "682a6c18a81ae81f328fc3f91b0b58d77a3a494c14577e6b681c2f1a1a95f1ec",
-          "tests/kesher_daily_pipeline_suite.py": "093b6c280488db9661fa6ef2220ee1f0299ba7f0ded63c3eaa3037d9b254c221",
-          "tests/test_kesher_canonical_state.py": "1b2df228a1bec270e2124babfb977762430da6b1600ed0de9d6f886dac536f0a",
-          "tests/test_kesher_daily_pipeline.py": "3a818b7291ed7876a5af7ef37eb7c1bf320ddd488ea5104979e9c0de0ae76238",
-          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
-          "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
-          "tests/test_notebooklm_auth_precedence.py": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
-          "tests/test_production_contract_v3.py": "0d31bc9b6e4f5dd14721b4e7fa4c030397279f98644b5e6fa9db612701d1bb7a",
-          "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
-          "tests/test_video_reconcile.py": "72dd110cc5aa221e674aeb4f2757a00e57adf43e626f4d456d0a38986bd1c1ae",
-          "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
-          "tests/test_video_review_schema.py": "5f31d330ffce90b2b243b48a2ea0b4982b1ab7f2a64acf70f1420fd664b6187f",
-          "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc",
-          ".github/workflows/kesher-daily-video.yml": "aad09563022b442f28a5a1818d65be37b3a3a3620a0cdcefdbb68a41eba4949e",
-          "scripts/article_claim_quality.py": "c5bf5977c2ec432e58d6c3d14e4ab75714bcbc701f34b880630fd4e72662f585",
-          "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
-          "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
-          "scripts/kesher_article_normalizer.py": "1b27b1b4d77370684bdca98915d875a46034387423af75c310a10b241332a2c1",
-          "scripts/kesher_content_controller.py": "e010910f3c9ae291df592cfc0998971211fe7fb33e430898244e88b5553118a0",
-          "scripts/kesher_content_controller_entry.py": "3fea2a16c15675f1951188d7ba67232c8f5276359170f15f32b344dc3601542a",
-          "scripts/kesher_content_controller_stabilized.py": "7ac68a689435152f36ae8038ef014ad80f6875681680800d0a934da01e2004a4",
-          "scripts/kesher_content_controller_v3_best_effort.py": "f8ef5ca350f4cf20be94aa1c952ae3f64b0ff703d177c16513b974f531db9e72",
-          "scripts/kesher_content_controller_v3_entry.py": "e56c49a7e337317ce5c747a47391c91615a5eec59d98f6aa961c62e4b81db732",
-          "scripts/kesher_content_controller_v4.py": "60bbb27d7263902504676e88d7586fd90a8070942547a721fff9856dec044227",
-          "scripts/kesher_content_controller_v4_runtime.py": "c448e3a2c03143bf6f7ad0cc0c2c4bea885a4201e3735640b7ddacc8756989cd",
-          "scripts/kesher_content_controller_v5.py": "4f5d493842370881877b9489836e172824b0ebafa57e3e398baf57cd3f2ac493",
-          "scripts/kesher_content_controller_v5_runtime.py": "56d0c3e7ecba8778812352f21499e50e717c522c1b6e7d24bc1ac666bed48608",
-          "scripts/kesher_content_controller_v5_runtime_base.py": "eb4292d4429bfc7f816221acc814532d0da998a11436d792f89d8a5a23022c11",
-          "scripts/kesher_content_watchdog.py": "94964decde96d244685645186133898d9de7a431d43f228d2e784c09f7b5c2fc",
-          "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
-          "scripts/kesher_short_policy.py": "82ec1902ee7e8245f7a795ca3a685384169e4cdeec9706de4c343b08d3ba3ac9",
-          "scripts/kesher_three_strike_runtime.py": "6bdad32e4ff51bc2b641a0baa96ff7e734baa3c3475f79844ae296a0b4536e33",
-          "tests/test_pipeline_v4.py": "d2e315c85f441bc93a0914d6a56ceb6236947e5aa2ad4cab54a003f2e786b25f",
-          "tests/test_short_pipeline_v4.py": "8f5cc1baa0b43a3a793dc4d38a53f50dc98bd7ecf2c0f5b447ed25bf807f803e",
-          "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
-          "tests/test_v4_runtime_activation.py": "98b614126a9f1df68acd252ebf56de11472be8b38267e60430b1c7191fd7845e",
-          ".github/workflows/kesher-short-v4.yml": "a0566d23b3c3563bd9973fcb4b42b9063a3a5b48fb199cf585a0a9461de4629a",
-          ".github/workflows/kesher-targeted-media-recovery-dispatch.yml": "ef12e7b71a5146700dfa2aef609129539b9461a317a77ac3e85c38ee446690a3",
-          ".github/kesher-media-recovery-request.json": "016485d8aa02e28178dc033ce1e67a49a210fab0d65042739931a1f442090541",
-          "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93"
-        },
-        "credential_services": {
-          "GITHUB_TOKEN": "github"
-        },
-        "credentials": [
-          "GITHUB_TOKEN"
-        ],
-        "dispatch_bindings": {
-          ".github/workflows/kesher-daily-video.yml": {
-            "capabilities": [
-              "branch_write",
-              "capability_write",
-              "jules_continue",
-              "jules_create",
-              "provider_continue",
-              "provider_create",
-              "read",
-              "workflow_dispatch",
-              "youtube_metadata",
-              "youtube_upload"
-            ],
-            "definition_sha256": "aad09563022b442f28a5a1818d65be37b3a3a3620a0cdcefdbb68a41eba4949e",
-            "inputs": {
-              "operation": "full",
-              "target_slug": "$.github/kesher-media-recovery-request.json.target_slug"
-            },
-            "registration_id": 331086666,
-            "resources": [
-              "github.dispatch",
-              "github.refs",
-              "github.state",
-              "jules.sessions",
-              "notebooklm.jobs",
-              "youtube.metadata",
-              "youtube.objects"
-            ]
-          },
-          ".github/workflows/kesher-short-v4.yml": {
-            "capabilities": [
-              "branch_write",
-              "capability_write",
-              "provider_continue",
-              "provider_create",
-              "read",
-              "workflow_dispatch",
-              "youtube_metadata",
-              "youtube_upload"
-            ],
-            "definition_sha256": "a0566d23b3c3563bd9973fcb4b42b9063a3a5b48fb199cf585a0a9461de4629a",
-            "inputs": {
-              "derive_slug": "$.github/kesher-media-recovery-request.json.target_slug",
-              "operation": "full"
-            },
-            "registration_id": 349292838,
-            "resources": [
-              "github.dispatch",
-              "github.refs",
-              "github.state",
-              "notebooklm.jobs",
-              "youtube.metadata",
-              "youtube.objects"
-            ]
-          }
-        },
-        "dispatches": [
-          ".github/workflows/kesher-daily-video.yml",
-          ".github/workflows/kesher-short-v4.yml"
-        ],
-        "note": "Preserves exact9947d0c6 push/main recovery request, current-day exact-one-article selection and both operation=full child dispatches. Read-only exact-workflow/event state admission occurs before dispatch credentials. Only this reviewed dispatcher role may retain these exact two push paths before exclusion; it is an exact retirement target before VERIFIED. Child provider credentials and all indirect scopes remain fenced; no status/PR mutation scope invented."
-      },
-      "role": "retiring_dispatcher"
-    },
     ".github/workflows/kesher-task-supervisor-controller.yml": {
       "capabilities": [
         "read"
@@ -3900,41 +3451,6 @@
       },
       "role": "diagnostic",
       "registration_id": 345470959
-    },
-    ".github/workflows/kesher-video-advisory-review.yml": {
-      "capabilities": [
-        "artifact_write",
-        "branch_write",
-        "jules_continue",
-        "jules_create",
-        "read"
-      ],
-      "definition_sha256": "577799bef7529e9e7e71164024cbfe01fdcd4b9ba52ed763ee06c0e9743af481",
-      "resources": [
-        "github.refs",
-        "jules.sessions"
-      ],
-      "review": {
-        "call_chain": {
-          "scripts/jules_video_reviewer.py": "c0609d4f9075ab3095dfd19d3729ee03126f35f6c0c48dad5a2e466d9e6c50f9",
-          "scripts/jules_video_reviewer_v3.py": "abc9b5071dc2c9aeb78403cfc4802bdf6969ae342f8477c9afafbb2175e0ef08",
-          "scripts/kesher_daily_pipeline.py": "58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f",
-          "scripts/requirements-video-cloud.txt": "682a6c18a81ae81f328fc3f91b0b58d77a3a494c14577e6b681c2f1a1a95f1ec",
-          "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
-          "tests/test_video_review_schema.py": "5f31d330ffce90b2b243b48a2ea0b4982b1ab7f2a64acf70f1420fd664b6187f"
-        },
-        "credential_services": {
-          "GITHUB_TOKEN": "github",
-          "JULES_API_KEY": "jules"
-        },
-        "credentials": [
-          "GITHUB_TOKEN",
-          "JULES_API_KEY"
-        ],
-        "dispatches": [],
-        "note": "Strict asynchronous advisory video reviewer sidecar. Exact review-branch/evidence/item/content identities fail closed before evidence checkout or Jules credentials. It can persist only the advisory result artifact and delete only kesher-video-review-<run_id>; it has no publication, YouTube, provider, canonical-state or scheduler authority. At Schema-6 cutover it requires explicit resource separation proof or is classified retired."
-      },
-      "role": "separate_infrastructure"
     },
     ".github/workflows/kesher-video-canary-dispatch.yml": {
       "capabilities": [
@@ -4222,6 +3738,490 @@
       },
       "role": "separate_infrastructure",
       "registration_id": 337057199
+    },
+    ".github/workflows/kesher-production-cutover.yml": {
+      "role": "handover",
+      "definition_sha256": "5295fb6326144ec4df95bb1644050c2850da3cf6581764fbb31bd5217c8724af",
+      "capabilities": [
+        "read",
+        "state_write",
+        "workflow_dispatch",
+        "capability_write",
+        "exclusion_write"
+      ],
+      "resources": [
+        "github.state",
+        "github.dispatch",
+        "jules.exclusion",
+        "notebooklm.exclusion",
+        "youtube.exclusion",
+        "cloudflare.exclusion",
+        "image_provider.exclusion"
+      ],
+      "review": {
+        "call_chain": {
+          "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
+          "scripts/kesher_runtime/cutover_auth.py": "27dbbd703912499e0ca553d774bca027844f3e7db116a22d787e54f4ba007a80",
+          "scripts/kesher_runtime/cutover_service.py": "7b5bcc7af5391111ccd7a491ca427e7244edb32a438c5fcd81f196a13df898de",
+          "scripts/kesher_runtime/cutover_gateway.py": "e8812d0d40bea7a8bae6bf23e3b7ea191dab5f05300d5b8ee8b33e6825b34e06",
+          "scripts/kesher_runtime/production_cutover.py": "1f6fdc9cc383f42ec9acb94c0d4baf2615b643ca89d7d0b5a3e13b31fa601a13",
+          "scripts/kesher_runtime/production_ports.py": "fcc4a12a2ed5572ae6930aac03616de9cda3f39a274921d2ecc04fdcba86c23b",
+          "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
+          "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/authority_topology.py": "915eee8f050e0bbc9304ec39a88e970c88388506bbc5418fb3cb38327056f80d",
+          "scripts/kesher_runtime/migration.py": "dffe62f3f56ff66e4afc0e73e15e54b647adb1759d93ceab263a2a0e52b8884c",
+          "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
+          "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
+          "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
+          "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
+          "scripts/kesher_runtime/legacy_retirement.py": "90555d274327debeac3e16adb50ac5e011f38cf353f78e888f228040a3027d4c",
+          "scripts/kesher_runtime/live_cutover.py": "f664174f6a861a9965e5e9dae2165ea3151ca6a120f0cae96126d9a9d706f4cb",
+          "scripts/kesher_runtime/authority_client.py": "2faf396e363269382163aafcb73bc80863e630bff551d3e22f872fc42b779e36",
+          "scripts/kesher_runtime/cutover_host.py": "9da32d13cd7c8616caeb36160452ba1fcf3981ae611817b6bed72af64b87c99c",
+          "scripts/requirements-cutover.txt": "0668f9baeedef3a43021fe4cbc6a963dd92f0dc10157102f105a073adecf550a",
+          "deploy/kesher-cutover.service": "0ca474ba7f12c8dbbeaed4337b21ee097ce112d70ce24b30ddf6e1a993e3ee9a"
+        },
+        "dispatches": [],
+        "credentials": [],
+        "credential_services": {},
+        "note": "Only manual exact-main epoch/revision-bound OIDC request to independently administered credential-owning cutover gateway. No provider credentials on runner, no generation/publication/activation. New registration ID requires independent post-merge binding before live admission."
+      }
+    },
+    ".github/workflows/kesher-targeted-media-recovery-dispatch.yml": {
+      "capabilities": [
+        "branch_write",
+        "capability_write",
+        "jules_continue",
+        "jules_create",
+        "provider_continue",
+        "provider_create",
+        "read",
+        "workflow_dispatch",
+        "youtube_metadata",
+        "youtube_upload"
+      ],
+      "definition_sha256": "ef12e7b71a5146700dfa2aef609129539b9461a317a77ac3e85c38ee446690a3",
+      "registration_id": 374765037,
+      "resources": [
+        "github.dispatch",
+        "github.refs",
+        "github.state",
+        "jules.sessions",
+        "notebooklm.jobs",
+        "youtube.metadata",
+        "youtube.objects"
+      ],
+      "review": {
+        "call_chain": {
+          "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
+          "package.json": "cc4e4dfd3fdb36b6701515cc21f811d0bb93ccd6244aeef7c3700414340225ed",
+          "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
+          "scripts/jules_video_reviewer.py": "c0609d4f9075ab3095dfd19d3729ee03126f35f6c0c48dad5a2e466d9e6c50f9",
+          "scripts/jules_video_reviewer_v3.py": "abc9b5071dc2c9aeb78403cfc4802bdf6969ae342f8477c9afafbb2175e0ef08",
+          "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
+          "scripts/kesher_daily_pipeline.py": "58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f",
+          "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
+          "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
+          "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
+          "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
+          "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
+          "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
+          "scripts/kesher_runtime/legacy_retirement.py": "90555d274327debeac3e16adb50ac5e011f38cf353f78e888f228040a3027d4c",
+          "scripts/kesher_runtime/media_state.py": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65",
+          "scripts/kesher_runtime/migration.py": "dffe62f3f56ff66e4afc0e73e15e54b647adb1759d93ceab263a2a0e52b8884c",
+          "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
+          "scripts/kesher_runtime/output_artifacts.py": "5bd90501e017d00d78f25195800542e7c9f9acf49b2a06b8751ff2f67c7ac5e0",
+          "scripts/kesher_runtime/provider.py": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f",
+          "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
+          "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
+          "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
+          "scripts/kesher_runtime/verification.py": "1ea3aa350e6283c726b77fd9e1474fd2369ea4c8a0ec7df75e213924953d341e",
+          "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
+          "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
+          "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
+          "scripts/kesher_video_asset_resolver.py": "0de08234ae8a1ef08c79d9d9634f7b04131dc40d8a8cb22d238f831a0c671d8b",
+          "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
+          "scripts/kesher_video_evidence_repair.py": "f7a53588468798a415ac176ee24cac4610f00215c9e1131c0226e6bd855dd531",
+          "scripts/kesher_video_reconcile.py": "ad2f2cca369f3aaf5f7db5c1d7beff9e572d87a4a0f46027b4065aa5355eaadd",
+          "scripts/kesher_video_upload_guard.py": "6bcd5fedeaa339d2d213cb4a957497b202c095ef77e9fa57a09a614df12b6ce7",
+          "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
+          "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
+          "scripts/prepare_jules_video_evidence.py": "54a8ef4ed1d9c082d59e975a08abf833e9fe99aece397c343c66ce675ced1712",
+          "scripts/requirements-video-cloud.txt": "682a6c18a81ae81f328fc3f91b0b58d77a3a494c14577e6b681c2f1a1a95f1ec",
+          "tests/kesher_daily_pipeline_suite.py": "093b6c280488db9661fa6ef2220ee1f0299ba7f0ded63c3eaa3037d9b254c221",
+          "tests/test_kesher_canonical_state.py": "1b2df228a1bec270e2124babfb977762430da6b1600ed0de9d6f886dac536f0a",
+          "tests/test_kesher_daily_pipeline.py": "3a818b7291ed7876a5af7ef37eb7c1bf320ddd488ea5104979e9c0de0ae76238",
+          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
+          "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
+          "tests/test_notebooklm_auth_precedence.py": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
+          "tests/test_production_contract_v3.py": "0d31bc9b6e4f5dd14721b4e7fa4c030397279f98644b5e6fa9db612701d1bb7a",
+          "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
+          "tests/test_video_reconcile.py": "72dd110cc5aa221e674aeb4f2757a00e57adf43e626f4d456d0a38986bd1c1ae",
+          "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
+          "tests/test_video_review_schema.py": "5f31d330ffce90b2b243b48a2ea0b4982b1ab7f2a64acf70f1420fd664b6187f",
+          "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc",
+          ".github/workflows/kesher-daily-video.yml": "aad09563022b442f28a5a1818d65be37b3a3a3620a0cdcefdbb68a41eba4949e",
+          "scripts/article_claim_quality.py": "c5bf5977c2ec432e58d6c3d14e4ab75714bcbc701f34b880630fd4e72662f585",
+          "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
+          "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
+          "scripts/kesher_article_normalizer.py": "1b27b1b4d77370684bdca98915d875a46034387423af75c310a10b241332a2c1",
+          "scripts/kesher_content_controller.py": "e010910f3c9ae291df592cfc0998971211fe7fb33e430898244e88b5553118a0",
+          "scripts/kesher_content_controller_entry.py": "3fea2a16c15675f1951188d7ba67232c8f5276359170f15f32b344dc3601542a",
+          "scripts/kesher_content_controller_stabilized.py": "7ac68a689435152f36ae8038ef014ad80f6875681680800d0a934da01e2004a4",
+          "scripts/kesher_content_controller_v3_best_effort.py": "f8ef5ca350f4cf20be94aa1c952ae3f64b0ff703d177c16513b974f531db9e72",
+          "scripts/kesher_content_controller_v3_entry.py": "e56c49a7e337317ce5c747a47391c91615a5eec59d98f6aa961c62e4b81db732",
+          "scripts/kesher_content_controller_v4.py": "60bbb27d7263902504676e88d7586fd90a8070942547a721fff9856dec044227",
+          "scripts/kesher_content_controller_v4_runtime.py": "c448e3a2c03143bf6f7ad0cc0c2c4bea885a4201e3735640b7ddacc8756989cd",
+          "scripts/kesher_content_controller_v5.py": "4f5d493842370881877b9489836e172824b0ebafa57e3e398baf57cd3f2ac493",
+          "scripts/kesher_content_controller_v5_runtime.py": "56d0c3e7ecba8778812352f21499e50e717c522c1b6e7d24bc1ac666bed48608",
+          "scripts/kesher_content_controller_v5_runtime_base.py": "eb4292d4429bfc7f816221acc814532d0da998a11436d792f89d8a5a23022c11",
+          "scripts/kesher_content_watchdog.py": "94964decde96d244685645186133898d9de7a431d43f228d2e784c09f7b5c2fc",
+          "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
+          "scripts/kesher_short_policy.py": "82ec1902ee7e8245f7a795ca3a685384169e4cdeec9706de4c343b08d3ba3ac9",
+          "scripts/kesher_three_strike_runtime.py": "6bdad32e4ff51bc2b641a0baa96ff7e734baa3c3475f79844ae296a0b4536e33",
+          "tests/test_pipeline_v4.py": "d2e315c85f441bc93a0914d6a56ceb6236947e5aa2ad4cab54a003f2e786b25f",
+          "tests/test_short_pipeline_v4.py": "8f5cc1baa0b43a3a793dc4d38a53f50dc98bd7ecf2c0f5b447ed25bf807f803e",
+          "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
+          "tests/test_v4_runtime_activation.py": "98b614126a9f1df68acd252ebf56de11472be8b38267e60430b1c7191fd7845e",
+          ".github/workflows/kesher-short-v4.yml": "a0566d23b3c3563bd9973fcb4b42b9063a3a5b48fb199cf585a0a9461de4629a",
+          ".github/workflows/kesher-targeted-media-recovery-dispatch.yml": "ef12e7b71a5146700dfa2aef609129539b9461a317a77ac3e85c38ee446690a3",
+          ".github/kesher-media-recovery-request.json": "016485d8aa02e28178dc033ce1e67a49a210fab0d65042739931a1f442090541",
+          "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93"
+        },
+        "credential_services": {
+          "GITHUB_TOKEN": "github"
+        },
+        "credentials": [
+          "GITHUB_TOKEN"
+        ],
+        "dispatch_bindings": {
+          ".github/workflows/kesher-daily-video.yml": {
+            "capabilities": [
+              "branch_write",
+              "capability_write",
+              "jules_continue",
+              "jules_create",
+              "provider_continue",
+              "provider_create",
+              "read",
+              "workflow_dispatch",
+              "youtube_metadata",
+              "youtube_upload"
+            ],
+            "definition_sha256": "aad09563022b442f28a5a1818d65be37b3a3a3620a0cdcefdbb68a41eba4949e",
+            "inputs": {
+              "operation": "full",
+              "target_slug": "$.github/kesher-media-recovery-request.json.target_slug"
+            },
+            "registration_id": 331086666,
+            "resources": [
+              "github.dispatch",
+              "github.refs",
+              "github.state",
+              "jules.sessions",
+              "notebooklm.jobs",
+              "youtube.metadata",
+              "youtube.objects"
+            ]
+          },
+          ".github/workflows/kesher-short-v4.yml": {
+            "capabilities": [
+              "branch_write",
+              "capability_write",
+              "provider_continue",
+              "provider_create",
+              "read",
+              "workflow_dispatch",
+              "youtube_metadata",
+              "youtube_upload"
+            ],
+            "definition_sha256": "a0566d23b3c3563bd9973fcb4b42b9063a3a5b48fb199cf585a0a9461de4629a",
+            "inputs": {
+              "derive_slug": "$.github/kesher-media-recovery-request.json.target_slug",
+              "operation": "full"
+            },
+            "registration_id": 349292838,
+            "resources": [
+              "github.dispatch",
+              "github.refs",
+              "github.state",
+              "notebooklm.jobs",
+              "youtube.metadata",
+              "youtube.objects"
+            ]
+          }
+        },
+        "dispatches": [
+          ".github/workflows/kesher-daily-video.yml",
+          ".github/workflows/kesher-short-v4.yml"
+        ],
+        "note": "Preserves exact9947d0c6 push/main recovery request, current-day exact-one-article selection and both operation=full child dispatches. Read-only exact-workflow/event state admission occurs before dispatch credentials. Only this reviewed dispatcher role may retain these exact two push paths before exclusion; it is an exact retirement target before VERIFIED. Child provider credentials and all indirect scopes remain fenced; no status/PR mutation scope invented."
+      },
+      "role": "retiring_dispatcher"
+    },
+    ".github/workflows/kesher-exact-short-metadata-recovery-20261006.yml": {
+      "capabilities": [
+        "read",
+        "youtube_metadata"
+      ],
+      "resources": [
+        "youtube.metadata"
+      ],
+      "role": "separate_infrastructure",
+      "registration_id": 376735017,
+      "definition_sha256": "e86663c06966b1bf3af7cf2ebffcd3b333f9905a93ea9ef7ce933a0a40abf1b0",
+      "review": {
+        "call_chain": {
+          ".github/workflows/kesher-exact-short-metadata-recovery-20261006.yml": "e86663c06966b1bf3af7cf2ebffcd3b333f9905a93ea9ef7ce933a0a40abf1b0"
+        },
+        "credential_services": {
+          "YOUTUBE_CLIENT_ID": "youtube",
+          "YOUTUBE_CLIENT_SECRET": "youtube",
+          "YOUTUBE_REFRESH_TOKEN": "youtube"
+        },
+        "credentials": [
+          "YOUTUBE_CLIENT_ID",
+          "YOUTUBE_CLIENT_SECRET",
+          "YOUTUBE_REFRESH_TOKEN"
+        ],
+        "dispatches": [],
+        "note": "Reviewed unchanged current-main inline OAuth exchange, channel/video GET and videos PUT metadata writer. Shared YouTube metadata mutation requires independently enforced resource separation; the frozen governance exception grants no production admission."
+      }
+    },
+    ".github/workflows/kesher-video-advisory-review.yml": {
+      "capabilities": [
+        "artifact_write",
+        "branch_write",
+        "jules_continue",
+        "jules_create",
+        "read"
+      ],
+      "definition_sha256": "577799bef7529e9e7e71164024cbfe01fdcd4b9ba52ed763ee06c0e9743af481",
+      "resources": [
+        "github.refs",
+        "jules.sessions"
+      ],
+      "review": {
+        "call_chain": {
+          "scripts/jules_video_reviewer.py": "c0609d4f9075ab3095dfd19d3729ee03126f35f6c0c48dad5a2e466d9e6c50f9",
+          "scripts/jules_video_reviewer_v3.py": "abc9b5071dc2c9aeb78403cfc4802bdf6969ae342f8477c9afafbb2175e0ef08",
+          "scripts/kesher_daily_pipeline.py": "58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f",
+          "scripts/requirements-video-cloud.txt": "682a6c18a81ae81f328fc3f91b0b58d77a3a494c14577e6b681c2f1a1a95f1ec",
+          "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
+          "tests/test_video_review_schema.py": "5f31d330ffce90b2b243b48a2ea0b4982b1ab7f2a64acf70f1420fd664b6187f"
+        },
+        "credential_services": {
+          "GITHUB_TOKEN": "github",
+          "JULES_API_KEY": "jules"
+        },
+        "credentials": [
+          "GITHUB_TOKEN",
+          "JULES_API_KEY"
+        ],
+        "dispatches": [],
+        "note": "Strict asynchronous advisory video reviewer sidecar. Exact review-branch/evidence/item/content identities fail closed before evidence checkout or Jules credentials. It can persist only the advisory result artifact and delete only kesher-video-review-<run_id>; it has no publication, YouTube, provider, canonical-state or scheduler authority. At Schema-6 cutover it requires explicit resource separation proof or is classified retired."
+      },
+      "role": "separate_infrastructure"
+    },
+    ".github/workflows/kesher-master-intent-shadow.yml": {
+      "capabilities": [
+        "read"
+      ],
+      "definition_sha256": "a0a5dd699c4bfa6b27c23f53518fd3b4efdf46f8eccbaf5d2bec66bb5634c771",
+      "resources": [],
+      "review": {
+        "call_chain": {
+          ".github/scripts/validate-article-pr.py": "2f175c5a6067b039755409a19bf1858f2fc56c922413ff94d6052d8ad4572ff3",
+          "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
+          "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
+          "scripts/kesher_article_normalizer.py": "1b27b1b4d77370684bdca98915d875a46034387423af75c310a10b241332a2c1",
+          "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
+          "scripts/kesher_content_controller.py": "e010910f3c9ae291df592cfc0998971211fe7fb33e430898244e88b5553118a0",
+          "scripts/kesher_content_controller_entry.py": "3fea2a16c15675f1951188d7ba67232c8f5276359170f15f32b344dc3601542a",
+          "scripts/kesher_content_controller_stabilized.py": "7ac68a689435152f36ae8038ef014ad80f6875681680800d0a934da01e2004a4",
+          "scripts/kesher_content_controller_v3_best_effort.py": "f8ef5ca350f4cf20be94aa1c952ae3f64b0ff703d177c16513b974f531db9e72",
+          "scripts/kesher_content_controller_v3_entry.py": "e56c49a7e337317ce5c747a47391c91615a5eec59d98f6aa961c62e4b81db732",
+          "scripts/kesher_content_controller_v4.py": "60bbb27d7263902504676e88d7586fd90a8070942547a721fff9856dec044227",
+          "scripts/kesher_content_controller_v5.py": "4f5d493842370881877b9489836e172824b0ebafa57e3e398baf57cd3f2ac493",
+          "scripts/kesher_content_controller_v5_runtime.py": "56d0c3e7ecba8778812352f21499e50e717c522c1b6e7d24bc1ac666bed48608",
+          "scripts/kesher_content_controller_v5_runtime_base.py": "eb4292d4429bfc7f816221acc814532d0da998a11436d792f89d8a5a23022c11",
+          "scripts/kesher_controller_repair.py": "1633fff2e4efe3b28e3625fcdd19fc4b1c3c666404da5da78d1983512cf50796",
+          "scripts/kesher_daily_pipeline.py": "58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f",
+          "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
+          "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
+          "scripts/kesher_master_supervisor.py": "368f00b850acbb92b9421732462fe466fa2be47057c3c601d2a8ad9cc7d2a8b1",
+          "scripts/kesher_master_supervisor_live.py": "badb4b46a8915f0944fe1995558e592f675b297737711813a65d4a28fe3f4cc8",
+          "scripts/kesher_master_supervisor_shadow.py": "21e9c69cb0c03bc7d6b67b985ed1e1a660716ab39d0725aa99d1f91d6f60b8e7",
+          "scripts/kesher_publication_manifest.py": "733eea18c989bf24277694f73465c765ceb4713cccd22996b293346c65fa5afb",
+          "scripts/kesher_runtime/__init__.py": "87abad5c98b1cc707accd87163d96a30b945e8057b5d798eacaebbe07da99cef",
+          "scripts/kesher_runtime/article_deploy.py": "44478ec6881ca4e5b6ae766bf33a2dc4bfb8b333ec7957063ab3da8ba208b760",
+          "scripts/kesher_runtime/article_image_worker.py": "4175edd11be879ecd698802bbc9a119060a74afef3302e96f985ea1ae995a284",
+          "scripts/kesher_runtime/article_merge.py": "b5c21968aadbbe5cc7184e1d2beed7d9d57b2489c1088fba4d9e95038cfb6fd7",
+          "scripts/kesher_runtime/article_merge_observer.py": "66180a37643ced73e8c28cd8db38294cfe94e296c6a93a509a56dc2afd2c82a1",
+          "scripts/kesher_runtime/article_normalize_worker.py": "1f6f2426e64af0d8917370f57fd2019b4d4f9c5505f553fcb372e7cb601bdc8d",
+          "scripts/kesher_runtime/article_quiescence.py": "51ca2257d97e575187106a341c89bd80fc3d458805c6a902b39fd4742d9a34a7",
+          "scripts/kesher_runtime/article_validation.py": "59a4e8639775f133439c01672a2ead5c484ce62bc00ea61ce30f4676d5ac6227",
+          "scripts/kesher_runtime/article_verification.py": "5f16c8ed232505c8bcb12e4249631eccc7fc8e845c781cf075030357dbc53987",
+          "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
+          "scripts/kesher_runtime/authority_client.py": "2faf396e363269382163aafcb73bc80863e630bff551d3e22f872fc42b779e36",
+          "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc",
+          "scripts/kesher_runtime/cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
+          "scripts/kesher_runtime/controller.py": "e695d6513ea25b0565517e15be5feb8b0205f0b6cdeb37bb7e8e5c1e0d1604fe",
+          "scripts/kesher_runtime/controller_entry.py": "562237507f626c669aba71ecdd9704beab5e6f71bd4f614f2521751c8618bff2",
+          "scripts/kesher_runtime/cutover_auth.py": "27dbbd703912499e0ca553d774bca027844f3e7db116a22d787e54f4ba007a80",
+          "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
+          "scripts/kesher_runtime/cutover_host.py": "9da32d13cd7c8616caeb36160452ba1fcf3981ae611817b6bed72af64b87c99c",
+          "scripts/kesher_runtime/cutover_service.py": "7b5bcc7af5391111ccd7a491ca427e7244edb32a438c5fcd81f196a13df898de",
+          "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
+          "scripts/kesher_runtime/deployment_observer.py": "00ef07c6db2f5c129187833fdb703be659d382186538fcb4d73aff487dd07bf4",
+          "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
+          "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
+          "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
+          "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858",
+          "scripts/kesher_runtime/legacy_retirement.py": "90555d274327debeac3e16adb50ac5e011f38cf353f78e888f228040a3027d4c",
+          "scripts/kesher_runtime/master_intent.py": "79363a5f941a34520de1bed13e2eb4649e77ba1079597a8fda0cd52750773d2b",
+          "scripts/kesher_runtime/master_intent_entry.py": "df53bf9cfec53bae78cb729bc65efa32ea7bd94bab1cae2018cdfec1692087e4",
+          "scripts/kesher_runtime/media_audit.py": "4d2affee1981ef26f098c209087ac8bcab00cc837883e0fe03e4bab789a1be67",
+          "scripts/kesher_runtime/media_observer.py": "3d4b1e761b3c77296f1fcb2b3ed1a57d04bd590ed68b5e963f22277b2a8d6b26",
+          "scripts/kesher_runtime/media_publication.py": "85004c226175d94264219892dc8806ab9b4fad01b91ef42728c3862421084c6b",
+          "scripts/kesher_runtime/media_state.py": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65",
+          "scripts/kesher_runtime/migration.py": "dffe62f3f56ff66e4afc0e73e15e54b647adb1759d93ceab263a2a0e52b8884c",
+          "scripts/kesher_runtime/observe.py": "8ace67492f9684e3e8a9313c9bcea9f833b40de0f265fbc16a9c8f821f75d35b",
+          "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
+          "scripts/kesher_runtime/output_artifacts.py": "5bd90501e017d00d78f25195800542e7c9f9acf49b2a06b8751ff2f67c7ac5e0",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/provider.py": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f",
+          "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
+          "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
+          "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
+          "scripts/kesher_runtime/verification.py": "1ea3aa350e6283c726b77fd9e1474fd2369ea4c8a0ec7df75e213924953d341e",
+          "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
+          "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
+          "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
+          "scripts/kesher_video_asset_resolver.py": "0de08234ae8a1ef08c79d9d9634f7b04131dc40d8a8cb22d238f831a0c671d8b",
+          "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
+          "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
+          "scripts/requirements-article.txt": "8c620822e39bbd1233c03fd0296879f1f58dbc5a1f4366f6650c3d3c7cb32a77"
+        },
+        "credential_services": {
+          "GITHUB_TOKEN": "github"
+        },
+        "credentials": [
+          "GITHUB_TOKEN"
+        ],
+        "dispatches": [],
+        "note": "Exact workflow permissions, inline API reads and local transitive call chain reviewed. Diagnostic execution is read-only: no protected mutation permission, no dispatch target, no state write, and no provider creation capability."
+      },
+      "role": "diagnostic"
+    },
+    ".github/workflows/kesher-master-owner-foundation-ci.yml": {
+      "capabilities": [
+        "read"
+      ],
+      "definition_sha256": "7e01783dd002ea4a9abc4bd1270bf533e67e80e6fb7221090d53fb037acc997b",
+      "resources": [],
+      "review": {
+        "call_chain": {
+          ".github/scripts/validate-article-pr.py": "2f175c5a6067b039755409a19bf1858f2fc56c922413ff94d6052d8ad4572ff3",
+          "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
+          "scripts/kesher_article_contract.py": "2c3bf8e994a6df5815604e40043a4cfb08ae4e96fd341cdd41cebd42a656d52a",
+          "scripts/kesher_article_normalizer.py": "1b27b1b4d77370684bdca98915d875a46034387423af75c310a10b241332a2c1",
+          "scripts/kesher_automation_policy.py": "46aa5214e7b44cd7323be385cb0909b01b9e4a1f7c824828ed0dab3667ee2cc6",
+          "scripts/kesher_content_controller.py": "e010910f3c9ae291df592cfc0998971211fe7fb33e430898244e88b5553118a0",
+          "scripts/kesher_content_controller_entry.py": "3fea2a16c15675f1951188d7ba67232c8f5276359170f15f32b344dc3601542a",
+          "scripts/kesher_content_controller_stabilized.py": "7ac68a689435152f36ae8038ef014ad80f6875681680800d0a934da01e2004a4",
+          "scripts/kesher_content_controller_v3_best_effort.py": "f8ef5ca350f4cf20be94aa1c952ae3f64b0ff703d177c16513b974f531db9e72",
+          "scripts/kesher_content_controller_v3_entry.py": "e56c49a7e337317ce5c747a47391c91615a5eec59d98f6aa961c62e4b81db732",
+          "scripts/kesher_content_controller_v4.py": "60bbb27d7263902504676e88d7586fd90a8070942547a721fff9856dec044227",
+          "scripts/kesher_content_controller_v5.py": "4f5d493842370881877b9489836e172824b0ebafa57e3e398baf57cd3f2ac493",
+          "scripts/kesher_content_controller_v5_runtime.py": "56d0c3e7ecba8778812352f21499e50e717c522c1b6e7d24bc1ac666bed48608",
+          "scripts/kesher_content_controller_v5_runtime_base.py": "eb4292d4429bfc7f816221acc814532d0da998a11436d792f89d8a5a23022c11",
+          "scripts/kesher_controller_repair.py": "1633fff2e4efe3b28e3625fcdd19fc4b1c3c666404da5da78d1983512cf50796",
+          "scripts/kesher_daily_pipeline.py": "58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f",
+          "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
+          "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
+          "scripts/kesher_master_supervisor.py": "368f00b850acbb92b9421732462fe466fa2be47057c3c601d2a8ad9cc7d2a8b1",
+          "scripts/kesher_master_supervisor_live.py": "badb4b46a8915f0944fe1995558e592f675b297737711813a65d4a28fe3f4cc8",
+          "scripts/kesher_master_supervisor_shadow.py": "21e9c69cb0c03bc7d6b67b985ed1e1a660716ab39d0725aa99d1f91d6f60b8e7",
+          "scripts/kesher_publication_manifest.py": "733eea18c989bf24277694f73465c765ceb4713cccd22996b293346c65fa5afb",
+          "scripts/kesher_runtime/__init__.py": "87abad5c98b1cc707accd87163d96a30b945e8057b5d798eacaebbe07da99cef",
+          "scripts/kesher_runtime/article_deploy.py": "44478ec6881ca4e5b6ae766bf33a2dc4bfb8b333ec7957063ab3da8ba208b760",
+          "scripts/kesher_runtime/article_image_worker.py": "4175edd11be879ecd698802bbc9a119060a74afef3302e96f985ea1ae995a284",
+          "scripts/kesher_runtime/article_merge.py": "b5c21968aadbbe5cc7184e1d2beed7d9d57b2489c1088fba4d9e95038cfb6fd7",
+          "scripts/kesher_runtime/article_merge_observer.py": "66180a37643ced73e8c28cd8db38294cfe94e296c6a93a509a56dc2afd2c82a1",
+          "scripts/kesher_runtime/article_normalize_worker.py": "1f6f2426e64af0d8917370f57fd2019b4d4f9c5505f553fcb372e7cb601bdc8d",
+          "scripts/kesher_runtime/article_quiescence.py": "51ca2257d97e575187106a341c89bd80fc3d458805c6a902b39fd4742d9a34a7",
+          "scripts/kesher_runtime/article_validation.py": "59a4e8639775f133439c01672a2ead5c484ce62bc00ea61ce30f4676d5ac6227",
+          "scripts/kesher_runtime/article_verification.py": "5f16c8ed232505c8bcb12e4249631eccc7fc8e845c781cf075030357dbc53987",
+          "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
+          "scripts/kesher_runtime/authority_client.py": "2faf396e363269382163aafcb73bc80863e630bff551d3e22f872fc42b779e36",
+          "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc",
+          "scripts/kesher_runtime/cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
+          "scripts/kesher_runtime/controller.py": "e695d6513ea25b0565517e15be5feb8b0205f0b6cdeb37bb7e8e5c1e0d1604fe",
+          "scripts/kesher_runtime/controller_entry.py": "562237507f626c669aba71ecdd9704beab5e6f71bd4f614f2521751c8618bff2",
+          "scripts/kesher_runtime/cutover_auth.py": "27dbbd703912499e0ca553d774bca027844f3e7db116a22d787e54f4ba007a80",
+          "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
+          "scripts/kesher_runtime/cutover_host.py": "9da32d13cd7c8616caeb36160452ba1fcf3981ae611817b6bed72af64b87c99c",
+          "scripts/kesher_runtime/cutover_service.py": "7b5bcc7af5391111ccd7a491ca427e7244edb32a438c5fcd81f196a13df898de",
+          "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
+          "scripts/kesher_runtime/deployment_observer.py": "00ef07c6db2f5c129187833fdb703be659d382186538fcb4d73aff487dd07bf4",
+          "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
+          "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
+          "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
+          "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858",
+          "scripts/kesher_runtime/legacy_retirement.py": "90555d274327debeac3e16adb50ac5e011f38cf353f78e888f228040a3027d4c",
+          "scripts/kesher_runtime/master_intent.py": "79363a5f941a34520de1bed13e2eb4649e77ba1079597a8fda0cd52750773d2b",
+          "scripts/kesher_runtime/master_intent_entry.py": "df53bf9cfec53bae78cb729bc65efa32ea7bd94bab1cae2018cdfec1692087e4",
+          "scripts/kesher_runtime/media_audit.py": "4d2affee1981ef26f098c209087ac8bcab00cc837883e0fe03e4bab789a1be67",
+          "scripts/kesher_runtime/media_observer.py": "3d4b1e761b3c77296f1fcb2b3ed1a57d04bd590ed68b5e963f22277b2a8d6b26",
+          "scripts/kesher_runtime/media_publication.py": "85004c226175d94264219892dc8806ab9b4fad01b91ef42728c3862421084c6b",
+          "scripts/kesher_runtime/media_state.py": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65",
+          "scripts/kesher_runtime/migration.py": "dffe62f3f56ff66e4afc0e73e15e54b647adb1759d93ceab263a2a0e52b8884c",
+          "scripts/kesher_runtime/observe.py": "8ace67492f9684e3e8a9313c9bcea9f833b40de0f265fbc16a9c8f821f75d35b",
+          "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
+          "scripts/kesher_runtime/output_artifacts.py": "5bd90501e017d00d78f25195800542e7c9f9acf49b2a06b8751ff2f67c7ac5e0",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/provider.py": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f",
+          "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
+          "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
+          "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
+          "scripts/kesher_runtime/verification.py": "1ea3aa350e6283c726b77fd9e1474fd2369ea4c8a0ec7df75e213924953d341e",
+          "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
+          "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
+          "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
+          "scripts/kesher_video_asset_resolver.py": "0de08234ae8a1ef08c79d9d9634f7b04131dc40d8a8cb22d238f831a0c671d8b",
+          "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
+          "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
+          "scripts/requirements-article.txt": "8c620822e39bbd1233c03fd0296879f1f58dbc5a1f4366f6650c3d3c7cb32a77",
+          "tests/test_article_worker_lazy_jules.py": "303ace7839c347112cdd39d5ec8022d7aaca5bc7175cb61b0839e1a4a7a3cb79",
+          "tests/test_controller_fact_reconcile.py": "e034b061e3f26b5a2693c01316caf33aadf30799a2a6cf3a4f87603ccdc893f5",
+          "tests/test_master_article_origin.py": "1a52e4b230e95f7c432281ec2efe0182b9a636c151354fb0fa459cd8f5e7875c",
+          "tests/test_master_intent.py": "c64b3af568a98d09aa64b73259145342f5062465c4e49618f2566a2553a85f40"
+        },
+        "credential_services": {},
+        "credentials": [],
+        "dispatches": [],
+        "note": "Exact workflow permissions, inline API reads and local transitive call chain reviewed. Diagnostic execution is read-only: no protected mutation permission, no dispatch target, no state write, and no provider creation capability."
+      },
+      "role": "diagnostic",
+      "registration_id": 403052684
     }
   }
 }
