@@ -468,6 +468,28 @@ def nested_identifier(payload: Any, keys: tuple[str, ...]) -> str | None:
     return None
 
 
+def prune_notebooklm_sources(notebook_id: str, keep_count: int = 35) -> None:
+    """Ensure NotebookLM notebook does not exceed Google's hard 50-source quota."""
+    try:
+        payload = run_notebooklm(["source", "list", "--notebook", notebook_id], timeout=120)
+        sources = payload.get("sources") if isinstance(payload, dict) else None
+        if not isinstance(sources, list) or len(sources) <= keep_count:
+            return
+        excess = len(sources) - keep_count
+        print(f"NOTEBOOKLM_CAPACITY_MANAGEMENT: total_sources={len(sources)} pruning_excess={excess}")
+        for src in sources[:excess]:
+            sid = src.get("id") or src.get("source_id")
+            if not sid:
+                continue
+            try:
+                run_notebooklm(["source", "delete", sid, "-y", "--notebook", notebook_id], timeout=60)
+                print(f"NOTEBOOKLM_PRUNED_SOURCE: source_id={sid}")
+            except Exception as err:
+                print(f"WARN: failed to delete source {sid}: {err}")
+    except Exception as exc:
+        print(f"WARN: prune_notebooklm_sources failed: {exc}")
+
+
 def auth_preflight() -> dict[str, Any]:
     try:
         version = importlib.metadata.version("notebooklm-py")
@@ -886,10 +908,20 @@ def add_source(state: dict[str, Any], item: dict[str, Any], *, allow_exact_recov
         title = f"kesher:{state.context.target.key}:{item.get('fresh_generation_attempt', 1)}"
 
     def create_source():
-        payload = run_notebooklm(
-            ["source", "add", body, "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
-            timeout=180,
-        )
+        source_file = STATE_DIR / f"{item['id']}-source.txt"
+        source_file.write_text(body, encoding="utf-8")
+        try:
+            payload = run_notebooklm(
+                ["source", "add", str(source_file), "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
+                timeout=180,
+            )
+        except PipelineError as exc:
+            print(f"WARN: source add via file failed ({exc}), pruning older notebook sources and retrying inline...")
+            prune_notebooklm_sources(NOTEBOOK_ID, keep_count=25)
+            payload = run_notebooklm(
+                ["source", "add", body, "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
+                timeout=180,
+            )
         source_id = nested_identifier(payload, ("source_id", "sourceId", "id"))
         if not source_id:
             raise PipelineError("NotebookLM source add returned no source ID")
@@ -2637,6 +2669,7 @@ def build_parser() -> argparse.ArgumentParser:
     mode.add_argument("--review-item")
     mode.add_argument("--remotion-rebuild-item")
     mode.add_argument("--prune-uploaded-media", action="store_true")
+    mode.add_argument("--prune-sources", action="store_true")
     mode.add_argument("--requires-durable-media-restore", action="store_true")
     mode.add_argument("--report-json", action="store_true")
     parser.add_argument("--slug")
@@ -2675,6 +2708,9 @@ def main() -> int:
         return rebuild_rejected_with_remotion(args.remotion_rebuild_item)
     if args.prune_uploaded_media:
         return prune_uploaded_media()
+    if args.prune_sources:
+        prune_notebooklm_sources(NOTEBOOK_ID)
+        return 0
     if args.requires_durable_media_restore:
         state = load_state()
         required = durable_media_restore_required(

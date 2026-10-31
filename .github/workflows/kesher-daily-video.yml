@@ -403,6 +403,11 @@ jobs:
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') }}
         run: python -u scripts/kesher_daily_pipeline.py --preflight
 
+      - name: Prune historical NotebookLM sources
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') }}
+        continue-on-error: true
+        run: python -u scripts/kesher_daily_pipeline.py --prune-sources
+
       - name: Prepare exact daily Video Overview generation
         id: prepare_generation
         if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery' }}
