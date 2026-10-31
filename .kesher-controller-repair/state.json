@@ -90,6 +90,41 @@
       "stage": "controller",
       "status": "human_blocker"
     },
+    "6b86ae6dffd4ecbbeb18fafd65f42065345203926b997f5dcb4759e509d49304": {
+      "affected": [
+        {
+          "article_run_id": null,
+          "article_session_id": null,
+          "artifact_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913",
+          "content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
+          "cycle": "2026-10-30",
+          "idea_id": "shared-laughter-couples-intimacy",
+          "item_id": "video-20261030-130605-860a1ecbaa",
+          "pr_number": 1256,
+          "slug": "shared-laughter-couples-intimacy",
+          "source_id": "7bd3534f-a904-4dea-8a8b-49cbb0a1f63e",
+          "task_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913"
+        }
+      ],
+      "created_at": "2026-10-31T12:01:02.971977+00:00",
+      "exact": {
+        "article_run_id": null,
+        "article_session_id": null,
+        "artifact_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913",
+        "content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
+        "cycle": "2026-10-30",
+        "idea_id": "shared-laughter-couples-intimacy",
+        "item_id": "video-20261030-130605-860a1ecbaa",
+        "pr_number": 1256,
+        "slug": "shared-laughter-couples-intimacy",
+        "source_id": "7bd3534f-a904-4dea-8a8b-49cbb0a1f63e",
+        "task_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913"
+      },
+      "failure_class": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
+      "fingerprint": "e689bba1f0f018cb65c615ea2915f666bde45f7dc74b56acebb1a1f1dd21adb2",
+      "stage": "long_video",
+      "status": "intent"
+    },
     "a55e72df1cc6537a972077115734392a28b2dd15eb9fd5f051adf8639bae9fb0": {
       "acquisition_started_at": "2026-10-29T15:20:53.070156+00:00",
       "affected": [
