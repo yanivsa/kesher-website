@@ -155,6 +155,19 @@
           "slug": null,
           "source_id": null,
           "task_id": null
+        },
+        {
+          "article_run_id": 41220918541,
+          "article_session_id": "sessions/14947022517645608193",
+          "artifact_id": null,
+          "content_sha256": null,
+          "cycle": "2026-10-31",
+          "idea_id": "parenting-p2-poop-only-in-diaper",
+          "item_id": null,
+          "pr_number": 1261,
+          "slug": null,
+          "source_id": null,
+          "task_id": null
         }
       ],
       "created_at": "2026-10-29T15:20:53.070156+00:00",
