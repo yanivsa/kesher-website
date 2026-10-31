@@ -1,0 +1,46 @@
+name: Kesher Master Intent Shadow
+run-name: kesher-master-shadow:${{ inputs.request_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      request_id:
+        description: Stable Master request ID
+        required: true
+        type: string
+      request_json:
+        description: Exact provider-neutral Master intent JSON
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: kesher-master-intent-shadow
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Validate explicit Master intent without writes or dispatch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUEST_JSON: ${{ inputs.request_json }}
+        run: |
+          set -euo pipefail
+          export MASTER_INTENT_NOW="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          python -m scripts.kesher_runtime.master_intent_entry --mode shadow --request-json "$REQUEST_JSON"
