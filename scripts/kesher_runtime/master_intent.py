@@ -1,30 +1,20 @@
 """Provider-neutral, fail-closed intent contract for a Master-owned KESHER runtime.
 
-This module does not observe providers, choose the next action, mutate state, or
-dispatch workers.  It validates an explicit decision made by the external Master
-against the exact main SHA and canonical state revision that decision observed.
+The Master chooses an action. This module validates that explicit decision against
+the exact main SHA and canonical state revision it observed, then creates only a
+canonical command intent. Dispatch remains a separate outbox responsibility.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
-from .identity import Identity, require_sha
-from .state import StateInvalid
+from .identity import Identity, MediaIdentity, SlotIdentity, SourceIdentity, require_sha
+from .state import StateInvalid, plan_command, validate_state
 
 
-# Article creation/settlement remain legacy controller/Jules operations during
-# migration.  The Master creates article PRs directly and may only request the
-# deterministic post-authoring operations below.
 MASTER_OPERATIONS = frozenset({
-    'normalize_article',
-    'attach_image',
-    'validate_article',
-    'merge_article',
-    'deploy_article',
-    'publish',
-    'reconcile',
-    'rebuild',
-    'repair_metadata',
+    'normalize_article', 'attach_image', 'validate_article', 'merge_article',
+    'deploy_article', 'publish', 'reconcile', 'rebuild', 'repair_metadata',
 })
 
 
@@ -35,6 +25,7 @@ class MasterIntent:
     expected_state_revision: int
     target: Identity
     operation: str
+    inputs: dict[str, str] = field(default_factory=dict)
 
 
 def validate_master_intent(intent: MasterIntent, *, main_sha: str, state_revision: int) -> MasterIntent:
@@ -57,6 +48,32 @@ def validate_master_intent(intent: MasterIntent, *, main_sha: str, state_revisio
         raise StateInvalid('MASTER_INTENT_STALE_STATE')
     if intent.operation not in MASTER_OPERATIONS:
         raise StateInvalid('MASTER_INTENT_OPERATION_FORBIDDEN')
-    if not hasattr(intent.target, 'to_dict') or not hasattr(intent.target, 'key'):
+    if not isinstance(intent.target, (SlotIdentity, SourceIdentity, MediaIdentity)):
         raise StateInvalid('MASTER_INTENT_TARGET_INVALID')
+    if not isinstance(intent.inputs, dict) or any(not isinstance(k, str) or not isinstance(v, str)
+                                                  for k, v in intent.inputs.items()):
+        raise StateInvalid('MASTER_INTENT_INPUTS_INVALID')
     return intent
+
+
+def _route_allowed(target: Identity, operation: str) -> bool:
+    if isinstance(target, MediaIdentity):
+        return operation in {'publish', 'reconcile', 'rebuild', 'repair_metadata'}
+    if isinstance(target, SlotIdentity):
+        return operation in {'normalize_article', 'attach_image', 'validate_article', 'merge_article'}
+    if isinstance(target, SourceIdentity):
+        return operation == 'deploy_article'
+    return False
+
+
+def plan_master_command(state: dict, intent: MasterIntent, *, main_sha: str, now: str) -> tuple[dict, str]:
+    """Persistable command plan only; never dispatch or perform provider effects."""
+    validate_state(state)
+    validate_master_intent(intent, main_sha=main_sha, state_revision=state['revision'])
+    if not _route_allowed(intent.target, intent.operation):
+        raise StateInvalid('MASTER_INTENT_ROUTE_FORBIDDEN')
+    ordinals = [row['ordinal'] for row in state['commands'].values()
+                if row['target'] == intent.target.to_dict() and row['operation'] == intent.operation]
+    ordinal = 1 + max(ordinals, default=0)
+    return plan_command(state, intent.target, intent.operation, ordinal, intent.inputs,
+                        code_sha=main_sha, now=now)
