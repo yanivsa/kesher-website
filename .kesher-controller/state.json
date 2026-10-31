@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-31T16:46:44.874086+00:00",
+    "next_retry_at": null,
     "run_id": 41217241439,
     "processed_run_id": 41217241439,
     "provider_id": null,
@@ -18,7 +18,7 @@
     "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-10-31T15:56:37.820420+00:00",
+    "last_dispatch_at": "2026-10-31T16:41:49.496635+00:00",
     "watchdog": {
       "identity": "2026-10-31",
       "session_id": null,
@@ -59,7 +59,8 @@
       }
     },
     "last_jules_session_id": "sessions/14947022517645608193",
-    "last_failed_run_id": 41217241439
+    "last_failed_run_id": 41217241439,
+    "resume_dispatches": 1
   },
   "backlog": [
     {
@@ -1769,14 +1770,7 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** To autonomously write and publish a single Kesher article about toddler potty training struggles (\"קקי רק בחיתול\") for the 2026-10-31 slot, following strict constraints regarding formatting, length, and internal links. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch correctly creates the article in `src/data/posts.json` targeting the appropriate topic and primary keyword. The JSON structure is correct, and the V3 override logic for omitting images (`image` and `imageAlt`) is properly respected. * **Completeness:** The patc…",
-    "retryable": true,
-    "retry_at": "2026-10-31T16:46:44.874086+00:00",
-    "at": "2026-10-31T16:41:44.874104+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-31T05:51:13.354369+00:00",
@@ -2585,9 +2579,19 @@
         "run_id": 41217241439,
         "session_id": "sessions/14947022517645608193"
       }
+    },
+    {
+      "at": "2026-10-31T16:41:49.496647+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "timed-out Jules session preserved; same-session recovery dispatched immediately",
+      "details": {
+        "run_id": 41217241439,
+        "session_id": "sessions/14947022517645608193"
+      }
     }
   ],
-  "updated_at": "2026-10-31T16:41:44.874114+00:00",
+  "updated_at": "2026-10-31T16:41:49.496654+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -3063,21 +3067,10 @@
         "topic_brief": "אשכול גמילה שהסתבכה. נושא/כאב: ילד שכבר עושה פיפי בשירותים אבל מבקש חיתול רק בשביל קקי; הורים מרגישים שהתהליך תקוע ונכנסים למאבק. להתייחס לפחד, פרטיות, הרגל, כאב והתאפקות בלי להניח סיבה אחת. אות ביקוש: Observed query signal: SERP + repeated parent questions. Canonical ID נדרש: poop-only-in-diaper. כותרת עבודה: קקי רק בחיתול: למה הילד מסרב לעשות בשירותים ומה אפשר לעשות? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לרופא/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p2-poop-only-in-diaper\nRequired Primary Keyword: קקי רק בחיתול"
       },
       "intent_at": "2026-10-31T16:41:01.697169+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41217241439,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-31T16:41:01.697169+00:00"
     }
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
