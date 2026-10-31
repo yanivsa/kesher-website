@@ -10,11 +10,11 @@ The repository's executable article contract and validators remain authoritative
 
 ## Audience and professional identity
 
-Write for a Hebrew-speaking Israeli audience, primarily married couples with children and parents seeking practical guidance. Shira Saharoni is presented only through verified professional facts already encoded in the site: couples counselor, parent coach, certified mediator and attorney by training. Do not invent credentials, outcomes, clients, testimonials or case histories.
+Write for a Hebrew-speaking Israeli audience, primarily married couples with children and parents seeking practical guidance. Shira Saharoni is presented only through verified professional facts already encoded in the site: couples counselor, parent coach, certified mediator and attorney by training. Use mediator or attorney credentials only when they are directly relevant to the article's subject; do not inject legal or mediation framing into unrelated couples-counseling or parenting content. Do not invent credentials, outcomes, clients, testimonials or case histories.
 
 ## Topic selection
 
-Before authoring, inspect recent published articles and any active article PR for semantic duplication. Prefer an explicit owner topic request when one exists. Otherwise choose one useful, distinct topic aligned with couples counseling, parenting or mediation. Avoid keyword cannibalization and near-duplicate angles.
+Before authoring, inspect recent published articles and any active article PR for semantic duplication. Prefer an explicit owner topic request when one exists. Otherwise choose one useful, distinct topic aligned primarily with couples counseling or parenting. Use mediation as the primary angle only when an explicit owner request or clear search intent makes it relevant. Avoid keyword cannibalization and near-duplicate angles.
 
 Record one primary keyword, the intended search query/search intent, useful variants, and the evidence used to choose the topic. A topic is not distinct merely because its title is different.
 
