@@ -2703,7 +2703,7 @@
     "evidence_rebind_head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1",
     "evidence_rebind_dispatched_at": "2026-10-31T20:46:17.908037+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 41247110492
+    "run_id": 41248780004
   },
   "long_video": {
     "attempt_count": 0,
@@ -3189,7 +3189,7 @@
   },
   "last_child_notification": {
     "workflow": "Kesher Trusted Article Image",
-    "run_id": 41247110492,
+    "run_id": 41248780004,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-31"
