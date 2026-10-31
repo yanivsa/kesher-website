@@ -39,13 +39,13 @@
     "published_date": "2026-10-30",
     "quality_content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-31T12:08:55.466827+00:00",
+    "quality_checked_at": "2026-10-31T12:19:05.059549+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-30T10:58:11.411762+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41044611686,
-    "live_verified_at": "2026-10-31T12:08:57.143508+00:00",
+    "live_verified_at": "2026-10-31T12:19:06.468545+00:00",
     "reconciled_existing_article": true
   },
   "backlog": [
@@ -2729,7 +2729,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 41199834457,
     "processed_run_id": null,
     "provider_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913",
     "failure_fingerprint": null,
@@ -3161,26 +3161,10 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-10-30",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "shared-laughter-couples-intimacy",
-        "derive_content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
-        "derive_long_item_id": "video-20261030-130605-860a1ecbaa"
-      },
-      "intent_at": "2026-10-31T12:08:49.505495+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41199834457,
-      "dispatched_at": "2026-10-31T12:08:49.505495+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
-    "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 41199240691,
+    "workflow": "Kesher Daily Article Short V4",
+    "run_id": 41199834457,
     "conclusion": "success",
     "source_slug": "shared-laughter-couples-intimacy",
     "slot": "2026-10-30"
