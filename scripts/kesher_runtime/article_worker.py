@@ -24,6 +24,21 @@ from .worker_entry import actions_admission
 
 REPOSITORY = 'yanivsa/kesher-website'
 from .article_quiescence import SOURCE_CONTEXT, assert_article_quiescent
+class LazyJules:
+    """Construct the legacy provider only if a legacy PR actually needs it."""
+    def __init__(self, factory):
+        self._factory = factory
+        self._instance = None
+
+    def _get(self):
+        if self._instance is None:
+            self._instance = self._factory()
+        return self._instance
+
+    def __getattr__(self, name):
+        return getattr(self._get(), name)
+
+
 IMAGE_CONTRACT = '''
 --- TRUSTED IMAGE OWNERSHIP ---
 Jules owns ARTICLE TEXT ONLY. Do not call image providers or download, generate,
@@ -232,7 +247,7 @@ def main(argv=None) -> int:
     try:
         admission = actions_admission(args.command_id, attach=True)
         context = admission.context
-        api = Jules(os.environ.get('JULES_API_KEY', ''))
+        api = LazyJules(lambda: Jules(os.environ.get('JULES_API_KEY', '')))
         repository = ArticleRepository(context.store.github)
         if admission.command['operation'] == 'normalize_article':
             result = run_normalization(context, api, repository)
