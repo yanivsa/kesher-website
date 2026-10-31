@@ -67,7 +67,7 @@
     "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
     "normalization_slot": "2026-10-31",
     "normalization_dispatched_at": "2026-10-31T20:08:19.526209+00:00",
-    "normalization_run_id": 41233433254,
+    "normalization_run_id": 41237474722,
     "normalization_drift_count": 2,
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
@@ -3163,24 +3163,11 @@
       "previous_run_id": 41217241439,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-31T16:41:01.697169+00:00"
-    },
-    "normalize-article-pr.yml": {
-      "workflow": "normalize-article-pr.yml",
-      "cycle": "2026-10-31",
-      "inputs": {
-        "pr_number": "1261",
-        "slot": "2026-10-31"
-      },
-      "intent_at": "2026-10-31T20:07:27.543870+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41233433254,
-      "observed_active_run_id": 41237474722,
-      "dispatched_at": "2026-10-31T20:07:27.543870+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Trusted Article Image",
-    "run_id": 41237311093,
+    "workflow": "Kesher Normalize Article PR",
+    "run_id": 41237474722,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-31"
