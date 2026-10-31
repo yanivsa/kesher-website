@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -45,7 +45,7 @@
     "last_deploy_dispatch_at": "2026-10-30T10:58:11.411762+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41044611686,
-    "live_verified_at": "2026-10-31T12:30:49.342031+00:00",
+    "live_verified_at": "2026-10-31T12:31:16.228343+00:00",
     "reconciled_existing_article": true
   },
   "backlog": [
@@ -1759,33 +1759,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-31T03:56:11.353788+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-10-31T04:00:54.863205+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-10-31T04:05:58.896735+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-31T04:11:01.502748+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2654,9 +2627,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-10-31T12:31:16.228371+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-31T12:31:17.402635+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-31T12:31:18.516074+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-31T12:09:23.412160+00:00",
+  "updated_at": "2026-10-31T12:31:18.516093+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2726,19 +2717,19 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41199834457,
     "processed_run_id": null,
-    "provider_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913",
+    "provider_id": "0cfbe8ca-65ef-4d1b-bd63-d124d8d0714a",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-31T12:09:23.412122+00:00",
-    "artifact_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913",
-    "source_id": "7bd3534f-a904-4dea-8a8b-49cbb0a1f63e",
-    "adopted_from_long_item_id": "video-20261030-130605-860a1ecbaa",
+    "artifact_id": "0cfbe8ca-65ef-4d1b-bd63-d124d8d0714a",
+    "source_id": "e7daa960-2862-47ad-bde3-e835dff72ce9",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:shared-laughter-couples-intimacy:860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947:video-20261031-141202-860a1ecbaa",
       "hard_started_at": "2026-10-31T12:12:10.029126+00:00",
@@ -2746,7 +2737,131 @@
       "last_fingerprint": "f0e4dce03c7db66f97ddb6fb285b7079fd9db40f09c7f891531bcac14278b693",
       "recovery_count": 0,
       "last_recovery_at": null
-    }
+    },
+    "source": {
+      "id": "shared-laughter-couples-intimacy",
+      "slug": "shared-laughter-couples-intimacy",
+      "title": "צחוק משותף בזוגיות: למה הסנכרון הקטן הזה קשור לאינטימיות וקרבה",
+      "date": "2026-10-30",
+      "category": "זוגיות",
+      "subcategory": "תקשורת ואינטימיות",
+      "excerpt": "מחקר על 71 זוגות מצא שדווקא רגעים של צחוק בו־זמני קשורים לאיכות הקשר, לקרבה ולתמיכה. מה אפשר ללמוד מזה על אינטימיות — ומה המדע עדיין לא הוכיח?",
+      "canonical_url": "https://kesher.saharoni.com/blog/shared-laughter-couples-intimacy",
+      "content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
+      "video_title": "צחוק משותף בזוגיות: למה רגע אחד של צחוק יחד יכול לקרב",
+      "short_title": "הסוד הקטן של זוגות קרובים? לצחוק יחד",
+      "short_hook": "מתי בפעם האחרונה צחקתם יחד באותו רגע? מחקר על זוגות מצא שהסנכרון הקטן הזה קשור לקרבה ולאיכות הקשר.",
+      "youtube_metadata": {
+        "title": "צחוק משותף בזוגיות: למה רגע אחד של צחוק יחד יכול לקרב",
+        "description": "מחקר על 71 זוגות מצא שדווקא רגעים של צחוק בו־זמני קשורים לאיכות הקשר, לקרבה ולתמיכה. מה אפשר ללמוד מזה על אינטימיות — ומה המדע עדיין לא הוכיח?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/shared-laughter-couples-intimacy\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "זוגיות",
+          "תקשורת ואינטימיות",
+          "צחוק משותף",
+          "אינטימיות",
+          "ייעוץ זוגי"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "הסוד הקטן של זוגות קרובים? לצחוק יחד",
+        "description": "מחקר על 71 זוגות מצא שדווקא רגעים של צחוק בו־זמני קשורים לאיכות הקשר, לקרבה ולתמיכה. מה אפשר ללמוד מזה על אינטימיות — ומה המדע עדיין לא הוכיח?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/shared-laughter-couples-intimacy\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "זוגיות",
+          "תקשורת ואינטימיות",
+          "צחוק משותף",
+          "אינטימיות",
+          "ייעוץ זוגי"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "0cfbe8ca-65ef-4d1b-bd63-d124d8d0714a",
+    "raw_sha256": "3d84b8560f2e38b557e6b55b51c919441b5fbbd6c0b0df186d8ec8b6268d04f8",
+    "final_sha256": "6efaef439f837da10ce883439cca1feb4eeecd32bec8598a999fb86221e08f03",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 72.1,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 72.1,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "7bd3534f-a904-4dea-8a8b-49cbb0a1f63e",
+      "task_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913",
+      "artifact_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913",
+      "raw_sha256": "3e34ca7116956dfe8ae8d7f0ff738cfa715b9002dcc9a291099151a82a28e660"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 72.1,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "3d84b8560f2e38b557e6b55b51c919441b5fbbd6c0b0df186d8ec8b6268d04f8",
+      "final_sha256": "6efaef439f837da10ce883439cca1feb4eeecd32bec8598a999fb86221e08f03",
+      "raw_audio_sha256": "56116ba6bd287d3df1b92b8420916cadff85f7ace64695a3b08b7870697ea887",
+      "final_audio_sha256": "56116ba6bd287d3df1b92b8420916cadff85f7ace64695a3b08b7870697ea887",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 72.167619
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 72.167619
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "6efaef439f837da10ce883439cca1feb4eeecd32bec8598a999fb86221e08f03",
+      "raw_sha256": "3d84b8560f2e38b557e6b55b51c919441b5fbbd6c0b0df186d8ec8b6268d04f8",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "49dd062c2eeb2883db63d433bde4b05e7207ab86f92616d7d828071d3632ea5c",
+      "source_duration_seconds": 72.1,
+      "final_duration_seconds": 72.1,
+      "start_seconds": 69.1,
+      "end_seconds": 72.1,
+      "audio_source_sha256": "3d84b8560f2e38b557e6b55b51c919441b5fbbd6c0b0df186d8ec8b6268d04f8"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261031-141202-860a1ecbaa",
+    "type": "article_short",
+    "youtube_id": "yZ6WfHlKB8Y",
+    "youtube_url": "https://youtu.be/yZ6WfHlKB8Y",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "49dd062c2eeb2883db63d433bde4b05e7207ab86f92616d7d828071d3632ea5c",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
