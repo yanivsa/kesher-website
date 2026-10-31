@@ -3278,11 +3278,11 @@
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/shared-laughter-couples-intimacy",
     "overview_youtube_url": "https://youtu.be/IF3Y05qZWWI",
-    "short_youtube_url": null,
+    "short_youtube_url": "https://youtu.be/yZ6WfHlKB8Y",
     "overview_edit_verified": true,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
+    "short_portrait_verified": true,
+    "short_signature_verified": true,
+    "short_origin_verified": true
   },
   "pending_dispatches": {},
   "last_child_notification": {
