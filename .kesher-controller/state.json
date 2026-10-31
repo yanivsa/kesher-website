@@ -66,7 +66,7 @@
     "current_pr_head_sha": "e255ed8e4f3b944c30b70e70ad75a32cc6fb539a",
     "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
     "normalization_slot": "2026-10-31",
-    "normalization_dispatched_at": "2026-10-31T16:46:29.428230+00:00",
+    "normalization_dispatched_at": "2026-10-31T17:11:31.920700+00:00",
     "normalization_run_id": 41221288833
   },
   "backlog": [
@@ -2606,9 +2606,19 @@
         "pr_number": 1261,
         "slot": "2026-10-31"
       }
+    },
+    {
+      "at": "2026-10-31T17:11:31.920726+00:00",
+      "from": "article_normalizing",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1261,
+        "slot": "2026-10-31"
+      }
     }
   ],
-  "updated_at": "2026-10-31T16:46:29.428264+00:00",
+  "updated_at": "2026-10-31T17:11:31.920733+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -3097,9 +3107,10 @@
         "slot": "2026-10-31"
       },
       "intent_at": "2026-10-31T17:10:51.091739+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41221288833,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41223319286,
+      "dispatched_at": "2026-10-31T17:10:51.091739+00:00"
     }
   },
   "last_child_notification": {
@@ -3108,17 +3119,5 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-31"
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
