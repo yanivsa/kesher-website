@@ -1,0 +1,31 @@
+name: Kesher Master Owner Foundation CI
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/kesher_runtime/master_intent.py'
+      - 'scripts/kesher_runtime/master_intent_entry.py'
+      - 'scripts/kesher_runtime/article_quiescence.py'
+      - 'scripts/kesher_runtime/article_worker.py'
+      - 'tests/test_master_intent.py'
+      - 'tests/test_master_article_origin.py'
+      - 'tests/test_article_worker_lazy_jules.py'
+      - '.github/workflows/kesher-master-intent-shadow.yml'
+      - '.github/prompts/kesher-article-authoring-contract.md'
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Compile changed runtime modules
+        run: python -m py_compile scripts/kesher_runtime/master_intent.py scripts/kesher_runtime/master_intent_entry.py scripts/kesher_runtime/article_quiescence.py scripts/kesher_runtime/article_worker.py
+      - name: Run focused Master Owner tests
+        run: python -m unittest tests.test_master_intent tests.test_master_article_origin tests.test_article_worker_lazy_jules -v
