@@ -39,13 +39,13 @@
     "published_date": "2026-10-30",
     "quality_content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-31T12:00:44.959851+00:00",
+    "quality_checked_at": "2026-10-31T12:08:55.466827+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-30T10:58:11.411762+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41044611686,
-    "live_verified_at": "2026-10-31T12:00:46.112112+00:00",
+    "live_verified_at": "2026-10-31T12:08:57.143508+00:00",
     "reconciled_existing_article": true
   },
   "backlog": [
@@ -2689,7 +2689,7 @@
     "status": "blocked",
     "last_error": null,
     "next_retry_at": "2026-10-30T11:19:09.364815+00:00",
-    "run_id": 41048663197,
+    "run_id": 41199240691,
     "processed_run_id": 41048663197,
     "provider_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913",
     "failure_fingerprint": null,
@@ -2707,7 +2707,7 @@
     "task_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913",
     "artifact_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913",
     "provider_status": "pending",
-    "verified": false,
+    "verified": true,
     "watchdog": {
       "identity": "long_video:shared-laughter-couples-intimacy:860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947:video-20261030-130605-860a1ecbaa",
       "hard_started_at": "2026-10-30T11:06:05.559920+00:00",
@@ -2717,7 +2717,20 @@
       "last_recovery_at": null
     },
     "pending_resume_ready": false,
-    "resume_dispatches": 1
+    "resume_dispatches": 1,
+    "youtube_id": "IF3Y05qZWWI",
+    "youtube_url": "https://youtu.be/IF3Y05qZWWI",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 120.7,
+    "content_duration_seconds": 120.708,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
@@ -3155,7 +3168,7 @@
   "pending_dispatches": {},
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 41048663197,
+    "run_id": 41199240691,
     "conclusion": "success",
     "source_slug": "shared-laughter-couples-intimacy",
     "slot": "2026-10-30"
