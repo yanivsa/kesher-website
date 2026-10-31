@@ -14,10 +14,11 @@ jobs:
   resync:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout exact branch
+      - name: Checkout latest isolated branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
+          ref: fix/authority-policy-recertify-20261031
       - name: Regenerate reviewed authority hash pins and remove one-shot workflow
         shell: bash
         run: |
