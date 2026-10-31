@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "article_generating",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -17,7 +17,7 @@
     },
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "last_dispatch_at": "2026-10-31T16:41:49.496635+00:00",
     "watchdog": {
       "identity": "2026-10-31",
@@ -64,7 +64,9 @@
     "pr_number": 1261,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1261",
     "current_pr_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
-    "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12"
+    "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
+    "normalization_slot": "2026-10-31",
+    "normalization_dispatched_at": "2026-10-31T16:46:29.428230+00:00"
   },
   "backlog": [
     {
@@ -2593,9 +2595,19 @@
         "run_id": 41217241439,
         "session_id": "sessions/14947022517645608193"
       }
+    },
+    {
+      "at": "2026-10-31T16:46:29.428256+00:00",
+      "from": "article_generating",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1261,
+        "slot": "2026-10-31"
+      }
     }
   ],
-  "updated_at": "2026-10-31T16:41:49.496654+00:00",
+  "updated_at": "2026-10-31T16:46:29.428264+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -3084,21 +3096,10 @@
         "slot": "2026-10-31"
       },
       "intent_at": "2026-10-31T16:45:48.149397+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41221288833,
+      "dispatched_at": "2026-10-31T16:45:48.149397+00:00"
     }
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
