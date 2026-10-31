@@ -40,6 +40,12 @@ Master-authored article branches use:
 
 `master/kesher-article/<slot>-<slug>`
 
+The PR title must start exactly with:
+
+`Publish Kesher article:`
+
+This prefix is part of the canonical observer contract; changing it makes the PR invisible to the article observation path.
+
 The PR body must contain:
 
 `Kesher-Origin: master-active-supervisor`
