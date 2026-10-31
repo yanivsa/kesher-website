@@ -1779,6 +1779,29 @@ class YoutubeMetadataRecoveryTest(unittest.TestCase):
         self.assertTrue(item["uploaded"])
         self.assertEqual(item["status"], "uploaded")
 
+    def test_prune_notebooklm_sources_deletes_excess_sources(self) -> None:
+        sources = [{"id": f"src-{i}", "title": f"Title {i}"} for i in range(50)]
+        deleted = []
+        def fake_run(args, timeout=120):
+            if args[0] == "source" and args[1] == "list":
+                return {"sources": sources, "count": 50}
+            if args[0] == "source" and args[1] == "delete":
+                deleted.append(args[2])
+                return {"status": "ok"}
+            return {}
+
+        with mock.patch.object(pipeline, "run_notebooklm", side_effect=fake_run):
+            pipeline.prune_notebooklm_sources("test-nb", keep_count=35)
+
+        self.assertEqual(len(deleted), 15)
+        self.assertEqual(deleted, [f"src-{i}" for i in range(15)])
+
+    def test_prune_notebooklm_sources_no_action_when_within_limit(self) -> None:
+        sources = [{"id": f"src-{i}", "title": f"Title {i}"} for i in range(10)]
+        with mock.patch.object(pipeline, "run_notebooklm", return_value={"sources": sources, "count": 10}) as run_mock:
+            pipeline.prune_notebooklm_sources("test-nb", keep_count=35)
+        self.assertEqual(run_mock.call_count, 1)
+
 
 if __name__ == "__main__":
     unittest.main()
