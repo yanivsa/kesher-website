@@ -138,6 +138,10 @@ class ProductionCutoverTests(unittest.TestCase):
         from scripts.kesher_runtime.authority_topology import policy
         evidence = json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())
         rules = policy(ROOT)
+        # These read-only Master Owner workflows were added on October 31 and
+        # have no registration in the immutable October 4 inventory.
+        del rules['workflows']['.github/workflows/kesher-master-intent-shadow.yml']
+        del rules['workflows']['.github/workflows/kesher-master-owner-foundation-ci.yml']
         # Project only this immutable October 4 fixture; October 6 metadata
         # authority remains classified in the current policy and refusal test.
         del rules['workflows']['.github/workflows/kesher-exact-short-metadata-recovery-20261006.yml']
@@ -175,6 +179,10 @@ class ProductionCutoverTests(unittest.TestCase):
         from scripts.kesher_runtime.authority_topology import policy,check_definitions,classify_registered
         import hashlib
         rules=policy(ROOT);del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
+        # These read-only Master Owner workflows were added on October 31 and
+        # have no registration in the immutable October 4 inventory.
+        del rules['workflows']['.github/workflows/kesher-master-intent-shadow.yml']
+        del rules['workflows']['.github/workflows/kesher-master-owner-foundation-ci.yml']
         # This immutable October 4 snapshot predates the metadata workflow.
         del rules['workflows']['.github/workflows/kesher-exact-short-metadata-recovery-20261006.yml']
         del rules['workflows']['.github/workflows/kesher-controller-liveness.yml']
@@ -561,6 +569,10 @@ class CredentialGatewayTests(unittest.TestCase):
         from tests.test_kesher_git_exclusion import EpochGit
         from tests.test_kesher_external_exclusion import ProtectedService
         rules=policy(ROOT)
+        # These read-only Master Owner workflows were added on October 31 and
+        # have no registration in the immutable October 4 inventory.
+        del rules['workflows']['.github/workflows/kesher-master-intent-shadow.yml']
+        del rules['workflows']['.github/workflows/kesher-master-owner-foundation-ci.yml']
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
         del rules['workflows']['.github/workflows/kesher-targeted-media-recovery-dispatch.yml']
         del rules['workflows']['.github/workflows/kesher-controller-liveness.yml']
