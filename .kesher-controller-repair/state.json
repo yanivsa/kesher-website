@@ -1,5 +1,40 @@
 {
   "incidents": {
+    "0c1344e33455f64a1e18946c128802c3b057496f39c369d731220185d5e6958e": {
+      "affected": [
+        {
+          "article_run_id": 41246615281,
+          "article_session_id": "sessions/17044592290286859459",
+          "artifact_id": null,
+          "content_sha256": null,
+          "cycle": "2026-10-31",
+          "idea_id": "parenting-p2-poop-only-in-diaper",
+          "item_id": null,
+          "pr_number": 1261,
+          "slug": null,
+          "source_id": null,
+          "task_id": null
+        }
+      ],
+      "created_at": "2026-10-31T22:45:56.343690+00:00",
+      "exact": {
+        "article_run_id": 41246615281,
+        "article_session_id": "sessions/17044592290286859459",
+        "artifact_id": null,
+        "content_sha256": null,
+        "cycle": "2026-10-31",
+        "idea_id": "parenting-p2-poop-only-in-diaper",
+        "item_id": null,
+        "pr_number": 1261,
+        "slug": null,
+        "source_id": null,
+        "task_id": null
+      },
+      "failure_class": "IDEA_SLOT_MISMATCH",
+      "fingerprint": "f3b8ffdd1f3724adb9db84db21dd5c5cf8c62ffb93574d26a3c3975e3a65f814",
+      "stage": "controller",
+      "status": "intent"
+    },
     "62e88666cabe99b6b64eee72494a2dcb8ab23750bf2482696450fa671f06c1c2": {
       "acquired_at": "2026-10-30T13:06:06.587446+00:00",
       "acquisition": "created",
