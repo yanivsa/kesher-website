@@ -10,6 +10,7 @@ from .github import GitHub, GitHubError, GitHubStateStore
 from .identity import identity_from_dict
 from .master_intent import MasterIntent, plan_master_command
 from .media_audit import ArchivedMediaAuditor
+from .media_observer import YouTubeInventory
 from .observe import RepositoryObserver
 from .output_artifacts import download_actions_artifact
 from .state import StateConflict, StateInvalid
@@ -19,8 +20,11 @@ from .worker_entry import REPOSITORY
 def _inventory_reader(*, now: str):
     """Use real public inventory when credentials exist; otherwise fail closed as unknown."""
     try:
-        from .controller_entry import youtube_inventory
-        return youtube_inventory(now=now)
+        from scripts import kesher_daily_pipeline as core
+        token = core.youtube_access_token()
+        return YouTubeInventory(
+            lambda resource, params: core.youtube_get(resource, token, params)
+        ).read(now=now)
     except (OSError, RuntimeError, ValueError, KeyError) as exc:
         raise RuntimeError('MASTER_SHADOW_MEDIA_INVENTORY_UNAVAILABLE') from exc
 
