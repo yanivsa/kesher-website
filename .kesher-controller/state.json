@@ -3262,19 +3262,27 @@
         "long_url": "https://youtu.be/jv3m3PC4RMw",
         "short_url": "https://youtu.be/sXboa-21Wyo"
       }
+    },
+    {
+      "idea_id": "shared-laughter-couples-intimacy",
+      "fingerprint": "51908c42600e7503eabaa016ab40076cff1ae306464b134debe49e3d301baa8a",
+      "topic_brief": "Direct owner-authored article already exists in open PR #1256 on branch publish/shared-laughter-couples-intimacy. Adopt and process this exact PR/slug; DO NOT create a new article, Jules session, duplicate PR, or duplicate provider item. Topic: ייעוץ זוגי: צחוק משותף כסנכרון חברתי של אינטימיות. Evidence: Kurtz & Algoe (2015) original 71-couple study, Greater Good Science Center summary, Hall (2017) meta-analysis. Preserve scientific correction: the couples study did not measure endorphins or neural synchrony. Service /services/couples. Continue after publication to same-identity Video Overview and 9:16 Short.",
+      "required_primary_keyword": "צחוק משותף בזוגיות",
+      "run_now": true,
+      "status": "complete",
+      "requested_at": "2026-10-30T10:43:33.693213+00:00",
+      "publication_slot": "2026-10-30",
+      "claimed_at": "2026-10-30T10:43:35.153923+00:00",
+      "completed_at": "2026-10-31T12:31:23.769409+00:00",
+      "outputs": {
+        "slug": "shared-laughter-couples-intimacy",
+        "article_url": "https://kesher.saharoni.com/blog/shared-laughter-couples-intimacy",
+        "long_url": "https://youtu.be/IF3Y05qZWWI",
+        "short_url": "https://youtu.be/yZ6WfHlKB8Y"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "shared-laughter-couples-intimacy",
-    "fingerprint": "51908c42600e7503eabaa016ab40076cff1ae306464b134debe49e3d301baa8a",
-    "topic_brief": "Direct owner-authored article already exists in open PR #1256 on branch publish/shared-laughter-couples-intimacy. Adopt and process this exact PR/slug; DO NOT create a new article, Jules session, duplicate PR, or duplicate provider item. Topic: ייעוץ זוגי: צחוק משותף כסנכרון חברתי של אינטימיות. Evidence: Kurtz & Algoe (2015) original 71-couple study, Greater Good Science Center summary, Hall (2017) meta-analysis. Preserve scientific correction: the couples study did not measure endorphins or neural synchrony. Service /services/couples. Continue after publication to same-identity Video Overview and 9:16 Short.",
-    "required_primary_keyword": "צחוק משותף בזוגיות",
-    "run_now": true,
-    "status": "claimed",
-    "requested_at": "2026-10-30T10:43:33.693213+00:00",
-    "publication_slot": "2026-10-30",
-    "claimed_at": "2026-10-30T10:43:35.153923+00:00"
-  },
+  "active_idea": null,
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/shared-laughter-couples-intimacy",
     "overview_youtube_url": "https://youtu.be/IF3Y05qZWWI",
