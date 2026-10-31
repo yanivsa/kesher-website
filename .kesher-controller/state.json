@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-30",
-  "status": "long_video_complete",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1759,15 +1759,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-31T03:51:02.551639+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-31T03:56:11.353788+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2657,9 +2648,15 @@
       "details": {
         "item_id": "video-20261030-130605-860a1ecbaa"
       }
+    },
+    {
+      "at": "2026-10-31T12:09:23.412152+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-10-31T12:09:15.374282+00:00",
+  "updated_at": "2026-10-31T12:09:23.412160+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2728,16 +2725,20 @@
     "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-10-31T12:09:23.412122+00:00",
+    "artifact_id": "16ca14b0-5fd7-4d92-bb73-18f917a61913",
+    "source_id": "7bd3534f-a904-4dea-8a8b-49cbb0a1f63e",
+    "adopted_from_long_item_id": "video-20261030-130605-860a1ecbaa"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3153,9 +3154,9 @@
   },
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/shared-laughter-couples-intimacy",
-    "overview_youtube_url": null,
+    "overview_youtube_url": "https://youtu.be/IF3Y05qZWWI",
     "short_youtube_url": null,
-    "overview_edit_verified": false,
+    "overview_edit_verified": true,
     "short_portrait_verified": false,
     "short_signature_verified": false,
     "short_origin_verified": false
@@ -3171,9 +3172,10 @@
         "derive_long_item_id": "video-20261030-130605-860a1ecbaa"
       },
       "intent_at": "2026-10-31T12:08:49.505495+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41199834457,
+      "dispatched_at": "2026-10-31T12:08:49.505495+00:00"
     }
   },
   "last_child_notification": {
