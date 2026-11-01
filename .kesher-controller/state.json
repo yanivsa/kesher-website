@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-01",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -46,7 +46,7 @@
     "last_deploy_dispatch_at": "2026-11-01T18:58:21.719530+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41339314739,
-    "live_verified_at": "2026-11-01T20:35:48.254130+00:00"
+    "live_verified_at": "2026-11-01T20:36:12.320519+00:00"
   },
   "backlog": [
     {
@@ -1759,24 +1759,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T16:20:59.436382+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-01T16:20:59.884294+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-01T16:21:00.363338+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-11-01T16:25:58.889543+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2467,9 +2449,27 @@
         "item_id": "video-20261101-215647-89f4065833",
         "long_item_id": "video-20261101-211603-89f4065833-a2"
       }
+    },
+    {
+      "at": "2026-11-01T20:36:12.320548+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-01T20:36:13.272510+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-01T20:36:14.274514+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-01T20:26:16.711138+00:00",
+  "updated_at": "2026-11-01T20:36:14.274533+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2539,19 +2539,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41346841088,
     "processed_run_id": null,
-    "provider_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
+    "provider_id": "ce029e18-0b64-410f-a8b7-4c16f5b0c954",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-11-01T20:26:16.711112+00:00",
-    "artifact_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
-    "source_id": "fc928ad9-1d2c-4d58-b593-15db16480aa2",
-    "adopted_from_long_item_id": "video-20261101-211603-89f4065833-a2",
+    "artifact_id": "ce029e18-0b64-410f-a8b7-4c16f5b0c954",
+    "source_id": "adf354ca-67da-4c66-b072-acc64778c627",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:gifted-children-asynchronous-development:89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67:video-20261101-215647-89f4065833",
       "hard_started_at": "2026-11-01T19:56:59.349030+00:00",
@@ -2559,7 +2559,132 @@
       "last_fingerprint": "ea9976295905f517cb5bc1f36d8c7b3a744deabb634b525cbcf4bc01d91293a1",
       "recovery_count": 1,
       "last_recovery_at": "2026-11-01T20:25:46.189252+00:00"
-    }
+    },
+    "source": {
+      "id": "gifted-children-asynchronous-development",
+      "slug": "gifted-children-asynchronous-development",
+      "title": "הילד מדבר כמו בן 13 ומתפרק כמו בן 7? מה הורים לילדים מחוננים חייבים לדעת על א־סינכרוניות",
+      "date": "2026-11-01",
+      "category": "הדרכת הורים",
+      "subcategory": "הנחיית הורים לילדים מחוננים",
+      "excerpt": "ילד מחונן יכול לחשוב ברמה מתקדמת מאוד ובאותו זמן להזדקק לעזרה בוויסות, בחברה או בתסכול. מהי התפתחות א־סינכרונית, איפה הורים טועים, ומה עושים בזמן הצפה בלי לבייש את הילד.",
+      "canonical_url": "https://kesher.saharoni.com/blog/gifted-children-asynchronous-development",
+      "content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
+      "video_title": "ילד מחונן מתפרק? להבין את הפער בין שכל מתקדם לרגש צעיר",
+      "short_title": "הילד גאון — אז למה הוא מתפרק כמו ילד קטן?",
+      "short_hook": "הוא יכול לדבר איתכם על חלל, צדק ופילוסופיה — ואז לבכות כי החולצה מגרדת. זו לא בהכרח סתירה.",
+      "youtube_metadata": {
+        "title": "ילד מחונן מתפרק? להבין את הפער בין שכל מתקדם לרגש צעיר",
+        "description": "ילד מחונן יכול לחשוב ברמה מתקדמת מאוד ובאותו זמן להזדקק לעזרה בוויסות, בחברה או בתסכול. מהי התפתחות א־סינכרונית, איפה הורים טועים, ומה עושים בזמן הצפה בלי לבייש את הילד.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/gifted-children-asynchronous-development\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "הנחיית הורים לילדים מחוננים",
+          "ילדים מחוננים התפתחות רגשית",
+          "התפתחות א־סינכרונית",
+          "ילד מחונן מתפרץ",
+          "הורות לילדים מחוננים"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "הילד גאון — אז למה הוא מתפרק כמו ילד קטן?",
+        "description": "ילד מחונן יכול לחשוב ברמה מתקדמת מאוד ובאותו זמן להזדקק לעזרה בוויסות, בחברה או בתסכול. מהי התפתחות א־סינכרונית, איפה הורים טועים, ומה עושים בזמן הצפה בלי לבייש את הילד.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/gifted-children-asynchronous-development\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "הנחיית הורים לילדים מחוננים",
+          "ילד מחונן מתפרץ",
+          "ילדים מחוננים רגישות",
+          "התפתחות א־סינכרונית"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "ce029e18-0b64-410f-a8b7-4c16f5b0c954",
+    "raw_sha256": "04fe769d01a55a4e4f7bd38cb696c6293032113a0421e77fd456af4300faa3a4",
+    "final_sha256": "8d4849862a1fe0612376da0a3d745450a7165e0a7a601420ef26983278160122",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 94.167,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 94.167,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "fc928ad9-1d2c-4d58-b593-15db16480aa2",
+      "task_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
+      "artifact_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
+      "raw_sha256": "afe54f50f20f839ad758d47e2b1c96f5edd1d7e26090f6c097ed9351baf66aaa"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 94.167,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "04fe769d01a55a4e4f7bd38cb696c6293032113a0421e77fd456af4300faa3a4",
+      "final_sha256": "8d4849862a1fe0612376da0a3d745450a7165e0a7a601420ef26983278160122",
+      "raw_audio_sha256": "255d62edb9fa44eb5a1a9cb557f3db1284cde9fbe8cab50b861c2f70148486b1",
+      "final_audio_sha256": "255d62edb9fa44eb5a1a9cb557f3db1284cde9fbe8cab50b861c2f70148486b1",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 94.226576
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 94.226576
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "8d4849862a1fe0612376da0a3d745450a7165e0a7a601420ef26983278160122",
+      "raw_sha256": "04fe769d01a55a4e4f7bd38cb696c6293032113a0421e77fd456af4300faa3a4",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "79b6ec35d4cbc2dd37ddc7a3771f2bbd7cd797fd66a7b335111c2077bf08e1df",
+      "source_duration_seconds": 94.167,
+      "final_duration_seconds": 94.167,
+      "start_seconds": 91.167,
+      "end_seconds": 94.167,
+      "audio_source_sha256": "04fe769d01a55a4e4f7bd38cb696c6293032113a0421e77fd456af4300faa3a4"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261101-215647-89f4065833",
+    "type": "article_short",
+    "youtube_id": "bmofQnopjzw",
+    "youtube_url": "https://youtu.be/bmofQnopjzw",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "79b6ec35d4cbc2dd37ddc7a3771f2bbd7cd797fd66a7b335111c2077bf08e1df",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
