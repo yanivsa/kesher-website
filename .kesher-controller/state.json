@@ -1758,14 +1758,7 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "COMPLETED_WITHOUT_PR",
-    "message": "Jules completed without creating a pull request; Jules diagnostic: The task is complete. As per your instructions, I checked if current `main` already contained an article for the target Primary Keyword 'ילדים מחוננים התפתחות רגשית'. The article `gifted-children-asynchronous-development` is already present and targets this keyword. Therefore, I followed the directive to \"stop cleanly without editing anything and without creating another PR.\" I have successfully executed the full repository test suite to verify everything remains clean, removed any temporary files, and exited without opening a pull request.",
-    "retryable": true,
-    "retry_at": "2026-11-01T23:20:54.738317+00:00",
-    "at": "2026-11-01T23:15:54.738341+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-11-01T18:53:47.033236+00:00",
@@ -2392,9 +2385,18 @@
         "run_id": 41357968167,
         "session_id": "sessions/14537073619063615873"
       }
+    },
+    {
+      "at": "2026-11-01T23:20:50.915460+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "owner run-now article retry backoff is active",
+      "details": {
+        "retry_at": "2026-11-01T23:20:54.738317+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-01T23:15:54.738348+00:00",
+  "updated_at": "2026-11-01T23:20:50.915477+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
