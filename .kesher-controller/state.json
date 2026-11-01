@@ -44,7 +44,7 @@
     "live": true,
     "last_deploy_dispatch_at": "2026-11-01T10:30:43.883987+00:00",
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T12:05:54.293865+00:00",
+    "live_verified_at": "2026-11-01T12:06:13.741124+00:00",
     "deploy_run_id": 41297802059
   },
   "backlog": [
@@ -1758,33 +1758,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T02:50:51.527268+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T02:55:54.314427+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T03:00:54.539302+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-11-01T03:05:43.005468+00:00",
       "from": "blocked",
       "to": "article_pr_open",
@@ -2557,9 +2530,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-01T12:06:13.741151+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-01T12:06:14.949079+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-01T12:06:16.061730+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-01T12:01:22.207754+00:00",
+  "updated_at": "2026-11-01T12:06:16.061748+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
