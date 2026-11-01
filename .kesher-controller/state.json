@@ -3105,7 +3105,22 @@
     }
   ],
   "active_idea": null,
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-11-01",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "good-news-response-relationship",
+        "target_content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
+        "target_item_id": "video-20261101-123658-0b2187efb1"
+      },
+      "intent_at": "2026-11-01T11:05:43.853154+00:00",
+      "status": "intent",
+      "previous_run_id": 41298207056,
+      "observed_active_run_id": null
+    }
+  },
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/good-news-response-relationship",
     "overview_youtube_url": null,
@@ -3127,5 +3142,21 @@
     "Auto-merge Kesher article PRs:41297274966",
     "Deploy to Cloudflare Pages:41297802059",
     "Kesher Daily NotebookLM Video Overview:41298207056"
-  ]
+  ],
+  "interventions": {
+    "v5|good-news-response-relationship|0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b|long_video": {
+      "pipeline_id": "v5",
+      "slug": "good-news-response-relationship",
+      "content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-11-01T13",
+      "last_fingerprint": "e1be4d7fafd4d48a7f81172804f578c8d59fa36fc6cacce3937d662e51ca270f",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-11-01T11:05:43.853154+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
