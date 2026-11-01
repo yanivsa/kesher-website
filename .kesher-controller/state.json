@@ -2693,7 +2693,7 @@
       }
     }
   ],
-  "updated_at": "2026-11-01T01:11:13.572955+00:00",
+  "updated_at": "2026-11-01T01:16:07.834789+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2709,7 +2709,8 @@
     "source_id": "local-editorial://poop-only-in-diaper/7",
     "evidence_rebind_head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1",
     "evidence_rebind_dispatched_at": "2026-10-31T20:46:17.908037+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
+    "run_id": null
   },
   "long_video": {
     "attempt_count": 0,
@@ -3186,11 +3187,10 @@
         "pr_number": "1261",
         "slot": "2026-10-31"
       },
-      "intent_at": "2026-11-01T01:10:42.934376+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-11-01T01:15:45.005205+00:00",
+      "status": "intent",
       "previous_run_id": 41237767458,
-      "observed_active_run_id": 41260009255,
-      "dispatched_at": "2026-11-01T01:10:42.934376+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
