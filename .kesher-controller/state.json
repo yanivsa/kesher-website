@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-01",
-  "status": "long_video_complete",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1758,15 +1758,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T01:25:57.431928+00:00",
-      "from": "article_pr_open",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-11-01T01:30:51.237433+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2609,9 +2600,15 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-01T11:12:44.972773+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-11-01T11:12:37.307273+00:00",
+  "updated_at": "2026-11-01T11:12:44.972778+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2676,16 +2673,20 @@
     "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-11-01T11:12:44.972751+00:00",
+    "artifact_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
+    "source_id": "5a2e233c-e37b-434f-8d18-0fc97e66c323",
+    "adopted_from_long_item_id": "video-20261101-123658-0b2187efb1"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3136,9 +3137,10 @@
         "derive_long_item_id": "video-20261101-123658-0b2187efb1"
       },
       "intent_at": "2026-11-01T11:12:09.667644+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41300876059,
+      "dispatched_at": "2026-11-01T11:12:09.667644+00:00"
     }
   },
   "deliverables": {
