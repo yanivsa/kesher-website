@@ -1,20 +1,20 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "article_pr_open",
+  "status": "article_deploying",
   "article": {
-    "attempt_count": 3,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "next_retry_at": null,
     "run_id": 41246615281,
     "processed_run_id": 41246615281,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 2
     },
-    "attempts": 3,
+    "attempts": 0,
     "deploy_attempts": 0,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-31T22:56:00.035341+00:00",
@@ -77,7 +77,17 @@
     "last_error": null,
     "normalized_head_sha": "9c0c897f7dddf4154fc157cf66e072ce2954ab04",
     "image_head_sha": "9c0c897f7dddf4154fc157cf66e072ce2954ab04",
-    "merge_candidate_sha": "9c0c897f7dddf4154fc157cf66e072ce2954ab04"
+    "merge_candidate_sha": "9c0c897f7dddf4154fc157cf66e072ce2954ab04",
+    "slug": "poop-only-in-diaper",
+    "title": "קקי רק בחיתול: למה הילד מסרב לעשות בשירותים ומה עושים?",
+    "url": "https://kesher.saharoni.com/blog/poop-only-in-diaper",
+    "published_date": "2026-10-31",
+    "quality_content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-11-01T06:00:43.814523+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -1789,12 +1799,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-31T20:11:51.867044+00:00",
-      "from": "article_image_rebinding",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
       "at": "2026-10-31T20:12:54.706410+00:00",
       "from": "article_pr_open",
       "to": "blocked",
@@ -2706,9 +2710,15 @@
       "from": "article_image_rebinding",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-11-01T06:00:46.126350+00:00",
+      "from": "article_pr_open",
+      "to": "article_deploying",
+      "reason": "deployment already active"
     }
   ],
-  "updated_at": "2026-11-01T05:51:16.247905+00:00",
+  "updated_at": "2026-11-01T06:00:46.126375+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2725,7 +2735,8 @@
     "evidence_rebind_head_sha": "d479c5f8a101a0f2f9ff0a60893ee1cee18a8931",
     "evidence_rebind_dispatched_at": "2026-11-01T05:37:33.491354+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 41277664520
+    "run_id": 41277664520,
+    "image_path": "/images/generated/blog/poop-only-in-diaper.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3173,7 +3184,7 @@
     "claimed_at": "2026-10-31T15:56:34.197090+00:00"
   },
   "deliverables": {
-    "article_url": null,
+    "article_url": "https://kesher.saharoni.com/blog/poop-only-in-diaper",
     "overview_youtube_url": null,
     "short_youtube_url": null,
     "overview_edit_verified": false,
