@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "article_normalizing",
+  "status": "article_image_rebinding",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -1787,16 +1787,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-31T20:08:19.526239+00:00",
-      "from": "article_image_rebinding",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1261,
-        "slot": "2026-10-31"
-      }
-    },
-    {
       "at": "2026-10-31T20:10:01.865810+00:00",
       "from": "article_normalizing",
       "to": "article_image_rebinding",
@@ -2708,12 +2698,22 @@
         "pr_number": 1261,
         "slot": "2026-10-31"
       }
+    },
+    {
+      "at": "2026-11-01T05:37:33.491380+00:00",
+      "from": "article_normalizing",
+      "to": "article_image_rebinding",
+      "reason": "prior trusted image artifact proved against current normalized article and must be reattached",
+      "details": {
+        "pr_number": 1261,
+        "head_sha": "d479c5f8a101a0f2f9ff0a60893ee1cee18a8931"
+      }
     }
   ],
-  "updated_at": "2026-11-01T05:33:19.327348+00:00",
+  "updated_at": "2026-11-01T05:37:33.491389+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "pending",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2724,8 +2724,8 @@
     "last_dispatch_at": "2026-10-31T19:56:11.297078+00:00",
     "artifact_sha256": "67513b35c1a7851825c6b3bca65b4b29b9d3614f5a718b5968ff877f98c3a148",
     "source_id": "local-editorial://poop-only-in-diaper/7",
-    "evidence_rebind_head_sha": "f9d280e006cbc4cd7669d879fe55b091af46b6a0",
-    "evidence_rebind_dispatched_at": "2026-11-01T05:24:57.911596+00:00",
+    "evidence_rebind_head_sha": "d479c5f8a101a0f2f9ff0a60893ee1cee18a8931",
+    "evidence_rebind_dispatched_at": "2026-11-01T05:37:33.491354+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
     "run_id": null
   },
@@ -3206,9 +3206,10 @@
         "expected_head_sha": "d479c5f8a101a0f2f9ff0a60893ee1cee18a8931"
       },
       "intent_at": "2026-11-01T05:36:58.942806+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41277664520,
+      "dispatched_at": "2026-11-01T05:36:58.942806+00:00"
     }
   },
   "last_child_notification": {
