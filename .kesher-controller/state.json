@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
-  "cycle": "2026-11-01",
-  "status": "complete",
+  "cycle": "2026-11-02",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -14,39 +14,8 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 1,
-    "pr_number": 1269,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1269",
-    "current_pr_head_sha": "a250690ca8de27ee34fde5011ba06bc53186a305",
-    "jules_head_sha": "a0d5f3e9755e8f51ebddc7566cf83d687b243e90",
-    "normalization_status": "complete",
-    "normalization_slot": "2026-11-01",
-    "normalization_dispatched_at": "2026-11-01T17:44:04.429621+00:00",
-    "normalization_run_id": 41332969883,
-    "normalization_drift_count": 1,
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-11-01T18:53:51.530800+00:00",
-    "merge_run_id": 41339167258,
-    "last_refunded_auto_merge_run_id": 41333561542,
-    "deferred_auto_merge_refund_count": 2,
-    "last_normalization_drift_head_sha": "a250690ca8de27ee34fde5011ba06bc53186a305",
-    "normalized_head_sha": "a250690ca8de27ee34fde5011ba06bc53186a305",
-    "image_head_sha": "a250690ca8de27ee34fde5011ba06bc53186a305",
-    "merge_candidate_sha": "a250690ca8de27ee34fde5011ba06bc53186a305",
-    "slug": "gifted-children-asynchronous-development",
-    "title": "הילד מדבר כמו בן 13 ומתפרק כמו בן 7? מה הורים לילדים מחוננים חייבים לדעת על א־סינכרוניות",
-    "url": "https://kesher.saharoni.com/blog/gifted-children-asynchronous-development",
-    "published_date": "2026-11-01",
-    "quality_content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
-    "reconciled_existing_article": true,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-11-01T21:55:52.539083+00:00",
-    "quality_violations": [],
-    "live": true,
-    "last_deploy_dispatch_at": "2026-11-01T18:58:21.719530+00:00",
-    "next_deploy_retry_at": null,
-    "deploy_run_id": 41339314739,
-    "live_verified_at": "2026-11-01T21:56:23.367272+00:00"
+    "deploy_attempts": 0,
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -1759,190 +1728,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T17:42:41.239201+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-01T17:42:42.379251+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-01T17:42:43.700751+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-01T17:43:49.947678+00:00",
-      "from": "complete",
-      "to": "article_needed",
-      "reason": "owner_run_now_cycle_started",
-      "details": {
-        "idea_id": "gifted-children-asynchronous-development",
-        "publication_slot": "2026-11-01"
-      }
-    },
-    {
-      "at": "2026-11-01T17:44:04.429648+00:00",
-      "from": "article_needed",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1269,
-        "slot": "2026-11-01"
-      }
-    },
-    {
-      "at": "2026-11-01T17:45:21.199638+00:00",
-      "from": "article_normalizing",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 1269
-      }
-    },
-    {
-      "at": "2026-11-01T17:46:38.903967+00:00",
-      "from": "article_image_running",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
-      "at": "2026-11-01T17:47:47.853556+00:00",
-      "from": "article_pr_open",
-      "to": "article_pr_open",
-      "reason": "successful_deferred_auto_merge_refunded",
-      "details": {
-        "run_id": 41333195711,
-        "pr_number": 1269,
-        "head_sha": "1b1c174f9b6c0562997978b0f24c5fe3d3a4bc2d",
-        "merge_dispatch_count": 0,
-        "refund_count": 1
-      }
-    },
-    {
-      "at": "2026-11-01T17:52:07.485587+00:00",
-      "from": "article_pr_open",
-      "to": "article_pr_open",
-      "reason": "successful_deferred_auto_merge_refunded",
-      "details": {
-        "run_id": 41333561542,
-        "pr_number": 1269,
-        "head_sha": "1b1c174f9b6c0562997978b0f24c5fe3d3a4bc2d",
-        "merge_dispatch_count": 0,
-        "refund_count": 2
-      }
-    },
-    {
-      "at": "2026-11-01T18:10:49.501078+00:00",
-      "from": "article_pr_open",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1269 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T18:15:50.706661+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1269 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T18:20:55.520236+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1269 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T18:26:00.327974+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1269 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T18:30:55.195991+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1269 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T18:35:48.630008+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1269 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T18:40:51.366880+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1269 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T18:42:52.702532+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1269 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T18:45:31.638538Z",
-      "from": "blocked",
-      "to": "article_pr_open",
-      "reason": "owner_metadata_repair",
-      "details": {
-        "pr_number": 1269,
-        "idea_id": "gifted-children-asynchronous-development",
-        "primary_keyword": "הילד",
-        "trusted_stems": [
-          "gifted"
-        ],
-        "preserved_head": "1b1c174f9b6c0562997978b0f24c5fe3d3a4bc2d",
-        "preserved_image_sha256": "e2719f16775e759f6e854d338441e405ca7bc0d97d7a1e119873d60e6681c4f4"
-      }
-    },
-    {
-      "at": "2026-11-01T18:51:20.906292+00:00",
-      "from": "article_pr_open",
-      "to": "article_image_rebinding",
-      "reason": "prior trusted image artifact proved against current normalized article and must be reattached",
-      "details": {
-        "pr_number": 1269,
-        "head_sha": "a250690ca8de27ee34fde5011ba06bc53186a305"
-      }
-    },
-    {
-      "at": "2026-11-01T18:52:46.613839+00:00",
-      "from": "article_image_rebinding",
-      "to": "article_image_running",
-      "reason": "trusted image workflow already active"
-    },
-    {
       "at": "2026-11-01T18:53:47.033236+00:00",
       "from": "article_image_running",
       "to": "article_pr_open",
@@ -2467,224 +2252,62 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-01T22:00:46.832197+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-11-01T22:00:46.832204+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-11-01T22:00:46.833393+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-11-01T21:56:25.931412+00:00",
+  "updated_at": "2026-11-01T22:00:46.832170+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "LocalEditorial",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-11-01T17:45:21.199608+00:00",
-    "artifact_sha256": "e2719f16775e759f6e854d338441e405ca7bc0d97d7a1e119873d60e6681c4f4",
-    "source_id": "local-editorial://gifted-children-asynchronous-development/2",
-    "evidence_rebind_head_sha": "a250690ca8de27ee34fde5011ba06bc53186a305",
-    "evidence_rebind_dispatched_at": "2026-11-01T18:51:20.906262+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 41333078383,
-    "image_path": "/images/generated/blog/gifted-children-asynchronous-development.png"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41343422872,
-    "processed_run_id": 41340770119,
-    "provider_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-11-01T19:46:32.314518+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261101-211603-89f4065833-a2",
-    "resume_dispatches": 2,
-    "source_slug": "gifted-children-asynchronous-development",
-    "source_content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
-    "content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
-    "source_id": "fc928ad9-1d2c-4d58-b593-15db16480aa2",
-    "task_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
-    "artifact_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
-    "provider_status": "pending",
-    "verified": true,
-    "watchdog": {
-      "identity": "long_video:gifted-children-asynchronous-development:89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67:video-20261101-211603-89f4065833-a2",
-      "hard_started_at": "2026-11-01T19:16:10.157044+00:00",
-      "last_progress_at": "2026-11-01T19:22:52.201365+00:00",
-      "last_fingerprint": "06a8cf6d1e1dc62f62bcfeb7e06ff969d2786ccf7a43a199488038feb6514eec",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-11-01T19:46:03.596358+00:00"
-    },
-    "pending_resume_ready": false,
-    "youtube_id": "hZnOr_12YDU",
-    "youtube_url": "https://youtu.be/hZnOr_12YDU",
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 132.0,
-    "content_duration_seconds": 132.0,
-    "signature_duration_seconds": 3.0,
-    "signature_overlay": true,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41346841088,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "ce029e18-0b64-410f-a8b7-4c16f5b0c954",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-11-01T20:26:16.711112+00:00",
-    "artifact_id": "ce029e18-0b64-410f-a8b7-4c16f5b0c954",
-    "source_id": "adf354ca-67da-4c66-b072-acc64778c627",
-    "adopted_from_long_item_id": null,
-    "watchdog": {
-      "identity": "short:gifted-children-asynchronous-development:89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67:video-20261101-215647-89f4065833",
-      "hard_started_at": "2026-11-01T19:56:59.349030+00:00",
-      "last_progress_at": "2026-11-01T20:04:13.930049+00:00",
-      "last_fingerprint": "ea9976295905f517cb5bc1f36d8c7b3a744deabb634b525cbcf4bc01d91293a1",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-11-01T20:25:46.189252+00:00"
-    },
-    "source": {
-      "id": "gifted-children-asynchronous-development",
-      "slug": "gifted-children-asynchronous-development",
-      "title": "הילד מדבר כמו בן 13 ומתפרק כמו בן 7? מה הורים לילדים מחוננים חייבים לדעת על א־סינכרוניות",
-      "date": "2026-11-01",
-      "category": "הדרכת הורים",
-      "subcategory": "הנחיית הורים לילדים מחוננים",
-      "excerpt": "ילד מחונן יכול לחשוב ברמה מתקדמת מאוד ובאותו זמן להזדקק לעזרה בוויסות, בחברה או בתסכול. מהי התפתחות א־סינכרונית, איפה הורים טועים, ומה עושים בזמן הצפה בלי לבייש את הילד.",
-      "canonical_url": "https://kesher.saharoni.com/blog/gifted-children-asynchronous-development",
-      "content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
-      "video_title": "ילד מחונן מתפרק? להבין את הפער בין שכל מתקדם לרגש צעיר",
-      "short_title": "הילד גאון — אז למה הוא מתפרק כמו ילד קטן?",
-      "short_hook": "הוא יכול לדבר איתכם על חלל, צדק ופילוסופיה — ואז לבכות כי החולצה מגרדת. זו לא בהכרח סתירה.",
-      "youtube_metadata": {
-        "title": "ילד מחונן מתפרק? להבין את הפער בין שכל מתקדם לרגש צעיר",
-        "description": "ילד מחונן יכול לחשוב ברמה מתקדמת מאוד ובאותו זמן להזדקק לעזרה בוויסות, בחברה או בתסכול. מהי התפתחות א־סינכרונית, איפה הורים טועים, ומה עושים בזמן הצפה בלי לבייש את הילד.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/gifted-children-asynchronous-development\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "הנחיית הורים לילדים מחוננים",
-          "ילדים מחוננים התפתחות רגשית",
-          "התפתחות א־סינכרונית",
-          "ילד מחונן מתפרץ",
-          "הורות לילדים מחוננים"
-        ]
-      },
-      "short_youtube_metadata": {
-        "title": "הילד גאון — אז למה הוא מתפרק כמו ילד קטן?",
-        "description": "ילד מחונן יכול לחשוב ברמה מתקדמת מאוד ובאותו זמן להזדקק לעזרה בוויסות, בחברה או בתסכול. מהי התפתחות א־סינכרונית, איפה הורים טועים, ומה עושים בזמן הצפה בלי לבייש את הילד.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/gifted-children-asynchronous-development\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "הנחיית הורים לילדים מחוננים",
-          "ילד מחונן מתפרץ",
-          "ילדים מחוננים רגישות",
-          "התפתחות א־סינכרונית"
-        ]
-      }
-    },
-    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-    "task_id": "ce029e18-0b64-410f-a8b7-4c16f5b0c954",
-    "raw_sha256": "04fe769d01a55a4e4f7bd38cb696c6293032113a0421e77fd456af4300faa3a4",
-    "final_sha256": "8d4849862a1fe0612376da0a3d745450a7165e0a7a601420ef26983278160122",
-    "provider_raw_media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 720,
-      "height": 1280,
-      "duration": 94.167,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 1080,
-      "height": 1920,
-      "duration": 94.167,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "provider_video_format": "short",
-    "provider_native_short": true,
-    "provider_native_short_verified": true,
-    "provider_short_fallback_used": false,
-    "fresh_generation_attempt": 1,
-    "overview_provider_identity": {
-      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-      "source_id": "fc928ad9-1d2c-4d58-b593-15db16480aa2",
-      "task_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
-      "artifact_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
-      "raw_sha256": "afe54f50f20f839ad758d47e2b1c96f5edd1d7e26090f6c097ed9351baf66aaa"
-    },
-    "shared_provider_identity": null,
-    "short_start_seconds": 0.0,
-    "short_duration_seconds": 94.167,
-    "audio_provenance": {
-      "schema_version": 1,
-      "mode": "stream_copy",
-      "raw_sha256": "04fe769d01a55a4e4f7bd38cb696c6293032113a0421e77fd456af4300faa3a4",
-      "final_sha256": "8d4849862a1fe0612376da0a3d745450a7165e0a7a601420ef26983278160122",
-      "raw_audio_sha256": "255d62edb9fa44eb5a1a9cb557f3db1284cde9fbe8cab50b861c2f70148486b1",
-      "final_audio_sha256": "255d62edb9fa44eb5a1a9cb557f3db1284cde9fbe8cab50b861c2f70148486b1",
-      "raw_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 94.226576
-      },
-      "final_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 94.226576
-      }
-    },
-    "signature_overlay": true,
-    "signature_provenance": {
-      "schema_version": 1,
-      "final_sha256": "8d4849862a1fe0612376da0a3d745450a7165e0a7a601420ef26983278160122",
-      "raw_sha256": "04fe769d01a55a4e4f7bd38cb696c6293032113a0421e77fd456af4300faa3a4",
-      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-      "segment_sha256": "79b6ec35d4cbc2dd37ddc7a3771f2bbd7cd797fd66a7b335111c2077bf08e1df",
-      "source_duration_seconds": 94.167,
-      "final_duration_seconds": 94.167,
-      "start_seconds": 91.167,
-      "end_seconds": 94.167,
-      "audio_source_sha256": "04fe769d01a55a4e4f7bd38cb696c6293032113a0421e77fd456af4300faa3a4"
-    },
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "item_id": "video-20261101-215647-89f4065833",
-    "type": "article_short",
-    "youtube_id": "bmofQnopjzw",
-    "youtube_url": "https://youtu.be/bmofQnopjzw",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "79b6ec35d4cbc2dd37ddc7a3771f2bbd7cd797fd66a7b335111c2077bf08e1df",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3141,335 +2764,5 @@
       }
     }
   ],
-  "active_idea": null,
-  "pending_dispatches": {},
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/gifted-children-asynchronous-development",
-    "overview_youtube_url": "https://youtu.be/hZnOr_12YDU",
-    "short_youtube_url": "https://youtu.be/bmofQnopjzw",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
-  },
-  "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 41346841088,
-    "conclusion": "success",
-    "source_slug": "gifted-children-asynchronous-development",
-    "slot": "2026-11-01"
-  },
-  "processed_child_notifications": [
-    "Deploy to Cloudflare Pages:41339314739",
-    "Kesher Daily NotebookLM Video Overview:41339789387",
-    "Kesher Daily NotebookLM Video Overview:41340770119",
-    "Kesher Daily NotebookLM Video Overview:41343422872",
-    "Kesher Daily Article Short V4:41344128071",
-    "Kesher Daily Article Short V4:41346841088"
-  ],
-  "interventions": {
-    "v5|good-news-response-relationship|0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b|long_video": {
-      "pipeline_id": "v5",
-      "slug": "good-news-response-relationship",
-      "content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
-      "stage": "long_video",
-      "strike_count": 1,
-      "last_check_token": "2026-11-01T13",
-      "last_fingerprint": "e1be4d7fafd4d48a7f81172804f578c8d59fa36fc6cacce3937d662e51ca270f",
-      "last_controller_action_token": "recovery:1:2026-11-01T11:05:43.853154+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-01T11:05:43.853154+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-01T11:05:43.853154+00:00"
-    },
-    "v5|good-news-response-relationship|0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b|short": {
-      "pipeline_id": "v5",
-      "slug": "good-news-response-relationship",
-      "content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-11-01T13",
-      "last_fingerprint": "40846257fcd0dc7b37729a731455a24658f947ae2373cb5635cc06cc14b619eb",
-      "last_controller_action_token": "recovery:1:2026-11-01T11:45:45.405182+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-01T11:45:45.405182+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-01T11:45:45.405182+00:00"
-    },
-    "v5|gifted-children-asynchronous-development|89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67|long_video": {
-      "pipeline_id": "v5",
-      "slug": "gifted-children-asynchronous-development",
-      "content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
-      "stage": "long_video",
-      "strike_count": 1,
-      "last_check_token": "2026-11-01T21",
-      "last_fingerprint": "d148507ac6eafaedb89efa806757551126cc8d7e6c388cdbdff51fb49b801cc6",
-      "last_controller_action_token": "recovery:1:2026-11-01T19:46:03.596358+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-01T19:46:03.596358+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-01T19:46:03.596358+00:00"
-    },
-    "v5|gifted-children-asynchronous-development|89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67|short": {
-      "pipeline_id": "v5",
-      "slug": "gifted-children-asynchronous-development",
-      "content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-11-01T22",
-      "last_fingerprint": "f29da0368767b5a8f615c1eda69f6a42c23ab005afb012ee6114b56562b20ba7",
-      "last_controller_action_token": "recovery:1:2026-11-01T20:25:46.189252+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-01T20:25:46.189252+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-01T20:25:46.189252+00:00"
-    }
-  },
-  "owner_cycle_archive": [
-    {
-      "cycle": "2026-11-01",
-      "status": "complete",
-      "article": {
-        "attempt_count": 0,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": null,
-        "processed_run_id": null,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "attempts": 0,
-        "deploy_attempts": 1,
-        "normalization_status": "complete",
-        "pr_number": 1254,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1254",
-        "current_pr_head_sha": "1c8182b5a5418b285d92662cbb561a7c552730ba",
-        "jules_head_sha": "276f8c53c06e66e70a2b59155244197482cf35a9",
-        "normalization_slot": "2026-11-01",
-        "normalization_dispatched_at": "2026-11-01T07:36:24.711390+00:00",
-        "normalization_run_id": 41285463088,
-        "normalization_drift_count": 0,
-        "last_normalization_drift_head_sha": "9f55da194a242055ea2a58fed389512f352a9b0f",
-        "merge_dispatch_count": 0,
-        "merge_dispatch_at": "2026-11-01T10:23:25.486382+00:00",
-        "normalized_head_sha": "1c8182b5a5418b285d92662cbb561a7c552730ba",
-        "image_head_sha": "1c8182b5a5418b285d92662cbb561a7c552730ba",
-        "merge_candidate_sha": "1c8182b5a5418b285d92662cbb561a7c552730ba",
-        "merge_run_id": 41297274966,
-        "last_refunded_auto_merge_run_id": 41297274966,
-        "deferred_auto_merge_refund_count": 1,
-        "slug": "good-news-response-relationship",
-        "title": "למה תגובה לבשורות טובות בזוגיות חשובה לא פחות מריבים, ואיך להגיב נכון",
-        "url": "https://kesher.saharoni.com/blog/good-news-response-relationship",
-        "published_date": "2026-11-01",
-        "quality_content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
-        "quality_status": "passed",
-        "quality_checked_at": "2026-11-01T17:42:12.954728+00:00",
-        "quality_violations": [],
-        "live": true,
-        "last_deploy_dispatch_at": "2026-11-01T10:30:43.883987+00:00",
-        "next_deploy_retry_at": null,
-        "live_verified_at": "2026-11-01T17:42:41.239180+00:00",
-        "deploy_run_id": 41297802059
-      },
-      "long_video": {
-        "attempt_count": 1,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 41300368179,
-        "processed_run_id": 41298207056,
-        "provider_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "overview_evidence_required": true,
-        "last_dispatch_at": "2026-11-01T11:06:07.096658+00:00",
-        "attempts": 1,
-        "last_run_conclusion": "success",
-        "item_id": "video-20261101-123658-0b2187efb1",
-        "source_slug": "good-news-response-relationship",
-        "source_content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
-        "content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
-        "source_id": "5a2e233c-e37b-434f-8d18-0fc97e66c323",
-        "task_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
-        "artifact_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
-        "provider_status": "pending",
-        "verified": true,
-        "watchdog": {
-          "identity": "long_video:good-news-response-relationship:0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b:video-20261101-123658-0b2187efb1",
-          "hard_started_at": "2026-11-01T10:37:03.178459+00:00",
-          "last_progress_at": "2026-11-01T10:44:14.333443+00:00",
-          "last_fingerprint": "2e238958d18576457b9039235d9f9de8818d5f55f2bd4af0a69c59a8fc94d4ac",
-          "recovery_count": 1,
-          "last_recovery_at": "2026-11-01T11:05:43.853154+00:00"
-        },
-        "pending_resume_ready": false,
-        "resume_dispatches": 1,
-        "youtube_id": "FI9DQb8YMdY",
-        "youtube_url": "https://youtu.be/FI9DQb8YMdY",
-        "technical_verified": true,
-        "visual_pipeline": "remotion-v1-notebooklm-audio",
-        "codec": "h264",
-        "width": 1280,
-        "height": 720,
-        "duration": 102.733,
-        "content_duration_seconds": 102.75,
-        "signature_duration_seconds": 3.0,
-        "signature_overlay": true,
-        "signature_fullscreen": true,
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
-      },
-      "short": {
-        "attempt_count": 2,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 41303337108,
-        "processed_run_id": null,
-        "provider_id": "f7d3c0ba-3dbe-4b28-ae1d-5ecc659e87d3",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "last_dispatch_at": "2026-11-01T11:46:05.945725+00:00",
-        "artifact_id": "f7d3c0ba-3dbe-4b28-ae1d-5ecc659e87d3",
-        "source_id": "0718e5da-648f-4b36-b83b-01d7725866cb",
-        "adopted_from_long_item_id": null,
-        "watchdog": {
-          "identity": "short:good-news-response-relationship:0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b:video-20261101-131454-0b2187efb1",
-          "hard_started_at": "2026-11-01T11:15:07.603686+00:00",
-          "last_progress_at": "2026-11-01T11:22:16.675011+00:00",
-          "last_fingerprint": "91a1f772433ae72086c9dec5811058b65ed910f7a7c74090d4517d15fb3bd200",
-          "recovery_count": 1,
-          "last_recovery_at": "2026-11-01T11:45:45.405182+00:00"
-        },
-        "source": {
-          "id": "good-news-response-relationship",
-          "slug": "good-news-response-relationship",
-          "title": "למה תגובה לבשורות טובות בזוגיות חשובה לא פחות מריבים, ואיך להגיב נכון",
-          "date": "2026-11-01",
-          "category": "זוגיות",
-          "subcategory": "הכנה לנישואים והשנה הראשונה",
-          "excerpt": "כולם מדברים על איך לריב נכון, אבל מחקרי קפיטליזציה מזכירים רגע חשוב נוסף: איך אנחנו מגיבים כשבן או בת הזוג מביאים בשורה טובה. ארבעת סגנונות התגובה וכלי פשוט לתגובה אקטיבית־בונה.",
-          "canonical_url": "https://kesher.saharoni.com/blog/good-news-response-relationship",
-          "content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
-          "video_title": "למה תגובה לבשורות טובות בזוגיות חשובה לא פחות מריבים, ואיך להגיב נכון",
-          "short_title": "למה תגובה לבשורות טובות בזוגיות חשובה לא פחות מריבים, ואיך להגיב נכון",
-          "short_hook": "",
-          "youtube_metadata": {
-            "title": "למה תגובה לבשורות טובות בזוגיות חשובה לא פחות מריבים, ואיך להגיב נכון",
-            "description": "כולם מדברים על איך לריב נכון, אבל מחקרי קפיטליזציה מזכירים רגע חשוב נוסף: איך אנחנו מגיבים כשבן או בת הזוג מביאים בשורה טובה. ארבעת סגנונות התגובה וכלי פשוט לתגובה אקטיבית־בונה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/good-news-response-relationship\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "זוגיות",
-              "הכנה לנישואים והשנה הראשונה"
-            ]
-          },
-          "short_youtube_metadata": {
-            "title": "בקצרה: למה תגובה לבשורות טובות בזוגיות חשובה לא פחות מריבים, ואיך להגיב נכון",
-            "description": "כולם מדברים על איך לריב נכון, אבל מחקרי קפיטליזציה מזכירים רגע חשוב נוסף: איך אנחנו מגיבים כשבן או בת הזוג מביאים בשורה טובה. ארבעת סגנונות התגובה וכלי פשוט לתגובה אקטיבית־בונה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/good-news-response-relationship\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "זוגיות",
-              "הכנה לנישואים והשנה הראשונה"
-            ]
-          }
-        },
-        "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-        "task_id": "f7d3c0ba-3dbe-4b28-ae1d-5ecc659e87d3",
-        "raw_sha256": "295c23c6f273b4ae054b763bb91c351f8803b89aaeedac55a4184402c800cf53",
-        "final_sha256": "10f3dfdf1d92cf0a8577f1b721396749bd35a3c974d217099121c4287f9ec85b",
-        "provider_raw_media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 720,
-          "height": 1280,
-          "duration": 80.8,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 1080,
-          "height": 1920,
-          "duration": 80.8,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "provider_video_format": "short",
-        "provider_native_short": true,
-        "provider_native_short_verified": true,
-        "provider_short_fallback_used": false,
-        "fresh_generation_attempt": 1,
-        "overview_provider_identity": {
-          "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-          "source_id": "5a2e233c-e37b-434f-8d18-0fc97e66c323",
-          "task_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
-          "artifact_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
-          "raw_sha256": "b43b6dc2f7293f9d160af5e805e0f233b7a94617cda99f0ff8bc716589f750be"
-        },
-        "shared_provider_identity": null,
-        "short_start_seconds": 0.0,
-        "short_duration_seconds": 80.8,
-        "audio_provenance": {
-          "schema_version": 1,
-          "mode": "stream_copy",
-          "raw_sha256": "295c23c6f273b4ae054b763bb91c351f8803b89aaeedac55a4184402c800cf53",
-          "final_sha256": "10f3dfdf1d92cf0a8577f1b721396749bd35a3c974d217099121c4287f9ec85b",
-          "raw_audio_sha256": "982934c4ffee7f53f346f8b5b0df6dea6f10a5dfc5de47c46bcdd4e1d1ad16ab",
-          "final_audio_sha256": "982934c4ffee7f53f346f8b5b0df6dea6f10a5dfc5de47c46bcdd4e1d1ad16ab",
-          "raw_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 80.851882
-          },
-          "final_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 80.851882
-          }
-        },
-        "signature_overlay": true,
-        "signature_provenance": {
-          "schema_version": 1,
-          "final_sha256": "10f3dfdf1d92cf0a8577f1b721396749bd35a3c974d217099121c4287f9ec85b",
-          "raw_sha256": "295c23c6f273b4ae054b763bb91c351f8803b89aaeedac55a4184402c800cf53",
-          "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-          "segment_sha256": "291a6c118972513b9f08d9011c5b8686d0181c59b40f62fb9e8ab535c2664238",
-          "source_duration_seconds": 80.8,
-          "final_duration_seconds": 80.8,
-          "start_seconds": 77.8,
-          "end_seconds": 80.8,
-          "audio_source_sha256": "295c23c6f273b4ae054b763bb91c351f8803b89aaeedac55a4184402c800cf53"
-        },
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "item_id": "video-20261101-131454-0b2187efb1",
-        "type": "article_short",
-        "youtube_id": "6OD4XrRataA",
-        "youtube_url": "https://youtu.be/6OD4XrRataA",
-        "verified": true,
-        "portrait_verified": true,
-        "signature_verified": true,
-        "signature_asset": "signature-mask.svg",
-        "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-        "technical_verified": true,
-        "signature_duration_seconds": 3.0,
-        "signature_fullscreen": true,
-        "signature_video_sha256": "291a6c118972513b9f08d9011c5b8686d0181c59b40f62fb9e8ab535c2664238",
-        "source_mode": "direct-short",
-        "width": 1080,
-        "height": 1920
-      },
-      "archived_at": "2026-11-01T17:43:49.947652+00:00",
-      "reason": "owner_run_now_cycle_started"
-    }
-  ]
+  "active_idea": null
 }
