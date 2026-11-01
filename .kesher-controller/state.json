@@ -3230,6 +3230,20 @@
       "previous_run_id": 41277111746,
       "observed_active_run_id": 41278513847,
       "dispatched_at": "2026-11-01T05:50:45.834265+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-31",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "poop-only-in-diaper",
+        "derive_content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
+        "derive_long_item_id": "video-20261101-081723-519994afd4-a2"
+      },
+      "intent_at": "2026-11-01T07:25:41.219326+00:00",
+      "status": "intent",
+      "previous_run_id": 41282614136,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3268,6 +3282,20 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-11-01T06:45:41.666027+00:00"
+    },
+    "v5|poop-only-in-diaper|519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d|short": {
+      "pipeline_id": "v5",
+      "slug": "poop-only-in-diaper",
+      "content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-11-01T09",
+      "last_fingerprint": "514e2f164765b08aee2fea16c114b27686b0329c980b7cecf51a2aa1a0d61cbf",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-11-01T07:25:41.219326+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   }
 }
