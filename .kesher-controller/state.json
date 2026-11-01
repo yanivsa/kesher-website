@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "article_pr_open",
+  "status": "article_image_rebinding",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -1788,12 +1788,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-31T12:35:43.377893+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
       "at": "2026-10-31T12:35:57.667786+00:00",
       "from": "article_needed",
       "to": "waiting_for_article_window",
@@ -2714,12 +2708,22 @@
         "previous_head_sha": "408214b969478aae1e8d59ae90e10b14dd18646f",
         "current_head_sha": "8c4a62bb3be49559fe478bdfee2fd8e719fabe15"
       }
+    },
+    {
+      "at": "2026-11-01T03:36:12.703052+00:00",
+      "from": "article_pr_open",
+      "to": "article_image_rebinding",
+      "reason": "exact trusted image evidence is valid except for PR head binding",
+      "details": {
+        "pr_number": 1261,
+        "head_sha": "8c4a62bb3be49559fe478bdfee2fd8e719fabe15"
+      }
     }
   ],
-  "updated_at": "2026-11-01T03:30:58.444330+00:00",
+  "updated_at": "2026-11-01T03:36:12.703061+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "pending",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2730,8 +2734,8 @@
     "last_dispatch_at": "2026-10-31T19:56:11.297078+00:00",
     "artifact_sha256": "67513b35c1a7851825c6b3bca65b4b29b9d3614f5a718b5968ff877f98c3a148",
     "source_id": "local-editorial://poop-only-in-diaper/7",
-    "evidence_rebind_head_sha": "408214b969478aae1e8d59ae90e10b14dd18646f",
-    "evidence_rebind_dispatched_at": "2026-11-01T03:05:57.292189+00:00",
+    "evidence_rebind_head_sha": "8c4a62bb3be49559fe478bdfee2fd8e719fabe15",
+    "evidence_rebind_dispatched_at": "2026-11-01T03:36:12.703028+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact"
   },
   "long_video": {
@@ -3211,9 +3215,10 @@
         "expected_head_sha": "8c4a62bb3be49559fe478bdfee2fd8e719fabe15"
       },
       "intent_at": "2026-11-01T03:35:51.980067+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41269838601,
+      "dispatched_at": "2026-11-01T03:35:51.980067+00:00"
     }
   },
   "last_child_notification": {
