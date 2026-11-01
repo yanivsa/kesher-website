@@ -15,7 +15,11 @@
     "failure_count_by_type": {},
     "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "pending"
+    "normalization_status": "pending",
+    "pr_number": 1254,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1254",
+    "current_pr_head_sha": "276f8c53c06e66e70a2b59155244197482cf35a9",
+    "jules_head_sha": "276f8c53c06e66e70a2b59155244197482cf35a9"
   },
   "backlog": [
     {
@@ -2440,15 +2444,17 @@
   "updated_at": "2026-11-01T07:35:44.908722+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "LocalEditorial",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "artifact_sha256": "54bf56ffd5054fc1cfdf9293c79a137a8fdaf8f05fb44205cdbe08f893908991",
+    "source_id": "local-editorial://good-news-response-relationship/5"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2902,5 +2908,31 @@
       }
     }
   ],
-  "active_idea": null
+  "active_idea": null,
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  },
+  "pending_dispatches": {
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
+      "cycle": "2026-11-01",
+      "inputs": {
+        "pr_number": "1254",
+        "slot": "2026-11-01"
+      },
+      "intent_at": "2026-11-01T07:35:42.777173+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  }
 }
