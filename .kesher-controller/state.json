@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-01",
-  "status": "article_needed",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -18,7 +18,10 @@
     "pr_number": 1269,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1269",
     "current_pr_head_sha": "a0d5f3e9755e8f51ebddc7566cf83d687b243e90",
-    "jules_head_sha": "a0d5f3e9755e8f51ebddc7566cf83d687b243e90"
+    "jules_head_sha": "a0d5f3e9755e8f51ebddc7566cf83d687b243e90",
+    "normalization_status": "running",
+    "normalization_slot": "2026-11-01",
+    "normalization_dispatched_at": "2026-11-01T17:44:04.429621+00:00"
   },
   "backlog": [
     {
@@ -1731,12 +1734,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T15:06:20.965467+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-01T15:06:22.121445+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2333,9 +2330,19 @@
         "idea_id": "gifted-children-asynchronous-development",
         "publication_slot": "2026-11-01"
       }
+    },
+    {
+      "at": "2026-11-01T17:44:04.429648+00:00",
+      "from": "article_needed",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1269,
+        "slot": "2026-11-01"
+      }
     }
   ],
-  "updated_at": "2026-11-01T17:42:43.700768+00:00",
+  "updated_at": "2026-11-01T17:44:04.429656+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2829,9 +2836,10 @@
         "slot": "2026-11-01"
       },
       "intent_at": "2026-11-01T17:43:46.927422+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41332969883,
+      "dispatched_at": "2026-11-01T17:43:46.927422+00:00"
     }
   },
   "deliverables": {
