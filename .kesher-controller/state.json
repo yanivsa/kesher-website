@@ -90,7 +90,7 @@
     "live": true,
     "deploy_run_id": 41278703111,
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T07:00:45.876130+00:00"
+    "live_verified_at": "2026-11-01T07:01:07.909116+00:00"
   },
   "backlog": [
     {
@@ -1802,38 +1802,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-31T22:05:56.159249+00:00",
-      "from": "article_result_wait",
-      "to": "article_generating",
-      "reason": "claimed scheduled article retry dispatched on original publication slot",
-      "details": {
-        "attempt": 2,
-        "publication_slot": "2026-10-31"
-      }
-    },
-    {
-      "at": "2026-10-31T22:45:54.255185+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
-        "retry_at": "2026-10-31T22:50:54.255162+00:00",
-        "failure_streak": 1,
-        "run_id": 41246615281,
-        "session_id": "sessions/17044592290286859459"
-      }
-    },
-    {
-      "at": "2026-10-31T22:45:54.255239+00:00",
-      "from": "article_retry_wait",
-      "to": "blocked",
-      "reason": "IDEA_SLOT_MISMATCH",
-      "details": {
-        "message": "IDEA_SLOT_MISMATCH"
-      }
-    },
-    {
       "at": "2026-10-31T22:50:54.305254+00:00",
       "from": "blocked",
       "to": "article_retry_wait",
@@ -2694,9 +2662,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-11-01T07:01:07.909145+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-01T07:01:08.864740+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-01T07:01:12.580900+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-11-01T06:56:16.035165+00:00",
+  "updated_at": "2026-11-01T07:01:12.580945+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
