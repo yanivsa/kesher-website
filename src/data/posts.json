@@ -38,7 +38,9 @@
     "imageIsFallback": false,
     "controllerManaged": true,
     "slug": "good-news-response-relationship",
-    "author": "שירה סהרוני"
+    "author": "שירה סהרוני",
+    "image": "/images/generated/blog/good-news-response-relationship.png",
+    "imageAlt": "איור עריכתי מקומי של שני בני זוג יושבים זה מול זה בשיחה רגועה בבית, עם שפת גוף פתוחה וקשובה."
   },
   {
     "id": "poop-only-in-diaper",
