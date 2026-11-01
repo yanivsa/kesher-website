@@ -44,7 +44,7 @@
     "live": true,
     "last_deploy_dispatch_at": "2026-11-01T10:30:43.883987+00:00",
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T10:35:44.715313+00:00"
+    "live_verified_at": "2026-11-01T10:35:59.410980+00:00"
   },
   "backlog": [
     {
@@ -2521,7 +2521,7 @@
       "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-11-01T10:35:44.715341+00:00",
+  "updated_at": "2026-11-01T10:35:59.411008+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -3011,6 +3011,19 @@
       "observed_active_run_id": 41297802059,
       "dispatch_head_sha": "d49a57ddc069636ea8582fb6d86ab91f2ae41545",
       "dispatched_at": "2026-11-01T10:30:35.034447+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-11-01",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "good-news-response-relationship",
+        "target_content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b"
+      },
+      "intent_at": "2026-11-01T10:35:41.683634+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -3032,5 +3045,18 @@
   "processed_child_notifications": [
     "Kesher Trusted Article Image:41297125179",
     "Auto-merge Kesher article PRs:41297274966"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
+  }
 }
