@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-01",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 0,
-    "status": "exhausted",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -27,8 +27,8 @@
     "image_head_sha": "1b1c174f9b6c0562997978b0f24c5fe3d3a4bc2d",
     "merge_candidate_sha": "1b1c174f9b6c0562997978b0f24c5fe3d3a4bc2d",
     "normalization_drift_count": 0,
-    "merge_dispatch_count": 3,
-    "merge_dispatch_at": "2026-11-01T18:00:58.772456+00:00",
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
     "merge_run_id": 41333561542,
     "last_refunded_auto_merge_run_id": 41333561542,
     "deferred_auto_merge_refund_count": 2
@@ -1741,19 +1741,8 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "PR #1269 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-11-01T18:42:52.702515+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-11-01T15:25:57.949052+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-11-01T15:25:58.394460+00:00",
       "from": "long_video_complete",
@@ -2397,6 +2386,22 @@
       "details": {
         "message": "PR #1269 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-11-01T18:45:31.638538Z",
+      "from": "blocked",
+      "to": "article_pr_open",
+      "reason": "owner_metadata_repair",
+      "details": {
+        "pr_number": 1269,
+        "idea_id": "gifted-children-asynchronous-development",
+        "primary_keyword": "הילד",
+        "trusted_stems": [
+          "gifted"
+        ],
+        "preserved_head": "1b1c174f9b6c0562997978b0f24c5fe3d3a4bc2d",
+        "preserved_image_sha256": "e2719f16775e759f6e854d338441e405ca7bc0d97d7a1e119873d60e6681c4f4"
+      }
     }
   ],
   "updated_at": "2026-11-01T18:42:52.702538+00:00",
@@ -2878,9 +2883,9 @@
   ],
   "active_idea": {
     "idea_id": "gifted-children-asynchronous-development",
-    "fingerprint": "a6864a69858e2b443ac7f85643bf5574765a0ccebc4b753dfb036f46528a7549",
-    "topic_brief": "Direct owner-authored article already exists in open PR #1269 on branch publish-article-gifted-children-asynchronous-development-1268. Adopt and process this exact PR and slug; DO NOT create a new article, Jules session, duplicate PR, duplicate source/provider item, video or upload. Authoritative slug: gifted-children-asynchronous-development. Topic: הנחיית הורים לילדים מחוננים — התפתחות א־סינכרונית והבדידות הפנימית. Formal definition: Columbus Group (1991); Linda Silverman was a founding member/prominent researcher. Do not present illustrative age gaps as a scientific formula and do not publish the supplied paraphrase as a verbatim Silverman quote. Practical parent flow: regulate first, calm boundary 'מותר לכעוס, אסור לשבור', logic later. Existing article content/build/RTL/accessibility/security gates passed; only ARTICLE_IMAGE_GUARD_FAILED remains, so attach one unique trusted local hero on the same PR before merge. Preserve the exact same identity through Article -> Video Overview -> 9:16 Short. Only three public verified links = Done.",
-    "required_primary_keyword": "ילדים מחוננים התפתחות רגשית",
+    "fingerprint": "6468eb2b421856b51291cae932ea8dc8625683a40bcfc9a7b32762252291c1ed",
+    "topic_brief": "Direct owner-authored article already exists in open PR #1269 on branch publish-article-gifted-children-asynchronous-development-1268. Adopt and process this exact PR and slug; DO NOT create a new article, Jules session, duplicate PR, duplicate source/provider item, video or upload. Authoritative slug: gifted-children-asynchronous-development. Topic: הנחיית הורים לילדים מחוננים — התפתחות א־סינכרונית והבדידות הפנימית. Formal definition: Columbus Group (1991); Linda Silverman was a founding member/prominent researcher. Do not present illustrative age gaps as a scientific formula and do not publish the supplied paraphrase as a verbatim Silverman quote. Practical parent flow: regulate first, calm boundary 'מותר לכעוס, אסור לשבור', logic later. Existing article content/build/RTL/accessibility/security gates passed; only ARTICLE_IMAGE_GUARD_FAILED remains, so attach one unique trusted local hero on the same PR before merge. Preserve the exact same identity through Article -> Video Overview -> 9:16 Short. Only three public verified links = Done.\nPrimary Keyword: הילד\nTrusted Stems: gifted",
+    "required_primary_keyword": "הילד",
     "run_now": true,
     "status": "claimed",
     "requested_at": "2026-11-01T17:43:48.882911+00:00",
