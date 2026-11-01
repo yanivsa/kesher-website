@@ -85,12 +85,12 @@
     "quality_content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-01T07:00:44.554686+00:00",
+    "quality_checked_at": "2026-11-01T07:02:25.179656+00:00",
     "quality_violations": [],
     "live": true,
     "deploy_run_id": 41278703111,
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T07:01:07.909116+00:00"
+    "live_verified_at": "2026-11-01T07:02:26.500445+00:00"
   },
   "backlog": [
     {
@@ -3222,26 +3222,11 @@
       "previous_run_id": 41277111746,
       "observed_active_run_id": 41278513847,
       "dispatched_at": "2026-11-01T05:50:45.834265+00:00"
-    },
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-10-31",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "poop-only-in-diaper",
-        "derive_content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
-        "derive_long_item_id": "video-20261101-081723-519994afd4-a2"
-      },
-      "intent_at": "2026-11-01T06:52:57.096540+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41282614136,
-      "dispatched_at": "2026-11-01T06:52:57.096540+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 41282137087,
+    "workflow": "Kesher Daily Article Short V4",
+    "run_id": 41282614136,
     "conclusion": "success",
     "source_slug": "poop-only-in-diaper",
     "slot": "2026-10-31"
