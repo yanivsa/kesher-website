@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "article_pr_open",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -17,7 +17,7 @@
     },
     "attempts": 3,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "last_dispatch_at": "2026-10-31T22:56:00.035341+00:00",
     "watchdog": {
       "identity": "2026-10-31",
@@ -66,7 +66,7 @@
     "current_pr_head_sha": "85cd9dfcb75dfc519e333334dce5c0c0681a7490",
     "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
     "normalization_slot": "2026-10-31",
-    "normalization_dispatched_at": "2026-11-01T02:20:56.079423+00:00",
+    "normalization_dispatched_at": "2026-11-01T04:05:48.741877+00:00",
     "normalization_run_id": 41264816693,
     "normalization_drift_count": 3,
     "merge_dispatch_count": 0,
@@ -1787,15 +1787,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-31T16:22:30.939787+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
       "at": "2026-10-31T16:29:55.154828+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2719,9 +2710,19 @@
         "previous_head_sha": "8c4a62bb3be49559fe478bdfee2fd8e719fabe15",
         "current_head_sha": "85cd9dfcb75dfc519e333334dce5c0c0681a7490"
       }
+    },
+    {
+      "at": "2026-11-01T04:05:48.741910+00:00",
+      "from": "article_pr_open",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1261,
+        "slot": "2026-10-31"
+      }
     }
   ],
-  "updated_at": "2026-11-01T04:00:51.709465+00:00",
+  "updated_at": "2026-11-01T04:05:48.741919+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
@@ -3215,9 +3216,10 @@
         "slot": "2026-10-31"
       },
       "intent_at": "2026-11-01T04:05:39.823233+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41264816693,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41271720137,
+      "dispatched_at": "2026-11-01T04:05:39.823233+00:00"
     }
   },
   "last_child_notification": {
