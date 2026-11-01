@@ -1,96 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-31",
-  "status": "complete",
+  "cycle": "2026-11-01",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
+    "last_error": null,
     "next_retry_at": null,
-    "run_id": 41246615281,
-    "processed_run_id": 41246615281,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 2
-    },
+    "failure_count_by_type": {},
     "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-10-31T22:56:00.035341+00:00",
-    "watchdog": {
-      "identity": "2026-10-31",
-      "session_id": null,
-      "last_progress_at": "2026-10-31T15:56:36+00:00",
-      "last_fingerprint": null,
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-10-31",
-      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "retryable": true,
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
-      "session_id": "sessions/17044592290286859459",
-      "pr_url": "",
-      "github_run_id": "41246615281",
-      "completed_at": "2026-10-31T22:43:57.346686+00:00",
-      "diagnostic": {
-        "source": {
-          "name": "sources/github/yanivsa/kesher-website",
-          "owner": "yanivsa",
-          "repo": "kesher-website",
-          "default_branch": "main",
-          "main_available": true
-        },
-        "activity_count": 6,
-        "change_set_count": 4,
-        "change_set_fingerprints": [],
-        "last_agent_message": "",
-        "last_progress": "",
-        "last_description": "",
-        "session_failed_reason": ""
-      }
-    },
-    "last_jules_session_id": "sessions/17044592290286859459",
-    "last_failed_run_id": 41246615281,
-    "resume_dispatches": 1,
-    "pr_number": 1261,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1261",
-    "current_pr_head_sha": "9c0c897f7dddf4154fc157cf66e072ce2954ab04",
-    "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
-    "normalization_slot": "2026-10-31",
-    "normalization_dispatched_at": "2026-11-01T05:33:19.327311+00:00",
-    "normalization_run_id": 41277385370,
-    "normalization_drift_count": 0,
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-11-01T05:51:20.693207+00:00",
-    "merge_run_id": 41277111746,
-    "last_refunded_auto_merge_run_id": 41277111746,
-    "deferred_auto_merge_refund_count": 4,
-    "last_normalization_drift_head_sha": "d479c5f8a101a0f2f9ff0a60893ee1cee18a8931",
-    "last_error": null,
-    "normalized_head_sha": "9c0c897f7dddf4154fc157cf66e072ce2954ab04",
-    "image_head_sha": "9c0c897f7dddf4154fc157cf66e072ce2954ab04",
-    "merge_candidate_sha": "9c0c897f7dddf4154fc157cf66e072ce2954ab04",
-    "slug": "poop-only-in-diaper",
-    "title": "קקי רק בחיתול: למה הילד מסרב לעשות בשירותים ומה עושים?",
-    "url": "https://kesher.saharoni.com/blog/poop-only-in-diaper",
-    "published_date": "2026-10-31",
-    "quality_content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
-    "reconciled_existing_article": true,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-11-01T07:33:03.591973+00:00",
-    "quality_violations": [],
-    "live": true,
-    "deploy_run_id": 41278703111,
-    "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T07:33:18.103655+00:00"
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -1800,187 +1725,8 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-31T23:15:51.385832+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-31T23:20:54.416378+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-31T23:25:52.487322+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-31T23:32:10.329721+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-31T23:40:57.528549+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-31T23:45:58.677217+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-31T23:50:50.740606+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-10-31T23:55:52.381872+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T00:00:58.690449+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T00:06:02.443048+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T00:10:57.997502+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T00:15:49.482273+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T00:20:49.752651+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T00:24:43.933256+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T00:30:56.681966+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T00:34:42.666204+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T00:35:58.530218+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T00:40:57.112258+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T00:45:52.373135+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T00:50:56.548395+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
     {
       "at": "2026-11-01T00:55:51.548770+00:00",
       "from": "blocked",
@@ -2671,217 +2417,62 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-01T07:35:44.908744+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-11-01T07:35:44.908750+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-11-01T07:35:44.909976+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-11-01T07:33:19.187819+00:00",
+  "updated_at": "2026-11-01T07:35:44.908722+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "LocalEditorial",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-31T19:56:11.297078+00:00",
-    "artifact_sha256": "67513b35c1a7851825c6b3bca65b4b29b9d3614f5a718b5968ff877f98c3a148",
-    "source_id": "local-editorial://poop-only-in-diaper/7",
-    "evidence_rebind_head_sha": "d479c5f8a101a0f2f9ff0a60893ee1cee18a8931",
-    "evidence_rebind_dispatched_at": "2026-11-01T05:37:33.491354+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 41277664520,
-    "image_path": "/images/generated/blog/poop-only-in-diaper.png"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41282137087,
-    "processed_run_id": 41280165818,
-    "provider_id": "557450da-572e-491e-8754-2d9839dcc55e",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-11-01T06:46:05.125292+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261101-081723-519994afd4-a2",
-    "resume_dispatches": 2,
-    "source_slug": "poop-only-in-diaper",
-    "source_content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
-    "content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
-    "source_id": "8312a7c2-adc1-4d18-a278-9fd6d801ad6b",
-    "task_id": "557450da-572e-491e-8754-2d9839dcc55e",
-    "artifact_id": "557450da-572e-491e-8754-2d9839dcc55e",
-    "provider_status": "pending",
-    "verified": true,
-    "watchdog": {
-      "identity": "long_video:poop-only-in-diaper:519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d:video-20261101-081723-519994afd4-a2",
-      "hard_started_at": "2026-11-01T06:17:31.247482+00:00",
-      "last_progress_at": "2026-11-01T06:24:09.799848+00:00",
-      "last_fingerprint": "a0d060ebae16c55396eb437f664740da2165aed59bdd3336c36f276d50675047",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-11-01T06:45:41.666027+00:00"
-    },
-    "pending_resume_ready": false,
-    "youtube_id": "XmdgyE0GnKY",
-    "youtube_url": "https://youtu.be/XmdgyE0GnKY",
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 118.667,
-    "content_duration_seconds": 118.667,
-    "signature_duration_seconds": 3.0,
-    "signature_overlay": true,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41284761149,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "6088e200-7ec1-448e-82cf-a86213c4a59a",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-11-01T07:26:05.249727+00:00",
-    "artifact_id": "6088e200-7ec1-448e-82cf-a86213c4a59a",
-    "source_id": "820c7bc1-9294-4290-9536-09561d529364",
-    "adopted_from_long_item_id": null,
-    "watchdog": {
-      "identity": "short:poop-only-in-diaper:519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d:video-20261101-085517-519994afd4",
-      "hard_started_at": "2026-11-01T06:55:24.975732+00:00",
-      "last_progress_at": "2026-11-01T07:02:19.089012+00:00",
-      "last_fingerprint": "9af5b0a3f256c698f66178984b034b4d4357657cd4c915280cb72386078d7e09",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-11-01T07:25:41.219326+00:00"
-    },
-    "source": {
-      "id": "poop-only-in-diaper",
-      "slug": "poop-only-in-diaper",
-      "title": "קקי רק בחיתול: למה הילד מסרב לעשות בשירותים ומה עושים?",
-      "date": "2026-10-31",
-      "category": "הדרכת הורים",
-      "subcategory": "גמילה מחיתולים",
-      "excerpt": "הילד עושה פיפי בשירותים אבל מבקש חיתול לקקי? למה זה קורה, איך להימנע ממאבקי כוח, ומהם הצעדים ההדרגתיים שיעזרו לו להרגיש בטוח לעשות קקי באסלה.",
-      "canonical_url": "https://kesher.saharoni.com/blog/poop-only-in-diaper",
-      "content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
-      "video_title": "קקי רק בחיתול: למה הילד מסרב לעשות בשירותים ומה עושים?",
-      "short_title": "קקי רק בחיתול: למה הילד מסרב לעשות בשירותים ומה עושים?",
-      "short_hook": "",
-      "youtube_metadata": {
-        "title": "קקי רק בחיתול: למה הילד מסרב לעשות בשירותים ומה עושים?",
-        "description": "הילד עושה פיפי בשירותים אבל מבקש חיתול לקקי? למה זה קורה, איך להימנע ממאבקי כוח, ומהם הצעדים ההדרגתיים שיעזרו לו להרגיש בטוח לעשות קקי באסלה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/poop-only-in-diaper\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "גמילה מחיתולים"
-        ]
-      },
-      "short_youtube_metadata": {
-        "title": "בקצרה: קקי רק בחיתול: למה הילד מסרב לעשות בשירותים ומה עושים?",
-        "description": "הילד עושה פיפי בשירותים אבל מבקש חיתול לקקי? למה זה קורה, איך להימנע ממאבקי כוח, ומהם הצעדים ההדרגתיים שיעזרו לו להרגיש בטוח לעשות קקי באסלה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/poop-only-in-diaper\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "גמילה מחיתולים"
-        ]
-      }
-    },
-    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-    "task_id": "6088e200-7ec1-448e-82cf-a86213c4a59a",
-    "raw_sha256": "77d46aaf7b25563760300e6644e29519b1d9c93b8cf80f3c06871f11237037e9",
-    "final_sha256": "8bde7d8e9db537ea48dc44ebd4d57fae7d7ae2bee71c521d9d846882f3f69c92",
-    "provider_raw_media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 720,
-      "height": 1280,
-      "duration": 85.367,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 1080,
-      "height": 1920,
-      "duration": 85.367,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "provider_video_format": "short",
-    "provider_native_short": true,
-    "provider_native_short_verified": true,
-    "provider_short_fallback_used": false,
-    "fresh_generation_attempt": 1,
-    "overview_provider_identity": {
-      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-      "source_id": "8312a7c2-adc1-4d18-a278-9fd6d801ad6b",
-      "task_id": "557450da-572e-491e-8754-2d9839dcc55e",
-      "artifact_id": "557450da-572e-491e-8754-2d9839dcc55e",
-      "raw_sha256": "733ccd0fce373a4587c5b53de2108d615727f611747d1c7ffe0c3c91519240ae"
-    },
-    "shared_provider_identity": null,
-    "short_start_seconds": 0.0,
-    "short_duration_seconds": 85.367,
-    "audio_provenance": {
-      "schema_version": 1,
-      "mode": "stream_copy",
-      "raw_sha256": "77d46aaf7b25563760300e6644e29519b1d9c93b8cf80f3c06871f11237037e9",
-      "final_sha256": "8bde7d8e9db537ea48dc44ebd4d57fae7d7ae2bee71c521d9d846882f3f69c92",
-      "raw_audio_sha256": "b0452e436c0103f7076ad63614d79bf5eb73f831471b559e155c73be49666c68",
-      "final_audio_sha256": "b0452e436c0103f7076ad63614d79bf5eb73f831471b559e155c73be49666c68",
-      "raw_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 85.426213
-      },
-      "final_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 85.426213
-      }
-    },
-    "signature_overlay": true,
-    "signature_provenance": {
-      "schema_version": 1,
-      "final_sha256": "8bde7d8e9db537ea48dc44ebd4d57fae7d7ae2bee71c521d9d846882f3f69c92",
-      "raw_sha256": "77d46aaf7b25563760300e6644e29519b1d9c93b8cf80f3c06871f11237037e9",
-      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-      "segment_sha256": "28ad4a68445715d2df961bc43f608bb460e0857d60d012423a1723b9ec80a9ce",
-      "source_duration_seconds": 85.367,
-      "final_duration_seconds": 85.367,
-      "start_seconds": 82.367,
-      "end_seconds": 85.367,
-      "audio_source_sha256": "77d46aaf7b25563760300e6644e29519b1d9c93b8cf80f3c06871f11237037e9"
-    },
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "item_id": "video-20261101-085517-519994afd4",
-    "type": "article_short",
-    "youtube_id": "PP4nMAXAGvM",
-    "youtube_url": "https://youtu.be/PP4nMAXAGvM",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "28ad4a68445715d2df961bc43f608bb460e0857d60d012423a1723b9ec80a9ce",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3311,96 +2902,5 @@
       }
     }
   ],
-  "active_idea": null,
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/poop-only-in-diaper",
-    "overview_youtube_url": "https://youtu.be/XmdgyE0GnKY",
-    "short_youtube_url": "https://youtu.be/PP4nMAXAGvM",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
-  },
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-10-31",
-      "inputs": {
-        "slot": "2026-10-31",
-        "topic_brief": "אשכול גמילה שהסתבכה. נושא/כאב: ילד שכבר עושה פיפי בשירותים אבל מבקש חיתול רק בשביל קקי; הורים מרגישים שהתהליך תקוע ונכנסים למאבק. להתייחס לפחד, פרטיות, הרגל, כאב והתאפקות בלי להניח סיבה אחת. אות ביקוש: Observed query signal: SERP + repeated parent questions. Canonical ID נדרש: poop-only-in-diaper. כותרת עבודה: קקי רק בחיתול: למה הילד מסרב לעשות בשירותים ומה אפשר לעשות? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לרופא/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p2-poop-only-in-diaper\nRequired Primary Keyword: קקי רק בחיתול"
-      },
-      "intent_at": "2026-10-31T22:55:42.826161+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41246615281,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-31T22:55:42.826161+00:00"
-    },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
-      "cycle": "2026-10-31",
-      "inputs": {
-        "pr_number": "1261",
-        "slot": "2026-10-31"
-      },
-      "intent_at": "2026-11-01T05:50:45.834265+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41277111746,
-      "observed_active_run_id": 41278513847,
-      "dispatched_at": "2026-11-01T05:50:45.834265+00:00"
-    }
-  },
-  "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 41284761149,
-    "conclusion": "success",
-    "source_slug": "poop-only-in-diaper",
-    "slot": "2026-10-31"
-  },
-  "processed_child_notifications": [
-    "Kesher Trusted Article Image:41236514277",
-    "Auto-merge Kesher article PRs:41236626056",
-    "Kesher Trusted Article Image:41237311093",
-    "Kesher Normalize Article PR:41237474722",
-    "Kesher Trusted Article Image:41237609039",
-    "Auto-merge Kesher article PRs:41237767458",
-    "Kesher Trusted Article Image:41240448115",
-    "Deploy to Cloudflare Pages:41278703111",
-    "Kesher Daily NotebookLM Video Overview:41280165818",
-    "Kesher Daily NotebookLM Video Overview:41282137087",
-    "Kesher Daily Article Short V4:41282614136",
-    "Kesher Daily Article Short V4:41284761149"
-  ],
-  "last_error": null,
-  "interventions": {
-    "v5|poop-only-in-diaper|519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d|long_video": {
-      "pipeline_id": "v5",
-      "slug": "poop-only-in-diaper",
-      "content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
-      "stage": "long_video",
-      "strike_count": 1,
-      "last_check_token": "2026-11-01T08",
-      "last_fingerprint": "b2e7d2f027f0a9f984967de476a695b88a5329085dcb1eec73d962d5e847c789",
-      "last_controller_action_token": "recovery:1:2026-11-01T06:45:41.666027+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-01T06:45:41.666027+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-01T06:45:41.666027+00:00"
-    },
-    "v5|poop-only-in-diaper|519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d|short": {
-      "pipeline_id": "v5",
-      "slug": "poop-only-in-diaper",
-      "content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-11-01T09",
-      "last_fingerprint": "514e2f164765b08aee2fea16c114b27686b0329c980b7cecf51a2aa1a0d61cbf",
-      "last_controller_action_token": "recovery:1:2026-11-01T07:25:41.219326+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-01T07:25:41.219326+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-01T07:25:41.219326+00:00"
-    }
-  }
+  "active_idea": null
 }
