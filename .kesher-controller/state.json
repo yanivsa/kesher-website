@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 3,
-    "status": "exhausted",
+    "status": "running",
     "next_retry_at": null,
     "run_id": 41246615281,
     "processed_run_id": 41246615281,
@@ -62,22 +62,20 @@
     "resume_dispatches": 1,
     "pr_number": 1261,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1261",
-    "current_pr_head_sha": "b88916310e1b0dd2a835effd1ec48c39bcdf3bbd",
+    "current_pr_head_sha": "69f99b0f8662000426bc010ed6cd8494b92ab868",
     "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
     "normalization_slot": "2026-10-31",
     "normalization_dispatched_at": "2026-11-01T04:05:48.741877+00:00",
     "normalization_run_id": 41271720137,
-    "normalization_drift_count": 0,
-    "merge_dispatch_count": 3,
-    "merge_dispatch_at": "2026-11-01T04:41:04.242372+00:00",
+    "normalization_drift_count": 1,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
     "merge_run_id": 41265126055,
     "last_refunded_auto_merge_run_id": 41265126055,
     "deferred_auto_merge_refund_count": 3,
-    "last_normalization_drift_head_sha": "44fc8276428291d414548595c8745c2940f4ae1e",
-    "normalized_head_sha": "b88916310e1b0dd2a835effd1ec48c39bcdf3bbd",
+    "last_normalization_drift_head_sha": "69f99b0f8662000426bc010ed6cd8494b92ab868",
     "last_error": null,
-    "image_head_sha": "b88916310e1b0dd2a835effd1ec48c39bcdf3bbd",
-    "merge_candidate_sha": "b88916310e1b0dd2a835effd1ec48c39bcdf3bbd"
+    "normalized_head_sha": "69f99b0f8662000426bc010ed6cd8494b92ab868"
   },
   "backlog": [
     {
@@ -1789,16 +1787,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-31T18:01:14.804267+00:00",
-      "from": "article_normalizing",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1261,
-        "slot": "2026-10-31"
-      }
-    },
-    {
       "at": "2026-10-31T18:16:17.433214+00:00",
       "from": "article_normalizing",
       "to": "article_normalizing",
@@ -2713,12 +2701,23 @@
       "details": {
         "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-11-01T05:05:51.365907+00:00",
+      "from": "blocked",
+      "to": "article_pr_open",
+      "reason": "late_article_head_after_merge_exhaustion_recovery",
+      "details": {
+        "pr_number": 1261,
+        "previous_head_sha": "b88916310e1b0dd2a835effd1ec48c39bcdf3bbd",
+        "current_head_sha": "69f99b0f8662000426bc010ed6cd8494b92ab868"
+      }
     }
   ],
   "updated_at": "2026-11-01T05:01:09.221641+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2731,8 +2730,7 @@
     "source_id": "local-editorial://poop-only-in-diaper/7",
     "evidence_rebind_head_sha": "44fc8276428291d414548595c8745c2940f4ae1e",
     "evidence_rebind_dispatched_at": "2026-11-01T04:16:31.763422+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 41272446205
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3202,18 +3200,18 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-31T22:55:42.826161+00:00"
     },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
       "cycle": "2026-10-31",
       "inputs": {
         "pr_number": "1261",
-        "slot": "2026-10-31"
+        "recovery_only": "true",
+        "expected_head_sha": "69f99b0f8662000426bc010ed6cd8494b92ab868"
       },
-      "intent_at": "2026-11-01T04:40:42.327392+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41265126055,
-      "observed_active_run_id": 41274035951,
-      "dispatched_at": "2026-11-01T04:40:42.327392+00:00"
+      "intent_at": "2026-11-01T05:05:49.226083+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3232,10 +3230,5 @@
     "Auto-merge Kesher article PRs:41237767458",
     "Kesher Trusted Article Image:41240448115"
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-11-01T05:01:09.221617+00:00"
-  }
+  "last_error": null
 }
