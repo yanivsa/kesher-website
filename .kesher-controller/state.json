@@ -1,22 +1,54 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-01T23:20:54.738317+00:00",
     "run_id": 41357968167,
-    "processed_run_id": null,
+    "processed_run_id": 41357968167,
     "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "COMPLETED_WITHOUT_PR",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "COMPLETED_WITHOUT_PR": 1
+    },
     "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-11-01T22:36:19.268840+00:00"
+    "last_dispatch_at": "2026-11-01T22:36:19.268840+00:00",
+    "last_run_conclusion": "failure",
+    "last_worker_result": {
+      "schema_version": 1,
+      "slot": "2026-11-02",
+      "outcome": "COMPLETED_WITHOUT_PR",
+      "retryable": true,
+      "message": "Jules completed without creating a pull request; Jules diagnostic: The task is complete. As per your instructions, I checked if current `main` already contained an article for the target Primary Keyword 'ילדים מחוננים התפתחות רגשית'. The article `gifted-children-asynchronous-development` is already present and targets this keyword. Therefore, I followed the directive to \"stop cleanly without editing anything and without creating another PR.\" I have successfully executed the full repository test suite to verify everything remains clean, removed any temporary files, and exited without opening a pull request.",
+      "session_id": "sessions/14537073619063615873",
+      "pr_url": "",
+      "github_run_id": "41357968167",
+      "completed_at": "2026-11-01T23:09:41.836169+00:00",
+      "diagnostic": {
+        "source": {
+          "name": "sources/github/yanivsa/kesher-website",
+          "owner": "yanivsa",
+          "repo": "kesher-website",
+          "default_branch": "main",
+          "main_available": true
+        },
+        "activity_count": 28,
+        "change_set_count": 23,
+        "change_set_fingerprints": [],
+        "last_agent_message": "The task is complete. As per your instructions, I checked if current `main` already contained an article for the target Primary Keyword 'ילדים מחוננים התפתחות רגשית'. The article `gifted-children-asynchronous-development` is already present and targets this keyword. Therefore, I followed the directive to \"stop cleanly without editing anything and without creating another PR.\" I have successfully executed the full repository test suite to verify everything remains clean, removed any temporary files, and exited without opening a pull request.",
+        "last_progress": "Finished task cleanly without modifications.",
+        "last_description": "",
+        "session_failed_reason": ""
+      }
+    },
+    "last_jules_session_id": "sessions/14537073619063615873",
+    "last_failed_run_id": 41357968167
   },
   "backlog": [
     {
@@ -1726,7 +1758,14 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "COMPLETED_WITHOUT_PR",
+    "message": "Jules completed without creating a pull request; Jules diagnostic: The task is complete. As per your instructions, I checked if current `main` already contained an article for the target Primary Keyword 'ילדים מחוננים התפתחות רגשית'. The article `gifted-children-asynchronous-development` is already present and targets this keyword. Therefore, I followed the directive to \"stop cleanly without editing anything and without creating another PR.\" I have successfully executed the full repository test suite to verify everything remains clean, removed any temporary files, and exited without opening a pull request.",
+    "retryable": true,
+    "retry_at": "2026-11-01T23:20:54.738317+00:00",
+    "at": "2026-11-01T23:15:54.738341+00:00"
+  },
   "history": [
     {
       "at": "2026-11-01T18:53:47.033236+00:00",
@@ -2340,9 +2379,22 @@
       "details": {
         "publication_slot": "2026-11-02"
       }
+    },
+    {
+      "at": "2026-11-01T23:15:54.738344+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "COMPLETED_WITHOUT_PR",
+      "details": {
+        "message": "Jules completed without creating a pull request; Jules diagnostic: The task is complete. As per your instructions, I checked if current `main` already contained an article for the target Primary Keyword 'ילדים מחוננים התפתחות רגשית'. The article `gifted-children-asynchronous-development` is already present and targets this keyword. Therefore, I followed the directive to \"stop cleanly without editing anything and without creating another PR.\" I have successfully executed the full repository test suite to verify everything remains clean, removed any temporary files, and exited without opening a pull request.",
+        "retry_at": "2026-11-01T23:20:54.738317+00:00",
+        "failure_streak": 1,
+        "run_id": 41357968167,
+        "session_id": "sessions/14537073619063615873"
+      }
     }
   ],
-  "updated_at": "2026-11-01T23:05:56.069540+00:00",
+  "updated_at": "2026-11-01T23:15:54.738348+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
