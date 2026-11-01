@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 3,
-    "status": "exhausted",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41246615281,
@@ -17,7 +17,7 @@
     },
     "attempts": 3,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
+    "normalization_status": "pending",
     "last_dispatch_at": "2026-10-31T22:56:00.035341+00:00",
     "watchdog": {
       "identity": "2026-10-31",
@@ -63,21 +63,18 @@
     "resume_dispatches": 1,
     "pr_number": 1261,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1261",
-    "current_pr_head_sha": "8c4a62bb3be49559fe478bdfee2fd8e719fabe15",
+    "current_pr_head_sha": "85cd9dfcb75dfc519e333334dce5c0c0681a7490",
     "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
     "normalization_slot": "2026-10-31",
     "normalization_dispatched_at": "2026-11-01T02:20:56.079423+00:00",
     "normalization_run_id": 41264816693,
-    "normalization_drift_count": 2,
-    "merge_dispatch_count": 3,
-    "merge_dispatch_at": "2026-11-01T03:46:01.010283+00:00",
+    "normalization_drift_count": 3,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
     "merge_run_id": 41265126055,
     "last_refunded_auto_merge_run_id": 41265126055,
     "deferred_auto_merge_refund_count": 3,
-    "last_normalization_drift_head_sha": "8c4a62bb3be49559fe478bdfee2fd8e719fabe15",
-    "normalized_head_sha": "8c4a62bb3be49559fe478bdfee2fd8e719fabe15",
-    "image_head_sha": "8c4a62bb3be49559fe478bdfee2fd8e719fabe15",
-    "merge_candidate_sha": "8c4a62bb3be49559fe478bdfee2fd8e719fabe15"
+    "last_normalization_drift_head_sha": "85cd9dfcb75dfc519e333334dce5c0c0681a7490"
   },
   "backlog": [
     {
@@ -1787,22 +1784,8 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-11-01T04:00:51.709438+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-31T16:17:55.162469+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
     {
       "at": "2026-10-31T16:22:30.939787+00:00",
       "from": "article_generating",
@@ -2725,12 +2708,23 @@
       "details": {
         "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-11-01T04:05:42.054788+00:00",
+      "from": "blocked",
+      "to": "article_pr_open",
+      "reason": "late_article_head_after_merge_exhaustion_recovery",
+      "details": {
+        "pr_number": 1261,
+        "previous_head_sha": "8c4a62bb3be49559fe478bdfee2fd8e719fabe15",
+        "current_head_sha": "85cd9dfcb75dfc519e333334dce5c0c0681a7490"
+      }
     }
   ],
   "updated_at": "2026-11-01T04:00:51.709465+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2743,8 +2737,7 @@
     "source_id": "local-editorial://poop-only-in-diaper/7",
     "evidence_rebind_head_sha": "8c4a62bb3be49559fe478bdfee2fd8e719fabe15",
     "evidence_rebind_dispatched_at": "2026-11-01T03:36:12.703028+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 41269838601
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3214,18 +3207,17 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-31T22:55:42.826161+00:00"
     },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
       "cycle": "2026-10-31",
       "inputs": {
         "pr_number": "1261",
         "slot": "2026-10-31"
       },
-      "intent_at": "2026-11-01T03:45:40.936079+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41265126055,
-      "observed_active_run_id": 41270465607,
-      "dispatched_at": "2026-11-01T03:45:40.936079+00:00"
+      "intent_at": "2026-11-01T04:05:39.823233+00:00",
+      "status": "intent",
+      "previous_run_id": 41264816693,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
