@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "article_pr_open",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -16,7 +16,7 @@
     },
     "attempts": 3,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "last_dispatch_at": "2026-10-31T22:56:00.035341+00:00",
     "watchdog": {
       "identity": "2026-10-31",
@@ -65,7 +65,7 @@
     "current_pr_head_sha": "607f87e0e30fbf598523af53b4b243ba59a0c303",
     "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
     "normalization_slot": "2026-10-31",
-    "normalization_dispatched_at": "2026-11-01T04:05:48.741877+00:00",
+    "normalization_dispatched_at": "2026-11-01T05:20:53.969267+00:00",
     "normalization_run_id": 41271720137,
     "normalization_drift_count": 2,
     "merge_dispatch_count": 0,
@@ -1786,16 +1786,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-31T19:16:32.349722+00:00",
-      "from": "article_normalizing",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1261,
-        "slot": "2026-10-31"
-      }
-    },
-    {
       "at": "2026-10-31T19:56:11.297105+00:00",
       "from": "article_normalizing",
       "to": "article_image_running",
@@ -2707,9 +2697,19 @@
       "from": "article_image_rebinding",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-11-01T05:20:53.969292+00:00",
+      "from": "article_pr_open",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1261,
+        "slot": "2026-10-31"
+      }
     }
   ],
-  "updated_at": "2026-11-01T05:10:20.113923+00:00",
+  "updated_at": "2026-11-01T05:20:53.969299+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
@@ -3203,9 +3203,10 @@
         "slot": "2026-10-31"
       },
       "intent_at": "2026-11-01T05:20:41.480969+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41271720137,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41276597242,
+      "dispatched_at": "2026-11-01T05:20:41.480969+00:00"
     }
   },
   "last_child_notification": {
