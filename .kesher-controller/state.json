@@ -40,13 +40,13 @@
     "quality_content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-01T19:20:50.224562+00:00",
+    "quality_checked_at": "2026-11-01T19:22:58.251195+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-01T18:58:21.719530+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41339314739,
-    "live_verified_at": "2026-11-01T19:21:16.974204+00:00"
+    "live_verified_at": "2026-11-01T19:23:00.053318+00:00"
   },
   "backlog": [
     {
@@ -2459,7 +2459,7 @@
     "attempt_count": 2,
     "status": "rejected",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-01T19:27:52.201365+00:00",
     "run_id": 41340770119,
     "processed_run_id": 41339789387,
     "provider_id": null,
@@ -2933,23 +2933,7 @@
     "publication_slot": "2026-11-01",
     "claimed_at": "2026-11-01T17:43:49.947664+00:00"
   },
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-11-01",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "gifted-children-asynchronous-development",
-        "target_content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
-        "target_item_id": "video-20261101-210454-89f4065833"
-      },
-      "intent_at": "2026-11-01T19:14:22.032920+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41339789387,
-      "observed_active_run_id": 41340770119,
-      "dispatched_at": "2026-11-01T19:14:22.032920+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/gifted-children-asynchronous-development",
     "overview_youtube_url": null,
@@ -2961,7 +2945,7 @@
   },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 41339789387,
+    "run_id": 41340770119,
     "conclusion": "success",
     "source_slug": "gifted-children-asynchronous-development",
     "slot": "2026-11-01"
