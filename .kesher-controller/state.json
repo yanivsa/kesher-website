@@ -4,7 +4,7 @@
   "status": "article_pr_open",
   "article": {
     "attempt_count": 0,
-    "status": "running",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -26,13 +26,23 @@
     "normalization_drift_count": 1,
     "merge_dispatch_count": 1,
     "merge_dispatch_at": "2026-11-01T18:53:51.530800+00:00",
-    "merge_run_id": 41333561542,
+    "merge_run_id": 41339167258,
     "last_refunded_auto_merge_run_id": 41333561542,
     "deferred_auto_merge_refund_count": 2,
     "last_normalization_drift_head_sha": "a250690ca8de27ee34fde5011ba06bc53186a305",
     "normalized_head_sha": "a250690ca8de27ee34fde5011ba06bc53186a305",
     "image_head_sha": "a250690ca8de27ee34fde5011ba06bc53186a305",
-    "merge_candidate_sha": "a250690ca8de27ee34fde5011ba06bc53186a305"
+    "merge_candidate_sha": "a250690ca8de27ee34fde5011ba06bc53186a305",
+    "slug": "gifted-children-asynchronous-development",
+    "title": "הילד מדבר כמו בן 13 ומתפרק כמו בן 7? מה הורים לילדים מחוננים חייבים לדעת על א־סינכרוניות",
+    "url": "https://kesher.saharoni.com/blog/gifted-children-asynchronous-development",
+    "published_date": "2026-11-01",
+    "quality_content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-11-01T18:58:14.380282+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2426,7 +2436,8 @@
     "evidence_rebind_head_sha": "a250690ca8de27ee34fde5011ba06bc53186a305",
     "evidence_rebind_dispatched_at": "2026-11-01T18:51:20.906262+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 41333078383
+    "run_id": 41333078383,
+    "image_path": "/images/generated/blog/gifted-children-asynchronous-development.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2901,18 +2912,15 @@
     "claimed_at": "2026-11-01T17:43:49.947664+00:00"
   },
   "pending_dispatches": {
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "deploy.yml": {
+      "workflow": "deploy.yml",
       "cycle": "2026-11-01",
-      "inputs": {
-        "pr_number": "1269",
-        "slot": "2026-11-01"
-      },
-      "intent_at": "2026-11-01T18:53:28.202786+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41333561542,
-      "observed_active_run_id": 41338944230,
-      "dispatched_at": "2026-11-01T18:53:28.202786+00:00"
+      "inputs": {},
+      "intent_at": "2026-11-01T18:58:09.989827+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "6b96b71a33df12c0ffde25803e13c3004253974e"
     }
   },
   "deliverables": {
@@ -2925,8 +2933,8 @@
     "short_origin_verified": true
   },
   "last_child_notification": {
-    "workflow": "Kesher Trusted Article Image",
-    "run_id": 41338735741,
+    "workflow": "Auto-merge Kesher article PRs",
+    "run_id": 41339167258,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-01"
