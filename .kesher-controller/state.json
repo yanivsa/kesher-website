@@ -1802,15 +1802,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-31T21:01:14.809331+00:00",
-      "from": "article_pr_open",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-10-31T21:06:15.737011+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2713,9 +2704,19 @@
         "item_id": "video-20261101-081723-519994afd4-a2",
         "task_id": "557450da-572e-491e-8754-2d9839dcc55e"
       }
+    },
+    {
+      "at": "2026-11-01T06:51:12.118957+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261101-081723-519994afd4-a2",
+        "task_id": "557450da-572e-491e-8754-2d9839dcc55e"
+      }
     }
   ],
-  "updated_at": "2026-11-01T06:46:55.210235+00:00",
+  "updated_at": "2026-11-01T06:51:12.118966+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
