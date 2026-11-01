@@ -101,7 +101,12 @@
       "התפתחות א־סינכרונית",
       "הדרכת הורים"
     ],
-    "shortHook": "הוא יכול לדבר איתכם על חלל, צדק ופילוסופיה — ואז לבכות כי החולצה מגרדת. זו לא בהכרח סתירה."
+    "shortHook": "הוא יכול לדבר איתכם על חלל, צדק ופילוסופיה — ואז לבכות כי החולצה מגרדת. זו לא בהכרח סתירה.",
+    "image": "/images/generated/blog/gifted-children-asynchronous-development.png",
+    "imageAlt": "איור עריכתי מקומי של מבוגר וילד באינטראקציה ביתית תומכת, בסביבה רגועה שמתאימה לתוכן הדרכת הורים.",
+    "imageProvider": "LocalEditorial",
+    "imageSourceUrl": "local-editorial://gifted-children-asynchronous-development/2",
+    "imageIsFallback": false
   },
   {
     "id": "poop-only-in-diaper",
