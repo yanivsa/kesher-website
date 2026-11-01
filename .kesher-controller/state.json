@@ -63,21 +63,21 @@
     "resume_dispatches": 1,
     "pr_number": 1261,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1261",
-    "current_pr_head_sha": "dd971cefd65a193bc4c919bfacd779af6032a5be",
+    "current_pr_head_sha": "cb17b6332ec800ed66e2e49c8faf33a51b1a87b2",
     "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
     "normalization_slot": "2026-10-31",
     "normalization_dispatched_at": "2026-10-31T20:08:19.526209+00:00",
     "normalization_run_id": 41237474722,
-    "normalization_drift_count": 0,
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-11-01T01:06:10.001824+00:00",
+    "normalization_drift_count": 1,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
     "merge_run_id": 41237767458,
     "last_refunded_auto_merge_run_id": 41237767458,
     "deferred_auto_merge_refund_count": 2,
-    "last_normalization_drift_head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1",
-    "normalized_head_sha": "dd971cefd65a193bc4c919bfacd779af6032a5be",
-    "image_head_sha": "dd971cefd65a193bc4c919bfacd779af6032a5be",
-    "merge_candidate_sha": "dd971cefd65a193bc4c919bfacd779af6032a5be"
+    "last_normalization_drift_head_sha": "cb17b6332ec800ed66e2e49c8faf33a51b1a87b2",
+    "normalized_head_sha": "cb17b6332ec800ed66e2e49c8faf33a51b1a87b2",
+    "image_head_sha": "cb17b6332ec800ed66e2e49c8faf33a51b1a87b2",
+    "merge_candidate_sha": "cb17b6332ec800ed66e2e49c8faf33a51b1a87b2"
   },
   "backlog": [
     {
@@ -2693,7 +2693,7 @@
       }
     }
   ],
-  "updated_at": "2026-11-01T01:06:05.267189+00:00",
+  "updated_at": "2026-11-01T01:11:13.572955+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2709,8 +2709,7 @@
     "source_id": "local-editorial://poop-only-in-diaper/7",
     "evidence_rebind_head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1",
     "evidence_rebind_dispatched_at": "2026-10-31T20:46:17.908037+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 41248780004
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3187,11 +3186,10 @@
         "pr_number": "1261",
         "slot": "2026-10-31"
       },
-      "intent_at": "2026-11-01T01:05:47.707590+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-11-01T01:10:42.934376+00:00",
+      "status": "intent",
       "previous_run_id": 41237767458,
-      "observed_active_run_id": 41259629303,
-      "dispatched_at": "2026-11-01T01:05:47.707590+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
