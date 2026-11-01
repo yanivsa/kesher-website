@@ -44,7 +44,7 @@
     "live": true,
     "last_deploy_dispatch_at": "2026-11-01T10:30:43.883987+00:00",
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T13:20:51.269992+00:00",
+    "live_verified_at": "2026-11-01T13:21:18.384606+00:00",
     "deploy_run_id": 41297802059
   },
   "backlog": [
@@ -1758,32 +1758,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T06:46:55.210227+00:00",
-      "from": "long_video_watchdog_recovery",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261101-081723-519994afd4-a2",
-        "task_id": "557450da-572e-491e-8754-2d9839dcc55e"
-      }
-    },
-    {
-      "at": "2026-11-01T06:51:12.118957+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261101-081723-519994afd4-a2",
-        "task_id": "557450da-572e-491e-8754-2d9839dcc55e"
-      }
-    },
-    {
-      "at": "2026-11-01T06:53:28.987503+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-01T06:53:30.198305+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2425,9 +2399,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-01T13:21:18.384634+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-01T13:21:19.628867+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-01T13:21:20.903861+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-01T13:16:23.686183+00:00",
+  "updated_at": "2026-11-01T13:21:20.903880+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
