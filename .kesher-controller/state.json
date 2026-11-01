@@ -2564,9 +2564,19 @@
         "item_id": "video-20261101-123658-0b2187efb1",
         "task_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59"
       }
+    },
+    {
+      "at": "2026-11-01T10:45:55.650369+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261101-123658-0b2187efb1",
+        "task_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59"
+      }
     }
   ],
-  "updated_at": "2026-11-01T10:44:36.621710+00:00",
+  "updated_at": "2026-11-01T10:45:55.650378+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
