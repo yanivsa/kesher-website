@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "article_image_rebinding",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -62,19 +62,22 @@
     "resume_dispatches": 1,
     "pr_number": 1261,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1261",
-    "current_pr_head_sha": "44fc8276428291d414548595c8745c2940f4ae1e",
+    "current_pr_head_sha": "b88916310e1b0dd2a835effd1ec48c39bcdf3bbd",
     "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
     "normalization_slot": "2026-10-31",
     "normalization_dispatched_at": "2026-11-01T04:05:48.741877+00:00",
     "normalization_run_id": 41271720137,
-    "normalization_drift_count": 1,
+    "normalization_drift_count": 0,
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 41265126055,
     "last_refunded_auto_merge_run_id": 41265126055,
     "deferred_auto_merge_refund_count": 3,
     "last_normalization_drift_head_sha": "44fc8276428291d414548595c8745c2940f4ae1e",
-    "normalized_head_sha": "44fc8276428291d414548595c8745c2940f4ae1e"
+    "normalized_head_sha": "b88916310e1b0dd2a835effd1ec48c39bcdf3bbd",
+    "last_error": null,
+    "image_head_sha": "b88916310e1b0dd2a835effd1ec48c39bcdf3bbd",
+    "merge_candidate_sha": "b88916310e1b0dd2a835effd1ec48c39bcdf3bbd"
   },
   "backlog": [
     {
@@ -1786,19 +1789,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-31T16:41:44.874109+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** To autonomously write and publish a single Kesher article about toddler potty training struggles (\"קקי רק בחיתול\") for the 2026-10-31 slot, following strict constraints regarding formatting, length, and internal links. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch correctly creates the article in `src/data/posts.json` targeting the appropriate topic and primary keyword. The JSON structure is correct, and the V3 override logic for omitting images (`image` and `imageAlt`) is properly respected. * **Completeness:** The patc…",
-        "retry_at": "2026-10-31T16:46:44.874086+00:00",
-        "failure_streak": 1,
-        "run_id": 41217241439,
-        "session_id": "sessions/14947022517645608193"
-      }
-    },
-    {
       "at": "2026-10-31T16:41:49.496647+00:00",
       "from": "article_retry_wait",
       "to": "article_generating",
@@ -2720,12 +2710,18 @@
         "pr_number": 1261,
         "head_sha": "44fc8276428291d414548595c8745c2940f4ae1e"
       }
+    },
+    {
+      "at": "2026-11-01T04:20:37.412870+00:00",
+      "from": "article_image_rebinding",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-11-01T04:16:31.763460+00:00",
+  "updated_at": "2026-11-01T04:20:37.412893+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2739,7 +2735,7 @@
     "evidence_rebind_head_sha": "44fc8276428291d414548595c8745c2940f4ae1e",
     "evidence_rebind_dispatched_at": "2026-11-01T04:16:31.763422+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": null
+    "run_id": 41272446205
   },
   "long_video": {
     "attempt_count": 0,
@@ -3209,24 +3205,22 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-31T22:55:42.826161+00:00"
     },
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
       "cycle": "2026-10-31",
       "inputs": {
         "pr_number": "1261",
-        "recovery_only": "true",
-        "expected_head_sha": "44fc8276428291d414548595c8745c2940f4ae1e"
+        "slot": "2026-10-31"
       },
-      "intent_at": "2026-11-01T04:15:50.210812+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41272446205,
-      "dispatched_at": "2026-11-01T04:15:50.210812+00:00"
+      "intent_at": "2026-11-01T04:20:09.311058+00:00",
+      "status": "intent",
+      "previous_run_id": 41265126055,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Normalize Article PR",
-    "run_id": 41271720137,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 41272446205,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-31"
