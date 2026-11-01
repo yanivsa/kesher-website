@@ -25,8 +25,8 @@
     "normalization_run_id": 41285463088,
     "normalization_drift_count": 0,
     "last_normalization_drift_head_sha": "9f55da194a242055ea2a58fed389512f352a9b0f",
-    "merge_dispatch_count": 0,
-    "merge_dispatch_at": null,
+    "merge_dispatch_count": 1,
+    "merge_dispatch_at": "2026-11-01T10:23:25.486382+00:00",
     "normalized_head_sha": "1c8182b5a5418b285d92662cbb561a7c552730ba",
     "image_head_sha": "1c8182b5a5418b285d92662cbb561a7c552730ba",
     "merge_candidate_sha": "1c8182b5a5418b285d92662cbb561a7c552730ba"
@@ -2964,9 +2964,10 @@
         "slot": "2026-11-01"
       },
       "intent_at": "2026-11-01T10:22:23.158187+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41297274966,
+      "dispatched_at": "2026-11-01T10:22:23.158187+00:00"
     }
   },
   "deliverables": {
@@ -2984,17 +2985,5 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-01"
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
