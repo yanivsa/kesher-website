@@ -44,9 +44,9 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-01T18:58:21.719530+00:00",
-    "next_deploy_retry_at": "2026-11-01T19:08:14.694983+00:00",
+    "next_deploy_retry_at": null,
     "deploy_run_id": 41339314739,
-    "live_verified_at": "2026-11-01T19:03:19.105036+00:00"
+    "live_verified_at": "2026-11-01T19:03:45.230117+00:00"
   },
   "backlog": [
     {
@@ -2427,7 +2427,7 @@
       "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-11-01T19:03:19.105072+00:00",
+  "updated_at": "2026-11-01T19:03:45.230147+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2920,7 +2920,21 @@
     "publication_slot": "2026-11-01",
     "claimed_at": "2026-11-01T17:43:49.947664+00:00"
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-11-01",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "gifted-children-asynchronous-development",
+        "target_content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67"
+      },
+      "intent_at": "2026-11-01T19:03:14.694983+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/gifted-children-asynchronous-development",
     "overview_youtube_url": null,
@@ -3212,5 +3226,18 @@
       "archived_at": "2026-11-01T17:43:49.947652+00:00",
       "reason": "owner_run_now_cycle_started"
     }
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
+  }
 }
