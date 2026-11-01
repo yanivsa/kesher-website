@@ -3121,19 +3121,27 @@
         "long_url": "https://youtu.be/XmdgyE0GnKY",
         "short_url": "https://youtu.be/PP4nMAXAGvM"
       }
+    },
+    {
+      "idea_id": "gifted-children-asynchronous-development",
+      "fingerprint": "6468eb2b421856b51291cae932ea8dc8625683a40bcfc9a7b32762252291c1ed",
+      "topic_brief": "Direct owner-authored article already exists in open PR #1269 on branch publish-article-gifted-children-asynchronous-development-1268. Adopt and process this exact PR and slug; DO NOT create a new article, Jules session, duplicate PR, duplicate source/provider item, video or upload. Authoritative slug: gifted-children-asynchronous-development. Topic: הנחיית הורים לילדים מחוננים — התפתחות א־סינכרונית והבדידות הפנימית. Formal definition: Columbus Group (1991); Linda Silverman was a founding member/prominent researcher. Do not present illustrative age gaps as a scientific formula and do not publish the supplied paraphrase as a verbatim Silverman quote. Practical parent flow: regulate first, calm boundary 'מותר לכעוס, אסור לשבור', logic later. Existing article content/build/RTL/accessibility/security gates passed; only ARTICLE_IMAGE_GUARD_FAILED remains, so attach one unique trusted local hero on the same PR before merge. Preserve the exact same identity through Article -> Video Overview -> 9:16 Short. Only three public verified links = Done.\nPrimary Keyword: הילד\nTrusted Stems: gifted",
+      "required_primary_keyword": "הילד",
+      "run_now": true,
+      "status": "complete",
+      "requested_at": "2026-11-01T17:43:48.882911+00:00",
+      "publication_slot": "2026-11-01",
+      "claimed_at": "2026-11-01T17:43:49.947664+00:00",
+      "completed_at": "2026-11-01T20:36:19.401167+00:00",
+      "outputs": {
+        "slug": "gifted-children-asynchronous-development",
+        "article_url": "https://kesher.saharoni.com/blog/gifted-children-asynchronous-development",
+        "long_url": "https://youtu.be/hZnOr_12YDU",
+        "short_url": "https://youtu.be/bmofQnopjzw"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "gifted-children-asynchronous-development",
-    "fingerprint": "6468eb2b421856b51291cae932ea8dc8625683a40bcfc9a7b32762252291c1ed",
-    "topic_brief": "Direct owner-authored article already exists in open PR #1269 on branch publish-article-gifted-children-asynchronous-development-1268. Adopt and process this exact PR and slug; DO NOT create a new article, Jules session, duplicate PR, duplicate source/provider item, video or upload. Authoritative slug: gifted-children-asynchronous-development. Topic: הנחיית הורים לילדים מחוננים — התפתחות א־סינכרונית והבדידות הפנימית. Formal definition: Columbus Group (1991); Linda Silverman was a founding member/prominent researcher. Do not present illustrative age gaps as a scientific formula and do not publish the supplied paraphrase as a verbatim Silverman quote. Practical parent flow: regulate first, calm boundary 'מותר לכעוס, אסור לשבור', logic later. Existing article content/build/RTL/accessibility/security gates passed; only ARTICLE_IMAGE_GUARD_FAILED remains, so attach one unique trusted local hero on the same PR before merge. Preserve the exact same identity through Article -> Video Overview -> 9:16 Short. Only three public verified links = Done.\nPrimary Keyword: הילד\nTrusted Stems: gifted",
-    "required_primary_keyword": "הילד",
-    "run_now": true,
-    "status": "claimed",
-    "requested_at": "2026-11-01T17:43:48.882911+00:00",
-    "publication_slot": "2026-11-01",
-    "claimed_at": "2026-11-01T17:43:49.947664+00:00"
-  },
+  "active_idea": null,
   "pending_dispatches": {},
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/gifted-children-asynchronous-development",
