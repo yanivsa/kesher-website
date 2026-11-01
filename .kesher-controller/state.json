@@ -2718,7 +2718,7 @@
       "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-11-01T04:31:14.824546+00:00",
+  "updated_at": "2026-11-01T04:40:59.416205+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -3212,11 +3212,10 @@
         "pr_number": "1261",
         "slot": "2026-10-31"
       },
-      "intent_at": "2026-11-01T04:30:54.932457+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-11-01T04:40:42.327392+00:00",
+      "status": "intent",
       "previous_run_id": 41265126055,
-      "observed_active_run_id": 41273412133,
-      "dispatched_at": "2026-11-01T04:30:54.932457+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
