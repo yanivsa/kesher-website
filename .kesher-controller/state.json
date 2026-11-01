@@ -62,22 +62,22 @@
     "resume_dispatches": 1,
     "pr_number": 1261,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1261",
-    "current_pr_head_sha": "37f8a7c2055c0318ad300f155c0f62bd77d5d59a",
+    "current_pr_head_sha": "9c0c897f7dddf4154fc157cf66e072ce2954ab04",
     "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
     "normalization_slot": "2026-10-31",
     "normalization_dispatched_at": "2026-11-01T05:33:19.327311+00:00",
     "normalization_run_id": 41277385370,
     "normalization_drift_count": 0,
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-11-01T05:41:50.796487+00:00",
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
     "merge_run_id": 41277111746,
     "last_refunded_auto_merge_run_id": 41277111746,
     "deferred_auto_merge_refund_count": 4,
     "last_normalization_drift_head_sha": "d479c5f8a101a0f2f9ff0a60893ee1cee18a8931",
     "last_error": null,
-    "normalized_head_sha": "37f8a7c2055c0318ad300f155c0f62bd77d5d59a",
-    "image_head_sha": "37f8a7c2055c0318ad300f155c0f62bd77d5d59a",
-    "merge_candidate_sha": "37f8a7c2055c0318ad300f155c0f62bd77d5d59a"
+    "normalized_head_sha": "9c0c897f7dddf4154fc157cf66e072ce2954ab04",
+    "image_head_sha": "9c0c897f7dddf4154fc157cf66e072ce2954ab04",
+    "merge_candidate_sha": "9c0c897f7dddf4154fc157cf66e072ce2954ab04"
   },
   "backlog": [
     {
@@ -2708,7 +2708,7 @@
       "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-11-01T05:41:46.849046+00:00",
+  "updated_at": "2026-11-01T05:51:16.247905+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -3202,11 +3202,10 @@
         "pr_number": "1261",
         "slot": "2026-10-31"
       },
-      "intent_at": "2026-11-01T05:41:13.250373+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-11-01T05:50:45.834265+00:00",
+      "status": "intent",
       "previous_run_id": 41277111746,
-      "observed_active_run_id": 41277921990,
-      "dispatched_at": "2026-11-01T05:41:13.250373+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
