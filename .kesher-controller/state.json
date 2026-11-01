@@ -2935,5 +2935,14 @@
       "observed_active_run_id": 41285463088,
       "dispatched_at": "2026-11-01T07:35:42.777173+00:00"
     }
+  },
+  "deliverables": {
+    "article_url": null,
+    "overview_youtube_url": null,
+    "short_youtube_url": null,
+    "overview_edit_verified": false,
+    "short_portrait_verified": false,
+    "short_signature_verified": false,
+    "short_origin_verified": false
   }
 }
