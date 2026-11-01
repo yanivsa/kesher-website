@@ -1789,16 +1789,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-31T17:11:31.920726+00:00",
-      "from": "article_normalizing",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1261,
-        "slot": "2026-10-31"
-      }
-    },
-    {
       "at": "2026-10-31T18:01:14.804267+00:00",
       "from": "article_normalizing",
       "to": "article_normalizing",
@@ -2714,9 +2704,18 @@
       "details": {
         "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-11-01T05:01:09.221635+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
+      }
     }
   ],
-  "updated_at": "2026-11-01T04:55:51.563785+00:00",
+  "updated_at": "2026-11-01T05:01:09.221641+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -3237,6 +3236,6 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-11-01T04:55:51.563760+00:00"
+    "at": "2026-11-01T05:01:09.221617+00:00"
   }
 }
