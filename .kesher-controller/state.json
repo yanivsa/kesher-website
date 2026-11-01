@@ -89,7 +89,7 @@
     "quality_violations": [],
     "live": true,
     "deploy_run_id": 41278703111,
-    "next_deploy_retry_at": null,
+    "next_deploy_retry_at": "2026-11-01T06:09:28.145373+00:00",
     "live_verified_at": "2026-11-01T06:04:33.115211+00:00"
   },
   "backlog": [
