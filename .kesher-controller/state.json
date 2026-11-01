@@ -68,8 +68,8 @@
     "normalization_dispatched_at": "2026-11-01T05:33:19.327311+00:00",
     "normalization_run_id": 41277385370,
     "normalization_drift_count": 0,
-    "merge_dispatch_count": 0,
-    "merge_dispatch_at": null,
+    "merge_dispatch_count": 1,
+    "merge_dispatch_at": "2026-11-01T05:41:50.796487+00:00",
     "merge_run_id": 41277111746,
     "last_refunded_auto_merge_run_id": 41277111746,
     "deferred_auto_merge_refund_count": 4,
@@ -3203,9 +3203,10 @@
         "slot": "2026-10-31"
       },
       "intent_at": "2026-11-01T05:41:13.250373+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41277111746,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41277921990,
+      "dispatched_at": "2026-11-01T05:41:13.250373+00:00"
     }
   },
   "last_child_notification": {
