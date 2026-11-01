@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "long_video_watchdog_recovery",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1802,12 +1802,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-31T20:47:39.465009+00:00",
-      "from": "article_image_rebinding",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
       "at": "2026-10-31T21:01:14.809331+00:00",
       "from": "article_pr_open",
       "to": "blocked",
@@ -2709,9 +2703,19 @@
         "slug": "poop-only-in-diaper",
         "content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d"
       }
+    },
+    {
+      "at": "2026-11-01T06:46:55.210227+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261101-081723-519994afd4-a2",
+        "task_id": "557450da-572e-491e-8754-2d9839dcc55e"
+      }
     }
   ],
-  "updated_at": "2026-11-01T06:46:05.125320+00:00",
+  "updated_at": "2026-11-01T06:46:55.210235+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2733,7 +2737,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-11-01T06:29:09.799848+00:00",
     "run_id": 41280165818,
