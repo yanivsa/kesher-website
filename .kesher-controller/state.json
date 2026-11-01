@@ -40,13 +40,13 @@
     "quality_content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-01T19:50:53.496411+00:00",
+    "quality_checked_at": "2026-11-01T19:54:06.783199+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-01T18:58:21.719530+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41339314739,
-    "live_verified_at": "2026-11-01T19:50:54.936773+00:00"
+    "live_verified_at": "2026-11-01T19:54:08.501853+00:00"
   },
   "backlog": [
     {
@@ -2509,7 +2509,7 @@
     "task_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
     "artifact_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
     "provider_status": "pending",
-    "verified": false,
+    "verified": true,
     "watchdog": {
       "identity": "long_video:gifted-children-asynchronous-development:89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67:video-20261101-211603-89f4065833-a2",
       "hard_started_at": "2026-11-01T19:16:10.157044+00:00",
@@ -2518,7 +2518,20 @@
       "recovery_count": 1,
       "last_recovery_at": "2026-11-01T19:46:03.596358+00:00"
     },
-    "pending_resume_ready": false
+    "pending_resume_ready": false,
+    "youtube_id": "hZnOr_12YDU",
+    "youtube_url": "https://youtu.be/hZnOr_12YDU",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 132.0,
+    "content_duration_seconds": 132.0,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
@@ -2980,23 +2993,7 @@
     "publication_slot": "2026-11-01",
     "claimed_at": "2026-11-01T17:43:49.947664+00:00"
   },
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-11-01",
-      "inputs": {
-        "operation": "recovery",
-        "target_slug": "gifted-children-asynchronous-development",
-        "target_content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
-        "target_item_id": "video-20261101-211603-89f4065833-a2"
-      },
-      "intent_at": "2026-11-01T19:46:03.596358+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41340770119,
-      "observed_active_run_id": 41343422872,
-      "dispatched_at": "2026-11-01T19:46:03.596358+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/gifted-children-asynchronous-development",
     "overview_youtube_url": null,
@@ -3008,7 +3005,7 @@
   },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 41340770119,
+    "run_id": 41343422872,
     "conclusion": "success",
     "source_slug": "gifted-children-asynchronous-development",
     "slot": "2026-11-01"
