@@ -3231,6 +3231,20 @@
       "previous_run_id": 41277111746,
       "observed_active_run_id": 41278513847,
       "dispatched_at": "2026-11-01T05:50:45.834265+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-31",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "poop-only-in-diaper",
+        "target_content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
+        "target_item_id": "video-20261101-081723-519994afd4-a2"
+      },
+      "intent_at": "2026-11-01T06:45:41.666027+00:00",
+      "status": "intent",
+      "previous_run_id": 41280165818,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3251,5 +3265,21 @@
     "Deploy to Cloudflare Pages:41278703111",
     "Kesher Daily NotebookLM Video Overview:41280165818"
   ],
-  "last_error": null
+  "last_error": null,
+  "interventions": {
+    "v5|poop-only-in-diaper|519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d|long_video": {
+      "pipeline_id": "v5",
+      "slug": "poop-only-in-diaper",
+      "content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-11-01T08",
+      "last_fingerprint": "b2e7d2f027f0a9f984967de476a695b88a5329085dcb1eec73d962d5e847c789",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-11-01T06:45:41.666027+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
