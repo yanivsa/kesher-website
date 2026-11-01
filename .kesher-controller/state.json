@@ -44,7 +44,7 @@
     "live": true,
     "last_deploy_dispatch_at": "2026-11-01T10:30:43.883987+00:00",
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T16:41:01.355439+00:00",
+    "live_verified_at": "2026-11-01T16:41:22.827203+00:00",
     "deploy_run_id": 41297802059
   },
   "backlog": [
@@ -1758,24 +1758,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T13:52:02.946946+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-01T13:55:58.248937+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-01T13:55:58.704365+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-01T13:55:59.173837+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2356,9 +2338,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-01T16:41:22.827245+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-01T16:41:24.026864+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-01T16:41:25.295525+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-01T16:36:24.991451+00:00",
+  "updated_at": "2026-11-01T16:41:25.295544+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
