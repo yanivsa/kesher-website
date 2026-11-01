@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-01",
-  "status": "long_video_complete",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1759,12 +1759,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T16:06:16.968321+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-01T16:06:18.179292+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2463,9 +2457,15 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-01T19:54:50.710825+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-11-01T19:54:41.145807+00:00",
+  "updated_at": "2026-11-01T19:54:50.710834+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2534,16 +2534,20 @@
     "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-11-01T19:54:50.710791+00:00",
+    "artifact_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
+    "source_id": "fc928ad9-1d2c-4d58-b593-15db16480aa2",
+    "adopted_from_long_item_id": "video-20261101-211603-89f4065833-a2"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3004,9 +3008,10 @@
         "derive_long_item_id": "video-20261101-211603-89f4065833-a2"
       },
       "intent_at": "2026-11-01T19:54:00.583513+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41344128071,
+      "dispatched_at": "2026-11-01T19:54:00.583513+00:00"
     }
   },
   "deliverables": {
