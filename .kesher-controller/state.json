@@ -1791,18 +1791,9 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-11-01T02:46:07.439157+00:00"
+    "at": "2026-11-01T02:50:51.527247+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-31T11:51:15.590177+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
     {
       "at": "2026-10-31T11:56:12.406323+00:00",
       "from": "blocked",
@@ -2701,9 +2692,18 @@
       "details": {
         "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-11-01T02:50:51.527268+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
+      }
     }
   ],
-  "updated_at": "2026-11-01T02:46:07.439179+00:00",
+  "updated_at": "2026-11-01T02:50:51.527273+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
