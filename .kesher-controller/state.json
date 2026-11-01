@@ -39,12 +39,12 @@
     "published_date": "2026-11-01",
     "quality_content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-01T10:40:45.080385+00:00",
+    "quality_checked_at": "2026-11-01T10:44:17.998103+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-01T10:30:43.883987+00:00",
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T10:41:00.809892+00:00",
+    "live_verified_at": "2026-11-01T10:44:19.103264+00:00",
     "deploy_run_id": 41297802059
   },
   "backlog": [
@@ -2576,7 +2576,7 @@
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-01T10:49:14.333443+00:00",
     "run_id": 41298207056,
     "processed_run_id": null,
     "provider_id": null,
@@ -3037,22 +3037,7 @@
     }
   ],
   "active_idea": null,
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-11-01",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "good-news-response-relationship",
-        "target_content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b"
-      },
-      "intent_at": "2026-11-01T10:35:41.683634+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41298207056,
-      "dispatched_at": "2026-11-01T10:35:41.683634+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/good-news-response-relationship",
     "overview_youtube_url": null,
@@ -3063,10 +3048,10 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 41297802059,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 41298207056,
     "conclusion": "success",
-    "source_slug": null,
+    "source_slug": "good-news-response-relationship",
     "slot": "2026-11-01"
   },
   "processed_child_notifications": [
