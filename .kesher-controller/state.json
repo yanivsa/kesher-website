@@ -85,12 +85,12 @@
     "quality_content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-01T06:45:45.761991+00:00",
+    "quality_checked_at": "2026-11-01T06:46:45.081122+00:00",
     "quality_violations": [],
     "live": true,
     "deploy_run_id": 41278703111,
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T06:45:46.957040+00:00"
+    "live_verified_at": "2026-11-01T06:46:45.968609+00:00"
   },
   "backlog": [
     {
