@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-11-01T23:20:54.738317+00:00",
+    "next_retry_at": null,
     "run_id": 41357968167,
     "processed_run_id": 41357968167,
     "provider_id": null,
@@ -15,10 +15,10 @@
     "failure_count_by_type": {
       "COMPLETED_WITHOUT_PR": 1
     },
-    "attempts": 1,
+    "attempts": 2,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-11-01T22:36:19.268840+00:00",
+    "last_dispatch_at": "2026-11-01T23:25:56.742324+00:00",
     "last_run_conclusion": "failure",
     "last_worker_result": {
       "schema_version": 1,
@@ -2394,9 +2394,19 @@
       "details": {
         "retry_at": "2026-11-01T23:20:54.738317+00:00"
       }
+    },
+    {
+      "at": "2026-11-01T23:25:56.742350+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 2,
+        "publication_slot": "2026-11-02"
+      }
     }
   ],
-  "updated_at": "2026-11-01T23:20:50.915477+00:00",
+  "updated_at": "2026-11-01T23:25:56.742357+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2908,9 +2918,10 @@
         "topic_brief": "Authoritative owner request: Issue #1268. Create one KESHER chain on gifted children and asynchronous development / inner loneliness. Use the full evidence, accuracy, SEO, practical parenting, visual and dedup safeguards in https://github.com/yanivsa/kesher-website/issues/1268. Preserve one identity Article -> Video Overview -> 9:16 Short; only 3 public verified assets = Done.\n\nIdea Request ID: gifted-asynchronous-development-1268\nRequired Primary Keyword: ילדים מחוננים התפתחות רגשית"
       },
       "intent_at": "2026-11-01T23:25:43.570239+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41357968167,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-11-01T23:25:43.570239+00:00"
     }
   }
 }
