@@ -16,7 +16,7 @@
     },
     "attempts": 3,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
+    "normalization_status": "pending",
     "last_dispatch_at": "2026-10-31T22:56:00.035341+00:00",
     "watchdog": {
       "identity": "2026-10-31",
@@ -62,22 +62,19 @@
     "resume_dispatches": 1,
     "pr_number": 1261,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1261",
-    "current_pr_head_sha": "b9bdb06fcad7a5cb9da16ba67daea8aa6a44c534",
+    "current_pr_head_sha": "44ffca4d5d93e96bd6c2171885f8ee3d8637c10f",
     "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
     "normalization_slot": "2026-10-31",
     "normalization_dispatched_at": "2026-11-01T05:20:53.969267+00:00",
     "normalization_run_id": 41276597242,
-    "normalization_drift_count": 0,
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-11-01T05:29:05.738298+00:00",
-    "merge_run_id": 41265126055,
-    "last_refunded_auto_merge_run_id": 41265126055,
-    "deferred_auto_merge_refund_count": 3,
-    "last_normalization_drift_head_sha": "f9d280e006cbc4cd7669d879fe55b091af46b6a0",
-    "last_error": null,
-    "normalized_head_sha": "b9bdb06fcad7a5cb9da16ba67daea8aa6a44c534",
-    "image_head_sha": "b9bdb06fcad7a5cb9da16ba67daea8aa6a44c534",
-    "merge_candidate_sha": "b9bdb06fcad7a5cb9da16ba67daea8aa6a44c534"
+    "normalization_drift_count": 1,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
+    "merge_run_id": 41277111746,
+    "last_refunded_auto_merge_run_id": 41277111746,
+    "deferred_auto_merge_refund_count": 4,
+    "last_normalization_drift_head_sha": "44ffca4d5d93e96bd6c2171885f8ee3d8637c10f",
+    "last_error": null
   },
   "backlog": [
     {
@@ -1789,19 +1786,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-31T19:59:23.090312+00:00",
-      "from": "article_pr_open",
-      "to": "article_pr_open",
-      "reason": "successful_deferred_auto_merge_refunded",
-      "details": {
-        "run_id": 41236626056,
-        "pr_number": 1261,
-        "head_sha": "b524ab174878f08151c17e42d3be013b7e0ec281",
-        "merge_dispatch_count": 0,
-        "refund_count": 1
-      }
-    },
-    {
       "at": "2026-10-31T20:06:16.464751+00:00",
       "from": "article_pr_open",
       "to": "article_image_rebinding",
@@ -2710,12 +2694,25 @@
       "from": "article_image_rebinding",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-11-01T05:33:11.689929+00:00",
+      "from": "article_pr_open",
+      "to": "article_pr_open",
+      "reason": "successful_deferred_auto_merge_refunded",
+      "details": {
+        "run_id": 41277111746,
+        "pr_number": 1261,
+        "head_sha": "44ffca4d5d93e96bd6c2171885f8ee3d8637c10f",
+        "merge_dispatch_count": 0,
+        "refund_count": 4
+      }
     }
   ],
   "updated_at": "2026-11-01T05:29:02.133278+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2728,8 +2725,7 @@
     "source_id": "local-editorial://poop-only-in-diaper/7",
     "evidence_rebind_head_sha": "f9d280e006cbc4cd7669d879fe55b091af46b6a0",
     "evidence_rebind_dispatched_at": "2026-11-01T05:24:57.911596+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 41276857210
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3199,23 +3195,22 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-31T22:55:42.826161+00:00"
     },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
       "cycle": "2026-10-31",
       "inputs": {
         "pr_number": "1261",
         "slot": "2026-10-31"
       },
-      "intent_at": "2026-11-01T05:28:35.052134+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41265126055,
-      "observed_active_run_id": 41277111746,
-      "dispatched_at": "2026-11-01T05:28:35.052134+00:00"
+      "intent_at": "2026-11-01T05:32:55.063420+00:00",
+      "status": "intent",
+      "previous_run_id": 41276597242,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Trusted Article Image",
-    "run_id": 41276857210,
+    "workflow": "Auto-merge Kesher article PRs",
+    "run_id": 41277111746,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-31"
