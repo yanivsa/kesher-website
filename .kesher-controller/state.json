@@ -2426,7 +2426,7 @@
     "evidence_rebind_head_sha": "a250690ca8de27ee34fde5011ba06bc53186a305",
     "evidence_rebind_dispatched_at": "2026-11-01T18:51:20.906262+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 41338735741
+    "run_id": 41333078383
   },
   "long_video": {
     "attempt_count": 0,
