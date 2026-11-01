@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "long_video_running",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -90,7 +90,7 @@
     "live": true,
     "deploy_run_id": 41278703111,
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T06:15:52.418037+00:00"
+    "live_verified_at": "2026-11-01T06:16:24.983971+00:00"
   },
   "backlog": [
     {
@@ -1802,15 +1802,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-31T20:21:19.644432+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exhausted 3 total article content attempts (initial + 2 repairs)"
-      }
-    },
-    {
       "at": "2026-10-31T20:26:14.185517+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2707,9 +2698,15 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-11-01T06:16:24.984072+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-11-01T06:11:21.364279+00:00",
+  "updated_at": "2026-11-01T06:16:24.984138+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2731,18 +2728,20 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "rejected",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41279374757,
-    "processed_run_id": null,
+    "processed_run_id": 41279374757,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-11-01T06:05:08.365451+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "last_run_conclusion": "success",
+    "item_id": "video-20261101-080606-519994afd4"
   },
   "short": {
     "attempt_count": 0,
@@ -3219,13 +3218,13 @@
       "inputs": {
         "operation": "full",
         "target_slug": "poop-only-in-diaper",
-        "target_content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d"
+        "target_content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
+        "target_item_id": "video-20261101-080606-519994afd4"
       },
-      "intent_at": "2026-11-01T06:04:28.145373+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41279374757,
-      "dispatched_at": "2026-11-01T06:04:28.145373+00:00"
+      "intent_at": "2026-11-01T06:15:45.182634+00:00",
+      "status": "intent",
+      "previous_run_id": 41279374757,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3245,5 +3244,22 @@
     "Kesher Trusted Article Image:41240448115",
     "Deploy to Cloudflare Pages:41278703111"
   ],
-  "last_error": null
+  "last_error": null,
+  "video": {
+    "attempt_count": 1,
+    "status": "rejected",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": 41279374757,
+    "processed_run_id": 41279374757,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-11-01T06:05:08.365451+00:00",
+    "attempts": 1,
+    "last_run_conclusion": "success",
+    "item_id": "video-20261101-080606-519994afd4"
+  }
 }
