@@ -2482,7 +2482,8 @@
     "failure_count_by_type": {},
     "artifact_sha256": "54bf56ffd5054fc1cfdf9293c79a137a8fdaf8f05fb44205cdbe08f893908991",
     "source_id": "local-editorial://good-news-response-relationship/5",
-    "last_dispatch_at": "2026-11-01T10:21:19.541459+00:00"
+    "last_dispatch_at": "2026-11-01T10:21:19.541459+00:00",
+    "run_id": 41297125179
   },
   "long_video": {
     "attempt_count": 0,
