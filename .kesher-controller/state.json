@@ -1,11 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 3,
-    "status": "blocked",
-    "last_error": null,
+    "status": "running",
     "next_retry_at": null,
     "run_id": 41246615281,
     "processed_run_id": 41246615281,
@@ -17,7 +16,7 @@
     },
     "attempts": 3,
     "deploy_attempts": 0,
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "last_dispatch_at": "2026-10-31T22:56:00.035341+00:00",
     "watchdog": {
       "identity": "2026-10-31",
@@ -68,13 +67,14 @@
     "normalization_slot": "2026-10-31",
     "normalization_dispatched_at": "2026-11-01T04:05:48.741877+00:00",
     "normalization_run_id": 41271720137,
-    "normalization_drift_count": 4,
+    "normalization_drift_count": 1,
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
     "merge_run_id": 41265126055,
     "last_refunded_auto_merge_run_id": 41265126055,
     "deferred_auto_merge_refund_count": 3,
-    "last_normalization_drift_head_sha": "44fc8276428291d414548595c8745c2940f4ae1e"
+    "last_normalization_drift_head_sha": "44fc8276428291d414548595c8745c2940f4ae1e",
+    "normalized_head_sha": "44fc8276428291d414548595c8745c2940f4ae1e"
   },
   "backlog": [
     {
@@ -1784,12 +1784,6 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_JULES_UNSTABLE_MUTATION",
-    "message": "Article PR head mutated repeatedly (4 times) after trusted stages; branch quiescence failed",
-    "at": "2026-11-01T04:07:16.604957+00:00"
-  },
   "history": [
     {
       "at": "2026-10-31T16:32:29.622310+00:00",
@@ -3213,6 +3207,19 @@
       "previous_run_id": 41246615281,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-31T22:55:42.826161+00:00"
+    },
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
+      "cycle": "2026-10-31",
+      "inputs": {
+        "pr_number": "1261",
+        "recovery_only": "true",
+        "expected_head_sha": "44fc8276428291d414548595c8745c2940f4ae1e"
+      },
+      "intent_at": "2026-11-01T04:15:50.210812+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
