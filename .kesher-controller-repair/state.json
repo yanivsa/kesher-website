@@ -33,8 +33,9 @@
       },
       "failure_class": "IDEA_SLOT_MISMATCH",
       "fingerprint": "f3b8ffdd1f3724adb9db84db21dd5c5cf8c62ffb93574d26a3c3975e3a65f814",
+      "reason": "uncertain_create_not_discoverable",
       "stage": "controller",
-      "status": "uncertain"
+      "status": "human_blocker"
     },
     "62e88666cabe99b6b64eee72494a2dcb8ab23750bf2482696450fa671f06c1c2": {
       "acquired_at": "2026-10-30T13:06:06.587446+00:00",
