@@ -2764,7 +2764,15 @@
     "last_dispatch_at": "2026-11-01T06:53:38.735531+00:00",
     "artifact_id": "557450da-572e-491e-8754-2d9839dcc55e",
     "source_id": "8312a7c2-adc1-4d18-a278-9fd6d801ad6b",
-    "adopted_from_long_item_id": "video-20261101-081723-519994afd4-a2"
+    "adopted_from_long_item_id": "video-20261101-081723-519994afd4-a2",
+    "watchdog": {
+      "identity": "short:poop-only-in-diaper:519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d:video-20261101-085517-519994afd4",
+      "hard_started_at": "2026-11-01T06:55:24.975732+00:00",
+      "last_progress_at": "2026-11-01T07:02:19.089012+00:00",
+      "last_fingerprint": "9af5b0a3f256c698f66178984b034b4d4357657cd4c915280cb72386078d7e09",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
