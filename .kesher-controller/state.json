@@ -39,12 +39,12 @@
     "published_date": "2026-11-01",
     "quality_content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-01T11:10:50.708888+00:00",
+    "quality_checked_at": "2026-11-01T11:12:13.630669+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-01T10:30:43.883987+00:00",
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T11:10:52.383282+00:00",
+    "live_verified_at": "2026-11-01T11:12:14.803210+00:00",
     "deploy_run_id": 41297802059
   },
   "backlog": [
@@ -2658,7 +2658,7 @@
     "task_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
     "artifact_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
     "provider_status": "pending",
-    "verified": false,
+    "verified": true,
     "watchdog": {
       "identity": "long_video:good-news-response-relationship:0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b:video-20261101-123658-0b2187efb1",
       "hard_started_at": "2026-11-01T10:37:03.178459+00:00",
@@ -2668,7 +2668,20 @@
       "last_recovery_at": "2026-11-01T11:05:43.853154+00:00"
     },
     "pending_resume_ready": false,
-    "resume_dispatches": 1
+    "resume_dispatches": 1,
+    "youtube_id": "FI9DQb8YMdY",
+    "youtube_url": "https://youtu.be/FI9DQb8YMdY",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 102.733,
+    "content_duration_seconds": 102.75,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
@@ -3120,23 +3133,7 @@
     }
   ],
   "active_idea": null,
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-11-01",
-      "inputs": {
-        "operation": "recovery",
-        "target_slug": "good-news-response-relationship",
-        "target_content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
-        "target_item_id": "video-20261101-123658-0b2187efb1"
-      },
-      "intent_at": "2026-11-01T11:05:43.853154+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41298207056,
-      "observed_active_run_id": 41300368179,
-      "dispatched_at": "2026-11-01T11:05:43.853154+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/good-news-response-relationship",
     "overview_youtube_url": null,
@@ -3148,7 +3145,7 @@
   },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 41298207056,
+    "run_id": 41300368179,
     "conclusion": "success",
     "source_slug": "good-news-response-relationship",
     "slot": "2026-11-01"
