@@ -2331,9 +2331,18 @@
       "details": {
         "publication_slot": "2026-11-02"
       }
+    },
+    {
+      "at": "2026-11-01T23:05:56.069517+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "owner run-now article workflow already active",
+      "details": {
+        "publication_slot": "2026-11-02"
+      }
     }
   ],
-  "updated_at": "2026-11-01T23:01:10.605589+00:00",
+  "updated_at": "2026-11-01T23:05:56.069540+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
