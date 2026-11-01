@@ -1741,7 +1741,12 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "controller",
+    "code": "IDEA_ID_CONFLICT",
+    "message": "IDEA_ID_CONFLICT",
+    "at": "2026-11-01T18:05:04.052264+00:00"
+  },
   "history": [
     {
       "at": "2026-11-01T15:11:16.432545+00:00",
