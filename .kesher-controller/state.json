@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-01",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1759,12 +1759,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T15:46:00.564407+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-01T15:46:01.066924+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2429,9 +2423,19 @@
       "from": "long_video_running",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-01T19:15:07.363729+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 1
+      }
     }
   ],
-  "updated_at": "2026-11-01T19:14:58.665342+00:00",
+  "updated_at": "2026-11-01T19:15:07.363736+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2452,8 +2456,8 @@
     "image_path": "/images/generated/blog/gifted-children-asynchronous-development.png"
   },
   "long_video": {
-    "attempt_count": 1,
-    "status": "rejected",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41339789387,
@@ -2463,10 +2467,11 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-11-01T19:03:52.662860+00:00",
+    "last_dispatch_at": "2026-11-01T19:15:07.363714+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
-    "item_id": "video-20261101-210454-89f4065833"
+    "item_id": "video-20261101-210454-89f4065833",
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
@@ -2939,9 +2944,10 @@
         "target_item_id": "video-20261101-210454-89f4065833"
       },
       "intent_at": "2026-11-01T19:14:22.032920+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41339789387,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41340770119,
+      "dispatched_at": "2026-11-01T19:14:22.032920+00:00"
     }
   },
   "deliverables": {
@@ -3237,22 +3243,5 @@
       "archived_at": "2026-11-01T17:43:49.947652+00:00",
       "reason": "owner_run_now_cycle_started"
     }
-  ],
-  "video": {
-    "attempt_count": 1,
-    "status": "rejected",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": 41339789387,
-    "processed_run_id": 41339789387,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-11-01T19:03:52.662860+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261101-210454-89f4065833"
-  }
+  ]
 }
