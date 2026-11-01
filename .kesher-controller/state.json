@@ -16,7 +16,7 @@
     },
     "attempts": 3,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
+    "normalization_status": "pending",
     "last_dispatch_at": "2026-10-31T22:56:00.035341+00:00",
     "watchdog": {
       "identity": "2026-10-31",
@@ -62,22 +62,19 @@
     "resume_dispatches": 1,
     "pr_number": 1261,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1261",
-    "current_pr_head_sha": "69f99b0f8662000426bc010ed6cd8494b92ab868",
+    "current_pr_head_sha": "607f87e0e30fbf598523af53b4b243ba59a0c303",
     "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
     "normalization_slot": "2026-10-31",
     "normalization_dispatched_at": "2026-11-01T04:05:48.741877+00:00",
     "normalization_run_id": 41271720137,
-    "normalization_drift_count": 1,
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-11-01T05:10:25.479149+00:00",
+    "normalization_drift_count": 2,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null,
     "merge_run_id": 41265126055,
     "last_refunded_auto_merge_run_id": 41265126055,
     "deferred_auto_merge_refund_count": 3,
-    "last_normalization_drift_head_sha": "69f99b0f8662000426bc010ed6cd8494b92ab868",
-    "last_error": null,
-    "normalized_head_sha": "69f99b0f8662000426bc010ed6cd8494b92ab868",
-    "image_head_sha": "69f99b0f8662000426bc010ed6cd8494b92ab868",
-    "merge_candidate_sha": "69f99b0f8662000426bc010ed6cd8494b92ab868"
+    "last_normalization_drift_head_sha": "607f87e0e30fbf598523af53b4b243ba59a0c303",
+    "last_error": null
   },
   "backlog": [
     {
@@ -2715,7 +2712,7 @@
   "updated_at": "2026-11-01T05:10:20.113923+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "processed_run_id": null,
@@ -2728,8 +2725,7 @@
     "source_id": "local-editorial://poop-only-in-diaper/7",
     "evidence_rebind_head_sha": "69f99b0f8662000426bc010ed6cd8494b92ab868",
     "evidence_rebind_dispatched_at": "2026-11-01T05:06:07.531376+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 41275594161
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3199,18 +3195,17 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-31T22:55:42.826161+00:00"
     },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
       "cycle": "2026-10-31",
       "inputs": {
         "pr_number": "1261",
         "slot": "2026-10-31"
       },
-      "intent_at": "2026-11-01T05:09:50.249909+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41265126055,
-      "observed_active_run_id": 41275886066,
-      "dispatched_at": "2026-11-01T05:09:50.249909+00:00"
+      "intent_at": "2026-11-01T05:20:41.480969+00:00",
+      "status": "intent",
+      "previous_run_id": 41271720137,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
