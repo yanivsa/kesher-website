@@ -38,6 +38,7 @@
       "status": "human_blocker"
     },
     "3482e59b487511b826bdc9df1577a89962e60dc11184e295c05764ffb267d55a": {
+      "acquisition_started_at": "2026-11-01T06:05:14.670801+00:00",
       "affected": [
         {
           "article_run_id": 41246615281,
@@ -70,7 +71,7 @@
       "failure_class": "ARTICLE_JULES_UNSTABLE_MUTATION",
       "fingerprint": "df7d68bab20d8a05ba9cb7074226b40b1556d29ddfc9e8799d0680464495b6ef",
       "stage": "article",
-      "status": "intent"
+      "status": "uncertain"
     },
     "62e88666cabe99b6b64eee72494a2dcb8ab23750bf2482696450fa671f06c1c2": {
       "acquired_at": "2026-10-30T13:06:06.587446+00:00",
