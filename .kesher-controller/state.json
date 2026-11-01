@@ -2547,7 +2547,15 @@
     "last_dispatch_at": "2026-11-01T19:54:50.710791+00:00",
     "artifact_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
     "source_id": "fc928ad9-1d2c-4d58-b593-15db16480aa2",
-    "adopted_from_long_item_id": "video-20261101-211603-89f4065833-a2"
+    "adopted_from_long_item_id": "video-20261101-211603-89f4065833-a2",
+    "watchdog": {
+      "identity": "short:gifted-children-asynchronous-development:89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67:video-20261101-215647-89f4065833",
+      "hard_started_at": "2026-11-01T19:56:59.349030+00:00",
+      "last_progress_at": "2026-11-01T20:04:13.930049+00:00",
+      "last_fingerprint": "ea9976295905f517cb5bc1f36d8c7b3a744deabb634b525cbcf4bc01d91293a1",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
