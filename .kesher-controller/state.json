@@ -44,7 +44,7 @@
     "live": true,
     "last_deploy_dispatch_at": "2026-11-01T10:30:43.883987+00:00",
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T12:35:52.134092+00:00",
+    "live_verified_at": "2026-11-01T12:36:16.912728+00:00",
     "deploy_run_id": 41297802059
   },
   "backlog": [
@@ -1758,31 +1758,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T04:16:31.763452+00:00",
-      "from": "article_pr_open",
-      "to": "article_image_rebinding",
-      "reason": "prior trusted image artifact proved against current normalized article and must be reattached",
-      "details": {
-        "pr_number": 1261,
-        "head_sha": "44fc8276428291d414548595c8745c2940f4ae1e"
-      }
-    },
-    {
-      "at": "2026-11-01T04:20:37.412870+00:00",
-      "from": "article_image_rebinding",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
-      "at": "2026-11-01T04:50:47.913099+00:00",
-      "from": "article_pr_open",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-11-01T04:55:51.563780+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2500,9 +2475,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-01T12:36:16.912760+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-01T12:36:18.105661+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-01T12:36:19.305817+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-01T12:31:08.535339+00:00",
+  "updated_at": "2026-11-01T12:36:19.305837+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
