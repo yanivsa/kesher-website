@@ -9,7 +9,7 @@ import { applyInternalLinkBackfill } from './internalLinkBackfill';
 
 type BasePost = (typeof posts)[number];
 
-const topicPosts = [
+const topicPosts: BasePost[] = [
   ...(giftedParentPosts as unknown as BasePost[]),
   ...(giftedParentPostsWave2 as unknown as BasePost[]),
 ];
@@ -18,24 +18,24 @@ const topicOverrides = giftedParentOverrides as unknown as Record<string, Partia
 const wave2TopicOverrides = giftedParentWave2Overrides as unknown as Record<string, Partial<BasePost>>;
 
 const applyTopicOverride = (post: BasePost): BasePost => {
-  const override = topicOverrides[post.id];
-  const wave2Override = wave2TopicOverrides[post.id];
-  return ({ ...post, ...(override ?? {}), ...(wave2Override ?? {}) } as BasePost);
+  const override: Partial<BasePost> = topicOverrides[post.id] ?? {};
+  const wave2Override: Partial<BasePost> = wave2TopicOverrides[post.id] ?? {};
+  return Object.assign({}, post, override, wave2Override) as BasePost;
 };
 
-const allPosts = [
+const allPosts: BasePost[] = [
   ...manualPosts,
   ...topicPosts,
   ...(recentPosts as unknown as BasePost[]),
-  ...posts,
+  ...(posts as unknown as BasePost[]),
 ]
   .map(applyTopicOverride)
-  .map(applyInternalLinkBackfill) as typeof posts;
+  .map(applyInternalLinkBackfill) as unknown as BasePost[];
 
 const wordCount = (html: string) =>
   html.replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length;
 
-export const isPublishablePost = (post: (typeof posts)[number]) =>
+export const isPublishablePost = (post: BasePost) =>
   wordCount(post.content) >= 500 &&
   (post.content.match(/<h3/g) || []).length >= 5;
 
