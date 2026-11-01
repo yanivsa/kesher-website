@@ -39,12 +39,12 @@
     "published_date": "2026-11-01",
     "quality_content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-01T13:55:45.078117+00:00",
+    "quality_checked_at": "2026-11-01T14:00:44.147630+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-01T10:30:43.883987+00:00",
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T13:55:58.248909+00:00",
+    "live_verified_at": "2026-11-01T14:00:44.883232+00:00",
     "deploy_run_id": 41297802059
   },
   "backlog": [
