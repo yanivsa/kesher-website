@@ -32,7 +32,16 @@
     "merge_candidate_sha": "1c8182b5a5418b285d92662cbb561a7c552730ba",
     "merge_run_id": 41297274966,
     "last_refunded_auto_merge_run_id": 41297274966,
-    "deferred_auto_merge_refund_count": 1
+    "deferred_auto_merge_refund_count": 1,
+    "slug": "good-news-response-relationship",
+    "title": "למה תגובה לבשורות טובות בזוגיות חשובה לא פחות מריבים, ואיך להגיב נכון",
+    "url": "https://kesher.saharoni.com/blog/good-news-response-relationship",
+    "published_date": "2026-11-01",
+    "quality_content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
+    "quality_status": "passed",
+    "quality_checked_at": "2026-11-01T10:30:38.123565+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2971,7 +2980,18 @@
     }
   ],
   "active_idea": null,
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-11-01",
+      "inputs": {},
+      "intent_at": "2026-11-01T10:30:35.034447+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "d49a57ddc069636ea8582fb6d86ab91f2ae41545"
+    }
+  },
   "deliverables": {
     "article_url": null,
     "overview_youtube_url": null,
