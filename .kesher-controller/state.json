@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-01",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1759,12 +1759,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T15:36:21.046928+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-01T15:36:22.319772+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2425,9 +2419,19 @@
       "from": "article_deploying",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-01T19:03:52.662872+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-11-01T19:03:45.230147+00:00",
+  "updated_at": "2026-11-01T19:03:52.662879+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2448,8 +2452,8 @@
     "image_path": "/images/generated/blog/gifted-children-asynchronous-development.png"
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2458,7 +2462,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-11-01T19:03:52.662860+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
@@ -2930,9 +2936,10 @@
         "target_content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67"
       },
       "intent_at": "2026-11-01T19:03:14.694983+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41339789387,
+      "dispatched_at": "2026-11-01T19:03:14.694983+00:00"
     }
   },
   "deliverables": {
@@ -3226,18 +3233,5 @@
       "archived_at": "2026-11-01T17:43:49.947652+00:00",
       "reason": "owner_run_now_cycle_started"
     }
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true
-  }
+  ]
 }
