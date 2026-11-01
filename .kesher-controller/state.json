@@ -27,11 +27,11 @@
     "image_head_sha": "1b1c174f9b6c0562997978b0f24c5fe3d3a4bc2d",
     "merge_candidate_sha": "1b1c174f9b6c0562997978b0f24c5fe3d3a4bc2d",
     "normalization_drift_count": 0,
-    "merge_dispatch_count": 1,
+    "merge_dispatch_count": 0,
     "merge_dispatch_at": "2026-11-01T17:51:03.180862+00:00",
-    "merge_run_id": 41333195711,
-    "last_refunded_auto_merge_run_id": 41333195711,
-    "deferred_auto_merge_refund_count": 1
+    "merge_run_id": 41333561542,
+    "last_refunded_auto_merge_run_id": 41333561542,
+    "deferred_auto_merge_refund_count": 2
   },
   "backlog": [
     {
@@ -1744,12 +1744,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T15:11:15.302817+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-01T15:11:16.432545+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2361,9 +2355,22 @@
         "merge_dispatch_count": 0,
         "refund_count": 1
       }
+    },
+    {
+      "at": "2026-11-01T17:52:07.485587+00:00",
+      "from": "article_pr_open",
+      "to": "article_pr_open",
+      "reason": "successful_deferred_auto_merge_refunded",
+      "details": {
+        "run_id": 41333561542,
+        "pr_number": 1269,
+        "head_sha": "1b1c174f9b6c0562997978b0f24c5fe3d3a4bc2d",
+        "merge_dispatch_count": 0,
+        "refund_count": 2
+      }
     }
   ],
-  "updated_at": "2026-11-01T17:50:59.493332+00:00",
+  "updated_at": "2026-11-01T17:52:20.648862+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2851,21 +2858,7 @@
     "publication_slot": "2026-11-01",
     "claimed_at": "2026-11-01T17:43:49.947664+00:00"
   },
-  "pending_dispatches": {
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
-      "cycle": "2026-11-01",
-      "inputs": {
-        "pr_number": "1269",
-        "slot": "2026-11-01"
-      },
-      "intent_at": "2026-11-01T17:50:41.863050+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41333195711,
-      "observed_active_run_id": 41333561542,
-      "dispatched_at": "2026-11-01T17:50:41.863050+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/good-news-response-relationship",
     "overview_youtube_url": "https://youtu.be/FI9DQb8YMdY",
@@ -2877,7 +2870,7 @@
   },
   "last_child_notification": {
     "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 41333195711,
+    "run_id": 41333561542,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-01"
