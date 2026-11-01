@@ -20,7 +20,9 @@
     ],
     "imageProvider": "LocalEditorial",
     "imageSourceUrl": "local-editorial://poop-only-in-diaper/7",
-    "imageIsFallback": false
+    "imageIsFallback": false,
+    "image": "/images/generated/blog/poop-only-in-diaper.png",
+    "imageAlt": "איור עריכתי מקומי של הורה וילד בחדר רחצה ביתי, לצד אסלה ושרפרף, באווירה רגועה ותומכת."
   },
   {
     "id": "first-grade-adjustment-difficulties",
