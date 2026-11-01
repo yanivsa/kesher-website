@@ -2958,7 +2958,9 @@
     "source_slug": null,
     "slot": "2026-11-01"
   },
-  "processed_child_notifications": [],
+  "processed_child_notifications": [
+    "Deploy to Cloudflare Pages:41339314739"
+  ],
   "interventions": {
     "v5|good-news-response-relationship|0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b|long_video": {
       "pipeline_id": "v5",
