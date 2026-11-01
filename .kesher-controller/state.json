@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "article_pr_open",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -17,7 +17,7 @@
     },
     "attempts": 3,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "last_dispatch_at": "2026-10-31T22:56:00.035341+00:00",
     "watchdog": {
       "identity": "2026-10-31",
@@ -66,7 +66,7 @@
     "current_pr_head_sha": "af79a9bb9b285470b0104531cfbd6101538d9873",
     "jules_head_sha": "1a195b238bd0c95ae62f569b5d7b33b7365c7c12",
     "normalization_slot": "2026-10-31",
-    "normalization_dispatched_at": "2026-10-31T20:08:19.526209+00:00",
+    "normalization_dispatched_at": "2026-11-01T02:20:56.079423+00:00",
     "normalization_run_id": 41237474722,
     "normalization_drift_count": 2,
     "merge_dispatch_count": 0,
@@ -1787,15 +1787,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-31T11:25:58.792918+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-31T11:30:54.731468+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2690,9 +2681,19 @@
         "previous_head_sha": "cb17b6332ec800ed66e2e49c8faf33a51b1a87b2",
         "current_head_sha": "af79a9bb9b285470b0104531cfbd6101538d9873"
       }
+    },
+    {
+      "at": "2026-11-01T02:20:56.079451+00:00",
+      "from": "article_pr_open",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1261,
+        "slot": "2026-10-31"
+      }
     }
   ],
-  "updated_at": "2026-11-01T02:15:48.943967+00:00",
+  "updated_at": "2026-11-01T02:20:56.079459+00:00",
   "image": {
     "attempt_count": 1,
     "status": "pending",
@@ -3186,9 +3187,10 @@
         "slot": "2026-10-31"
       },
       "intent_at": "2026-11-01T02:20:45.264155+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41237474722,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41264816693,
+      "dispatched_at": "2026-11-01T02:20:45.264155+00:00"
     }
   },
   "last_child_notification": {
