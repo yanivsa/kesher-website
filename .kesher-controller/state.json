@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-01",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -44,7 +44,7 @@
     "live": true,
     "last_deploy_dispatch_at": "2026-11-01T10:30:43.883987+00:00",
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T11:12:14.803210+00:00",
+    "live_verified_at": "2026-11-01T11:12:36.368594+00:00",
     "deploy_run_id": 41297802059
   },
   "backlog": [
@@ -1758,26 +1758,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T01:00:51.389249+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T01:05:50.653840+00:00",
-      "from": "blocked",
-      "to": "article_pr_open",
-      "reason": "late_article_head_after_merge_exhaustion_recovery",
-      "details": {
-        "pr_number": 1261,
-        "previous_head_sha": "6ee5a2bf8cfcdf3f14375c0a5325fd72c51b14c1",
-        "current_head_sha": "dd971cefd65a193bc4c919bfacd779af6032a5be"
-      }
-    },
-    {
       "at": "2026-11-01T01:25:57.431928+00:00",
       "from": "article_pr_open",
       "to": "blocked",
@@ -2617,9 +2597,21 @@
         "item_id": "video-20261101-123658-0b2187efb1",
         "task_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59"
       }
+    },
+    {
+      "at": "2026-11-01T11:12:36.368612+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-01T11:12:37.307259+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-11-01T11:11:12.827098+00:00",
+  "updated_at": "2026-11-01T11:12:37.307273+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2637,9 +2629,9 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "generating",
+    "status": "complete",
     "last_error": null,
-    "next_retry_at": "2026-11-01T10:49:14.333443+00:00",
+    "next_retry_at": null,
     "run_id": 41300368179,
     "processed_run_id": 41298207056,
     "provider_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
@@ -3133,7 +3125,22 @@
     }
   ],
   "active_idea": null,
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-11-01",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "good-news-response-relationship",
+        "derive_content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
+        "derive_long_item_id": "video-20261101-123658-0b2187efb1"
+      },
+      "intent_at": "2026-11-01T11:12:09.667644+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/good-news-response-relationship",
     "overview_youtube_url": null,
