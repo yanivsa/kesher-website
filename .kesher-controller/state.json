@@ -2969,7 +2969,22 @@
     "publication_slot": "2026-11-01",
     "claimed_at": "2026-11-01T17:43:49.947664+00:00"
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-11-01",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "gifted-children-asynchronous-development",
+        "target_content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
+        "target_item_id": "video-20261101-211603-89f4065833-a2"
+      },
+      "intent_at": "2026-11-01T19:46:03.596358+00:00",
+      "status": "intent",
+      "previous_run_id": 41340770119,
+      "observed_active_run_id": null
+    }
+  },
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/gifted-children-asynchronous-development",
     "overview_youtube_url": null,
@@ -3021,6 +3036,20 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-11-01T11:45:45.405182+00:00"
+    },
+    "v5|gifted-children-asynchronous-development|89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67|long_video": {
+      "pipeline_id": "v5",
+      "slug": "gifted-children-asynchronous-development",
+      "content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-11-01T21",
+      "last_fingerprint": "d148507ac6eafaedb89efa806757551126cc8d7e6c388cdbdff51fb49b801cc6",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-11-01T19:46:03.596358+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   },
   "owner_cycle_archive": [
