@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1802,15 +1802,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-31T20:31:11.675058+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exhausted 3 total article content attempts (initial + 2 repairs)"
-      }
-    },
-    {
       "at": "2026-10-31T20:36:29.038107+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2705,9 +2696,19 @@
         "operation": "full",
         "resume": 1
       }
+    },
+    {
+      "at": "2026-11-01T06:24:30.808475+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261101-081723-519994afd4-a2",
+        "task_id": "557450da-572e-491e-8754-2d9839dcc55e"
+      }
     }
   ],
-  "updated_at": "2026-11-01T06:16:36.324451+00:00",
+  "updated_at": "2026-11-01T06:24:30.808484+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2729,12 +2730,12 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-11-01T06:29:09.799848+00:00",
     "run_id": 41280165818,
-    "processed_run_id": 41279374757,
-    "provider_id": null,
+    "processed_run_id": 41280165818,
+    "provider_id": "557450da-572e-491e-8754-2d9839dcc55e",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
@@ -2742,8 +2743,24 @@
     "last_dispatch_at": "2026-11-01T06:16:36.324430+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
-    "item_id": "video-20261101-080606-519994afd4",
-    "resume_dispatches": 1
+    "item_id": "video-20261101-081723-519994afd4-a2",
+    "resume_dispatches": 1,
+    "source_slug": "poop-only-in-diaper",
+    "source_content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
+    "content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
+    "source_id": "8312a7c2-adc1-4d18-a278-9fd6d801ad6b",
+    "task_id": "557450da-572e-491e-8754-2d9839dcc55e",
+    "artifact_id": "557450da-572e-491e-8754-2d9839dcc55e",
+    "provider_status": "pending",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:poop-only-in-diaper:519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d:video-20261101-081723-519994afd4-a2",
+      "hard_started_at": "2026-11-01T06:17:31.247482+00:00",
+      "last_progress_at": "2026-11-01T06:24:09.799848+00:00",
+      "last_fingerprint": "a0d060ebae16c55396eb437f664740da2165aed59bdd3336c36f276d50675047",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
