@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-01",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1759,12 +1759,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T16:01:12.096516+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-01T16:01:12.945349+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2453,9 +2447,21 @@
         "item_id": "video-20261101-211603-89f4065833-a2",
         "task_id": "1d98a0e9-c555-46aa-a01e-84c595561756"
       }
+    },
+    {
+      "at": "2026-11-01T19:46:32.314536+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_recovery",
+      "reason": "long-form provider stalled; resumed the same durable provider identity",
+      "details": {
+        "item_id": "video-20261101-211603-89f4065833-a2",
+        "task_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
+        "slug": "gifted-children-asynchronous-development",
+        "content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67"
+      }
     }
   ],
-  "updated_at": "2026-11-01T19:41:15.470712+00:00",
+  "updated_at": "2026-11-01T19:46:32.314543+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2477,7 +2483,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "generating",
+    "status": "running",
     "last_error": null,
     "next_retry_at": "2026-11-01T19:27:52.201365+00:00",
     "run_id": 41340770119,
@@ -2487,11 +2493,11 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-11-01T19:15:07.363714+00:00",
+    "last_dispatch_at": "2026-11-01T19:46:32.314518+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
     "item_id": "video-20261101-211603-89f4065833-a2",
-    "resume_dispatches": 1,
+    "resume_dispatches": 2,
     "source_slug": "gifted-children-asynchronous-development",
     "source_content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
     "content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
@@ -2505,9 +2511,10 @@
       "hard_started_at": "2026-11-01T19:16:10.157044+00:00",
       "last_progress_at": "2026-11-01T19:22:52.201365+00:00",
       "last_fingerprint": "06a8cf6d1e1dc62f62bcfeb7e06ff969d2786ccf7a43a199488038feb6514eec",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    }
+      "recovery_count": 1,
+      "last_recovery_at": "2026-11-01T19:46:03.596358+00:00"
+    },
+    "pending_resume_ready": false
   },
   "short": {
     "attempt_count": 0,
@@ -2980,9 +2987,10 @@
         "target_item_id": "video-20261101-211603-89f4065833-a2"
       },
       "intent_at": "2026-11-01T19:46:03.596358+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41340770119,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41343422872,
+      "dispatched_at": "2026-11-01T19:46:03.596358+00:00"
     }
   },
   "deliverables": {
@@ -3045,11 +3053,12 @@
       "strike_count": 1,
       "last_check_token": "2026-11-01T21",
       "last_fingerprint": "d148507ac6eafaedb89efa806757551126cc8d7e6c388cdbdff51fb49b801cc6",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
+      "last_controller_action_token": "recovery:1:2026-11-01T19:46:03.596358+00:00",
+      "controller_action_observed": true,
       "last_observed_at": "2026-11-01T19:46:03.596358+00:00",
-      "last_action": "observe_controller",
-      "direct_takeover_required": false
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-11-01T19:46:03.596358+00:00"
     }
   },
   "owner_cycle_archive": [
