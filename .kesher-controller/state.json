@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-01",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -2604,9 +2604,21 @@
         "item_id": "video-20261101-123658-0b2187efb1",
         "task_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59"
       }
+    },
+    {
+      "at": "2026-11-01T11:06:07.096678+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_recovery",
+      "reason": "long-form provider stalled; resumed the same durable provider identity",
+      "details": {
+        "item_id": "video-20261101-123658-0b2187efb1",
+        "task_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
+        "slug": "good-news-response-relationship",
+        "content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b"
+      }
     }
   ],
-  "updated_at": "2026-11-01T11:01:10.931628+00:00",
+  "updated_at": "2026-11-01T11:06:07.096685+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2624,7 +2636,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "generating",
+    "status": "running",
     "last_error": null,
     "next_retry_at": "2026-11-01T10:49:14.333443+00:00",
     "run_id": 41298207056,
@@ -2634,7 +2646,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-11-01T10:36:04.425257+00:00",
+    "last_dispatch_at": "2026-11-01T11:06:07.096658+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
     "item_id": "video-20261101-123658-0b2187efb1",
@@ -2651,9 +2663,11 @@
       "hard_started_at": "2026-11-01T10:37:03.178459+00:00",
       "last_progress_at": "2026-11-01T10:44:14.333443+00:00",
       "last_fingerprint": "2e238958d18576457b9039235d9f9de8818d5f55f2bd4af0a69c59a8fc94d4ac",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    }
+      "recovery_count": 1,
+      "last_recovery_at": "2026-11-01T11:05:43.853154+00:00"
+    },
+    "pending_resume_ready": false,
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
@@ -3116,9 +3130,10 @@
         "target_item_id": "video-20261101-123658-0b2187efb1"
       },
       "intent_at": "2026-11-01T11:05:43.853154+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41298207056,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41300368179,
+      "dispatched_at": "2026-11-01T11:05:43.853154+00:00"
     }
   },
   "deliverables": {
@@ -3152,11 +3167,12 @@
       "strike_count": 1,
       "last_check_token": "2026-11-01T13",
       "last_fingerprint": "e1be4d7fafd4d48a7f81172804f578c8d59fa36fc6cacce3937d662e51ca270f",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
+      "last_controller_action_token": "recovery:1:2026-11-01T11:05:43.853154+00:00",
+      "controller_action_observed": true,
       "last_observed_at": "2026-11-01T11:05:43.853154+00:00",
-      "last_action": "observe_controller",
-      "direct_takeover_required": false
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-11-01T11:05:43.853154+00:00"
     }
   }
 }
