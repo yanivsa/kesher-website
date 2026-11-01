@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-01",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -44,7 +44,7 @@
     "live": true,
     "last_deploy_dispatch_at": "2026-11-01T10:30:43.883987+00:00",
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T11:53:45.063386+00:00",
+    "live_verified_at": "2026-11-01T11:53:56.966569+00:00",
     "deploy_run_id": 41297802059
   },
   "backlog": [
@@ -1758,33 +1758,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T02:05:53.071050+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T02:10:58.325694+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-01T02:15:48.943961+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-11-01T02:20:48.182243+00:00",
       "from": "blocked",
       "to": "article_pr_open",
@@ -2589,9 +2562,27 @@
         "item_id": "video-20261101-131454-0b2187efb1",
         "long_item_id": "video-20261101-123658-0b2187efb1"
       }
+    },
+    {
+      "at": "2026-11-01T11:53:56.966600+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-01T11:53:57.371880+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-01T11:53:57.771403+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-01T11:46:05.945753+00:00",
+  "updated_at": "2026-11-01T11:53:57.771422+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2657,19 +2648,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41303337108,
     "processed_run_id": null,
-    "provider_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
+    "provider_id": "f7d3c0ba-3dbe-4b28-ae1d-5ecc659e87d3",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-11-01T11:46:05.945725+00:00",
-    "artifact_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
-    "source_id": "5a2e233c-e37b-434f-8d18-0fc97e66c323",
-    "adopted_from_long_item_id": "video-20261101-123658-0b2187efb1",
+    "artifact_id": "f7d3c0ba-3dbe-4b28-ae1d-5ecc659e87d3",
+    "source_id": "0718e5da-648f-4b36-b83b-01d7725866cb",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:good-news-response-relationship:0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b:video-20261101-131454-0b2187efb1",
       "hard_started_at": "2026-11-01T11:15:07.603686+00:00",
@@ -2677,7 +2668,125 @@
       "last_fingerprint": "91a1f772433ae72086c9dec5811058b65ed910f7a7c74090d4517d15fb3bd200",
       "recovery_count": 1,
       "last_recovery_at": "2026-11-01T11:45:45.405182+00:00"
-    }
+    },
+    "source": {
+      "id": "good-news-response-relationship",
+      "slug": "good-news-response-relationship",
+      "title": "למה תגובה לבשורות טובות בזוגיות חשובה לא פחות מריבים, ואיך להגיב נכון",
+      "date": "2026-11-01",
+      "category": "זוגיות",
+      "subcategory": "הכנה לנישואים והשנה הראשונה",
+      "excerpt": "כולם מדברים על איך לריב נכון, אבל מחקרי קפיטליזציה מזכירים רגע חשוב נוסף: איך אנחנו מגיבים כשבן או בת הזוג מביאים בשורה טובה. ארבעת סגנונות התגובה וכלי פשוט לתגובה אקטיבית־בונה.",
+      "canonical_url": "https://kesher.saharoni.com/blog/good-news-response-relationship",
+      "content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
+      "video_title": "למה תגובה לבשורות טובות בזוגיות חשובה לא פחות מריבים, ואיך להגיב נכון",
+      "short_title": "למה תגובה לבשורות טובות בזוגיות חשובה לא פחות מריבים, ואיך להגיב נכון",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "למה תגובה לבשורות טובות בזוגיות חשובה לא פחות מריבים, ואיך להגיב נכון",
+        "description": "כולם מדברים על איך לריב נכון, אבל מחקרי קפיטליזציה מזכירים רגע חשוב נוסף: איך אנחנו מגיבים כשבן או בת הזוג מביאים בשורה טובה. ארבעת סגנונות התגובה וכלי פשוט לתגובה אקטיבית־בונה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/good-news-response-relationship\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "זוגיות",
+          "הכנה לנישואים והשנה הראשונה"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: למה תגובה לבשורות טובות בזוגיות חשובה לא פחות מריבים, ואיך להגיב נכון",
+        "description": "כולם מדברים על איך לריב נכון, אבל מחקרי קפיטליזציה מזכירים רגע חשוב נוסף: איך אנחנו מגיבים כשבן או בת הזוג מביאים בשורה טובה. ארבעת סגנונות התגובה וכלי פשוט לתגובה אקטיבית־בונה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/good-news-response-relationship\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "זוגיות",
+          "הכנה לנישואים והשנה הראשונה"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "f7d3c0ba-3dbe-4b28-ae1d-5ecc659e87d3",
+    "raw_sha256": "295c23c6f273b4ae054b763bb91c351f8803b89aaeedac55a4184402c800cf53",
+    "final_sha256": "10f3dfdf1d92cf0a8577f1b721396749bd35a3c974d217099121c4287f9ec85b",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 80.8,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 80.8,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "5a2e233c-e37b-434f-8d18-0fc97e66c323",
+      "task_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
+      "artifact_id": "4c401794-2223-4d6f-9ce9-66ca5a84dd59",
+      "raw_sha256": "b43b6dc2f7293f9d160af5e805e0f233b7a94617cda99f0ff8bc716589f750be"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 80.8,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "295c23c6f273b4ae054b763bb91c351f8803b89aaeedac55a4184402c800cf53",
+      "final_sha256": "10f3dfdf1d92cf0a8577f1b721396749bd35a3c974d217099121c4287f9ec85b",
+      "raw_audio_sha256": "982934c4ffee7f53f346f8b5b0df6dea6f10a5dfc5de47c46bcdd4e1d1ad16ab",
+      "final_audio_sha256": "982934c4ffee7f53f346f8b5b0df6dea6f10a5dfc5de47c46bcdd4e1d1ad16ab",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 80.851882
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 80.851882
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "10f3dfdf1d92cf0a8577f1b721396749bd35a3c974d217099121c4287f9ec85b",
+      "raw_sha256": "295c23c6f273b4ae054b763bb91c351f8803b89aaeedac55a4184402c800cf53",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "291a6c118972513b9f08d9011c5b8686d0181c59b40f62fb9e8ab535c2664238",
+      "source_duration_seconds": 80.8,
+      "final_duration_seconds": 80.8,
+      "start_seconds": 77.8,
+      "end_seconds": 80.8,
+      "audio_source_sha256": "295c23c6f273b4ae054b763bb91c351f8803b89aaeedac55a4184402c800cf53"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261101-131454-0b2187efb1",
+    "type": "article_short",
+    "youtube_id": "6OD4XrRataA",
+    "youtube_url": "https://youtu.be/6OD4XrRataA",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "291a6c118972513b9f08d9011c5b8686d0181c59b40f62fb9e8ab535c2664238",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
