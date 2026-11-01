@@ -39,12 +39,13 @@
     "published_date": "2026-11-01",
     "quality_content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-01T10:35:43.890680+00:00",
+    "quality_checked_at": "2026-11-01T10:36:44.702218+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-01T10:30:43.883987+00:00",
     "next_deploy_retry_at": null,
-    "live_verified_at": "2026-11-01T10:35:59.410980+00:00"
+    "live_verified_at": "2026-11-01T10:36:45.546639+00:00",
+    "deploy_run_id": 41297802059
   },
   "backlog": [
     {
@@ -3013,17 +3014,6 @@
   ],
   "active_idea": null,
   "pending_dispatches": {
-    "deploy.yml": {
-      "workflow": "deploy.yml",
-      "cycle": "2026-11-01",
-      "inputs": {},
-      "intent_at": "2026-11-01T10:30:35.034447+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41297802059,
-      "dispatch_head_sha": "d49a57ddc069636ea8582fb6d86ab91f2ae41545",
-      "dispatched_at": "2026-11-01T10:30:35.034447+00:00"
-    },
     "kesher-daily-video.yml": {
       "workflow": "kesher-daily-video.yml",
       "cycle": "2026-11-01",
@@ -3049,8 +3039,8 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 41297274966,
+    "workflow": "Deploy to Cloudflare Pages",
+    "run_id": 41297802059,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-01"
