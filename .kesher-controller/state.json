@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-31",
-  "status": "article_pr_open",
+  "status": "blocked",
   "article": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "exhausted",
     "next_retry_at": null,
     "run_id": 41246615281,
     "processed_run_id": 41246615281,
@@ -1789,16 +1789,6 @@
   ],
   "history": [
     {
-      "at": "2026-10-31T16:41:49.496647+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "timed-out Jules session preserved; same-session recovery dispatched immediately",
-      "details": {
-        "run_id": 41217241439,
-        "session_id": "sessions/14947022517645608193"
-      }
-    },
-    {
       "at": "2026-10-31T16:46:29.428256+00:00",
       "from": "article_generating",
       "to": "article_normalizing",
@@ -2716,9 +2706,18 @@
       "from": "article_image_rebinding",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-11-01T04:50:47.913099+00:00",
+      "from": "article_pr_open",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)"
+      }
     }
   ],
-  "updated_at": "2026-11-01T04:40:59.416205+00:00",
+  "updated_at": "2026-11-01T04:50:47.913105+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -3235,5 +3234,10 @@
     "Auto-merge Kesher article PRs:41237767458",
     "Kesher Trusted Article Image:41240448115"
   ],
-  "last_error": null
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+    "message": "PR #1261 exceeded maximum auto-merge dispatch budget (3 dispatches)",
+    "at": "2026-11-01T04:50:47.913084+00:00"
+  }
 }
