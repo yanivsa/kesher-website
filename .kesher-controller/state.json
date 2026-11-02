@@ -1728,12 +1728,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T13:26:24.771747+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-11-02T13:31:11.066429+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2346,9 +2340,18 @@
       "details": {
         "publication_slot": "2026-11-02"
       }
+    },
+    {
+      "at": "2026-11-02T16:30:52.350091+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "owner run-now article workflow already active",
+      "details": {
+        "publication_slot": "2026-11-02"
+      }
     }
   ],
-  "updated_at": "2026-11-02T16:25:59.418350+00:00",
+  "updated_at": "2026-11-02T16:30:52.350110+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
