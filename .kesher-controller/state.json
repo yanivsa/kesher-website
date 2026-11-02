@@ -1,83 +1,20 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "complete",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41370641101,
-    "processed_run_id": 41370641101,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "COMPLETED_WITHOUT_PR": 1
-    },
+    "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 1,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-11-02T01:05:57.007600+00:00",
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-11-02",
-      "outcome": "PR_CREATED",
-      "retryable": false,
-      "message": "Jules diagnostic: I have successfully fixed the `evidence_missing` requirement by injecting an external authoritative reference (`<a href=\"https://www.apa.org\">איגוד הפסיכולוגים האמריקאי</a>`) back into the article content. I ensured that the anchor text is written in pure Hebrew, fixing the previous `Latin characters found in visible prose` content policy failure. I ran the content validations (`npm run test:content`) locally, and all automation gates have now passed without issues, confirming the fix. Finally, I committed the changes to trigger a new CI run.",
-      "session_id": "sessions/16513651425300945584",
-      "pr_url": "https://github.com/yanivsa/kesher-website/pull/1270",
-      "github_run_id": "41370641101",
-      "completed_at": "2026-11-02T01:12:31.620915+00:00",
-      "diagnostic": {
-        "source": {
-          "name": "sources/github/yanivsa/kesher-website",
-          "owner": "yanivsa",
-          "repo": "kesher-website",
-          "default_branch": "main",
-          "main_available": true
-        },
-        "activity_count": 138,
-        "change_set_count": 119,
-        "change_set_fingerprints": [],
-        "last_agent_message": "I have successfully fixed the `evidence_missing` requirement by injecting an external authoritative reference (`<a href=\"https://www.apa.org\">איגוד הפסיכולוגים האמריקאי</a>`) back into the article content. I ensured that the anchor text is written in pure Hebrew, fixing the previous `Latin characters found in visible prose` content policy failure. I ran the content validations (`npm run test:content`) locally, and all automation gates have now passed without issues, confirming the fix. Finally, I committed the changes to trigger a new CI run.",
-        "last_progress": "All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
-        "last_description": "",
-        "session_failed_reason": ""
-      }
-    },
-    "last_jules_session_id": "sessions/16513651425300945584",
-    "last_failed_run_id": 41357968167,
-    "pr_number": 1273,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1273",
-    "current_pr_head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
-    "jules_head_sha": "5b66484af2cfbea8f9e184c45fa538fa40ba7363",
-    "normalization_slot": "2026-11-02",
-    "normalization_dispatched_at": "2026-11-02T06:10:58.139910+00:00",
-    "normalized_head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
-    "image_head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
-    "merge_candidate_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
-    "normalization_drift_count": 0,
-    "merge_dispatch_count": 0,
-    "merge_dispatch_at": "2026-11-02T09:53:08.304969+00:00",
-    "merge_run_id": 41424266285,
-    "last_refunded_auto_merge_run_id": 41424266285,
-    "deferred_auto_merge_refund_count": 1,
-    "slug": "stool-withholding-potty-training",
-    "title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
-    "url": "https://kesher.saharoni.com/blog/stool-withholding-potty-training",
-    "published_date": "2026-11-02",
-    "quality_content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
-    "reconciled_existing_article": true,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-11-02T16:00:51.343884+00:00",
-    "quality_violations": [],
-    "live": true,
-    "last_deploy_dispatch_at": "2026-11-02T10:00:06.933777+00:00",
-    "next_deploy_retry_at": null,
-    "deploy_run_id": 41425191708,
-    "live_verified_at": "2026-11-02T16:01:17.285469+00:00"
+    "deploy_attempts": 0
   },
   "backlog": [
     {
@@ -1790,12 +1727,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T13:16:39.856933+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-11-02T13:21:05.603600+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2388,198 +2319,54 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-02T16:05:46.429244+00:00",
+      "from": "complete",
+      "to": "article_needed",
+      "reason": "owner_run_now_cycle_started",
+      "details": {
+        "idea_id": "couples-social-baseline-theory",
+        "publication_slot": "2026-11-02"
+      }
     }
   ],
   "updated_at": "2026-11-02T16:01:19.265150+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41423989896,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "LocalEditorial",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-11-02T09:51:02.231902+00:00",
-    "artifact_sha256": "6eb41e0cb5c933a7a04b58f33f6e6fbd55d206d3a251d341bd4b4024914b37c5",
-    "source_id": "local-editorial://stool-withholding-potty-training/4",
-    "image_path": "/images/generated/blog/stool-withholding-potty-training.png"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41426298898,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-11-02T10:08:06.310720+00:00",
-    "attempts": 1,
-    "item_id": "video-20261102-120920-b66776d3b0",
-    "youtube_id": "xZotdUtnJXw",
-    "youtube_url": "https://youtu.be/xZotdUtnJXw",
-    "verified": true,
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 115.3,
-    "content_duration_seconds": 115.292,
-    "signature_duration_seconds": 3.0,
-    "signature_overlay": true,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "artifact_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
-    "source_id": "13dc8ffa-f038-424c-80c3-8749d1b83f6a"
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41432112748,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "8712550e-9b82-4463-92e2-4720a81776e8",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-11-02T10:51:23.003400+00:00",
-    "artifact_id": "8712550e-9b82-4463-92e2-4720a81776e8",
-    "source_id": "b3402ce9-c8bb-43fd-b5ba-5f8720dc0908",
-    "adopted_from_long_item_id": null,
-    "watchdog": {
-      "identity": "short:stool-withholding-potty-training:b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734:video-20261102-122309-b66776d3b0",
-      "hard_started_at": "2026-11-02T10:23:15.443698+00:00",
-      "last_progress_at": "2026-11-02T10:30:08.523650+00:00",
-      "last_fingerprint": "0869c0fccf42e240853575b0bcc054b56faebd54b5eb9a7d6fd65984ecd8d70b",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-11-02T10:50:57.379716+00:00"
-    },
-    "source": {
-      "id": "stool-withholding-potty-training",
-      "slug": "stool-withholding-potty-training",
-      "title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
-      "date": "2026-11-02",
-      "category": "הדרכת הורים",
-      "subcategory": "גמילה מחיתולים",
-      "excerpt": "ילדים רבים בשלב הגמילה מסוגלים להתאפק שעות ואפילו ימים. למה זה קורה, ואיך אפשר לעזור להם לשחרר במקום להעצים את הלחץ והמאבק סביב העניין.",
-      "canonical_url": "https://kesher.saharoni.com/blog/stool-withholding-potty-training",
-      "content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
-      "video_title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
-      "short_title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
-      "short_hook": "",
-      "youtube_metadata": {
-        "title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
-        "description": "ילדים רבים בשלב הגמילה מסוגלים להתאפק שעות ואפילו ימים. למה זה קורה, ואיך אפשר לעזור להם לשחרר במקום להעצים את הלחץ והמאבק סביב העניין.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/stool-withholding-potty-training\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "גמילה מחיתולים"
-        ]
-      },
-      "short_youtube_metadata": {
-        "title": "בקצרה: התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
-        "description": "ילדים רבים בשלב הגמילה מסוגלים להתאפק שעות ואפילו ימים. למה זה קורה, ואיך אפשר לעזור להם לשחרר במקום להעצים את הלחץ והמאבק סביב העניין.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/stool-withholding-potty-training\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "גמילה מחיתולים"
-        ]
-      }
-    },
-    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-    "task_id": "8712550e-9b82-4463-92e2-4720a81776e8",
-    "raw_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c",
-    "final_sha256": "b4e0b5ae110600e1110736868e8b822d1b4af39ad46e35bae1d19863f913b2ec",
-    "provider_raw_media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 720,
-      "height": 1280,
-      "duration": 95.933,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 1080,
-      "height": 1920,
-      "duration": 95.933,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "provider_video_format": "short",
-    "provider_native_short": true,
-    "provider_native_short_verified": true,
-    "provider_short_fallback_used": false,
-    "fresh_generation_attempt": 1,
-    "overview_provider_identity": {
-      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-      "source_id": "13dc8ffa-f038-424c-80c3-8749d1b83f6a",
-      "task_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
-      "artifact_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
-      "raw_sha256": "8e317ccacc4c67e0f36be72a5b0c9173561a395ddd3859119a3848963439a210"
-    },
-    "shared_provider_identity": null,
-    "short_start_seconds": 0.0,
-    "short_duration_seconds": 95.933,
-    "audio_provenance": {
-      "schema_version": 1,
-      "mode": "stream_copy",
-      "raw_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c",
-      "final_sha256": "b4e0b5ae110600e1110736868e8b822d1b4af39ad46e35bae1d19863f913b2ec",
-      "raw_audio_sha256": "e8c19a0bb4ee269c6318e7f10cff0f2ce1c26d597eb83aeee49dcd3a58de49fe",
-      "final_audio_sha256": "e8c19a0bb4ee269c6318e7f10cff0f2ce1c26d597eb83aeee49dcd3a58de49fe",
-      "raw_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 95.991293
-      },
-      "final_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 95.991293
-      }
-    },
-    "signature_overlay": true,
-    "signature_provenance": {
-      "schema_version": 1,
-      "final_sha256": "b4e0b5ae110600e1110736868e8b822d1b4af39ad46e35bae1d19863f913b2ec",
-      "raw_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c",
-      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-      "segment_sha256": "5004d317d2172765d070987db91e0315aebb6dcd303f80dd8b2b9d98ae21c988",
-      "source_duration_seconds": 95.933,
-      "final_duration_seconds": 95.933,
-      "start_seconds": 92.933,
-      "end_seconds": 95.933,
-      "audio_source_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c"
-    },
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "item_id": "video-20261102-122309-b66776d3b0",
-    "type": "article_short",
-    "youtube_id": "Yy15MJftfEY",
-    "youtube_url": "https://youtu.be/Yy15MJftfEY",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "5004d317d2172765d070987db91e0315aebb6dcd303f80dd8b2b9d98ae21c988",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3045,7 +2832,17 @@
       }
     }
   ],
-  "active_idea": null,
+  "active_idea": {
+    "idea_id": "couples-social-baseline-theory",
+    "fingerprint": "ed3ed6c4eb9788edf0e6cf0dc1e1796ccef89f731e50c1b99777370b0401abda",
+    "topic_brief": "ייעוץ זוגי — Social Baseline Theory (SBT), James A. Coan / David A. Sbarra. Create one authoritative Hebrew article and continue the SAME source identity through YouTube Video Overview and native 9:16 Short. Evidence anchors: Coan & Sbarra, Curr Opin Psychol 2015, DOI 10.1016/j.copsyc.2014.12.021 (SBT: social proximity can reduce perceived risk/effort); Coan, Schaefer & Davidson, Psychol Sci 2006, DOI 10.1111/j.1467-9280.2006.01832.x (spousal handholding attenuated neural threat responses; stronger effects with higher marital quality); Schnall et al., J Exp Soc Psychol 2008, DOI 10.1016/j.jesp.2008.04.011 (supportive social context associated with lower perceived hill steepness); Ein-Dor et al., Front Psychol 2015, DOI 10.3389/fpsyg.2015.00492 (social avoidance associated with higher basal glucose/consumption, correlational). FACT-CHECK GUARDS: do NOT claim the brain burns twice as much glucose/energy; do NOT state a generic '30% steeper' effect; do NOT present the supplied oxygen/calories wording as a verbatim Coan quote. Distinguish theory from demonstrated findings. Couple application: offer a brief 2-minute no-screen closeness/handholding ritual as a practical co-regulation exercise inspired by the evidence, explicitly not as a validated SBT protocol. Hook may focus on why ordinary life can feel heavier when partners feel alone inside the relationship. Tone: responsible, warm, non-pathologizing couples counseling; no medical promises. Include credible primary sources, at least 3 real internal blog links, and CTA to couples counseling. Critical identity invariant: idea_id couples-social-baseline-theory must bind only to its own new article slug/content hash and the long+short created from that same source; never adopt/reuse stool-withholding or gifted assets. Deduplicate before any create/upload.",
+    "required_primary_keyword": "תיאוריית הבסיס החברתי בזוגיות",
+    "run_now": true,
+    "status": "claimed",
+    "requested_at": "2026-11-02T16:05:44.820933+00:00",
+    "publication_slot": "2026-11-02",
+    "claimed_at": "2026-11-02T16:05:46.429229+00:00"
+  },
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/stool-withholding-potty-training",
     "overview_youtube_url": "https://youtu.be/xZotdUtnJXw",
@@ -3055,34 +2852,7 @@
     "short_signature_verified": true,
     "short_origin_verified": true
   },
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-11-02",
-      "inputs": {
-        "slot": "2026-11-02",
-        "topic_brief": "Authoritative owner request: Issue #1268. Create one KESHER chain on gifted children and asynchronous development / inner loneliness. Use the full evidence, accuracy, SEO, practical parenting, visual and dedup safeguards in https://github.com/yanivsa/kesher-website/issues/1268. Preserve one identity Article -> Video Overview -> 9:16 Short; only 3 public verified assets = Done.\n\nIdea Request ID: gifted-asynchronous-development-1268\nRequired Primary Keyword: ילדים מחוננים התפתחות רגשית"
-      },
-      "intent_at": "2026-11-02T01:05:41.652858+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41362070134,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-11-02T01:05:41.652858+00:00"
-    },
-    "normalize-article-pr.yml": {
-      "workflow": "normalize-article-pr.yml",
-      "cycle": "2026-11-02",
-      "inputs": {
-        "pr_number": "1273",
-        "slot": "2026-11-02"
-      },
-      "intent_at": "2026-11-02T06:10:43.115981+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41398313007,
-      "dispatched_at": "2026-11-02T06:10:43.115981+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
     "run_id": 41432112748,
@@ -3090,12 +2860,7 @@
     "source_slug": "stool-withholding-potty-training",
     "slot": "2026-11-02"
   },
-  "processed_child_notifications": [
-    "Deploy to Cloudflare Pages:41425191708",
-    "Kesher Daily NotebookLM Video Overview:41426298898",
-    "Kesher Daily Article Short V4:41428160932",
-    "Kesher Daily Article Short V4:41432112748"
-  ],
+  "processed_child_notifications": [],
   "interventions": {
     "v5|stool-withholding-potty-training|b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734|short": {
       "pipeline_id": "v5",
@@ -3112,5 +2877,264 @@
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-11-02T10:50:57.379716+00:00"
     }
-  }
+  },
+  "owner_cycle_archive": [
+    {
+      "cycle": "2026-11-02",
+      "status": "complete",
+      "article": {
+        "attempt_count": 0,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 41370641101,
+        "processed_run_id": 41370641101,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {
+          "COMPLETED_WITHOUT_PR": 1
+        },
+        "attempts": 0,
+        "deploy_attempts": 1,
+        "normalization_status": "complete",
+        "last_dispatch_at": "2026-11-02T01:05:57.007600+00:00",
+        "last_run_conclusion": "failure",
+        "last_worker_result": {
+          "schema_version": 1,
+          "slot": "2026-11-02",
+          "outcome": "PR_CREATED",
+          "retryable": false,
+          "message": "Jules diagnostic: I have successfully fixed the `evidence_missing` requirement by injecting an external authoritative reference (`<a href=\"https://www.apa.org\">איגוד הפסיכולוגים האמריקאי</a>`) back into the article content. I ensured that the anchor text is written in pure Hebrew, fixing the previous `Latin characters found in visible prose` content policy failure. I ran the content validations (`npm run test:content`) locally, and all automation gates have now passed without issues, confirming the fix. Finally, I committed the changes to trigger a new CI run.",
+          "session_id": "sessions/16513651425300945584",
+          "pr_url": "https://github.com/yanivsa/kesher-website/pull/1270",
+          "github_run_id": "41370641101",
+          "completed_at": "2026-11-02T01:12:31.620915+00:00",
+          "diagnostic": {
+            "source": {
+              "name": "sources/github/yanivsa/kesher-website",
+              "owner": "yanivsa",
+              "repo": "kesher-website",
+              "default_branch": "main",
+              "main_available": true
+            },
+            "activity_count": 138,
+            "change_set_count": 119,
+            "change_set_fingerprints": [],
+            "last_agent_message": "I have successfully fixed the `evidence_missing` requirement by injecting an external authoritative reference (`<a href=\"https://www.apa.org\">איגוד הפסיכולוגים האמריקאי</a>`) back into the article content. I ensured that the anchor text is written in pure Hebrew, fixing the previous `Latin characters found in visible prose` content policy failure. I ran the content validations (`npm run test:content`) locally, and all automation gates have now passed without issues, confirming the fix. Finally, I committed the changes to trigger a new CI run.",
+            "last_progress": "All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
+            "last_description": "",
+            "session_failed_reason": ""
+          }
+        },
+        "last_jules_session_id": "sessions/16513651425300945584",
+        "last_failed_run_id": 41357968167,
+        "pr_number": 1273,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1273",
+        "current_pr_head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
+        "jules_head_sha": "5b66484af2cfbea8f9e184c45fa538fa40ba7363",
+        "normalization_slot": "2026-11-02",
+        "normalization_dispatched_at": "2026-11-02T06:10:58.139910+00:00",
+        "normalized_head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
+        "image_head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
+        "merge_candidate_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
+        "normalization_drift_count": 0,
+        "merge_dispatch_count": 0,
+        "merge_dispatch_at": "2026-11-02T09:53:08.304969+00:00",
+        "merge_run_id": 41424266285,
+        "last_refunded_auto_merge_run_id": 41424266285,
+        "deferred_auto_merge_refund_count": 1,
+        "slug": "stool-withholding-potty-training",
+        "title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
+        "url": "https://kesher.saharoni.com/blog/stool-withholding-potty-training",
+        "published_date": "2026-11-02",
+        "quality_content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
+        "reconciled_existing_article": true,
+        "quality_status": "passed",
+        "quality_checked_at": "2026-11-02T16:00:51.343884+00:00",
+        "quality_violations": [],
+        "live": true,
+        "last_deploy_dispatch_at": "2026-11-02T10:00:06.933777+00:00",
+        "next_deploy_retry_at": null,
+        "deploy_run_id": 41425191708,
+        "live_verified_at": "2026-11-02T16:01:17.285469+00:00"
+      },
+      "long_video": {
+        "attempt_count": 1,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 41426298898,
+        "processed_run_id": null,
+        "provider_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "overview_evidence_required": true,
+        "last_dispatch_at": "2026-11-02T10:08:06.310720+00:00",
+        "attempts": 1,
+        "item_id": "video-20261102-120920-b66776d3b0",
+        "youtube_id": "xZotdUtnJXw",
+        "youtube_url": "https://youtu.be/xZotdUtnJXw",
+        "verified": true,
+        "technical_verified": true,
+        "visual_pipeline": "remotion-v1-notebooklm-audio",
+        "codec": "h264",
+        "width": 1280,
+        "height": 720,
+        "duration": 115.3,
+        "content_duration_seconds": 115.292,
+        "signature_duration_seconds": 3.0,
+        "signature_overlay": true,
+        "signature_fullscreen": true,
+        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+        "artifact_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
+        "source_id": "13dc8ffa-f038-424c-80c3-8749d1b83f6a"
+      },
+      "short": {
+        "attempt_count": 2,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 41432112748,
+        "processed_run_id": null,
+        "provider_id": "8712550e-9b82-4463-92e2-4720a81776e8",
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "last_dispatch_at": "2026-11-02T10:51:23.003400+00:00",
+        "artifact_id": "8712550e-9b82-4463-92e2-4720a81776e8",
+        "source_id": "b3402ce9-c8bb-43fd-b5ba-5f8720dc0908",
+        "adopted_from_long_item_id": null,
+        "watchdog": {
+          "identity": "short:stool-withholding-potty-training:b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734:video-20261102-122309-b66776d3b0",
+          "hard_started_at": "2026-11-02T10:23:15.443698+00:00",
+          "last_progress_at": "2026-11-02T10:30:08.523650+00:00",
+          "last_fingerprint": "0869c0fccf42e240853575b0bcc054b56faebd54b5eb9a7d6fd65984ecd8d70b",
+          "recovery_count": 1,
+          "last_recovery_at": "2026-11-02T10:50:57.379716+00:00"
+        },
+        "source": {
+          "id": "stool-withholding-potty-training",
+          "slug": "stool-withholding-potty-training",
+          "title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
+          "date": "2026-11-02",
+          "category": "הדרכת הורים",
+          "subcategory": "גמילה מחיתולים",
+          "excerpt": "ילדים רבים בשלב הגמילה מסוגלים להתאפק שעות ואפילו ימים. למה זה קורה, ואיך אפשר לעזור להם לשחרר במקום להעצים את הלחץ והמאבק סביב העניין.",
+          "canonical_url": "https://kesher.saharoni.com/blog/stool-withholding-potty-training",
+          "content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
+          "video_title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
+          "short_title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
+          "short_hook": "",
+          "youtube_metadata": {
+            "title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
+            "description": "ילדים רבים בשלב הגמילה מסוגלים להתאפק שעות ואפילו ימים. למה זה קורה, ואיך אפשר לעזור להם לשחרר במקום להעצים את הלחץ והמאבק סביב העניין.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/stool-withholding-potty-training\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+            "tags": [
+              "הדרכת הורים",
+              "גמילה מחיתולים"
+            ]
+          },
+          "short_youtube_metadata": {
+            "title": "בקצרה: התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
+            "description": "ילדים רבים בשלב הגמילה מסוגלים להתאפק שעות ואפילו ימים. למה זה קורה, ואיך אפשר לעזור להם לשחרר במקום להעצים את הלחץ והמאבק סביב העניין.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/stool-withholding-potty-training\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+            "tags": [
+              "הדרכת הורים",
+              "גמילה מחיתולים"
+            ]
+          }
+        },
+        "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+        "task_id": "8712550e-9b82-4463-92e2-4720a81776e8",
+        "raw_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c",
+        "final_sha256": "b4e0b5ae110600e1110736868e8b822d1b4af39ad46e35bae1d19863f913b2ec",
+        "provider_raw_media": {
+          "codec": "h264",
+          "audio_codec": "aac",
+          "width": 720,
+          "height": 1280,
+          "duration": 95.933,
+          "format": "mov,mp4,m4a,3gp,3g2,mj2"
+        },
+        "media": {
+          "codec": "h264",
+          "audio_codec": "aac",
+          "width": 1080,
+          "height": 1920,
+          "duration": 95.933,
+          "format": "mov,mp4,m4a,3gp,3g2,mj2"
+        },
+        "provider_video_format": "short",
+        "provider_native_short": true,
+        "provider_native_short_verified": true,
+        "provider_short_fallback_used": false,
+        "fresh_generation_attempt": 1,
+        "overview_provider_identity": {
+          "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+          "source_id": "13dc8ffa-f038-424c-80c3-8749d1b83f6a",
+          "task_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
+          "artifact_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
+          "raw_sha256": "8e317ccacc4c67e0f36be72a5b0c9173561a395ddd3859119a3848963439a210"
+        },
+        "shared_provider_identity": null,
+        "short_start_seconds": 0.0,
+        "short_duration_seconds": 95.933,
+        "audio_provenance": {
+          "schema_version": 1,
+          "mode": "stream_copy",
+          "raw_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c",
+          "final_sha256": "b4e0b5ae110600e1110736868e8b822d1b4af39ad46e35bae1d19863f913b2ec",
+          "raw_audio_sha256": "e8c19a0bb4ee269c6318e7f10cff0f2ce1c26d597eb83aeee49dcd3a58de49fe",
+          "final_audio_sha256": "e8c19a0bb4ee269c6318e7f10cff0f2ce1c26d597eb83aeee49dcd3a58de49fe",
+          "raw_timing": {
+            "codec": "aac",
+            "sample_rate": 44100,
+            "channels": 1,
+            "start_seconds": 0.0,
+            "duration_seconds": 95.991293
+          },
+          "final_timing": {
+            "codec": "aac",
+            "sample_rate": 44100,
+            "channels": 1,
+            "start_seconds": 0.0,
+            "duration_seconds": 95.991293
+          }
+        },
+        "signature_overlay": true,
+        "signature_provenance": {
+          "schema_version": 1,
+          "final_sha256": "b4e0b5ae110600e1110736868e8b822d1b4af39ad46e35bae1d19863f913b2ec",
+          "raw_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c",
+          "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+          "segment_sha256": "5004d317d2172765d070987db91e0315aebb6dcd303f80dd8b2b9d98ae21c988",
+          "source_duration_seconds": 95.933,
+          "final_duration_seconds": 95.933,
+          "start_seconds": 92.933,
+          "end_seconds": 95.933,
+          "audio_source_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c"
+        },
+        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+        "item_id": "video-20261102-122309-b66776d3b0",
+        "type": "article_short",
+        "youtube_id": "Yy15MJftfEY",
+        "youtube_url": "https://youtu.be/Yy15MJftfEY",
+        "verified": true,
+        "portrait_verified": true,
+        "signature_verified": true,
+        "signature_asset": "signature-mask.svg",
+        "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+        "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+        "technical_verified": true,
+        "signature_duration_seconds": 3.0,
+        "signature_fullscreen": true,
+        "signature_video_sha256": "5004d317d2172765d070987db91e0315aebb6dcd303f80dd8b2b9d98ae21c988",
+        "source_mode": "direct-short",
+        "width": 1080,
+        "height": 1920
+      },
+      "archived_at": "2026-11-02T16:05:46.429212+00:00",
+      "reason": "owner_run_now_cycle_started"
+    }
+  ]
 }
