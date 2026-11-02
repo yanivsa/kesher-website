@@ -2507,9 +2507,18 @@
       "details": {
         "session_id": null
       }
+    },
+    {
+      "at": "2026-11-02T23:59:30.450552+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-11-02T23:54:42.941084+00:00",
+  "updated_at": "2026-11-02T23:59:30.450560+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
