@@ -3,10 +3,10 @@
   "cycle": "2026-11-02",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 3,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
-    "next_retry_at": "2026-11-02T01:17:49.666961+00:00",
+    "next_retry_at": null,
     "run_id": 41370641101,
     "processed_run_id": 41370641101,
     "provider_id": null,
@@ -15,7 +15,7 @@
     "failure_count_by_type": {
       "COMPLETED_WITHOUT_PR": 1
     },
-    "attempts": 3,
+    "attempts": 0,
     "deploy_attempts": 0,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-11-02T01:05:57.007600+00:00",
@@ -63,7 +63,17 @@
     "merge_dispatch_at": "2026-11-02T09:53:08.304969+00:00",
     "merge_run_id": 41424266285,
     "last_refunded_auto_merge_run_id": 41424266285,
-    "deferred_auto_merge_refund_count": 1
+    "deferred_auto_merge_refund_count": 1,
+    "slug": "stool-withholding-potty-training",
+    "title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
+    "url": "https://kesher.saharoni.com/blog/stool-withholding-potty-training",
+    "published_date": "2026-11-02",
+    "quality_content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-11-02T10:00:00.478385+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2643,7 +2653,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-11-02T09:51:02.231902+00:00",
     "artifact_sha256": "6eb41e0cb5c933a7a04b58f33f6e6fbd55d206d3a251d341bd4b4024914b37c5",
-    "source_id": "local-editorial://stool-withholding-potty-training/4"
+    "source_id": "local-editorial://stool-withholding-potty-training/4",
+    "image_path": "/images/generated/blog/stool-withholding-potty-training.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3161,6 +3172,16 @@
       "previous_run_id": null,
       "observed_active_run_id": 41398313007,
       "dispatched_at": "2026-11-02T06:10:43.115981+00:00"
+    },
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-11-02",
+      "inputs": {},
+      "intent_at": "2026-11-02T09:59:56.948523+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "1b25e89e06bd546cfcf8e7100b9fb0d7c1d27d3b"
     }
   },
   "last_child_notification": {
