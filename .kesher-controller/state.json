@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "article_result_wait",
+  "status": "blocked",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -1764,14 +1764,13 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "controller",
+    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+    "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts",
+    "at": "2026-11-02T01:20:47.816111+00:00"
+  },
   "history": [
-    {
-      "at": "2026-11-01T19:11:23.489089+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
     {
       "at": "2026-11-01T19:14:58.665335+00:00",
       "from": "long_video_running",
@@ -2484,9 +2483,18 @@
         "outcome": "PR_CREATED",
         "pr_url": "https://github.com/yanivsa/kesher-website/pull/1270"
       }
+    },
+    {
+      "at": "2026-11-02T01:20:47.816115+00:00",
+      "from": "article_result_wait",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
+      }
     }
   ],
-  "updated_at": "2026-11-02T01:15:49.666995+00:00",
+  "updated_at": "2026-11-02T01:20:47.816120+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
