@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1794,12 +1794,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T14:46:14.460887+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-11-02T14:51:23.935194+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2566,9 +2560,21 @@
         "item_id": "video-20261102-232627-35b906afcd",
         "task_id": "c39d28ff-a6a5-4273-905d-6b312536b8aa"
       }
+    },
+    {
+      "at": "2026-11-02T22:01:33.448282+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_recovery",
+      "reason": "long-form provider stalled; resumed the same durable provider identity",
+      "details": {
+        "item_id": "video-20261102-232627-35b906afcd",
+        "task_id": "c39d28ff-a6a5-4273-905d-6b312536b8aa",
+        "slug": "couples-social-baseline-theory",
+        "content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5"
+      }
     }
   ],
-  "updated_at": "2026-11-02T21:56:12.159219+00:00",
+  "updated_at": "2026-11-02T22:01:33.448290+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -2589,7 +2595,7 @@
   },
   "long_video": {
     "attempt_count": 0,
-    "status": "generating",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41528181655,
@@ -2614,9 +2620,12 @@
       "hard_started_at": "2026-11-02T21:26:32.276344+00:00",
       "last_progress_at": "2026-11-02T21:35:46.239852+00:00",
       "last_fingerprint": "c90d13c49e6cbd25c3cbd1cf7682634e396472974ee4144ca1d2d4a8fd2ffa3e",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    }
+      "recovery_count": 1,
+      "last_recovery_at": "2026-11-02T22:00:57.260900+00:00"
+    },
+    "pending_resume_ready": false,
+    "last_dispatch_at": "2026-11-02T22:01:33.448262+00:00",
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
@@ -3138,9 +3147,10 @@
         "target_item_id": "video-20261102-232627-35b906afcd"
       },
       "intent_at": "2026-11-02T22:00:57.260900+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41528181655,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41533608510,
+      "dispatched_at": "2026-11-02T22:00:57.260900+00:00"
     }
   },
   "last_child_notification": {
@@ -3177,11 +3187,12 @@
       "strike_count": 1,
       "last_check_token": "2026-11-03T00",
       "last_fingerprint": "4bcb3dfdb23dc8f90a1431e316234acbb68c825970479d9e6cee4b97354789dd",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
+      "last_controller_action_token": "recovery:1:2026-11-02T22:00:57.260900+00:00",
+      "controller_action_observed": true,
       "last_observed_at": "2026-11-02T22:00:57.260900+00:00",
-      "last_action": "observe_controller",
-      "direct_takeover_required": false
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-11-02T22:00:57.260900+00:00"
     }
   },
   "owner_cycle_archive": [
