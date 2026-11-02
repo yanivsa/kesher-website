@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1794,12 +1794,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T14:41:17.880544+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-02T14:41:18.896881+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2546,9 +2540,19 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-11-02T21:36:09.061854+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261102-232627-35b906afcd",
+        "task_id": "c39d28ff-a6a5-4273-905d-6b312536b8aa"
+      }
     }
   ],
-  "updated_at": "2026-11-02T21:31:26.440274+00:00",
+  "updated_at": "2026-11-02T21:36:09.061860+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -2569,16 +2573,34 @@
   },
   "long_video": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41528181655,
-    "processed_run_id": null,
-    "provider_id": null,
+    "processed_run_id": 41528181655,
+    "provider_id": "c39d28ff-a6a5-4273-905d-6b312536b8aa",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_run_conclusion": "success",
+    "item_id": "video-20261102-232627-35b906afcd",
+    "source_slug": "couples-social-baseline-theory",
+    "source_content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
+    "content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
+    "source_id": "5557b72e-eb2a-40d7-bb00-af680b5b8f47",
+    "task_id": "c39d28ff-a6a5-4273-905d-6b312536b8aa",
+    "artifact_id": "c39d28ff-a6a5-4273-905d-6b312536b8aa",
+    "provider_status": "pending",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:couples-social-baseline-theory:35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5:video-20261102-232627-35b906afcd",
+      "hard_started_at": "2026-11-02T21:26:32.276344+00:00",
+      "last_progress_at": "2026-11-02T21:35:46.239852+00:00",
+      "last_fingerprint": "c90d13c49e6cbd25c3cbd1cf7682634e396472974ee4144ca1d2d4a8fd2ffa3e",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
