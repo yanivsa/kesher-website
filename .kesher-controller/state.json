@@ -1,21 +1,53 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-02T17:15:50.113729+00:00",
     "run_id": 41478118287,
-    "processed_run_id": null,
+    "processed_run_id": 41478118287,
     "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "JULES_TIMEOUT_SESSION_ACTIVE": 1
+    },
     "attempts": 1,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-11-02T16:06:01.801263+00:00"
+    "last_dispatch_at": "2026-11-02T16:06:01.801263+00:00",
+    "last_run_conclusion": "failure",
+    "last_worker_result": {
+      "schema_version": 1,
+      "slot": "2026-11-02",
+      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "retryable": true,
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Cleaned up all temporary scratch files. — `git status` shows only the expected JSON and XML/TXT files are staged.",
+      "session_id": "sessions/14530118500646372484",
+      "pr_url": "",
+      "github_run_id": "41478118287",
+      "completed_at": "2026-11-02T17:07:20.569263+00:00",
+      "diagnostic": {
+        "source": {
+          "name": "sources/github/yanivsa/kesher-website",
+          "owner": "yanivsa",
+          "repo": "kesher-website",
+          "default_branch": "main",
+          "main_available": true
+        },
+        "activity_count": 55,
+        "change_set_count": 53,
+        "change_set_fingerprints": [],
+        "last_agent_message": "",
+        "last_progress": "Cleaned up all temporary scratch files. — `git status` shows only the expected JSON and XML/TXT files are staged.",
+        "last_description": "",
+        "session_failed_reason": ""
+      }
+    },
+    "last_jules_session_id": "sessions/14530118500646372484",
+    "last_failed_run_id": 41478118287
   },
   "backlog": [
     {
@@ -1725,14 +1757,15 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Cleaned up all temporary scratch files. — `git status` shows only the expected JSON and XML/TXT files are staged.",
+    "retryable": true,
+    "retry_at": "2026-11-02T17:15:50.113729+00:00",
+    "at": "2026-11-02T17:10:50.113747+00:00"
+  },
   "history": [
-    {
-      "at": "2026-11-02T13:41:11.688734+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-11-02T13:41:12.812045+00:00",
       "from": "long_video_complete",
@@ -2370,9 +2403,22 @@
       "details": {
         "publication_slot": "2026-11-02"
       }
+    },
+    {
+      "at": "2026-11-02T17:10:50.113751+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "details": {
+        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Cleaned up all temporary scratch files. — `git status` shows only the expected JSON and XML/TXT files are staged.",
+        "retry_at": "2026-11-02T17:15:50.113729+00:00",
+        "failure_streak": 1,
+        "run_id": 41478118287,
+        "session_id": "sessions/14530118500646372484"
+      }
     }
   ],
-  "updated_at": "2026-11-02T17:05:51.042783+00:00",
+  "updated_at": "2026-11-02T17:10:50.113756+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2901,11 +2947,10 @@
         "slot": "2026-11-02",
         "topic_brief": "ייעוץ זוגי — Social Baseline Theory (SBT), James A. Coan / David A. Sbarra. Create one authoritative Hebrew article and continue the SAME source identity through YouTube Video Overview and native 9:16 Short. Evidence anchors: Coan & Sbarra, Curr Opin Psychol 2015, DOI 10.1016/j.copsyc.2014.12.021 (SBT: social proximity can reduce perceived risk/effort); Coan, Schaefer & Davidson, Psychol Sci 2006, DOI 10.1111/j.1467-9280.2006.01832.x (spousal handholding attenuated neural threat responses; stronger effects with higher marital quality); Schnall et al., J Exp Soc Psychol 2008, DOI 10.1016/j.jesp.2008.04.011 (supportive social context associated with lower perceived hill steepness); Ein-Dor et al., Front Psychol 2015, DOI 10.3389/fpsyg.2015.00492 (social avoidance associated with higher basal glucose/consumption, correlational). FACT-CHECK GUARDS: do NOT claim the brain burns twice as much glucose/energy; do NOT state a generic '30% steeper' effect; do NOT present the supplied oxygen/calories wording as a verbatim Coan quote. Distinguish theory from demonstrated findings. Couple application: offer a brief 2-minute no-screen closeness/handholding ritual as a practical co-regulation exercise inspired by the evidence, explicitly not as a validated SBT protocol. Hook may focus on why ordinary life can feel heavier when partners feel alone inside the relationship. Tone: responsible, warm, non-pathologizing couples counseling; no medical promises. Include credible primary sources, at least 3 real internal blog links, and CTA to couples counseling. Critical identity invariant: idea_id couples-social-baseline-theory must bind only to its own new article slug/content hash and the long+short created from that same source; never adopt/reuse stool-withholding or gifted assets. Deduplicate before any create/upload.\n\nIdea Request ID: couples-social-baseline-theory\nRequired Primary Keyword: תיאוריית הבסיס החברתי בזוגיות"
       },
-      "intent_at": "2026-11-02T16:05:41.371914+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-11-02T16:05:41.371914+00:00"
+      "intent_at": "2026-11-02T17:10:43.699183+00:00",
+      "status": "intent",
+      "previous_run_id": 41478118287,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
