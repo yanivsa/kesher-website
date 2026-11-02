@@ -17,7 +17,12 @@
     "serviceUrl": "/services/parenting",
     "serviceLabel": "הדרכת הורים",
     "controllerManaged": true,
-    "slug": "stool-withholding-potty-training"
+    "slug": "stool-withholding-potty-training",
+    "image": "/images/generated/blog/stool-withholding-potty-training.png",
+    "imageAlt": "איור עריכתי מקומי של הורה וילד בחדר רחצה ביתי, לצד אסלה ושרפרף, באווירה רגועה ותומכת.",
+    "imageProvider": "LocalEditorial",
+    "imageSourceUrl": "local-editorial://stool-withholding-potty-training/4",
+    "imageIsFallback": false
   },
   {
     "id": "good-news-response-relationship",
