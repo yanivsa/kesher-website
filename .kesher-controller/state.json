@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41370641101,
@@ -77,7 +77,7 @@
     "last_deploy_dispatch_at": "2026-11-02T10:00:06.933777+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41425191708,
-    "live_verified_at": "2026-11-02T10:59:56.909250+00:00"
+    "live_verified_at": "2026-11-02T11:00:15.570158+00:00"
   },
   "backlog": [
     {
@@ -1790,24 +1790,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T21:56:23.367299+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-01T21:56:24.672515+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-01T21:56:25.931394+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-11-01T22:00:46.832197+00:00",
       "from": null,
       "to": "article_needed",
@@ -2653,9 +2635,27 @@
         "item_id": "video-20261102-122309-b66776d3b0",
         "long_item_id": "video-20261102-120920-b66776d3b0"
       }
+    },
+    {
+      "at": "2026-11-02T11:00:15.570190+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-02T11:00:16.061077+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-02T11:00:16.842303+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-02T10:51:23.003427+00:00",
+  "updated_at": "2026-11-02T11:00:16.842323+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2706,19 +2706,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41432112748,
     "processed_run_id": null,
-    "provider_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
+    "provider_id": "8712550e-9b82-4463-92e2-4720a81776e8",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-11-02T10:51:23.003400+00:00",
-    "artifact_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
-    "source_id": "13dc8ffa-f038-424c-80c3-8749d1b83f6a",
-    "adopted_from_long_item_id": "video-20261102-120920-b66776d3b0",
+    "artifact_id": "8712550e-9b82-4463-92e2-4720a81776e8",
+    "source_id": "b3402ce9-c8bb-43fd-b5ba-5f8720dc0908",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:stool-withholding-potty-training:b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734:video-20261102-122309-b66776d3b0",
       "hard_started_at": "2026-11-02T10:23:15.443698+00:00",
@@ -2726,7 +2726,125 @@
       "last_fingerprint": "0869c0fccf42e240853575b0bcc054b56faebd54b5eb9a7d6fd65984ecd8d70b",
       "recovery_count": 1,
       "last_recovery_at": "2026-11-02T10:50:57.379716+00:00"
-    }
+    },
+    "source": {
+      "id": "stool-withholding-potty-training",
+      "slug": "stool-withholding-potty-training",
+      "title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
+      "date": "2026-11-02",
+      "category": "הדרכת הורים",
+      "subcategory": "גמילה מחיתולים",
+      "excerpt": "ילדים רבים בשלב הגמילה מסוגלים להתאפק שעות ואפילו ימים. למה זה קורה, ואיך אפשר לעזור להם לשחרר במקום להעצים את הלחץ והמאבק סביב העניין.",
+      "canonical_url": "https://kesher.saharoni.com/blog/stool-withholding-potty-training",
+      "content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
+      "video_title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
+      "short_title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
+        "description": "ילדים רבים בשלב הגמילה מסוגלים להתאפק שעות ואפילו ימים. למה זה קורה, ואיך אפשר לעזור להם לשחרר במקום להעצים את הלחץ והמאבק סביב העניין.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/stool-withholding-potty-training\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "גמילה מחיתולים"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
+        "description": "ילדים רבים בשלב הגמילה מסוגלים להתאפק שעות ואפילו ימים. למה זה קורה, ואיך אפשר לעזור להם לשחרר במקום להעצים את הלחץ והמאבק סביב העניין.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/stool-withholding-potty-training\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "גמילה מחיתולים"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "8712550e-9b82-4463-92e2-4720a81776e8",
+    "raw_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c",
+    "final_sha256": "b4e0b5ae110600e1110736868e8b822d1b4af39ad46e35bae1d19863f913b2ec",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 95.933,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 95.933,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "13dc8ffa-f038-424c-80c3-8749d1b83f6a",
+      "task_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
+      "artifact_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
+      "raw_sha256": "8e317ccacc4c67e0f36be72a5b0c9173561a395ddd3859119a3848963439a210"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 95.933,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c",
+      "final_sha256": "b4e0b5ae110600e1110736868e8b822d1b4af39ad46e35bae1d19863f913b2ec",
+      "raw_audio_sha256": "e8c19a0bb4ee269c6318e7f10cff0f2ce1c26d597eb83aeee49dcd3a58de49fe",
+      "final_audio_sha256": "e8c19a0bb4ee269c6318e7f10cff0f2ce1c26d597eb83aeee49dcd3a58de49fe",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 95.991293
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 95.991293
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "b4e0b5ae110600e1110736868e8b822d1b4af39ad46e35bae1d19863f913b2ec",
+      "raw_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "5004d317d2172765d070987db91e0315aebb6dcd303f80dd8b2b9d98ae21c988",
+      "source_duration_seconds": 95.933,
+      "final_duration_seconds": 95.933,
+      "start_seconds": 92.933,
+      "end_seconds": 95.933,
+      "audio_source_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261102-122309-b66776d3b0",
+    "type": "article_short",
+    "youtube_id": "Yy15MJftfEY",
+    "youtube_url": "https://youtu.be/Yy15MJftfEY",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "5004d317d2172765d070987db91e0315aebb6dcd303f80dd8b2b9d98ae21c988",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
