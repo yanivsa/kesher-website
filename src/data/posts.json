@@ -40,7 +40,25 @@
     "imageAlt": "איור עריכתי מקומי של שני בני זוג יושבים זה מול זה בשיחה רגועה בבית, עם שפת גוף פתוחה וקשובה.",
     "imageProvider": "LocalEditorial",
     "imageSourceUrl": "local-editorial://couples-social-baseline-theory/3",
-    "imageIsFallback": false
+    "imageIsFallback": false,
+    "evidence": [
+      {
+        "title": "Coan & Sbarra (2015), Social Baseline Theory: The Social Regulation of Risk and Effort",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4375548/"
+      },
+      {
+        "title": "Coan, Schaefer & Davidson (2006), Lending a hand: social regulation of the neural response to threat",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/17201784/"
+      },
+      {
+        "title": "Schnall et al. (2008), Social Support and the Perception of Geographical Slant",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/22389520/"
+      },
+      {
+        "title": "Ein-Dor et al. (2015), Sugarcoated isolation",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4407480/"
+      }
+    ]
   },
   {
     "id": "good-news-response-relationship",
