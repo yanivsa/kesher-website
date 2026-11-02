@@ -1,14 +1,14 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "article_generating",
+  "status": "article_result_wait",
   "article": {
     "attempt_count": 3,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-02T01:17:49.666961+00:00",
     "run_id": 41370641101,
-    "processed_run_id": 41362070134,
+    "processed_run_id": 41370641101,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
@@ -25,11 +25,11 @@
       "slot": "2026-11-02",
       "outcome": "PR_CREATED",
       "retryable": false,
-      "message": "Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
+      "message": "Jules diagnostic: I have successfully fixed the `evidence_missing` requirement by injecting an external authoritative reference (`<a href=\"https://www.apa.org\">איגוד הפסיכולוגים האמריקאי</a>`) back into the article content. I ensured that the anchor text is written in pure Hebrew, fixing the previous `Latin characters found in visible prose` content policy failure. I ran the content validations (`npm run test:content`) locally, and all automation gates have now passed without issues, confirming the fix. Finally, I committed the changes to trigger a new CI run.",
       "session_id": "sessions/16513651425300945584",
       "pr_url": "https://github.com/yanivsa/kesher-website/pull/1270",
-      "github_run_id": "41362070134",
-      "completed_at": "2026-11-01T23:58:22.737734+00:00",
+      "github_run_id": "41370641101",
+      "completed_at": "2026-11-02T01:12:31.620915+00:00",
       "diagnostic": {
         "source": {
           "name": "sources/github/yanivsa/kesher-website",
@@ -38,10 +38,10 @@
           "default_branch": "main",
           "main_available": true
         },
-        "activity_count": 37,
-        "change_set_count": 34,
+        "activity_count": 138,
+        "change_set_count": 119,
         "change_set_fingerprints": [],
-        "last_agent_message": "",
+        "last_agent_message": "I have successfully fixed the `evidence_missing` requirement by injecting an external authoritative reference (`<a href=\"https://www.apa.org\">איגוד הפסיכולוגים האמריקאי</a>`) back into the article content. I ensured that the anchor text is written in pure Hebrew, fixing the previous `Latin characters found in visible prose` content policy failure. I ran the content validations (`npm run test:content`) locally, and all automation gates have now passed without issues, confirming the fix. Finally, I committed the changes to trigger a new CI run.",
         "last_progress": "All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
         "last_description": "",
         "session_failed_reason": ""
@@ -1767,12 +1767,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T19:11:21.474589+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-01T19:11:23.489089+00:00",
       "from": "article_live",
       "to": "video_running",
@@ -2479,9 +2473,20 @@
       "details": {
         "publication_slot": "2026-11-02"
       }
+    },
+    {
+      "at": "2026-11-02T01:15:49.666988+00:00",
+      "from": "article_generating",
+      "to": "article_result_wait",
+      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
+      "details": {
+        "run_id": 41370641101,
+        "outcome": "PR_CREATED",
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1270"
+      }
     }
   ],
-  "updated_at": "2026-11-02T01:11:13.458400+00:00",
+  "updated_at": "2026-11-02T01:15:49.666995+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
