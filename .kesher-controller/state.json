@@ -1768,19 +1768,9 @@
     "stage": "controller",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts",
-    "at": "2026-11-02T02:00:53.058752+00:00"
+    "at": "2026-11-02T02:05:48.859563+00:00"
   },
   "history": [
-    {
-      "at": "2026-11-01T19:41:15.470704+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261101-211603-89f4065833-a2",
-        "task_id": "1d98a0e9-c555-46aa-a01e-84c595561756"
-      }
-    },
     {
       "at": "2026-11-01T19:46:32.314536+00:00",
       "from": "long_video_watchdog_wait",
@@ -2496,9 +2486,18 @@
       "details": {
         "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-11-02T02:05:48.859568+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
+      }
     }
   ],
-  "updated_at": "2026-11-02T02:00:53.058760+00:00",
+  "updated_at": "2026-11-02T02:05:48.859573+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
