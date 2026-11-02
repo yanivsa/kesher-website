@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "long_video_watchdog_recovery",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1794,12 +1794,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T14:51:23.935194+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-02T14:51:25.249283+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2572,9 +2566,19 @@
         "slug": "couples-social-baseline-theory",
         "content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5"
       }
+    },
+    {
+      "at": "2026-11-02T22:06:15.989223+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261102-232627-35b906afcd",
+        "task_id": "c39d28ff-a6a5-4273-905d-6b312536b8aa"
+      }
     }
   ],
-  "updated_at": "2026-11-02T22:01:33.448290+00:00",
+  "updated_at": "2026-11-02T22:06:15.989232+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -2595,7 +2599,7 @@
   },
   "long_video": {
     "attempt_count": 0,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41528181655,
