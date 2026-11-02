@@ -1,0 +1,39 @@
+name: Kesher Owner Duplicate Active Idea Recovery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/kesher_recover_duplicate_active_idea.py
+      - tests/test_kesher_duplicate_active_idea_recovery.py
+      - .github/workflows/kesher-owner-duplicate-idea-recovery.yml
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: kesher-owner-duplicate-active-idea-recovery-2026-11-02
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact main revision
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Regression tests
+        run: python -m unittest tests.test_kesher_duplicate_active_idea_recovery
+
+      - name: Recover proven duplicate active idea and wake canonical controller
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >-
+          python scripts/kesher_recover_duplicate_active_idea.py
+          --cycle 2026-11-02
+          --idea-id gifted-asynchronous-development-1268
+          --completed-idea-id gifted-children-asynchronous-development
