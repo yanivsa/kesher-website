@@ -1768,15 +1768,9 @@
     "stage": "controller",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts",
-    "at": "2026-11-02T05:05:48.497994+00:00"
+    "at": "2026-11-02T05:10:45.971657+00:00"
   },
   "history": [
-    {
-      "at": "2026-11-01T21:16:07.875213+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-11-01T21:16:08.944722+00:00",
       "from": "long_video_complete",
@@ -2592,9 +2586,18 @@
       "details": {
         "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-11-02T05:10:45.971661+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
+      }
     }
   ],
-  "updated_at": "2026-11-02T05:05:48.498003+00:00",
+  "updated_at": "2026-11-02T05:10:45.971665+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
