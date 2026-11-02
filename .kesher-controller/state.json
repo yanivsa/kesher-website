@@ -49,9 +49,9 @@
     },
     "last_jules_session_id": "sessions/16513651425300945584",
     "last_failed_run_id": 41357968167,
-    "pr_number": 1270,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1270",
-    "current_pr_head_sha": "f99a4119de919a59cb814a08f8d0f3e507005895",
+    "pr_number": 1273,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1273",
+    "current_pr_head_sha": "4fdf617abc22794829058ea783390bd9532839dc",
     "jules_head_sha": "5b66484af2cfbea8f9e184c45fa538fa40ba7363",
     "normalization_slot": "2026-11-02",
     "normalization_dispatched_at": "2026-11-02T00:51:02.966585+00:00"
@@ -3110,19 +3110,6 @@
     "short_origin_verified": false
   },
   "pending_dispatches": {
-    "normalize-article-pr.yml": {
-      "workflow": "normalize-article-pr.yml",
-      "cycle": "2026-11-02",
-      "inputs": {
-        "pr_number": "1270",
-        "slot": "2026-11-02"
-      },
-      "intent_at": "2026-11-02T00:50:47.892157+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41369350808,
-      "dispatched_at": "2026-11-02T00:50:47.892157+00:00"
-    },
     "kesher-article-generation.yml": {
       "workflow": "kesher-article-generation.yml",
       "cycle": "2026-11-02",
@@ -3135,6 +3122,18 @@
       "previous_run_id": 41362070134,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-02T01:05:41.652858+00:00"
+    },
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
+      "cycle": "2026-11-02",
+      "inputs": {
+        "pr_number": "1273",
+        "slot": "2026-11-02"
+      },
+      "intent_at": "2026-11-02T05:30:44.588532+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   }
 }
