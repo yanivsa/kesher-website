@@ -51,7 +51,7 @@
     "last_failed_run_id": 41357968167,
     "pr_number": 1270,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1270",
-    "current_pr_head_sha": "5b66484af2cfbea8f9e184c45fa538fa40ba7363",
+    "current_pr_head_sha": "f99a4119de919a59cb814a08f8d0f3e507005895",
     "jules_head_sha": "5b66484af2cfbea8f9e184c45fa538fa40ba7363",
     "normalization_slot": "2026-11-02",
     "normalization_dispatched_at": "2026-11-02T00:01:02.626263+00:00"
@@ -2994,11 +2994,10 @@
         "pr_number": "1270",
         "slot": "2026-11-02"
       },
-      "intent_at": "2026-11-02T00:00:46.205118+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-11-02T00:50:47.892157+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": 41364889797,
-      "dispatched_at": "2026-11-02T00:00:46.205118+00:00"
+      "observed_active_run_id": null
     }
   }
 }
