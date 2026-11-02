@@ -1768,21 +1768,9 @@
     "stage": "controller",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts",
-    "at": "2026-11-02T02:05:48.859563+00:00"
+    "at": "2026-11-02T02:10:48.320507+00:00"
   },
   "history": [
-    {
-      "at": "2026-11-01T19:46:32.314536+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_recovery",
-      "reason": "long-form provider stalled; resumed the same durable provider identity",
-      "details": {
-        "item_id": "video-20261101-211603-89f4065833-a2",
-        "task_id": "1d98a0e9-c555-46aa-a01e-84c595561756",
-        "slug": "gifted-children-asynchronous-development",
-        "content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67"
-      }
-    },
     {
       "at": "2026-11-01T19:51:10.828360+00:00",
       "from": "long_video_watchdog_recovery",
@@ -2495,9 +2483,18 @@
       "details": {
         "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-11-02T02:10:48.320510+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
+      }
     }
   ],
-  "updated_at": "2026-11-02T02:05:48.859573+00:00",
+  "updated_at": "2026-11-02T02:10:48.320515+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
