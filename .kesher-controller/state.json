@@ -3216,6 +3216,20 @@
       "previous_run_id": null,
       "observed_active_run_id": 41398313007,
       "dispatched_at": "2026-11-02T06:10:43.115981+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-11-02",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "stool-withholding-potty-training",
+        "derive_content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
+        "derive_long_item_id": "video-20261102-120920-b66776d3b0"
+      },
+      "intent_at": "2026-11-02T10:50:57.379716+00:00",
+      "status": "intent",
+      "previous_run_id": 41428160932,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3229,5 +3243,21 @@
     "Deploy to Cloudflare Pages:41425191708",
     "Kesher Daily NotebookLM Video Overview:41426298898",
     "Kesher Daily Article Short V4:41428160932"
-  ]
+  ],
+  "interventions": {
+    "v5|stool-withholding-potty-training|b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734|short": {
+      "pipeline_id": "v5",
+      "slug": "stool-withholding-potty-training",
+      "content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-11-02T12",
+      "last_fingerprint": "142f9be3c76e6e1fb959cebe69116567cfe57342025be88158ebf936c3d2292e",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-11-02T10:50:57.379716+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
