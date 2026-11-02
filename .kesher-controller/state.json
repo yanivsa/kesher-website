@@ -75,13 +75,13 @@
     "quality_content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-02T22:05:52.082361+00:00",
+    "quality_checked_at": "2026-11-02T22:07:11.466566+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-02T21:20:55.889665+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41527518343,
-    "live_verified_at": "2026-11-02T22:05:54.020087+00:00"
+    "live_verified_at": "2026-11-02T22:07:12.929902+00:00"
   },
   "backlog": [
     {
@@ -2601,8 +2601,8 @@
     "attempt_count": 0,
     "status": "generating",
     "last_error": null,
-    "next_retry_at": null,
-    "run_id": 41528181655,
+    "next_retry_at": "2026-11-02T22:12:06.297133+00:00",
+    "run_id": 41533608510,
     "processed_run_id": 41528181655,
     "provider_id": "c39d28ff-a6a5-4273-905d-6b312536b8aa",
     "failure_fingerprint": null,
@@ -3140,28 +3140,13 @@
       "previous_run_id": null,
       "observed_active_run_id": 41505957053,
       "dispatched_at": "2026-11-02T19:00:43.494041+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-11-02",
-      "inputs": {
-        "operation": "recovery",
-        "target_slug": "couples-social-baseline-theory",
-        "target_content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
-        "target_item_id": "video-20261102-232627-35b906afcd"
-      },
-      "intent_at": "2026-11-02T22:00:57.260900+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41528181655,
-      "observed_active_run_id": 41533608510,
-      "dispatched_at": "2026-11-02T22:00:57.260900+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 41527518343,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 41533608510,
     "conclusion": "success",
-    "source_slug": null,
+    "source_slug": "couples-social-baseline-theory",
     "slot": "2026-11-02"
   },
   "processed_child_notifications": [
