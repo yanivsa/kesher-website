@@ -1,17 +1,17 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "article_normalizing",
+  "status": "article_result_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-02T01:01:46.961924+00:00",
     "run_id": 41362070134,
-    "processed_run_id": 41357968167,
+    "processed_run_id": 41362070134,
     "provider_id": null,
-    "failure_fingerprint": "COMPLETED_WITHOUT_PR",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "COMPLETED_WITHOUT_PR": 1
     },
@@ -23,13 +23,13 @@
     "last_worker_result": {
       "schema_version": 1,
       "slot": "2026-11-02",
-      "outcome": "COMPLETED_WITHOUT_PR",
-      "retryable": true,
-      "message": "Jules completed without creating a pull request; Jules diagnostic: The task is complete. As per your instructions, I checked if current `main` already contained an article for the target Primary Keyword 'ילדים מחוננים התפתחות רגשית'. The article `gifted-children-asynchronous-development` is already present and targets this keyword. Therefore, I followed the directive to \"stop cleanly without editing anything and without creating another PR.\" I have successfully executed the full repository test suite to verify everything remains clean, removed any temporary files, and exited without opening a pull request.",
-      "session_id": "sessions/14537073619063615873",
-      "pr_url": "",
-      "github_run_id": "41357968167",
-      "completed_at": "2026-11-01T23:09:41.836169+00:00",
+      "outcome": "PR_CREATED",
+      "retryable": false,
+      "message": "Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
+      "session_id": "sessions/16513651425300945584",
+      "pr_url": "https://github.com/yanivsa/kesher-website/pull/1270",
+      "github_run_id": "41362070134",
+      "completed_at": "2026-11-01T23:58:22.737734+00:00",
       "diagnostic": {
         "source": {
           "name": "sources/github/yanivsa/kesher-website",
@@ -38,16 +38,16 @@
           "default_branch": "main",
           "main_available": true
         },
-        "activity_count": 28,
-        "change_set_count": 23,
+        "activity_count": 37,
+        "change_set_count": 34,
         "change_set_fingerprints": [],
-        "last_agent_message": "The task is complete. As per your instructions, I checked if current `main` already contained an article for the target Primary Keyword 'ילדים מחוננים התפתחות רגשית'. The article `gifted-children-asynchronous-development` is already present and targets this keyword. Therefore, I followed the directive to \"stop cleanly without editing anything and without creating another PR.\" I have successfully executed the full repository test suite to verify everything remains clean, removed any temporary files, and exited without opening a pull request.",
-        "last_progress": "Finished task cleanly without modifications.",
+        "last_agent_message": "",
+        "last_progress": "All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
         "last_description": "",
         "session_failed_reason": ""
       }
     },
-    "last_jules_session_id": "sessions/14537073619063615873",
+    "last_jules_session_id": "sessions/16513651425300945584",
     "last_failed_run_id": 41357968167,
     "pr_number": 1270,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1270",
@@ -1767,12 +1767,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T19:03:19.105067+00:00",
-      "from": "article_deploying",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-01T19:03:52.662872+00:00",
       "from": "article_live",
       "to": "video_running",
@@ -2468,9 +2462,20 @@
         "pr_number": 1270,
         "slot": "2026-11-02"
       }
+    },
+    {
+      "at": "2026-11-02T00:59:46.961952+00:00",
+      "from": "article_normalizing",
+      "to": "article_result_wait",
+      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
+      "details": {
+        "run_id": 41362070134,
+        "outcome": "PR_CREATED",
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1270"
+      }
     }
   ],
-  "updated_at": "2026-11-02T00:51:02.966621+00:00",
+  "updated_at": "2026-11-02T00:59:46.961961+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
