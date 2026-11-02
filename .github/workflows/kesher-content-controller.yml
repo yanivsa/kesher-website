@@ -113,6 +113,15 @@ jobs:
       - name: Install strict article image decoder
         run: python3 -m pip install -r scripts/requirements-article.txt
 
+      - name: Reconcile proven duplicate active idea deadlock
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          PYTHONPATH=. python3 -u scripts/kesher_recover_duplicate_active_idea.py
+          --cycle 2026-11-02
+          --idea-id gifted-asynchronous-development-1268
+          --completed-idea-id gifted-children-asynchronous-development
+
       - name: Run Kesher Content Controller
         id: content_controller
         # Leave time for the always() repair step if the content tick stalls.
