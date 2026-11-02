@@ -3,20 +3,20 @@
   "cycle": "2026-11-02",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 2,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41502919641,
     "processed_run_id": 41495758484,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 2,
       "JULES_TERMINAL_FAILURE": 1
     },
-    "attempts": 2,
+    "attempts": 0,
     "deploy_attempts": 0,
     "last_dispatch_at": "2026-11-02T18:41:15.877627+00:00",
     "last_run_conclusion": "failure",
@@ -67,7 +67,17 @@
     "image_head_sha": "e0d0a1cd35f6c0267d67a2a43ba26416eebfaa8e",
     "merge_candidate_sha": "e0d0a1cd35f6c0267d67a2a43ba26416eebfaa8e",
     "last_refunded_auto_merge_run_id": 41526573763,
-    "deferred_auto_merge_refund_count": 1
+    "deferred_auto_merge_refund_count": 1,
+    "slug": "couples-social-baseline-theory",
+    "title": "תיאוריית הבסיס החברתי בזוגיות: למה הכול מרגיש כבד יותר כשאנחנו מרגישים לבד?",
+    "url": "https://kesher.saharoni.com/blog/couples-social-baseline-theory",
+    "published_date": "2026-11-02",
+    "quality_content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-11-02T21:20:50.999101+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2546,7 +2556,8 @@
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
     "artifact_sha256": "7dcd65e300c7fa78f833b5c0ccde8916449f4ac6f77e8199a897dd5c99139e5d",
     "source_id": "local-editorial://couples-social-baseline-theory/3",
-    "run_id": 41526297801
+    "run_id": 41526297801,
+    "image_path": "/images/generated/blog/couples-social-baseline-theory.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3069,6 +3080,16 @@
       "previous_run_id": null,
       "observed_active_run_id": 41505957053,
       "dispatched_at": "2026-11-02T19:00:43.494041+00:00"
+    },
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-11-02",
+      "inputs": {},
+      "intent_at": "2026-11-02T21:20:48.363877+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "c58e6dae683113fee341687d25cee2358dffa3b8"
     }
   },
   "last_child_notification": {
