@@ -1,17 +1,9 @@
 #!/usr/bin/env python3
-"""Fail-closed owner recovery for a duplicate KESHER active idea.
+"""Fail-closed preflight for one proven duplicate KESHER active idea deadlock.
 
-This is deliberately narrow. It repairs canonical controller state only when:
-- the expected cycle and active idea match exactly;
-- the controller is terminally blocked on ARTICLE_ATTEMPTS_EXHAUSTED;
-- a specified prior idea is already complete with Article + Video + Short URLs;
-- the stale article PR is closed and unmerged; and
-- no article-generation workflow is currently active.
-
-The repair never retries generation for the duplicate. It archives that active idea as
-rejected, claims the next queued idea on the same publication slot, resets only the
-new cycle stages, persists state with an exact blob SHA, then wakes the canonical
-controller once.
+The pure recovery is deliberately strict and tested. The CLI is idempotent: outside
+its exact target cycle/idea/terminal state it is a no-op so it can live temporarily
+inside the canonical controller workflow without creating a second authority path.
 """
 from __future__ import annotations
 
@@ -30,7 +22,6 @@ from typing import Any, Callable
 STATE_REF = "automation-state"
 STATE_PATH = ".kesher-controller/state.json"
 ARTICLE_WORKFLOW = "kesher-article-generation.yml"
-CONTROLLER_WORKFLOW = "kesher-content-controller.yml"
 MAX_HISTORY = 50
 
 
@@ -76,7 +67,7 @@ def recover_duplicate_active_idea(
     pr_is_closed_unmerged: Callable[[int], bool],
     article_workflow_active: Callable[[], bool],
 ) -> bool:
-    """Apply one exact, auditable state transition; mutate only after all gates pass."""
+    """Apply one exact state transition, mutating only after every gate passes."""
     if not isinstance(state, dict):
         raise RecoveryError("STATE_INVALID")
     if str(state.get("cycle") or "") != target_cycle:
@@ -102,7 +93,6 @@ def recover_duplicate_active_idea(
     completed = _verified_completed_idea(state, completed_idea_id)
     if completed is None:
         raise RecoveryError("COMPLETED_SOURCE_NOT_VERIFIED")
-
     if article_workflow_active():
         raise RecoveryError("ARTICLE_WORKFLOW_ACTIVE")
 
@@ -125,7 +115,6 @@ def recover_duplicate_active_idea(
     if not replacement_id or replacement_id == target_idea_id:
         raise RecoveryError("REPLACEMENT_IDEA_INVALID")
 
-    # All external/identity checks have passed. Mutations start here.
     prior_status = str(state.get("status") or "")
     rejected = copy.deepcopy(active)
     rejected.update({
@@ -143,11 +132,7 @@ def recover_duplicate_active_idea(
     state["idea_history"] = idea_history[-MAX_HISTORY:]
 
     state["idea_queue"] = copy.deepcopy(queue[1:])
-    replacement.update({
-        "status": "claimed",
-        "publication_slot": target_cycle,
-        "claimed_at": now_iso,
-    })
+    replacement.update({"status": "claimed", "publication_slot": target_cycle, "claimed_at": now_iso})
     state["active_idea"] = replacement
 
     article_stage = _stage()
@@ -198,7 +183,7 @@ class GitHubAPI:
 
     def request(self, method: str, path: str, body: dict[str, Any] | None = None) -> Any:
         data = json.dumps(body, ensure_ascii=False, separators=(",", ":")).encode("utf-8") if body is not None else None
-        req = urllib.request.Request(
+        request = urllib.request.Request(
             self.api_root + path,
             data=data,
             method=method,
@@ -211,7 +196,7 @@ class GitHubAPI:
             },
         )
         try:
-            with urllib.request.urlopen(req, timeout=45) as response:
+            with urllib.request.urlopen(request, timeout=45) as response:
                 raw = response.read()
                 return json.loads(raw) if raw else {}
         except urllib.error.HTTPError as exc:
@@ -226,8 +211,7 @@ class GitHubAPI:
         if payload.get("encoding") != "base64":
             raise RecoveryError("STATE_ENCODING_INVALID")
         raw = base64.b64decode("".join(str(payload.get("content") or "").split()), validate=True)
-        state = json.loads(raw)
-        return state, str(payload.get("sha") or "")
+        return json.loads(raw), str(payload.get("sha") or "")
 
     def pr_is_closed_unmerged(self, number: int) -> bool:
         pr = self.request("GET", f"/repos/{self.repo}/pulls/{number}")
@@ -236,10 +220,9 @@ class GitHubAPI:
     def article_workflow_active(self) -> bool:
         for status in ("in_progress", "queued", "waiting", "pending", "requested"):
             payload = self.request(
-                "GET",
-                f"/repos/{self.repo}/actions/workflows/{ARTICLE_WORKFLOW}/runs?status={status}&per_page=10",
+                "GET", f"/repos/{self.repo}/actions/workflows/{ARTICLE_WORKFLOW}/runs?status={status}&per_page=10"
             )
-            if payload.get("total_count", 0):
+            if int(payload.get("total_count") or 0) > 0:
                 return True
         return False
 
@@ -257,14 +240,25 @@ class GitHubAPI:
             "sha": sha,
         })
 
-    def wake_controller(self) -> None:
-        self.request("POST", f"/repos/{self.repo}/actions/workflows/{CONTROLLER_WORKFLOW}/dispatches", {
-            "ref": "main",
-        })
-
 
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _cli_target_is_applicable(state: dict[str, Any], cycle: str, idea_id: str) -> bool:
+    active = state.get("active_idea") if isinstance(state.get("active_idea"), dict) else {}
+    last_error = state.get("last_error") if isinstance(state.get("last_error"), dict) else {}
+    article = state.get("article") if isinstance(state.get("article"), dict) else {}
+    attempts = int(article.get("attempts") or article.get("attempt_count") or 0)
+    return (
+        str(state.get("cycle") or "") == cycle
+        and str(active.get("idea_id") or "") == idea_id
+        and str(active.get("status") or "") == "claimed"
+        and str(state.get("status") or "") == "blocked"
+        and str(last_error.get("stage") or "") == "article"
+        and str(last_error.get("code") or "") == "ARTICLE_ATTEMPTS_EXHAUSTED"
+        and attempts >= 3
+    )
 
 
 def main() -> int:
@@ -277,21 +271,25 @@ def main() -> int:
 
     api = GitHubAPI(os.environ.get("GITHUB_TOKEN", ""), args.repo)
     state, sha = api.load_state()
-    changed = recover_duplicate_active_idea(
+    if not _cli_target_is_applicable(state, args.cycle, args.idea_id):
+        print("Duplicate-active-idea recovery not applicable; canonical controller continues")
+        return 0
+    if api.article_workflow_active():
+        print("Duplicate-active-idea recovery deferred: article workflow is active")
+        return 0
+
+    recover_duplicate_active_idea(
         state,
         target_cycle=args.cycle,
         target_idea_id=args.idea_id,
         completed_idea_id=args.completed_idea_id,
         now_iso=_utc_now(),
         pr_is_closed_unmerged=api.pr_is_closed_unmerged,
-        article_workflow_active=api.article_workflow_active,
+        article_workflow_active=lambda: False,
     )
-    if not changed:
-        print("No state change required")
-        return 0
     api.save_state(state, sha)
-    api.wake_controller()
-    print(f"Recovered duplicate active idea {args.idea_id}; canonical controller wake dispatched")
+    replacement = (state.get("active_idea") or {}).get("idea_id")
+    print(f"Recovered duplicate active idea {args.idea_id}; claimed replacement {replacement}")
     return 0
 
 
