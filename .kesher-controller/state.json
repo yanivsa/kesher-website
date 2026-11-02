@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-11-02T17:50:53.322214+00:00",
+    "next_retry_at": null,
     "run_id": 41488678242,
     "processed_run_id": 41488678242,
     "provider_id": null,
@@ -16,9 +16,9 @@
       "JULES_TIMEOUT_SESSION_ACTIVE": 1,
       "JULES_TERMINAL_FAILURE": 1
     },
-    "attempts": 1,
+    "attempts": 2,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-11-02T17:10:54.132066+00:00",
+    "last_dispatch_at": "2026-11-02T17:55:56.755134+00:00",
     "last_run_conclusion": "failure",
     "last_worker_result": {
       "schema_version": 1,
@@ -1762,12 +1762,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T13:56:29.056221+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-02T13:56:30.331075+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2440,9 +2434,19 @@
       "details": {
         "retry_at": "2026-11-02T17:50:53.322214+00:00"
       }
+    },
+    {
+      "at": "2026-11-02T17:55:56.755164+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 2,
+        "publication_slot": "2026-11-02"
+      }
     }
   ],
-  "updated_at": "2026-11-02T17:50:57.285910+00:00",
+  "updated_at": "2026-11-02T17:55:56.755171+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2972,9 +2976,10 @@
         "topic_brief": "ייעוץ זוגי — Social Baseline Theory (SBT), James A. Coan / David A. Sbarra. Create one authoritative Hebrew article and continue the SAME source identity through YouTube Video Overview and native 9:16 Short. Evidence anchors: Coan & Sbarra, Curr Opin Psychol 2015, DOI 10.1016/j.copsyc.2014.12.021 (SBT: social proximity can reduce perceived risk/effort); Coan, Schaefer & Davidson, Psychol Sci 2006, DOI 10.1111/j.1467-9280.2006.01832.x (spousal handholding attenuated neural threat responses; stronger effects with higher marital quality); Schnall et al., J Exp Soc Psychol 2008, DOI 10.1016/j.jesp.2008.04.011 (supportive social context associated with lower perceived hill steepness); Ein-Dor et al., Front Psychol 2015, DOI 10.3389/fpsyg.2015.00492 (social avoidance associated with higher basal glucose/consumption, correlational). FACT-CHECK GUARDS: do NOT claim the brain burns twice as much glucose/energy; do NOT state a generic '30% steeper' effect; do NOT present the supplied oxygen/calories wording as a verbatim Coan quote. Distinguish theory from demonstrated findings. Couple application: offer a brief 2-minute no-screen closeness/handholding ritual as a practical co-regulation exercise inspired by the evidence, explicitly not as a validated SBT protocol. Hook may focus on why ordinary life can feel heavier when partners feel alone inside the relationship. Tone: responsible, warm, non-pathologizing couples counseling; no medical promises. Include credible primary sources, at least 3 real internal blog links, and CTA to couples counseling. Critical identity invariant: idea_id couples-social-baseline-theory must bind only to its own new article slug/content hash and the long+short created from that same source; never adopt/reuse stool-withholding or gifted assets. Deduplicate before any create/upload.\n\nIdea Request ID: couples-social-baseline-theory\nRequired Primary Keyword: תיאוריית הבסיס החברתי בזוגיות"
       },
       "intent_at": "2026-11-02T17:55:45.690129+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41488678242,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-11-02T17:55:45.690129+00:00"
     }
   },
   "last_child_notification": {
