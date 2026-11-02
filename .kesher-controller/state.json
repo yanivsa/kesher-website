@@ -1728,12 +1728,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T13:36:24.292853+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-02T13:36:25.592270+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2358,9 +2352,18 @@
       "details": {
         "publication_slot": "2026-11-02"
       }
+    },
+    {
+      "at": "2026-11-02T16:51:07.468227+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "owner run-now article workflow already active",
+      "details": {
+        "publication_slot": "2026-11-02"
+      }
     }
   ],
-  "updated_at": "2026-11-02T16:46:38.458112+00:00",
+  "updated_at": "2026-11-02T16:51:07.468255+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
