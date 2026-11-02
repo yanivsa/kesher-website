@@ -54,7 +54,7 @@
     "current_pr_head_sha": "c1fd1337423b948aadd5d5bddd9aca8503f8926e",
     "jules_head_sha": "5b66484af2cfbea8f9e184c45fa538fa40ba7363",
     "normalization_slot": "2026-11-02",
-    "normalization_dispatched_at": "2026-11-02T05:31:06.317566+00:00"
+    "normalization_dispatched_at": "2026-11-02T06:10:58.139910+00:00"
   },
   "backlog": [
     {
@@ -1767,12 +1767,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T21:26:23.266712+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-01T21:26:24.534726+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2603,9 +2597,19 @@
         "pr_number": 1273,
         "slot": "2026-11-02"
       }
+    },
+    {
+      "at": "2026-11-02T06:10:58.139941+00:00",
+      "from": "article_normalizing",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1273,
+        "slot": "2026-11-02"
+      }
     }
   ],
-  "updated_at": "2026-11-02T05:31:06.317608+00:00",
+  "updated_at": "2026-11-02T06:10:58.139950+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -3130,9 +3134,10 @@
         "slot": "2026-11-02"
       },
       "intent_at": "2026-11-02T06:10:43.115981+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41398313007,
+      "dispatched_at": "2026-11-02T06:10:43.115981+00:00"
     }
   }
 }
