@@ -77,7 +77,7 @@
     "last_deploy_dispatch_at": "2026-11-02T10:00:06.933777+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41425191708,
-    "live_verified_at": "2026-11-02T11:41:06.498425+00:00"
+    "live_verified_at": "2026-11-02T11:41:36.355621+00:00"
   },
   "backlog": [
     {
@@ -1790,36 +1790,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T01:05:57.007622+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "owner run-now article dispatched immediately",
-      "details": {
-        "attempt": 3,
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
-      "at": "2026-11-02T01:11:13.458377+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
-      "at": "2026-11-02T01:15:49.666988+00:00",
-      "from": "article_generating",
-      "to": "article_result_wait",
-      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
-      "details": {
-        "run_id": 41370641101,
-        "outcome": "PR_CREATED",
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1270"
-      }
-    },
-    {
       "at": "2026-11-02T01:20:47.816115+00:00",
       "from": "article_result_wait",
       "to": "blocked",
@@ -2584,9 +2554,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-02T11:41:36.355647+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-02T11:41:37.610665+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-02T11:41:38.867025+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-02T11:36:23.557996+00:00",
+  "updated_at": "2026-11-02T11:41:38.867043+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
