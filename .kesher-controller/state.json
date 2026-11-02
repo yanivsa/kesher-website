@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "article_result_wait",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -1767,16 +1767,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T19:03:52.662872+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "new video workflow dispatched",
-      "details": {
-        "operation": "full",
-        "attempt": 1
-      }
-    },
-    {
       "at": "2026-11-01T19:06:02.389729+00:00",
       "from": "long_video_running",
       "to": "article_live",
@@ -2473,9 +2463,18 @@
         "outcome": "PR_CREATED",
         "pr_url": "https://github.com/yanivsa/kesher-website/pull/1270"
       }
+    },
+    {
+      "at": "2026-11-02T01:00:47.765206+00:00",
+      "from": "article_result_wait",
+      "to": "article_retry_wait",
+      "reason": "owner run-now article retry backoff is active",
+      "details": {
+        "retry_at": "2026-11-02T01:01:46.961924+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-02T00:59:46.961961+00:00",
+  "updated_at": "2026-11-02T01:00:47.765222+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
