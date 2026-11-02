@@ -3290,19 +3290,27 @@
         "long_url": "https://youtu.be/hZnOr_12YDU",
         "short_url": "https://youtu.be/bmofQnopjzw"
       }
+    },
+    {
+      "idea_id": "gifted-asynchronous-development-1268",
+      "fingerprint": "2e877bc730491a61af890e062018893cee14b0367ff69cfe80e06fc1755eaeb6",
+      "topic_brief": "Authoritative owner request: Issue #1268. Create one KESHER chain on gifted children and asynchronous development / inner loneliness. Use the full evidence, accuracy, SEO, practical parenting, visual and dedup safeguards in https://github.com/yanivsa/kesher-website/issues/1268. Preserve one identity Article -> Video Overview -> 9:16 Short; only 3 public verified assets = Done.",
+      "required_primary_keyword": "ילדים מחוננים התפתחות רגשית",
+      "run_now": true,
+      "status": "complete",
+      "requested_at": "2026-11-01T10:13:37.906537+00:00",
+      "publication_slot": "2026-11-02",
+      "claimed_at": "2026-11-01T22:36:15.953071+00:00",
+      "completed_at": "2026-11-02T11:00:21.433167+00:00",
+      "outputs": {
+        "slug": "stool-withholding-potty-training",
+        "article_url": "https://kesher.saharoni.com/blog/stool-withholding-potty-training",
+        "long_url": "https://youtu.be/xZotdUtnJXw",
+        "short_url": "https://youtu.be/Yy15MJftfEY"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "gifted-asynchronous-development-1268",
-    "fingerprint": "2e877bc730491a61af890e062018893cee14b0367ff69cfe80e06fc1755eaeb6",
-    "topic_brief": "Authoritative owner request: Issue #1268. Create one KESHER chain on gifted children and asynchronous development / inner loneliness. Use the full evidence, accuracy, SEO, practical parenting, visual and dedup safeguards in https://github.com/yanivsa/kesher-website/issues/1268. Preserve one identity Article -> Video Overview -> 9:16 Short; only 3 public verified assets = Done.",
-    "required_primary_keyword": "ילדים מחוננים התפתחות רגשית",
-    "run_now": true,
-    "status": "claimed",
-    "requested_at": "2026-11-01T10:13:37.906537+00:00",
-    "publication_slot": "2026-11-02",
-    "claimed_at": "2026-11-01T22:36:15.953071+00:00"
-  },
+  "active_idea": null,
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/stool-withholding-potty-training",
     "overview_youtube_url": "https://youtu.be/xZotdUtnJXw",
