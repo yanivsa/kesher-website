@@ -81,7 +81,7 @@
     "last_deploy_dispatch_at": "2026-11-02T21:20:55.889665+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41527518343,
-    "live_verified_at": "2026-11-02T22:32:21.071492+00:00"
+    "live_verified_at": "2026-11-02T22:32:52.768407+00:00"
   },
   "backlog": [
     {
@@ -1794,24 +1794,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T15:16:20.183937+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-02T15:16:21.333670+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-02T15:21:21.066426+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-02T15:21:22.269937+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2584,9 +2566,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-11-02T22:32:52.768431+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-02T22:32:54.116093+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-02T22:32:58.950601+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-11-02T22:31:35.019020+00:00",
+  "updated_at": "2026-11-02T22:32:58.950621+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -2609,7 +2609,7 @@
     "attempt_count": 2,
     "status": "complete",
     "last_error": null,
-    "next_retry_at": "2026-11-02T22:37:12.703404+00:00",
+    "next_retry_at": null,
     "run_id": 41536232746,
     "processed_run_id": 41534550166,
     "provider_id": "64cf7300-0482-4c35-8a75-3c2b16b7caea",
@@ -2657,7 +2657,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 41537997891,
     "processed_run_id": null,
     "provider_id": "64cf7300-0482-4c35-8a75-3c2b16b7caea",
     "failure_fingerprint": null,
