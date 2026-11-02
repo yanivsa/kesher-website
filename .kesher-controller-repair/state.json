@@ -273,8 +273,9 @@
       },
       "failure_class": "ARTICLE_ATTEMPTS_EXHAUSTED",
       "fingerprint": "0429c21736b9c9215db8c8901bfdcc868b621f1cf00e922ded49360808bdd10d",
+      "reason": "uncertain_create_not_discoverable",
       "stage": "controller",
-      "status": "uncertain"
+      "status": "human_blocker"
     },
     "a55e72df1cc6537a972077115734392a28b2dd15eb9fd5f051adf8639bae9fb0": {
       "acquisition_started_at": "2026-10-29T15:20:53.070156+00:00",
