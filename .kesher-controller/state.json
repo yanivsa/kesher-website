@@ -2978,19 +2978,6 @@
     "short_origin_verified": false
   },
   "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-11-02",
-      "inputs": {
-        "slot": "2026-11-02",
-        "topic_brief": "Authoritative owner request: Issue #1268. Create one KESHER chain on gifted children and asynchronous development / inner loneliness. Use the full evidence, accuracy, SEO, practical parenting, visual and dedup safeguards in https://github.com/yanivsa/kesher-website/issues/1268. Preserve one identity Article -> Video Overview -> 9:16 Short; only 3 public verified assets = Done.\n\nIdea Request ID: gifted-asynchronous-development-1268\nRequired Primary Keyword: ילדים מחוננים התפתחות רגשית"
-      },
-      "intent_at": "2026-11-01T23:25:43.570239+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41357968167,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-11-01T23:25:43.570239+00:00"
-    },
     "normalize-article-pr.yml": {
       "workflow": "normalize-article-pr.yml",
       "cycle": "2026-11-02",
@@ -3003,6 +2990,18 @@
       "previous_run_id": null,
       "observed_active_run_id": 41369350808,
       "dispatched_at": "2026-11-02T00:50:47.892157+00:00"
+    },
+    "kesher-article-generation.yml": {
+      "workflow": "kesher-article-generation.yml",
+      "cycle": "2026-11-02",
+      "inputs": {
+        "slot": "2026-11-02",
+        "topic_brief": "Authoritative owner request: Issue #1268. Create one KESHER chain on gifted children and asynchronous development / inner loneliness. Use the full evidence, accuracy, SEO, practical parenting, visual and dedup safeguards in https://github.com/yanivsa/kesher-website/issues/1268. Preserve one identity Article -> Video Overview -> 9:16 Short; only 3 public verified assets = Done.\n\nIdea Request ID: gifted-asynchronous-development-1268\nRequired Primary Keyword: ילדים מחוננים התפתחות רגשית"
+      },
+      "intent_at": "2026-11-02T01:05:41.652858+00:00",
+      "status": "intent",
+      "previous_run_id": 41362070134,
+      "observed_active_run_id": null
     }
   }
 }
