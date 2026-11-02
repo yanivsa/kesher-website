@@ -48,7 +48,11 @@
       }
     },
     "last_jules_session_id": "sessions/14537073619063615873",
-    "last_failed_run_id": 41357968167
+    "last_failed_run_id": 41357968167,
+    "pr_number": 1270,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1270",
+    "current_pr_head_sha": "5b66484af2cfbea8f9e184c45fa538fa40ba7363",
+    "jules_head_sha": "5b66484af2cfbea8f9e184c45fa538fa40ba7363"
   },
   "backlog": [
     {
@@ -2976,6 +2980,18 @@
       "previous_run_id": 41357968167,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-01T23:25:43.570239+00:00"
+    },
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
+      "cycle": "2026-11-02",
+      "inputs": {
+        "pr_number": "1270",
+        "slot": "2026-11-02"
+      },
+      "intent_at": "2026-11-02T00:00:46.205118+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   }
 }
