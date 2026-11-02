@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "blocked",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -54,7 +54,7 @@
     "current_pr_head_sha": "4fdf617abc22794829058ea783390bd9532839dc",
     "jules_head_sha": "5b66484af2cfbea8f9e184c45fa538fa40ba7363",
     "normalization_slot": "2026-11-02",
-    "normalization_dispatched_at": "2026-11-02T00:51:02.966585+00:00"
+    "normalization_dispatched_at": "2026-11-02T05:31:06.317566+00:00"
   },
   "backlog": [
     {
@@ -1764,19 +1764,8 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts",
-    "at": "2026-11-02T05:25:47.332458+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-11-01T21:20:58.472743+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
     {
       "at": "2026-11-01T21:26:23.266712+00:00",
       "from": "complete",
@@ -2604,9 +2593,19 @@
       "details": {
         "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-11-02T05:31:06.317598+00:00",
+      "from": "blocked",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1273,
+        "slot": "2026-11-02"
+      }
     }
   ],
-  "updated_at": "2026-11-02T05:25:47.332466+00:00",
+  "updated_at": "2026-11-02T05:31:06.317608+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -3131,9 +3130,10 @@
         "slot": "2026-11-02"
       },
       "intent_at": "2026-11-02T05:30:44.588532+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41394479226,
+      "dispatched_at": "2026-11-02T05:30:44.588532+00:00"
     }
   }
 }
