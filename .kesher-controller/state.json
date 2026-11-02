@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 2,
+    "attempt_count": 3,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-11-02T01:01:46.961924+00:00",
+    "next_retry_at": null,
     "run_id": 41362070134,
     "processed_run_id": 41362070134,
     "provider_id": null,
@@ -15,10 +15,10 @@
     "failure_count_by_type": {
       "COMPLETED_WITHOUT_PR": 1
     },
-    "attempts": 2,
+    "attempts": 3,
     "deploy_attempts": 0,
     "normalization_status": "running",
-    "last_dispatch_at": "2026-11-01T23:25:56.742324+00:00",
+    "last_dispatch_at": "2026-11-02T01:05:57.007600+00:00",
     "last_run_conclusion": "failure",
     "last_worker_result": {
       "schema_version": 1,
@@ -1767,12 +1767,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T19:06:02.389729+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-01T19:06:03.436654+00:00",
       "from": "article_live",
       "to": "video_running",
@@ -2472,9 +2466,19 @@
       "details": {
         "retry_at": "2026-11-02T01:01:46.961924+00:00"
       }
+    },
+    {
+      "at": "2026-11-02T01:05:57.007622+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 3,
+        "publication_slot": "2026-11-02"
+      }
     }
   ],
-  "updated_at": "2026-11-02T01:00:47.765222+00:00",
+  "updated_at": "2026-11-02T01:05:57.007627+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2999,9 +3003,10 @@
         "topic_brief": "Authoritative owner request: Issue #1268. Create one KESHER chain on gifted children and asynchronous development / inner loneliness. Use the full evidence, accuracy, SEO, practical parenting, visual and dedup safeguards in https://github.com/yanivsa/kesher-website/issues/1268. Preserve one identity Article -> Video Overview -> 9:16 Short; only 3 public verified assets = Done.\n\nIdea Request ID: gifted-asynchronous-development-1268\nRequired Primary Keyword: ילדים מחוננים התפתחות רגשית"
       },
       "intent_at": "2026-11-02T01:05:41.652858+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41362070134,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-11-02T01:05:41.652858+00:00"
     }
   }
 }
