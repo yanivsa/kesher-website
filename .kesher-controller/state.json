@@ -71,13 +71,13 @@
     "quality_content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-02T10:25:51.636884+00:00",
+    "quality_checked_at": "2026-11-02T10:30:12.172350+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-02T10:00:06.933777+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41425191708,
-    "live_verified_at": "2026-11-02T10:26:12.261649+00:00"
+    "live_verified_at": "2026-11-02T10:30:13.202371+00:00"
   },
   "backlog": [
     {
@@ -3208,26 +3208,11 @@
       "previous_run_id": null,
       "observed_active_run_id": 41398313007,
       "dispatched_at": "2026-11-02T06:10:43.115981+00:00"
-    },
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-11-02",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "stool-withholding-potty-training",
-        "derive_content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
-        "derive_long_item_id": "video-20261102-120920-b66776d3b0"
-      },
-      "intent_at": "2026-11-02T10:20:45.847796+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41428160932,
-      "dispatched_at": "2026-11-02T10:20:45.847796+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 41426298898,
+    "workflow": "Kesher Daily Article Short V4",
+    "run_id": 41428160932,
     "conclusion": "success",
     "source_slug": "stool-withholding-potty-training",
     "slot": "2026-11-02"
