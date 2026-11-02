@@ -1759,21 +1759,8 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "JULES_TERMINAL_FAILURE",
-    "message": "Jules ended with terminal state FAILED; Jules diagnostic: Jules was unable to complete the task.",
-    "retryable": true,
-    "retry_at": "2026-11-02T17:50:53.322214+00:00",
-    "at": "2026-11-02T17:45:53.322235+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-11-02T13:56:27.793570+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-11-02T13:56:29.056221+00:00",
       "from": "article_live",
@@ -2444,9 +2431,18 @@
         "run_id": 41488678242,
         "session_id": "sessions/14530118500646372484"
       }
+    },
+    {
+      "at": "2026-11-02T17:50:57.285892+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "owner run-now article retry backoff is active",
+      "details": {
+        "retry_at": "2026-11-02T17:50:53.322214+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-02T17:45:53.322245+00:00",
+  "updated_at": "2026-11-02T17:50:57.285910+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
