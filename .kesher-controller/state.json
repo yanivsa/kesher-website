@@ -1,19 +1,19 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-02T18:46:09.797499+00:00",
     "run_id": 41495758484,
-    "processed_run_id": 41488678242,
+    "processed_run_id": 41495758484,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TERMINAL_FAILURE",
+    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
     "same_failure_streak": 1,
     "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 1,
+      "JULES_TIMEOUT_SESSION_ACTIVE": 2,
       "JULES_TERMINAL_FAILURE": 1
     },
     "attempts": 2,
@@ -23,13 +23,13 @@
     "last_worker_result": {
       "schema_version": 1,
       "slot": "2026-11-02",
-      "outcome": "JULES_TERMINAL_FAILURE",
+      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
       "retryable": true,
-      "message": "Jules ended with terminal state FAILED; Jules diagnostic: Jules was unable to complete the task.",
-      "session_id": "sessions/14530118500646372484",
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Started test suite in the background.",
+      "session_id": "sessions/15923825558660971853",
       "pr_url": "",
-      "github_run_id": "41488678242",
-      "completed_at": "2026-11-02T17:40:10.941627+00:00",
+      "github_run_id": "41495758484",
+      "completed_at": "2026-11-02T18:37:03.313526+00:00",
       "diagnostic": {
         "source": {
           "name": "sources/github/yanivsa/kesher-website",
@@ -38,17 +38,17 @@
           "default_branch": "main",
           "main_available": true
         },
-        "activity_count": 79,
-        "change_set_count": 75,
+        "activity_count": 42,
+        "change_set_count": 40,
         "change_set_fingerprints": [],
         "last_agent_message": "",
-        "last_progress": "Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish exactly one new Hebrew article about \"Social Baseline Theory\" for couples counseling on the date `2026-11-02`, strictly following formatting guidelines, a specific primary keyword, and a rule to explicitly omit image generation in this specific run. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully adds the new article to `src/data/posts.json`, omitting the `image` and `imageAlt` fields as strictly required by the `PIPELINE V3 IMAGE-STAGE OVERRIDE`. It uses the…",
+        "last_progress": "Started test suite in the background.",
         "last_description": "",
-        "session_failed_reason": "Jules was unable to complete the task."
+        "session_failed_reason": ""
       }
     },
-    "last_jules_session_id": "sessions/14530118500646372484",
-    "last_failed_run_id": 41488678242,
+    "last_jules_session_id": "sessions/15923825558660971853",
+    "last_failed_run_id": 41495758484,
     "resume_dispatches": 1
   },
   "backlog": [
@@ -1759,14 +1759,15 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Started test suite in the background.",
+    "retryable": true,
+    "retry_at": "2026-11-02T18:46:09.797499+00:00",
+    "at": "2026-11-02T18:41:09.797519+00:00"
+  },
   "history": [
-    {
-      "at": "2026-11-02T14:11:16.157943+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-11-02T14:11:17.110332+00:00",
       "from": "long_video_complete",
@@ -2468,9 +2469,22 @@
       "details": {
         "publication_slot": "2026-11-02"
       }
+    },
+    {
+      "at": "2026-11-02T18:41:09.797522+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "details": {
+        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Started test suite in the background.",
+        "retry_at": "2026-11-02T18:46:09.797499+00:00",
+        "failure_streak": 1,
+        "run_id": 41495758484,
+        "session_id": "sessions/15923825558660971853"
+      }
     }
   ],
-  "updated_at": "2026-11-02T18:35:56.410794+00:00",
+  "updated_at": "2026-11-02T18:41:09.797527+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2999,11 +3013,10 @@
         "slot": "2026-11-02",
         "topic_brief": "ייעוץ זוגי — Social Baseline Theory (SBT), James A. Coan / David A. Sbarra. Create one authoritative Hebrew article and continue the SAME source identity through YouTube Video Overview and native 9:16 Short. Evidence anchors: Coan & Sbarra, Curr Opin Psychol 2015, DOI 10.1016/j.copsyc.2014.12.021 (SBT: social proximity can reduce perceived risk/effort); Coan, Schaefer & Davidson, Psychol Sci 2006, DOI 10.1111/j.1467-9280.2006.01832.x (spousal handholding attenuated neural threat responses; stronger effects with higher marital quality); Schnall et al., J Exp Soc Psychol 2008, DOI 10.1016/j.jesp.2008.04.011 (supportive social context associated with lower perceived hill steepness); Ein-Dor et al., Front Psychol 2015, DOI 10.3389/fpsyg.2015.00492 (social avoidance associated with higher basal glucose/consumption, correlational). FACT-CHECK GUARDS: do NOT claim the brain burns twice as much glucose/energy; do NOT state a generic '30% steeper' effect; do NOT present the supplied oxygen/calories wording as a verbatim Coan quote. Distinguish theory from demonstrated findings. Couple application: offer a brief 2-minute no-screen closeness/handholding ritual as a practical co-regulation exercise inspired by the evidence, explicitly not as a validated SBT protocol. Hook may focus on why ordinary life can feel heavier when partners feel alone inside the relationship. Tone: responsible, warm, non-pathologizing couples counseling; no medical promises. Include credible primary sources, at least 3 real internal blog links, and CTA to couples counseling. Critical identity invariant: idea_id couples-social-baseline-theory must bind only to its own new article slug/content hash and the long+short created from that same source; never adopt/reuse stool-withholding or gifted assets. Deduplicate before any create/upload.\n\nIdea Request ID: couples-social-baseline-theory\nRequired Primary Keyword: תיאוריית הבסיס החברתי בזוגיות"
       },
-      "intent_at": "2026-11-02T17:55:45.690129+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41488678242,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-11-02T17:55:45.690129+00:00"
+      "intent_at": "2026-11-02T18:40:59.715315+00:00",
+      "status": "intent",
+      "previous_run_id": 41495758484,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
