@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -51,11 +51,16 @@
     "last_failed_run_id": 41357968167,
     "pr_number": 1273,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1273",
-    "current_pr_head_sha": "d21cedba5973e4b85fcfdee84a8ac4111cd95833",
+    "current_pr_head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
     "jules_head_sha": "5b66484af2cfbea8f9e184c45fa538fa40ba7363",
     "normalization_slot": "2026-11-02",
     "normalization_dispatched_at": "2026-11-02T06:10:58.139910+00:00",
-    "normalized_head_sha": "d21cedba5973e4b85fcfdee84a8ac4111cd95833"
+    "normalized_head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
+    "image_head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
+    "merge_candidate_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
+    "normalization_drift_count": 0,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null
   },
   "backlog": [
     {
@@ -1768,12 +1773,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T21:26:25.932753+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-11-01T21:31:00.592600+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2612,21 +2611,29 @@
         "attempt": 1,
         "pr_number": 1273
       }
+    },
+    {
+      "at": "2026-11-02T09:53:03.943254+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-11-02T09:51:02.231940+00:00",
+  "updated_at": "2026-11-02T09:53:03.943270+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41423989896,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "LocalEditorial",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-11-02T09:51:02.231902+00:00"
+    "last_dispatch_at": "2026-11-02T09:51:02.231902+00:00",
+    "artifact_sha256": "6eb41e0cb5c933a7a04b58f33f6e6fbd55d206d3a251d341bd4b4024914b37c5",
+    "source_id": "local-editorial://stool-withholding-potty-training/4"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3145,17 +3152,24 @@
       "observed_active_run_id": 41398313007,
       "dispatched_at": "2026-11-02T06:10:43.115981+00:00"
     },
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
       "cycle": "2026-11-02",
       "inputs": {
-        "pr_number": "1273"
+        "pr_number": "1273",
+        "slot": "2026-11-02"
       },
-      "intent_at": "2026-11-02T09:50:42.433453+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-11-02T09:52:34.675089+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": 41423989896,
-      "dispatched_at": "2026-11-02T09:50:42.433453+00:00"
+      "observed_active_run_id": null
     }
+  },
+  "last_child_notification": {
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 41423989896,
+    "conclusion": "success",
+    "source_slug": null,
+    "slot": "2026-11-02"
   }
 }
