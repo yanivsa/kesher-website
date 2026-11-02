@@ -59,8 +59,11 @@
     "image_head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
     "merge_candidate_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
     "normalization_drift_count": 0,
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-11-02T09:53:08.304969+00:00"
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": "2026-11-02T09:53:08.304969+00:00",
+    "merge_run_id": 41424266285,
+    "last_refunded_auto_merge_run_id": 41424266285,
+    "deferred_auto_merge_refund_count": 1
   },
   "backlog": [
     {
@@ -1773,12 +1776,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T21:31:00.592600+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-01T21:31:01.104047+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2617,6 +2614,19 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-11-02T09:54:35.371791+00:00",
+      "from": "article_pr_open",
+      "to": "article_pr_open",
+      "reason": "successful_deferred_auto_merge_refunded",
+      "details": {
+        "run_id": 41424266285,
+        "pr_number": 1273,
+        "head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
+        "merge_dispatch_count": 0,
+        "refund_count": 1
+      }
     }
   ],
   "updated_at": "2026-11-02T09:53:03.943270+00:00",
@@ -3151,24 +3161,11 @@
       "previous_run_id": null,
       "observed_active_run_id": 41398313007,
       "dispatched_at": "2026-11-02T06:10:43.115981+00:00"
-    },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
-      "cycle": "2026-11-02",
-      "inputs": {
-        "pr_number": "1273",
-        "slot": "2026-11-02"
-      },
-      "intent_at": "2026-11-02T09:52:34.675089+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41424266285,
-      "dispatched_at": "2026-11-02T09:52:34.675089+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Trusted Article Image",
-    "run_id": 41423989896,
+    "workflow": "Auto-merge Kesher article PRs",
+    "run_id": 41424266285,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-02"
