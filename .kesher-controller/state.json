@@ -75,13 +75,13 @@
     "quality_content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-02T23:05:46.058313+00:00",
+    "quality_checked_at": "2026-11-02T23:09:58.370147+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-02T21:20:55.889665+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41527518343,
-    "live_verified_at": "2026-11-02T23:05:46.971918+00:00"
+    "live_verified_at": "2026-11-02T23:10:01.213880+00:00"
   },
   "backlog": [
     {
@@ -2661,7 +2661,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41537997891,
+    "run_id": 41542055289,
     "processed_run_id": null,
     "provider_id": "64cf7300-0482-4c35-8a75-3c2b16b7caea",
     "failure_fingerprint": null,
@@ -3177,26 +3177,11 @@
       "previous_run_id": null,
       "observed_active_run_id": 41505957053,
       "dispatched_at": "2026-11-02T19:00:43.494041+00:00"
-    },
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-11-02",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "couples-social-baseline-theory",
-        "derive_content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
-        "derive_long_item_id": "video-20261103-002015-35b906afcd-a3"
-      },
-      "intent_at": "2026-11-02T23:00:51.410455+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41537997891,
-      "observed_active_run_id": 41542055289,
-      "dispatched_at": "2026-11-02T23:00:51.410455+00:00"
     }
   },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
-    "run_id": 41537997891,
+    "run_id": 41542055289,
     "conclusion": "success",
     "source_slug": "couples-social-baseline-theory",
     "slot": "2026-11-02"
