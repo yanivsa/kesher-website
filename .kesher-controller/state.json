@@ -3260,19 +3260,27 @@
         "long_url": "https://youtu.be/xZotdUtnJXw",
         "short_url": "https://youtu.be/Yy15MJftfEY"
       }
+    },
+    {
+      "idea_id": "couples-social-baseline-theory",
+      "fingerprint": "ed3ed6c4eb9788edf0e6cf0dc1e1796ccef89f731e50c1b99777370b0401abda",
+      "topic_brief": "ייעוץ זוגי — Social Baseline Theory (SBT), James A. Coan / David A. Sbarra. Create one authoritative Hebrew article and continue the SAME source identity through YouTube Video Overview and native 9:16 Short. Evidence anchors: Coan & Sbarra, Curr Opin Psychol 2015, DOI 10.1016/j.copsyc.2014.12.021 (SBT: social proximity can reduce perceived risk/effort); Coan, Schaefer & Davidson, Psychol Sci 2006, DOI 10.1111/j.1467-9280.2006.01832.x (spousal handholding attenuated neural threat responses; stronger effects with higher marital quality); Schnall et al., J Exp Soc Psychol 2008, DOI 10.1016/j.jesp.2008.04.011 (supportive social context associated with lower perceived hill steepness); Ein-Dor et al., Front Psychol 2015, DOI 10.3389/fpsyg.2015.00492 (social avoidance associated with higher basal glucose/consumption, correlational). FACT-CHECK GUARDS: do NOT claim the brain burns twice as much glucose/energy; do NOT state a generic '30% steeper' effect; do NOT present the supplied oxygen/calories wording as a verbatim Coan quote. Distinguish theory from demonstrated findings. Couple application: offer a brief 2-minute no-screen closeness/handholding ritual as a practical co-regulation exercise inspired by the evidence, explicitly not as a validated SBT protocol. Hook may focus on why ordinary life can feel heavier when partners feel alone inside the relationship. Tone: responsible, warm, non-pathologizing couples counseling; no medical promises. Include credible primary sources, at least 3 real internal blog links, and CTA to couples counseling. Critical identity invariant: idea_id couples-social-baseline-theory must bind only to its own new article slug/content hash and the long+short created from that same source; never adopt/reuse stool-withholding or gifted assets. Deduplicate before any create/upload.",
+      "required_primary_keyword": "תיאוריית הבסיס החברתי בזוגיות",
+      "run_now": true,
+      "status": "complete",
+      "requested_at": "2026-11-02T16:05:44.820933+00:00",
+      "publication_slot": "2026-11-02",
+      "claimed_at": "2026-11-02T16:05:46.429229+00:00",
+      "completed_at": "2026-11-02T23:11:01.409369+00:00",
+      "outputs": {
+        "slug": "couples-social-baseline-theory",
+        "article_url": "https://kesher.saharoni.com/blog/couples-social-baseline-theory",
+        "long_url": "https://youtu.be/u74a6XImxWw",
+        "short_url": "https://youtu.be/vnOyiBp3IBk"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "couples-social-baseline-theory",
-    "fingerprint": "ed3ed6c4eb9788edf0e6cf0dc1e1796ccef89f731e50c1b99777370b0401abda",
-    "topic_brief": "ייעוץ זוגי — Social Baseline Theory (SBT), James A. Coan / David A. Sbarra. Create one authoritative Hebrew article and continue the SAME source identity through YouTube Video Overview and native 9:16 Short. Evidence anchors: Coan & Sbarra, Curr Opin Psychol 2015, DOI 10.1016/j.copsyc.2014.12.021 (SBT: social proximity can reduce perceived risk/effort); Coan, Schaefer & Davidson, Psychol Sci 2006, DOI 10.1111/j.1467-9280.2006.01832.x (spousal handholding attenuated neural threat responses; stronger effects with higher marital quality); Schnall et al., J Exp Soc Psychol 2008, DOI 10.1016/j.jesp.2008.04.011 (supportive social context associated with lower perceived hill steepness); Ein-Dor et al., Front Psychol 2015, DOI 10.3389/fpsyg.2015.00492 (social avoidance associated with higher basal glucose/consumption, correlational). FACT-CHECK GUARDS: do NOT claim the brain burns twice as much glucose/energy; do NOT state a generic '30% steeper' effect; do NOT present the supplied oxygen/calories wording as a verbatim Coan quote. Distinguish theory from demonstrated findings. Couple application: offer a brief 2-minute no-screen closeness/handholding ritual as a practical co-regulation exercise inspired by the evidence, explicitly not as a validated SBT protocol. Hook may focus on why ordinary life can feel heavier when partners feel alone inside the relationship. Tone: responsible, warm, non-pathologizing couples counseling; no medical promises. Include credible primary sources, at least 3 real internal blog links, and CTA to couples counseling. Critical identity invariant: idea_id couples-social-baseline-theory must bind only to its own new article slug/content hash and the long+short created from that same source; never adopt/reuse stool-withholding or gifted assets. Deduplicate before any create/upload.",
-    "required_primary_keyword": "תיאוריית הבסיס החברתי בזוגיות",
-    "run_now": true,
-    "status": "claimed",
-    "requested_at": "2026-11-02T16:05:44.820933+00:00",
-    "publication_slot": "2026-11-02",
-    "claimed_at": "2026-11-02T16:05:46.429229+00:00"
-  },
+  "active_idea": null,
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/couples-social-baseline-theory",
     "overview_youtube_url": "https://youtu.be/u74a6XImxWw",
