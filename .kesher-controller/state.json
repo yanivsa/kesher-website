@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "long_video_complete",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1794,12 +1794,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T15:16:19.198961+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-02T15:16:20.183937+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2584,9 +2578,15 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-02T22:31:35.019012+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-11-02T22:31:24.670877+00:00",
+  "updated_at": "2026-11-02T22:31:35.019020+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -2653,16 +2653,20 @@
     "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "64cf7300-0482-4c35-8a75-3c2b16b7caea",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-11-02T22:31:35.018983+00:00",
+    "artifact_id": "64cf7300-0482-4c35-8a75-3c2b16b7caea",
+    "source_id": "6808d5dc-6ac7-4909-8aca-c0045ba265a2",
+    "adopted_from_long_item_id": "video-20261103-002015-35b906afcd-a3"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3187,9 +3191,10 @@
         "derive_long_item_id": "video-20261103-002015-35b906afcd-a3"
       },
       "intent_at": "2026-11-02T22:30:44.915086+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41537997891,
+      "dispatched_at": "2026-11-02T22:30:44.915086+00:00"
     }
   },
   "last_child_notification": {
