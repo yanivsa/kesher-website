@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41502919641,
@@ -81,7 +81,7 @@
     "last_deploy_dispatch_at": "2026-11-02T21:20:55.889665+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41527518343,
-    "live_verified_at": "2026-11-02T23:10:01.213880+00:00"
+    "live_verified_at": "2026-11-02T23:10:49.516385+00:00"
   },
   "backlog": [
     {
@@ -1794,24 +1794,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T15:26:24.103599+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-02T15:31:14.509812+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-02T15:31:15.330549+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-02T15:31:16.268513+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2588,9 +2570,27 @@
         "item_id": "video-20261103-003318-35b906afcd",
         "long_item_id": "video-20261103-002015-35b906afcd-a3"
       }
+    },
+    {
+      "at": "2026-11-02T23:10:49.516417+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-02T23:10:51.321679+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-02T23:10:53.004444+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-02T23:01:19.031112+00:00",
+  "updated_at": "2026-11-02T23:10:53.004464+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -2658,19 +2658,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41542055289,
     "processed_run_id": null,
-    "provider_id": "64cf7300-0482-4c35-8a75-3c2b16b7caea",
+    "provider_id": "6b82ea54-8dd3-4b6f-886b-5ac7d911fe6e",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-11-02T23:01:19.031086+00:00",
-    "artifact_id": "64cf7300-0482-4c35-8a75-3c2b16b7caea",
-    "source_id": "6808d5dc-6ac7-4909-8aca-c0045ba265a2",
-    "adopted_from_long_item_id": "video-20261103-002015-35b906afcd-a3",
+    "artifact_id": "6b82ea54-8dd3-4b6f-886b-5ac7d911fe6e",
+    "source_id": "a6e50270-4057-4712-b30d-ed61ee51f1b7",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:couples-social-baseline-theory:35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5:video-20261103-003318-35b906afcd",
       "hard_started_at": "2026-11-02T22:33:25.818248+00:00",
@@ -2678,7 +2678,125 @@
       "last_fingerprint": "e49d1e5bff8c43038be0c1f3edb2df019c70d704e89988305ff628ab85cf6b3f",
       "recovery_count": 1,
       "last_recovery_at": "2026-11-02T23:00:51.410455+00:00"
-    }
+    },
+    "source": {
+      "id": "couples-social-baseline-theory",
+      "slug": "couples-social-baseline-theory",
+      "title": "תיאוריית הבסיס החברתי בזוגיות: למה הכול מרגיש כבד יותר כשאנחנו מרגישים לבד?",
+      "date": "2026-11-02",
+      "category": "ייעוץ זוגי",
+      "subcategory": "תקשורת זוגית",
+      "excerpt": "תיאוריית הבסיס החברתי בזוגיות מציעה שהמוח מצפה לזמינות של קשרים קרובים ומשאבים חברתיים. מה באמת הראו מחקרי אחיזת היד, תפיסת המאמץ והגלוקוז — ואיך אפשר לתרגם את הרעיון לצעד זוגי קטן בלי להפוך תיאוריה להבטחה?",
+      "canonical_url": "https://kesher.saharoni.com/blog/couples-social-baseline-theory",
+      "content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
+      "video_title": "תיאוריית הבסיס החברתי בזוגיות: למה הכול מרגיש כבד יותר כשאנחנו מרגישים לבד?",
+      "short_title": "תיאוריית הבסיס החברתי בזוגיות: למה הכול מרגיש כבד יותר כשאנחנו מרגישים לבד?",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "תיאוריית הבסיס החברתי בזוגיות: למה הכול מרגיש כבד יותר כשאנחנו מרגישים לבד?",
+        "description": "תיאוריית הבסיס החברתי בזוגיות מציעה שהמוח מצפה לזמינות של קשרים קרובים ומשאבים חברתיים. מה באמת הראו מחקרי אחיזת היד, תפיסת המאמץ והגלוקוז — ואיך אפשר לתרגם את הרעיון לצעד זוגי קטן בלי להפוך תיאוריה להבטחה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/couples-social-baseline-theory\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "ייעוץ זוגי",
+          "תקשורת זוגית"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: תיאוריית הבסיס החברתי בזוגיות: למה הכול מרגיש כבד יותר כשאנחנו מרגישים לבד?",
+        "description": "תיאוריית הבסיס החברתי בזוגיות מציעה שהמוח מצפה לזמינות של קשרים קרובים ומשאבים חברתיים. מה באמת הראו מחקרי אחיזת היד, תפיסת המאמץ והגלוקוז — ואיך אפשר לתרגם את הרעיון לצעד זוגי קטן בלי להפוך תיאוריה להבטחה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/couples-social-baseline-theory\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "ייעוץ זוגי",
+          "תקשורת זוגית"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "6b82ea54-8dd3-4b6f-886b-5ac7d911fe6e",
+    "raw_sha256": "44758453d6f4d3bf13a5d90669927576f1448c15d31c2039649e01de2b465506",
+    "final_sha256": "9f59ca6acd9931f752bc221347887076123849c06d23f8444823bcc18b4222ab",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 99.0,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 99.0,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "6808d5dc-6ac7-4909-8aca-c0045ba265a2",
+      "task_id": "64cf7300-0482-4c35-8a75-3c2b16b7caea",
+      "artifact_id": "64cf7300-0482-4c35-8a75-3c2b16b7caea",
+      "raw_sha256": "a901f9da42c9ece36d97609f718e46501e6ab15de710cd6f8a1f56726a2976d7"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 99.0,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "44758453d6f4d3bf13a5d90669927576f1448c15d31c2039649e01de2b465506",
+      "final_sha256": "9f59ca6acd9931f752bc221347887076123849c06d23f8444823bcc18b4222ab",
+      "raw_audio_sha256": "7ad3cdf22d6de973be124c67d633cd5a3e5a6465ab439e2c4f6c3b3e5438defe",
+      "final_audio_sha256": "7ad3cdf22d6de973be124c67d633cd5a3e5a6465ab439e2c4f6c3b3e5438defe",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 99.056327
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 99.056327
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "9f59ca6acd9931f752bc221347887076123849c06d23f8444823bcc18b4222ab",
+      "raw_sha256": "44758453d6f4d3bf13a5d90669927576f1448c15d31c2039649e01de2b465506",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "fb6b15b25ef198ab73756ccae1465af4617c91541442e7d1cbbc8668a588f475",
+      "source_duration_seconds": 99.0,
+      "final_duration_seconds": 99.0,
+      "start_seconds": 96.0,
+      "end_seconds": 99.0,
+      "audio_source_sha256": "44758453d6f4d3bf13a5d90669927576f1448c15d31c2039649e01de2b465506"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261103-003318-35b906afcd",
+    "type": "article_short",
+    "youtube_id": "vnOyiBp3IBk",
+    "youtube_url": "https://youtu.be/vnOyiBp3IBk",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "fb6b15b25ef198ab73756ccae1465af4617c91541442e7d1cbbc8668a588f475",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
