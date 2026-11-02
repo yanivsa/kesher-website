@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "article_pr_open",
+  "status": "article_image_rebinding",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -52,20 +52,18 @@
     "resume_dispatches": 2,
     "pr_number": 1274,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1274",
-    "current_pr_head_sha": "4bbc12d078ff48a7ac922f3d870cc33a33dc0e1f",
+    "current_pr_head_sha": "e0d0a1cd35f6c0267d67a2a43ba26416eebfaa8e",
     "jules_head_sha": "3b54560d6061bfc38a4a6c90e2e79fdcfb725991",
     "normalization_status": "complete",
     "normalization_slot": "2026-11-02",
     "normalization_dispatched_at": "2026-11-02T19:00:58.323474+00:00",
     "normalization_run_id": 41505957053,
-    "normalization_drift_count": 1,
-    "last_normalization_drift_head_sha": "4bbc12d078ff48a7ac922f3d870cc33a33dc0e1f",
+    "normalization_drift_count": 2,
+    "last_normalization_drift_head_sha": "e0d0a1cd35f6c0267d67a2a43ba26416eebfaa8e",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
-    "normalized_head_sha": "4bbc12d078ff48a7ac922f3d870cc33a33dc0e1f",
-    "image_head_sha": "4bbc12d078ff48a7ac922f3d870cc33a33dc0e1f",
-    "merge_candidate_sha": "4bbc12d078ff48a7ac922f3d870cc33a33dc0e1f",
-    "merge_run_id": 41525880713
+    "merge_run_id": 41525880713,
+    "normalized_head_sha": "e0d0a1cd35f6c0267d67a2a43ba26416eebfaa8e"
   },
   "backlog": [
     {
@@ -1778,12 +1776,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T14:26:26.437801+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-02T14:26:26.897270+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2515,15 +2507,24 @@
       "from": "article_image_rebinding",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-11-02T21:13:49.545440+00:00",
+      "from": "article_pr_open",
+      "to": "article_image_rebinding",
+      "reason": "prior trusted image artifact reattach already active",
+      "details": {
+        "pr_number": 1274,
+        "head_sha": "e0d0a1cd35f6c0267d67a2a43ba26416eebfaa8e"
+      }
     }
   ],
-  "updated_at": "2026-11-02T21:12:23.950475+00:00",
+  "updated_at": "2026-11-02T21:13:49.545465+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41525290787,
     "processed_run_id": null,
     "provider_id": "LocalEditorial",
     "failure_fingerprint": null,
@@ -2533,7 +2534,8 @@
     "evidence_rebind_dispatched_at": "2026-11-02T21:06:31.353926+00:00",
     "evidence_rebind_mode": "reattach_prior_trusted_artifact",
     "artifact_sha256": "7dcd65e300c7fa78f833b5c0ccde8916449f4ac6f77e8199a897dd5c99139e5d",
-    "source_id": "local-editorial://couples-social-baseline-theory/3"
+    "source_id": "local-editorial://couples-social-baseline-theory/3",
+    "run_id": 41526297801
   },
   "long_video": {
     "attempt_count": 0,
