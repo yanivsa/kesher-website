@@ -2714,7 +2714,15 @@
     "last_dispatch_at": "2026-11-02T10:21:34.952952+00:00",
     "artifact_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
     "source_id": "13dc8ffa-f038-424c-80c3-8749d1b83f6a",
-    "adopted_from_long_item_id": "video-20261102-120920-b66776d3b0"
+    "adopted_from_long_item_id": "video-20261102-120920-b66776d3b0",
+    "watchdog": {
+      "identity": "short:stool-withholding-potty-training:b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734:video-20261102-122309-b66776d3b0",
+      "hard_started_at": "2026-11-02T10:23:15.443698+00:00",
+      "last_progress_at": "2026-11-02T10:30:08.523650+00:00",
+      "last_fingerprint": "0869c0fccf42e240853575b0bcc054b56faebd54b5eb9a7d6fd65984ecd8d70b",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
