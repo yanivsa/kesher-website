@@ -71,13 +71,13 @@
     "quality_content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-02T10:15:56.091155+00:00",
+    "quality_checked_at": "2026-11-02T10:20:51.932798+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-02T10:00:06.933777+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41425191708,
-    "live_verified_at": "2026-11-02T10:16:33.011742+00:00"
+    "live_verified_at": "2026-11-02T10:20:53.739694+00:00"
   },
   "backlog": [
     {
@@ -2672,16 +2672,33 @@
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-02T10:25:45.847796+00:00",
     "run_id": 41426298898,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-11-02T10:08:06.310720+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "item_id": "video-20261102-120920-b66776d3b0",
+    "youtube_id": "xZotdUtnJXw",
+    "youtube_url": "https://youtu.be/xZotdUtnJXw",
+    "verified": true,
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 115.3,
+    "content_duration_seconds": 115.292,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "artifact_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
+    "source_id": "13dc8ffa-f038-424c-80c3-8749d1b83f6a"
   },
   "short": {
     "attempt_count": 0,
@@ -3187,27 +3204,13 @@
       "previous_run_id": null,
       "observed_active_run_id": 41398313007,
       "dispatched_at": "2026-11-02T06:10:43.115981+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-11-02",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "stool-withholding-potty-training",
-        "target_content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734"
-      },
-      "intent_at": "2026-11-02T10:07:31.735422+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41426298898,
-      "dispatched_at": "2026-11-02T10:07:31.735422+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 41425191708,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 41426298898,
     "conclusion": "success",
-    "source_slug": null,
+    "source_slug": "stool-withholding-potty-training",
     "slot": "2026-11-02"
   },
   "processed_child_notifications": [
