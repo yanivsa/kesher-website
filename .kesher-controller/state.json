@@ -3127,6 +3127,20 @@
       "previous_run_id": null,
       "observed_active_run_id": 41505957053,
       "dispatched_at": "2026-11-02T19:00:43.494041+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-11-02",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "couples-social-baseline-theory",
+        "target_content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
+        "target_item_id": "video-20261102-232627-35b906afcd"
+      },
+      "intent_at": "2026-11-02T22:00:57.260900+00:00",
+      "status": "intent",
+      "previous_run_id": 41528181655,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3154,6 +3168,20 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-11-02T10:50:57.379716+00:00"
+    },
+    "v5|couples-social-baseline-theory|35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5|long_video": {
+      "pipeline_id": "v5",
+      "slug": "couples-social-baseline-theory",
+      "content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-11-03T00",
+      "last_fingerprint": "4bcb3dfdb23dc8f90a1431e316234acbb68c825970479d9e6cee4b97354789dd",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-11-02T22:00:57.260900+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   },
   "owner_cycle_archive": [
