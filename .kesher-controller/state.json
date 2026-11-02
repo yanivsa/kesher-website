@@ -54,7 +54,7 @@
     "current_pr_head_sha": "f99a4119de919a59cb814a08f8d0f3e507005895",
     "jules_head_sha": "5b66484af2cfbea8f9e184c45fa538fa40ba7363",
     "normalization_slot": "2026-11-02",
-    "normalization_dispatched_at": "2026-11-02T00:01:02.626263+00:00"
+    "normalization_dispatched_at": "2026-11-02T00:51:02.966585+00:00"
   },
   "backlog": [
     {
@@ -1767,16 +1767,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T18:58:21.719570+00:00",
-      "from": "article_pr_open",
-      "to": "article_deploying",
-      "reason": "public article check failed; recovery deploy dispatched",
-      "details": {
-        "http_status": 404,
-        "attempt": 1
-      }
-    },
-    {
       "at": "2026-11-01T19:03:19.105067+00:00",
       "from": "article_deploying",
       "to": "article_live",
@@ -2468,9 +2458,19 @@
         "pr_number": 1270,
         "slot": "2026-11-02"
       }
+    },
+    {
+      "at": "2026-11-02T00:51:02.966613+00:00",
+      "from": "article_normalizing",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1270,
+        "slot": "2026-11-02"
+      }
     }
   ],
-  "updated_at": "2026-11-02T00:01:02.626299+00:00",
+  "updated_at": "2026-11-02T00:51:02.966621+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2995,9 +2995,10 @@
         "slot": "2026-11-02"
       },
       "intent_at": "2026-11-02T00:50:47.892157+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41369350808,
+      "dispatched_at": "2026-11-02T00:50:47.892157+00:00"
     }
   }
 }
