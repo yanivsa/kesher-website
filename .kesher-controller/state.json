@@ -59,8 +59,8 @@
     "image_head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
     "merge_candidate_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
     "normalization_drift_count": 0,
-    "merge_dispatch_count": 0,
-    "merge_dispatch_at": null
+    "merge_dispatch_count": 1,
+    "merge_dispatch_at": "2026-11-02T09:53:08.304969+00:00"
   },
   "backlog": [
     {
@@ -3160,9 +3160,10 @@
         "slot": "2026-11-02"
       },
       "intent_at": "2026-11-02T09:52:34.675089+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41424266285,
+      "dispatched_at": "2026-11-02T09:52:34.675089+00:00"
     }
   },
   "last_child_notification": {
