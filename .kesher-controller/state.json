@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1790,12 +1790,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T21:36:25.758434+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-01T21:36:27.090788+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2645,9 +2639,19 @@
       "from": "article_deploying",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-02T10:08:06.310733+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-11-02T10:07:59.724230+00:00",
+  "updated_at": "2026-11-02T10:08:06.310741+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2665,8 +2669,8 @@
     "image_path": "/images/generated/blog/stool-withholding-potty-training.png"
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2675,7 +2679,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-11-02T10:08:06.310720+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
@@ -3191,9 +3197,10 @@
         "target_content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734"
       },
       "intent_at": "2026-11-02T10:07:31.735422+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41426298898,
+      "dispatched_at": "2026-11-02T10:07:31.735422+00:00"
     }
   },
   "last_child_notification": {
@@ -3202,18 +3209,5 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-02"
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true
   }
 }
