@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "long_video_running",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -81,7 +81,7 @@
     "last_deploy_dispatch_at": "2026-11-02T21:20:55.889665+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41527518343,
-    "live_verified_at": "2026-11-02T22:30:52.407546+00:00"
+    "live_verified_at": "2026-11-02T22:31:23.368410+00:00"
   },
   "backlog": [
     {
@@ -1794,18 +1794,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T15:11:22.051684+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-02T15:11:23.120995+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-11-02T15:16:19.198961+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2584,9 +2572,21 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-11-02T22:31:23.368439+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-02T22:31:24.670856+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-11-02T22:26:13.120963+00:00",
+  "updated_at": "2026-11-02T22:31:24.670877+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -2607,7 +2607,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "rejected",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41536232746,
@@ -3176,6 +3176,20 @@
       "previous_run_id": 41534550166,
       "observed_active_run_id": 41536232746,
       "dispatched_at": "2026-11-02T22:18:40.926853+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-11-02",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "couples-social-baseline-theory",
+        "derive_content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
+        "derive_long_item_id": "video-20261103-002015-35b906afcd-a3"
+      },
+      "intent_at": "2026-11-02T22:30:44.915086+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
