@@ -3306,11 +3306,11 @@
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/stool-withholding-potty-training",
     "overview_youtube_url": "https://youtu.be/xZotdUtnJXw",
-    "short_youtube_url": null,
+    "short_youtube_url": "https://youtu.be/Yy15MJftfEY",
     "overview_edit_verified": true,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
+    "short_portrait_verified": true,
+    "short_signature_verified": true,
+    "short_origin_verified": true
   },
   "pending_dispatches": {
     "kesher-article-generation.yml": {
