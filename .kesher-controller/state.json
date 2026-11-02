@@ -75,9 +75,9 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-02T10:00:06.933777+00:00",
-    "next_deploy_retry_at": "2026-11-02T10:12:31.735422+00:00",
+    "next_deploy_retry_at": null,
     "deploy_run_id": 41425191708,
-    "live_verified_at": "2026-11-02T10:07:37.081754+00:00"
+    "live_verified_at": "2026-11-02T10:07:59.724203+00:00"
   },
   "backlog": [
     {
@@ -2647,7 +2647,7 @@
       "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-11-02T10:07:37.081789+00:00",
+  "updated_at": "2026-11-02T10:07:59.724230+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -3181,6 +3181,19 @@
       "previous_run_id": null,
       "observed_active_run_id": 41398313007,
       "dispatched_at": "2026-11-02T06:10:43.115981+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-11-02",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "stool-withholding-potty-training",
+        "target_content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734"
+      },
+      "intent_at": "2026-11-02T10:07:31.735422+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3189,5 +3202,18 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-02"
+  },
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
   }
 }
