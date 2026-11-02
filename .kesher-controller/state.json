@@ -1768,15 +1768,9 @@
     "stage": "controller",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts",
-    "at": "2026-11-02T02:25:49.839307+00:00"
+    "at": "2026-11-02T02:30:54.524923+00:00"
   },
   "history": [
-    {
-      "at": "2026-11-01T19:54:50.710825+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
     {
       "at": "2026-11-01T19:56:18.433082+00:00",
       "from": "short_running",
@@ -2497,9 +2491,18 @@
       "details": {
         "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-11-02T02:30:54.524926+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted 3 fresh generation attempts"
+      }
     }
   ],
-  "updated_at": "2026-11-02T02:25:49.839317+00:00",
+  "updated_at": "2026-11-02T02:30:54.524931+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
