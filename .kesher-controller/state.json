@@ -1,87 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-11-02",
-  "status": "complete",
+  "cycle": "2026-11-03",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41502919641,
-    "processed_run_id": 41495758484,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 2,
-      "JULES_TERMINAL_FAILURE": 1
-    },
+    "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 1,
-    "last_dispatch_at": "2026-11-02T18:41:15.877627+00:00",
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-11-02",
-      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "retryable": true,
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Started test suite in the background.",
-      "session_id": "sessions/15923825558660971853",
-      "pr_url": "",
-      "github_run_id": "41495758484",
-      "completed_at": "2026-11-02T18:37:03.313526+00:00",
-      "diagnostic": {
-        "source": {
-          "name": "sources/github/yanivsa/kesher-website",
-          "owner": "yanivsa",
-          "repo": "kesher-website",
-          "default_branch": "main",
-          "main_available": true
-        },
-        "activity_count": 42,
-        "change_set_count": 40,
-        "change_set_fingerprints": [],
-        "last_agent_message": "",
-        "last_progress": "Started test suite in the background.",
-        "last_description": "",
-        "session_failed_reason": ""
-      }
-    },
-    "last_jules_session_id": "sessions/15923825558660971853",
-    "last_failed_run_id": 41495758484,
-    "resume_dispatches": 2,
-    "pr_number": 1274,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1274",
-    "current_pr_head_sha": "e0d0a1cd35f6c0267d67a2a43ba26416eebfaa8e",
-    "jules_head_sha": "3b54560d6061bfc38a4a6c90e2e79fdcfb725991",
-    "normalization_status": "complete",
-    "normalization_slot": "2026-11-02",
-    "normalization_dispatched_at": "2026-11-02T19:00:58.323474+00:00",
-    "normalization_run_id": 41505957053,
-    "normalization_drift_count": 2,
-    "last_normalization_drift_head_sha": "e0d0a1cd35f6c0267d67a2a43ba26416eebfaa8e",
-    "merge_dispatch_count": 0,
-    "merge_dispatch_at": "2026-11-02T21:14:50.443495+00:00",
-    "merge_run_id": 41527238163,
-    "normalized_head_sha": "e0d0a1cd35f6c0267d67a2a43ba26416eebfaa8e",
-    "image_head_sha": "e0d0a1cd35f6c0267d67a2a43ba26416eebfaa8e",
-    "merge_candidate_sha": "e0d0a1cd35f6c0267d67a2a43ba26416eebfaa8e",
-    "last_refunded_auto_merge_run_id": 41526573763,
-    "deferred_auto_merge_refund_count": 1,
-    "slug": "couples-social-baseline-theory",
-    "title": "תיאוריית הבסיס החברתי בזוגיות: למה הכול מרגיש כבד יותר כשאנחנו מרגישים לבד?",
-    "url": "https://kesher.saharoni.com/blog/couples-social-baseline-theory",
-    "published_date": "2026-11-02",
-    "quality_content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
-    "reconciled_existing_article": true,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-11-02T23:09:58.370147+00:00",
-    "quality_violations": [],
-    "live": true,
-    "last_deploy_dispatch_at": "2026-11-02T21:20:55.889665+00:00",
-    "next_deploy_retry_at": null,
-    "deploy_run_id": 41527518343,
-    "live_verified_at": "2026-11-02T23:10:49.516385+00:00"
+    "deploy_attempts": 0,
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -1794,130 +1728,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T15:31:16.268513+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-02T15:36:18.107118+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-02T15:36:19.434631+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-02T15:36:20.703082+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-02T15:41:33.301408+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-02T15:41:34.642935+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-02T15:41:36.059266+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-02T15:46:17.908244+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-02T15:46:18.945075+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-02T15:46:19.842978+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-02T15:51:31.070056+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-02T15:51:32.087383+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-02T15:51:33.126616+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-02T15:56:29.279434+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-02T15:56:30.865901+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-02T15:56:32.187072+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-02T16:01:17.285488+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-02T16:01:18.276617+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-02T16:01:19.265136+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-02T16:05:46.429244+00:00",
-      "from": "complete",
-      "to": "article_needed",
-      "reason": "owner_run_now_cycle_started",
-      "details": {
-        "idea_id": "couples-social-baseline-theory",
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
       "at": "2026-11-02T16:06:01.801290+00:00",
       "from": "article_needed",
       "to": "article_generating",
@@ -2588,215 +2398,62 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-02T23:15:51.670836+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-11-02T23:15:51.670840+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-11-02T23:15:51.671626+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-11-02T23:10:53.004464+00:00",
+  "updated_at": "2026-11-02T23:15:51.670818+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "LocalEditorial",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "evidence_rebind_head_sha": "4bbc12d078ff48a7ac922f3d870cc33a33dc0e1f",
-    "evidence_rebind_dispatched_at": "2026-11-02T21:06:31.353926+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "artifact_sha256": "7dcd65e300c7fa78f833b5c0ccde8916449f4ac6f77e8199a897dd5c99139e5d",
-    "source_id": "local-editorial://couples-social-baseline-theory/3",
-    "run_id": 41526297801,
-    "image_path": "/images/generated/blog/couples-social-baseline-theory.png"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41536232746,
-    "processed_run_id": 41534550166,
-    "provider_id": "64cf7300-0482-4c35-8a75-3c2b16b7caea",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261103-002015-35b906afcd-a3",
-    "source_slug": "couples-social-baseline-theory",
-    "source_content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
-    "content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
-    "source_id": "6808d5dc-6ac7-4909-8aca-c0045ba265a2",
-    "task_id": "c39d28ff-a6a5-4273-905d-6b312536b8aa",
-    "artifact_id": "64cf7300-0482-4c35-8a75-3c2b16b7caea",
-    "provider_status": "pending",
-    "verified": true,
-    "watchdog": {
-      "identity": "long_video:couples-social-baseline-theory:35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5:video-20261102-232627-35b906afcd",
-      "hard_started_at": "2026-11-02T21:26:32.276344+00:00",
-      "last_progress_at": "2026-11-02T21:35:46.239852+00:00",
-      "last_fingerprint": "c90d13c49e6cbd25c3cbd1cf7682634e396472974ee4144ca1d2d4a8fd2ffa3e",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-11-02T22:00:57.260900+00:00"
-    },
-    "pending_resume_ready": false,
-    "last_dispatch_at": "2026-11-02T22:19:13.775676+00:00",
-    "resume_dispatches": 3,
-    "youtube_id": "u74a6XImxWw",
-    "youtube_url": "https://youtu.be/u74a6XImxWw",
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 95.2,
-    "content_duration_seconds": 95.208,
-    "signature_duration_seconds": 3.0,
-    "signature_overlay": true,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41542055289,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "6b82ea54-8dd3-4b6f-886b-5ac7d911fe6e",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-11-02T23:01:19.031086+00:00",
-    "artifact_id": "6b82ea54-8dd3-4b6f-886b-5ac7d911fe6e",
-    "source_id": "a6e50270-4057-4712-b30d-ed61ee51f1b7",
-    "adopted_from_long_item_id": null,
-    "watchdog": {
-      "identity": "short:couples-social-baseline-theory:35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5:video-20261103-003318-35b906afcd",
-      "hard_started_at": "2026-11-02T22:33:25.818248+00:00",
-      "last_progress_at": "2026-11-02T22:40:18.180846+00:00",
-      "last_fingerprint": "e49d1e5bff8c43038be0c1f3edb2df019c70d704e89988305ff628ab85cf6b3f",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-11-02T23:00:51.410455+00:00"
-    },
-    "source": {
-      "id": "couples-social-baseline-theory",
-      "slug": "couples-social-baseline-theory",
-      "title": "תיאוריית הבסיס החברתי בזוגיות: למה הכול מרגיש כבד יותר כשאנחנו מרגישים לבד?",
-      "date": "2026-11-02",
-      "category": "ייעוץ זוגי",
-      "subcategory": "תקשורת זוגית",
-      "excerpt": "תיאוריית הבסיס החברתי בזוגיות מציעה שהמוח מצפה לזמינות של קשרים קרובים ומשאבים חברתיים. מה באמת הראו מחקרי אחיזת היד, תפיסת המאמץ והגלוקוז — ואיך אפשר לתרגם את הרעיון לצעד זוגי קטן בלי להפוך תיאוריה להבטחה?",
-      "canonical_url": "https://kesher.saharoni.com/blog/couples-social-baseline-theory",
-      "content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
-      "video_title": "תיאוריית הבסיס החברתי בזוגיות: למה הכול מרגיש כבד יותר כשאנחנו מרגישים לבד?",
-      "short_title": "תיאוריית הבסיס החברתי בזוגיות: למה הכול מרגיש כבד יותר כשאנחנו מרגישים לבד?",
-      "short_hook": "",
-      "youtube_metadata": {
-        "title": "תיאוריית הבסיס החברתי בזוגיות: למה הכול מרגיש כבד יותר כשאנחנו מרגישים לבד?",
-        "description": "תיאוריית הבסיס החברתי בזוגיות מציעה שהמוח מצפה לזמינות של קשרים קרובים ומשאבים חברתיים. מה באמת הראו מחקרי אחיזת היד, תפיסת המאמץ והגלוקוז — ואיך אפשר לתרגם את הרעיון לצעד זוגי קטן בלי להפוך תיאוריה להבטחה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/couples-social-baseline-theory\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "ייעוץ זוגי",
-          "תקשורת זוגית"
-        ]
-      },
-      "short_youtube_metadata": {
-        "title": "בקצרה: תיאוריית הבסיס החברתי בזוגיות: למה הכול מרגיש כבד יותר כשאנחנו מרגישים לבד?",
-        "description": "תיאוריית הבסיס החברתי בזוגיות מציעה שהמוח מצפה לזמינות של קשרים קרובים ומשאבים חברתיים. מה באמת הראו מחקרי אחיזת היד, תפיסת המאמץ והגלוקוז — ואיך אפשר לתרגם את הרעיון לצעד זוגי קטן בלי להפוך תיאוריה להבטחה?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/couples-social-baseline-theory\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "ייעוץ זוגי",
-          "תקשורת זוגית"
-        ]
-      }
-    },
-    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-    "task_id": "6b82ea54-8dd3-4b6f-886b-5ac7d911fe6e",
-    "raw_sha256": "44758453d6f4d3bf13a5d90669927576f1448c15d31c2039649e01de2b465506",
-    "final_sha256": "9f59ca6acd9931f752bc221347887076123849c06d23f8444823bcc18b4222ab",
-    "provider_raw_media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 720,
-      "height": 1280,
-      "duration": 99.0,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 1080,
-      "height": 1920,
-      "duration": 99.0,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "provider_video_format": "short",
-    "provider_native_short": true,
-    "provider_native_short_verified": true,
-    "provider_short_fallback_used": false,
-    "fresh_generation_attempt": 1,
-    "overview_provider_identity": {
-      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-      "source_id": "6808d5dc-6ac7-4909-8aca-c0045ba265a2",
-      "task_id": "64cf7300-0482-4c35-8a75-3c2b16b7caea",
-      "artifact_id": "64cf7300-0482-4c35-8a75-3c2b16b7caea",
-      "raw_sha256": "a901f9da42c9ece36d97609f718e46501e6ab15de710cd6f8a1f56726a2976d7"
-    },
-    "shared_provider_identity": null,
-    "short_start_seconds": 0.0,
-    "short_duration_seconds": 99.0,
-    "audio_provenance": {
-      "schema_version": 1,
-      "mode": "stream_copy",
-      "raw_sha256": "44758453d6f4d3bf13a5d90669927576f1448c15d31c2039649e01de2b465506",
-      "final_sha256": "9f59ca6acd9931f752bc221347887076123849c06d23f8444823bcc18b4222ab",
-      "raw_audio_sha256": "7ad3cdf22d6de973be124c67d633cd5a3e5a6465ab439e2c4f6c3b3e5438defe",
-      "final_audio_sha256": "7ad3cdf22d6de973be124c67d633cd5a3e5a6465ab439e2c4f6c3b3e5438defe",
-      "raw_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 99.056327
-      },
-      "final_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 99.056327
-      }
-    },
-    "signature_overlay": true,
-    "signature_provenance": {
-      "schema_version": 1,
-      "final_sha256": "9f59ca6acd9931f752bc221347887076123849c06d23f8444823bcc18b4222ab",
-      "raw_sha256": "44758453d6f4d3bf13a5d90669927576f1448c15d31c2039649e01de2b465506",
-      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-      "segment_sha256": "fb6b15b25ef198ab73756ccae1465af4617c91541442e7d1cbbc8668a588f475",
-      "source_duration_seconds": 99.0,
-      "final_duration_seconds": 99.0,
-      "start_seconds": 96.0,
-      "end_seconds": 99.0,
-      "audio_source_sha256": "44758453d6f4d3bf13a5d90669927576f1448c15d31c2039649e01de2b465506"
-    },
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "item_id": "video-20261103-003318-35b906afcd",
-    "type": "article_short",
-    "youtube_id": "vnOyiBp3IBk",
-    "youtube_url": "https://youtu.be/vnOyiBp3IBk",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "fb6b15b25ef198ab73756ccae1465af4617c91541442e7d1cbbc8668a588f475",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3280,350 +2937,5 @@
       }
     }
   ],
-  "active_idea": null,
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/couples-social-baseline-theory",
-    "overview_youtube_url": "https://youtu.be/u74a6XImxWw",
-    "short_youtube_url": "https://youtu.be/vnOyiBp3IBk",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
-  },
-  "pending_dispatches": {
-    "normalize-article-pr.yml": {
-      "workflow": "normalize-article-pr.yml",
-      "cycle": "2026-11-02",
-      "inputs": {
-        "pr_number": "1274",
-        "slot": "2026-11-02"
-      },
-      "intent_at": "2026-11-02T19:00:43.494041+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41505957053,
-      "dispatched_at": "2026-11-02T19:00:43.494041+00:00"
-    }
-  },
-  "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 41542055289,
-    "conclusion": "success",
-    "source_slug": "couples-social-baseline-theory",
-    "slot": "2026-11-02"
-  },
-  "processed_child_notifications": [
-    "Deploy to Cloudflare Pages:41527518343",
-    "Kesher Daily NotebookLM Video Overview:41533608510",
-    "Kesher Daily NotebookLM Video Overview:41534550166",
-    "Kesher Daily NotebookLM Video Overview:41536232746",
-    "Kesher Daily Article Short V4:41537997891",
-    "Kesher Daily Article Short V4:41542055289"
-  ],
-  "interventions": {
-    "v5|stool-withholding-potty-training|b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734|short": {
-      "pipeline_id": "v5",
-      "slug": "stool-withholding-potty-training",
-      "content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-11-02T12",
-      "last_fingerprint": "142f9be3c76e6e1fb959cebe69116567cfe57342025be88158ebf936c3d2292e",
-      "last_controller_action_token": "recovery:1:2026-11-02T10:50:57.379716+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-02T10:50:57.379716+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-02T10:50:57.379716+00:00"
-    },
-    "v5|couples-social-baseline-theory|35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5|long_video": {
-      "pipeline_id": "v5",
-      "slug": "couples-social-baseline-theory",
-      "content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
-      "stage": "long_video",
-      "strike_count": 1,
-      "last_check_token": "2026-11-03T00",
-      "last_fingerprint": "4bcb3dfdb23dc8f90a1431e316234acbb68c825970479d9e6cee4b97354789dd",
-      "last_controller_action_token": "recovery:1:2026-11-02T22:00:57.260900+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-02T22:00:57.260900+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-02T22:00:57.260900+00:00"
-    },
-    "v5|couples-social-baseline-theory|35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5|short": {
-      "pipeline_id": "v5",
-      "slug": "couples-social-baseline-theory",
-      "content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-11-03T01",
-      "last_fingerprint": "a45d8a3cc1c465c957025e260a3acf3dfa681b0ee980ae9044af4d1540526703",
-      "last_controller_action_token": "recovery:1:2026-11-02T23:00:51.410455+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-02T23:00:51.410455+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-02T23:00:51.410455+00:00"
-    }
-  },
-  "owner_cycle_archive": [
-    {
-      "cycle": "2026-11-02",
-      "status": "complete",
-      "article": {
-        "attempt_count": 0,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 41370641101,
-        "processed_run_id": 41370641101,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {
-          "COMPLETED_WITHOUT_PR": 1
-        },
-        "attempts": 0,
-        "deploy_attempts": 1,
-        "normalization_status": "complete",
-        "last_dispatch_at": "2026-11-02T01:05:57.007600+00:00",
-        "last_run_conclusion": "failure",
-        "last_worker_result": {
-          "schema_version": 1,
-          "slot": "2026-11-02",
-          "outcome": "PR_CREATED",
-          "retryable": false,
-          "message": "Jules diagnostic: I have successfully fixed the `evidence_missing` requirement by injecting an external authoritative reference (`<a href=\"https://www.apa.org\">איגוד הפסיכולוגים האמריקאי</a>`) back into the article content. I ensured that the anchor text is written in pure Hebrew, fixing the previous `Latin characters found in visible prose` content policy failure. I ran the content validations (`npm run test:content`) locally, and all automation gates have now passed without issues, confirming the fix. Finally, I committed the changes to trigger a new CI run.",
-          "session_id": "sessions/16513651425300945584",
-          "pr_url": "https://github.com/yanivsa/kesher-website/pull/1270",
-          "github_run_id": "41370641101",
-          "completed_at": "2026-11-02T01:12:31.620915+00:00",
-          "diagnostic": {
-            "source": {
-              "name": "sources/github/yanivsa/kesher-website",
-              "owner": "yanivsa",
-              "repo": "kesher-website",
-              "default_branch": "main",
-              "main_available": true
-            },
-            "activity_count": 138,
-            "change_set_count": 119,
-            "change_set_fingerprints": [],
-            "last_agent_message": "I have successfully fixed the `evidence_missing` requirement by injecting an external authoritative reference (`<a href=\"https://www.apa.org\">איגוד הפסיכולוגים האמריקאי</a>`) back into the article content. I ensured that the anchor text is written in pure Hebrew, fixing the previous `Latin characters found in visible prose` content policy failure. I ran the content validations (`npm run test:content`) locally, and all automation gates have now passed without issues, confirming the fix. Finally, I committed the changes to trigger a new CI run.",
-            "last_progress": "All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
-            "last_description": "",
-            "session_failed_reason": ""
-          }
-        },
-        "last_jules_session_id": "sessions/16513651425300945584",
-        "last_failed_run_id": 41357968167,
-        "pr_number": 1273,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1273",
-        "current_pr_head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
-        "jules_head_sha": "5b66484af2cfbea8f9e184c45fa538fa40ba7363",
-        "normalization_slot": "2026-11-02",
-        "normalization_dispatched_at": "2026-11-02T06:10:58.139910+00:00",
-        "normalized_head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
-        "image_head_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
-        "merge_candidate_sha": "e0488ff7a5c2199a22df4e5db6de86f187c0a544",
-        "normalization_drift_count": 0,
-        "merge_dispatch_count": 0,
-        "merge_dispatch_at": "2026-11-02T09:53:08.304969+00:00",
-        "merge_run_id": 41424266285,
-        "last_refunded_auto_merge_run_id": 41424266285,
-        "deferred_auto_merge_refund_count": 1,
-        "slug": "stool-withholding-potty-training",
-        "title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
-        "url": "https://kesher.saharoni.com/blog/stool-withholding-potty-training",
-        "published_date": "2026-11-02",
-        "quality_content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
-        "reconciled_existing_article": true,
-        "quality_status": "passed",
-        "quality_checked_at": "2026-11-02T16:00:51.343884+00:00",
-        "quality_violations": [],
-        "live": true,
-        "last_deploy_dispatch_at": "2026-11-02T10:00:06.933777+00:00",
-        "next_deploy_retry_at": null,
-        "deploy_run_id": 41425191708,
-        "live_verified_at": "2026-11-02T16:01:17.285469+00:00"
-      },
-      "long_video": {
-        "attempt_count": 1,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 41426298898,
-        "processed_run_id": null,
-        "provider_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "overview_evidence_required": true,
-        "last_dispatch_at": "2026-11-02T10:08:06.310720+00:00",
-        "attempts": 1,
-        "item_id": "video-20261102-120920-b66776d3b0",
-        "youtube_id": "xZotdUtnJXw",
-        "youtube_url": "https://youtu.be/xZotdUtnJXw",
-        "verified": true,
-        "technical_verified": true,
-        "visual_pipeline": "remotion-v1-notebooklm-audio",
-        "codec": "h264",
-        "width": 1280,
-        "height": 720,
-        "duration": 115.3,
-        "content_duration_seconds": 115.292,
-        "signature_duration_seconds": 3.0,
-        "signature_overlay": true,
-        "signature_fullscreen": true,
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "artifact_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
-        "source_id": "13dc8ffa-f038-424c-80c3-8749d1b83f6a"
-      },
-      "short": {
-        "attempt_count": 2,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 41432112748,
-        "processed_run_id": null,
-        "provider_id": "8712550e-9b82-4463-92e2-4720a81776e8",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "last_dispatch_at": "2026-11-02T10:51:23.003400+00:00",
-        "artifact_id": "8712550e-9b82-4463-92e2-4720a81776e8",
-        "source_id": "b3402ce9-c8bb-43fd-b5ba-5f8720dc0908",
-        "adopted_from_long_item_id": null,
-        "watchdog": {
-          "identity": "short:stool-withholding-potty-training:b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734:video-20261102-122309-b66776d3b0",
-          "hard_started_at": "2026-11-02T10:23:15.443698+00:00",
-          "last_progress_at": "2026-11-02T10:30:08.523650+00:00",
-          "last_fingerprint": "0869c0fccf42e240853575b0bcc054b56faebd54b5eb9a7d6fd65984ecd8d70b",
-          "recovery_count": 1,
-          "last_recovery_at": "2026-11-02T10:50:57.379716+00:00"
-        },
-        "source": {
-          "id": "stool-withholding-potty-training",
-          "slug": "stool-withholding-potty-training",
-          "title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
-          "date": "2026-11-02",
-          "category": "הדרכת הורים",
-          "subcategory": "גמילה מחיתולים",
-          "excerpt": "ילדים רבים בשלב הגמילה מסוגלים להתאפק שעות ואפילו ימים. למה זה קורה, ואיך אפשר לעזור להם לשחרר במקום להעצים את הלחץ והמאבק סביב העניין.",
-          "canonical_url": "https://kesher.saharoni.com/blog/stool-withholding-potty-training",
-          "content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
-          "video_title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
-          "short_title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
-          "short_hook": "",
-          "youtube_metadata": {
-            "title": "התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
-            "description": "ילדים רבים בשלב הגמילה מסוגלים להתאפק שעות ואפילו ימים. למה זה קורה, ואיך אפשר לעזור להם לשחרר במקום להעצים את הלחץ והמאבק סביב העניין.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/stool-withholding-potty-training\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים",
-              "גמילה מחיתולים"
-            ]
-          },
-          "short_youtube_metadata": {
-            "title": "בקצרה: התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?",
-            "description": "ילדים רבים בשלב הגמילה מסוגלים להתאפק שעות ואפילו ימים. למה זה קורה, ואיך אפשר לעזור להם לשחרר במקום להעצים את הלחץ והמאבק סביב העניין.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/stool-withholding-potty-training\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים",
-              "גמילה מחיתולים"
-            ]
-          }
-        },
-        "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-        "task_id": "8712550e-9b82-4463-92e2-4720a81776e8",
-        "raw_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c",
-        "final_sha256": "b4e0b5ae110600e1110736868e8b822d1b4af39ad46e35bae1d19863f913b2ec",
-        "provider_raw_media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 720,
-          "height": 1280,
-          "duration": 95.933,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 1080,
-          "height": 1920,
-          "duration": 95.933,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "provider_video_format": "short",
-        "provider_native_short": true,
-        "provider_native_short_verified": true,
-        "provider_short_fallback_used": false,
-        "fresh_generation_attempt": 1,
-        "overview_provider_identity": {
-          "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-          "source_id": "13dc8ffa-f038-424c-80c3-8749d1b83f6a",
-          "task_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
-          "artifact_id": "bdd42c6a-81e3-4485-9225-93cbebc168ea",
-          "raw_sha256": "8e317ccacc4c67e0f36be72a5b0c9173561a395ddd3859119a3848963439a210"
-        },
-        "shared_provider_identity": null,
-        "short_start_seconds": 0.0,
-        "short_duration_seconds": 95.933,
-        "audio_provenance": {
-          "schema_version": 1,
-          "mode": "stream_copy",
-          "raw_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c",
-          "final_sha256": "b4e0b5ae110600e1110736868e8b822d1b4af39ad46e35bae1d19863f913b2ec",
-          "raw_audio_sha256": "e8c19a0bb4ee269c6318e7f10cff0f2ce1c26d597eb83aeee49dcd3a58de49fe",
-          "final_audio_sha256": "e8c19a0bb4ee269c6318e7f10cff0f2ce1c26d597eb83aeee49dcd3a58de49fe",
-          "raw_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 95.991293
-          },
-          "final_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 95.991293
-          }
-        },
-        "signature_overlay": true,
-        "signature_provenance": {
-          "schema_version": 1,
-          "final_sha256": "b4e0b5ae110600e1110736868e8b822d1b4af39ad46e35bae1d19863f913b2ec",
-          "raw_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c",
-          "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-          "segment_sha256": "5004d317d2172765d070987db91e0315aebb6dcd303f80dd8b2b9d98ae21c988",
-          "source_duration_seconds": 95.933,
-          "final_duration_seconds": 95.933,
-          "start_seconds": 92.933,
-          "end_seconds": 95.933,
-          "audio_source_sha256": "531e1fe4b36356066301d0c0c8b8ad69d41891217de539276cc9c8501848033c"
-        },
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "item_id": "video-20261102-122309-b66776d3b0",
-        "type": "article_short",
-        "youtube_id": "Yy15MJftfEY",
-        "youtube_url": "https://youtu.be/Yy15MJftfEY",
-        "verified": true,
-        "portrait_verified": true,
-        "signature_verified": true,
-        "signature_asset": "signature-mask.svg",
-        "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-        "technical_verified": true,
-        "signature_duration_seconds": 3.0,
-        "signature_fullscreen": true,
-        "signature_video_sha256": "5004d317d2172765d070987db91e0315aebb6dcd303f80dd8b2b9d98ae21c988",
-        "source_mode": "direct-short",
-        "width": 1080,
-        "height": 1920
-      },
-      "archived_at": "2026-11-02T16:05:46.429212+00:00",
-      "reason": "owner_run_now_cycle_started"
-    }
-  ]
+  "active_idea": null
 }
