@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-02",
-  "status": "article_pr_open",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -16,7 +16,7 @@
       "COMPLETED_WITHOUT_PR": 1
     },
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-11-02T01:05:57.007600+00:00",
     "last_run_conclusion": "failure",
@@ -73,7 +73,9 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-11-02T10:00:00.478385+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-11-02T10:00:06.933777+00:00",
+    "next_deploy_retry_at": "2026-11-02T10:04:56.948523+00:00"
   },
   "backlog": [
     {
@@ -1786,12 +1788,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-01T21:31:01.104047+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-01T21:31:01.607194+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2637,9 +2633,19 @@
         "merge_dispatch_count": 0,
         "refund_count": 1
       }
+    },
+    {
+      "at": "2026-11-02T10:00:06.933818+00:00",
+      "from": "article_pr_open",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-11-02T09:53:03.943270+00:00",
+  "updated_at": "2026-11-02T10:00:06.933826+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -3138,7 +3144,7 @@
     "claimed_at": "2026-11-01T22:36:15.953071+00:00"
   },
   "deliverables": {
-    "article_url": null,
+    "article_url": "https://kesher.saharoni.com/blog/stool-withholding-potty-training",
     "overview_youtube_url": null,
     "short_youtube_url": null,
     "overview_edit_verified": false,
@@ -3178,10 +3184,11 @@
       "cycle": "2026-11-02",
       "inputs": {},
       "intent_at": "2026-11-02T09:59:56.948523+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "1b25e89e06bd546cfcf8e7100b9fb0d7c1d27d3b"
+      "observed_active_run_id": 41425191708,
+      "dispatch_head_sha": "1b25e89e06bd546cfcf8e7100b9fb0d7c1d27d3b",
+      "dispatched_at": "2026-11-02T09:59:56.948523+00:00"
     }
   },
   "last_child_notification": {
