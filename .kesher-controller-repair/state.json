@@ -33,9 +33,9 @@
       },
       "failure_class": "IDEA_SLOT_MISMATCH",
       "fingerprint": "f3b8ffdd1f3724adb9db84db21dd5c5cf8c62ffb93574d26a3c3975e3a65f814",
-      "reason": "uncertain_create_not_discoverable",
+      "reason": "content_delivered_and_verified",
       "stage": "controller",
-      "status": "human_blocker"
+      "status": "verified"
     },
     "3482e59b487511b826bdc9df1577a89962e60dc11184e295c05764ffb267d55a": {
       "acquisition_started_at": "2026-11-01T06:05:14.670801+00:00",
@@ -70,9 +70,9 @@
       },
       "failure_class": "ARTICLE_JULES_UNSTABLE_MUTATION",
       "fingerprint": "df7d68bab20d8a05ba9cb7074226b40b1556d29ddfc9e8799d0680464495b6ef",
-      "reason": "uncertain_create_not_discoverable",
+      "reason": "content_delivered_and_verified",
       "stage": "article",
-      "status": "human_blocker"
+      "status": "verified"
     },
     "62e88666cabe99b6b64eee72494a2dcb8ab23750bf2482696450fa671f06c1c2": {
       "acquired_at": "2026-10-30T13:06:06.587446+00:00",
@@ -109,10 +109,10 @@
       },
       "failure_class": "DURABLE_PROGRESS_EXHAUSTED",
       "fingerprint": "331b6a9f15cc5ee2ddd203802090fb0c2f63c683dfb05e9e68346280315dd8f5",
-      "reason": "repair_executor_timeout",
+      "reason": "content_delivered_and_verified",
       "session_id": "sessions/3869985841951022469",
       "stage": "long_video",
-      "status": "human_blocker"
+      "status": "verified"
     },
     "681f5fe840efab0439bbc6b41b81d104fe9f3d1c0d0730097d63b564d693d58b": {
       "acquisition_started_at": "2026-10-29T14:07:27.103967+00:00",
@@ -212,9 +212,9 @@
       },
       "failure_class": "CONTROLLER_WORKFLOW_FAILED",
       "fingerprint": "c99449fd00c79b3070d2264d31c0468f60a8101121f700afff3294424fdd97a3",
-      "reason": "uncertain_create_not_discoverable",
+      "reason": "content_delivered_and_verified",
       "stage": "controller",
-      "status": "human_blocker"
+      "status": "verified"
     },
     "6b86ae6dffd4ecbbeb18fafd65f42065345203926b997f5dcb4759e509d49304": {
       "acquisition_started_at": "2026-10-31T12:01:02.971977+00:00",
@@ -249,9 +249,9 @@
       },
       "failure_class": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
       "fingerprint": "e689bba1f0f018cb65c615ea2915f666bde45f7dc74b56acebb1a1f1dd21adb2",
-      "reason": "uncertain_create_not_discoverable",
+      "reason": "content_delivered_and_verified",
       "stage": "long_video",
-      "status": "human_blocker"
+      "status": "verified"
     },
     "7cf01651a96dd77823f188debbd6a3bf1b08ebeed3a24abedf99e7d0bf5d57b1": {
       "acquisition_started_at": "2026-11-02T01:55:50.905198+00:00",
@@ -286,9 +286,9 @@
       },
       "failure_class": "ARTICLE_ATTEMPTS_EXHAUSTED",
       "fingerprint": "0429c21736b9c9215db8c8901bfdcc868b621f1cf00e922ded49360808bdd10d",
-      "reason": "uncertain_create_not_discoverable",
+      "reason": "content_delivered_and_verified",
       "stage": "controller",
-      "status": "human_blocker"
+      "status": "verified"
     },
     "a55e72df1cc6537a972077115734392a28b2dd15eb9fd5f051adf8639bae9fb0": {
       "acquisition_started_at": "2026-10-29T15:20:53.070156+00:00",
@@ -362,9 +362,9 @@
       },
       "failure_class": "ARTICLE_ATTEMPTS_EXHAUSTED",
       "fingerprint": "7b184611ad2919c9cd988b24c9c2d2f4f7bc22b51126ff652db76c1f2b28b4d5",
-      "reason": "uncertain_create_not_discoverable",
+      "reason": "content_delivered_and_verified",
       "stage": "article",
-      "status": "human_blocker"
+      "status": "verified"
     }
   },
   "version": 1
