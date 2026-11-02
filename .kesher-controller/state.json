@@ -2666,7 +2666,15 @@
     "last_dispatch_at": "2026-11-02T22:31:35.018983+00:00",
     "artifact_id": "64cf7300-0482-4c35-8a75-3c2b16b7caea",
     "source_id": "6808d5dc-6ac7-4909-8aca-c0045ba265a2",
-    "adopted_from_long_item_id": "video-20261103-002015-35b906afcd-a3"
+    "adopted_from_long_item_id": "video-20261103-002015-35b906afcd-a3",
+    "watchdog": {
+      "identity": "short:couples-social-baseline-theory:35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5:video-20261103-003318-35b906afcd",
+      "hard_started_at": "2026-11-02T22:33:25.818248+00:00",
+      "last_progress_at": "2026-11-02T22:40:18.180846+00:00",
+      "last_fingerprint": "e49d1e5bff8c43038be0c1f3edb2df019c70d704e89988305ff628ab85cf6b3f",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
