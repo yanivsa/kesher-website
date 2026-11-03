@@ -1,21 +1,25 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-03T10:05:52.018932+00:00",
     "run_id": 41612211788,
-    "processed_run_id": null,
+    "processed_run_id": 41612211788,
     "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "ARTICLE_WORKFLOW_FAILED",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "ARTICLE_WORKFLOW_FAILED": 1
+    },
     "attempts": 1,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-11-03T09:35:12.007820+00:00"
+    "last_dispatch_at": "2026-11-03T09:35:12.007820+00:00",
+    "last_run_conclusion": "cancelled",
+    "last_failed_run_id": 41612211788
   },
   "backlog": [
     {
@@ -1725,18 +1729,15 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_WORKFLOW_FAILED",
+    "message": "article run 41612211788 completed with conclusion=cancelled but no structured result was available",
+    "retryable": true,
+    "retry_at": "2026-11-03T10:05:52.018932+00:00",
+    "at": "2026-11-03T10:00:52.018956+00:00"
+  },
   "history": [
-    {
-      "at": "2026-11-03T06:31:12.857395+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261103-080543-a5235343e9",
-        "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a"
-      }
-    },
     {
       "at": "2026-11-03T06:35:58.908078+00:00",
       "from": "long_video_watchdog_wait",
@@ -2364,9 +2365,22 @@
       "details": {
         "publication_slot": "2026-11-03"
       }
+    },
+    {
+      "at": "2026-11-03T10:00:52.018961+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "ARTICLE_WORKFLOW_FAILED",
+      "details": {
+        "message": "article run 41612211788 completed with conclusion=cancelled but no structured result was available",
+        "retry_at": "2026-11-03T10:05:52.018932+00:00",
+        "failure_streak": 1,
+        "run_id": 41612211788,
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-11-03T09:55:49.405763+00:00",
+  "updated_at": "2026-11-03T10:00:52.018968+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
