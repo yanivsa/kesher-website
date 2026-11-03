@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-11-03T10:05:52.018932+00:00",
+    "next_retry_at": null,
     "run_id": 41612211788,
     "processed_run_id": 41612211788,
     "provider_id": null,
@@ -15,9 +15,9 @@
     "failure_count_by_type": {
       "ARTICLE_WORKFLOW_FAILED": 1
     },
-    "attempts": 1,
+    "attempts": 2,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-11-03T09:35:12.007820+00:00",
+    "last_dispatch_at": "2026-11-03T10:10:59.199752+00:00",
     "last_run_conclusion": "cancelled",
     "last_failed_run_id": 41612211788
   },
@@ -1732,16 +1732,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-03T06:40:56.901402+00:00",
-      "from": "long_video_watchdog_recovery",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261103-080543-a5235343e9",
-        "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a"
-      }
-    },
-    {
       "at": "2026-11-03T06:44:29.716362+00:00",
       "from": "long_video_watchdog_wait",
       "to": "article_live",
@@ -2368,9 +2358,19 @@
       "details": {
         "retry_at": "2026-11-03T10:05:52.018932+00:00"
       }
+    },
+    {
+      "at": "2026-11-03T10:10:59.199780+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 2,
+        "publication_slot": "2026-11-03"
+      }
     }
   ],
-  "updated_at": "2026-11-03T10:05:57.038555+00:00",
+  "updated_at": "2026-11-03T10:10:59.199788+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2927,9 +2927,10 @@
         "topic_brief": "ייעוץ זוגי — שפת ה׳אנחנו׳ (We-Talk) בזמן קונפליקט. מקורות ראשיים מחייבים: Seider et al., Psychology and Aging 2009 (154 זוגות; שיחת קונפליקט של 15 דקות; greater we-ness was associated with lower cardiovascular arousal and more positive/less negative emotional behavior): https://pmc.ncbi.nlm.nih.gov/articles/PMC2785123/ . Karan, Rosenthal & Robbins, Journal of Social and Personal Relationships 2019, meta-analysis of 30 studies / 5,288 participants; overall positive but modest association of we-talk with relationship/personal functioning, partner effects often stronger: https://journals.sagepub.com/doi/full/10.1177/0265407518795336 . מקור משני עדכני לעניין ציבורי בלבד: https://somethingnavy.com/saying-we-couples/ (31.10.2026). חובה לדייק: אין לטעון שמילה אחת מורידה דופק באופן סיבתי, אין לטעון ניבוי שביעות רצון לאורך עשורים, ואין להציג we-talk כקסם; מדובר בעיקר בקשרים מתאמיים ובהקשר של קונפליקט. אפשר להזכיר שגם 'you' אינו תמיד שלילי מחוץ לקונפליקט. זווית טיפולית: להעביר את הבעיה 'מבינינו' ל'מולנו'; במקום 'למה אתה אף פעם לא מתארגן בזמן?' — 'איך אנחנו יכולים לצאת מהבית בלי להילחץ?'. כלי מעשי: משפט אחד שמתחיל ב'איך אנחנו...' בלי policing של כינויי גוף. שירות: ייעוץ זוגי. המאמר צריך להיות מקצועי, חם, בעברית, עם evidence מובנה, CTA אמיתי לייעוץ זוגי, לפחות 3 קישורי /blog/ קיימים, serviceUrl, controllerManaged, hero תקין, SEO/RTL/mobile/accessibility. Video Overview ו-Short חייבים להישאר על אותה authoritative identity ולהימנע מטענות סיבתיות מוגזמות.\n\nIdea Request ID: we-talk-couples-conflict\nRequired Primary Keyword: שפת אנחנו בזוגיות"
       },
       "intent_at": "2026-11-03T10:10:46.840864+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41612211788,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-11-03T10:10:46.840864+00:00"
     }
   },
   "deliverables": {
