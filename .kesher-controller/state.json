@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1763,12 +1763,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-03T07:25:00.387498+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-11-03T07:31:13.121981+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2429,9 +2423,19 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-11-03T12:03:21.213624+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261103-135620-349c806f14",
+        "task_id": "5dc8e8a8-49b1-4191-991b-30075ae23203"
+      }
     }
   ],
-  "updated_at": "2026-11-03T12:01:34.884789+00:00",
+  "updated_at": "2026-11-03T12:03:21.213632+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2450,18 +2454,36 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-11-03T12:07:56.846346+00:00",
     "run_id": 41631416384,
-    "processed_run_id": null,
-    "provider_id": null,
+    "processed_run_id": 41631416384,
+    "provider_id": "5dc8e8a8-49b1-4191-991b-30075ae23203",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-11-03T11:55:25.372305+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "last_run_conclusion": "success",
+    "item_id": "video-20261103-135620-349c806f14",
+    "source_slug": "we-language-relationships",
+    "source_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
+    "content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
+    "source_id": "4b663f61-836a-4ac2-b805-93528d8691ea",
+    "task_id": "5dc8e8a8-49b1-4191-991b-30075ae23203",
+    "artifact_id": "5dc8e8a8-49b1-4191-991b-30075ae23203",
+    "provider_status": "pending",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:we-language-relationships:349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf:video-20261103-135620-349c806f14",
+      "hard_started_at": "2026-11-03T11:56:25.211960+00:00",
+      "last_progress_at": "2026-11-03T12:02:56.846346+00:00",
+      "last_fingerprint": "ec6c16ef7e70f722a8e2f0e687d6841cbff2367e948e71d9e8fab1e8e32e9eae",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
