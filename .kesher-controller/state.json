@@ -3100,6 +3100,20 @@
       "previous_run_id": 41612211788,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T10:10:46.840864+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-11-03",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "we-language-relationships",
+        "derive_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
+        "derive_long_item_id": "video-20261103-143235-349c806f14-a2"
+      },
+      "intent_at": "2026-11-03T13:35:47.954311+00:00",
+      "status": "intent",
+      "previous_run_id": 41641391786,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -3171,6 +3185,20 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-11-03T13:00:45.764701+00:00"
+    },
+    "v5|we-language-relationships|349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf|short": {
+      "pipeline_id": "v5",
+      "slug": "we-language-relationships",
+      "content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-11-03T15",
+      "last_fingerprint": "ef22d3a59398c3d601454d27a6848f2a651eb00d2986bc3d0898194796a98933",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-11-03T13:35:47.954311+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   },
   "owner_cycle_archive": [
