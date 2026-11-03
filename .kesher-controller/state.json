@@ -2913,7 +2913,20 @@
     "publication_slot": "2026-11-03",
     "claimed_at": "2026-11-03T09:34:56.846373+00:00"
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-article-generation.yml": {
+      "workflow": "kesher-article-generation.yml",
+      "cycle": "2026-11-03",
+      "inputs": {
+        "slot": "2026-11-03",
+        "topic_brief": "ייעוץ זוגי — שפת ה׳אנחנו׳ (We-Talk) בזמן קונפליקט. מקורות ראשיים מחייבים: Seider et al., Psychology and Aging 2009 (154 זוגות; שיחת קונפליקט של 15 דקות; greater we-ness was associated with lower cardiovascular arousal and more positive/less negative emotional behavior): https://pmc.ncbi.nlm.nih.gov/articles/PMC2785123/ . Karan, Rosenthal & Robbins, Journal of Social and Personal Relationships 2019, meta-analysis of 30 studies / 5,288 participants; overall positive but modest association of we-talk with relationship/personal functioning, partner effects often stronger: https://journals.sagepub.com/doi/full/10.1177/0265407518795336 . מקור משני עדכני לעניין ציבורי בלבד: https://somethingnavy.com/saying-we-couples/ (31.10.2026). חובה לדייק: אין לטעון שמילה אחת מורידה דופק באופן סיבתי, אין לטעון ניבוי שביעות רצון לאורך עשורים, ואין להציג we-talk כקסם; מדובר בעיקר בקשרים מתאמיים ובהקשר של קונפליקט. אפשר להזכיר שגם 'you' אינו תמיד שלילי מחוץ לקונפליקט. זווית טיפולית: להעביר את הבעיה 'מבינינו' ל'מולנו'; במקום 'למה אתה אף פעם לא מתארגן בזמן?' — 'איך אנחנו יכולים לצאת מהבית בלי להילחץ?'. כלי מעשי: משפט אחד שמתחיל ב'איך אנחנו...' בלי policing של כינויי גוף. שירות: ייעוץ זוגי. המאמר צריך להיות מקצועי, חם, בעברית, עם evidence מובנה, CTA אמיתי לייעוץ זוגי, לפחות 3 קישורי /blog/ קיימים, serviceUrl, controllerManaged, hero תקין, SEO/RTL/mobile/accessibility. Video Overview ו-Short חייבים להישאר על אותה authoritative identity ולהימנע מטענות סיבתיות מוגזמות.\n\nIdea Request ID: we-talk-couples-conflict\nRequired Primary Keyword: שפת אנחנו בזוגיות"
+      },
+      "intent_at": "2026-11-03T09:34:51.861133+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/baby-cries-at-daycare",
     "overview_youtube_url": "https://youtu.be/5IpeOucSNgE",
