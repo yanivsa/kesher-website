@@ -89,7 +89,7 @@
     "last_deploy_dispatch_at": "2026-11-03T05:58:23.315088+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41586983256,
-    "live_verified_at": "2026-11-03T06:50:49.938617+00:00"
+    "live_verified_at": "2026-11-03T06:51:13.762374+00:00"
   },
   "backlog": [
     {
@@ -1802,33 +1802,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T18:05:56.172178+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
-      "at": "2026-11-02T18:10:55.655900+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
-      "at": "2026-11-02T18:15:51.888095+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
       "at": "2026-11-02T18:20:54.162044+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2630,9 +2603,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-11-03T06:51:13.762405+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-03T06:51:14.631405+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-03T06:51:18.323568+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-11-03T06:46:20.941933+00:00",
+  "updated_at": "2026-11-03T06:51:18.323587+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
