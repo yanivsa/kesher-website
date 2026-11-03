@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "long_video_complete",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1802,19 +1802,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T17:45:53.322239+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TERMINAL_FAILURE",
-      "details": {
-        "message": "Jules ended with terminal state FAILED; Jules diagnostic: Jules was unable to complete the task.",
-        "retry_at": "2026-11-02T17:50:53.322214+00:00",
-        "failure_streak": 1,
-        "run_id": 41488678242,
-        "session_id": "sessions/14530118500646372484"
-      }
-    },
-    {
       "at": "2026-11-02T17:50:57.285892+00:00",
       "from": "article_retry_wait",
       "to": "article_retry_wait",
@@ -2647,9 +2634,15 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-03T06:44:40.824063+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-11-03T06:44:30.960213+00:00",
+  "updated_at": "2026-11-03T06:44:40.824075+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -2719,16 +2712,20 @@
     "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-11-03T06:44:40.824030+00:00",
+    "artifact_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
+    "source_id": "3be3d466-72ab-425c-b0f6-ba03fa14ad35",
+    "adopted_from_long_item_id": "video-20261103-080543-a5235343e9"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3247,9 +3244,10 @@
         "derive_long_item_id": "video-20261103-080543-a5235343e9"
       },
       "intent_at": "2026-11-03T06:43:51.796887+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41591813893,
+      "dispatched_at": "2026-11-03T06:43:51.796887+00:00"
     }
   },
   "deliverables": {
