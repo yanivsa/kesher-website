@@ -83,13 +83,13 @@
     "quality_content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-03T07:20:47.294830+00:00",
+    "quality_checked_at": "2026-11-03T07:24:24.576151+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-03T05:58:23.315088+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41586983256,
-    "live_verified_at": "2026-11-03T07:20:47.893093+00:00"
+    "live_verified_at": "2026-11-03T07:24:26.463761+00:00"
   },
   "backlog": [
     {
@@ -3223,21 +3223,6 @@
       "previous_run_id": 41544116434,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T00:10:44.004777+00:00"
-    },
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-11-03",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "baby-cries-at-daycare",
-        "derive_content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
-        "derive_long_item_id": "video-20261103-080543-a5235343e9"
-      },
-      "intent_at": "2026-11-03T07:15:58.716413+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41591813893,
-      "observed_active_run_id": 41595215460,
-      "dispatched_at": "2026-11-03T07:15:58.716413+00:00"
     }
   },
   "deliverables": {
@@ -3251,7 +3236,7 @@
   },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
-    "run_id": 41591813893,
+    "run_id": 41595215460,
     "conclusion": "success",
     "source_slug": "baby-cries-at-daycare",
     "slot": "2026-11-03"
