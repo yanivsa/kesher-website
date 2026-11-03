@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-04",
-  "status": "waiting_for_article_window",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,9 +13,10 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
+    "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "pending"
+    "normalization_status": "pending",
+    "last_dispatch_at": "2026-11-03T22:41:32.587775+00:00"
   },
   "backlog": [
     {
@@ -2230,9 +2231,18 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-11-03T22:41:32.587788+00:00",
+      "from": "waiting_for_article_window",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-11-03T22:31:18.744604+00:00",
+  "updated_at": "2026-11-03T22:41:32.587793+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2798,18 +2808,6 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  },
   "pending_dispatches": {
     "kesher-article-generation.yml": {
       "workflow": "kesher-article-generation.yml",
@@ -2819,9 +2817,10 @@
         "topic_brief": "אשכול מעבר לגן. נושא: ילד לא רוצה ללכת לגן ומתנגד בבוקר לאורך זמן. אות ביקוש: SERP ושאלות הורים חוזרות. Canonical ID נדרש: child-does-not-want-kindergarten. כותרת עבודה: הילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים זה יעבור? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג. תן תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לברר מול הילד והצוות, נורות אזהרה ומתי לערב איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים ואקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מחרדת פרידה ומקשיי הסתגלות כלליים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p2-child-does-not-want-kindergarten\nRequired Primary Keyword: ילד לא רוצה ללכת לגן"
       },
       "intent_at": "2026-11-03T22:40:44.592483+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-11-03T22:40:44.592483+00:00"
     }
   }
 }
