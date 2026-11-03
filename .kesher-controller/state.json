@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "article_needed",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,8 +13,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
-    "deploy_attempts": 0
+    "attempts": 1,
+    "deploy_attempts": 0,
+    "last_dispatch_at": "2026-11-03T09:35:12.007820+00:00"
   },
   "backlog": [
     {
@@ -1727,12 +1728,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-03T06:11:15.000972+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
       "at": "2026-11-03T06:12:35.445867+00:00",
       "from": "long_video_running",
       "to": "long_video_watchdog_wait",
@@ -2363,9 +2358,19 @@
         "idea_id": "we-talk-couples-conflict",
         "publication_slot": "2026-11-03"
       }
+    },
+    {
+      "at": "2026-11-03T09:35:12.007849+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "owner run-now article dispatched immediately",
+      "details": {
+        "attempt": 1,
+        "publication_slot": "2026-11-03"
+      }
     }
   ],
-  "updated_at": "2026-11-03T09:31:16.432059+00:00",
+  "updated_at": "2026-11-03T09:35:12.007856+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2922,9 +2927,10 @@
         "topic_brief": "ייעוץ זוגי — שפת ה׳אנחנו׳ (We-Talk) בזמן קונפליקט. מקורות ראשיים מחייבים: Seider et al., Psychology and Aging 2009 (154 זוגות; שיחת קונפליקט של 15 דקות; greater we-ness was associated with lower cardiovascular arousal and more positive/less negative emotional behavior): https://pmc.ncbi.nlm.nih.gov/articles/PMC2785123/ . Karan, Rosenthal & Robbins, Journal of Social and Personal Relationships 2019, meta-analysis of 30 studies / 5,288 participants; overall positive but modest association of we-talk with relationship/personal functioning, partner effects often stronger: https://journals.sagepub.com/doi/full/10.1177/0265407518795336 . מקור משני עדכני לעניין ציבורי בלבד: https://somethingnavy.com/saying-we-couples/ (31.10.2026). חובה לדייק: אין לטעון שמילה אחת מורידה דופק באופן סיבתי, אין לטעון ניבוי שביעות רצון לאורך עשורים, ואין להציג we-talk כקסם; מדובר בעיקר בקשרים מתאמיים ובהקשר של קונפליקט. אפשר להזכיר שגם 'you' אינו תמיד שלילי מחוץ לקונפליקט. זווית טיפולית: להעביר את הבעיה 'מבינינו' ל'מולנו'; במקום 'למה אתה אף פעם לא מתארגן בזמן?' — 'איך אנחנו יכולים לצאת מהבית בלי להילחץ?'. כלי מעשי: משפט אחד שמתחיל ב'איך אנחנו...' בלי policing של כינויי גוף. שירות: ייעוץ זוגי. המאמר צריך להיות מקצועי, חם, בעברית, עם evidence מובנה, CTA אמיתי לייעוץ זוגי, לפחות 3 קישורי /blog/ קיימים, serviceUrl, controllerManaged, hero תקין, SEO/RTL/mobile/accessibility. Video Overview ו-Short חייבים להישאר על אותה authoritative identity ולהימנע מטענות סיבתיות מוגזמות.\n\nIdea Request ID: we-talk-couples-conflict\nRequired Primary Keyword: שפת אנחנו בזוגיות"
       },
       "intent_at": "2026-11-03T09:34:51.861133+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-11-03T09:34:51.861133+00:00"
     }
   },
   "deliverables": {
