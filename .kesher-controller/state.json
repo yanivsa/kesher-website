@@ -89,7 +89,7 @@
     "last_deploy_dispatch_at": "2026-11-03T05:58:23.315088+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41586983256,
-    "live_verified_at": "2026-11-03T07:40:49.327372+00:00"
+    "live_verified_at": "2026-11-03T07:41:11.644867+00:00"
   },
   "backlog": [
     {
@@ -1802,32 +1802,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T19:00:58.323501+00:00",
-      "from": "article_generating",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1274,
-        "slot": "2026-11-02"
-      }
-    },
-    {
-      "at": "2026-11-02T21:06:31.353957+00:00",
-      "from": "article_normalizing",
-      "to": "article_image_rebinding",
-      "reason": "prior trusted image artifact proved against current normalized article and must be reattached",
-      "details": {
-        "pr_number": 1274,
-        "head_sha": "4bbc12d078ff48a7ac922f3d870cc33a33dc0e1f"
-      }
-    },
-    {
-      "at": "2026-11-02T21:08:26.884973+00:00",
-      "from": "article_image_rebinding",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
       "at": "2026-11-02T21:13:49.545440+00:00",
       "from": "article_pr_open",
       "to": "article_image_rebinding",
@@ -2590,9 +2564,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-03T07:41:11.644913+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-03T07:41:12.635757+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-03T07:41:13.659634+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-03T07:36:20.716982+00:00",
+  "updated_at": "2026-11-03T07:41:13.659658+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
