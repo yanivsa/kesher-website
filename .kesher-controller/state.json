@@ -3031,7 +3031,9 @@
     "source_slug": null,
     "slot": "2026-11-03"
   },
-  "processed_child_notifications": [],
+  "processed_child_notifications": [
+    "Deploy to Cloudflare Pages:41630359596"
+  ],
   "interventions": {
     "v5|baby-cries-at-daycare|a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b|long_video": {
       "pipeline_id": "v5",
