@@ -50,7 +50,7 @@
     "last_deploy_dispatch_at": "2026-11-03T11:47:32.822204+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41630359596,
-    "live_verified_at": "2026-11-03T15:16:02.805336+00:00"
+    "live_verified_at": "2026-11-03T15:16:27.917016+00:00"
   },
   "backlog": [
     {
@@ -1763,32 +1763,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-03T09:31:16.432044+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-03T09:34:56.846388+00:00",
-      "from": "complete",
-      "to": "article_needed",
-      "reason": "owner_run_now_cycle_started",
-      "details": {
-        "idea_id": "we-talk-couples-conflict",
-        "publication_slot": "2026-11-03"
-      }
-    },
-    {
-      "at": "2026-11-03T09:35:12.007849+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "owner run-now article dispatched immediately",
-      "details": {
-        "attempt": 1,
-        "publication_slot": "2026-11-03"
-      }
-    },
-    {
       "at": "2026-11-03T09:41:07.186655+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2489,9 +2463,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-03T15:16:27.917043+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-03T15:16:28.886908+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-03T15:16:29.908407+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-03T15:12:05.019909+00:00",
+  "updated_at": "2026-11-03T15:16:29.908428+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
