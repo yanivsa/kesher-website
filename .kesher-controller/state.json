@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41551027777,
@@ -89,7 +89,7 @@
     "last_deploy_dispatch_at": "2026-11-03T05:58:23.315088+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41586983256,
-    "live_verified_at": "2026-11-03T07:24:26.463761+00:00"
+    "live_verified_at": "2026-11-03T07:24:57.686221+00:00"
   },
   "backlog": [
     {
@@ -1802,33 +1802,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T18:25:55.542320+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
-      "at": "2026-11-02T18:31:11.719944+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
-      "at": "2026-11-02T18:35:56.410769+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
       "at": "2026-11-02T18:41:09.797522+00:00",
       "from": "article_generating",
       "to": "article_retry_wait",
@@ -2622,9 +2595,27 @@
         "item_id": "video-20261103-084618-a5235343e9",
         "long_item_id": "video-20261103-080543-a5235343e9"
       }
+    },
+    {
+      "at": "2026-11-03T07:24:57.686251+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-03T07:24:59.078650+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-03T07:25:00.387498+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-03T07:16:22.404286+00:00",
+  "updated_at": "2026-11-03T07:25:00.387517+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -2695,19 +2686,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41595215460,
     "processed_run_id": null,
-    "provider_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
+    "provider_id": "ab58ccd7-ad09-4ff6-a11b-e2a0f793acdc",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-11-03T07:16:22.404262+00:00",
-    "artifact_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
-    "source_id": "3be3d466-72ab-425c-b0f6-ba03fa14ad35",
-    "adopted_from_long_item_id": "video-20261103-080543-a5235343e9",
+    "artifact_id": "ab58ccd7-ad09-4ff6-a11b-e2a0f793acdc",
+    "source_id": "43c71a2f-ce81-46fd-ae25-07ed81dca855",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:baby-cries-at-daycare:a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b:video-20261103-084618-a5235343e9",
       "hard_started_at": "2026-11-03T06:46:25.742986+00:00",
@@ -2715,7 +2706,125 @@
       "last_fingerprint": "98179099ac1980f59a394cd16a9a430b6bc2704a0a02377dfbcf6a491251b021",
       "recovery_count": 1,
       "last_recovery_at": "2026-11-03T07:15:58.716413+00:00"
-    }
+    },
+    "source": {
+      "id": "baby-cries-at-daycare",
+      "slug": "baby-cries-at-daycare",
+      "title": "תינוק בוכה במעון: מתי זו הסתגלות רגילה ומתי זו נורת אזהרה?",
+      "date": "2026-11-03",
+      "category": "הדרכת הורים",
+      "subcategory": "הגיל הרך",
+      "excerpt": "הפרידה בבוקר מלווה בבכי קורע לב, ובמהלך היום אתם תוהים אם התינוק שלכם בוכה במעון יותר מהרגיל. האם זו הסתגלות טבעית, או נורת אזהרה שמצריכה בירור מול הצוות?",
+      "canonical_url": "https://kesher.saharoni.com/blog/baby-cries-at-daycare",
+      "content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
+      "video_title": "תינוק בוכה במעון: מתי זו הסתגלות רגילה ומתי זו נורת אזהרה?",
+      "short_title": "תינוק בוכה במעון: מתי זו הסתגלות רגילה ומתי זו נורת אזהרה?",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "תינוק בוכה במעון: מתי זו הסתגלות רגילה ומתי זו נורת אזהרה?",
+        "description": "הפרידה בבוקר מלווה בבכי קורע לב, ובמהלך היום אתם תוהים אם התינוק שלכם בוכה במעון יותר מהרגיל. האם זו הסתגלות טבעית, או נורת אזהרה שמצריכה בירור מול הצוות?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/baby-cries-at-daycare\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "הגיל הרך"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: תינוק בוכה במעון: מתי זו הסתגלות רגילה ומתי זו נורת אזהרה?",
+        "description": "הפרידה בבוקר מלווה בבכי קורע לב, ובמהלך היום אתם תוהים אם התינוק שלכם בוכה במעון יותר מהרגיל. האם זו הסתגלות טבעית, או נורת אזהרה שמצריכה בירור מול הצוות?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/baby-cries-at-daycare\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "הגיל הרך"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "ab58ccd7-ad09-4ff6-a11b-e2a0f793acdc",
+    "raw_sha256": "176bca55e209dece56f6810865f86c8badaf32b88713354f74241a6d2f1d231b",
+    "final_sha256": "b391a2e4f8d2a8ec6a278802f4a35d41014cfdda8a95ca9ff575449ad3e3ac73",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 80.933,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 80.933,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "3be3d466-72ab-425c-b0f6-ba03fa14ad35",
+      "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
+      "artifact_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
+      "raw_sha256": "47eb5e5b822e7991fcc3f156e9e5ad60eb0c866b04b2aee0b31c7a7e777e5a61"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 80.933,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "176bca55e209dece56f6810865f86c8badaf32b88713354f74241a6d2f1d231b",
+      "final_sha256": "b391a2e4f8d2a8ec6a278802f4a35d41014cfdda8a95ca9ff575449ad3e3ac73",
+      "raw_audio_sha256": "4aa3084c5b8dd723642694bda98b00911bb88d666eb5e73201f8af22ecfd6958",
+      "final_audio_sha256": "4aa3084c5b8dd723642694bda98b00911bb88d666eb5e73201f8af22ecfd6958",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 80.991202
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 80.991202
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "b391a2e4f8d2a8ec6a278802f4a35d41014cfdda8a95ca9ff575449ad3e3ac73",
+      "raw_sha256": "176bca55e209dece56f6810865f86c8badaf32b88713354f74241a6d2f1d231b",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "51ee73bb5dfb3242cf94e13481114138fe4cc89f801e7c18716f14e01df736b6",
+      "source_duration_seconds": 80.933,
+      "final_duration_seconds": 80.933,
+      "start_seconds": 77.933,
+      "end_seconds": 80.933,
+      "audio_source_sha256": "176bca55e209dece56f6810865f86c8badaf32b88713354f74241a6d2f1d231b"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261103-084618-a5235343e9",
+    "type": "article_short",
+    "youtube_id": "HtFHfU3RvnE",
+    "youtube_url": "https://youtu.be/HtFHfU3RvnE",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "51ee73bb5dfb3242cf94e13481114138fe4cc89f801e7c18716f14e01df736b6",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
