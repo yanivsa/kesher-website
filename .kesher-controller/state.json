@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "article_deploying",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -83,11 +83,13 @@
     "quality_content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-03T06:00:46.005413+00:00",
+    "quality_checked_at": "2026-11-03T06:04:09.530282+00:00",
     "quality_violations": [],
-    "live": false,
+    "live": true,
     "last_deploy_dispatch_at": "2026-11-03T05:58:23.315088+00:00",
-    "next_deploy_retry_at": "2026-11-03T06:03:12.840152+00:00"
+    "next_deploy_retry_at": null,
+    "deploy_run_id": 41586983256,
+    "live_verified_at": "2026-11-03T06:04:10.933659+00:00"
   },
   "backlog": [
     {
@@ -1800,15 +1802,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T16:30:52.350091+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
       "at": "2026-11-02T16:35:58.513286+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2661,9 +2654,15 @@
         "http_status": 404,
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-11-03T06:04:10.933692+00:00",
+      "from": "article_deploying",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-11-03T06:00:47.818439+00:00",
+  "updated_at": "2026-11-03T06:04:10.933698+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -2694,7 +2693,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
   },
   "short": {
     "attempt_count": 0,
@@ -3214,17 +3214,6 @@
       "previous_run_id": 41544116434,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T00:10:44.004777+00:00"
-    },
-    "deploy.yml": {
-      "workflow": "deploy.yml",
-      "cycle": "2026-11-03",
-      "inputs": {},
-      "intent_at": "2026-11-03T05:58:12.840152+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41586983256,
-      "dispatch_head_sha": "4057fac5d5fb72abc2ecd3b8a1b75241afbed37c",
-      "dispatched_at": "2026-11-03T05:58:12.840152+00:00"
     }
   },
   "deliverables": {
@@ -3237,8 +3226,8 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 41586079940,
+    "workflow": "Deploy to Cloudflare Pages",
+    "run_id": 41586983256,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-03"
