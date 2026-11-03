@@ -3222,6 +3222,20 @@
       "previous_run_id": 41544116434,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T00:10:44.004777+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-11-03",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "baby-cries-at-daycare",
+        "derive_content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
+        "derive_long_item_id": "video-20261103-080543-a5235343e9"
+      },
+      "intent_at": "2026-11-03T07:15:58.716413+00:00",
+      "status": "intent",
+      "previous_run_id": 41591813893,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -3263,6 +3277,20 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-11-03T06:35:42.756813+00:00"
+    },
+    "v5|baby-cries-at-daycare|a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b|short": {
+      "pipeline_id": "v5",
+      "slug": "baby-cries-at-daycare",
+      "content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-11-03T09",
+      "last_fingerprint": "b1ddc675f9b6d381c5a052b83c98b6163c551b6e83548e4cb867396ef58b068c",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-11-03T07:15:58.716413+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   }
 }
