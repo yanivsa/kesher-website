@@ -2580,9 +2580,18 @@
       "details": {
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-11-03T00:19:17.497428+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-11-03T00:11:19.470499+00:00",
+  "updated_at": "2026-11-03T00:19:17.497436+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
