@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1802,15 +1802,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T17:20:56.772095+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
       "at": "2026-11-02T17:25:52.867435+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2649,9 +2640,21 @@
         "item_id": "video-20261103-080543-a5235343e9",
         "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a"
       }
+    },
+    {
+      "at": "2026-11-03T06:35:58.908078+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_recovery",
+      "reason": "long-form provider stalled; resumed the same durable provider identity",
+      "details": {
+        "item_id": "video-20261103-080543-a5235343e9",
+        "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
+        "slug": "baby-cries-at-daycare",
+        "content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b"
+      }
     }
   ],
-  "updated_at": "2026-11-03T06:31:12.857404+00:00",
+  "updated_at": "2026-11-03T06:35:58.908087+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -2674,7 +2677,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "generating",
+    "status": "running",
     "last_error": null,
     "next_retry_at": "2026-11-03T06:17:20.252331+00:00",
     "run_id": 41587625992,
@@ -2684,7 +2687,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-11-03T06:04:45.260057+00:00",
+    "last_dispatch_at": "2026-11-03T06:35:58.908058+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
     "item_id": "video-20261103-080543-a5235343e9",
@@ -2701,9 +2704,11 @@
       "hard_started_at": "2026-11-03T06:05:48.970598+00:00",
       "last_progress_at": "2026-11-03T06:12:20.252331+00:00",
       "last_fingerprint": "9d2b7916e8201b88eb341bbdde70a0ed6fdbd28524b0bf82693e6634347de566",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    }
+      "recovery_count": 1,
+      "last_recovery_at": "2026-11-03T06:35:42.756813+00:00"
+    },
+    "pending_resume_ready": false,
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
@@ -3234,9 +3239,10 @@
         "target_item_id": "video-20261103-080543-a5235343e9"
       },
       "intent_at": "2026-11-03T06:35:42.756813+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41587625992,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41590896220,
+      "dispatched_at": "2026-11-03T06:35:42.756813+00:00"
     }
   },
   "deliverables": {
@@ -3270,11 +3276,12 @@
       "strike_count": 1,
       "last_check_token": "2026-11-03T08",
       "last_fingerprint": "65043cb3ae0af1ef748b2b88ddb4581b9a26c9d950f3ed14a851775ad2ab38af",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
+      "last_controller_action_token": "recovery:1:2026-11-03T06:35:42.756813+00:00",
+      "controller_action_observed": true,
       "last_observed_at": "2026-11-03T06:35:42.756813+00:00",
-      "last_action": "observe_controller",
-      "direct_takeover_required": false
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-11-03T06:35:42.756813+00:00"
     }
   }
 }
