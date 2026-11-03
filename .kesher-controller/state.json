@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -61,13 +61,18 @@
     "last_dispatch_at": "2026-11-03T00:11:19.470479+00:00",
     "pr_number": 1275,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1275",
-    "current_pr_head_sha": "57832b1b25d3da27ccd8c02853af6ec21811077d",
+    "current_pr_head_sha": "bac59ef7eced9321250ffe8a0140ad5f28bc166d",
     "jules_head_sha": "965683d15c1e1788591ed6cd3dbf92fc868abc6e",
     "normalization_status": "complete",
     "normalization_slot": "2026-11-03",
     "normalization_dispatched_at": "2026-11-03T00:31:31.121273+00:00",
     "normalization_run_id": 41553468547,
-    "normalized_head_sha": "57832b1b25d3da27ccd8c02853af6ec21811077d"
+    "normalized_head_sha": "bac59ef7eced9321250ffe8a0140ad5f28bc166d",
+    "image_head_sha": "bac59ef7eced9321250ffe8a0140ad5f28bc166d",
+    "merge_candidate_sha": "bac59ef7eced9321250ffe8a0140ad5f28bc166d",
+    "normalization_drift_count": 0,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null
   },
   "backlog": [
     {
@@ -1780,15 +1785,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T16:15:54.600496+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
       "at": "2026-11-02T16:20:57.490192+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2639,25 +2635,25 @@
         "attempt": 2,
         "pr_number": 1275
       }
+    },
+    {
+      "at": "2026-11-03T05:48:45.014237+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-11-03T05:46:40.253564+00:00",
+  "updated_at": "2026-11-03T05:48:45.014257+00:00",
   "image": {
     "attempt_count": 2,
-    "status": "running",
-    "last_error": {
-      "code": "IMAGE_WORKFLOW_FAILED",
-      "message": "trusted image run 41584456328 completed with conclusion=failure but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-11-03T05:41:27.755052+00:00",
-      "at": "2026-11-03T05:36:27.755083+00:00"
-    },
+    "status": "complete",
+    "last_error": null,
     "next_retry_at": null,
     "run_id": 41585875253,
     "processed_run_id": 41584456328,
     "provider_id": "LocalEditorial",
-    "failure_fingerprint": "IMAGE_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "IMAGE_WORKFLOW_FAILED": 1
     },
@@ -3197,6 +3193,18 @@
       "previous_run_id": 41544116434,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T00:10:44.004777+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-11-03",
+      "inputs": {
+        "pr_number": "1275",
+        "slot": "2026-11-03"
+      },
+      "intent_at": "2026-11-03T05:47:59.711324+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -3214,5 +3222,17 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-03"
+  },
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   }
 }
