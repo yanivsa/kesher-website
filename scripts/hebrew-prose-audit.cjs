@@ -99,6 +99,7 @@ function auditText(input) {
   const words = countWords(text);
   const sentences = splitSentences(text);
   const findings = [];
+  const advisories = [];
 
   const formulaCounts = FORMULAIC_PHRASES
     .map((phrase) => [phrase, countPhrase(text, phrase)])
@@ -180,17 +181,17 @@ function auditText(input) {
   const rhetoricalQuestions = (text.match(/\?/g) || []).length;
   const qDensity = words ? (rhetoricalQuestions * 1000) / words : 0;
   if (rhetoricalQuestions >= 6 && qDensity >= 10) {
-    findings.push(finding(
+    advisories.push(finding(
       'question-cadence',
       rhetoricalQuestions,
-      'Question density is unusually high and may indicate a repetitive hook pattern.',
+      'Question density is high. This is advisory only because question-led headings are normal in KESHER content.',
       [`${rhetoricalQuestions} question marks`, `${qDensity.toFixed(1)} per 1,000 words`],
     ));
   }
 
   const riskPoints = findings.length;
   const risk = riskPoints === 0 ? 'low' : riskPoints === 1 ? 'watch' : riskPoints <= 3 ? 'medium' : 'high';
-  return { risk, riskPoints, wordCount: words, sentenceCount: sentences.length, findings };
+  return { risk, riskPoints, wordCount: words, sentenceCount: sentences.length, findings, advisories };
 }
 
 function auditPosts(posts, options = {}) {
@@ -214,10 +215,14 @@ function auditPosts(posts, options = {}) {
 
   const riskCounts = { low: 0, watch: 0, medium: 0, high: 0 };
   const categoryCounts = {};
+  const advisoryCounts = {};
   for (const article of articles) {
     riskCounts[article.risk] += 1;
     for (const item of article.findings) {
       categoryCounts[item.category] = (categoryCounts[item.category] || 0) + 1;
+    }
+    for (const item of article.advisories) {
+      advisoryCounts[item.category] = (advisoryCounts[item.category] || 0) + 1;
     }
   }
 
@@ -227,6 +232,7 @@ function auditPosts(posts, options = {}) {
     sampleAudited: articles.length,
     riskCounts,
     categoryCounts,
+    advisoryCounts,
     articles,
   };
 }
@@ -247,10 +253,28 @@ function formatMarkdownReport(report) {
   if (!categories.length) lines.push('No heuristic findings in this sample.');
   else for (const [category, count] of categories) lines.push(`- ${category}: ${count} article(s)`);
 
-  lines.push('', '## Articles', '', '| id | date | risk | findings |', '|---|---|---:|---|');
+  lines.push('', '## Advisory metrics', '');
+  const advisories = Object.entries(report.advisoryCounts).sort((a, b) => b[1] - a[1]);
+  if (!advisories.length) lines.push('No advisory-only findings in this sample.');
+  else for (const [category, count] of advisories) lines.push(`- ${category}: ${count} article(s)`);
+
+  lines.push('', '## Articles', '', '| id | date | risk | findings | advisories |', '|---|---|---:|---|---|');
   for (const article of report.articles) {
     const categoriesText = article.findings.map((item) => item.category).join(', ') || '—';
-    lines.push(`| ${article.id} | ${article.date} | ${article.risk} | ${categoriesText} |`);
+    const advisoryText = article.advisories.map((item) => item.category).join(', ') || '—';
+    lines.push(`| ${article.id} | ${article.date} | ${article.risk} | ${categoriesText} | ${advisoryText} |`);
+  }
+  const flagged = report.articles.filter((article) => article.findings.length > 0);
+  if (flagged.length) {
+    lines.push('', '## Finding details', '');
+    for (const article of flagged) {
+      lines.push(`### ${article.id}`);
+      for (const item of article.findings) {
+        const examples = item.examples.length ? ` Examples: ${item.examples.join(' | ')}` : '';
+        lines.push(`- ${item.category} (${item.count}): ${item.message}${examples}`);
+      }
+      lines.push('');
+    }
   }
   return `${lines.join('\n')}\n`;
 }
