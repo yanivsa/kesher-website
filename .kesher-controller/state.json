@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1763,16 +1763,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-03T07:16:22.404281+00:00",
-      "from": "short_running",
-      "to": "short_watchdog_recovery",
-      "reason": "Short provider stalled; re-dispatched derivation from the same verified long-form identity",
-      "details": {
-        "item_id": "video-20261103-084618-a5235343e9",
-        "long_item_id": "video-20261103-080543-a5235343e9"
-      }
-    },
-    {
       "at": "2026-11-03T07:24:57.686251+00:00",
       "from": "short_watchdog_recovery",
       "to": "article_live",
@@ -2429,9 +2419,19 @@
       "from": "article_deploying",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-03T11:55:25.372318+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-11-03T11:55:17.885562+00:00",
+  "updated_at": "2026-11-03T11:55:25.372326+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2449,8 +2449,8 @@
     "image_path": "/images/generated/blog/we-language-relationships.png"
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2459,7 +2459,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-11-03T11:55:25.372305+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
@@ -3007,9 +3009,10 @@
         "target_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf"
       },
       "intent_at": "2026-11-03T11:54:45.314169+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41631416384,
+      "dispatched_at": "2026-11-03T11:54:45.314169+00:00"
     }
   },
   "deliverables": {
@@ -3347,18 +3350,5 @@
       "archived_at": "2026-11-03T09:34:56.846359+00:00",
       "reason": "owner_run_now_cycle_started"
     }
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true
-  }
+  ]
 }
