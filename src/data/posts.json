@@ -56,7 +56,12 @@
         "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2785123/",
         "note": "נמצא מתאם בין שימוש במונחים כמו 'אנחנו' למדדים רגשיים ופיזיולוגיים מתונים יותר."
       }
-    ]
+    ],
+    "image": "/images/generated/blog/we-language-relationships.png",
+    "imageAlt": "איור עריכתי מקומי של שני בני זוג יושבים זה מול זה בשיחה רגועה בבית, עם שפת גוף פתוחה וקשובה.",
+    "imageProvider": "LocalEditorial",
+    "imageSourceUrl": "local-editorial://we-language-relationships/6",
+    "imageIsFallback": false
   },
   {
     "id": "stool-withholding-potty-training",
