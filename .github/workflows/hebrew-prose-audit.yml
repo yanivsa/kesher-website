@@ -1,0 +1,38 @@
+name: Hebrew prose audit
+
+on:
+  pull_request:
+    paths:
+      - 'src/data/**'
+      - 'scripts/hebrew-prose-audit.cjs'
+      - 'tests/hebrew-prose-audit.test.cjs'
+      - '.github/workflows/hebrew-prose-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hebrew-prose-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+
+      - name: Test Hebrew prose audit
+        run: node --test tests/hebrew-prose-audit.test.cjs
+
+      - name: Audit 30 recent publishable articles
+        run: |
+          set -euo pipefail
+          node scripts/hebrew-prose-audit.cjs --sample=30 --format=markdown | tee hebrew-prose-audit.md
+          cat hebrew-prose-audit.md >> "$GITHUB_STEP_SUMMARY"
