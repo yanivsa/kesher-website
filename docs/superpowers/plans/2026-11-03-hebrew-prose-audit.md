@@ -4,9 +4,9 @@
 
 **Goal:** Add a Hebrew-first, report-only prose quality audit for recent KESHER articles and calibrate it on 30 published articles before any blocking enforcement.
 
-**Architecture:** A dependency-free CommonJS audit script reuses the repository's canonical post loader and publishability policy. It scores observable Hebrew prose patterns only, emits a human-readable report, and runs through the existing governed `test:content` gate. It stays non-blocking until calibration supports stricter enforcement.
+**Architecture:** A dependency-free CommonJS audit script reuses the repository's canonical post loader and publishability policy. It scores observable Hebrew prose patterns only and emits a human-readable report. The pilot is intentionally not wired into production CI: the repository's authority policy pins workflow definitions and `package.json`, so production automation requires a separate reviewed recertification change.
 
-**Tech Stack:** Node.js 22, CommonJS, Node built-in test runner, existing repository CI.
+**Tech Stack:** Node.js 22, CommonJS, Node built-in test runner.
 
 **Spec:** `.github/prompts/kesher-article-authoring-contract.md`
 
@@ -18,7 +18,7 @@
 - Reuse `scripts/load-posts.cjs` and `scripts/content-policy.cjs` as the source of truth.
 - Do not rewrite article content automatically.
 - A heuristic finding is an editorial signal, not proof of AI authorship.
-- Do not add a standalone workflow when the existing governed content gate can run the audit.
+- Do not change authority-pinned CI surfaces as part of this pilot.
 
 ## Review Focus
 
@@ -26,7 +26,7 @@
 - HTML tags and entities must not distort prose counts.
 - The sample must contain the 30 most recent publishable articles, not stubs.
 - Existing validators remain authoritative for claims, schema and publication safety.
-- A future strict mode must be opt-in and must not be enabled before calibration.
+- A future strict mode must be opt-in and must not be enabled before calibration and authority review.
 
 ---
 
@@ -47,15 +47,19 @@
 
 ### Task 2: 30-article calibration run
 
-**Files:**
-- Modify: `package.json`
-
 **Interfaces:**
 - Consumes: canonical repository post catalogs through `loadPosts()`.
-- Produces: a report in the existing `test:content` CI logs for the 30 newest publishable articles.
+- Produces: a report for the 30 newest publishable articles.
 
-- [x] Run unit tests through the existing content gate.
-- [x] Run `node scripts/hebrew-prose-audit.cjs --sample=30 --format=markdown` through `test:content`.
+- [x] Run the focused Node test suite.
+- [x] Run `node scripts/hebrew-prose-audit.cjs --sample=30 --format=markdown` against the repository corpus.
 - [x] Review the first real 30-article result.
 - [x] Move `question-cadence` to advisory-only after it flagged 13/30 articles and proved too noisy for KESHER's question-led editorial style.
-- [ ] Review the remaining punctuation/formulaic findings before considering any strict enforcement.
+- [x] Re-run calibration: 24 low, 6 watch, 0 medium, 0 high; five punctuation-cadence findings and one formulaic-phrases finding.
+- [x] Remove the temporary calibration workflow after the run; do not leave an unreviewed workflow definition in the repository.
+
+### Task 3: Production integration
+
+- [ ] Manually review the six `watch` articles to estimate true-positive rate.
+- [ ] If the signal is useful, prepare a separate authority-reviewed change that wires the audit into an existing governed path and recertifies affected hashes.
+- [ ] Consider strict enforcement only after additional calibration; keep question cadence advisory unless later evidence supports a different threshold.
