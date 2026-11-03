@@ -44,13 +44,13 @@
     "quality_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-03T13:06:03.155203+00:00",
+    "quality_checked_at": "2026-11-03T13:07:41.635960+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-03T11:47:32.822204+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41630359596,
-    "live_verified_at": "2026-11-03T13:06:04.647955+00:00"
+    "live_verified_at": "2026-11-03T13:07:43.349657+00:00"
   },
   "backlog": [
     {
@@ -2508,7 +2508,7 @@
     "attempt_count": 2,
     "status": "complete",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-03T13:12:35.378950+00:00",
     "run_id": 41640647022,
     "processed_run_id": 41636461854,
     "provider_id": "143bde9a-347e-4404-ba75-8c2e7e1e3ffc",
@@ -2539,7 +2539,18 @@
     "pending_resume_ready": false,
     "resume_dispatches": 3,
     "youtube_id": "s28sesV4yks",
-    "youtube_url": "https://youtu.be/s28sesV4yks"
+    "youtube_url": "https://youtu.be/s28sesV4yks",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 113.633,
+    "content_duration_seconds": 113.625,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 1,
@@ -3082,21 +3093,6 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T10:10:46.840864+00:00"
     },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-11-03",
-      "inputs": {
-        "operation": "recovery",
-        "target_slug": "we-language-relationships",
-        "target_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
-        "target_item_id": "video-20261103-143235-349c806f14-a2"
-      },
-      "intent_at": "2026-11-03T13:00:45.764701+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41636461854,
-      "observed_active_run_id": 41640647022,
-      "dispatched_at": "2026-11-03T13:00:45.764701+00:00"
-    },
     "kesher-short-v4.yml": {
       "workflow": "kesher-short-v4.yml",
       "cycle": "2026-11-03",
@@ -3124,7 +3120,7 @@
   },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 41636461854,
+    "run_id": 41640647022,
     "conclusion": "success",
     "source_slug": "we-language-relationships",
     "slot": "2026-11-03"
