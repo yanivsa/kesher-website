@@ -3,19 +3,19 @@
   "cycle": "2026-11-03",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 2,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41617102356,
     "processed_run_id": 41612211788,
     "provider_id": null,
-    "failure_fingerprint": "ARTICLE_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "ARTICLE_WORKFLOW_FAILED": 1
     },
-    "attempts": 2,
+    "attempts": 0,
     "deploy_attempts": 0,
     "last_dispatch_at": "2026-11-03T10:10:59.199752+00:00",
     "last_run_conclusion": "cancelled",
@@ -34,9 +34,19 @@
     "normalization_drift_count": 0,
     "merge_dispatch_count": 1,
     "merge_dispatch_at": "2026-11-03T11:46:04.629350+00:00",
-    "merge_run_id": 41629300367,
+    "merge_run_id": 41630166387,
     "last_refunded_auto_merge_run_id": 41629300367,
-    "deferred_auto_merge_refund_count": 1
+    "deferred_auto_merge_refund_count": 1,
+    "slug": "we-language-relationships",
+    "title": "איך לריב בלי לפגוע? שפת אנחנו בזוגיות יכולה לשנות את התמונה",
+    "url": "https://kesher.saharoni.com/blog/we-language-relationships",
+    "published_date": "2026-11-03",
+    "quality_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-11-03T11:47:25.568980+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2427,7 +2437,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-11-03T11:37:48.940019+00:00",
     "artifact_sha256": "63a70fb3fd1a42d52ca86f73056b74ca3a7957572a8d8e7cf1dcddcf57c35440",
-    "source_id": "local-editorial://we-language-relationships/6"
+    "source_id": "local-editorial://we-language-relationships/6",
+    "image_path": "/images/generated/blog/we-language-relationships.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2978,18 +2989,15 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T10:10:46.840864+00:00"
     },
-    "auto-merge-article-prs.yml": {
-      "workflow": "auto-merge-article-prs.yml",
+    "deploy.yml": {
+      "workflow": "deploy.yml",
       "cycle": "2026-11-03",
-      "inputs": {
-        "pr_number": "1278",
-        "slot": "2026-11-03"
-      },
-      "intent_at": "2026-11-03T11:45:46.096040+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41629300367,
-      "observed_active_run_id": 41630166387,
-      "dispatched_at": "2026-11-03T11:45:46.096040+00:00"
+      "inputs": {},
+      "intent_at": "2026-11-03T11:47:19.357091+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "378c990f2c6c173ee01d2507d6d32891622c80e3"
     }
   },
   "deliverables": {
@@ -3003,7 +3011,7 @@
   },
   "last_child_notification": {
     "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 41629300367,
+    "run_id": 41630166387,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-03"
