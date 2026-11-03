@@ -44,7 +44,7 @@
     "quality_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-03T11:47:25.568980+00:00",
+    "quality_checked_at": "2026-11-03T11:50:44.260934+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-11-03T11:47:32.822204+00:00",
@@ -2429,7 +2429,7 @@
       }
     }
   ],
-  "updated_at": "2026-11-03T11:47:32.822258+00:00",
+  "updated_at": "2026-11-03T11:50:46.473601+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
