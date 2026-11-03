@@ -3,19 +3,19 @@
   "cycle": "2026-11-03",
   "status": "article_pr_open",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41551027777,
     "processed_run_id": 41544116434,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
     "watchdog": {
       "identity": "2026-11-03",
@@ -75,7 +75,17 @@
     "merge_dispatch_at": "2026-11-03T05:48:49.240767+00:00",
     "merge_run_id": 41586079940,
     "last_refunded_auto_merge_run_id": 41586079940,
-    "deferred_auto_merge_refund_count": 1
+    "deferred_auto_merge_refund_count": 1,
+    "slug": "baby-cries-at-daycare",
+    "title": "תינוק בוכה במעון: מתי זו הסתגלות רגילה ומתי זו נורת אזהרה?",
+    "url": "https://kesher.saharoni.com/blog/baby-cries-at-daycare",
+    "published_date": "2026-11-03",
+    "quality_content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-11-03T05:58:16.549706+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2668,7 +2678,8 @@
     "artifact_sha256": "ef423f9bbb060f201b4b72768d1c7f5b23ab6f7f909703db998ca091021ae5d0",
     "source_id": "local-editorial://baby-cries-at-daycare/5",
     "last_run_conclusion": "failure",
-    "last_failed_run_id": 41584456328
+    "last_failed_run_id": 41584456328,
+    "image_path": "/images/generated/blog/baby-cries-at-daycare.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3200,6 +3211,16 @@
       "previous_run_id": 41544116434,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T00:10:44.004777+00:00"
+    },
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-11-03",
+      "inputs": {},
+      "intent_at": "2026-11-03T05:58:12.840152+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "4057fac5d5fb72abc2ecd3b8a1b75241afbed37c"
     }
   },
   "deliverables": {
