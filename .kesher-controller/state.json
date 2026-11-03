@@ -50,7 +50,7 @@
     "last_deploy_dispatch_at": "2026-11-03T11:47:32.822204+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41630359596,
-    "live_verified_at": "2026-11-03T13:07:43.349657+00:00"
+    "live_verified_at": "2026-11-03T13:08:15.606128+00:00"
   },
   "backlog": [
     {
@@ -1763,24 +1763,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-03T07:56:13.520608+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-03T07:56:14.710371+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-03T08:01:23.888531+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-03T08:01:25.079387+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2485,9 +2467,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-11-03T13:08:15.606160+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-03T13:08:16.762953+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-03T13:08:20.669604+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-11-03T13:06:30.947176+00:00",
+  "updated_at": "2026-11-03T13:08:20.669628+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2508,7 +2508,7 @@
     "attempt_count": 2,
     "status": "complete",
     "last_error": null,
-    "next_retry_at": "2026-11-03T13:12:35.378950+00:00",
+    "next_retry_at": null,
     "run_id": 41640647022,
     "processed_run_id": 41636461854,
     "provider_id": "143bde9a-347e-4404-ba75-8c2e7e1e3ffc",
