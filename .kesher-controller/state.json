@@ -1,56 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-11-03",
-  "status": "complete",
+  "cycle": "2026-11-04",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41617102356,
-    "processed_run_id": 41612211788,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "ARTICLE_WORKFLOW_FAILED": 1
-    },
+    "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 1,
-    "last_dispatch_at": "2026-11-03T10:10:59.199752+00:00",
-    "last_run_conclusion": "cancelled",
-    "last_failed_run_id": 41612211788,
-    "pr_number": 1278,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1278",
-    "current_pr_head_sha": "7b65d6ced4bada11746cb8d384416d909e8cdee3",
-    "jules_head_sha": "b9af06326e753164d2214beaf7e1e95c2681f87a",
-    "normalization_status": "complete",
-    "normalization_slot": "2026-11-03",
-    "normalization_dispatched_at": "2026-11-03T11:36:05.005129+00:00",
-    "normalization_run_id": 41628837446,
-    "normalized_head_sha": "7b65d6ced4bada11746cb8d384416d909e8cdee3",
-    "image_head_sha": "7b65d6ced4bada11746cb8d384416d909e8cdee3",
-    "merge_candidate_sha": "7b65d6ced4bada11746cb8d384416d909e8cdee3",
-    "normalization_drift_count": 0,
-    "merge_dispatch_count": 1,
-    "merge_dispatch_at": "2026-11-03T11:46:04.629350+00:00",
-    "merge_run_id": 41630166387,
-    "last_refunded_auto_merge_run_id": 41629300367,
-    "deferred_auto_merge_refund_count": 1,
-    "slug": "we-language-relationships",
-    "title": "איך לריב בלי לפגוע? שפת אנחנו בזוגיות יכולה לשנות את התמונה",
-    "url": "https://kesher.saharoni.com/blog/we-language-relationships",
-    "published_date": "2026-11-03",
-    "quality_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
-    "reconciled_existing_article": true,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-11-03T21:59:03.431567+00:00",
-    "quality_violations": [],
-    "live": true,
-    "last_deploy_dispatch_at": "2026-11-03T11:47:32.822204+00:00",
-    "next_deploy_retry_at": null,
-    "deploy_run_id": 41630359596,
-    "live_verified_at": "2026-11-03T21:59:26.765583+00:00"
+    "deploy_attempts": 0,
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -1763,126 +1728,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-03T17:12:40.826440+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-03T17:16:29.667687+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-03T17:16:31.070464+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-03T17:16:32.350556+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-03T17:26:44.654699+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-03T17:26:45.562451+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-03T17:26:46.598715+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-03T17:35:25.161536+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-03T17:35:26.603569+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-03T17:35:27.924913+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-03T17:43:26.356148+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-03T17:43:27.137466+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-03T17:43:27.866124+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-03T17:48:44.051651+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-03T17:48:44.903391+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-03T17:48:45.622199+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-03T17:56:20.995903+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-03T17:56:22.017838+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-03T17:56:23.071408+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-03T18:04:20.940293+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-03T18:04:21.948933+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2361,214 +2206,62 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-03T22:05:11.914383+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-11-03T22:05:11.914390+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-11-03T22:05:11.915547+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-11-03T21:59:29.025159+00:00",
+  "updated_at": "2026-11-03T22:05:11.914359+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41629064080,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "LocalEditorial",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-11-03T11:37:48.940019+00:00",
-    "artifact_sha256": "63a70fb3fd1a42d52ca86f73056b74ca3a7957572a8d8e7cf1dcddcf57c35440",
-    "source_id": "local-editorial://we-language-relationships/6",
-    "image_path": "/images/generated/blog/we-language-relationships.png"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41640647022,
-    "processed_run_id": 41636461854,
-    "provider_id": "143bde9a-347e-4404-ba75-8c2e7e1e3ffc",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-11-03T13:01:27.697908+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261103-143235-349c806f14-a2",
-    "source_slug": "we-language-relationships",
-    "source_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
-    "content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
-    "source_id": "7fdf0f27-b7bf-4659-99cd-3ee650e7d2d6",
-    "task_id": "143bde9a-347e-4404-ba75-8c2e7e1e3ffc",
-    "artifact_id": "143bde9a-347e-4404-ba75-8c2e7e1e3ffc",
-    "provider_status": "pending",
-    "verified": true,
-    "watchdog": {
-      "identity": "long_video:we-language-relationships:349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf:video-20261103-143235-349c806f14-a2",
-      "hard_started_at": "2026-11-03T12:32:42.104053+00:00",
-      "last_progress_at": "2026-11-03T12:39:19.166003+00:00",
-      "last_fingerprint": "b0626be62956e85bb007e0acea153789a7783cb31e30b3d80d0343347e828fc0",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-11-03T13:00:45.764701+00:00"
-    },
-    "pending_resume_ready": false,
-    "resume_dispatches": 3,
-    "youtube_id": "s28sesV4yks",
-    "youtube_url": "https://youtu.be/s28sesV4yks",
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 113.633,
-    "content_duration_seconds": 113.625,
-    "signature_duration_seconds": 3.0,
-    "signature_overlay": true,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41645821474,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "7f9eeaa2-b6c7-48bc-9701-9638b8e57160",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-11-03T13:36:21.709892+00:00",
-    "artifact_id": "7f9eeaa2-b6c7-48bc-9701-9638b8e57160",
-    "source_id": "194bfc7b-9f54-42e3-89b8-5856a9784a92",
-    "adopted_from_long_item_id": null,
-    "watchdog": {
-      "identity": "short:we-language-relationships:349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf:video-20261103-150826-349c806f14",
-      "hard_started_at": "2026-11-03T13:08:34.373690+00:00",
-      "last_progress_at": "2026-11-03T13:15:24.667614+00:00",
-      "last_fingerprint": "401d8868683d7a5a809b2c308dab8ed7d29cacaba2406ca2a0fe07719cda7a92",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-11-03T13:35:47.954311+00:00"
-    },
-    "source": {
-      "id": "we-language-relationships",
-      "slug": "we-language-relationships",
-      "title": "איך לריב בלי לפגוע? שפת אנחנו בזוגיות יכולה לשנות את התמונה",
-      "date": "2026-11-03",
-      "category": "ייעוץ זוגי",
-      "subcategory": "תקשורת זוגית",
-      "excerpt": "רגעים של מתח או קונפליקט בין בני זוג נוטים להסלים מהר. מה היה קורה אם במקום להטיח האשמות זה בזה, היינו מתייחסים לבעיה כמשהו משותף? הכירו את 'שפת אנחנו' – לא פתרון קל ומיידי, אבל גישה שמחקרים מראים שעשויה לרכך את הדינמיקה ברגעים מאתגרים.",
-      "canonical_url": "https://kesher.saharoni.com/blog/we-language-relationships",
-      "content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
-      "video_title": "איך לריב בלי לפגוע? שפת אנחנו בזוגיות יכולה לשנות את התמונה",
-      "short_title": "איך לריב בלי לפגוע? שפת אנחנו בזוגיות יכולה לשנות את התמונה",
-      "short_hook": "",
-      "youtube_metadata": {
-        "title": "איך לריב בלי לפגוע? שפת אנחנו בזוגיות יכולה לשנות את התמונה",
-        "description": "רגעים של מתח או קונפליקט בין בני זוג נוטים להסלים מהר. מה היה קורה אם במקום להטיח האשמות זה בזה, היינו מתייחסים לבעיה כמשהו משותף? הכירו את 'שפת אנחנו' – לא פתרון קל ומיידי, אבל גישה שמחקרים מראים שעשויה לרכך את הדינמיקה ברגעים מאתגרים.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/we-language-relationships\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "ייעוץ זוגי",
-          "תקשורת זוגית"
-        ]
-      },
-      "short_youtube_metadata": {
-        "title": "בקצרה: איך לריב בלי לפגוע? שפת אנחנו בזוגיות יכולה לשנות את התמונה",
-        "description": "רגעים של מתח או קונפליקט בין בני זוג נוטים להסלים מהר. מה היה קורה אם במקום להטיח האשמות זה בזה, היינו מתייחסים לבעיה כמשהו משותף? הכירו את 'שפת אנחנו' – לא פתרון קל ומיידי, אבל גישה שמחקרים מראים שעשויה לרכך את הדינמיקה ברגעים מאתגרים.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/we-language-relationships\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "ייעוץ זוגי",
-          "תקשורת זוגית"
-        ]
-      }
-    },
-    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-    "task_id": "7f9eeaa2-b6c7-48bc-9701-9638b8e57160",
-    "raw_sha256": "d3e740b8e256746d08fa79d72de88905da9299dca73903b39737e12f43be00a3",
-    "final_sha256": "b7e80bc604b6440a633a8229301dfa2367e958c55352229b9e13d8faa0d572dc",
-    "provider_raw_media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 720,
-      "height": 1280,
-      "duration": 86.167,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 1080,
-      "height": 1920,
-      "duration": 86.167,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "provider_video_format": "short",
-    "provider_native_short": true,
-    "provider_native_short_verified": true,
-    "provider_short_fallback_used": false,
-    "fresh_generation_attempt": 1,
-    "overview_provider_identity": {
-      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-      "source_id": "7fdf0f27-b7bf-4659-99cd-3ee650e7d2d6",
-      "task_id": "143bde9a-347e-4404-ba75-8c2e7e1e3ffc",
-      "artifact_id": "143bde9a-347e-4404-ba75-8c2e7e1e3ffc",
-      "raw_sha256": "074f44af022220fe0c7a6917bff73890230579313a913ba9ec7b020d945d8ff7"
-    },
-    "shared_provider_identity": null,
-    "short_start_seconds": 0.0,
-    "short_duration_seconds": 86.167,
-    "audio_provenance": {
-      "schema_version": 1,
-      "mode": "stream_copy",
-      "raw_sha256": "d3e740b8e256746d08fa79d72de88905da9299dca73903b39737e12f43be00a3",
-      "final_sha256": "b7e80bc604b6440a633a8229301dfa2367e958c55352229b9e13d8faa0d572dc",
-      "raw_audio_sha256": "15273a7c1811b99cc3e3b82a3c526c0560bd0da8c021842081656d7ee523bdb6",
-      "final_audio_sha256": "15273a7c1811b99cc3e3b82a3c526c0560bd0da8c021842081656d7ee523bdb6",
-      "raw_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 86.215692
-      },
-      "final_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 86.215692
-      }
-    },
-    "signature_overlay": true,
-    "signature_provenance": {
-      "schema_version": 1,
-      "final_sha256": "b7e80bc604b6440a633a8229301dfa2367e958c55352229b9e13d8faa0d572dc",
-      "raw_sha256": "d3e740b8e256746d08fa79d72de88905da9299dca73903b39737e12f43be00a3",
-      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-      "segment_sha256": "94bf5e4e3b9ef5699a86afc05e16724f2012bc28432c6f6ae9bae5066a76a3a8",
-      "source_duration_seconds": 86.167,
-      "final_duration_seconds": 86.167,
-      "start_seconds": 83.167,
-      "end_seconds": 86.167,
-      "audio_source_sha256": "d3e740b8e256746d08fa79d72de88905da9299dca73903b39737e12f43be00a3"
-    },
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "item_id": "video-20261103-150826-349c806f14",
-    "type": "article_short",
-    "youtube_id": "mwefSBhDJN4",
-    "youtube_url": "https://youtu.be/mwefSBhDJN4",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "94bf5e4e3b9ef5699a86afc05e16724f2012bc28432c6f6ae9bae5066a76a3a8",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3088,394 +2781,5 @@
       }
     }
   ],
-  "active_idea": null,
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-11-03",
-      "inputs": {
-        "slot": "2026-11-03",
-        "topic_brief": "ייעוץ זוגי — שפת ה׳אנחנו׳ (We-Talk) בזמן קונפליקט. מקורות ראשיים מחייבים: Seider et al., Psychology and Aging 2009 (154 זוגות; שיחת קונפליקט של 15 דקות; greater we-ness was associated with lower cardiovascular arousal and more positive/less negative emotional behavior): https://pmc.ncbi.nlm.nih.gov/articles/PMC2785123/ . Karan, Rosenthal & Robbins, Journal of Social and Personal Relationships 2019, meta-analysis of 30 studies / 5,288 participants; overall positive but modest association of we-talk with relationship/personal functioning, partner effects often stronger: https://journals.sagepub.com/doi/full/10.1177/0265407518795336 . מקור משני עדכני לעניין ציבורי בלבד: https://somethingnavy.com/saying-we-couples/ (31.10.2026). חובה לדייק: אין לטעון שמילה אחת מורידה דופק באופן סיבתי, אין לטעון ניבוי שביעות רצון לאורך עשורים, ואין להציג we-talk כקסם; מדובר בעיקר בקשרים מתאמיים ובהקשר של קונפליקט. אפשר להזכיר שגם 'you' אינו תמיד שלילי מחוץ לקונפליקט. זווית טיפולית: להעביר את הבעיה 'מבינינו' ל'מולנו'; במקום 'למה אתה אף פעם לא מתארגן בזמן?' — 'איך אנחנו יכולים לצאת מהבית בלי להילחץ?'. כלי מעשי: משפט אחד שמתחיל ב'איך אנחנו...' בלי policing של כינויי גוף. שירות: ייעוץ זוגי. המאמר צריך להיות מקצועי, חם, בעברית, עם evidence מובנה, CTA אמיתי לייעוץ זוגי, לפחות 3 קישורי /blog/ קיימים, serviceUrl, controllerManaged, hero תקין, SEO/RTL/mobile/accessibility. Video Overview ו-Short חייבים להישאר על אותה authoritative identity ולהימנע מטענות סיבתיות מוגזמות.\n\nIdea Request ID: we-talk-couples-conflict\nRequired Primary Keyword: שפת אנחנו בזוגיות"
-      },
-      "intent_at": "2026-11-03T10:10:46.840864+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41612211788,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-11-03T10:10:46.840864+00:00"
-    }
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/we-language-relationships",
-    "overview_youtube_url": "https://youtu.be/s28sesV4yks",
-    "short_youtube_url": "https://youtu.be/mwefSBhDJN4",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
-  },
-  "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 41645821474,
-    "conclusion": "success",
-    "source_slug": "we-language-relationships",
-    "slot": "2026-11-03"
-  },
-  "processed_child_notifications": [
-    "Deploy to Cloudflare Pages:41630359596",
-    "Kesher Daily NotebookLM Video Overview:41631416384",
-    "Kesher Daily NotebookLM Video Overview:41635762860",
-    "Kesher Daily NotebookLM Video Overview:41636461854",
-    "Kesher Daily NotebookLM Video Overview:41640647022",
-    "Kesher Daily Article Short V4:41641391786",
-    "Kesher Daily Article Short V4:41645821474"
-  ],
-  "interventions": {
-    "v5|baby-cries-at-daycare|a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b|long_video": {
-      "pipeline_id": "v5",
-      "slug": "baby-cries-at-daycare",
-      "content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
-      "stage": "long_video",
-      "strike_count": 1,
-      "last_check_token": "2026-11-03T08",
-      "last_fingerprint": "65043cb3ae0af1ef748b2b88ddb4581b9a26c9d950f3ed14a851775ad2ab38af",
-      "last_controller_action_token": "recovery:1:2026-11-03T06:35:42.756813+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-03T06:35:42.756813+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-03T06:35:42.756813+00:00"
-    },
-    "v5|baby-cries-at-daycare|a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b|short": {
-      "pipeline_id": "v5",
-      "slug": "baby-cries-at-daycare",
-      "content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-11-03T09",
-      "last_fingerprint": "b1ddc675f9b6d381c5a052b83c98b6163c551b6e83548e4cb867396ef58b068c",
-      "last_controller_action_token": "recovery:1:2026-11-03T07:15:58.716413+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-03T07:15:58.716413+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-03T07:15:58.716413+00:00"
-    },
-    "v5|we-language-relationships|349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf|long_video": {
-      "pipeline_id": "v5",
-      "slug": "we-language-relationships",
-      "content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
-      "stage": "long_video",
-      "strike_count": 1,
-      "last_check_token": "2026-11-03T15",
-      "last_fingerprint": "a5155dc799046bf322a6bcc78bf11afb40d72e665c5d42e8efde572e7622b8fc",
-      "last_controller_action_token": "recovery:1:2026-11-03T13:00:45.764701+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-03T13:00:45.764701+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-03T13:00:45.764701+00:00"
-    },
-    "v5|we-language-relationships|349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf|short": {
-      "pipeline_id": "v5",
-      "slug": "we-language-relationships",
-      "content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-11-03T15",
-      "last_fingerprint": "ef22d3a59398c3d601454d27a6848f2a651eb00d2986bc3d0898194796a98933",
-      "last_controller_action_token": "recovery:1:2026-11-03T13:35:47.954311+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-03T13:35:47.954311+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-03T13:35:47.954311+00:00"
-    }
-  },
-  "owner_cycle_archive": [
-    {
-      "cycle": "2026-11-03",
-      "status": "complete",
-      "article": {
-        "attempt_count": 0,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 41551027777,
-        "processed_run_id": 41544116434,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {
-          "JULES_TIMEOUT_SESSION_ACTIVE": 1
-        },
-        "attempts": 0,
-        "deploy_attempts": 1,
-        "watchdog": {
-          "identity": "2026-11-03",
-          "session_id": null,
-          "last_progress_at": "2026-11-02T23:16:21+00:00",
-          "last_fingerprint": null,
-          "last_nudge_at": null,
-          "nudge_count": 0,
-          "worker_restart_count": 0,
-          "last_restart_at": null,
-          "last_restart_run_id": null
-        },
-        "last_run_conclusion": "failure",
-        "last_worker_result": {
-          "schema_version": 1,
-          "slot": "2026-11-03",
-          "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-          "retryable": true,
-          "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Executed `npm run check` which passed all steps, including linting, content v... — Executed `npm run check` which passed all steps, including linting, content validation, python tests, build, and playwright e2e tests.",
-          "session_id": "sessions/9151480570397346513",
-          "pr_url": "",
-          "github_run_id": "41544116434",
-          "completed_at": "2026-11-02T23:57:21.187694+00:00",
-          "diagnostic": {
-            "source": {
-              "name": "sources/github/yanivsa/kesher-website",
-              "owner": "yanivsa",
-              "repo": "kesher-website",
-              "default_branch": "main",
-              "main_available": true
-            },
-            "activity_count": 23,
-            "change_set_count": 21,
-            "change_set_fingerprints": [],
-            "last_agent_message": "",
-            "last_progress": "Executed `npm run check` which passed all steps, including linting, content v... — Executed `npm run check` which passed all steps, including linting, content validation, python tests, build, and playwright e2e tests.",
-            "last_description": "",
-            "session_failed_reason": ""
-          }
-        },
-        "last_jules_session_id": "sessions/9151480570397346513",
-        "last_failed_run_id": 41544116434,
-        "last_dispatch_at": "2026-11-03T00:11:19.470479+00:00",
-        "pr_number": 1275,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1275",
-        "current_pr_head_sha": "bac59ef7eced9321250ffe8a0140ad5f28bc166d",
-        "jules_head_sha": "965683d15c1e1788591ed6cd3dbf92fc868abc6e",
-        "normalization_status": "complete",
-        "normalization_slot": "2026-11-03",
-        "normalization_dispatched_at": "2026-11-03T00:31:31.121273+00:00",
-        "normalization_run_id": 41553468547,
-        "normalized_head_sha": "bac59ef7eced9321250ffe8a0140ad5f28bc166d",
-        "image_head_sha": "bac59ef7eced9321250ffe8a0140ad5f28bc166d",
-        "merge_candidate_sha": "bac59ef7eced9321250ffe8a0140ad5f28bc166d",
-        "normalization_drift_count": 0,
-        "merge_dispatch_count": 0,
-        "merge_dispatch_at": "2026-11-03T05:48:49.240767+00:00",
-        "merge_run_id": 41586079940,
-        "last_refunded_auto_merge_run_id": 41586079940,
-        "deferred_auto_merge_refund_count": 1,
-        "slug": "baby-cries-at-daycare",
-        "title": "תינוק בוכה במעון: מתי זו הסתגלות רגילה ומתי זו נורת אזהרה?",
-        "url": "https://kesher.saharoni.com/blog/baby-cries-at-daycare",
-        "published_date": "2026-11-03",
-        "quality_content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
-        "reconciled_existing_article": true,
-        "quality_status": "passed",
-        "quality_checked_at": "2026-11-03T09:30:46.797074+00:00",
-        "quality_violations": [],
-        "live": true,
-        "last_deploy_dispatch_at": "2026-11-03T05:58:23.315088+00:00",
-        "next_deploy_retry_at": null,
-        "deploy_run_id": 41586983256,
-        "live_verified_at": "2026-11-03T09:31:14.659665+00:00"
-      },
-      "long_video": {
-        "attempt_count": 1,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 41590896220,
-        "processed_run_id": 41587625992,
-        "provider_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "overview_evidence_required": true,
-        "last_dispatch_at": "2026-11-03T06:35:58.908058+00:00",
-        "attempts": 1,
-        "last_run_conclusion": "success",
-        "item_id": "video-20261103-080543-a5235343e9",
-        "source_slug": "baby-cries-at-daycare",
-        "source_content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
-        "content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
-        "source_id": "3be3d466-72ab-425c-b0f6-ba03fa14ad35",
-        "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
-        "artifact_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
-        "provider_status": "pending",
-        "verified": true,
-        "watchdog": {
-          "identity": "long_video:baby-cries-at-daycare:a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b:video-20261103-080543-a5235343e9",
-          "hard_started_at": "2026-11-03T06:05:48.970598+00:00",
-          "last_progress_at": "2026-11-03T06:12:20.252331+00:00",
-          "last_fingerprint": "9d2b7916e8201b88eb341bbdde70a0ed6fdbd28524b0bf82693e6634347de566",
-          "recovery_count": 1,
-          "last_recovery_at": "2026-11-03T06:35:42.756813+00:00"
-        },
-        "pending_resume_ready": false,
-        "resume_dispatches": 1,
-        "youtube_id": "5IpeOucSNgE",
-        "youtube_url": "https://youtu.be/5IpeOucSNgE",
-        "technical_verified": true,
-        "visual_pipeline": "remotion-v1-notebooklm-audio",
-        "codec": "h264",
-        "width": 1280,
-        "height": 720,
-        "duration": 126.433,
-        "content_duration_seconds": 126.417,
-        "signature_duration_seconds": 3.0,
-        "signature_overlay": true,
-        "signature_fullscreen": true,
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
-      },
-      "short": {
-        "attempt_count": 2,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 41595215460,
-        "processed_run_id": null,
-        "provider_id": "ab58ccd7-ad09-4ff6-a11b-e2a0f793acdc",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "last_dispatch_at": "2026-11-03T07:16:22.404262+00:00",
-        "artifact_id": "ab58ccd7-ad09-4ff6-a11b-e2a0f793acdc",
-        "source_id": "43c71a2f-ce81-46fd-ae25-07ed81dca855",
-        "adopted_from_long_item_id": null,
-        "watchdog": {
-          "identity": "short:baby-cries-at-daycare:a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b:video-20261103-084618-a5235343e9",
-          "hard_started_at": "2026-11-03T06:46:25.742986+00:00",
-          "last_progress_at": "2026-11-03T06:53:17.910462+00:00",
-          "last_fingerprint": "98179099ac1980f59a394cd16a9a430b6bc2704a0a02377dfbcf6a491251b021",
-          "recovery_count": 1,
-          "last_recovery_at": "2026-11-03T07:15:58.716413+00:00"
-        },
-        "source": {
-          "id": "baby-cries-at-daycare",
-          "slug": "baby-cries-at-daycare",
-          "title": "תינוק בוכה במעון: מתי זו הסתגלות רגילה ומתי זו נורת אזהרה?",
-          "date": "2026-11-03",
-          "category": "הדרכת הורים",
-          "subcategory": "הגיל הרך",
-          "excerpt": "הפרידה בבוקר מלווה בבכי קורע לב, ובמהלך היום אתם תוהים אם התינוק שלכם בוכה במעון יותר מהרגיל. האם זו הסתגלות טבעית, או נורת אזהרה שמצריכה בירור מול הצוות?",
-          "canonical_url": "https://kesher.saharoni.com/blog/baby-cries-at-daycare",
-          "content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
-          "video_title": "תינוק בוכה במעון: מתי זו הסתגלות רגילה ומתי זו נורת אזהרה?",
-          "short_title": "תינוק בוכה במעון: מתי זו הסתגלות רגילה ומתי זו נורת אזהרה?",
-          "short_hook": "",
-          "youtube_metadata": {
-            "title": "תינוק בוכה במעון: מתי זו הסתגלות רגילה ומתי זו נורת אזהרה?",
-            "description": "הפרידה בבוקר מלווה בבכי קורע לב, ובמהלך היום אתם תוהים אם התינוק שלכם בוכה במעון יותר מהרגיל. האם זו הסתגלות טבעית, או נורת אזהרה שמצריכה בירור מול הצוות?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/baby-cries-at-daycare\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים",
-              "הגיל הרך"
-            ]
-          },
-          "short_youtube_metadata": {
-            "title": "בקצרה: תינוק בוכה במעון: מתי זו הסתגלות רגילה ומתי זו נורת אזהרה?",
-            "description": "הפרידה בבוקר מלווה בבכי קורע לב, ובמהלך היום אתם תוהים אם התינוק שלכם בוכה במעון יותר מהרגיל. האם זו הסתגלות טבעית, או נורת אזהרה שמצריכה בירור מול הצוות?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/baby-cries-at-daycare\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים",
-              "הגיל הרך"
-            ]
-          }
-        },
-        "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-        "task_id": "ab58ccd7-ad09-4ff6-a11b-e2a0f793acdc",
-        "raw_sha256": "176bca55e209dece56f6810865f86c8badaf32b88713354f74241a6d2f1d231b",
-        "final_sha256": "b391a2e4f8d2a8ec6a278802f4a35d41014cfdda8a95ca9ff575449ad3e3ac73",
-        "provider_raw_media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 720,
-          "height": 1280,
-          "duration": 80.933,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 1080,
-          "height": 1920,
-          "duration": 80.933,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "provider_video_format": "short",
-        "provider_native_short": true,
-        "provider_native_short_verified": true,
-        "provider_short_fallback_used": false,
-        "fresh_generation_attempt": 1,
-        "overview_provider_identity": {
-          "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-          "source_id": "3be3d466-72ab-425c-b0f6-ba03fa14ad35",
-          "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
-          "artifact_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
-          "raw_sha256": "47eb5e5b822e7991fcc3f156e9e5ad60eb0c866b04b2aee0b31c7a7e777e5a61"
-        },
-        "shared_provider_identity": null,
-        "short_start_seconds": 0.0,
-        "short_duration_seconds": 80.933,
-        "audio_provenance": {
-          "schema_version": 1,
-          "mode": "stream_copy",
-          "raw_sha256": "176bca55e209dece56f6810865f86c8badaf32b88713354f74241a6d2f1d231b",
-          "final_sha256": "b391a2e4f8d2a8ec6a278802f4a35d41014cfdda8a95ca9ff575449ad3e3ac73",
-          "raw_audio_sha256": "4aa3084c5b8dd723642694bda98b00911bb88d666eb5e73201f8af22ecfd6958",
-          "final_audio_sha256": "4aa3084c5b8dd723642694bda98b00911bb88d666eb5e73201f8af22ecfd6958",
-          "raw_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 80.991202
-          },
-          "final_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 80.991202
-          }
-        },
-        "signature_overlay": true,
-        "signature_provenance": {
-          "schema_version": 1,
-          "final_sha256": "b391a2e4f8d2a8ec6a278802f4a35d41014cfdda8a95ca9ff575449ad3e3ac73",
-          "raw_sha256": "176bca55e209dece56f6810865f86c8badaf32b88713354f74241a6d2f1d231b",
-          "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-          "segment_sha256": "51ee73bb5dfb3242cf94e13481114138fe4cc89f801e7c18716f14e01df736b6",
-          "source_duration_seconds": 80.933,
-          "final_duration_seconds": 80.933,
-          "start_seconds": 77.933,
-          "end_seconds": 80.933,
-          "audio_source_sha256": "176bca55e209dece56f6810865f86c8badaf32b88713354f74241a6d2f1d231b"
-        },
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "item_id": "video-20261103-084618-a5235343e9",
-        "type": "article_short",
-        "youtube_id": "HtFHfU3RvnE",
-        "youtube_url": "https://youtu.be/HtFHfU3RvnE",
-        "verified": true,
-        "portrait_verified": true,
-        "signature_verified": true,
-        "signature_asset": "signature-mask.svg",
-        "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-        "technical_verified": true,
-        "signature_duration_seconds": 3.0,
-        "signature_fullscreen": true,
-        "signature_video_sha256": "51ee73bb5dfb3242cf94e13481114138fe4cc89f801e7c18716f14e01df736b6",
-        "source_mode": "direct-short",
-        "width": 1080,
-        "height": 1920
-      },
-      "archived_at": "2026-11-03T09:34:56.846359+00:00",
-      "reason": "owner_run_now_cycle_started"
-    }
-  ]
+  "active_idea": null
 }
