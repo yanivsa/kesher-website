@@ -56,10 +56,13 @@
 - [x] Review the first real 30-article result.
 - [x] Move `question-cadence` to advisory-only after it flagged 13/30 articles and proved too noisy for KESHER's question-led editorial style.
 - [x] Re-run calibration: 24 low, 6 watch, 0 medium, 0 high; five punctuation-cadence findings and one formulaic-phrases finding.
+- [x] Manually review the six `watch` articles. The five punctuation findings remain useful as soft editorial signals. `first-grade-maturity` was a false positive because four different stock phrases appeared only once each in a long article.
+- [x] Add a regression test for distinct single-use stock phrases and raise the diverse-phrase threshold from 4 to 6 while preserving detection when one stock phrase repeats.
+- [ ] Re-run the 30-article calibration after the threshold change. Expected direction: the former formulaic false positive should become low while punctuation watches remain unchanged.
 - [x] Remove the temporary calibration workflow after the run; do not leave an unreviewed workflow definition in the repository.
 
 ### Task 3: Production integration
 
-- [ ] Manually review the six `watch` articles to estimate true-positive rate.
-- [ ] If the signal is useful, prepare a separate authority-reviewed change that wires the audit into an existing governed path and recertifies affected hashes.
+- [ ] Prepare a separate authority-reviewed change that wires the audit into an existing governed Jules/article-validation path and recertifies only the affected hashes.
+- [ ] Keep the integration report-only: surface the audit result to the article worker/review path, but do not block publication or rewrite prose automatically.
 - [ ] Consider strict enforcement only after additional calibration; keep question cadence advisory unless later evidence supports a different threshold.
