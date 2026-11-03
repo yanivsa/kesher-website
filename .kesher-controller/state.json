@@ -22,11 +22,13 @@
     "last_failed_run_id": 41612211788,
     "pr_number": 1278,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1278",
-    "current_pr_head_sha": "d8295a21b692e8b06093bc2d21f10a305d34f22f",
+    "current_pr_head_sha": "89d6b16fe78ef38d4f24e71e0765e4b3d0040883",
     "jules_head_sha": "b9af06326e753164d2214beaf7e1e95c2681f87a",
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "normalization_slot": "2026-11-03",
-    "normalization_dispatched_at": "2026-11-03T11:36:05.005129+00:00"
+    "normalization_dispatched_at": "2026-11-03T11:36:05.005129+00:00",
+    "normalization_run_id": 41628837446,
+    "normalized_head_sha": "89d6b16fe78ef38d4f24e71e0765e4b3d0040883"
   },
   "backlog": [
     {
@@ -2954,18 +2956,16 @@
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T10:10:46.840864+00:00"
     },
-    "normalize-article-pr.yml": {
-      "workflow": "normalize-article-pr.yml",
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
       "cycle": "2026-11-03",
       "inputs": {
-        "pr_number": "1278",
-        "slot": "2026-11-03"
+        "pr_number": "1278"
       },
-      "intent_at": "2026-11-03T11:35:45.699169+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-11-03T11:37:22.237278+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": 41628837446,
-      "dispatched_at": "2026-11-03T11:35:45.699169+00:00"
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -2978,10 +2978,10 @@
     "short_origin_verified": true
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 41595215460,
+    "workflow": "Kesher Normalize Article PR",
+    "run_id": 41628837446,
     "conclusion": "success",
-    "source_slug": "baby-cries-at-daycare",
+    "source_slug": null,
     "slot": "2026-11-03"
   },
   "processed_child_notifications": [],
