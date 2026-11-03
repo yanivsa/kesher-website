@@ -1802,19 +1802,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T17:10:50.113751+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Cleaned up all temporary scratch files. — `git status` shows only the expected JSON and XML/TXT files are staged.",
-        "retry_at": "2026-11-02T17:15:50.113729+00:00",
-        "failure_streak": 1,
-        "run_id": 41478118287,
-        "session_id": "sessions/14530118500646372484"
-      }
-    },
-    {
       "at": "2026-11-02T17:10:54.132092+00:00",
       "from": "article_retry_wait",
       "to": "article_generating",
@@ -2651,9 +2638,19 @@
         "item_id": "video-20261103-080543-a5235343e9",
         "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a"
       }
+    },
+    {
+      "at": "2026-11-03T06:21:03.808124+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261103-080543-a5235343e9",
+        "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a"
+      }
     }
   ],
-  "updated_at": "2026-11-03T06:16:13.162841+00:00",
+  "updated_at": "2026-11-03T06:21:03.808130+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
