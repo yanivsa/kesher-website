@@ -44,13 +44,13 @@
     "quality_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-03T12:35:57.140164+00:00",
+    "quality_checked_at": "2026-11-03T12:39:27.380435+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-03T11:47:32.822204+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41630359596,
-    "live_verified_at": "2026-11-03T12:36:15.432656+00:00"
+    "live_verified_at": "2026-11-03T12:39:29.139651+00:00"
   },
   "backlog": [
     {
@@ -2482,7 +2482,7 @@
     "attempt_count": 2,
     "status": "rejected",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-03T12:44:19.166003+00:00",
     "run_id": 41636461854,
     "processed_run_id": 41635762860,
     "provider_id": "5dc8e8a8-49b1-4191-991b-30075ae23203",
@@ -3049,21 +3049,6 @@
       "previous_run_id": 41612211788,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T10:10:46.840864+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-11-03",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "we-language-relationships",
-        "target_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
-        "target_item_id": "video-20261103-135620-349c806f14"
-      },
-      "intent_at": "2026-11-03T12:30:47.941231+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41635762860,
-      "observed_active_run_id": 41636461854,
-      "dispatched_at": "2026-11-03T12:30:47.941231+00:00"
     }
   },
   "deliverables": {
@@ -3077,7 +3062,7 @@
   },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 41635762860,
+    "run_id": 41636461854,
     "conclusion": "success",
     "source_slug": "we-language-relationships",
     "slot": "2026-11-03"
