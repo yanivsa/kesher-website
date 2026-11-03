@@ -3037,6 +3037,20 @@
       "previous_run_id": 41612211788,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T10:10:46.840864+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-11-03",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "we-language-relationships",
+        "target_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
+        "target_item_id": "video-20261103-135620-349c806f14"
+      },
+      "intent_at": "2026-11-03T12:26:22.045181+00:00",
+      "status": "intent",
+      "previous_run_id": 41631416384,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -3089,6 +3103,20 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-11-03T07:15:58.716413+00:00"
+    },
+    "v5|we-language-relationships|349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf|long_video": {
+      "pipeline_id": "v5",
+      "slug": "we-language-relationships",
+      "content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-11-03T14",
+      "last_fingerprint": "2a183f0acd39cf7225de7dde97525df492967b32092a076708fa90406f3a94c3",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-11-03T12:26:22.045181+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   },
   "owner_cycle_archive": [
