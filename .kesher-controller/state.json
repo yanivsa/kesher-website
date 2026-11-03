@@ -48,7 +48,7 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-03T11:47:32.822204+00:00",
-    "next_deploy_retry_at": null,
+    "next_deploy_retry_at": "2026-11-03T11:59:45.314169+00:00",
     "deploy_run_id": 41630359596,
     "live_verified_at": "2026-11-03T11:54:51.496352+00:00"
   },
