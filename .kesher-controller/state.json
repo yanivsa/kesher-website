@@ -1802,15 +1802,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T17:05:51.042762+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
       "at": "2026-11-02T17:10:50.113751+00:00",
       "from": "article_generating",
       "to": "article_retry_wait",
@@ -2650,9 +2641,19 @@
         "item_id": "video-20261103-080543-a5235343e9",
         "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a"
       }
+    },
+    {
+      "at": "2026-11-03T06:16:13.162834+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261103-080543-a5235343e9",
+        "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a"
+      }
     }
   ],
-  "updated_at": "2026-11-03T06:12:35.445876+00:00",
+  "updated_at": "2026-11-03T06:16:13.162841+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
