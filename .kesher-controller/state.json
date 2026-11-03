@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -89,7 +89,7 @@
     "last_deploy_dispatch_at": "2026-11-03T05:58:23.315088+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41586983256,
-    "live_verified_at": "2026-11-03T06:43:58.626554+00:00"
+    "live_verified_at": "2026-11-03T06:44:29.716332+00:00"
   },
   "backlog": [
     {
@@ -1802,24 +1802,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T17:30:49.239503+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
-      "at": "2026-11-02T17:36:33.785347+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
       "at": "2026-11-02T17:45:53.322239+00:00",
       "from": "article_generating",
       "to": "article_retry_wait",
@@ -2653,9 +2635,21 @@
         "item_id": "video-20261103-080543-a5235343e9",
         "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a"
       }
+    },
+    {
+      "at": "2026-11-03T06:44:29.716362+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-03T06:44:30.960176+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-11-03T06:40:56.901411+00:00",
+  "updated_at": "2026-11-03T06:44:30.960213+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -2678,9 +2672,9 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "generating",
+    "status": "complete",
     "last_error": null,
-    "next_retry_at": "2026-11-03T06:17:20.252331+00:00",
+    "next_retry_at": null,
     "run_id": 41590896220,
     "processed_run_id": 41587625992,
     "provider_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
@@ -3242,6 +3236,20 @@
       "previous_run_id": 41544116434,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T00:10:44.004777+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-11-03",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "baby-cries-at-daycare",
+        "derive_content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
+        "derive_long_item_id": "video-20261103-080543-a5235343e9"
+      },
+      "intent_at": "2026-11-03T06:43:51.796887+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
