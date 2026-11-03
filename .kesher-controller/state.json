@@ -83,13 +83,13 @@
     "quality_content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-03T06:10:46.189922+00:00",
+    "quality_checked_at": "2026-11-03T06:12:22.842513+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-03T05:58:23.315088+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41586983256,
-    "live_verified_at": "2026-11-03T06:11:13.363719+00:00"
+    "live_verified_at": "2026-11-03T06:12:23.813148+00:00"
   },
   "backlog": [
     {
@@ -2676,7 +2676,7 @@
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-03T06:17:20.252331+00:00",
     "run_id": 41587625992,
     "processed_run_id": null,
     "provider_id": null,
@@ -3205,20 +3205,6 @@
       "previous_run_id": 41544116434,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T00:10:44.004777+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-11-03",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "baby-cries-at-daycare",
-        "target_content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b"
-      },
-      "intent_at": "2026-11-03T06:04:06.104200+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 41587625992,
-      "dispatched_at": "2026-11-03T06:04:06.104200+00:00"
     }
   },
   "deliverables": {
@@ -3231,10 +3217,10 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 41586983256,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 41587625992,
     "conclusion": "success",
-    "source_slug": null,
+    "source_slug": "baby-cries-at-daycare",
     "slot": "2026-11-03"
   },
   "processed_child_notifications": [
