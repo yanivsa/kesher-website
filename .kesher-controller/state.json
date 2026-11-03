@@ -1729,27 +1729,8 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_WORKFLOW_FAILED",
-    "message": "article run 41612211788 completed with conclusion=cancelled but no structured result was available",
-    "retryable": true,
-    "retry_at": "2026-11-03T10:05:52.018932+00:00",
-    "at": "2026-11-03T10:00:52.018956+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-11-03T06:35:58.908078+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_recovery",
-      "reason": "long-form provider stalled; resumed the same durable provider identity",
-      "details": {
-        "item_id": "video-20261103-080543-a5235343e9",
-        "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
-        "slug": "baby-cries-at-daycare",
-        "content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b"
-      }
-    },
     {
       "at": "2026-11-03T06:40:56.901402+00:00",
       "from": "long_video_watchdog_recovery",
@@ -2378,9 +2359,18 @@
         "run_id": 41612211788,
         "session_id": null
       }
+    },
+    {
+      "at": "2026-11-03T10:05:57.038537+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "owner run-now article retry backoff is active",
+      "details": {
+        "retry_at": "2026-11-03T10:05:52.018932+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-03T10:00:52.018968+00:00",
+  "updated_at": "2026-11-03T10:05:57.038555+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
