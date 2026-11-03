@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41617102356,
@@ -50,7 +50,7 @@
     "last_deploy_dispatch_at": "2026-11-03T11:47:32.822204+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41630359596,
-    "live_verified_at": "2026-11-03T13:45:08.774506+00:00"
+    "live_verified_at": "2026-11-03T13:45:33.468613+00:00"
   },
   "backlog": [
     {
@@ -1763,24 +1763,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-03T08:03:36.987016+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-03T08:06:14.189313+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-03T08:06:14.740690+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-03T08:06:15.179124+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2489,9 +2471,27 @@
         "item_id": "video-20261103-150826-349c806f14",
         "long_item_id": "video-20261103-143235-349c806f14-a2"
       }
+    },
+    {
+      "at": "2026-11-03T13:45:33.468642+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-03T13:45:34.291721+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-03T13:45:35.133515+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-03T13:36:21.709920+00:00",
+  "updated_at": "2026-11-03T13:45:35.133534+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2558,19 +2558,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41645821474,
     "processed_run_id": null,
-    "provider_id": "143bde9a-347e-4404-ba75-8c2e7e1e3ffc",
+    "provider_id": "7f9eeaa2-b6c7-48bc-9701-9638b8e57160",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-11-03T13:36:21.709892+00:00",
-    "artifact_id": "143bde9a-347e-4404-ba75-8c2e7e1e3ffc",
-    "source_id": "7fdf0f27-b7bf-4659-99cd-3ee650e7d2d6",
-    "adopted_from_long_item_id": "video-20261103-143235-349c806f14-a2",
+    "artifact_id": "7f9eeaa2-b6c7-48bc-9701-9638b8e57160",
+    "source_id": "194bfc7b-9f54-42e3-89b8-5856a9784a92",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:we-language-relationships:349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf:video-20261103-150826-349c806f14",
       "hard_started_at": "2026-11-03T13:08:34.373690+00:00",
@@ -2578,7 +2578,125 @@
       "last_fingerprint": "401d8868683d7a5a809b2c308dab8ed7d29cacaba2406ca2a0fe07719cda7a92",
       "recovery_count": 1,
       "last_recovery_at": "2026-11-03T13:35:47.954311+00:00"
-    }
+    },
+    "source": {
+      "id": "we-language-relationships",
+      "slug": "we-language-relationships",
+      "title": "איך לריב בלי לפגוע? שפת אנחנו בזוגיות יכולה לשנות את התמונה",
+      "date": "2026-11-03",
+      "category": "ייעוץ זוגי",
+      "subcategory": "תקשורת זוגית",
+      "excerpt": "רגעים של מתח או קונפליקט בין בני זוג נוטים להסלים מהר. מה היה קורה אם במקום להטיח האשמות זה בזה, היינו מתייחסים לבעיה כמשהו משותף? הכירו את 'שפת אנחנו' – לא פתרון קל ומיידי, אבל גישה שמחקרים מראים שעשויה לרכך את הדינמיקה ברגעים מאתגרים.",
+      "canonical_url": "https://kesher.saharoni.com/blog/we-language-relationships",
+      "content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
+      "video_title": "איך לריב בלי לפגוע? שפת אנחנו בזוגיות יכולה לשנות את התמונה",
+      "short_title": "איך לריב בלי לפגוע? שפת אנחנו בזוגיות יכולה לשנות את התמונה",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "איך לריב בלי לפגוע? שפת אנחנו בזוגיות יכולה לשנות את התמונה",
+        "description": "רגעים של מתח או קונפליקט בין בני זוג נוטים להסלים מהר. מה היה קורה אם במקום להטיח האשמות זה בזה, היינו מתייחסים לבעיה כמשהו משותף? הכירו את 'שפת אנחנו' – לא פתרון קל ומיידי, אבל גישה שמחקרים מראים שעשויה לרכך את הדינמיקה ברגעים מאתגרים.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/we-language-relationships\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "ייעוץ זוגי",
+          "תקשורת זוגית"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: איך לריב בלי לפגוע? שפת אנחנו בזוגיות יכולה לשנות את התמונה",
+        "description": "רגעים של מתח או קונפליקט בין בני זוג נוטים להסלים מהר. מה היה קורה אם במקום להטיח האשמות זה בזה, היינו מתייחסים לבעיה כמשהו משותף? הכירו את 'שפת אנחנו' – לא פתרון קל ומיידי, אבל גישה שמחקרים מראים שעשויה לרכך את הדינמיקה ברגעים מאתגרים.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/we-language-relationships\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "ייעוץ זוגי",
+          "תקשורת זוגית"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "7f9eeaa2-b6c7-48bc-9701-9638b8e57160",
+    "raw_sha256": "d3e740b8e256746d08fa79d72de88905da9299dca73903b39737e12f43be00a3",
+    "final_sha256": "b7e80bc604b6440a633a8229301dfa2367e958c55352229b9e13d8faa0d572dc",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 86.167,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 86.167,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "7fdf0f27-b7bf-4659-99cd-3ee650e7d2d6",
+      "task_id": "143bde9a-347e-4404-ba75-8c2e7e1e3ffc",
+      "artifact_id": "143bde9a-347e-4404-ba75-8c2e7e1e3ffc",
+      "raw_sha256": "074f44af022220fe0c7a6917bff73890230579313a913ba9ec7b020d945d8ff7"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 86.167,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "d3e740b8e256746d08fa79d72de88905da9299dca73903b39737e12f43be00a3",
+      "final_sha256": "b7e80bc604b6440a633a8229301dfa2367e958c55352229b9e13d8faa0d572dc",
+      "raw_audio_sha256": "15273a7c1811b99cc3e3b82a3c526c0560bd0da8c021842081656d7ee523bdb6",
+      "final_audio_sha256": "15273a7c1811b99cc3e3b82a3c526c0560bd0da8c021842081656d7ee523bdb6",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 86.215692
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 86.215692
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "b7e80bc604b6440a633a8229301dfa2367e958c55352229b9e13d8faa0d572dc",
+      "raw_sha256": "d3e740b8e256746d08fa79d72de88905da9299dca73903b39737e12f43be00a3",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "94bf5e4e3b9ef5699a86afc05e16724f2012bc28432c6f6ae9bae5066a76a3a8",
+      "source_duration_seconds": 86.167,
+      "final_duration_seconds": 86.167,
+      "start_seconds": 83.167,
+      "end_seconds": 86.167,
+      "audio_source_sha256": "d3e740b8e256746d08fa79d72de88905da9299dca73903b39737e12f43be00a3"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261103-150826-349c806f14",
+    "type": "article_short",
+    "youtube_id": "mwefSBhDJN4",
+    "youtube_url": "https://youtu.be/mwefSBhDJN4",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "94bf5e4e3b9ef5699a86afc05e16724f2012bc28432c6f6ae9bae5066a76a3a8",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
