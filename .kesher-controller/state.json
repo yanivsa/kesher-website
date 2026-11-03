@@ -19,7 +19,11 @@
     "deploy_attempts": 0,
     "last_dispatch_at": "2026-11-03T10:10:59.199752+00:00",
     "last_run_conclusion": "cancelled",
-    "last_failed_run_id": 41612211788
+    "last_failed_run_id": 41612211788,
+    "pr_number": 1278,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1278",
+    "current_pr_head_sha": "b9af06326e753164d2214beaf7e1e95c2681f87a",
+    "jules_head_sha": "b9af06326e753164d2214beaf7e1e95c2681f87a"
   },
   "backlog": [
     {
@@ -2934,6 +2938,18 @@
       "previous_run_id": 41612211788,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T10:10:46.840864+00:00"
+    },
+    "normalize-article-pr.yml": {
+      "workflow": "normalize-article-pr.yml",
+      "cycle": "2026-11-03",
+      "inputs": {
+        "pr_number": "1278",
+        "slot": "2026-11-03"
+      },
+      "intent_at": "2026-11-03T10:20:44.423885+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
