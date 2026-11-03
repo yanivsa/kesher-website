@@ -1732,12 +1732,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-03T06:44:29.716362+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-03T06:44:30.960176+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2368,9 +2362,18 @@
         "attempt": 2,
         "publication_slot": "2026-11-03"
       }
+    },
+    {
+      "at": "2026-11-03T10:15:53.157674+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "owner run-now article workflow already active",
+      "details": {
+        "publication_slot": "2026-11-03"
+      }
     }
   ],
-  "updated_at": "2026-11-03T10:10:59.199788+00:00",
+  "updated_at": "2026-11-03T10:15:53.157698+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
