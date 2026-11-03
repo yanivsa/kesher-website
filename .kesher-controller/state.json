@@ -1767,14 +1767,7 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Executed `npm run check` which passed all steps, including linting, content v... — Executed `npm run check` which passed all steps, including linting, content validation, python tests, build, and playwright e2e tests.",
-    "retryable": true,
-    "retry_at": "2026-11-03T00:06:12.518886+00:00",
-    "at": "2026-11-03T00:01:12.518906+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-11-02T16:06:01.801290+00:00",
@@ -2568,9 +2561,18 @@
         "run_id": 41544116434,
         "session_id": "sessions/9151480570397346513"
       }
+    },
+    {
+      "at": "2026-11-03T00:06:08.952604+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-11-03T00:06:12.518886+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-03T00:01:12.518916+00:00",
+  "updated_at": "2026-11-03T00:06:08.952618+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
