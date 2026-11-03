@@ -24,6 +24,17 @@ test('repeated formulaic phrases are reported', () => {
   assert.ok(result.findings.some((f) => f.category === 'formulaic-phrases'));
 });
 
+test('distinct single-use formulaic phrases stay low risk', () => {
+  const text = [
+    'חשוב לזכור שלכל משפחה יש קצב משלה.',
+    'חשוב להבין שההחלטה תלויה בהקשר ולא בכלל אחד.',
+    'כדאי לזכור ששינוי בדרך כלל לוקח זמן.',
+    'במילים אחרות, אין פתרון יחיד שמתאים לכולם.',
+  ].join(' ');
+  const result = auditText(text);
+  assert.ok(!result.findings.some((f) => f.category === 'formulaic-phrases'));
+});
+
 test('repeated sentence starters are reported', () => {
   const text = [
     'אפשר להתחיל במשפט קצר.',
