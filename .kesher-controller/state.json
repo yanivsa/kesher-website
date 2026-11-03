@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "long_video_watchdog_recovery",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1802,15 +1802,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T17:25:52.867435+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
       "at": "2026-11-02T17:30:49.239503+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2652,9 +2643,19 @@
         "slug": "baby-cries-at-daycare",
         "content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b"
       }
+    },
+    {
+      "at": "2026-11-03T06:40:56.901402+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261103-080543-a5235343e9",
+        "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a"
+      }
     }
   ],
-  "updated_at": "2026-11-03T06:35:58.908087+00:00",
+  "updated_at": "2026-11-03T06:40:56.901411+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -2677,7 +2678,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-11-03T06:17:20.252331+00:00",
     "run_id": 41590896220,
