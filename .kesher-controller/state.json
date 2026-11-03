@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-11-03T00:06:12.518886+00:00",
+    "next_retry_at": null,
     "run_id": 41544116434,
     "processed_run_id": 41544116434,
     "provider_id": null,
@@ -15,7 +15,7 @@
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
-    "attempts": 0,
+    "attempts": 1,
     "deploy_attempts": 0,
     "watchdog": {
       "identity": "2026-11-03",
@@ -57,7 +57,8 @@
       }
     },
     "last_jules_session_id": "sessions/9151480570397346513",
-    "last_failed_run_id": 41544116434
+    "last_failed_run_id": 41544116434,
+    "last_dispatch_at": "2026-11-03T00:11:19.470479+00:00"
   },
   "backlog": [
     {
@@ -2570,9 +2571,18 @@
       "details": {
         "retry_at": "2026-11-03T00:06:12.518886+00:00"
       }
+    },
+    {
+      "at": "2026-11-03T00:11:19.470492+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-11-03T00:06:08.952618+00:00",
+  "updated_at": "2026-11-03T00:11:19.470499+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -3111,9 +3121,10 @@
         "topic_brief": "נושא הורות. נושא/כאב: בכי ממושך בפרידה או במהלך היום במעון; ההורה לא יודע אם זו הסתגלות רגילה או סימן שהמסגרת לא מתאימה. להתמקד במה לברר מול הצוות, מגמת שיפור ונורות אזהרה. אות ביקוש: Observed query signal: SERP + repeated parent questions. Canonical ID נדרש: baby-cries-at-daycare. כותרת עבודה: תינוק בוכה במעון: מתי זו הסתגלות רגילה ומתי זו נורת אזהרה? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג ולא של מאמר אקדמי. 800–900 מילים שימושיות, תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, נורות אזהרה ומתי לפנות לרופא/איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים/אקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p2-baby-cries-at-daycare\nRequired Primary Keyword: תינוק בוכה במעון"
       },
       "intent_at": "2026-11-03T00:10:44.004777+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 41544116434,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-11-03T00:10:44.004777+00:00"
     }
   },
   "deliverables": {
@@ -3124,17 +3135,5 @@
     "short_portrait_verified": false,
     "short_signature_verified": false,
     "short_origin_verified": false
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
