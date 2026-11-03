@@ -58,7 +58,7 @@
 - [x] Re-run calibration: 24 low, 6 watch, 0 medium, 0 high; five punctuation-cadence findings and one formulaic-phrases finding.
 - [x] Manually review the six `watch` articles. The five punctuation findings remain useful as soft editorial signals. `first-grade-maturity` was a false positive because four different stock phrases appeared only once each in a long article.
 - [x] Add a regression test for distinct single-use stock phrases and raise the diverse-phrase threshold from 4 to 6 while preserving detection when one stock phrase repeats.
-- [ ] Re-run the 30-article calibration after the threshold change. Expected direction: the former formulaic false positive should become low while punctuation watches remain unchanged.
+- [x] Re-run the focused suite and 30-article calibration after the threshold change: 9/9 tests passed; 25 low, 5 watch, 0 medium, 0 high. `first-grade-maturity` moved to low and the five punctuation watches remained unchanged.
 - [x] Remove the temporary calibration workflow after the run; do not leave an unreviewed workflow definition in the repository.
 
 ### Task 3: Production integration
