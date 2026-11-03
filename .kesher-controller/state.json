@@ -2706,7 +2706,15 @@
     "last_dispatch_at": "2026-11-03T06:44:40.824030+00:00",
     "artifact_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
     "source_id": "3be3d466-72ab-425c-b0f6-ba03fa14ad35",
-    "adopted_from_long_item_id": "video-20261103-080543-a5235343e9"
+    "adopted_from_long_item_id": "video-20261103-080543-a5235343e9",
+    "watchdog": {
+      "identity": "short:baby-cries-at-daycare:a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b:video-20261103-084618-a5235343e9",
+      "hard_started_at": "2026-11-03T06:46:25.742986+00:00",
+      "last_progress_at": "2026-11-03T06:53:17.910462+00:00",
+      "last_fingerprint": "98179099ac1980f59a394cd16a9a430b6bc2704a0a02377dfbcf6a491251b021",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
