@@ -89,7 +89,7 @@
     "last_deploy_dispatch_at": "2026-11-03T05:58:23.315088+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41586983256,
-    "live_verified_at": "2026-11-03T09:16:01.563621+00:00"
+    "live_verified_at": "2026-11-03T09:16:24.716063+00:00"
   },
   "backlog": [
     {
@@ -1802,38 +1802,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-03T00:31:31.121302+00:00",
-      "from": "article_generating",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1275,
-        "slot": "2026-11-03"
-      }
-    },
-    {
-      "at": "2026-11-03T05:32:02.486430+00:00",
-      "from": "article_normalizing",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 1275
-      }
-    },
-    {
-      "at": "2026-11-03T05:36:27.755089+00:00",
-      "from": "article_image_running",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_WORKFLOW_FAILED",
-      "details": {
-        "message": "trusted image run 41584456328 completed with conclusion=failure but no validated image is present",
-        "retry_at": "2026-11-03T05:41:27.755052+00:00",
-        "failure_streak": 1,
-        "run_id": 41584456328
-      }
-    },
-    {
       "at": "2026-11-03T05:41:34.115597+00:00",
       "from": "image_retry_wait",
       "to": "image_retry_wait",
@@ -2470,9 +2438,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-03T09:16:24.716085+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-03T09:16:26.066000+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-03T09:16:27.189139+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-03T09:11:13.961893+00:00",
+  "updated_at": "2026-11-03T09:16:27.189155+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
