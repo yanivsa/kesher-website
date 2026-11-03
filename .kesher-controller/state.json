@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "long_video_watchdog_recovery",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -50,7 +50,7 @@
     "last_deploy_dispatch_at": "2026-11-03T11:47:32.822204+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41630359596,
-    "live_verified_at": "2026-11-03T12:30:56.539861+00:00"
+    "live_verified_at": "2026-11-03T12:31:32.372026+00:00"
   },
   "backlog": [
     {
@@ -1763,12 +1763,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-03T07:36:20.716969+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-11-03T07:41:11.644913+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2455,9 +2449,15 @@
         "slug": "we-language-relationships",
         "content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf"
       }
+    },
+    {
+      "at": "2026-11-03T12:31:32.372056+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-11-03T12:26:47.943761+00:00",
+  "updated_at": "2026-11-03T12:31:32.372063+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2476,11 +2476,11 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "rejected",
     "last_error": null,
-    "next_retry_at": "2026-11-03T12:07:56.846346+00:00",
+    "next_retry_at": null,
     "run_id": 41635762860,
-    "processed_run_id": 41631416384,
+    "processed_run_id": 41635762860,
     "provider_id": "5dc8e8a8-49b1-4191-991b-30075ae23203",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
@@ -3045,6 +3045,20 @@
       "previous_run_id": 41612211788,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T10:10:46.840864+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-11-03",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "we-language-relationships",
+        "target_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
+        "target_item_id": "video-20261103-135620-349c806f14"
+      },
+      "intent_at": "2026-11-03T12:30:47.941231+00:00",
+      "status": "intent",
+      "previous_run_id": 41635762860,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -3400,5 +3414,40 @@
       "archived_at": "2026-11-03T09:34:56.846359+00:00",
       "reason": "owner_run_now_cycle_started"
     }
-  ]
+  ],
+  "video": {
+    "attempt_count": 1,
+    "status": "rejected",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": 41635762860,
+    "processed_run_id": 41635762860,
+    "provider_id": "5dc8e8a8-49b1-4191-991b-30075ae23203",
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-11-03T12:26:47.943735+00:00",
+    "attempts": 1,
+    "last_run_conclusion": "success",
+    "item_id": "video-20261103-135620-349c806f14",
+    "source_slug": "we-language-relationships",
+    "source_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
+    "content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
+    "source_id": "4b663f61-836a-4ac2-b805-93528d8691ea",
+    "task_id": "5dc8e8a8-49b1-4191-991b-30075ae23203",
+    "artifact_id": "5dc8e8a8-49b1-4191-991b-30075ae23203",
+    "provider_status": "pending",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:we-language-relationships:349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf:video-20261103-135620-349c806f14",
+      "hard_started_at": "2026-11-03T11:56:25.211960+00:00",
+      "last_progress_at": "2026-11-03T12:02:56.846346+00:00",
+      "last_fingerprint": "ec6c16ef7e70f722a8e2f0e687d6841cbff2367e948e71d9e8fab1e8e32e9eae",
+      "recovery_count": 1,
+      "last_recovery_at": "2026-11-03T12:26:22.045181+00:00"
+    },
+    "pending_resume_ready": false,
+    "resume_dispatches": 1
+  }
 }
