@@ -49,6 +49,14 @@ test('dense em dashes are reported', () => {
   assert.ok(result.findings.some((f) => f.category === 'punctuation-cadence'));
 });
 
+test('question-heavy prose is advisory only and does not raise risk', () => {
+  const text = 'מה עושים עכשיו? למה זה קורה? איך מגיבים? מתי עוצרים? מי צריך לדבר? האם לחכות? מה אפשר לנסות?';
+  const result = auditText(text);
+  assert.equal(result.risk, 'low');
+  assert.ok(result.advisories.some((f) => f.category === 'question-cadence'));
+  assert.ok(!result.findings.some((f) => f.category === 'question-cadence'));
+});
+
 test('auditPosts sorts by date and caps the sample', () => {
   const posts = Array.from({ length: 35 }, (_, i) => ({
     id: `post-${i}`,
