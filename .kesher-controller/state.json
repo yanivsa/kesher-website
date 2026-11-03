@@ -89,7 +89,7 @@
     "last_deploy_dispatch_at": "2026-11-03T05:58:23.315088+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41586983256,
-    "live_verified_at": "2026-11-03T09:05:56.299428+00:00"
+    "live_verified_at": "2026-11-03T09:06:19.177192+00:00"
   },
   "backlog": [
     {
@@ -1802,37 +1802,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T23:59:30.450552+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-11-03T00:01:12.518911+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Executed `npm run check` which passed all steps, including linting, content v... — Executed `npm run check` which passed all steps, including linting, content validation, python tests, build, and playwright e2e tests.",
-        "retry_at": "2026-11-03T00:06:12.518886+00:00",
-        "failure_streak": 1,
-        "run_id": 41544116434,
-        "session_id": "sessions/9151480570397346513"
-      }
-    },
-    {
-      "at": "2026-11-03T00:06:08.952604+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "article retry backoff is active",
-      "details": {
-        "retry_at": "2026-11-03T00:06:12.518886+00:00"
-      }
-    },
-    {
       "at": "2026-11-03T00:11:19.470492+00:00",
       "from": "article_retry_wait",
       "to": "article_generating",
@@ -2492,9 +2461,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-03T09:06:19.177217+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-03T09:06:20.105378+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-03T09:06:21.017008+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-03T09:01:16.369211+00:00",
+  "updated_at": "2026-11-03T09:06:21.017025+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
