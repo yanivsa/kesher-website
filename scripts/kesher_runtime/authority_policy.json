@@ -1479,7 +1479,7 @@
         "read",
         "state_write"
       ],
-      "definition_sha256": "25380c2ec7be6ab2204c6cb7ef717fffdf1dfae4f2f21e8aadf55bc33b22e413",
+      "definition_sha256": "1fe8ac0d86332fb81bd65d1abcdf9af93bd6347b16989b2da60342b2e383460d",
       "resources": [
         "github.refs",
         "github.state"
@@ -1561,7 +1561,9 @@
           "scripts/kesher_runtime/cutover_host.py": "9da32d13cd7c8616caeb36160452ba1fcf3981ae611817b6bed72af64b87c99c",
           "scripts/kesher_runtime/cutover_auth.py": "27dbbd703912499e0ca553d774bca027844f3e7db116a22d787e54f4ba007a80",
           "scripts/kesher_runtime/cutover_service.py": "7b5bcc7af5391111ccd7a491ca427e7244edb32a438c5fcd81f196a13df898de",
-          "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4"
+          "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
+          "scripts/hebrew-prose-audit.cjs": "0b9378a7f5c977657b0b75663b69b992291c192963c1b1a171f8121997d6ee64",
+          "scripts/kesher_runtime/article_prose_audit.py": "8506e33f2da9ba77731130dc1aae42c0c068e98fd93e1d2ab04564d38b1e408c"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"

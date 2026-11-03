@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
+const fs = require('node:fs');
 const path = require('node:path');
 
 const FORMULAIC_PHRASES = [
@@ -194,6 +195,17 @@ function auditText(input) {
   return { risk, riskPoints, wordCount: words, sentenceCount: sentences.length, findings, advisories };
 }
 
+function auditPost(post) {
+  if (!post || typeof post !== 'object' || Array.isArray(post)) throw new TypeError('post must be an object');
+  const combined = `${post.title || ''}\n${post.excerpt || ''}\n${post.content || ''}`;
+  return {
+    id: post.id || '',
+    date: post.date || '',
+    title: post.title || '',
+    ...auditText(combined),
+  };
+}
+
 function auditPosts(posts, options = {}) {
   const sample = Math.max(1, Number(options.sample || 30));
   const publishable = typeof options.isPublishable === 'function' ? options.isPublishable : () => true;
@@ -203,15 +215,7 @@ function auditPosts(posts, options = {}) {
     .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || String(a.id || '').localeCompare(String(b.id || '')))
     .slice(0, sample);
 
-  const articles = selected.map((post) => {
-    const combined = `${post.title || ''}\n${post.excerpt || ''}\n${post.content || ''}`;
-    return {
-      id: post.id,
-      date: post.date || '',
-      title: post.title || '',
-      ...auditText(combined),
-    };
-  });
+  const articles = selected.map(auditPost);
 
   const riskCounts = { low: 0, watch: 0, medium: 0, high: 0 };
   const categoryCounts = {};
@@ -280,12 +284,13 @@ function formatMarkdownReport(report) {
 }
 
 function parseArgs(argv) {
-  const options = { sample: 30, format: 'markdown', strict: false };
+  const options = { sample: 30, format: 'markdown', strict: false, postStdin: false };
   for (const arg of argv) {
     if (arg.startsWith('--sample=')) options.sample = Number(arg.split('=')[1]);
     else if (arg === '--json' || arg === '--format=json') options.format = 'json';
     else if (arg === '--markdown' || arg === '--format=markdown') options.format = 'markdown';
     else if (arg === '--strict') options.strict = true;
+    else if (arg === '--post-stdin') options.postStdin = true;
   }
   if (!Number.isFinite(options.sample) || options.sample < 1) throw new Error('--sample must be a positive number');
   return options;
@@ -293,6 +298,13 @@ function parseArgs(argv) {
 
 function main() {
   const options = parseArgs(process.argv.slice(2));
+  if (options.postStdin) {
+    const post = JSON.parse(fs.readFileSync(0, 'utf8'));
+    const result = auditPost(post);
+    process.stdout.write(`${JSON.stringify(result)}\n`);
+    return;
+  }
+
   const root = path.resolve(__dirname, '..');
   const { loadPosts } = require(path.join(root, 'scripts', 'load-posts.cjs'));
   const { isPublishable } = require(path.join(root, 'scripts', 'content-policy.cjs'));
@@ -305,6 +317,7 @@ if (require.main === module) main();
 
 module.exports = {
   auditText,
+  auditPost,
   auditPosts,
   formatMarkdownReport,
   normalizeText,
