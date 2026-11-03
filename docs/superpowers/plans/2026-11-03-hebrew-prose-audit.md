@@ -4,20 +4,21 @@
 
 **Goal:** Add a Hebrew-first, report-only prose quality audit for recent KESHER articles and calibrate it on 30 published articles before any blocking enforcement.
 
-**Architecture:** A dependency-free CommonJS audit script reuses the repository's canonical post loader and publishability policy. It scores observable Hebrew prose patterns only, emits a human-readable report, and stays non-blocking until the sample is reviewed and thresholds are calibrated.
+**Architecture:** A dependency-free CommonJS audit script reuses the repository's canonical post loader and publishability policy. It scores observable Hebrew prose patterns only, emits a human-readable report, and runs through the existing governed `test:content` gate. It stays non-blocking until calibration supports stricter enforcement.
 
-**Tech Stack:** Node.js 22, CommonJS, Node built-in test runner, GitHub Actions.
+**Tech Stack:** Node.js 22, CommonJS, Node built-in test runner, existing repository CI.
 
 **Spec:** `.github/prompts/kesher-article-authoring-contract.md`
 
 ## Global Constraints
 
 - Hebrew-first checks; do not reuse SlopMonster's English score.
-- Report-only by default; no deploy or merge blocking.
+- Report-only by default; no deploy or merge blocking based on prose risk.
 - No external package dependency.
 - Reuse `scripts/load-posts.cjs` and `scripts/content-policy.cjs` as the source of truth.
 - Do not rewrite article content automatically.
 - A heuristic finding is an editorial signal, not proof of AI authorship.
+- Do not add a standalone workflow when the existing governed content gate can run the audit.
 
 ## Review Focus
 
@@ -47,13 +48,14 @@
 ### Task 2: 30-article calibration run
 
 **Files:**
-- Create: `.github/workflows/hebrew-prose-audit.yml`
+- Modify: `package.json`
 
 **Interfaces:**
 - Consumes: canonical repository post catalogs through `loadPosts()`.
-- Produces: GitHub Actions step summary for the 30 newest publishable articles.
+- Produces: a report in the existing `test:content` CI logs for the 30 newest publishable articles.
 
-- [x] Add a pinned-action, read-only workflow.
-- [x] Run unit tests in CI before the audit.
-- [x] Run `node scripts/hebrew-prose-audit.cjs --sample=30 --format=markdown`.
-- [ ] Review the real 30-article results and tune false positives before considering strict enforcement.
+- [x] Run unit tests through the existing content gate.
+- [x] Run `node scripts/hebrew-prose-audit.cjs --sample=30 --format=markdown` through `test:content`.
+- [x] Review the first real 30-article result.
+- [x] Move `question-cadence` to advisory-only after it flagged 13/30 articles and proved too noisy for KESHER's question-led editorial style.
+- [ ] Review the remaining punctuation/formulaic findings before considering any strict enforcement.
