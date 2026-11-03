@@ -83,13 +83,13 @@
     "quality_content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-03T06:40:46.574459+00:00",
+    "quality_checked_at": "2026-11-03T06:43:56.766979+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-03T05:58:23.315088+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41586983256,
-    "live_verified_at": "2026-11-03T06:40:47.187529+00:00"
+    "live_verified_at": "2026-11-03T06:43:58.626554+00:00"
   },
   "backlog": [
     {
@@ -2699,7 +2699,7 @@
     "task_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
     "artifact_id": "84fa0225-6adb-441c-ad3c-f9094b0aab0a",
     "provider_status": "pending",
-    "verified": false,
+    "verified": true,
     "watchdog": {
       "identity": "long_video:baby-cries-at-daycare:a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b:video-20261103-080543-a5235343e9",
       "hard_started_at": "2026-11-03T06:05:48.970598+00:00",
@@ -2709,7 +2709,20 @@
       "last_recovery_at": "2026-11-03T06:35:42.756813+00:00"
     },
     "pending_resume_ready": false,
-    "resume_dispatches": 1
+    "resume_dispatches": 1,
+    "youtube_id": "5IpeOucSNgE",
+    "youtube_url": "https://youtu.be/5IpeOucSNgE",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 126.433,
+    "content_duration_seconds": 126.417,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
@@ -3229,21 +3242,6 @@
       "previous_run_id": 41544116434,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T00:10:44.004777+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-11-03",
-      "inputs": {
-        "operation": "recovery",
-        "target_slug": "baby-cries-at-daycare",
-        "target_content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
-        "target_item_id": "video-20261103-080543-a5235343e9"
-      },
-      "intent_at": "2026-11-03T06:35:42.756813+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41587625992,
-      "observed_active_run_id": 41590896220,
-      "dispatched_at": "2026-11-03T06:35:42.756813+00:00"
     }
   },
   "deliverables": {
@@ -3257,7 +3255,7 @@
   },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 41587625992,
+    "run_id": 41590896220,
     "conclusion": "success",
     "source_slug": "baby-cries-at-daycare",
     "slot": "2026-11-03"
