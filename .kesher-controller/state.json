@@ -48,9 +48,9 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-03T11:47:32.822204+00:00",
-    "next_deploy_retry_at": "2026-11-03T11:59:45.314169+00:00",
+    "next_deploy_retry_at": null,
     "deploy_run_id": 41630359596,
-    "live_verified_at": "2026-11-03T11:54:51.496352+00:00"
+    "live_verified_at": "2026-11-03T11:55:17.885533+00:00"
   },
   "backlog": [
     {
@@ -2431,7 +2431,7 @@
       "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-11-03T11:54:51.496389+00:00",
+  "updated_at": "2026-11-03T11:55:17.885562+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2997,6 +2997,19 @@
       "previous_run_id": 41612211788,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T10:10:46.840864+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-11-03",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "we-language-relationships",
+        "target_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf"
+      },
+      "intent_at": "2026-11-03T11:54:45.314169+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
@@ -3334,5 +3347,18 @@
       "archived_at": "2026-11-03T09:34:56.846359+00:00",
       "reason": "owner_run_now_cycle_started"
     }
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
+  }
 }
