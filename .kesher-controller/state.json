@@ -89,7 +89,7 @@
     "last_deploy_dispatch_at": "2026-11-03T05:58:23.315088+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41586983256,
-    "live_verified_at": "2026-11-03T08:03:11.876464+00:00"
+    "live_verified_at": "2026-11-03T08:03:34.447903+00:00"
   },
   "backlog": [
     {
@@ -1802,38 +1802,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T21:56:12.159211+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261102-232627-35b906afcd",
-        "task_id": "c39d28ff-a6a5-4273-905d-6b312536b8aa"
-      }
-    },
-    {
-      "at": "2026-11-02T22:01:33.448282+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_recovery",
-      "reason": "long-form provider stalled; resumed the same durable provider identity",
-      "details": {
-        "item_id": "video-20261102-232627-35b906afcd",
-        "task_id": "c39d28ff-a6a5-4273-905d-6b312536b8aa",
-        "slug": "couples-social-baseline-theory",
-        "content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5"
-      }
-    },
-    {
-      "at": "2026-11-02T22:06:15.989223+00:00",
-      "from": "long_video_watchdog_recovery",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261102-232627-35b906afcd",
-        "task_id": "c39d28ff-a6a5-4273-905d-6b312536b8aa"
-      }
-    },
-    {
       "at": "2026-11-02T22:07:43.923796+00:00",
       "from": "long_video_watchdog_wait",
       "to": "article_live",
@@ -2551,9 +2519,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-03T08:03:34.447925+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-03T08:03:35.705410+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-03T08:03:36.987016+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-03T08:01:26.222693+00:00",
+  "updated_at": "2026-11-03T08:03:36.987033+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
