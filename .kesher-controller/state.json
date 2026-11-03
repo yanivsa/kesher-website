@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-03",
-  "status": "article_pr_open",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -16,7 +16,7 @@
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "watchdog": {
       "identity": "2026-11-03",
       "session_id": null,
@@ -85,7 +85,9 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-11-03T05:58:16.549706+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-11-03T05:58:23.315088+00:00",
+    "next_deploy_retry_at": "2026-11-03T06:03:12.840152+00:00"
   },
   "backlog": [
     {
@@ -1798,15 +1800,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T16:25:59.418331+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "owner run-now article workflow already active",
-      "details": {
-        "publication_slot": "2026-11-02"
-      }
-    },
-    {
       "at": "2026-11-02T16:30:52.350091+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2658,9 +2651,19 @@
         "merge_dispatch_count": 0,
         "refund_count": 1
       }
+    },
+    {
+      "at": "2026-11-03T05:58:23.315128+00:00",
+      "from": "article_pr_open",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-11-03T05:48:45.014257+00:00",
+  "updated_at": "2026-11-03T05:58:23.315135+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -3217,14 +3220,15 @@
       "cycle": "2026-11-03",
       "inputs": {},
       "intent_at": "2026-11-03T05:58:12.840152+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "4057fac5d5fb72abc2ecd3b8a1b75241afbed37c"
+      "observed_active_run_id": 41586983256,
+      "dispatch_head_sha": "4057fac5d5fb72abc2ecd3b8a1b75241afbed37c",
+      "dispatched_at": "2026-11-03T05:58:12.840152+00:00"
     }
   },
   "deliverables": {
-    "article_url": null,
+    "article_url": "https://kesher.saharoni.com/blog/baby-cries-at-daycare",
     "overview_youtube_url": null,
     "short_youtube_url": null,
     "overview_edit_verified": false,
