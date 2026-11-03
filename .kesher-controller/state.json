@@ -89,7 +89,7 @@
     "last_deploy_dispatch_at": "2026-11-03T05:58:23.315088+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41586983256,
-    "live_verified_at": "2026-11-03T08:50:54.147512+00:00"
+    "live_verified_at": "2026-11-03T08:51:22.349703+00:00"
   },
   "backlog": [
     {
@@ -1802,39 +1802,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-02T23:15:51.671626+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-11-02T23:16:19.588733Z",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "primary_keyword_conflict_advanced",
-      "details": {
-        "rejected_idea_id": "parenting-p2-stool-withholding-potty-training",
-        "required_primary_keyword": "התאפקות קקי בגמילה",
-        "conflicting_slugs": [
-          "stool-withholding-potty-training"
-        ],
-        "prior_article_attempts": 0,
-        "previous_error": null,
-        "replacement_idea_id": "parenting-p2-baby-cries-at-daycare",
-        "replacement_primary_keyword": "תינוק בוכה במעון",
-        "publication_slot": "2026-11-03"
-      }
-    },
-    {
-      "at": "2026-11-02T23:24:47.538110+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
       "at": "2026-11-02T23:29:52.828893+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2525,9 +2492,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-03T08:51:22.349730+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-03T08:51:23.517176+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-03T08:51:24.700458+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-03T08:46:04.002734+00:00",
+  "updated_at": "2026-11-03T08:51:24.700475+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
