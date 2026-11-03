@@ -106,7 +106,7 @@ function auditText(input) {
     .filter(([, count]) => count > 0);
   const formulaTotal = formulaCounts.reduce((sum, [, count]) => sum + count, 0);
   const repeatedFormula = formulaCounts.filter(([, count]) => count >= 2);
-  if (repeatedFormula.length || formulaTotal >= 4) {
+  if (repeatedFormula.length || formulaTotal >= 6) {
     findings.push(finding(
       'formulaic-phrases',
       formulaTotal,
