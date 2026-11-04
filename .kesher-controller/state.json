@@ -52,13 +52,13 @@
     "quality_content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-04T14:25:51.727822+00:00",
+    "quality_checked_at": "2026-11-04T14:30:49.158485+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-04T12:09:34.966879+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41826850285,
-    "live_verified_at": "2026-11-04T14:26:13.788395+00:00"
+    "live_verified_at": "2026-11-04T14:30:50.240489+00:00"
   },
   "backlog": [
     {
