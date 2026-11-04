@@ -1758,15 +1758,9 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "PR #1279 exceeded maximum auto-merge dispatch budget (3 dispatches)",
-    "at": "2026-11-04T04:46:03.004256+00:00"
+    "at": "2026-11-04T04:51:18.512378+00:00"
   },
   "history": [
-    {
-      "at": "2026-11-03T20:20:39.897340+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-11-03T20:20:41.203238+00:00",
       "from": "long_video_complete",
@@ -2557,9 +2551,18 @@
       "details": {
         "message": "PR #1279 exceeded maximum auto-merge dispatch budget (3 dispatches)"
       }
+    },
+    {
+      "at": "2026-11-04T04:51:18.512396+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1279 exceeded maximum auto-merge dispatch budget (3 dispatches)"
+      }
     }
   ],
-  "updated_at": "2026-11-04T04:46:03.004277+00:00",
+  "updated_at": "2026-11-04T04:51:18.512401+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
