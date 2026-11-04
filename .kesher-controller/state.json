@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-04",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1771,15 +1771,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-04T04:11:13.696492+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1279 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-11-04T04:16:01.722576+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2664,9 +2655,19 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-11-04T12:26:02.776396+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261104-141901-45359ff036",
+        "task_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80"
+      }
     }
   ],
-  "updated_at": "2026-11-04T12:21:35.128755+00:00",
+  "updated_at": "2026-11-04T12:26:02.776405+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2688,18 +2689,36 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-11-04T12:30:40.800784+00:00",
     "run_id": 41828065776,
-    "processed_run_id": null,
-    "provider_id": null,
+    "processed_run_id": 41828065776,
+    "provider_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-11-04T12:18:01.787228+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "last_run_conclusion": "success",
+    "item_id": "video-20261104-141901-45359ff036",
+    "source_slug": "child-does-not-want-kindergarten",
+    "source_content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
+    "content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
+    "source_id": "8eefc333-70d6-4b35-8418-34a71220b4e2",
+    "task_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80",
+    "artifact_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80",
+    "provider_status": "pending",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:child-does-not-want-kindergarten:45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49:video-20261104-141901-45359ff036",
+      "hard_started_at": "2026-11-04T12:19:06.981735+00:00",
+      "last_progress_at": "2026-11-04T12:25:40.800784+00:00",
+      "last_fingerprint": "8f36971dada09f925c08ebd04702ab6aa6e86248da28fbfe06b66b619564eaa9",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
