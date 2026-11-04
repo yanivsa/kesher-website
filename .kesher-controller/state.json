@@ -3277,6 +3277,20 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T22:40:44.592483+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-11-04",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "child-does-not-want-kindergarten",
+        "target_content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
+        "target_item_id": "video-20261104-141901-45359ff036"
+      },
+      "intent_at": "2026-11-04T12:45:44.930004+00:00",
+      "status": "intent",
+      "previous_run_id": 41828065776,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3301,5 +3315,21 @@
     "Auto-merge Kesher article PRs:41760093288",
     "Deploy to Cloudflare Pages:41826850285",
     "Kesher Daily NotebookLM Video Overview:41828065776"
-  ]
+  ],
+  "interventions": {
+    "v5|child-does-not-want-kindergarten|45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49|long_video": {
+      "pipeline_id": "v5",
+      "slug": "child-does-not-want-kindergarten",
+      "content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-11-04T14",
+      "last_fingerprint": "ef976406cf4b29e14bc7e1f28c49a386675e329c184ed11e0acfb5eb5f4fb482",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-11-04T12:45:44.930004+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
