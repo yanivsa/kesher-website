@@ -248,11 +248,13 @@ def local_editorial_fallback(
     return None
 
 
-# V4's choose_candidate resolves the module-global local_fallback at call time,
-# so this replaces only the terminal no-network provider while preserving all
-# bounded external attempts and duplicate-pixel checks.
-v4.local_fallback = local_editorial_fallback
-v4.v3.local_fallback = local_editorial_fallback
+# Editorial quality policy: never publish a synthetic vector illustration as an
+# article hero. The legacy LocalEditorial renderer above is retained only for
+# compatibility with historical artifacts/tests, NOT for new publication.
+# Keep V4's photo-only curated selector; when no topic-appropriate photograph
+# exists, its bounded provider chain must fail closed instead of fabricating a
+# cheap-looking placeholder. In particular, do not override v4.local_fallback.
+v4.v3.local_fallback = v4.local_fallback
 
 
 def main() -> int:
