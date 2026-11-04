@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-04",
-  "status": "long_video_watchdog_recovery",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1771,15 +1771,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-04T04:36:19.593724+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1279 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-11-04T04:41:26.058240+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2671,9 +2662,19 @@
         "slug": "child-does-not-want-kindergarten",
         "content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49"
       }
+    },
+    {
+      "at": "2026-11-04T12:51:32.585153+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261104-141901-45359ff036",
+        "task_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80"
+      }
     }
   ],
-  "updated_at": "2026-11-04T12:46:02.642396+00:00",
+  "updated_at": "2026-11-04T12:51:32.585163+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2695,7 +2696,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-11-04T12:30:40.800784+00:00",
     "run_id": 41832107291,
