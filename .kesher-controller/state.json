@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-04",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -30,12 +30,17 @@
     },
     "pr_number": 1279,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1279",
-    "current_pr_head_sha": "dd9cb50ec65ca70f4a713f67e88f8634823f1f22",
+    "current_pr_head_sha": "36cc86847dabc09c6fc83a4874a5fa683f014974",
     "jules_head_sha": "c16620bad5d6183a16e4258db43bba0f4afc84a7",
     "normalization_slot": "2026-11-04",
     "normalization_dispatched_at": "2026-11-04T00:36:03.867126+00:00",
     "normalization_run_id": 41748040138,
-    "normalized_head_sha": "dd9cb50ec65ca70f4a713f67e88f8634823f1f22"
+    "normalized_head_sha": "36cc86847dabc09c6fc83a4874a5fa683f014974",
+    "image_head_sha": "36cc86847dabc09c6fc83a4874a5fa683f014974",
+    "merge_candidate_sha": "36cc86847dabc09c6fc83a4874a5fa683f014974",
+    "normalization_drift_count": 0,
+    "merge_dispatch_count": 0,
+    "merge_dispatch_at": null
   },
   "backlog": [
     {
@@ -2334,21 +2339,29 @@
         "attempt": 1,
         "pr_number": 1279
       }
+    },
+    {
+      "at": "2026-11-04T00:39:56.357430+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-11-04T00:38:05.335940+00:00",
+  "updated_at": "2026-11-04T00:39:56.357451+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41748280989,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "LocalEditorial",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-11-04T00:38:05.335881+00:00"
+    "last_dispatch_at": "2026-11-04T00:38:05.335881+00:00",
+    "artifact_sha256": "010a99ee0b149ce6087c37431744aa609f22f147c35f5394f4df876de42f801f",
+    "source_id": "local-editorial://child-does-not-want-kindergarten/0"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2916,6 +2929,18 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T22:40:44.592483+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-11-04",
+      "inputs": {
+        "pr_number": "1279",
+        "slot": "2026-11-04"
+      },
+      "intent_at": "2026-11-04T00:39:09.271069+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2927,5 +2952,17 @@
   },
   "processed_child_notifications": [
     "Kesher Normalize Article PR:41748040138"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
