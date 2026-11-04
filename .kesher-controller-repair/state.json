@@ -70,8 +70,9 @@
       },
       "failure_class": "GITHUB_MUTATION_UNCERTAIN",
       "fingerprint": "66cf7ebad734587143c2e163b5e99980c2372aabf393bb15bb5f75bd6d59a3fd",
+      "reason": "uncertain_create_not_discoverable",
       "stage": "controller",
-      "status": "uncertain"
+      "status": "human_blocker"
     },
     "3482e59b487511b826bdc9df1577a89962e60dc11184e295c05764ffb267d55a": {
       "acquisition_started_at": "2026-11-01T06:05:14.670801+00:00",
