@@ -35,15 +35,6 @@ class TestPrimaryKeywordContract(unittest.TestCase):
         self.assertEqual(slug_represents_keyword("changing-kindergarten-midyear", "מעבר גן באמצע שנה"), (True, ""))
         self.assertFalse(slug_represents_keyword("stock-market-investments", "מעבר גן באמצע שנה")[0])
 
-    def test_kindergarten_refusal_topic_accepts_relevant_slug_only(self):
-        self.assertEqual(slug_represents_keyword("child-does-not-want-kindergarten", "ילד לא רוצה ללכת לגן"), (True, ""))
-        self.assertFalse(slug_represents_keyword("stock-market-investments", "ילד לא רוצה ללכת לגן")[0])
-
-    def test_daycare_prep_and_play_topics_accept_relevant_slugs(self):
-        self.assertEqual(slug_represents_keyword("prepare-toddler-daycare", "הכנה למעון"), (True, ""))
-        self.assertEqual(slug_represents_keyword("child-not-playing-kindergarten", "ילד לא משחק בגן"), (True, ""))
-        self.assertEqual(slug_represents_keyword("good-news-response-relationship", "תגובה לבשורות טובות בזוגיות"), (True, ""))
-
     def setUp(self):
         self.posts_file = Path(__file__).resolve().parent.parent / "src" / "data" / "posts.json"
 

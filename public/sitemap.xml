@@ -417,12 +417,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://kesher.saharoni.com/blog/child-does-not-want-kindergarten</loc>
-    <lastmod>2026-11-04</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://kesher.saharoni.com/blog/baby-cries-at-daycare</loc>
     <lastmod>2026-11-03</lastmod>
     <changefreq>monthly</changefreq>
@@ -1223,6 +1217,12 @@
   <url>
     <loc>https://kesher.saharoni.com/blog/when-everyone-around-you-gets-married</loc>
     <lastmod>2026-10-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/child-does-not-want-kindergarten</loc>
+    <lastmod>2026-11-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
