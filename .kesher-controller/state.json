@@ -3281,6 +3281,20 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-03T22:40:44.592483+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-11-04",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "child-does-not-want-kindergarten",
+        "derive_content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
+        "derive_long_item_id": "video-20261104-141901-45359ff036"
+      },
+      "intent_at": "2026-11-04T13:25:46.409325+00:00",
+      "status": "intent",
+      "previous_run_id": 41833088513,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3323,6 +3337,20 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-11-04T12:45:44.930004+00:00"
+    },
+    "v5|child-does-not-want-kindergarten|45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49|short": {
+      "pipeline_id": "v5",
+      "slug": "child-does-not-want-kindergarten",
+      "content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-11-04T15",
+      "last_fingerprint": "2fd822e4b59bb2b70800472d64f52a4a07dbb08ec7b6c9d225c05b285649144d",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-11-04T13:25:46.409325+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
     }
   }
 }
