@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-04",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1771,15 +1771,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-04T03:56:06.970538+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1279 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-11-04T04:01:24.248146+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2669,9 +2660,19 @@
       "from": "article_deploying",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-04T12:18:01.787252+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-11-04T12:17:53.407805+00:00",
+  "updated_at": "2026-11-04T12:18:01.787262+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2692,8 +2693,8 @@
     "image_path": "/images/generated/blog/child-does-not-want-kindergarten.png"
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2702,7 +2703,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-11-04T12:18:01.787228+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
@@ -3268,9 +3271,10 @@
         "target_content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49"
       },
       "intent_at": "2026-11-04T12:17:15.454095+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 41828065776,
+      "dispatched_at": "2026-11-04T12:17:15.454095+00:00"
     }
   },
   "last_child_notification": {
@@ -3293,18 +3297,5 @@
     "Kesher Normalize Article PR:41759589972",
     "Kesher Trusted Article Image:41759792725",
     "Auto-merge Kesher article PRs:41760093288"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true
-  }
+  ]
 }
