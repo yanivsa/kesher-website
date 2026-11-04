@@ -53,7 +53,7 @@ class EditorialHeroQualityTests(unittest.TestCase):
             picture.write_bytes(b"fixture-photograph")
             with mock.patch.object(v4, "_candidate_pool", return_value=[
                 (0, "public/images/generated/blog/defensiveness-in-relationships.jpg"),
-            ]), mock.patch.object(v4, "_trusted_candidate_path", return_value=picture), \\
+            ]), mock.patch.object(v4, "_trusted_candidate_path", return_value=picture), \
                 mock.patch.object(v4.core, "validate_candidate", return_value=(1200, 675, "jpg")):
                 result = v4.local_fallback(
                     "yanivsa/kesher-website", post, "main", "", [],
