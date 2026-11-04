@@ -37,6 +37,41 @@
       "stage": "controller",
       "status": "verified"
     },
+    "21735f775244b0291f23212923b7542c79f7219b3c3c818e18fba312abd69d09": {
+      "affected": [
+        {
+          "article_run_id": 41732992184,
+          "article_session_id": null,
+          "artifact_id": null,
+          "content_sha256": null,
+          "cycle": "2026-11-04",
+          "idea_id": "parenting-p2-child-does-not-want-kindergarten",
+          "item_id": null,
+          "pr_number": 1279,
+          "slug": null,
+          "source_id": null,
+          "task_id": null
+        }
+      ],
+      "created_at": "2026-11-04T09:36:01.602244+00:00",
+      "exact": {
+        "article_run_id": 41732992184,
+        "article_session_id": null,
+        "artifact_id": null,
+        "content_sha256": null,
+        "cycle": "2026-11-04",
+        "idea_id": "parenting-p2-child-does-not-want-kindergarten",
+        "item_id": null,
+        "pr_number": 1279,
+        "slug": null,
+        "source_id": null,
+        "task_id": null
+      },
+      "failure_class": "GITHUB_MUTATION_UNCERTAIN",
+      "fingerprint": "66cf7ebad734587143c2e163b5e99980c2372aabf393bb15bb5f75bd6d59a3fd",
+      "stage": "controller",
+      "status": "intent"
+    },
     "3482e59b487511b826bdc9df1577a89962e60dc11184e295c05764ffb267d55a": {
       "acquisition_started_at": "2026-11-01T06:05:14.670801+00:00",
       "affected": [
