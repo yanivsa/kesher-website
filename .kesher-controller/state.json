@@ -2410,7 +2410,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-11-04T00:38:05.335881+00:00",
     "artifact_sha256": "010a99ee0b149ce6087c37431744aa609f22f147c35f5394f4df876de42f801f",
-    "source_id": "local-editorial://child-does-not-want-kindergarten/0"
+    "source_id": "local-editorial://child-does-not-want-kindergarten/0",
+    "run_id": 41748280989
   },
   "long_video": {
     "attempt_count": 0,
