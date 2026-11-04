@@ -3356,19 +3356,27 @@
         "long_url": "https://youtu.be/s28sesV4yks",
         "short_url": "https://youtu.be/mwefSBhDJN4"
       }
+    },
+    {
+      "idea_id": "parenting-p2-child-does-not-want-kindergarten",
+      "fingerprint": "ca155c1fcb11acd7fbe7b4f763358c41c6131b761df0be80bc898065305fd9a3",
+      "topic_brief": "אשכול מעבר לגן. נושא: ילד לא רוצה ללכת לגן ומתנגד בבוקר לאורך זמן. אות ביקוש: SERP ושאלות הורים חוזרות. Canonical ID נדרש: child-does-not-want-kindergarten. כותרת עבודה: הילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים זה יעבור? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג. תן תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לברר מול הילד והצוות, נורות אזהרה ומתי לערב איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים ואקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מחרדת פרידה ומקשיי הסתגלות כלליים ואל תיצור URL מתחרה.",
+      "required_primary_keyword": "ילד לא רוצה ללכת לגן",
+      "run_now": false,
+      "status": "complete",
+      "requested_at": "2026-10-19T10:24:46.611990+00:00",
+      "publication_slot": "2026-11-04",
+      "claimed_at": "2026-11-03T22:41:28.919918+00:00",
+      "completed_at": "2026-11-04T13:34:20.819820+00:00",
+      "outputs": {
+        "slug": "child-does-not-want-kindergarten",
+        "article_url": "https://kesher.saharoni.com/blog/child-does-not-want-kindergarten",
+        "long_url": "https://youtu.be/Nk8L-eaWFSA",
+        "short_url": "https://youtu.be/wb2Lw8PZoDE"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "parenting-p2-child-does-not-want-kindergarten",
-    "fingerprint": "ca155c1fcb11acd7fbe7b4f763358c41c6131b761df0be80bc898065305fd9a3",
-    "topic_brief": "אשכול מעבר לגן. נושא: ילד לא רוצה ללכת לגן ומתנגד בבוקר לאורך זמן. אות ביקוש: SERP ושאלות הורים חוזרות. Canonical ID נדרש: child-does-not-want-kindergarten. כותרת עבודה: הילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים זה יעבור? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג. תן תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לברר מול הילד והצוות, נורות אזהרה ומתי לערב איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים ואקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מחרדת פרידה ומקשיי הסתגלות כלליים ואל תיצור URL מתחרה.",
-    "required_primary_keyword": "ילד לא רוצה ללכת לגן",
-    "run_now": false,
-    "status": "claimed",
-    "requested_at": "2026-10-19T10:24:46.611990+00:00",
-    "publication_slot": "2026-11-04",
-    "claimed_at": "2026-11-03T22:41:28.919918+00:00"
-  },
+  "active_idea": null,
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/child-does-not-want-kindergarten",
     "overview_youtube_url": "https://youtu.be/Nk8L-eaWFSA",
