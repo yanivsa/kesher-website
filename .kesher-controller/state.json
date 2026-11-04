@@ -2452,7 +2452,8 @@
     "source_id": "local-editorial://child-does-not-want-kindergarten/0",
     "evidence_rebind_head_sha": "cc9ee3a99e354d8163cd911207766c81a0ee864b",
     "evidence_rebind_dispatched_at": "2026-11-04T01:23:50.157389+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact"
+    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
+    "run_id": 41748280989
   },
   "long_video": {
     "attempt_count": 0,
