@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-04",
-  "status": "short_watchdog_recovery",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "next_retry_at": null,
     "run_id": 41732992184,
     "processed_run_id": null,
@@ -58,7 +58,7 @@
     "last_deploy_dispatch_at": "2026-11-04T12:09:34.966879+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 41826850285,
-    "live_verified_at": "2026-11-04T13:33:57.911369+00:00"
+    "live_verified_at": "2026-11-04T13:34:14.303661+00:00"
   },
   "backlog": [
     {
@@ -1771,33 +1771,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-04T05:31:21.356196+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1279 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-04T05:36:10.842299+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1279 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
-      "at": "2026-11-04T05:41:27.321297+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1279 exceeded maximum auto-merge dispatch budget (3 dispatches)"
-      }
-    },
-    {
       "at": "2026-11-04T05:46:25.496582+00:00",
       "from": "blocked",
       "to": "blocked",
@@ -2646,9 +2619,27 @@
         "item_id": "video-20261104-145534-45359ff036",
         "long_item_id": "video-20261104-141901-45359ff036"
       }
+    },
+    {
+      "at": "2026-11-04T13:34:14.303684+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-04T13:34:14.831260+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-04T13:34:15.503196+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-04T13:26:03.514069+00:00",
+  "updated_at": "2026-11-04T13:34:15.503212+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2718,19 +2709,19 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41838044531,
     "processed_run_id": null,
-    "provider_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80",
+    "provider_id": "e90ff994-96b6-45cc-ad4b-f8244b0a8e39",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-11-04T13:26:03.514039+00:00",
-    "artifact_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80",
-    "source_id": "8eefc333-70d6-4b35-8418-34a71220b4e2",
-    "adopted_from_long_item_id": "video-20261104-141901-45359ff036",
+    "artifact_id": "e90ff994-96b6-45cc-ad4b-f8244b0a8e39",
+    "source_id": "adaede52-5b95-4067-8ee8-f6402693308d",
+    "adopted_from_long_item_id": null,
     "watchdog": {
       "identity": "short:child-does-not-want-kindergarten:45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49:video-20261104-145534-45359ff036",
       "hard_started_at": "2026-11-04T12:55:46.173271+00:00",
@@ -2738,7 +2729,125 @@
       "last_fingerprint": "c38fb828af772fc5bded94ea1be34eca418a61095b0b54bac3759943f9999949",
       "recovery_count": 1,
       "last_recovery_at": "2026-11-04T13:25:46.409325+00:00"
-    }
+    },
+    "source": {
+      "id": "child-does-not-want-kindergarten",
+      "slug": "child-does-not-want-kindergarten",
+      "title": "ילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים שזה יעבור?",
+      "date": "2026-11-04",
+      "category": "הנחיית הורים",
+      "subcategory": "גיל הרך",
+      "excerpt": "מאבקי הבוקר מתארכים, הבכי בשער קורע לב, ואתם תוהים אם זו סתם תקופה או משהו עמוק יותר. ילד לא רוצה ללכת לגן מסיבות שונות, וכדי לעזור לו למצוא שוב את השקט, כדאי לשים לב לכמה נורות אזהרה.",
+      "canonical_url": "https://kesher.saharoni.com/blog/child-does-not-want-kindergarten",
+      "content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
+      "video_title": "ילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים שזה יעבור?",
+      "short_title": "ילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים שזה יעבור?",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "ילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים שזה יעבור?",
+        "description": "מאבקי הבוקר מתארכים, הבכי בשער קורע לב, ואתם תוהים אם זו סתם תקופה או משהו עמוק יותר. ילד לא רוצה ללכת לגן מסיבות שונות, וכדי לעזור לו למצוא שוב את השקט, כדאי לשים לב לכמה נורות אזהרה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/child-does-not-want-kindergarten\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הנחיית הורים",
+          "גיל הרך"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: ילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים שזה יעבור?",
+        "description": "מאבקי הבוקר מתארכים, הבכי בשער קורע לב, ואתם תוהים אם זו סתם תקופה או משהו עמוק יותר. ילד לא רוצה ללכת לגן מסיבות שונות, וכדי לעזור לו למצוא שוב את השקט, כדאי לשים לב לכמה נורות אזהרה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/child-does-not-want-kindergarten\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הנחיית הורים",
+          "גיל הרך"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "e90ff994-96b6-45cc-ad4b-f8244b0a8e39",
+    "raw_sha256": "6f8a717d8625b2ff9e03cea593804a52548d49196f6e09e4a5745ef856cf8c34",
+    "final_sha256": "2254061eb53d99deab873ef5e4caf75fbc3781bf7270969bf3ee271812d1c261",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 61.067,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 61.067,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "8eefc333-70d6-4b35-8418-34a71220b4e2",
+      "task_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80",
+      "artifact_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80",
+      "raw_sha256": "d49f88bc692abb44868f88c33cfb961c03547be003f6abe05e120010aa0dcd51"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 61.067,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "6f8a717d8625b2ff9e03cea593804a52548d49196f6e09e4a5745ef856cf8c34",
+      "final_sha256": "2254061eb53d99deab873ef5e4caf75fbc3781bf7270969bf3ee271812d1c261",
+      "raw_audio_sha256": "23fb3d98825123996118050603d9326bb33b7afb3a9d76a2e4caee95bb4ebd6e",
+      "final_audio_sha256": "23fb3d98825123996118050603d9326bb33b7afb3a9d76a2e4caee95bb4ebd6e",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 61.114921
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 61.114921
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "2254061eb53d99deab873ef5e4caf75fbc3781bf7270969bf3ee271812d1c261",
+      "raw_sha256": "6f8a717d8625b2ff9e03cea593804a52548d49196f6e09e4a5745ef856cf8c34",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "c8258cbdf9e5357400f5d5d8da0f2de30f81118ca35cc852fbb1fd6481b52906",
+      "source_duration_seconds": 61.067,
+      "final_duration_seconds": 61.067,
+      "start_seconds": 58.067,
+      "end_seconds": 61.067,
+      "audio_source_sha256": "6f8a717d8625b2ff9e03cea593804a52548d49196f6e09e4a5745ef856cf8c34"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261104-145534-45359ff036",
+    "type": "article_short",
+    "youtube_id": "wb2Lw8PZoDE",
+    "youtube_url": "https://youtu.be/wb2Lw8PZoDE",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "c8258cbdf9e5357400f5d5d8da0f2de30f81118ca35cc852fbb1fd6481b52906",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
