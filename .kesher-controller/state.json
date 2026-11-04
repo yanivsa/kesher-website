@@ -2729,7 +2729,15 @@
     "last_dispatch_at": "2026-11-04T12:52:52.262803+00:00",
     "artifact_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80",
     "source_id": "8eefc333-70d6-4b35-8418-34a71220b4e2",
-    "adopted_from_long_item_id": "video-20261104-141901-45359ff036"
+    "adopted_from_long_item_id": "video-20261104-141901-45359ff036",
+    "watchdog": {
+      "identity": "short:child-does-not-want-kindergarten:45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49:video-20261104-145534-45359ff036",
+      "hard_started_at": "2026-11-04T12:55:46.173271+00:00",
+      "last_progress_at": "2026-11-04T13:02:48.494090+00:00",
+      "last_fingerprint": "c38fb828af772fc5bded94ea1be34eca418a61095b0b54bac3759943f9999949",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
