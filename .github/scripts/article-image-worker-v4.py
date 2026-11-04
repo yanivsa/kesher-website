@@ -58,6 +58,12 @@ CATEGORY_DESCRIPTIONS = {
 }
 
 TOPIC_FILENAME_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
+    # Preschool separation is not interchangeable with a generic parenting
+    # or couples photograph. Require recognisable preschool/daycare context.
+    (r"גן ילדים|גננת|מעון|הסתגלות לגן|פרידה בגן|kindergarten|daycare|preschool|morning.dropoff|child.does.not.want.kindergarten",
+     ("daycare", "kindergarten", "preschool", "separation", "dropoff", "nursery")),
+    (r"גמילה|חיתול|עצירות|potty|toilet|constipation",
+     ("potty", "toilet", "bathroom", "constipation", "training")),
     (r"כיתה|בית ספר|ילקוט|בוקר|התארגנות", ("first-grade", "school", "morning", "adhd")),
     (r"מחונ|פרפקציונ", ("gifted", "perfectionism")),
     (r"קשב|adhd", ("adhd", "executive", "attention")),
@@ -200,6 +206,16 @@ def _topic_score(post: dict[str, Any], source_path: str) -> int:
         if re.search(pattern, text, re.I):
             score += sum(20 for hint in hints if hint in filename)
     return score
+
+
+def _requires_specific_visual_scene(post: dict[str, Any]) -> bool:
+    """Sensitive, concrete article subjects must not receive generic stock."""
+    text = " ".join(str(post.get(k) or "") for k in
+                    ("id", "title", "subcategory", "excerpt")).lower()
+    return bool(re.search(
+        r"גן ילדים|גננת|מעון|הסתגלות לגן|פרידה בגן|kindergarten|daycare|preschool|"
+        r"morning.dropoff|child.does.not.want.kindergarten|"
+        r"גמילה|חיתול|עצירות|potty|toilet|constipation", text, re.I))
 
 
 def _stable_tiebreak(post: dict[str, Any], source_path: str) -> str:
@@ -414,6 +430,18 @@ def local_fallback(
             _width, _height, ext = core.validate_candidate(data)
             digest = hashlib.sha256(data).hexdigest()
             score = _topic_score(post, source_path)
+
+            # Image format, dimensions, and category membership are NOT
+            # evidence that the depicted scene fits a specific article.
+            # Block generic parent/child photos for daycare, potty-training,
+            # and similarly concrete editorial subjects. On exhaustion the
+            # upstream provider can generate a new photo; otherwise fail closed.
+            if _requires_specific_visual_scene(post) and score < 20:
+                print(
+                    f"IMAGE_LOCAL_FALLBACK_REJECTED category={category} path={source_path} reason=topic_mismatch",
+                    file=sys.stderr, flush=True,
+                )
+                continue
 
             # Seed reserves are inventory-only unless the article itself gives a
             # concrete semantic reason to use them. This prevents a technically
