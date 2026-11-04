@@ -1,64 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-11-04",
-  "status": "complete",
+  "cycle": "2026-11-05",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
+    "last_error": null,
     "next_retry_at": null,
-    "run_id": 41732992184,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 1,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-11-03T22:41:32.587775+00:00",
-    "watchdog": {
-      "identity": "2026-11-04",
-      "session_id": null,
-      "last_progress_at": "2026-11-03T22:41:31+00:00",
-      "last_fingerprint": null,
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "pr_number": 1279,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1279",
-    "current_pr_head_sha": "ad27a8b08d65d50624bb20301348b3116cb22f50",
-    "jules_head_sha": "c16620bad5d6183a16e4258db43bba0f4afc84a7",
-    "normalization_slot": "2026-11-04",
-    "normalization_dispatched_at": "2026-11-04T02:15:56.009183+00:00",
-    "normalization_run_id": 41759589972,
-    "normalization_drift_count": 0,
-    "merge_dispatch_count": 0,
-    "merge_dispatch_at": null,
-    "merge_run_id": 41825901498,
-    "last_refunded_auto_merge_run_id": 41760093288,
-    "deferred_auto_merge_refund_count": 4,
-    "last_normalization_drift_head_sha": "7d88f37f8bd5a2b714598ef1e9678193f9e97723",
-    "last_error": null,
-    "normalized_head_sha": "ad27a8b08d65d50624bb20301348b3116cb22f50",
-    "image_head_sha": "ad27a8b08d65d50624bb20301348b3116cb22f50",
-    "merge_candidate_sha": "ad27a8b08d65d50624bb20301348b3116cb22f50",
-    "slug": "child-does-not-want-kindergarten",
-    "title": "ילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים שזה יעבור?",
-    "url": "https://kesher.saharoni.com/blog/child-does-not-want-kindergarten",
-    "published_date": "2026-11-04",
-    "quality_content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
-    "reconciled_existing_article": true,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-11-04T21:59:00.286250+00:00",
-    "quality_violations": [],
-    "live": true,
-    "last_deploy_dispatch_at": "2026-11-04T12:09:34.966879+00:00",
-    "next_deploy_retry_at": null,
-    "deploy_run_id": 41826850285,
-    "live_verified_at": "2026-11-04T21:59:25.144328+00:00"
+    "deploy_attempts": 0,
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -1771,126 +1728,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-04T19:16:16.983560+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-04T19:21:42.693811+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-04T19:21:43.998461+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-04T19:21:45.326221+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-04T19:26:07.277915+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-04T19:26:07.840287+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-04T19:26:08.359931+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-04T19:31:32.128172+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-04T19:31:33.462470+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-04T19:31:34.712462+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-04T19:36:33.685039+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-04T19:36:34.820360+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-04T19:36:35.921364+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-04T19:41:30.009633+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-04T19:41:31.301512+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-04T19:41:32.577020+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-04T19:46:18.162343+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-04T19:46:19.434458+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-04T19:46:20.768171+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-04T19:51:11.932954+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-04T19:51:12.618585+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2369,217 +2206,62 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-04T22:00:44.913808+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-11-04T22:00:44.913814+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-11-04T22:00:44.914966+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-11-04T21:59:27.129717+00:00",
+  "updated_at": "2026-11-04T22:00:44.913787+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "LocalEditorial",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-11-04T00:38:05.335881+00:00",
-    "artifact_sha256": "010a99ee0b149ce6087c37431744aa609f22f147c35f5394f4df876de42f801f",
-    "source_id": "local-editorial://child-does-not-want-kindergarten/0",
-    "evidence_rebind_head_sha": "7d88f37f8bd5a2b714598ef1e9678193f9e97723",
-    "evidence_rebind_dispatched_at": "2026-11-04T02:17:45.289576+00:00",
-    "evidence_rebind_mode": "reattach_prior_trusted_artifact",
-    "run_id": 41748280989,
-    "image_path": "/images/generated/blog/child-does-not-want-kindergarten.png"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41832107291,
-    "processed_run_id": 41828065776,
-    "provider_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-11-04T12:46:02.642370+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261104-141901-45359ff036",
-    "source_slug": "child-does-not-want-kindergarten",
-    "source_content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
-    "content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
-    "source_id": "8eefc333-70d6-4b35-8418-34a71220b4e2",
-    "task_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80",
-    "artifact_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80",
-    "provider_status": "pending",
-    "verified": true,
-    "watchdog": {
-      "identity": "long_video:child-does-not-want-kindergarten:45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49:video-20261104-141901-45359ff036",
-      "hard_started_at": "2026-11-04T12:19:06.981735+00:00",
-      "last_progress_at": "2026-11-04T12:25:40.800784+00:00",
-      "last_fingerprint": "8f36971dada09f925c08ebd04702ab6aa6e86248da28fbfe06b66b619564eaa9",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-11-04T12:45:44.930004+00:00"
-    },
-    "pending_resume_ready": false,
-    "resume_dispatches": 1,
-    "youtube_id": "Nk8L-eaWFSA",
-    "youtube_url": "https://youtu.be/Nk8L-eaWFSA",
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 122.633,
-    "content_duration_seconds": 122.625,
-    "signature_duration_seconds": 3.0,
-    "signature_overlay": true,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41838044531,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "e90ff994-96b6-45cc-ad4b-f8244b0a8e39",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-11-04T13:26:03.514039+00:00",
-    "artifact_id": "e90ff994-96b6-45cc-ad4b-f8244b0a8e39",
-    "source_id": "adaede52-5b95-4067-8ee8-f6402693308d",
-    "adopted_from_long_item_id": null,
-    "watchdog": {
-      "identity": "short:child-does-not-want-kindergarten:45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49:video-20261104-145534-45359ff036",
-      "hard_started_at": "2026-11-04T12:55:46.173271+00:00",
-      "last_progress_at": "2026-11-04T13:02:48.494090+00:00",
-      "last_fingerprint": "c38fb828af772fc5bded94ea1be34eca418a61095b0b54bac3759943f9999949",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-11-04T13:25:46.409325+00:00"
-    },
-    "source": {
-      "id": "child-does-not-want-kindergarten",
-      "slug": "child-does-not-want-kindergarten",
-      "title": "ילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים שזה יעבור?",
-      "date": "2026-11-04",
-      "category": "הנחיית הורים",
-      "subcategory": "גיל הרך",
-      "excerpt": "מאבקי הבוקר מתארכים, הבכי בשער קורע לב, ואתם תוהים אם זו סתם תקופה או משהו עמוק יותר. ילד לא רוצה ללכת לגן מסיבות שונות, וכדי לעזור לו למצוא שוב את השקט, כדאי לשים לב לכמה נורות אזהרה.",
-      "canonical_url": "https://kesher.saharoni.com/blog/child-does-not-want-kindergarten",
-      "content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
-      "video_title": "ילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים שזה יעבור?",
-      "short_title": "ילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים שזה יעבור?",
-      "short_hook": "",
-      "youtube_metadata": {
-        "title": "ילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים שזה יעבור?",
-        "description": "מאבקי הבוקר מתארכים, הבכי בשער קורע לב, ואתם תוהים אם זו סתם תקופה או משהו עמוק יותר. ילד לא רוצה ללכת לגן מסיבות שונות, וכדי לעזור לו למצוא שוב את השקט, כדאי לשים לב לכמה נורות אזהרה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/child-does-not-want-kindergarten\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הנחיית הורים",
-          "גיל הרך"
-        ]
-      },
-      "short_youtube_metadata": {
-        "title": "בקצרה: ילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים שזה יעבור?",
-        "description": "מאבקי הבוקר מתארכים, הבכי בשער קורע לב, ואתם תוהים אם זו סתם תקופה או משהו עמוק יותר. ילד לא רוצה ללכת לגן מסיבות שונות, וכדי לעזור לו למצוא שוב את השקט, כדאי לשים לב לכמה נורות אזהרה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/child-does-not-want-kindergarten\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הנחיית הורים",
-          "גיל הרך"
-        ]
-      }
-    },
-    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-    "task_id": "e90ff994-96b6-45cc-ad4b-f8244b0a8e39",
-    "raw_sha256": "6f8a717d8625b2ff9e03cea593804a52548d49196f6e09e4a5745ef856cf8c34",
-    "final_sha256": "2254061eb53d99deab873ef5e4caf75fbc3781bf7270969bf3ee271812d1c261",
-    "provider_raw_media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 720,
-      "height": 1280,
-      "duration": 61.067,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 1080,
-      "height": 1920,
-      "duration": 61.067,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "provider_video_format": "short",
-    "provider_native_short": true,
-    "provider_native_short_verified": true,
-    "provider_short_fallback_used": false,
-    "fresh_generation_attempt": 1,
-    "overview_provider_identity": {
-      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-      "source_id": "8eefc333-70d6-4b35-8418-34a71220b4e2",
-      "task_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80",
-      "artifact_id": "e21eb320-70ef-4ec8-83c7-17c9062adb80",
-      "raw_sha256": "d49f88bc692abb44868f88c33cfb961c03547be003f6abe05e120010aa0dcd51"
-    },
-    "shared_provider_identity": null,
-    "short_start_seconds": 0.0,
-    "short_duration_seconds": 61.067,
-    "audio_provenance": {
-      "schema_version": 1,
-      "mode": "stream_copy",
-      "raw_sha256": "6f8a717d8625b2ff9e03cea593804a52548d49196f6e09e4a5745ef856cf8c34",
-      "final_sha256": "2254061eb53d99deab873ef5e4caf75fbc3781bf7270969bf3ee271812d1c261",
-      "raw_audio_sha256": "23fb3d98825123996118050603d9326bb33b7afb3a9d76a2e4caee95bb4ebd6e",
-      "final_audio_sha256": "23fb3d98825123996118050603d9326bb33b7afb3a9d76a2e4caee95bb4ebd6e",
-      "raw_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 61.114921
-      },
-      "final_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 61.114921
-      }
-    },
-    "signature_overlay": true,
-    "signature_provenance": {
-      "schema_version": 1,
-      "final_sha256": "2254061eb53d99deab873ef5e4caf75fbc3781bf7270969bf3ee271812d1c261",
-      "raw_sha256": "6f8a717d8625b2ff9e03cea593804a52548d49196f6e09e4a5745ef856cf8c34",
-      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-      "segment_sha256": "c8258cbdf9e5357400f5d5d8da0f2de30f81118ca35cc852fbb1fd6481b52906",
-      "source_duration_seconds": 61.067,
-      "final_duration_seconds": 61.067,
-      "start_seconds": 58.067,
-      "end_seconds": 61.067,
-      "audio_source_sha256": "6f8a717d8625b2ff9e03cea593804a52548d49196f6e09e4a5745ef856cf8c34"
-    },
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "item_id": "video-20261104-145534-45359ff036",
-    "type": "article_short",
-    "youtube_id": "wb2Lw8PZoDE",
-    "youtube_url": "https://youtu.be/wb2Lw8PZoDE",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "c8258cbdf9e5357400f5d5d8da0f2de30f81118ca35cc852fbb1fd6481b52906",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3108,87 +2790,5 @@
       }
     }
   ],
-  "active_idea": null,
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/child-does-not-want-kindergarten",
-    "overview_youtube_url": "https://youtu.be/Nk8L-eaWFSA",
-    "short_youtube_url": "https://youtu.be/wb2Lw8PZoDE",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
-  },
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-11-04",
-      "inputs": {
-        "slot": "2026-11-04",
-        "topic_brief": "אשכול מעבר לגן. נושא: ילד לא רוצה ללכת לגן ומתנגד בבוקר לאורך זמן. אות ביקוש: SERP ושאלות הורים חוזרות. Canonical ID נדרש: child-does-not-want-kindergarten. כותרת עבודה: הילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים זה יעבור? כתוב בעברית ישראלית טבעית, חמה וישירה, בשפה של הורה מודאג. תן תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לברר מול הילד והצוות, נורות אזהרה ומתי לערב איש מקצוע. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. מקורות רשמיים ואקדמיים קודמים למסחריים. לפחות 3 קישורים פנימיים רלוונטיים ו-CTA להדרכת הורים. שמור intent נפרד מחרדת פרידה ומקשיי הסתגלות כלליים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p2-child-does-not-want-kindergarten\nRequired Primary Keyword: ילד לא רוצה ללכת לגן"
-      },
-      "intent_at": "2026-11-03T22:40:44.592483+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-11-03T22:40:44.592483+00:00"
-    }
-  },
-  "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 41838044531,
-    "conclusion": "success",
-    "source_slug": "child-does-not-want-kindergarten",
-    "slot": "2026-11-04"
-  },
-  "processed_child_notifications": [
-    "Kesher Normalize Article PR:41748040138",
-    "Kesher Trusted Article Image:41748280989",
-    "Auto-merge Kesher article PRs:41748513677",
-    "Kesher Normalize Article PR:41753528044",
-    "Kesher Trusted Article Image:41753761977",
-    "Auto-merge Kesher article PRs:41754072394",
-    "Kesher Normalize Article PR:41755705790",
-    "Kesher Trusted Article Image:41755931700",
-    "Auto-merge Kesher article PRs:41756322612",
-    "Kesher Normalize Article PR:41759589972",
-    "Kesher Trusted Article Image:41759792725",
-    "Auto-merge Kesher article PRs:41760093288",
-    "Deploy to Cloudflare Pages:41826850285",
-    "Kesher Daily NotebookLM Video Overview:41828065776",
-    "Kesher Daily NotebookLM Video Overview:41832107291",
-    "Kesher Daily Article Short V4:41833088513",
-    "Kesher Daily Article Short V4:41838044531"
-  ],
-  "interventions": {
-    "v5|child-does-not-want-kindergarten|45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49|long_video": {
-      "pipeline_id": "v5",
-      "slug": "child-does-not-want-kindergarten",
-      "content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
-      "stage": "long_video",
-      "strike_count": 1,
-      "last_check_token": "2026-11-04T14",
-      "last_fingerprint": "ef976406cf4b29e14bc7e1f28c49a386675e329c184ed11e0acfb5eb5f4fb482",
-      "last_controller_action_token": "recovery:1:2026-11-04T12:45:44.930004+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-04T12:45:44.930004+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-04T12:45:44.930004+00:00"
-    },
-    "v5|child-does-not-want-kindergarten|45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49|short": {
-      "pipeline_id": "v5",
-      "slug": "child-does-not-want-kindergarten",
-      "content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-11-04T15",
-      "last_fingerprint": "2fd822e4b59bb2b70800472d64f52a4a07dbb08ec7b6c9d225c05b285649144d",
-      "last_controller_action_token": "recovery:1:2026-11-04T13:25:46.409325+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-04T13:25:46.409325+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-04T13:25:46.409325+00:00"
-    }
-  }
+  "active_idea": null
 }
