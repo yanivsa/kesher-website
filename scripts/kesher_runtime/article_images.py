@@ -150,6 +150,33 @@ def stock_query(post: dict[str, Any]) -> str:
     return stock_queries(post)[0]
 
 
+def editorial_scene_direction(post: dict[str, Any]) -> str:
+    """Literal, article-specific photo brief: never a generic category portrait."""
+    text = " ".join(str(post.get(field) or "") for field in
+                    ("id", "title", "subcategory", "excerpt")).lower()
+    if re.search(r"גן ילדים|גננת|מעון|kindergarten|daycare|preschool|morning.dropoff", text):
+        return ("A parent at the entrance to a real Israeli kindergarten or daycare, "
+                "at the moment of a gentle morning goodbye, a visibly age-appropriate "
+                "young child and a welcoming educator; authentic classroom doorway "
+                "and children's activity context. No random couple in a living room.")
+    if re.search(r"גמילה|חיתול|עצירות|potty|toilet|constipation", text):
+        return ("A respectful parent helping their preschool child through a calm "
+                "potty-training routine near a clean home bathroom doorway; never "
+                "depict exposed bodies, distress close-ups, or humiliating imagery.")
+    if re.search(r"מחוננ|פרפקציונ|gifted|perfectionism", text):
+        return ("A school-age child grappling with a real learning activity at a "
+                "desk while a parent supports without pressure; show relevant "
+                "materials and a candid emotional expression.")
+    if re.search(r"קשב|adhd|ילקוט|התארגנות בבוקר", text):
+        return ("A parent and school-age child organising a schoolbag and morning "
+                "routine in a realistic Israeli family home.")
+    if re.search(r"בגיד|אמון|trust|infidelity", text):
+        return ("Two adult partners in a serious, attentive and respectful "
+                "conversation that conveys relational trust, with natural emotion.")
+    return ("Show a specific real-life moment directly illustrating this exact "
+            "headline and excerpt, not a generic smiling family stock photograph.")
+
+
 def image_prompt(post: dict[str, Any]) -> str:
     title = str(post.get("title") or "").strip()
     category = str(post.get("category") or "").strip()
@@ -160,8 +187,13 @@ def image_prompt(post: dict[str, Any]) -> str:
         "Style: Authentic documentary editorial photography, 35mm lens, natural warm daylight, 16:9 landscape aspect ratio. "
         "Setting: Realistic everyday Israeli apartment, home kitchen, balcony, or neighborhood cafe. "
         "Subjects: Real Israeli people with natural, candid expressions and genuine emotional interaction. "
+        "Make the photograph immediately recognisable as relevant to this particular story. "
+        "Commercial editorial photo quality: believable hands and faces, convincing real environment, "
+        "balanced composition with a clear subject, natural colours, crisp photographic details. "
         "Strict rules: Absolutely no text, no captions, no logos, no watermarks, no illustrations, no 3D renders, "
-        "no infographic diagrams, no surreal symbolism, no floating objects, no empty clinic rooms. "
+        "no infographic diagrams, no surreal symbolism, no floating objects, no empty clinic rooms, "
+        "no generic stock-photo poses, no plastic skin or distorted anatomy. "
+        f"Required specific scene: {editorial_scene_direction(post)} "
         f"Article title: {title}. "
         f"Category: {category}{(' - ' + subcategory) if subcategory else ''}. "
         f"Context: {excerpt[:500]}"
@@ -233,10 +265,17 @@ def verify_pixels(post: dict[str, Any], data: bytes, ext: str) -> tuple[bool, st
     prompt = (
         "Inspect the ACTUAL pixels of this candidate article hero image. "
         "Return exactly one line beginning MATCH| or REJECT|. "
-        "MATCH only if it is a photorealistic landscape image with real people in a concrete, natural interaction "
-        "that is visibly relevant to the article topic, without visible text/logo/infographic, abstract symbolism, "
-        "or an empty-room-only composition. After MATCH| write a concrete Hebrew description of what is visibly in "
-        "the image, at least 30 characters. Do not claim anything not visible. "
+        "MATCH only if it is a high-quality, credible photographic landscape image, not an illustration, "
+        "cartoon, synthetic vector graphic, render, or generic stock pose. Require natural faces and hands, "
+        "correct anatomy, non-distorted objects, and a deliberate editorial composition. "
+        "The ACTUAL depicted setting, subjects, and action must match the SPECIFIC article subject, "
+        "not merely the broad category of parenting or relationships. "
+        "REJECT if an ordinary generic family photo could be used for dozens of unrelated articles, "
+        "or if the subject-specific scene is missing. REJECT garbled text, logos, misleading depictions, "
+        "or an empty-room-only composition. "
+        "After MATCH| write a concrete Hebrew description of the subjects, setting and action visibly "
+        "present in the image, at least 30 characters. Never invent invisible details. "
+        f"Required scene: {editorial_scene_direction(post)} "
         f"Article title: {post.get('title','')}. Category: {post.get('category','')}. "
         f"Context: {str(post.get('excerpt') or '')[:500]}"
     )
