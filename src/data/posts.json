@@ -22,7 +22,9 @@
     "slug": "child-does-not-want-kindergarten",
     "imageProvider": "LocalEditorial",
     "imageSourceUrl": "local-editorial://child-does-not-want-kindergarten/0",
-    "imageIsFallback": false
+    "imageIsFallback": false,
+    "image": "/images/generated/blog/child-does-not-want-kindergarten.png",
+    "imageAlt": "איור עריכתי מקומי של הורה ופעוט בכניסה למסגרת ילדים, עם דלת פתוחה וקוביות משחק, ברגע פרידה תומך."
   },
   {
     "id": "baby-cries-at-daycare",
