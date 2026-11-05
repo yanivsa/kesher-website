@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
-  "cycle": "2026-11-05",
-  "status": "complete",
+  "cycle": "2026-11-06",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -15,17 +15,7 @@
     "failure_count_by_type": {},
     "attempts": 0,
     "deploy_attempts": 0,
-    "slug": "parental-hostile-attributions",
-    "title": "הילד עושה לי דווקא? מלכודת ייחוס הכוונות שמדליקה את הכעס ההורי",
-    "url": "https://kesher.saharoni.com/blog/parental-hostile-attributions",
-    "published_date": "2026-11-05",
-    "quality_content_sha256": "50bd1213faea5ec1e9917e25bbda160188b2c5887b5093e8216e6ae609521663",
-    "quality_status": "passed",
-    "quality_checked_at": "2026-11-05T21:55:50.490700+00:00",
-    "quality_violations": [],
-    "live": true,
-    "live_verified_at": "2026-11-05T21:56:12.295099+00:00",
-    "next_deploy_retry_at": null
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -1738,126 +1728,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-05T19:24:05.764542+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-05T19:24:07.230356+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-05T19:24:08.489956+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-05T19:26:23.172483+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-05T19:26:24.286881+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-05T19:26:25.527457+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-05T19:31:21.520065+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-05T19:31:22.856726+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-05T19:31:24.173896+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-05T19:36:32.319556+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-05T19:36:33.704995+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-05T19:36:34.996068+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-05T19:41:32.163008+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-05T19:41:33.499722+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-05T19:41:34.823891+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-05T19:46:30.912601+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-05T19:46:32.286550+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-05T19:46:33.616134+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-05T19:51:24.309529+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-05T19:51:25.476100+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-05T19:51:26.660192+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2340,12 +2210,30 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-05T22:00:51.197634+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-11-05T22:00:51.197641+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-11-05T22:00:51.198914+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-11-05T21:56:14.323486+00:00",
+  "updated_at": "2026-11-05T22:00:51.197608+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2357,166 +2245,27 @@
   },
   "long_video": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "07abae52-7615-4a61-a4f1-14e4537de684",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "item_id": "video-20261105-145932-50bd1213fa",
-    "youtube_id": "9yko_eVEzmI",
-    "youtube_url": "https://youtu.be/9yko_eVEzmI",
-    "verified": true,
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 112.867,
-    "content_duration_seconds": 112.875,
-    "signature_duration_seconds": 3.0,
-    "signature_overlay": true,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "artifact_id": "07abae52-7615-4a61-a4f1-14e4537de684",
-    "source_id": "a0b77869-4d87-4ec7-b863-9933e9f4297a"
+    "failure_count_by_type": {}
   },
   "short": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "db89a3f9-b617-43b0-a993-f47ccec7e470",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "source": {
-      "id": "parental-hostile-attributions",
-      "slug": "parental-hostile-attributions",
-      "title": "הילד עושה לי דווקא? מלכודת ייחוס הכוונות שמדליקה את הכעס ההורי",
-      "date": "2026-11-05",
-      "category": "הדרכת הורים",
-      "subcategory": "ויסות רגשי וסמכות הורית",
-      "excerpt": "כשהילד מסרב להתלבש או מתעלם, קל לפרש זאת כהתרסה מכוונת. מה מלמדים מחקרי ייחוס כוונות ועוררות הורית, ואיך מחליפים מאבק כוח בגבול רגוע וברור?",
-      "canonical_url": "https://kesher.saharoni.com/blog/parental-hostile-attributions",
-      "content_sha256": "50bd1213faea5ec1e9917e25bbda160188b2c5887b5093e8216e6ae609521663",
-      "video_title": "הילד עושה לי דווקא? מלכודת ייחוס הכוונות שמדליקה את הכעס ההורי",
-      "short_title": "הילד עושה לי דווקא? מלכודת ייחוס הכוונות שמדליקה את הכעס ההורי",
-      "short_hook": "",
-      "youtube_metadata": {
-        "title": "הילד עושה לי דווקא? מלכודת ייחוס הכוונות שמדליקה את הכעס ההורי",
-        "description": "כשהילד מסרב להתלבש או מתעלם, קל לפרש זאת כהתרסה מכוונת. מה מלמדים מחקרי ייחוס כוונות ועוררות הורית, ואיך מחליפים מאבק כוח בגבול רגוע וברור?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/parental-hostile-attributions\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "ויסות רגשי וסמכות הורית"
-        ]
-      },
-      "short_youtube_metadata": {
-        "title": "בקצרה: הילד עושה לי דווקא? מלכודת ייחוס הכוונות שמדליקה את הכעס ההורי",
-        "description": "כשהילד מסרב להתלבש או מתעלם, קל לפרש זאת כהתרסה מכוונת. מה מלמדים מחקרי ייחוס כוונות ועוררות הורית, ואיך מחליפים מאבק כוח בגבול רגוע וברור?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/parental-hostile-attributions\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "ויסות רגשי וסמכות הורית"
-        ]
-      }
-    },
-    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-    "task_id": "db89a3f9-b617-43b0-a993-f47ccec7e470",
-    "raw_sha256": "fefbfff28867d632e01e4b832b8515f8d140c6046ad1e94dfa17ea8dcf1ad105",
-    "final_sha256": "e031e47b62ce6522d5328b30719f7111d6aba13a4eb95a21f58b53fad60c50b3",
-    "provider_raw_media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 720,
-      "height": 1280,
-      "duration": 85.367,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 1080,
-      "height": 1920,
-      "duration": 85.367,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "provider_video_format": "short",
-    "provider_native_short": true,
-    "provider_native_short_verified": true,
-    "provider_short_fallback_used": false,
-    "fresh_generation_attempt": 1,
-    "overview_provider_identity": {
-      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-      "source_id": "a0b77869-4d87-4ec7-b863-9933e9f4297a",
-      "task_id": "07abae52-7615-4a61-a4f1-14e4537de684",
-      "artifact_id": "07abae52-7615-4a61-a4f1-14e4537de684",
-      "raw_sha256": "1a292c299d7dc7eaefa42ed96786b9ec6b0618ab040a511a2da64be74325fffe"
-    },
-    "shared_provider_identity": null,
-    "adopted_from_long_item_id": null,
-    "short_start_seconds": 0.0,
-    "short_duration_seconds": 85.367,
-    "audio_provenance": {
-      "schema_version": 1,
-      "mode": "stream_copy",
-      "raw_sha256": "fefbfff28867d632e01e4b832b8515f8d140c6046ad1e94dfa17ea8dcf1ad105",
-      "final_sha256": "e031e47b62ce6522d5328b30719f7111d6aba13a4eb95a21f58b53fad60c50b3",
-      "raw_audio_sha256": "1b5bd2c7fdaf7577157435135cc6cfe5352b4627ca7f3b8abc370d2be967efc0",
-      "final_audio_sha256": "1b5bd2c7fdaf7577157435135cc6cfe5352b4627ca7f3b8abc370d2be967efc0",
-      "raw_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 85.426213
-      },
-      "final_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 85.426213
-      }
-    },
-    "signature_overlay": true,
-    "signature_provenance": {
-      "schema_version": 1,
-      "final_sha256": "e031e47b62ce6522d5328b30719f7111d6aba13a4eb95a21f58b53fad60c50b3",
-      "raw_sha256": "fefbfff28867d632e01e4b832b8515f8d140c6046ad1e94dfa17ea8dcf1ad105",
-      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-      "segment_sha256": "872172db1be1bf1debd420bad9f7a2fe7f5577c5d71002c7e79d2169541c2072",
-      "source_duration_seconds": 85.367,
-      "final_duration_seconds": 85.367,
-      "start_seconds": 82.367,
-      "end_seconds": 85.367,
-      "audio_source_sha256": "fefbfff28867d632e01e4b832b8515f8d140c6046ad1e94dfa17ea8dcf1ad105"
-    },
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "item_id": "video-20261105-151243-50bd1213fa",
-    "type": "article_short",
-    "youtube_id": "kemveSWrbDA",
-    "youtube_url": "https://youtu.be/kemveSWrbDA",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "872172db1be1bf1debd420bad9f7a2fe7f5577c5d71002c7e79d2169541c2072",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920,
-    "artifact_id": "db89a3f9-b617-43b0-a993-f47ccec7e470",
-    "source_id": "9d9b247e-0a7e-4390-8099-fe0692ef6897"
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3072,312 +2821,5 @@
       }
     }
   ],
-  "active_idea": null,
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/parental-hostile-attributions",
-    "overview_youtube_url": "https://youtu.be/9yko_eVEzmI",
-    "short_youtube_url": "https://youtu.be/kemveSWrbDA",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
-  },
-  "pending_dispatches": {},
-  "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 42031465704,
-    "conclusion": "success",
-    "source_slug": null,
-    "slot": "2026-11-05"
-  },
-  "processed_child_notifications": [],
-  "interventions": {
-    "v5|prepare-toddler-for-daycare|09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141|long_video": {
-      "pipeline_id": "v5",
-      "slug": "prepare-toddler-for-daycare",
-      "content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
-      "stage": "long_video",
-      "strike_count": 1,
-      "last_check_token": "2026-11-05T12",
-      "last_fingerprint": "a2ea55ed40b2fcf099efdc5009a862ffc9ab6e3f64efa65ffd0f7db762ebad41",
-      "last_controller_action_token": "recovery:1:2026-11-05T10:55:54.280749+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-11-05T10:55:54.280749+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-11-05T10:55:54.280749+00:00"
-    }
-  },
-  "owner_cycle_archive": [
-    {
-      "cycle": "2026-11-05",
-      "status": "complete",
-      "article": {
-        "attempt_count": 0,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 41933017754,
-        "processed_run_id": 41926697531,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {
-          "JULES_TIMEOUT_SESSION_ACTIVE": 1
-        },
-        "attempts": 0,
-        "deploy_attempts": 1,
-        "normalization_status": "complete",
-        "last_dispatch_at": "2026-11-04T23:21:07.022523+00:00",
-        "watchdog": {
-          "identity": "2026-11-05",
-          "session_id": null,
-          "last_progress_at": "2026-11-04T22:36:07+00:00",
-          "last_fingerprint": null,
-          "last_nudge_at": null,
-          "nudge_count": 0,
-          "worker_restart_count": 0,
-          "last_restart_at": null,
-          "last_restart_run_id": null
-        },
-        "last_run_conclusion": "failure",
-        "last_worker_result": {
-          "schema_version": 1,
-          "slot": "2026-11-05",
-          "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-          "retryable": true,
-          "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Cleaned up all temporary scratch files.",
-          "session_id": "sessions/14865919078984950472",
-          "pr_url": "",
-          "github_run_id": "41926697531",
-          "completed_at": "2026-11-04T23:16:53.220527+00:00",
-          "diagnostic": {
-            "source": {
-              "name": "sources/github/yanivsa/kesher-website",
-              "owner": "yanivsa",
-              "repo": "kesher-website",
-              "default_branch": "main",
-              "main_available": true
-            },
-            "activity_count": 42,
-            "change_set_count": 40,
-            "change_set_fingerprints": [],
-            "last_agent_message": "",
-            "last_progress": "Cleaned up all temporary scratch files.",
-            "last_description": "",
-            "session_failed_reason": ""
-          }
-        },
-        "last_jules_session_id": "sessions/14865919078984950472",
-        "last_failed_run_id": 41926697531,
-        "resume_dispatches": 1,
-        "pr_number": 1283,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1283",
-        "current_pr_head_sha": "6791151873b5a12444cf7f6ad868923e11e2ef92",
-        "jules_head_sha": "362d6a5de30ae59dd2ea69e145f8c95abe3aeaf3",
-        "normalization_slot": "2026-11-05",
-        "normalization_dispatched_at": "2026-11-04T23:36:25.066223+00:00",
-        "normalization_run_id": 41935048465,
-        "normalized_head_sha": "6791151873b5a12444cf7f6ad868923e11e2ef92",
-        "slug": "prepare-toddler-for-daycare",
-        "title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
-        "url": "https://kesher.saharoni.com/blog/prepare-toddler-for-daycare",
-        "published_date": "2026-11-05",
-        "quality_content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
-        "reconciled_existing_article": true,
-        "quality_status": "passed",
-        "quality_checked_at": "2026-11-05T21:40:53.883716+00:00",
-        "quality_violations": [],
-        "live": true,
-        "last_deploy_dispatch_at": "2026-11-05T10:18:58.822257+00:00",
-        "next_deploy_retry_at": null,
-        "deploy_run_id": 42031465704,
-        "live_verified_at": "2026-11-05T21:41:17.526027+00:00"
-      },
-      "long_video": {
-        "attempt_count": 2,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 42015476913,
-        "processed_run_id": 42014829641,
-        "provider_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "overview_evidence_required": true,
-        "last_dispatch_at": "2026-11-05T11:01:13.462347+00:00",
-        "attempts": 1,
-        "last_run_conclusion": "success",
-        "item_id": "video-20261105-130219-09220525c3-a2",
-        "source_slug": "prepare-toddler-for-daycare",
-        "source_content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
-        "content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
-        "source_id": "57bd7671-cca2-4ba4-87e0-6033ec393216",
-        "task_id": "7e3b36a0-3f7b-4be9-91bc-535ef2bb3b59",
-        "artifact_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
-        "provider_status": "pending",
-        "verified": true,
-        "watchdog": {
-          "identity": "long_video:prepare-toddler-for-daycare:09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141:video-20261105-122637-09220525c3",
-          "hard_started_at": "2026-11-05T10:26:45.779913+00:00",
-          "last_progress_at": "2026-11-05T10:33:26.533033+00:00",
-          "last_fingerprint": "267189b1d0b531a1a8cfaf667381959e04c523f7be80d5c8af444c6cafa6f2a9",
-          "recovery_count": 1,
-          "last_recovery_at": "2026-11-05T10:55:54.280749+00:00"
-        },
-        "pending_resume_ready": false,
-        "resume_dispatches": 2,
-        "youtube_id": "yytmmH7rKnI",
-        "youtube_url": "https://youtu.be/yytmmH7rKnI",
-        "technical_verified": true,
-        "visual_pipeline": "remotion-v1-notebooklm-audio",
-        "codec": "h264",
-        "width": 1280,
-        "height": 720,
-        "duration": 97.067,
-        "content_duration_seconds": 97.083,
-        "signature_duration_seconds": 3.0,
-        "signature_overlay": true,
-        "signature_fullscreen": true,
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
-      },
-      "short": {
-        "attempt_count": 1,
-        "status": "complete",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 42017134168,
-        "processed_run_id": null,
-        "provider_id": "8517cebc-ba5d-4f04-90ae-c25fb53f052d",
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "last_dispatch_at": "2026-11-05T11:12:58.186201+00:00",
-        "artifact_id": "8517cebc-ba5d-4f04-90ae-c25fb53f052d",
-        "source_id": "e23d04e1-80c5-4aa5-b4be-255e2610601d",
-        "adopted_from_long_item_id": null,
-        "source": {
-          "id": "prepare-toddler-for-daycare",
-          "slug": "prepare-toddler-for-daycare",
-          "title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
-          "date": "2026-11-05",
-          "category": "הדרכת הורים",
-          "subcategory": "הגיל הרך",
-          "excerpt": "איך מכינים פעוט שרגיל ליחס אישי בסביבה המוכרת של הבית למעבר למעון או לגן? צעדים מעשיים שכדאי לעשות בשבועות שלפני הכניסה למסגרת הקבוצתית, מה כדאי לשאול את הצוות, ואיך אפשר לעזור להם ולנו בהסתגלות למסגרת החדשה.",
-          "canonical_url": "https://kesher.saharoni.com/blog/prepare-toddler-for-daycare",
-          "content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
-          "video_title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
-          "short_title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
-          "short_hook": "",
-          "youtube_metadata": {
-            "title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
-            "description": "איך מכינים פעוט שרגיל ליחס אישי בסביבה המוכרת של הבית למעבר למעון או לגן? צעדים מעשיים שכדאי לעשות בשבועות שלפני הכניסה למסגרת הקבוצתית, מה כדאי לשאול את הצוות, ואיך אפשר לעזור להם ולנו בהסתגלות למסגרת החדשה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/prepare-toddler-for-daycare\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים",
-              "הגיל הרך"
-            ]
-          },
-          "short_youtube_metadata": {
-            "title": "בקצרה: הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
-            "description": "איך מכינים פעוט שרגיל ליחס אישי בסביבה המוכרת של הבית למעבר למעון או לגן? צעדים מעשיים שכדאי לעשות בשבועות שלפני הכניסה למסגרת הקבוצתית, מה כדאי לשאול את הצוות, ואיך אפשר לעזור להם ולנו בהסתגלות למסגרת החדשה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/prepare-toddler-for-daycare\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-            "tags": [
-              "הדרכת הורים",
-              "הגיל הרך"
-            ]
-          }
-        },
-        "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-        "task_id": "8517cebc-ba5d-4f04-90ae-c25fb53f052d",
-        "raw_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c",
-        "final_sha256": "fe8b283a4e824bffe24c9e6f68e8323738d3923dab209daa3e6596d41f085ae7",
-        "provider_raw_media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 720,
-          "height": 1280,
-          "duration": 81.167,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "media": {
-          "codec": "h264",
-          "audio_codec": "aac",
-          "width": 1080,
-          "height": 1920,
-          "duration": 81.167,
-          "format": "mov,mp4,m4a,3gp,3g2,mj2"
-        },
-        "provider_video_format": "short",
-        "provider_native_short": true,
-        "provider_native_short_verified": true,
-        "provider_short_fallback_used": false,
-        "fresh_generation_attempt": 1,
-        "overview_provider_identity": {
-          "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-          "source_id": "57bd7671-cca2-4ba4-87e0-6033ec393216",
-          "task_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
-          "artifact_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
-          "raw_sha256": "51d30c22e0cb15ce7b58f75fe655917d657b92663f513b63f7d68413d50818e7"
-        },
-        "shared_provider_identity": null,
-        "short_start_seconds": 0.0,
-        "short_duration_seconds": 81.167,
-        "audio_provenance": {
-          "schema_version": 1,
-          "mode": "stream_copy",
-          "raw_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c",
-          "final_sha256": "fe8b283a4e824bffe24c9e6f68e8323738d3923dab209daa3e6596d41f085ae7",
-          "raw_audio_sha256": "4b86f036007e333ff2aacccf31f499579a8b0aca12b5f64e37fbf27769fe6c4b",
-          "final_audio_sha256": "4b86f036007e333ff2aacccf31f499579a8b0aca12b5f64e37fbf27769fe6c4b",
-          "raw_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 81.223401
-          },
-          "final_timing": {
-            "codec": "aac",
-            "sample_rate": 44100,
-            "channels": 1,
-            "start_seconds": 0.0,
-            "duration_seconds": 81.223401
-          }
-        },
-        "signature_overlay": true,
-        "signature_provenance": {
-          "schema_version": 1,
-          "final_sha256": "fe8b283a4e824bffe24c9e6f68e8323738d3923dab209daa3e6596d41f085ae7",
-          "raw_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c",
-          "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-          "segment_sha256": "f046e874d9a3d593fd247176237e664f2f37fbaed8f3ef99e5367611ffd2213d",
-          "source_duration_seconds": 81.167,
-          "final_duration_seconds": 81.167,
-          "start_seconds": 78.167,
-          "end_seconds": 81.167,
-          "audio_source_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c"
-        },
-        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "item_id": "video-20261105-131653-09220525c3",
-        "type": "article_short",
-        "youtube_id": "9cDEQcofmfE",
-        "youtube_url": "https://youtu.be/9cDEQcofmfE",
-        "verified": true,
-        "portrait_verified": true,
-        "signature_verified": true,
-        "signature_asset": "signature-mask.svg",
-        "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-        "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-        "technical_verified": true,
-        "signature_duration_seconds": 3.0,
-        "signature_fullscreen": true,
-        "signature_video_sha256": "f046e874d9a3d593fd247176237e664f2f37fbaed8f3ef99e5367611ffd2213d",
-        "source_mode": "direct-short",
-        "width": 1080,
-        "height": 1920
-      },
-      "archived_at": "2026-11-05T21:43:20.280896+00:00",
-      "reason": "owner_run_now_cycle_started"
-    }
-  ]
+  "active_idea": null
 }
