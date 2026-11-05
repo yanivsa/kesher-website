@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-05",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -2437,9 +2437,19 @@
       "from": "article_deploying",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-05T10:25:18.312242+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-11-05T10:25:10.958353+00:00",
+  "updated_at": "2026-11-05T10:25:18.312249+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2455,8 +2465,8 @@
     "image_path": "/images/generated/blog/prepare-toddler-for-daycare-adobe-v2.jpg"
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2465,7 +2475,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-11-05T10:25:18.312226+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
@@ -3052,9 +3064,10 @@
         "target_content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141"
       },
       "intent_at": "2026-11-05T10:24:41.794606+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 42010556772,
+      "dispatched_at": "2026-11-05T10:24:41.794606+00:00"
     }
   },
   "last_child_notification": {
@@ -3063,18 +3076,5 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-05"
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true
   }
 }
