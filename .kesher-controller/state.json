@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-05",
-  "status": "article_image_running",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -16,7 +16,7 @@
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-11-04T23:21:07.022523+00:00",
     "watchdog": {
@@ -78,7 +78,9 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-11-05T10:18:53.835013+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-11-05T10:18:58.822257+00:00",
+    "next_deploy_retry_at": "2026-11-05T10:23:52.031497+00:00"
   },
   "backlog": [
     {
@@ -2417,9 +2419,19 @@
         "attempt": 1,
         "pr_number": 1283
       }
+    },
+    {
+      "at": "2026-11-05T10:18:58.822301+00:00",
+      "from": "article_image_running",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-11-05T10:16:26.444808+00:00",
+  "updated_at": "2026-11-05T10:18:58.822309+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2988,7 +3000,7 @@
     "claimed_at": "2026-11-04T22:36:05.312730+00:00"
   },
   "deliverables": {
-    "article_url": null,
+    "article_url": "https://kesher.saharoni.com/blog/prepare-toddler-for-daycare",
     "overview_youtube_url": null,
     "short_youtube_url": null,
     "overview_edit_verified": false,
@@ -3027,10 +3039,11 @@
       "cycle": "2026-11-05",
       "inputs": {},
       "intent_at": "2026-11-05T10:18:52.031497+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "c860f24fb010c850cbf3816461a35c5b3b74be57"
+      "observed_active_run_id": 42009684517,
+      "dispatch_head_sha": "c860f24fb010c850cbf3816461a35c5b3b74be57",
+      "dispatched_at": "2026-11-05T10:18:52.031497+00:00"
     }
   },
   "last_child_notification": {
