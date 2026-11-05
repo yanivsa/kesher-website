@@ -3092,6 +3092,20 @@
       "previous_run_id": null,
       "observed_active_run_id": 42009329732,
       "dispatched_at": "2026-11-05T10:15:41.148181+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-11-05",
+      "inputs": {
+        "operation": "recovery",
+        "target_slug": "prepare-toddler-for-daycare",
+        "target_content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
+        "target_item_id": "video-20261105-122637-09220525c3"
+      },
+      "intent_at": "2026-11-05T10:55:54.280749+00:00",
+      "status": "intent",
+      "previous_run_id": 42010556772,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3104,5 +3118,21 @@
   "processed_child_notifications": [
     "Deploy to Cloudflare Pages:42009684517",
     "Kesher Daily NotebookLM Video Overview:42010556772"
-  ]
+  ],
+  "interventions": {
+    "v5|prepare-toddler-for-daycare|09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141|long_video": {
+      "pipeline_id": "v5",
+      "slug": "prepare-toddler-for-daycare",
+      "content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-11-05T12",
+      "last_fingerprint": "a2ea55ed40b2fcf099efdc5009a862ffc9ab6e3f64efa65ffd0f7db762ebad41",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-11-05T10:55:54.280749+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
