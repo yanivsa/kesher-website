@@ -3192,19 +3192,27 @@
         "long_url": "https://youtu.be/Nk8L-eaWFSA",
         "short_url": "https://youtu.be/wb2Lw8PZoDE"
       }
+    },
+    {
+      "idea_id": "parenting-p2-prepare-toddler-for-daycare",
+      "fingerprint": "862d6b005b272b45c87cf405924af22e5c8b90dece5a12feb7d61866ffd4c1e5",
+      "topic_brief": "נושא הורות ומעבר למסגרת. הורה שמכין פעוט שהיה עד עכשיו בבית או עם מטפלת למעבר למסגרת קבוצתית. להתמקד בשבועות שלפני הכניסה: היכרות, שגרה, פרידה, מידע לצוות וציפיות מציאותיות. אות ביקוש: SERP ומקורות רשמיים. Canonical ID נדרש: prepare-toddler-for-daycare. כותרת עבודה: הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת? כתוב בעברית ישראלית טבעית, חמה וישירה ובשפה של הורה מודאג. 800–900 מילים שימושיות. תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, מה לברר מול הצוות ומתי לפנות להתייעצות. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. העדף מקורות רשמיים ואקדמיים. לפחות 3 קישורים פנימיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
+      "required_primary_keyword": "הכנה למעון",
+      "run_now": false,
+      "status": "complete",
+      "requested_at": "2026-10-19T10:25:26.589001+00:00",
+      "publication_slot": "2026-11-05",
+      "claimed_at": "2026-11-04T22:36:05.312730+00:00",
+      "completed_at": "2026-11-05T11:29:00.446991+00:00",
+      "outputs": {
+        "slug": "prepare-toddler-for-daycare",
+        "article_url": "https://kesher.saharoni.com/blog/prepare-toddler-for-daycare",
+        "long_url": "https://youtu.be/yytmmH7rKnI",
+        "short_url": "https://youtu.be/9cDEQcofmfE"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "parenting-p2-prepare-toddler-for-daycare",
-    "fingerprint": "862d6b005b272b45c87cf405924af22e5c8b90dece5a12feb7d61866ffd4c1e5",
-    "topic_brief": "נושא הורות ומעבר למסגרת. הורה שמכין פעוט שהיה עד עכשיו בבית או עם מטפלת למעבר למסגרת קבוצתית. להתמקד בשבועות שלפני הכניסה: היכרות, שגרה, פרידה, מידע לצוות וציפיות מציאותיות. אות ביקוש: SERP ומקורות רשמיים. Canonical ID נדרש: prepare-toddler-for-daycare. כותרת עבודה: הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת? כתוב בעברית ישראלית טבעית, חמה וישירה ובשפה של הורה מודאג. 800–900 מילים שימושיות. תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, מה לברר מול הצוות ומתי לפנות להתייעצות. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. העדף מקורות רשמיים ואקדמיים. לפחות 3 קישורים פנימיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
-    "required_primary_keyword": "הכנה למעון",
-    "run_now": false,
-    "status": "claimed",
-    "requested_at": "2026-10-19T10:25:26.589001+00:00",
-    "publication_slot": "2026-11-05",
-    "claimed_at": "2026-11-04T22:36:05.312730+00:00"
-  },
+  "active_idea": null,
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/prepare-toddler-for-daycare",
     "overview_youtube_url": "https://youtu.be/yytmmH7rKnI",
