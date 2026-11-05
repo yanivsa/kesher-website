@@ -493,6 +493,41 @@
       "reason": "verified_failure_recurred",
       "stage": "article",
       "status": "human_blocker"
+    },
+    "b9aebbcda38cbeee8df46f09b6b71bd3f845f00a23f6a7d67a5b5eae2cb65ec3": {
+      "affected": [
+        {
+          "article_run_id": 41933017754,
+          "article_session_id": "sessions/14865919078984950472",
+          "artifact_id": null,
+          "content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
+          "cycle": "2026-11-05",
+          "idea_id": null,
+          "item_id": null,
+          "pr_number": 1283,
+          "slug": "prepare-toddler-for-daycare",
+          "source_id": null,
+          "task_id": null
+        }
+      ],
+      "created_at": "2026-11-05T16:01:19.214286+00:00",
+      "exact": {
+        "article_run_id": 41933017754,
+        "article_session_id": "sessions/14865919078984950472",
+        "artifact_id": null,
+        "content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
+        "cycle": "2026-11-05",
+        "idea_id": null,
+        "item_id": null,
+        "pr_number": 1283,
+        "slug": "prepare-toddler-for-daycare",
+        "source_id": null,
+        "task_id": null
+      },
+      "failure_class": "CONTROLLER_STATE_NOT_LOADED",
+      "fingerprint": "6037faae272142aa1d8eeed986cfe232899bf7a8f84cf8ac922a7e3afa619cad",
+      "stage": "controller",
+      "status": "intent"
     }
   },
   "version": 1
