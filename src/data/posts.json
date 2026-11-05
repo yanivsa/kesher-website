@@ -15,7 +15,21 @@
     "imageSourceUrl": "local://public/images/generated/blog/prepare-toddler-for-daycare-adobe-v2.jpg",
     "imageIsFallback": false,
     "imageAlt": "אבא כורע ליד הפעוט בבית באור בוקר טבעי ועוזר לו לנעול נעליים לצד תיק קטן לקראת יומו הראשון במעון",
-    "imageCredit": "תמונה מקורית שנוצרה עבור KESHER באמצעות Adobe Firefly, נובמבר 2026"
+    "imageCredit": "תמונה מקורית שנוצרה עבור KESHER באמצעות Adobe Firefly, נובמבר 2026",
+    "evidence": [
+      {
+        "title": "American Academy of Pediatrics — Preparing Your Child for Child Care",
+        "url": "https://www.healthychildren.org/English/family-life/work-and-child-care/Pages/preparing-your-child-for-child-care.aspx"
+      },
+      {
+        "title": "American Academy of Pediatrics — Making Baby Drop Off at Child Care Easier",
+        "url": "https://www.healthychildren.org/English/family-life/work-and-child-care/Pages/making-baby-drop-off-at-child-care-easier.aspx"
+      },
+      {
+        "title": "UNICEF Parenting — How to manage your child's separation anxiety",
+        "url": "https://www.unicef.org/parenting/child-care/managing-child-separation-anxiety"
+      }
+    ]
   },
   {
     "id": "child-does-not-want-kindergarten",
