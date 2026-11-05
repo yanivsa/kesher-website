@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-05",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 41933017754,
@@ -82,7 +82,7 @@
     "last_deploy_dispatch_at": "2026-11-05T10:18:58.822257+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 42009684517,
-    "live_verified_at": "2026-11-05T11:28:19.848937+00:00"
+    "live_verified_at": "2026-11-05T11:28:52.204071+00:00"
   },
   "backlog": [
     {
@@ -1795,24 +1795,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-04T20:36:05.575771+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-04T20:36:06.213040+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-04T20:36:06.741588+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-11-04T20:41:17.523437+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2477,9 +2459,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-11-05T11:28:52.204103+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-05T11:28:53.576191+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-05T11:28:54.823059+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-05T11:26:16.462604+00:00",
+  "updated_at": "2026-11-05T11:28:54.823080+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2544,19 +2544,137 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 42017134168,
     "processed_run_id": null,
-    "provider_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
+    "provider_id": "8517cebc-ba5d-4f04-90ae-c25fb53f052d",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-11-05T11:12:58.186201+00:00",
-    "artifact_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
-    "source_id": "57bd7671-cca2-4ba4-87e0-6033ec393216",
-    "adopted_from_long_item_id": "video-20261105-130219-09220525c3-a2"
+    "artifact_id": "8517cebc-ba5d-4f04-90ae-c25fb53f052d",
+    "source_id": "e23d04e1-80c5-4aa5-b4be-255e2610601d",
+    "adopted_from_long_item_id": null,
+    "source": {
+      "id": "prepare-toddler-for-daycare",
+      "slug": "prepare-toddler-for-daycare",
+      "title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
+      "date": "2026-11-05",
+      "category": "הדרכת הורים",
+      "subcategory": "הגיל הרך",
+      "excerpt": "איך מכינים פעוט שרגיל ליחס אישי בסביבה המוכרת של הבית למעבר למעון או לגן? צעדים מעשיים שכדאי לעשות בשבועות שלפני הכניסה למסגרת הקבוצתית, מה כדאי לשאול את הצוות, ואיך אפשר לעזור להם ולנו בהסתגלות למסגרת החדשה.",
+      "canonical_url": "https://kesher.saharoni.com/blog/prepare-toddler-for-daycare",
+      "content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
+      "video_title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
+      "short_title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
+        "description": "איך מכינים פעוט שרגיל ליחס אישי בסביבה המוכרת של הבית למעבר למעון או לגן? צעדים מעשיים שכדאי לעשות בשבועות שלפני הכניסה למסגרת הקבוצתית, מה כדאי לשאול את הצוות, ואיך אפשר לעזור להם ולנו בהסתגלות למסגרת החדשה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/prepare-toddler-for-daycare\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "הגיל הרך"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
+        "description": "איך מכינים פעוט שרגיל ליחס אישי בסביבה המוכרת של הבית למעבר למעון או לגן? צעדים מעשיים שכדאי לעשות בשבועות שלפני הכניסה למסגרת הקבוצתית, מה כדאי לשאול את הצוות, ואיך אפשר לעזור להם ולנו בהסתגלות למסגרת החדשה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/prepare-toddler-for-daycare\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "הגיל הרך"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "8517cebc-ba5d-4f04-90ae-c25fb53f052d",
+    "raw_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c",
+    "final_sha256": "fe8b283a4e824bffe24c9e6f68e8323738d3923dab209daa3e6596d41f085ae7",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 81.167,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 81.167,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "57bd7671-cca2-4ba4-87e0-6033ec393216",
+      "task_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
+      "artifact_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
+      "raw_sha256": "51d30c22e0cb15ce7b58f75fe655917d657b92663f513b63f7d68413d50818e7"
+    },
+    "shared_provider_identity": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 81.167,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c",
+      "final_sha256": "fe8b283a4e824bffe24c9e6f68e8323738d3923dab209daa3e6596d41f085ae7",
+      "raw_audio_sha256": "4b86f036007e333ff2aacccf31f499579a8b0aca12b5f64e37fbf27769fe6c4b",
+      "final_audio_sha256": "4b86f036007e333ff2aacccf31f499579a8b0aca12b5f64e37fbf27769fe6c4b",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 81.223401
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 81.223401
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "fe8b283a4e824bffe24c9e6f68e8323738d3923dab209daa3e6596d41f085ae7",
+      "raw_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "f046e874d9a3d593fd247176237e664f2f37fbaed8f3ef99e5367611ffd2213d",
+      "source_duration_seconds": 81.167,
+      "final_duration_seconds": 81.167,
+      "start_seconds": 78.167,
+      "end_seconds": 81.167,
+      "audio_source_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261105-131653-09220525c3",
+    "type": "article_short",
+    "youtube_id": "9cDEQcofmfE",
+    "youtube_url": "https://youtu.be/9cDEQcofmfE",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "f046e874d9a3d593fd247176237e664f2f37fbaed8f3ef99e5367611ffd2213d",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
