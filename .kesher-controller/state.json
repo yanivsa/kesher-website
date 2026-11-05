@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-05",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1795,12 +1795,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-04T20:06:18.955404+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-04T20:06:19.946149+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2473,9 +2467,19 @@
       "from": "long_video_watchdog_recovery",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-05T11:01:13.462360+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 2
+      }
     }
   ],
-  "updated_at": "2026-11-05T11:01:06.534784+00:00",
+  "updated_at": "2026-11-05T11:01:13.462374+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2491,8 +2495,8 @@
     "image_path": "/images/generated/blog/prepare-toddler-for-daycare-adobe-v2.jpg"
   },
   "long_video": {
-    "attempt_count": 1,
-    "status": "rejected",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 42014829641,
@@ -2502,7 +2506,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-11-05T10:56:27.610801+00:00",
+    "last_dispatch_at": "2026-11-05T11:01:13.462347+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
     "item_id": "video-20261105-122637-09220525c3",
@@ -2523,7 +2527,7 @@
       "last_recovery_at": "2026-11-05T10:55:54.280749+00:00"
     },
     "pending_resume_ready": false,
-    "resume_dispatches": 1
+    "resume_dispatches": 2
   },
   "short": {
     "attempt_count": 0,
@@ -3111,9 +3115,10 @@
         "target_item_id": "video-20261105-122637-09220525c3"
       },
       "intent_at": "2026-11-05T11:00:47.233656+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 42014829641,
-      "observed_active_run_id": null
+      "observed_active_run_id": 42015476913,
+      "dispatched_at": "2026-11-05T11:00:47.233656+00:00"
     }
   },
   "last_child_notification": {
@@ -3143,40 +3148,5 @@
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-11-05T10:55:54.280749+00:00"
     }
-  },
-  "video": {
-    "attempt_count": 1,
-    "status": "rejected",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": 42014829641,
-    "processed_run_id": 42014829641,
-    "provider_id": "7e3b36a0-3f7b-4be9-91bc-535ef2bb3b59",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-11-05T10:56:27.610801+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261105-122637-09220525c3",
-    "source_slug": "prepare-toddler-for-daycare",
-    "source_content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
-    "content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
-    "source_id": "60f8b68a-51e3-4acb-9d57-f176e6a95039",
-    "task_id": "7e3b36a0-3f7b-4be9-91bc-535ef2bb3b59",
-    "artifact_id": "7e3b36a0-3f7b-4be9-91bc-535ef2bb3b59",
-    "provider_status": "pending",
-    "verified": false,
-    "watchdog": {
-      "identity": "long_video:prepare-toddler-for-daycare:09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141:video-20261105-122637-09220525c3",
-      "hard_started_at": "2026-11-05T10:26:45.779913+00:00",
-      "last_progress_at": "2026-11-05T10:33:26.533033+00:00",
-      "last_fingerprint": "267189b1d0b531a1a8cfaf667381959e04c523f7be80d5c8af444c6cafa6f2a9",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-11-05T10:55:54.280749+00:00"
-    },
-    "pending_resume_ready": false,
-    "resume_dispatches": 1
   }
 }
