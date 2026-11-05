@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-05",
-  "status": "article_needed",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -24,7 +24,7 @@
     "quality_checked_at": "2026-11-05T21:43:23.075909+00:00",
     "quality_violations": [],
     "live": true,
-    "live_verified_at": "2026-11-05T21:43:24.110767+00:00",
+    "live_verified_at": "2026-11-05T21:43:44.589776+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1738,24 +1738,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-05T19:01:17.181534+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-05T19:01:18.147902+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-05T19:01:19.111314+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-11-05T19:06:27.646773+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2340,12 +2322,30 @@
         "idea_id": "relationship-memory-reconstruction-holmberg-20261105",
         "publication_slot": "2026-11-05"
       }
+    },
+    {
+      "at": "2026-11-05T21:43:44.589805+00:00",
+      "from": "article_needed",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-05T21:43:45.821098+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-05T21:43:47.026670+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-05T21:41:19.505301+00:00",
+  "updated_at": "2026-11-05T21:43:47.026691+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2357,7 +2357,7 @@
   },
   "long_video": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2387,15 +2387,136 @@
   },
   "short": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "db89a3f9-b617-43b0-a993-f47ccec7e470",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "source": {
+      "id": "parental-hostile-attributions",
+      "slug": "parental-hostile-attributions",
+      "title": "הילד עושה לי דווקא? מלכודת ייחוס הכוונות שמדליקה את הכעס ההורי",
+      "date": "2026-11-05",
+      "category": "הדרכת הורים",
+      "subcategory": "ויסות רגשי וסמכות הורית",
+      "excerpt": "כשהילד מסרב להתלבש או מתעלם, קל לפרש זאת כהתרסה מכוונת. מה מלמדים מחקרי ייחוס כוונות ועוררות הורית, ואיך מחליפים מאבק כוח בגבול רגוע וברור?",
+      "canonical_url": "https://kesher.saharoni.com/blog/parental-hostile-attributions",
+      "content_sha256": "50bd1213faea5ec1e9917e25bbda160188b2c5887b5093e8216e6ae609521663",
+      "video_title": "הילד עושה לי דווקא? מלכודת ייחוס הכוונות שמדליקה את הכעס ההורי",
+      "short_title": "הילד עושה לי דווקא? מלכודת ייחוס הכוונות שמדליקה את הכעס ההורי",
+      "short_hook": "",
+      "youtube_metadata": {
+        "title": "הילד עושה לי דווקא? מלכודת ייחוס הכוונות שמדליקה את הכעס ההורי",
+        "description": "כשהילד מסרב להתלבש או מתעלם, קל לפרש זאת כהתרסה מכוונת. מה מלמדים מחקרי ייחוס כוונות ועוררות הורית, ואיך מחליפים מאבק כוח בגבול רגוע וברור?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/parental-hostile-attributions\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "ויסות רגשי וסמכות הורית"
+        ]
+      },
+      "short_youtube_metadata": {
+        "title": "בקצרה: הילד עושה לי דווקא? מלכודת ייחוס הכוונות שמדליקה את הכעס ההורי",
+        "description": "כשהילד מסרב להתלבש או מתעלם, קל לפרש זאת כהתרסה מכוונת. מה מלמדים מחקרי ייחוס כוונות ועוררות הורית, ואיך מחליפים מאבק כוח בגבול רגוע וברור?\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/parental-hostile-attributions\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+        "tags": [
+          "הדרכת הורים",
+          "ויסות רגשי וסמכות הורית"
+        ]
+      }
+    },
+    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+    "task_id": "db89a3f9-b617-43b0-a993-f47ccec7e470",
+    "raw_sha256": "fefbfff28867d632e01e4b832b8515f8d140c6046ad1e94dfa17ea8dcf1ad105",
+    "final_sha256": "e031e47b62ce6522d5328b30719f7111d6aba13a4eb95a21f58b53fad60c50b3",
+    "provider_raw_media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 720,
+      "height": 1280,
+      "duration": 85.367,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "media": {
+      "codec": "h264",
+      "audio_codec": "aac",
+      "width": 1080,
+      "height": 1920,
+      "duration": 85.367,
+      "format": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    "provider_video_format": "short",
+    "provider_native_short": true,
+    "provider_native_short_verified": true,
+    "provider_short_fallback_used": false,
+    "fresh_generation_attempt": 1,
+    "overview_provider_identity": {
+      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "source_id": "a0b77869-4d87-4ec7-b863-9933e9f4297a",
+      "task_id": "07abae52-7615-4a61-a4f1-14e4537de684",
+      "artifact_id": "07abae52-7615-4a61-a4f1-14e4537de684",
+      "raw_sha256": "1a292c299d7dc7eaefa42ed96786b9ec6b0618ab040a511a2da64be74325fffe"
+    },
+    "shared_provider_identity": null,
+    "adopted_from_long_item_id": null,
+    "short_start_seconds": 0.0,
+    "short_duration_seconds": 85.367,
+    "audio_provenance": {
+      "schema_version": 1,
+      "mode": "stream_copy",
+      "raw_sha256": "fefbfff28867d632e01e4b832b8515f8d140c6046ad1e94dfa17ea8dcf1ad105",
+      "final_sha256": "e031e47b62ce6522d5328b30719f7111d6aba13a4eb95a21f58b53fad60c50b3",
+      "raw_audio_sha256": "1b5bd2c7fdaf7577157435135cc6cfe5352b4627ca7f3b8abc370d2be967efc0",
+      "final_audio_sha256": "1b5bd2c7fdaf7577157435135cc6cfe5352b4627ca7f3b8abc370d2be967efc0",
+      "raw_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 85.426213
+      },
+      "final_timing": {
+        "codec": "aac",
+        "sample_rate": 44100,
+        "channels": 1,
+        "start_seconds": 0.0,
+        "duration_seconds": 85.426213
+      }
+    },
+    "signature_overlay": true,
+    "signature_provenance": {
+      "schema_version": 1,
+      "final_sha256": "e031e47b62ce6522d5328b30719f7111d6aba13a4eb95a21f58b53fad60c50b3",
+      "raw_sha256": "fefbfff28867d632e01e4b832b8515f8d140c6046ad1e94dfa17ea8dcf1ad105",
+      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "segment_sha256": "872172db1be1bf1debd420bad9f7a2fe7f5577c5d71002c7e79d2169541c2072",
+      "source_duration_seconds": 85.367,
+      "final_duration_seconds": 85.367,
+      "start_seconds": 82.367,
+      "end_seconds": 85.367,
+      "audio_source_sha256": "fefbfff28867d632e01e4b832b8515f8d140c6046ad1e94dfa17ea8dcf1ad105"
+    },
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "item_id": "video-20261105-151243-50bd1213fa",
+    "type": "article_short",
+    "youtube_id": "kemveSWrbDA",
+    "youtube_url": "https://youtu.be/kemveSWrbDA",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "872172db1be1bf1debd420bad9f7a2fe7f5577c5d71002c7e79d2169541c2072",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920,
+    "artifact_id": "db89a3f9-b617-43b0-a993-f47ccec7e470",
+    "source_id": "9d9b247e-0a7e-4390-8099-fe0692ef6897"
   },
   "migration": {
     "v4_short_controller_state": null
