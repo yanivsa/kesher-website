@@ -76,13 +76,13 @@
     "quality_content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-05T11:10:48.251921+00:00",
+    "quality_checked_at": "2026-11-05T11:12:12.782037+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-05T10:18:58.822257+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 42009684517,
-    "live_verified_at": "2026-11-05T11:11:16.239014+00:00"
+    "live_verified_at": "2026-11-05T11:12:14.566111+00:00"
   },
   "backlog": [
     {
@@ -2498,10 +2498,10 @@
     "attempt_count": 2,
     "status": "rejected",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-05T11:17:08.036953+00:00",
     "run_id": 42015476913,
     "processed_run_id": 42014829641,
-    "provider_id": "7e3b36a0-3f7b-4be9-91bc-535ef2bb3b59",
+    "provider_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
@@ -2509,15 +2509,15 @@
     "last_dispatch_at": "2026-11-05T11:01:13.462347+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
-    "item_id": "video-20261105-122637-09220525c3",
+    "item_id": "video-20261105-130219-09220525c3-a2",
     "source_slug": "prepare-toddler-for-daycare",
     "source_content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
     "content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
-    "source_id": "60f8b68a-51e3-4acb-9d57-f176e6a95039",
+    "source_id": "57bd7671-cca2-4ba4-87e0-6033ec393216",
     "task_id": "7e3b36a0-3f7b-4be9-91bc-535ef2bb3b59",
-    "artifact_id": "7e3b36a0-3f7b-4be9-91bc-535ef2bb3b59",
+    "artifact_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
     "provider_status": "pending",
-    "verified": false,
+    "verified": true,
     "watchdog": {
       "identity": "long_video:prepare-toddler-for-daycare:09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141:video-20261105-122637-09220525c3",
       "hard_started_at": "2026-11-05T10:26:45.779913+00:00",
@@ -2527,7 +2527,20 @@
       "last_recovery_at": "2026-11-05T10:55:54.280749+00:00"
     },
     "pending_resume_ready": false,
-    "resume_dispatches": 2
+    "resume_dispatches": 2,
+    "youtube_id": "yytmmH7rKnI",
+    "youtube_url": "https://youtu.be/yytmmH7rKnI",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 97.067,
+    "content_duration_seconds": 97.083,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
@@ -3104,26 +3117,11 @@
       "previous_run_id": null,
       "observed_active_run_id": 42009329732,
       "dispatched_at": "2026-11-05T10:15:41.148181+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-11-05",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "prepare-toddler-for-daycare",
-        "target_content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
-        "target_item_id": "video-20261105-122637-09220525c3"
-      },
-      "intent_at": "2026-11-05T11:00:47.233656+00:00",
-      "status": "dispatched",
-      "previous_run_id": 42014829641,
-      "observed_active_run_id": 42015476913,
-      "dispatched_at": "2026-11-05T11:00:47.233656+00:00"
     }
   },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 42010556772,
+    "run_id": 42015476913,
     "conclusion": "success",
     "source_slug": "prepare-toddler-for-daycare",
     "slot": "2026-11-05"
