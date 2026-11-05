@@ -1,88 +1,20 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-05",
-  "status": "complete",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 41933017754,
-    "processed_run_id": 41926697531,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 1
-    },
+    "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 1,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-11-04T23:21:07.022523+00:00",
-    "watchdog": {
-      "identity": "2026-11-05",
-      "session_id": null,
-      "last_progress_at": "2026-11-04T22:36:07+00:00",
-      "last_fingerprint": null,
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-11-05",
-      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "retryable": true,
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Cleaned up all temporary scratch files.",
-      "session_id": "sessions/14865919078984950472",
-      "pr_url": "",
-      "github_run_id": "41926697531",
-      "completed_at": "2026-11-04T23:16:53.220527+00:00",
-      "diagnostic": {
-        "source": {
-          "name": "sources/github/yanivsa/kesher-website",
-          "owner": "yanivsa",
-          "repo": "kesher-website",
-          "default_branch": "main",
-          "main_available": true
-        },
-        "activity_count": 42,
-        "change_set_count": 40,
-        "change_set_fingerprints": [],
-        "last_agent_message": "",
-        "last_progress": "Cleaned up all temporary scratch files.",
-        "last_description": "",
-        "session_failed_reason": ""
-      }
-    },
-    "last_jules_session_id": "sessions/14865919078984950472",
-    "last_failed_run_id": 41926697531,
-    "resume_dispatches": 1,
-    "pr_number": 1283,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1283",
-    "current_pr_head_sha": "6791151873b5a12444cf7f6ad868923e11e2ef92",
-    "jules_head_sha": "362d6a5de30ae59dd2ea69e145f8c95abe3aeaf3",
-    "normalization_slot": "2026-11-05",
-    "normalization_dispatched_at": "2026-11-04T23:36:25.066223+00:00",
-    "normalization_run_id": 41935048465,
-    "normalized_head_sha": "6791151873b5a12444cf7f6ad868923e11e2ef92",
-    "slug": "prepare-toddler-for-daycare",
-    "title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
-    "url": "https://kesher.saharoni.com/blog/prepare-toddler-for-daycare",
-    "published_date": "2026-11-05",
-    "quality_content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
-    "reconciled_existing_article": true,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-11-05T21:40:53.883716+00:00",
-    "quality_violations": [],
-    "live": true,
-    "last_deploy_dispatch_at": "2026-11-05T10:18:58.822257+00:00",
-    "next_deploy_retry_at": null,
-    "deploy_run_id": 42031465704,
-    "live_verified_at": "2026-11-05T21:41:17.526027+00:00"
+    "deploy_attempts": 0
   },
   "backlog": [
     {
@@ -1795,12 +1727,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-05T18:56:09.462097+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-11-05T19:01:17.181534+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2393,204 +2319,54 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-05T21:43:20.280925+00:00",
+      "from": "complete",
+      "to": "article_needed",
+      "reason": "owner_run_now_cycle_started",
+      "details": {
+        "idea_id": "relationship-memory-reconstruction-holmberg-20261105",
+        "publication_slot": "2026-11-05"
+      }
     }
   ],
   "updated_at": "2026-11-05T21:41:19.505301+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 42009329732,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-11-05T10:16:26.444770+00:00",
-    "image_path": "/images/generated/blog/prepare-toddler-for-daycare-adobe-v2.jpg"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 42015476913,
-    "processed_run_id": 42014829641,
-    "provider_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-11-05T11:01:13.462347+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261105-130219-09220525c3-a2",
-    "source_slug": "prepare-toddler-for-daycare",
-    "source_content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
-    "content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
-    "source_id": "57bd7671-cca2-4ba4-87e0-6033ec393216",
-    "task_id": "7e3b36a0-3f7b-4be9-91bc-535ef2bb3b59",
-    "artifact_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
-    "provider_status": "pending",
-    "verified": true,
-    "watchdog": {
-      "identity": "long_video:prepare-toddler-for-daycare:09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141:video-20261105-122637-09220525c3",
-      "hard_started_at": "2026-11-05T10:26:45.779913+00:00",
-      "last_progress_at": "2026-11-05T10:33:26.533033+00:00",
-      "last_fingerprint": "267189b1d0b531a1a8cfaf667381959e04c523f7be80d5c8af444c6cafa6f2a9",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-11-05T10:55:54.280749+00:00"
-    },
-    "pending_resume_ready": false,
-    "resume_dispatches": 2,
-    "youtube_id": "yytmmH7rKnI",
-    "youtube_url": "https://youtu.be/yytmmH7rKnI",
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 97.067,
-    "content_duration_seconds": 97.083,
-    "signature_duration_seconds": 3.0,
-    "signature_overlay": true,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 42017134168,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "8517cebc-ba5d-4f04-90ae-c25fb53f052d",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-11-05T11:12:58.186201+00:00",
-    "artifact_id": "8517cebc-ba5d-4f04-90ae-c25fb53f052d",
-    "source_id": "e23d04e1-80c5-4aa5-b4be-255e2610601d",
-    "adopted_from_long_item_id": null,
-    "source": {
-      "id": "prepare-toddler-for-daycare",
-      "slug": "prepare-toddler-for-daycare",
-      "title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
-      "date": "2026-11-05",
-      "category": "הדרכת הורים",
-      "subcategory": "הגיל הרך",
-      "excerpt": "איך מכינים פעוט שרגיל ליחס אישי בסביבה המוכרת של הבית למעבר למעון או לגן? צעדים מעשיים שכדאי לעשות בשבועות שלפני הכניסה למסגרת הקבוצתית, מה כדאי לשאול את הצוות, ואיך אפשר לעזור להם ולנו בהסתגלות למסגרת החדשה.",
-      "canonical_url": "https://kesher.saharoni.com/blog/prepare-toddler-for-daycare",
-      "content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
-      "video_title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
-      "short_title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
-      "short_hook": "",
-      "youtube_metadata": {
-        "title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
-        "description": "איך מכינים פעוט שרגיל ליחס אישי בסביבה המוכרת של הבית למעבר למעון או לגן? צעדים מעשיים שכדאי לעשות בשבועות שלפני הכניסה למסגרת הקבוצתית, מה כדאי לשאול את הצוות, ואיך אפשר לעזור להם ולנו בהסתגלות למסגרת החדשה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/prepare-toddler-for-daycare\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "הגיל הרך"
-        ]
-      },
-      "short_youtube_metadata": {
-        "title": "בקצרה: הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
-        "description": "איך מכינים פעוט שרגיל ליחס אישי בסביבה המוכרת של הבית למעבר למעון או לגן? צעדים מעשיים שכדאי לעשות בשבועות שלפני הכניסה למסגרת הקבוצתית, מה כדאי לשאול את הצוות, ואיך אפשר לעזור להם ולנו בהסתגלות למסגרת החדשה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/prepare-toddler-for-daycare\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
-        "tags": [
-          "הדרכת הורים",
-          "הגיל הרך"
-        ]
-      }
-    },
-    "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-    "task_id": "8517cebc-ba5d-4f04-90ae-c25fb53f052d",
-    "raw_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c",
-    "final_sha256": "fe8b283a4e824bffe24c9e6f68e8323738d3923dab209daa3e6596d41f085ae7",
-    "provider_raw_media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 720,
-      "height": 1280,
-      "duration": 81.167,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "media": {
-      "codec": "h264",
-      "audio_codec": "aac",
-      "width": 1080,
-      "height": 1920,
-      "duration": 81.167,
-      "format": "mov,mp4,m4a,3gp,3g2,mj2"
-    },
-    "provider_video_format": "short",
-    "provider_native_short": true,
-    "provider_native_short_verified": true,
-    "provider_short_fallback_used": false,
-    "fresh_generation_attempt": 1,
-    "overview_provider_identity": {
-      "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
-      "source_id": "57bd7671-cca2-4ba4-87e0-6033ec393216",
-      "task_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
-      "artifact_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
-      "raw_sha256": "51d30c22e0cb15ce7b58f75fe655917d657b92663f513b63f7d68413d50818e7"
-    },
-    "shared_provider_identity": null,
-    "short_start_seconds": 0.0,
-    "short_duration_seconds": 81.167,
-    "audio_provenance": {
-      "schema_version": 1,
-      "mode": "stream_copy",
-      "raw_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c",
-      "final_sha256": "fe8b283a4e824bffe24c9e6f68e8323738d3923dab209daa3e6596d41f085ae7",
-      "raw_audio_sha256": "4b86f036007e333ff2aacccf31f499579a8b0aca12b5f64e37fbf27769fe6c4b",
-      "final_audio_sha256": "4b86f036007e333ff2aacccf31f499579a8b0aca12b5f64e37fbf27769fe6c4b",
-      "raw_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 81.223401
-      },
-      "final_timing": {
-        "codec": "aac",
-        "sample_rate": 44100,
-        "channels": 1,
-        "start_seconds": 0.0,
-        "duration_seconds": 81.223401
-      }
-    },
-    "signature_overlay": true,
-    "signature_provenance": {
-      "schema_version": 1,
-      "final_sha256": "fe8b283a4e824bffe24c9e6f68e8323738d3923dab209daa3e6596d41f085ae7",
-      "raw_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c",
-      "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-      "segment_sha256": "f046e874d9a3d593fd247176237e664f2f37fbaed8f3ef99e5367611ffd2213d",
-      "source_duration_seconds": 81.167,
-      "final_duration_seconds": 81.167,
-      "start_seconds": 78.167,
-      "end_seconds": 81.167,
-      "audio_source_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c"
-    },
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "item_id": "video-20261105-131653-09220525c3",
-    "type": "article_short",
-    "youtube_id": "9cDEQcofmfE",
-    "youtube_url": "https://youtu.be/9cDEQcofmfE",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "f046e874d9a3d593fd247176237e664f2f37fbaed8f3ef99e5367611ffd2213d",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
@@ -3128,7 +2904,17 @@
       }
     }
   ],
-  "active_idea": null,
+  "active_idea": {
+    "idea_id": "relationship-memory-reconstruction-holmberg-20261105",
+    "fingerprint": "c964904e50dcaaa464087dfa65377dbe117b8bb475e03b2d78850aaaab103a12",
+    "topic_brief": "משימת OWNER מפורשת: לייצר שלושה נכסים דיגיטליים (מאמר באתר KESHER, YouTube Overview, Short אנכי 9:16) לאותה זהות תוכן חדשה, ללא כפילויות. נושא לייעוץ זוגי: 'שכתוב ההיסטוריה הזוגית: כשההווה משנה את הזיכרון מהעבר'. ניסוח מיועד: 'האם באמת תמיד היה רע? איך משבר בהווה צובע את זיכרונות הזוגיות'. מחקרי יסוד: Holmberg & Holmes (1994), Reconstruction of Relationship Memories: A Mental Models Approach, Springer DOI:10.1007/978-1-4612-2624-6_18; Karney & Frye (2002), But we've been getting better lately, PMID 11831412; Yap et al. (2023/2025), https://pmc.ncbi.nlm.nih.gov/articles/PMC11731263/ ; Frye & Karney (2004), DOI:10.1111/j.1475-6811.2004.00072.x. יש להבחין בין זיכרון משוחזר להיסטוריה מתועדת: המחקר מצביע על הטיית זיכרון המקושרת להרגשה הנוכחית, לא שהמוח 'משקר' באופן מכוון או שהוכח מנגנון ספציפי בקליפת המוח; אין לטעון שכל משבר מעוות זיכרונות, שכל סימן אזהרה היה כוזב, או שכל קשר מתאים. אין להמציא נתוני מדגם/מועדים/ממצאים פרטניים כמו ירח דבש אם לא אומתו. אין לייחס לחוקרים את המשפט 'כשכואב לנו בהווה...' — זו פרפרזה מקורית אפשרית עם תווית מפורשת של מסר ולא ציטוט מחקרי. כלי לזוגות: לפגוש יחד תמונות/מכתבים ישנים כנקודת פתיחה לשיחה, לא כהוכחה שהעבר היה מושלם; לתקף פגיעה אמיתית ולהדגיש שהטיה אינה שוללת אלימות או פגיעה מתמשכת. הוק לשורט: 'אולי תמיד היינו לא מתאימים? כשאנחנו כועסים היום, גם העבר עלול להיראות אחרת'. שירות: ייעוץ זוגי אצל שירה סהרוני, מקורות אקדמיים בתוך המאמר, SEO/RTL/נגישות. תמונת שער מקורית/מורשית פוטוריאליסטית ומדויקת לנושא: זוג ישראלי מבוגר מעט מתבונן באלבום תמונות ישן ליד שולחן ביתי, הבעה מתלבטת אך רגישה, צילום מקצועי אמיתי, לא אילוסטרציה/טיפוגרפיה/תמונה גנרית. ביצוע: dedup → article quality and image gates → merge/deploy → public verification → Overview and native vertical Short with technical/voice gates → public verifications.",
+    "required_primary_keyword": "זיכרונות בזוגיות",
+    "run_now": true,
+    "status": "claimed",
+    "requested_at": "2026-11-05T21:43:19.535754+00:00",
+    "publication_slot": "2026-11-05",
+    "claimed_at": "2026-11-05T21:43:20.280911+00:00"
+  },
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/prepare-toddler-for-daycare",
     "overview_youtube_url": "https://youtu.be/yytmmH7rKnI",
@@ -3138,33 +2924,7 @@
     "short_signature_verified": true,
     "short_origin_verified": true
   },
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-11-05",
-      "inputs": {
-        "slot": "2026-11-05",
-        "topic_brief": "נושא הורות ומעבר למסגרת. הורה שמכין פעוט שהיה עד עכשיו בבית או עם מטפלת למעבר למסגרת קבוצתית. להתמקד בשבועות שלפני הכניסה: היכרות, שגרה, פרידה, מידע לצוות וציפיות מציאותיות. אות ביקוש: SERP ומקורות רשמיים. Canonical ID נדרש: prepare-toddler-for-daycare. כותרת עבודה: הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת? כתוב בעברית ישראלית טבעית, חמה וישירה ובשפה של הורה מודאג. 800–900 מילים שימושיות. תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, מה לברר מול הצוות ומתי לפנות להתייעצות. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. העדף מקורות רשמיים ואקדמיים. לפחות 3 קישורים פנימיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p2-prepare-toddler-for-daycare\nRequired Primary Keyword: הכנה למעון"
-      },
-      "intent_at": "2026-11-04T23:20:42.393690+00:00",
-      "status": "dispatched",
-      "previous_run_id": 41926697531,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-11-04T23:20:42.393690+00:00"
-    },
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
-      "cycle": "2026-11-05",
-      "inputs": {
-        "pr_number": "1283"
-      },
-      "intent_at": "2026-11-05T10:15:41.148181+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 42009329732,
-      "dispatched_at": "2026-11-05T10:15:41.148181+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
     "workflow": "Deploy to Cloudflare Pages",
     "run_id": 42031465704,
@@ -3172,13 +2932,7 @@
     "source_slug": null,
     "slot": "2026-11-05"
   },
-  "processed_child_notifications": [
-    "Deploy to Cloudflare Pages:42009684517",
-    "Kesher Daily NotebookLM Video Overview:42010556772",
-    "Kesher Daily NotebookLM Video Overview:42015476913",
-    "Kesher Daily Article Short V4:42017134168",
-    "Deploy to Cloudflare Pages:42031465704"
-  ],
+  "processed_child_notifications": [],
   "interventions": {
     "v5|prepare-toddler-for-daycare|09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141|long_video": {
       "pipeline_id": "v5",
@@ -3195,5 +2949,277 @@
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-11-05T10:55:54.280749+00:00"
     }
-  }
+  },
+  "owner_cycle_archive": [
+    {
+      "cycle": "2026-11-05",
+      "status": "complete",
+      "article": {
+        "attempt_count": 0,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 41933017754,
+        "processed_run_id": 41926697531,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {
+          "JULES_TIMEOUT_SESSION_ACTIVE": 1
+        },
+        "attempts": 0,
+        "deploy_attempts": 1,
+        "normalization_status": "complete",
+        "last_dispatch_at": "2026-11-04T23:21:07.022523+00:00",
+        "watchdog": {
+          "identity": "2026-11-05",
+          "session_id": null,
+          "last_progress_at": "2026-11-04T22:36:07+00:00",
+          "last_fingerprint": null,
+          "last_nudge_at": null,
+          "nudge_count": 0,
+          "worker_restart_count": 0,
+          "last_restart_at": null,
+          "last_restart_run_id": null
+        },
+        "last_run_conclusion": "failure",
+        "last_worker_result": {
+          "schema_version": 1,
+          "slot": "2026-11-05",
+          "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+          "retryable": true,
+          "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Cleaned up all temporary scratch files.",
+          "session_id": "sessions/14865919078984950472",
+          "pr_url": "",
+          "github_run_id": "41926697531",
+          "completed_at": "2026-11-04T23:16:53.220527+00:00",
+          "diagnostic": {
+            "source": {
+              "name": "sources/github/yanivsa/kesher-website",
+              "owner": "yanivsa",
+              "repo": "kesher-website",
+              "default_branch": "main",
+              "main_available": true
+            },
+            "activity_count": 42,
+            "change_set_count": 40,
+            "change_set_fingerprints": [],
+            "last_agent_message": "",
+            "last_progress": "Cleaned up all temporary scratch files.",
+            "last_description": "",
+            "session_failed_reason": ""
+          }
+        },
+        "last_jules_session_id": "sessions/14865919078984950472",
+        "last_failed_run_id": 41926697531,
+        "resume_dispatches": 1,
+        "pr_number": 1283,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1283",
+        "current_pr_head_sha": "6791151873b5a12444cf7f6ad868923e11e2ef92",
+        "jules_head_sha": "362d6a5de30ae59dd2ea69e145f8c95abe3aeaf3",
+        "normalization_slot": "2026-11-05",
+        "normalization_dispatched_at": "2026-11-04T23:36:25.066223+00:00",
+        "normalization_run_id": 41935048465,
+        "normalized_head_sha": "6791151873b5a12444cf7f6ad868923e11e2ef92",
+        "slug": "prepare-toddler-for-daycare",
+        "title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
+        "url": "https://kesher.saharoni.com/blog/prepare-toddler-for-daycare",
+        "published_date": "2026-11-05",
+        "quality_content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
+        "reconciled_existing_article": true,
+        "quality_status": "passed",
+        "quality_checked_at": "2026-11-05T21:40:53.883716+00:00",
+        "quality_violations": [],
+        "live": true,
+        "last_deploy_dispatch_at": "2026-11-05T10:18:58.822257+00:00",
+        "next_deploy_retry_at": null,
+        "deploy_run_id": 42031465704,
+        "live_verified_at": "2026-11-05T21:41:17.526027+00:00"
+      },
+      "long_video": {
+        "attempt_count": 2,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 42015476913,
+        "processed_run_id": 42014829641,
+        "provider_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "overview_evidence_required": true,
+        "last_dispatch_at": "2026-11-05T11:01:13.462347+00:00",
+        "attempts": 1,
+        "last_run_conclusion": "success",
+        "item_id": "video-20261105-130219-09220525c3-a2",
+        "source_slug": "prepare-toddler-for-daycare",
+        "source_content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
+        "content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
+        "source_id": "57bd7671-cca2-4ba4-87e0-6033ec393216",
+        "task_id": "7e3b36a0-3f7b-4be9-91bc-535ef2bb3b59",
+        "artifact_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
+        "provider_status": "pending",
+        "verified": true,
+        "watchdog": {
+          "identity": "long_video:prepare-toddler-for-daycare:09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141:video-20261105-122637-09220525c3",
+          "hard_started_at": "2026-11-05T10:26:45.779913+00:00",
+          "last_progress_at": "2026-11-05T10:33:26.533033+00:00",
+          "last_fingerprint": "267189b1d0b531a1a8cfaf667381959e04c523f7be80d5c8af444c6cafa6f2a9",
+          "recovery_count": 1,
+          "last_recovery_at": "2026-11-05T10:55:54.280749+00:00"
+        },
+        "pending_resume_ready": false,
+        "resume_dispatches": 2,
+        "youtube_id": "yytmmH7rKnI",
+        "youtube_url": "https://youtu.be/yytmmH7rKnI",
+        "technical_verified": true,
+        "visual_pipeline": "remotion-v1-notebooklm-audio",
+        "codec": "h264",
+        "width": 1280,
+        "height": 720,
+        "duration": 97.067,
+        "content_duration_seconds": 97.083,
+        "signature_duration_seconds": 3.0,
+        "signature_overlay": true,
+        "signature_fullscreen": true,
+        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
+      },
+      "short": {
+        "attempt_count": 1,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 42017134168,
+        "processed_run_id": null,
+        "provider_id": "8517cebc-ba5d-4f04-90ae-c25fb53f052d",
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "last_dispatch_at": "2026-11-05T11:12:58.186201+00:00",
+        "artifact_id": "8517cebc-ba5d-4f04-90ae-c25fb53f052d",
+        "source_id": "e23d04e1-80c5-4aa5-b4be-255e2610601d",
+        "adopted_from_long_item_id": null,
+        "source": {
+          "id": "prepare-toddler-for-daycare",
+          "slug": "prepare-toddler-for-daycare",
+          "title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
+          "date": "2026-11-05",
+          "category": "הדרכת הורים",
+          "subcategory": "הגיל הרך",
+          "excerpt": "איך מכינים פעוט שרגיל ליחס אישי בסביבה המוכרת של הבית למעבר למעון או לגן? צעדים מעשיים שכדאי לעשות בשבועות שלפני הכניסה למסגרת הקבוצתית, מה כדאי לשאול את הצוות, ואיך אפשר לעזור להם ולנו בהסתגלות למסגרת החדשה.",
+          "canonical_url": "https://kesher.saharoni.com/blog/prepare-toddler-for-daycare",
+          "content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
+          "video_title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
+          "short_title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
+          "short_hook": "",
+          "youtube_metadata": {
+            "title": "הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
+            "description": "איך מכינים פעוט שרגיל ליחס אישי בסביבה המוכרת של הבית למעבר למעון או לגן? צעדים מעשיים שכדאי לעשות בשבועות שלפני הכניסה למסגרת הקבוצתית, מה כדאי לשאול את הצוות, ואיך אפשר לעזור להם ולנו בהסתגלות למסגרת החדשה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/prepare-toddler-for-daycare\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+            "tags": [
+              "הדרכת הורים",
+              "הגיל הרך"
+            ]
+          },
+          "short_youtube_metadata": {
+            "title": "בקצרה: הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?",
+            "description": "איך מכינים פעוט שרגיל ליחס אישי בסביבה המוכרת של הבית למעבר למעון או לגן? צעדים מעשיים שכדאי לעשות בשבועות שלפני הכניסה למסגרת הקבוצתית, מה כדאי לשאול את הצוות, ואיך אפשר לעזור להם ולנו בהסתגלות למסגרת החדשה.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/prepare-toddler-for-daycare\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
+            "tags": [
+              "הדרכת הורים",
+              "הגיל הרך"
+            ]
+          }
+        },
+        "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+        "task_id": "8517cebc-ba5d-4f04-90ae-c25fb53f052d",
+        "raw_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c",
+        "final_sha256": "fe8b283a4e824bffe24c9e6f68e8323738d3923dab209daa3e6596d41f085ae7",
+        "provider_raw_media": {
+          "codec": "h264",
+          "audio_codec": "aac",
+          "width": 720,
+          "height": 1280,
+          "duration": 81.167,
+          "format": "mov,mp4,m4a,3gp,3g2,mj2"
+        },
+        "media": {
+          "codec": "h264",
+          "audio_codec": "aac",
+          "width": 1080,
+          "height": 1920,
+          "duration": 81.167,
+          "format": "mov,mp4,m4a,3gp,3g2,mj2"
+        },
+        "provider_video_format": "short",
+        "provider_native_short": true,
+        "provider_native_short_verified": true,
+        "provider_short_fallback_used": false,
+        "fresh_generation_attempt": 1,
+        "overview_provider_identity": {
+          "notebook_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+          "source_id": "57bd7671-cca2-4ba4-87e0-6033ec393216",
+          "task_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
+          "artifact_id": "6866ebc8-d6b1-4045-9bcd-06899733595d",
+          "raw_sha256": "51d30c22e0cb15ce7b58f75fe655917d657b92663f513b63f7d68413d50818e7"
+        },
+        "shared_provider_identity": null,
+        "short_start_seconds": 0.0,
+        "short_duration_seconds": 81.167,
+        "audio_provenance": {
+          "schema_version": 1,
+          "mode": "stream_copy",
+          "raw_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c",
+          "final_sha256": "fe8b283a4e824bffe24c9e6f68e8323738d3923dab209daa3e6596d41f085ae7",
+          "raw_audio_sha256": "4b86f036007e333ff2aacccf31f499579a8b0aca12b5f64e37fbf27769fe6c4b",
+          "final_audio_sha256": "4b86f036007e333ff2aacccf31f499579a8b0aca12b5f64e37fbf27769fe6c4b",
+          "raw_timing": {
+            "codec": "aac",
+            "sample_rate": 44100,
+            "channels": 1,
+            "start_seconds": 0.0,
+            "duration_seconds": 81.223401
+          },
+          "final_timing": {
+            "codec": "aac",
+            "sample_rate": 44100,
+            "channels": 1,
+            "start_seconds": 0.0,
+            "duration_seconds": 81.223401
+          }
+        },
+        "signature_overlay": true,
+        "signature_provenance": {
+          "schema_version": 1,
+          "final_sha256": "fe8b283a4e824bffe24c9e6f68e8323738d3923dab209daa3e6596d41f085ae7",
+          "raw_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c",
+          "asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+          "segment_sha256": "f046e874d9a3d593fd247176237e664f2f37fbaed8f3ef99e5367611ffd2213d",
+          "source_duration_seconds": 81.167,
+          "final_duration_seconds": 81.167,
+          "start_seconds": 78.167,
+          "end_seconds": 81.167,
+          "audio_source_sha256": "a06636be087665375d1bbc43c272778d73d4e2c98ad237c5b50f553a58c1184c"
+        },
+        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+        "item_id": "video-20261105-131653-09220525c3",
+        "type": "article_short",
+        "youtube_id": "9cDEQcofmfE",
+        "youtube_url": "https://youtu.be/9cDEQcofmfE",
+        "verified": true,
+        "portrait_verified": true,
+        "signature_verified": true,
+        "signature_asset": "signature-mask.svg",
+        "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+        "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+        "technical_verified": true,
+        "signature_duration_seconds": 3.0,
+        "signature_fullscreen": true,
+        "signature_video_sha256": "f046e874d9a3d593fd247176237e664f2f37fbaed8f3ef99e5367611ffd2213d",
+        "source_mode": "direct-short",
+        "width": 1080,
+        "height": 1920
+      },
+      "archived_at": "2026-11-05T21:43:20.280896+00:00",
+      "reason": "owner_run_now_cycle_started"
+    }
+  ]
 }
