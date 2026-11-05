@@ -527,8 +527,9 @@
       },
       "failure_class": "CONTROLLER_STATE_NOT_LOADED",
       "fingerprint": "6037faae272142aa1d8eeed986cfe232899bf7a8f84cf8ac922a7e3afa619cad",
+      "reason": "uncertain_create_not_discoverable",
       "stage": "controller",
-      "status": "uncertain"
+      "status": "human_blocker"
     }
   },
   "version": 1
