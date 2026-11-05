@@ -76,13 +76,13 @@
     "quality_content_sha256": "09220525c37760599e27181a3680903a546b358f3ea1b69e706c70756ea27141",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-05T13:00:50.446083+00:00",
+    "quality_checked_at": "2026-11-05T13:03:57.819240+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-05T10:18:58.822257+00:00",
     "next_deploy_retry_at": null,
-    "deploy_run_id": 42009684517,
-    "live_verified_at": "2026-11-05T13:01:05.670872+00:00"
+    "deploy_run_id": 42031465704,
+    "live_verified_at": "2026-11-05T13:03:59.018086+00:00"
   },
   "backlog": [
     {
@@ -3235,10 +3235,10 @@
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 42017134168,
+    "workflow": "Deploy to Cloudflare Pages",
+    "run_id": 42031465704,
     "conclusion": "success",
-    "source_slug": "prepare-toddler-for-daycare",
+    "source_slug": null,
     "slot": "2026-11-05"
   },
   "processed_child_notifications": [
