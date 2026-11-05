@@ -80,9 +80,9 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-05T10:18:58.822257+00:00",
-    "next_deploy_retry_at": "2026-11-05T13:08:53.850649+00:00",
+    "next_deploy_retry_at": null,
     "deploy_run_id": 42031465704,
-    "live_verified_at": "2026-11-05T13:03:59.018086+00:00"
+    "live_verified_at": "2026-11-05T13:04:20.165129+00:00"
   },
   "backlog": [
     {
@@ -1795,37 +1795,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-04T23:12:36.517351+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-11-04T23:18:52.312810+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-11-04T23:21:03.041057+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Cleaned up all temporary scratch files.",
-        "retry_at": "2026-11-04T23:26:03.041036+00:00",
-        "failure_streak": 1,
-        "run_id": 41926697531,
-        "session_id": "sessions/14865919078984950472"
-      }
-    },
-    {
       "at": "2026-11-04T23:21:07.022534+00:00",
       "from": "article_retry_wait",
       "to": "article_generating",
@@ -2462,9 +2431,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-05T13:04:20.165160+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-05T13:04:21.158610+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-05T13:04:21.997265+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-05T13:01:06.562279+00:00",
+  "updated_at": "2026-11-05T13:04:21.997286+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
