@@ -3052,19 +3052,27 @@
         "long_url": "https://youtu.be/yytmmH7rKnI",
         "short_url": "https://youtu.be/9cDEQcofmfE"
       }
+    },
+    {
+      "idea_id": "relationship-memory-reconstruction-holmberg-20261105",
+      "fingerprint": "c964904e50dcaaa464087dfa65377dbe117b8bb475e03b2d78850aaaab103a12",
+      "topic_brief": "משימת OWNER מפורשת: לייצר שלושה נכסים דיגיטליים (מאמר באתר KESHER, YouTube Overview, Short אנכי 9:16) לאותה זהות תוכן חדשה, ללא כפילויות. נושא לייעוץ זוגי: 'שכתוב ההיסטוריה הזוגית: כשההווה משנה את הזיכרון מהעבר'. ניסוח מיועד: 'האם באמת תמיד היה רע? איך משבר בהווה צובע את זיכרונות הזוגיות'. מחקרי יסוד: Holmberg & Holmes (1994), Reconstruction of Relationship Memories: A Mental Models Approach, Springer DOI:10.1007/978-1-4612-2624-6_18; Karney & Frye (2002), But we've been getting better lately, PMID 11831412; Yap et al. (2023/2025), https://pmc.ncbi.nlm.nih.gov/articles/PMC11731263/ ; Frye & Karney (2004), DOI:10.1111/j.1475-6811.2004.00072.x. יש להבחין בין זיכרון משוחזר להיסטוריה מתועדת: המחקר מצביע על הטיית זיכרון המקושרת להרגשה הנוכחית, לא שהמוח 'משקר' באופן מכוון או שהוכח מנגנון ספציפי בקליפת המוח; אין לטעון שכל משבר מעוות זיכרונות, שכל סימן אזהרה היה כוזב, או שכל קשר מתאים. אין להמציא נתוני מדגם/מועדים/ממצאים פרטניים כמו ירח דבש אם לא אומתו. אין לייחס לחוקרים את המשפט 'כשכואב לנו בהווה...' — זו פרפרזה מקורית אפשרית עם תווית מפורשת של מסר ולא ציטוט מחקרי. כלי לזוגות: לפגוש יחד תמונות/מכתבים ישנים כנקודת פתיחה לשיחה, לא כהוכחה שהעבר היה מושלם; לתקף פגיעה אמיתית ולהדגיש שהטיה אינה שוללת אלימות או פגיעה מתמשכת. הוק לשורט: 'אולי תמיד היינו לא מתאימים? כשאנחנו כועסים היום, גם העבר עלול להיראות אחרת'. שירות: ייעוץ זוגי אצל שירה סהרוני, מקורות אקדמיים בתוך המאמר, SEO/RTL/נגישות. תמונת שער מקורית/מורשית פוטוריאליסטית ומדויקת לנושא: זוג ישראלי מבוגר מעט מתבונן באלבום תמונות ישן ליד שולחן ביתי, הבעה מתלבטת אך רגישה, צילום מקצועי אמיתי, לא אילוסטרציה/טיפוגרפיה/תמונה גנרית. ביצוע: dedup → article quality and image gates → merge/deploy → public verification → Overview and native vertical Short with technical/voice gates → public verifications.",
+      "required_primary_keyword": "זיכרונות בזוגיות",
+      "run_now": true,
+      "status": "complete",
+      "requested_at": "2026-11-05T21:43:19.535754+00:00",
+      "publication_slot": "2026-11-05",
+      "claimed_at": "2026-11-05T21:43:20.280911+00:00",
+      "completed_at": "2026-11-05T21:43:52.122554+00:00",
+      "outputs": {
+        "slug": "parental-hostile-attributions",
+        "article_url": "https://kesher.saharoni.com/blog/parental-hostile-attributions",
+        "long_url": "https://youtu.be/9yko_eVEzmI",
+        "short_url": "https://youtu.be/kemveSWrbDA"
+      }
     }
   ],
-  "active_idea": {
-    "idea_id": "relationship-memory-reconstruction-holmberg-20261105",
-    "fingerprint": "c964904e50dcaaa464087dfa65377dbe117b8bb475e03b2d78850aaaab103a12",
-    "topic_brief": "משימת OWNER מפורשת: לייצר שלושה נכסים דיגיטליים (מאמר באתר KESHER, YouTube Overview, Short אנכי 9:16) לאותה זהות תוכן חדשה, ללא כפילויות. נושא לייעוץ זוגי: 'שכתוב ההיסטוריה הזוגית: כשההווה משנה את הזיכרון מהעבר'. ניסוח מיועד: 'האם באמת תמיד היה רע? איך משבר בהווה צובע את זיכרונות הזוגיות'. מחקרי יסוד: Holmberg & Holmes (1994), Reconstruction of Relationship Memories: A Mental Models Approach, Springer DOI:10.1007/978-1-4612-2624-6_18; Karney & Frye (2002), But we've been getting better lately, PMID 11831412; Yap et al. (2023/2025), https://pmc.ncbi.nlm.nih.gov/articles/PMC11731263/ ; Frye & Karney (2004), DOI:10.1111/j.1475-6811.2004.00072.x. יש להבחין בין זיכרון משוחזר להיסטוריה מתועדת: המחקר מצביע על הטיית זיכרון המקושרת להרגשה הנוכחית, לא שהמוח 'משקר' באופן מכוון או שהוכח מנגנון ספציפי בקליפת המוח; אין לטעון שכל משבר מעוות זיכרונות, שכל סימן אזהרה היה כוזב, או שכל קשר מתאים. אין להמציא נתוני מדגם/מועדים/ממצאים פרטניים כמו ירח דבש אם לא אומתו. אין לייחס לחוקרים את המשפט 'כשכואב לנו בהווה...' — זו פרפרזה מקורית אפשרית עם תווית מפורשת של מסר ולא ציטוט מחקרי. כלי לזוגות: לפגוש יחד תמונות/מכתבים ישנים כנקודת פתיחה לשיחה, לא כהוכחה שהעבר היה מושלם; לתקף פגיעה אמיתית ולהדגיש שהטיה אינה שוללת אלימות או פגיעה מתמשכת. הוק לשורט: 'אולי תמיד היינו לא מתאימים? כשאנחנו כועסים היום, גם העבר עלול להיראות אחרת'. שירות: ייעוץ זוגי אצל שירה סהרוני, מקורות אקדמיים בתוך המאמר, SEO/RTL/נגישות. תמונת שער מקורית/מורשית פוטוריאליסטית ומדויקת לנושא: זוג ישראלי מבוגר מעט מתבונן באלבום תמונות ישן ליד שולחן ביתי, הבעה מתלבטת אך רגישה, צילום מקצועי אמיתי, לא אילוסטרציה/טיפוגרפיה/תמונה גנרית. ביצוע: dedup → article quality and image gates → merge/deploy → public verification → Overview and native vertical Short with technical/voice gates → public verifications.",
-    "required_primary_keyword": "זיכרונות בזוגיות",
-    "run_now": true,
-    "status": "claimed",
-    "requested_at": "2026-11-05T21:43:19.535754+00:00",
-    "publication_slot": "2026-11-05",
-    "claimed_at": "2026-11-05T21:43:20.280911+00:00"
-  },
+  "active_idea": null,
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/parental-hostile-attributions",
     "overview_youtube_url": "https://youtu.be/9yko_eVEzmI",
