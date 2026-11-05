@@ -82,7 +82,7 @@
     "last_deploy_dispatch_at": "2026-11-05T10:18:58.822257+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 42031465704,
-    "live_verified_at": "2026-11-05T19:05:56.753097+00:00"
+    "live_verified_at": "2026-11-05T19:06:27.646746+00:00"
   },
   "backlog": [
     {
@@ -1795,27 +1795,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-05T16:12:05.192751+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "GITHUB_MUTATION_UNCERTAIN",
-      "details": {
-        "message": "GITHUB_MUTATION_UNCERTAIN: PUT https://api.github.com/repos/yanivsa/kesher-website/contents/.kesher-controller/state.json HTTP 500; reconcile before retry"
-      }
-    },
-    {
-      "at": "2026-11-05T16:21:01.919142+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-11-05T16:21:33.420256+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-05T16:21:34.916951+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2396,9 +2375,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-11-05T19:06:27.646773+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-05T19:06:29.011319+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-05T19:06:30.342574+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-11-05T19:01:19.111331+00:00",
+  "updated_at": "2026-11-05T19:06:30.342592+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
