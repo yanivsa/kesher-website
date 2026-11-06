@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1766,12 +1766,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-05T20:56:17.121250+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-05T20:56:18.088855+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2529,9 +2523,19 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-11-06T10:32:43.279094+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261106-122551-eb4a3aaa9d",
+        "task_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1"
+      }
     }
   ],
-  "updated_at": "2026-11-06T10:31:18.294990+00:00",
+  "updated_at": "2026-11-06T10:32:43.279105+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2552,18 +2556,36 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-11-06T10:37:30.132642+00:00",
     "run_id": 42202486835,
-    "processed_run_id": null,
-    "provider_id": null,
+    "processed_run_id": 42202486835,
+    "provider_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-11-06T10:24:56.102325+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "last_run_conclusion": "success",
+    "item_id": "video-20261106-122551-eb4a3aaa9d",
+    "source_slug": "relationship-memory-reconstruction",
+    "source_content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
+    "content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
+    "source_id": "f48f461a-0227-4611-8067-e3e5b0eb66de",
+    "task_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1",
+    "artifact_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1",
+    "provider_status": "pending",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:relationship-memory-reconstruction:eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27:video-20261106-122551-eb4a3aaa9d",
+      "hard_started_at": "2026-11-06T10:25:56.742344+00:00",
+      "last_progress_at": "2026-11-06T10:32:30.132642+00:00",
+      "last_fingerprint": "17325d355180425efc083a28daf0798669b3df7875708286010a5e74e04eec75",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
