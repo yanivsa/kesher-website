@@ -47,13 +47,13 @@
     "quality_content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-06T10:30:49.533315+00:00",
+    "quality_checked_at": "2026-11-06T10:32:32.307534+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-06T10:17:13.418292+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 42201489711,
-    "live_verified_at": "2026-11-06T10:31:16.535623+00:00"
+    "live_verified_at": "2026-11-06T10:32:33.278181+00:00"
   },
   "backlog": [
     {
@@ -2554,7 +2554,7 @@
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-06T10:37:30.132642+00:00",
     "run_id": 42202486835,
     "processed_run_id": null,
     "provider_id": null,
@@ -3167,27 +3167,13 @@
       "previous_run_id": 42182508177,
       "observed_active_run_id": 42185302400,
       "dispatched_at": "2026-11-06T08:05:44.193997+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-11-06",
-      "inputs": {
-        "operation": "full",
-        "target_slug": "relationship-memory-reconstruction",
-        "target_content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27"
-      },
-      "intent_at": "2026-11-06T10:24:31.976751+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 42202486835,
-      "dispatched_at": "2026-11-06T10:24:31.976751+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 42201489711,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 42202486835,
     "conclusion": "success",
-    "source_slug": null,
+    "source_slug": "relationship-memory-reconstruction",
     "slot": "2026-11-06"
   },
   "processed_child_notifications": [
