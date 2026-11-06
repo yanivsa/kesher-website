@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "article_normalizing",
+  "status": "image_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -15,7 +15,7 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "last_dispatch_at": "2026-11-06T06:01:33.445541+00:00",
     "watchdog": {
       "identity": "2026-11-06",
@@ -30,7 +30,7 @@
     },
     "pr_number": 1287,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1287",
-    "current_pr_head_sha": "08e16dc7fd41601d22ca54d5903214e37907f2a1",
+    "current_pr_head_sha": "16e10f549083e242bb32fca87f1a4aa24a13c155",
     "jules_head_sha": "5d725847d581e256aea1c0c07e6b4a15a5d507d0",
     "normalization_slot": "2026-11-06",
     "normalization_dispatched_at": "2026-11-06T08:16:31.330064+00:00",
@@ -38,7 +38,8 @@
     "normalization_drift_count": 1,
     "last_normalization_drift_head_sha": "08e16dc7fd41601d22ca54d5903214e37907f2a1",
     "merge_dispatch_count": 0,
-    "merge_dispatch_at": null
+    "merge_dispatch_at": null,
+    "normalized_head_sha": "16e10f549083e242bb32fca87f1a4aa24a13c155"
   },
   "backlog": [
     {
@@ -1751,12 +1752,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-05T20:01:28.921609+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-05T20:01:30.317048+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2431,9 +2426,18 @@
         "pr_number": 1287,
         "slot": "2026-11-06"
       }
+    },
+    {
+      "at": "2026-11-06T08:18:40.346034+00:00",
+      "from": "article_normalizing",
+      "to": "image_retry_wait",
+      "reason": "trusted image retry backoff is active",
+      "details": {
+        "retry_at": "2026-11-06T08:26:31.792161+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-06T08:16:31.330103+00:00",
+  "updated_at": "2026-11-06T08:18:40.346055+00:00",
   "image": {
     "attempt_count": 3,
     "status": "retry_wait",
