@@ -51,9 +51,9 @@
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-06T10:17:13.418292+00:00",
-    "next_deploy_retry_at": "2026-11-06T10:29:31.976751+00:00",
+    "next_deploy_retry_at": null,
     "deploy_run_id": 42201489711,
-    "live_verified_at": "2026-11-06T10:24:35.185167+00:00"
+    "live_verified_at": "2026-11-06T10:24:50.867234+00:00"
   },
   "backlog": [
     {
@@ -2527,7 +2527,7 @@
       "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-11-06T10:24:35.185201+00:00",
+  "updated_at": "2026-11-06T10:24:50.867260+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -3161,6 +3161,19 @@
       "previous_run_id": 42182508177,
       "observed_active_run_id": 42185302400,
       "dispatched_at": "2026-11-06T08:05:44.193997+00:00"
+    },
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-11-06",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "relationship-memory-reconstruction",
+        "target_content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27"
+      },
+      "intent_at": "2026-11-06T10:24:31.976751+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3173,5 +3186,18 @@
   "processed_child_notifications": [
     "Kesher Normalize Article PR:42180880855",
     "Kesher Normalize Article PR:42186498998"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
+  }
 }
