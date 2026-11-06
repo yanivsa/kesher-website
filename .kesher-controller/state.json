@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "long_video_running",
+  "status": "long_video_retry_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -53,7 +53,7 @@
     "last_deploy_dispatch_at": "2026-11-06T10:17:13.418292+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 42201489711,
-    "live_verified_at": "2026-11-06T11:20:51.059569+00:00"
+    "live_verified_at": "2026-11-06T11:21:19.416160+00:00"
   },
   "backlog": [
     {
@@ -1766,24 +1766,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-05T21:16:17.241633+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-05T21:16:18.500288+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-11-05T21:21:08.147508+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-05T21:21:08.885384+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2553,9 +2535,37 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-11-06T11:21:19.416180+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-06T11:21:21.641748+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "VIDEO_WORKFLOW_FAILED",
+      "details": {
+        "message": "video run 42207293664 completed with conclusion=failure",
+        "retry_at": "2026-11-06T11:26:21.641725+00:00",
+        "failure_streak": 1,
+        "run_id": 42207293664,
+        "session_id": null
+      }
+    },
+    {
+      "at": "2026-11-06T11:21:21.641780+00:00",
+      "from": "video_retry_wait",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-11-06T11:26:21.641725+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-06T11:16:03.209526+00:00",
+  "updated_at": "2026-11-06T11:21:21.641784+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2578,17 +2588,19 @@
     "attempt_count": 2,
     "status": "uploading",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-06T11:26:21.641725+00:00",
     "run_id": 42207293664,
-    "processed_run_id": 42202486835,
+    "processed_run_id": 42207293664,
     "provider_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "VIDEO_WORKFLOW_FAILED": 1
+    },
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-11-06T11:03:08.409646+00:00",
     "attempts": 1,
-    "last_run_conclusion": "success",
+    "last_run_conclusion": "failure",
     "item_id": "video-20261106-122551-eb4a3aaa9d",
     "source_slug": "relationship-memory-reconstruction",
     "source_content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
@@ -2606,7 +2618,8 @@
       "recovery_count": 0,
       "last_recovery_at": null
     },
-    "resume_dispatches": 1
+    "resume_dispatches": 1,
+    "last_failed_run_id": 42207293664
   },
   "short": {
     "attempt_count": 0,
