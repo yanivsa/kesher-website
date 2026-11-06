@@ -1752,12 +1752,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-05T20:06:37.757350+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-05T20:06:39.162364+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2438,9 +2432,18 @@
       "details": {
         "retry_at": "2026-11-06T08:26:31.792161+00:00"
       }
+    },
+    {
+      "at": "2026-11-06T08:26:25.117711+00:00",
+      "from": "image_retry_wait",
+      "to": "image_retry_wait",
+      "reason": "trusted image retry backoff is active",
+      "details": {
+        "retry_at": "2026-11-06T08:26:31.792161+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-06T08:21:36.315537+00:00",
+  "updated_at": "2026-11-06T08:26:25.117729+00:00",
   "image": {
     "attempt_count": 3,
     "status": "retry_wait",
