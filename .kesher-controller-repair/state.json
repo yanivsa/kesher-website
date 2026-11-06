@@ -545,6 +545,7 @@
       "status": "human_blocker"
     },
     "d385a0a277d1f127448349e125a18f21c6bf8f0fb87f6625c875dc33f61d4c55": {
+      "acquisition_started_at": "2026-11-06T12:21:08.093953+00:00",
       "affected": [
         {
           "article_run_id": 42171852912,
@@ -577,7 +578,7 @@
       "failure_class": "VIDEO_ATTEMPTS_EXHAUSTED",
       "fingerprint": "1556362d39b2b93376a4b05ee0dec6d8919529ae5485b867083537d1d18c063a",
       "stage": "long_video",
-      "status": "intent"
+      "status": "uncertain"
     },
     "f89e81f0ca2d2e94f8c5ed2000b96fb079084e9e6754e14fa7453d9cb905863a": {
       "acquisition_started_at": "2026-11-06T08:31:36.483956+00:00",
