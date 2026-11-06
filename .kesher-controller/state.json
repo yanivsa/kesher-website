@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "article_deploying",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -47,11 +47,13 @@
     "quality_content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-06T10:20:45.468841+00:00",
+    "quality_checked_at": "2026-11-06T10:24:34.305028+00:00",
     "quality_violations": [],
-    "live": false,
+    "live": true,
     "last_deploy_dispatch_at": "2026-11-06T10:17:13.418292+00:00",
-    "next_deploy_retry_at": "2026-11-06T10:22:01.530078+00:00"
+    "next_deploy_retry_at": null,
+    "deploy_run_id": 42201489711,
+    "live_verified_at": "2026-11-06T10:24:35.185167+00:00"
   },
   "backlog": [
     {
@@ -1764,12 +1766,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-05T20:46:26.044377+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-05T20:46:27.407837+00:00",
       "from": "article_live",
       "to": "complete",
@@ -2523,9 +2519,15 @@
         "http_status": 404,
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-11-06T10:24:35.185194+00:00",
+      "from": "article_deploying",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-11-06T10:20:47.161030+00:00",
+  "updated_at": "2026-11-06T10:24:35.185201+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2554,7 +2556,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
   },
   "short": {
     "attempt_count": 0,
@@ -3158,22 +3161,11 @@
       "previous_run_id": 42182508177,
       "observed_active_run_id": 42185302400,
       "dispatched_at": "2026-11-06T08:05:44.193997+00:00"
-    },
-    "deploy.yml": {
-      "workflow": "deploy.yml",
-      "cycle": "2026-11-06",
-      "inputs": {},
-      "intent_at": "2026-11-06T10:17:01.530078+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 42201489711,
-      "dispatch_head_sha": "b9cea3970fb6049b84e1156eba449cb971c670d9",
-      "dispatched_at": "2026-11-06T10:17:01.530078+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Normalize Article PR",
-    "run_id": 42186498998,
+    "workflow": "Deploy to Cloudflare Pages",
+    "run_id": 42201489711,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-06"
