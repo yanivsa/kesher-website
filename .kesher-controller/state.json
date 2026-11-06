@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "article_image_running",
+  "status": "image_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1745,14 +1745,15 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "image",
+    "code": "IMAGE_WORKFLOW_FAILED",
+    "message": "trusted image run 42185302400 completed with conclusion=failure but no validated image is present",
+    "retryable": true,
+    "retry_at": "2026-11-06T08:26:31.792161+00:00",
+    "at": "2026-11-06T08:11:31.792185+00:00"
+  },
   "history": [
-    {
-      "at": "2026-11-05T19:56:19.447002+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
     {
       "at": "2026-11-05T20:01:27.529671+00:00",
       "from": "complete",
@@ -2418,31 +2419,43 @@
         "attempt": 3,
         "pr_number": 1287
       }
+    },
+    {
+      "at": "2026-11-06T08:11:31.792192+00:00",
+      "from": "article_image_running",
+      "to": "image_retry_wait",
+      "reason": "IMAGE_WORKFLOW_FAILED",
+      "details": {
+        "message": "trusted image run 42185302400 completed with conclusion=failure but no validated image is present",
+        "retry_at": "2026-11-06T08:26:31.792161+00:00",
+        "failure_streak": 3,
+        "run_id": 42185302400
+      }
     }
   ],
-  "updated_at": "2026-11-06T08:06:22.613563+00:00",
+  "updated_at": "2026-11-06T08:11:31.792200+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "retry_wait",
     "last_error": {
       "code": "IMAGE_WORKFLOW_FAILED",
-      "message": "trusted image run 42182508177 completed with conclusion=failure but no validated image is present",
+      "message": "trusted image run 42185302400 completed with conclusion=failure but no validated image is present",
       "retryable": true,
-      "retry_at": "2026-11-06T08:01:24.005519+00:00",
-      "at": "2026-11-06T07:46:24.005549+00:00"
+      "retry_at": "2026-11-06T08:26:31.792161+00:00",
+      "at": "2026-11-06T08:11:31.792185+00:00"
     },
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-06T08:26:31.792161+00:00",
     "run_id": 42185302400,
-    "processed_run_id": 42182508177,
+    "processed_run_id": 42185302400,
     "provider_id": null,
     "failure_fingerprint": "IMAGE_WORKFLOW_FAILED",
-    "same_failure_streak": 2,
+    "same_failure_streak": 3,
     "failure_count_by_type": {
-      "IMAGE_WORKFLOW_FAILED": 2
+      "IMAGE_WORKFLOW_FAILED": 3
     },
     "last_dispatch_at": "2026-11-06T08:06:22.613522+00:00",
     "last_run_conclusion": "failure",
-    "last_failed_run_id": 42182508177
+    "last_failed_run_id": 42185302400
   },
   "long_video": {
     "attempt_count": 0,
