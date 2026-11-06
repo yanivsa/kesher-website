@@ -1,0 +1,37 @@
+name: Kesher Production Internal Link Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Sunday 02:25 UTC; read-only production verification.
+    - cron: "25 2 * * 0"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kesher-production-internal-link-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source-of-truth link plans
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Validate URL and HTML link parser
+        run: python3 scripts/live-internal-link-audit.py --self-test
+
+      - name: Audit 72 planned Priority 1 and 2 links in production
+        run: python3 scripts/live-internal-link-audit.py --output live-internal-link-audit.json
+
+      - name: Preserve live verification evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-production-internal-link-audit
+          path: live-internal-link-audit.json
+          if-no-files-found: warn
+          retention-days: 30
