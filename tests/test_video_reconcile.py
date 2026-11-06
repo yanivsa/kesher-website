@@ -127,6 +127,12 @@ class VideoReconcileTests(unittest.TestCase):
                 )
             token.assert_not_called()
 
+    def test_public_adoption_restores_lightweight_state_without_heavy_media(self) -> None:
+        workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/kesher-daily-video.yml").read_text(encoding="utf-8")
+        self.assertIn('if [ "${RESTORE_OPERATION:-}" = "adopt-public" ]; then', workflow)
+        self.assertIn('Adopt-public: authoritative lightweight state restored; no media hydration needed.', workflow)
+        self.assertLess(workflow.index('if [ "${RESTORE_OPERATION:-}" = "adopt-public" ]; then'), workflow.index("restore_args=(--requires-durable-media-restore)"))
+
     def test_video_workflow_declares_video_overview_media_mode(self) -> None:
         workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/kesher-daily-video.yml").read_text(encoding="utf-8")
         self.assertIn("KESHER_MEDIA_MODE: video_overview", workflow)
