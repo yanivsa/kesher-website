@@ -2278,15 +2278,6 @@
   },
   "idea_queue": [
     {
-      "idea_id": "parenting-p2-child-not-playing-kindergarten",
-      "fingerprint": "9a501d9e42b839de05d79c5af1f2d5bf6df252fae4f54a2b40fcdda6fa04ab7c",
-      "topic_brief": "נושא הורות ומעבר למסגרת. ילד שיושב בצד, צופה ולא מצטרף למשחק בגן; הורה חושש מבדידות או דחייה. להבחין בין זמן הסתגלות, אופי שקט וקושי מתמשך, ולהציע שאלות לצוות וצעדים בבית בלי לאבחן. אות ביקוש: SERP ושאלות הורים חוזרות. Canonical ID נדרש: child-not-playing-kindergarten. כותרת עבודה: הילד לא משחק בגן ויושב בצד: לתת זמן או להתערב? כתוב בעברית ישראלית טבעית, חמה וישירה ובשפה של הורה מודאג. 800–900 מילים שימושיות. תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, מה לברר מול הצוות ומתי לפנות להתייעצות. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. העדף מקורות רשמיים ואקדמיים. לפחות 3 קישורים פנימיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
-      "required_primary_keyword": "ילד לא משחק בגן",
-      "run_now": false,
-      "status": "queued",
-      "requested_at": "2026-10-19T10:26:10.994184+00:00"
-    },
-    {
       "idea_id": "separate-room-transition-20261019-v1",
       "fingerprint": "bf7fb7a86716e9f432b6d4c497e932699852592831baaad075d98f46efccd61f",
       "topic_brief": "כתוב מאמר עברי מקצועי ומעשי להורים בנושא מעבר לחדר נפרד: מתי הזמן המתאים להעביר תינוק או פעוט מחדר ההורים לחדר משלו, הנחיות בטיחות ומוכנות רגשית, איך לבנות שגרת מעבר הדרגתית ונעימה, התמודדות עם פחדי לילה ויקיצות מרובות, ואיך להרגיע בלי להפוך את הלילה למאבק מתמשך.",
@@ -2827,7 +2818,17 @@
       }
     }
   ],
-  "active_idea": null,
+  "active_idea": {
+    "idea_id": "parenting-p2-child-not-playing-kindergarten",
+    "fingerprint": "9a501d9e42b839de05d79c5af1f2d5bf6df252fae4f54a2b40fcdda6fa04ab7c",
+    "topic_brief": "נושא הורות ומעבר למסגרת. ילד שיושב בצד, צופה ולא מצטרף למשחק בגן; הורה חושש מבדידות או דחייה. להבחין בין זמן הסתגלות, אופי שקט וקושי מתמשך, ולהציע שאלות לצוות וצעדים בבית בלי לאבחן. אות ביקוש: SERP ושאלות הורים חוזרות. Canonical ID נדרש: child-not-playing-kindergarten. כותרת עבודה: הילד לא משחק בגן ויושב בצד: לתת זמן או להתערב? כתוב בעברית ישראלית טבעית, חמה וישירה ובשפה של הורה מודאג. 800–900 מילים שימושיות. תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, מה לברר מול הצוות ומתי לפנות להתייעצות. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. העדף מקורות רשמיים ואקדמיים. לפחות 3 קישורים פנימיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.",
+    "required_primary_keyword": "ילד לא משחק בגן",
+    "run_now": false,
+    "status": "claimed",
+    "requested_at": "2026-10-19T10:26:10.994184+00:00",
+    "publication_slot": "2026-11-06",
+    "claimed_at": "2026-11-06T06:01:29.104889+00:00"
+  },
   "deliverables": {
     "article_url": null,
     "overview_youtube_url": null,
@@ -2836,5 +2837,31 @@
     "short_portrait_verified": false,
     "short_signature_verified": false,
     "short_origin_verified": false
+  },
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  },
+  "pending_dispatches": {
+    "kesher-article-generation.yml": {
+      "workflow": "kesher-article-generation.yml",
+      "cycle": "2026-11-06",
+      "inputs": {
+        "slot": "2026-11-06",
+        "topic_brief": "נושא הורות ומעבר למסגרת. ילד שיושב בצד, צופה ולא מצטרף למשחק בגן; הורה חושש מבדידות או דחייה. להבחין בין זמן הסתגלות, אופי שקט וקושי מתמשך, ולהציע שאלות לצוות וצעדים בבית בלי לאבחן. אות ביקוש: SERP ושאלות הורים חוזרות. Canonical ID נדרש: child-not-playing-kindergarten. כותרת עבודה: הילד לא משחק בגן ויושב בצד: לתת זמן או להתערב? כתוב בעברית ישראלית טבעית, חמה וישירה ובשפה של הורה מודאג. 800–900 מילים שימושיות. תשובה ישירה בתחילת המאמר, צעדים מעשיים, מה לא לעשות, מה לברר מול הצוות ומתי לפנות להתייעצות. אין להמציא סיפורי מטופלים, ניסיון אישי של שירה, נתונים או מחקרים. העדף מקורות רשמיים ואקדמיים. לפחות 3 קישורים פנימיים ו-CTA להדרכת הורים. שמור intent נפרד מעמודים סמוכים ואל תיצור URL מתחרה.\n\nIdea Request ID: parenting-p2-child-not-playing-kindergarten\nRequired Primary Keyword: ילד לא משחק בגן"
+      },
+      "intent_at": "2026-11-06T06:00:42.623819+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
   }
 }
