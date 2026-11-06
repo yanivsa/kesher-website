@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "article_needed",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -14,7 +14,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-11-06T06:01:33.445541+00:00",
     "watchdog": {
@@ -49,7 +49,9 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-11-06T10:17:05.736838+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-11-06T10:17:13.418292+00:00",
+    "next_deploy_retry_at": "2026-11-06T10:22:01.530078+00:00"
   },
   "backlog": [
     {
@@ -1762,12 +1764,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-05T20:41:31.275222+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-11-05T20:46:26.044377+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2517,9 +2513,19 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-11-06T10:17:13.418332+00:00",
+      "from": "article_needed",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-11-06T10:16:20.959256+00:00",
+  "updated_at": "2026-11-06T10:17:13.418338+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -3119,7 +3125,7 @@
     "claimed_at": "2026-11-06T06:01:29.104889+00:00"
   },
   "deliverables": {
-    "article_url": null,
+    "article_url": "https://kesher.saharoni.com/blog/relationship-memory-reconstruction",
     "overview_youtube_url": null,
     "short_youtube_url": null,
     "overview_edit_verified": false,
@@ -3158,10 +3164,11 @@
       "cycle": "2026-11-06",
       "inputs": {},
       "intent_at": "2026-11-06T10:17:01.530078+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "b9cea3970fb6049b84e1156eba449cb971c670d9"
+      "observed_active_run_id": 42201489711,
+      "dispatch_head_sha": "b9cea3970fb6049b84e1156eba449cb971c670d9",
+      "dispatched_at": "2026-11-06T10:17:01.530078+00:00"
     }
   },
   "last_child_notification": {
