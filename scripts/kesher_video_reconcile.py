@@ -1226,6 +1226,91 @@ def bind_short_overview_identity(
     )
     return 0
 
+def adopt_verified_public_overview_id(
+    slug: str, content_sha256: str, item_id: str, youtube_id: str,
+) -> int:
+    """Adopt a known existing upload without inserting media or weakening public gates.
+
+    Strict source/item/channel/title/description evidence is required before even
+    persisting the recovered ID. An incomplete tag/metadata gate persists the ID
+    as UNVERIFIED, preventing a second insert, but cannot mark publication done.
+    """
+    import re
+
+    slug, content_sha256, item_id, youtube_id = (
+        str(value or "").strip() for value in (slug, content_sha256, item_id, youtube_id)
+    )
+    if not all((slug, content_sha256, item_id)) or not re.fullmatch(r"[0-9A-Za-z_-]{11}", youtube_id):
+        raise pipeline.PipelineError("PUBLIC_ADOPTION_EXACT_IDENTITY_REQUIRED")
+    source = current_source_snapshot(slug)
+    if source.get("content_sha256") != content_sha256:
+        raise pipeline.PipelineError("PUBLIC_ADOPTION_SOURCE_CHANGED")
+
+    state = pipeline.load_state()
+    matches = [
+        row for row in state.get("items", [])
+        if isinstance(row, dict) and str(row.get("id") or "").strip() == item_id
+    ]
+    if len(matches) != 1:
+        raise pipeline.PipelineError("PUBLIC_ADOPTION_ITEM_NOT_UNIQUE")
+    item = matches[0]
+    if (
+        item.get("type") != "video_overview"
+        or source_slug(item) != slug
+        or str((item.get("source") or {}).get("content_sha256") or "") != content_sha256
+        or item.get("technical_verified") is not True
+        or item.get("status") not in {"approved", "uploading", "uploaded"}
+        or (item.get("uploaded") is True and item.get("youtube_id") != youtube_id)
+        or (item.get("youtube_id") and item.get("youtube_id") != youtube_id)
+        or item.get("upload_eligible") is False
+    ):
+        raise pipeline.PipelineError("PUBLIC_ADOPTION_ITEM_NOT_ELIGIBLE")
+    if any(
+        row is not item and isinstance(row, dict) and row.get("youtube_id") == youtube_id
+        for row in state.get("items", [])
+    ):
+        raise pipeline.PipelineError("PUBLIC_ADOPTION_YOUTUBE_ID_ALREADY_OWNED")
+
+    token = pipeline.youtube_access_token()
+    pipeline.verify_authenticated_channel(token)
+    remote = pipeline.youtube_get(
+        "videos", token, {"part": "snippet,status,processingDetails", "id": youtube_id}
+    )
+    rows = remote.get("items") or []
+    if len(rows) != 1 or rows[0].get("id") != youtube_id:
+        raise pipeline.PipelineError("PUBLIC_ADOPTION_REMOTE_ID_NOT_UNIQUE")
+    row = rows[0]
+    snippet = row.get("snippet") or {}
+    meta = item.get("youtube_metadata") or {}
+    if (
+        snippet.get("channelId") != pipeline.YOUTUBE_CHANNEL_ID
+        or snippet.get("title") != meta.get("title")
+        or snippet.get("description") != meta.get("description")
+        or (row.get("status") or {}).get("privacyStatus") != "public"
+        or (row.get("processingDetails") or {}).get("processingStatus") != "succeeded"
+    ):
+        raise pipeline.PipelineError("PUBLIC_ADOPTION_REMOTE_PROOF_MISMATCH")
+
+    # Save the proven external ID BEFORE the strict tags/publication gate. If
+    # remote tags still drift, a subsequent owner run can safely repair ONLY
+    # this existing video and retry, never uploading another copy.
+    item["youtube_id"] = youtube_id
+    item["youtube_url"] = f"https://youtu.be/{youtube_id}"
+    if item.get("uploaded") is not True:
+        item["status"] = "uploading"
+    pipeline.save_state(state)
+    verification = pipeline.verify_public_upload(item, token, timeout_seconds=1)
+    item["youtube_verification"] = verification
+    item["uploaded"] = True
+    item["status"] = "uploaded"
+    item["uploaded_at"] = pipeline.utc_now()
+    item["updated_at"] = pipeline.utc_now()
+    item.pop("upload_session_uri", None)
+    pipeline.save_state(state)
+    print(f"VIDEO_EXISTING_PUBLIC_ID_ADOPTED slug={slug} item={item_id} url={item['youtube_url']}")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -1234,6 +1319,7 @@ def main() -> int:
     mode.add_argument("--release-without-short", metavar="SLUG")
     mode.add_argument("--adopt-long-form-state", metavar="STATE_PATH")
     mode.add_argument("--bind-short-overview-identity", metavar="STATE_PATH")
+    mode.add_argument("--adopt-verified-public-overview-id", metavar="YOUTUBE_ID")
     parser.add_argument("--slug", default="")
     parser.add_argument("--content-sha256", default="")
     parser.add_argument("--item-id", default="")
@@ -1243,6 +1329,10 @@ def main() -> int:
         return prepare_generation(args.slug)
     if args.prepare_upload:
         return prepare_upload(args.slug, args.content_sha256, args.item_id)
+    if args.adopt_verified_public_overview_id:
+        return adopt_verified_public_overview_id(
+            args.slug, args.content_sha256, args.item_id, args.adopt_verified_public_overview_id
+        )
     if args.adopt_long_form_state:
         return adopt_long_form_provider(args.adopt_long_form_state, args.slug, args.content_sha256, args.long_item_id)
     if args.bind_short_overview_identity:
