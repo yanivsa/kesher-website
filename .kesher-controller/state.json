@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "long_video_retry_wait",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -53,7 +53,7 @@
     "last_deploy_dispatch_at": "2026-11-06T10:17:13.418292+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 42201489711,
-    "live_verified_at": "2026-11-06T12:10:57.193266+00:00"
+    "live_verified_at": "2026-11-06T12:11:32.887417+00:00"
   },
   "backlog": [
     {
@@ -1763,20 +1763,13 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "long_video",
+    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
+    "message": "video exhausted 3 total controller dispatch attempts",
+    "at": "2026-11-06T12:11:37.835613+00:00"
+  },
   "history": [
-    {
-      "at": "2026-11-05T21:46:14.294090+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-11-05T21:46:15.449265+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
     {
       "at": "2026-11-05T21:51:19.394149+00:00",
       "from": "complete",
@@ -2585,9 +2578,24 @@
       "details": {
         "retry_at": "2026-11-06T12:06:27.906699+00:00"
       }
+    },
+    {
+      "at": "2026-11-06T12:11:32.887445+00:00",
+      "from": "long_video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-06T12:11:37.835632+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-11-06T12:06:02.501756+00:00",
+  "updated_at": "2026-11-06T12:11:37.835638+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2608,7 +2616,7 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "uploading",
+    "status": "exhausted",
     "last_error": null,
     "next_retry_at": "2026-11-06T12:06:27.906699+00:00",
     "run_id": 42210906006,
