@@ -577,8 +577,9 @@
       },
       "failure_class": "IMAGE_ATTEMPTS_EXHAUSTED",
       "fingerprint": "0b3178e4b846a685255141ad73b94a64493c548ec99f7c2eca43c629dde79b8d",
+      "reason": "uncertain_create_not_discoverable",
       "stage": "image",
-      "status": "uncertain"
+      "status": "human_blocker"
     }
   },
   "version": 1
