@@ -1752,12 +1752,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-05T20:01:30.317048+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-11-05T20:06:37.757350+00:00",
       "from": "complete",
       "to": "article_live",
@@ -2435,9 +2429,18 @@
       "details": {
         "retry_at": "2026-11-06T08:26:31.792161+00:00"
       }
+    },
+    {
+      "at": "2026-11-06T08:21:36.315516+00:00",
+      "from": "image_retry_wait",
+      "to": "image_retry_wait",
+      "reason": "trusted image retry backoff is active",
+      "details": {
+        "retry_at": "2026-11-06T08:26:31.792161+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-06T08:18:40.346055+00:00",
+  "updated_at": "2026-11-06T08:21:36.315537+00:00",
   "image": {
     "attempt_count": 3,
     "status": "retry_wait",
