@@ -3220,5 +3220,21 @@
     "Deploy to Cloudflare Pages:42201489711",
     "Kesher Daily NotebookLM Video Overview:42202486835",
     "Kesher Daily Article Short V4:42204508523"
-  ]
+  ],
+  "interventions": {
+    "v5|relationship-memory-reconstruction|eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27|long_video": {
+      "pipeline_id": "v5",
+      "slug": "relationship-memory-reconstruction",
+      "content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-11-06T12",
+      "last_fingerprint": "c333a44a0ac982d9c8a5cbc81a287004ed24152e6f95708e95e094505a9d4173",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-11-06T10:55:47.524753+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
