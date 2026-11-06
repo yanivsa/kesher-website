@@ -543,6 +543,41 @@
       "reason": "uncertain_create_not_discoverable",
       "stage": "controller",
       "status": "human_blocker"
+    },
+    "f89e81f0ca2d2e94f8c5ed2000b96fb079084e9e6754e14fa7453d9cb905863a": {
+      "affected": [
+        {
+          "article_run_id": 42171852912,
+          "article_session_id": null,
+          "artifact_id": null,
+          "content_sha256": null,
+          "cycle": "2026-11-06",
+          "idea_id": "parenting-p2-child-not-playing-kindergarten",
+          "item_id": null,
+          "pr_number": 1287,
+          "slug": null,
+          "source_id": null,
+          "task_id": null
+        }
+      ],
+      "created_at": "2026-11-06T08:31:36.483956+00:00",
+      "exact": {
+        "article_run_id": 42171852912,
+        "article_session_id": null,
+        "artifact_id": null,
+        "content_sha256": null,
+        "cycle": "2026-11-06",
+        "idea_id": "parenting-p2-child-not-playing-kindergarten",
+        "item_id": null,
+        "pr_number": 1287,
+        "slug": null,
+        "source_id": null,
+        "task_id": null
+      },
+      "failure_class": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "fingerprint": "0b3178e4b846a685255141ad73b94a64493c548ec99f7c2eca43c629dde79b8d",
+      "stage": "image",
+      "status": "intent"
     }
   },
   "version": 1
