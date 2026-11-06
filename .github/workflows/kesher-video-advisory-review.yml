@@ -118,7 +118,7 @@ jobs:
 
       - name: Persist advisory Jules review result
         if: ${{ always() && steps.identity.outcome == 'success' }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: kesher-video-advisory-review-${{ github.run_id }}
           path: ${{ github.workspace }}/review-evidence/${{ inputs.evidence_root }}/state.json
