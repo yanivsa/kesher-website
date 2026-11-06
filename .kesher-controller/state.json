@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "article_normalizing",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -2346,12 +2346,22 @@
         "pr_number": 1287,
         "slot": "2026-11-06"
       }
+    },
+    {
+      "at": "2026-11-06T07:28:01.013418+00:00",
+      "from": "article_normalizing",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 1,
+        "pr_number": 1287
+      }
     }
   ],
-  "updated_at": "2026-11-06T07:26:26.432789+00:00",
+  "updated_at": "2026-11-06T07:28:01.013425+00:00",
   "image": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2359,7 +2369,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-11-06T07:28:01.013391+00:00"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2971,9 +2982,10 @@
         "pr_number": "1287"
       },
       "intent_at": "2026-11-06T07:27:31.045052+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 42181049975,
+      "dispatched_at": "2026-11-06T07:27:31.045052+00:00"
     }
   },
   "last_child_notification": {
@@ -2982,17 +2994,5 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-06"
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
