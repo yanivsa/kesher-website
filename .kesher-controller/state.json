@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "blocked",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 42171852912,
@@ -13,7 +13,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-11-06T06:01:33.445541+00:00",
@@ -39,7 +39,17 @@
     "last_normalization_drift_head_sha": "08e16dc7fd41601d22ca54d5903214e37907f2a1",
     "merge_dispatch_count": 0,
     "merge_dispatch_at": null,
-    "normalized_head_sha": "16e10f549083e242bb32fca87f1a4aa24a13c155"
+    "normalized_head_sha": "16e10f549083e242bb32fca87f1a4aa24a13c155",
+    "slug": "relationship-memory-reconstruction",
+    "title": "האם באמת תמיד היה רע? כך משבר בהווה משנה את זיכרונות הזוגיות",
+    "url": "https://kesher.saharoni.com/blog/relationship-memory-reconstruction",
+    "published_date": "2026-11-06",
+    "quality_content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-11-06T10:17:05.736838+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -1749,12 +1759,7 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_ATTEMPTS_EXHAUSTED",
-    "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-11-06T10:16:20.959231+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-11-05T20:41:31.275222+00:00",
@@ -2517,26 +2522,21 @@
   "updated_at": "2026-11-06T10:16:20.959256+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "exhausted",
-    "last_error": {
-      "code": "IMAGE_WORKFLOW_FAILED",
-      "message": "trusted image run 42185302400 completed with conclusion=failure but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-11-06T08:26:31.792161+00:00",
-      "at": "2026-11-06T08:11:31.792185+00:00"
-    },
-    "next_retry_at": "2026-11-06T08:26:31.792161+00:00",
+    "status": "complete",
+    "last_error": null,
+    "next_retry_at": null,
     "run_id": 42185302400,
     "processed_run_id": 42185302400,
     "provider_id": null,
-    "failure_fingerprint": "IMAGE_WORKFLOW_FAILED",
-    "same_failure_streak": 3,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "IMAGE_WORKFLOW_FAILED": 3
     },
     "last_dispatch_at": "2026-11-06T08:06:22.613522+00:00",
     "last_run_conclusion": "failure",
-    "last_failed_run_id": 42185302400
+    "last_failed_run_id": 42185302400,
+    "image_path": "/images/generated/blog/relationship-memory-reconstruction-editorial-20261106.jpg"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3152,6 +3152,16 @@
       "previous_run_id": 42182508177,
       "observed_active_run_id": 42185302400,
       "dispatched_at": "2026-11-06T08:05:44.193997+00:00"
+    },
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-11-06",
+      "inputs": {},
+      "intent_at": "2026-11-06T10:17:01.530078+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "b9cea3970fb6049b84e1156eba449cb971c670d9"
     }
   },
   "last_child_notification": {
