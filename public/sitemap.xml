@@ -417,12 +417,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://kesher.saharoni.com/blog/child-not-playing-kindergarten</loc>
-    <lastmod>2026-11-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://kesher.saharoni.com/blog/parental-hostile-attributions</loc>
     <lastmod>2026-11-05</lastmod>
     <changefreq>monthly</changefreq>
@@ -1241,6 +1235,12 @@
   <url>
     <loc>https://kesher.saharoni.com/blog/when-everyone-around-you-gets-married</loc>
     <lastmod>2026-10-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/child-not-playing-kindergarten</loc>
+    <lastmod>2026-11-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
