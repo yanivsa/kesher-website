@@ -3012,11 +3012,10 @@
       "inputs": {
         "pr_number": "1287"
       },
-      "intent_at": "2026-11-06T07:27:31.045052+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 42181049975,
-      "dispatched_at": "2026-11-06T07:27:31.045052+00:00"
+      "intent_at": "2026-11-06T07:40:43.329275+00:00",
+      "status": "intent",
+      "previous_run_id": 42181049975,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -3028,5 +3027,17 @@
   },
   "processed_child_notifications": [
     "Kesher Normalize Article PR:42180880855"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
