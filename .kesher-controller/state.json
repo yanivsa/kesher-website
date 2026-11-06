@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1766,12 +1766,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-05T20:46:27.407837+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-11-05T20:46:28.721365+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -2525,9 +2519,19 @@
       "from": "article_deploying",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-06T10:24:56.102339+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-11-06T10:24:50.867260+00:00",
+  "updated_at": "2026-11-06T10:24:56.102347+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2547,8 +2551,8 @@
     "image_path": "/images/generated/blog/relationship-memory-reconstruction-editorial-20261106.jpg"
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2557,7 +2561,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-11-06T10:24:56.102325+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
@@ -3171,9 +3177,10 @@
         "target_content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27"
       },
       "intent_at": "2026-11-06T10:24:31.976751+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 42202486835,
+      "dispatched_at": "2026-11-06T10:24:31.976751+00:00"
     }
   },
   "last_child_notification": {
@@ -3186,18 +3193,5 @@
   "processed_child_notifications": [
     "Kesher Normalize Article PR:42180880855",
     "Kesher Normalize Article PR:42186498998"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true
-  }
+  ]
 }
