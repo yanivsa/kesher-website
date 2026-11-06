@@ -15,6 +15,11 @@ on:
           - upload
           - rebuild
           - recovery
+          - adopt-public
+      adopt_youtube_id:
+        description: Existing public YouTube video ID, exact-source verification only; no upload
+        required: false
+        type: string
       rebuild_item_id:
         description: Exact visually rejected item to rebuild with Remotion
         required: false
@@ -407,6 +412,28 @@ jobs:
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') }}
         continue-on-error: true
         run: python -u scripts/kesher_daily_pipeline.py --prune-sources
+
+      - name: Adopt and verify existing exact public YouTube Overview without uploading
+        if: ${{ inputs.operation == 'adopt-public' }}
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          ADOPT_YOUTUBE_ID: ${{ inputs.adopt_youtube_id }}
+          ADOPT_SLUG: ${{ inputs.target_slug }}
+          ADOPT_SHA: ${{ inputs.target_content_sha256 }}
+          ADOPT_ITEM: ${{ inputs.target_item_id }}
+        run: |
+          set -euo pipefail
+          test -n "$ADOPT_YOUTUBE_ID"
+          test -n "$ADOPT_SLUG"
+          test -n "$ADOPT_SHA"
+          test -n "$ADOPT_ITEM"
+          python -u scripts/kesher_video_reconcile.py \
+            --adopt-verified-public-overview-id "$ADOPT_YOUTUBE_ID" \
+            --slug "$ADOPT_SLUG" \
+            --content-sha256 "$ADOPT_SHA" \
+            --item-id "$ADOPT_ITEM"
 
       - name: Prepare exact daily Video Overview generation
         id: prepare_generation
