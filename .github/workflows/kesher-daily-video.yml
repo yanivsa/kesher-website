@@ -236,6 +236,12 @@ jobs:
           fi
 
           python -u scripts/kesher_daily_pipeline.py --report-json > /tmp/kesher-state-report.json
+          # Adopting an already-public YouTube ID is strictly metadata-only.
+          # Never require an MP4 or route this no-upload operation to the generation parser.
+          if [ "${RESTORE_OPERATION:-}" = "adopt-public" ]; then
+            echo "Adopt-public: authoritative lightweight state restored; no media hydration needed."
+            exit 0
+          fi
           restore_args=(--requires-durable-media-restore)
           if [ -n "${RESTORE_OPERATION:-}" ]; then restore_args+=(--operation "$RESTORE_OPERATION"); fi
           if [ -n "${RESTORE_TARGET_ITEM_ID:-}" ]; then restore_args+=(--item-id "$RESTORE_TARGET_ITEM_ID"); fi
