@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -47,13 +47,13 @@
     "quality_content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-08T11:50:45.930737+00:00",
+    "quality_checked_at": "2026-11-08T11:51:47.843545+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-06T10:17:13.418292+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 42201489711,
-    "live_verified_at": "2026-11-08T11:50:46.674154+00:00"
+    "live_verified_at": "2026-11-08T11:51:49.014593+00:00"
   },
   "backlog": [
     {
@@ -1763,12 +1763,7 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-11-06T12:11:37.835613+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-11-05T21:51:19.394149+00:00",
@@ -2593,6 +2588,17 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-11-08T11:51:45.348817+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "verified_overview_exhaustion_recovery",
+      "details": {
+        "slug": "relationship-memory-reconstruction",
+        "item_id": "video-20261106-122551-eb4a3aaa9d",
+        "youtube_url": "https://youtu.be/VPUSEiBk2es"
+      }
     }
   ],
   "updated_at": "2026-11-06T12:11:37.835638+00:00",
@@ -2615,22 +2621,20 @@
     "image_path": "/images/generated/blog/relationship-memory-reconstruction-editorial-20261106.jpg"
   },
   "long_video": {
-    "attempt_count": 3,
-    "status": "exhausted",
+    "attempt_count": 0,
+    "status": "complete",
     "last_error": null,
-    "next_retry_at": "2026-11-06T12:06:27.906699+00:00",
-    "run_id": 42210906006,
-    "processed_run_id": 42210906006,
+    "next_retry_at": "2026-11-08T11:56:40.913164+00:00",
+    "run_id": 42477489481,
+    "processed_run_id": null,
     "provider_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1",
-    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
-    "same_failure_streak": 2,
-    "failure_count_by_type": {
-      "VIDEO_WORKFLOW_FAILED": 2
-    },
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-11-06T11:31:39.788373+00:00",
+    "last_dispatch_at": null,
     "attempts": 1,
-    "last_run_conclusion": "failure",
+    "last_run_conclusion": null,
     "item_id": "video-20261106-122551-eb4a3aaa9d",
     "source_slug": "relationship-memory-reconstruction",
     "source_content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
@@ -2639,17 +2643,38 @@
     "task_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1",
     "artifact_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1",
     "provider_status": "pending",
-    "verified": false,
-    "watchdog": {
-      "identity": "long_video:relationship-memory-reconstruction:eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27:video-20261106-122551-eb4a3aaa9d",
-      "hard_started_at": "2026-11-06T10:25:56.742344+00:00",
-      "last_progress_at": "2026-11-06T10:32:30.132642+00:00",
-      "last_fingerprint": "17325d355180425efc083a28daf0798669b3df7875708286010a5e74e04eec75",
-      "recovery_count": 0,
-      "last_recovery_at": null
+    "verified": true,
+    "resume_dispatches": 0,
+    "last_failed_run_id": 42210906006,
+    "source_binding_exhaustion_recovery_applied": true,
+    "source_binding_recovery_previous": {
+      "attempt_count": 3,
+      "item_id": "video-20261106-122551-eb4a3aaa9d",
+      "provider_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1",
+      "artifact_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1",
+      "source_id": "f48f461a-0227-4611-8067-e3e5b0eb66de",
+      "watchdog": {
+        "identity": "long_video:relationship-memory-reconstruction:eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27:video-20261106-122551-eb4a3aaa9d",
+        "hard_started_at": "2026-11-06T10:25:56.742344+00:00",
+        "last_progress_at": "2026-11-06T10:32:30.132642+00:00",
+        "last_fingerprint": "17325d355180425efc083a28daf0798669b3df7875708286010a5e74e04eec75",
+        "recovery_count": 0,
+        "last_recovery_at": null
+      }
     },
-    "resume_dispatches": 2,
-    "last_failed_run_id": 42210906006
+    "youtube_id": "VPUSEiBk2es",
+    "youtube_url": "https://youtu.be/VPUSEiBk2es",
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 101.167,
+    "content_duration_seconds": 101.167,
+    "signature_duration_seconds": 3.0,
+    "signature_overlay": true,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
     "attempt_count": 0,
@@ -3262,26 +3287,11 @@
       "previous_run_id": 42182508177,
       "observed_active_run_id": 42185302400,
       "dispatched_at": "2026-11-06T08:05:44.193997+00:00"
-    },
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-11-06",
-      "inputs": {
-        "operation": "upload",
-        "target_slug": "relationship-memory-reconstruction",
-        "target_content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
-        "target_item_id": "video-20261106-122551-eb4a3aaa9d"
-      },
-      "intent_at": "2026-11-06T11:30:49.132606+00:00",
-      "status": "dispatched",
-      "previous_run_id": 42207293664,
-      "observed_active_run_id": 42210906006,
-      "dispatched_at": "2026-11-06T11:30:49.132606+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 42204508523,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 42477489481,
     "conclusion": "success",
     "source_slug": "relationship-memory-reconstruction",
     "slot": "2026-11-06"
