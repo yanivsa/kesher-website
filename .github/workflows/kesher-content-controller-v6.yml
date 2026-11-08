@@ -145,6 +145,13 @@ jobs:
           [ "$artifact_name" = "kesher-short-v4-state" ] || { echo 'Refusing unknown artifact class'; exit 2; }
           gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${EXPORT_ARTIFACT_ID}/zip" > /tmp/kesher-short-source.zip
 
+      - name: Install ffprobe package for Short QA
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          command -v ffprobe
+
       - name: Validate exact native 9:16 Short and export only approved review evidence
         env:
           EXPORT_ITEM: ${{ inputs.short_item_id }}
