@@ -19,6 +19,16 @@ on:
         default: false
         type: boolean
 
+      existing_session_mode:
+        description: Exact original Nov 7/8 Jules session only; off keeps original article workflow untouched
+        required: false
+        default: 'off'
+        type: choice
+        options:
+          - 'off'
+          - check
+          - nudge
+
 permissions:
   contents: read
   pull-requests: write
@@ -81,6 +91,7 @@ jobs:
           echo "Resolved slot=$slot test_mode=$test_mode trigger=$trigger topic_brief_bytes=$(wc -c < "$brief_file")"
 
       - name: Run exactly one autonomous Jules article text attempt with evidence contract
+        if: ${{ inputs.existing_session_mode == 'off' }}
         id: article_worker
         continue-on-error: true
         env:
@@ -90,6 +101,20 @@ jobs:
           set -euo pipefail
           mkdir -p "$(dirname "$KESHER_ARTICLE_RESULT_PATH")"
           python3 -u scripts/jules_article_runner_v4.py --slot "$KESHER_ARTICLE_SLOT"
+
+      - name: Fail-closed recovery unit tests (existing Jules sessions only)
+        if: ${{ inputs.existing_session_mode == 'check' || inputs.existing_session_mode == 'nudge' }}
+        run: python -m unittest discover -s tests -p 'test_kesher_jules_exact_session_recovery.py' -v
+
+      - name: Read or nudge same existing Jules session WITHOUT creating an article
+        if: ${{ (inputs.existing_session_mode == 'check' || inputs.existing_session_mode == 'nudge') && inputs.test_mode != true }}
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+          KESHER_SLOT: ${{ inputs.slot }}
+          KESHER_MODE: ${{ inputs.existing_session_mode }}
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_jules_exact_session_recovery --slot "$KESHER_SLOT" --mode "$KESHER_MODE"
 
       - name: Persist structured article attempt result
         if: ${{ always() && steps.bridge_admission.outcome == 'success' && hashFiles('.kesher-article-result/result.json') != '' }}
@@ -134,7 +159,7 @@ jobs:
           exit 1
 
       - name: Notify canonical Kesher Content Controller on completion
-        if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' && inputs.test_mode != true }}
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' && inputs.test_mode != true && inputs.existing_session_mode == 'off' }}
         continue-on-error: true
         timeout-minutes: 2
         env:

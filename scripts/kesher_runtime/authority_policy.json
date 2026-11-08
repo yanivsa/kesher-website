@@ -1318,7 +1318,7 @@
         "read",
         "workflow_dispatch"
       ],
-      "definition_sha256": "10cd205c5f1c58d55184c62bd0caf68525a5482895e015d209c834d0e52fe437",
+      "definition_sha256": "27f880cfc0fe25060b820dfc87f0744ec9cb0c4facfe04cb7650f118ad027418",
       "resources": [
         "github.dispatch",
         "github.pull_requests",
@@ -1338,7 +1338,9 @@
           "scripts/kesher_runtime/legacy_retirement.py": "90555d274327debeac3e16adb50ac5e011f38cf353f78e888f228040a3027d4c",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
           "tests/test_jules_article_runner.py": "0e835465783dd94e33ddcf7c9ac8de40f91ec2e367ed72d1d50e175b352196ce",
-          "scripts/kesher_daily_pipeline.py": "58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f"
+          "scripts/kesher_daily_pipeline.py": "58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f",
+          "scripts/kesher_jules_exact_session_recovery.py": "9a2effd74e5d86cf093e2acdf522a5c140202c6b62212d0e0d83ae34ad6709fa",
+          "tests/test_kesher_jules_exact_session_recovery.py": "4967ebf4435c37d210727be447adb2c62c1099b127ab3406d1f12391fcde245b"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
