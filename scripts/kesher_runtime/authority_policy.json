@@ -1318,7 +1318,7 @@
         "read",
         "workflow_dispatch"
       ],
-      "definition_sha256": "6979c14d2b2e6c764dbeb3fbddfd72c80f69070200c3ef1716e445f43c12cdf1",
+      "definition_sha256": "0c57699712544749594a6ad2064cf6e43adb1387c461fc9765e33c3db476821f",
       "resources": [
         "github.dispatch",
         "github.pull_requests",

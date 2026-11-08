@@ -37,7 +37,10 @@ permissions:
   actions: write
 
 concurrency:
-  group: kesher-article-generation-${{ github.event_name }}-${{ inputs.slot || github.sha }}
+  # A read-only GET of the SAME pinned existing stress session need not wait for
+  # an unrelated long-running article poll. Mutation/nudge and all actual
+  # generation retain the original per-slot concurrency group unchanged.
+  group: kesher-article-generation-${{ github.event_name }}-${{ (inputs.existing_session_mode == 'stress-check' && 'readonly-stress-20261108') || (inputs.slot || github.sha) }}
   cancel-in-progress: false
 
 jobs:
