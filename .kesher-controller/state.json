@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "short_running",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -53,7 +53,7 @@
     "last_deploy_dispatch_at": "2026-11-06T10:17:13.418292+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 42201489711,
-    "live_verified_at": "2026-11-08T12:24:16.723536+00:00"
+    "live_verified_at": "2026-11-08T12:24:42.172247+00:00"
   },
   "backlog": [
     {
@@ -1766,25 +1766,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-06T07:36:16.492317+00:00",
-      "from": "image_retry_wait",
-      "to": "image_retry_wait",
-      "reason": "trusted image retry backoff is active",
-      "details": {
-        "retry_at": "2026-11-06T07:36:27.810511+00:00"
-      }
-    },
-    {
-      "at": "2026-11-06T07:41:20.197583+00:00",
-      "from": "image_retry_wait",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 2,
-        "pr_number": 1287
-      }
-    },
-    {
       "at": "2026-11-06T07:46:24.005555+00:00",
       "from": "article_image_running",
       "to": "image_retry_wait",
@@ -2563,9 +2544,21 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-11-08T12:24:42.172272+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-08T12:24:43.409136+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-11-08T12:21:17.964193+00:00",
+  "updated_at": "2026-11-08T12:24:43.409156+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2643,23 +2636,17 @@
   "short": {
     "attempt_count": 2,
     "status": "running",
-    "last_error": {
-      "code": "SHORT_WORKFLOW_FAILED",
-      "message": "Short derive run 42477627205 completed with conclusion=failure",
-      "retryable": true,
-      "retry_at": "2026-11-08T12:16:12.508998+00:00",
-      "at": "2026-11-08T12:11:12.509017+00:00"
-    },
+    "last_error": null,
     "next_retry_at": null,
     "run_id": 42479845407,
-    "processed_run_id": 42477627205,
+    "processed_run_id": 42479845407,
     "provider_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1",
-    "failure_fingerprint": "SHORT_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "SHORT_WORKFLOW_FAILED": 1
     },
-    "last_run_conclusion": "failure",
+    "last_run_conclusion": "success",
     "last_dispatch_at": "2026-11-08T12:21:17.964151+00:00",
     "artifact_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1",
     "source_id": "f48f461a-0227-4611-8067-e3e5b0eb66de",
@@ -3265,6 +3252,20 @@
       "previous_run_id": 42182508177,
       "observed_active_run_id": 42185302400,
       "dispatched_at": "2026-11-06T08:05:44.193997+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-11-06",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "relationship-memory-reconstruction",
+        "derive_content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
+        "derive_long_item_id": "video-20261106-122551-eb4a3aaa9d"
+      },
+      "intent_at": "2026-11-08T12:24:09.852843+00:00",
+      "status": "intent",
+      "previous_run_id": 42479845407,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
