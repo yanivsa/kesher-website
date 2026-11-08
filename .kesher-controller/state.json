@@ -1,19 +1,20 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-08",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-11-08T20:10:54.797886+00:00",
     "run_id": 42516246292,
-    "processed_run_id": 42512834601,
+    "processed_run_id": 42516246292,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 2,
+    "failure_fingerprint": "COMPLETED_WITHOUT_PR",
+    "same_failure_streak": 1,
     "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 2
+      "JULES_TIMEOUT_SESSION_ACTIVE": 2,
+      "COMPLETED_WITHOUT_PR": 1
     },
     "attempts": 0,
     "deploy_attempts": 0,
@@ -21,16 +22,32 @@
     "last_worker_result": {
       "schema_version": 1,
       "slot": "2026-11-08",
-      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "outcome": "COMPLETED_WITHOUT_PR",
       "retryable": true,
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
+      "message": "Jules completed without creating a pull request; Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
       "session_id": "sessions/6279608980264196665",
       "pr_url": "",
-      "github_run_id": "42512834601",
-      "completed_at": "2026-11-08T19:40:38.003298+00:00"
+      "github_run_id": "42516246292",
+      "completed_at": "2026-11-08T20:01:41.551461+00:00",
+      "diagnostic": {
+        "source": {
+          "name": "sources/github/yanivsa/kesher-website",
+          "owner": "yanivsa",
+          "repo": "kesher-website",
+          "default_branch": "main",
+          "main_available": true
+        },
+        "activity_count": 22,
+        "change_set_count": 19,
+        "change_set_fingerprints": [],
+        "last_agent_message": "",
+        "last_progress": "All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
+        "last_description": "",
+        "session_failed_reason": ""
+      }
     },
     "last_jules_session_id": "sessions/6279608980264196665",
-    "last_failed_run_id": 42512834601,
+    "last_failed_run_id": 42516246292,
     "resume_dispatches": 2,
     "last_dispatch_at": "2026-11-08T19:40:55.163018+00:00"
   },
@@ -1742,17 +1759,15 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "COMPLETED_WITHOUT_PR",
+    "message": "Jules completed without creating a pull request; Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
+    "retryable": true,
+    "retry_at": "2026-11-08T20:10:54.797886+00:00",
+    "at": "2026-11-08T20:05:54.797904+00:00"
+  },
   "history": [
-    {
-      "at": "2026-11-08T15:26:12.832185+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts"
-      }
-    },
     {
       "at": "2026-11-08T15:30:47.815838+00:00",
       "from": "blocked",
@@ -2534,9 +2549,22 @@
       "details": {
         "publication_slot": "2026-11-08"
       }
+    },
+    {
+      "at": "2026-11-08T20:05:54.797908+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "COMPLETED_WITHOUT_PR",
+      "details": {
+        "message": "Jules completed without creating a pull request; Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
+        "retry_at": "2026-11-08T20:10:54.797886+00:00",
+        "failure_streak": 1,
+        "run_id": 42516246292,
+        "session_id": "sessions/6279608980264196665"
+      }
     }
   ],
-  "updated_at": "2026-11-08T20:00:57.977679+00:00",
+  "updated_at": "2026-11-08T20:05:54.797914+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
