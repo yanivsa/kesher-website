@@ -1,4 +1,4 @@
-"""Read/urgently nudge ONLY two already-created owner Jules sessions.
+"""Read/urgently nudge ONLY exact pinned, already-created owner Jules sessions.
 
 No Jules create/list/delete calls, no new GitHub PR, and no publication side
 effects. Each session is pinned to the source identity of its original brief.
@@ -28,16 +28,37 @@ ALLOWED = {
         "separate-room-transition-20261019-v1",
     ),
 }
+# Same 2026-11-08 date, DIFFERENT immutable session and owner brief. Never
+# confuse with the independently pinned separate-room Nov 8 session above.
+STRESS_SLOT = "2026-11-08-stress"
+STRESS_SESSION = (
+    "13248247772650112609",
+    "סטרס מהעבודה בזוגיות",
+    "couples-after-work-stress-crossover",
+)
+
+
+def source_spec(slot: str) -> tuple[str, str, str]:
+    if slot == STRESS_SLOT:
+        return STRESS_SESSION
+    if slot not in ALLOWED:
+        raise ValueError("Unsupported owner source key; no Jules call performed")
+    return ALLOWED[slot]
+
+
+def publication_date(slot: str) -> str:
+    return "2026-11-08" if slot == STRESS_SLOT else slot
+
+
 ACTIVE = {"IN_PROGRESS", "PAUSED", "AWAITING_USER_FEEDBACK", "PLANNING", "QUEUED"}
 KNOWN = ACTIVE | {"COMPLETED", "FAILED", "AWAITING_PLAN_APPROVAL"}
 PR_RE = re.compile(r"https://github[.]com/yanivsa/kesher-website/pull/[0-9]+/?$")
 
 
 def expected_title(slot: str) -> str:
-    if slot not in ALLOWED:
-        raise ValueError("Unsupported publication slot; no Jules call performed")
-    keyword_hash = hashlib.sha256(ALLOWED[slot][1].encode("utf-8")).hexdigest()[:10]
-    return f"Kesher article {slot} kw-{keyword_hash}"
+    _, keyword, _ = source_spec(slot)
+    keyword_hash = hashlib.sha256(keyword.encode("utf-8")).hexdigest()[:10]
+    return f"Kesher article {publication_date(slot)} kw-{keyword_hash}"
 
 
 def session_name(payload: dict) -> str:
@@ -46,7 +67,7 @@ def session_name(payload: dict) -> str:
 
 
 def inspect_identity(payload: dict, slot: str) -> tuple[str, list[str]]:
-    if session_name(payload) != f"sessions/{ALLOWED[slot][0]}":
+    if session_name(payload) != f"sessions/{source_spec(slot)[0]}":
         raise ValueError("Unexpected Jules session ID; aborting without write")
     title = str(payload.get("title") or "").strip()
     # Jules v1alpha may return the legacy slot title, an owner-brief keyword
@@ -54,14 +75,14 @@ def inspect_identity(payload: dict, slot: str) -> tuple[str, list[str]]:
     # The hardcoded 19-digit existing session ID above is the authority.
     # We still refuse any title for another slot or arbitrary task.
     if title and not re.fullmatch(
-        rf"Kesher article {re.escape(slot)}(?: kw-[0-9a-f]{{10}})?",
+        rf"Kesher article {re.escape(publication_date(slot))}(?: kw-[0-9a-f]{{10}})?",
         title,
     ):
         raise ValueError("Jules title/slot identity mismatch; aborting without write")
     # Corroborate keyword/idea against the original prompt when the API
     # exposes it. Do not require a field Jules may redact on GET.
     prompt = str(payload.get("prompt") or "")
-    if prompt and (ALLOWED[slot][1] not in prompt and ALLOWED[slot][2] not in prompt):
+    if prompt and (source_spec(slot)[1] not in prompt and source_spec(slot)[2] not in prompt):
         raise ValueError("Jules source prompt keyword/idea mismatch; aborting without write")
     source_context = payload.get("sourceContext") or {}
     source = str(source_context.get("source") or "")
@@ -111,8 +132,14 @@ def request_jules(api_key: str, method: str, path: str, body: dict | None = None
 
 
 def nudge_prompt(slot: str) -> str:
-    _, keyword, idea = ALLOWED[slot]
+    _, keyword, idea = source_spec(slot)
     context = (
+        "For the exact owner stress-after-work couples article: use Saxbe and Repetti "
+        "2010 and related observational findings without claiming causal hormonal contagion; "
+        "a mutually agreed 10–15 minute transition is a practical suggestion, not a tested "
+        "treatment. Respect equal childcare/housework and consent; use real research links. "
+        "Keep same idea_id, article identity and original change sets, not another source. "
+        if slot == STRESS_SLOT else
         "For baby room transition: distinguish AAP safe-sleep recommendations from "
         "parenting advice, do not claim unsafe early solitary sleep is recommended. "
         if slot == "2026-11-08" else
@@ -120,7 +147,7 @@ def nudge_prompt(slot: str) -> str:
         "or fabricated studies. "
     )
     return (
-        f"OWNER RESUME OF THIS EXACT EXISTING SESSION ONLY. Publication slot {slot}; "
+        f"OWNER RESUME OF THIS EXACT EXISTING SESSION ONLY. Publication slot {publication_date(slot)}; "
         f"idea_id={idea}; required keyword={keyword}. Continue and correct your existing "
         "changes within this SAME session/source branch; Do NOT create a separate article "
         "or Jules session. Finish the already-started article, repair exact brief/content "
@@ -137,14 +164,14 @@ def nudge_prompt(slot: str) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--slot", choices=tuple(ALLOWED), required=True)
+    parser.add_argument("--slot", choices=tuple(ALLOWED) + (STRESS_SLOT,), required=True)
     parser.add_argument("--mode", choices=("check", "nudge"), default="check")
     args = parser.parse_args()
     api_key = os.getenv("JULES_API_KEY", "")
     if not api_key:
         print("BLOCKED: Jules API secret absent", file=sys.stderr)
         return 2
-    sid = ALLOWED[args.slot][0]
+    sid = source_spec(args.slot)[0]
     payload = request_jules(api_key, "GET", f"/sessions/{sid}")
     state, pr_urls = inspect_identity(payload, args.slot)
     print(json.dumps({"slot": args.slot, "session": f"sessions/{sid}", "state": state,
