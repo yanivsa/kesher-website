@@ -117,7 +117,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         """
         return self.now.date().isoformat()
 
-    def _reset_for_run_now(self, state: dict, publication_slot: str) -> None:
+    def _reset_for_run_now(self, state: dict, publication_slot: str, *, previous_active_idea=None) -> None:
         previous_status = str(state.get("status") or "")
         active = state.get("active_idea")
         if not isinstance(active, dict):
@@ -129,7 +129,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             "article": copy.deepcopy(state.get("article") or {}),
             "long_video": copy.deepcopy(state.get("long_video") or {}),
             "short": copy.deepcopy(state.get("short") or {}),
-            "active_idea": copy.deepcopy(state.get("active_idea") or {}),
+            "active_idea": copy.deepcopy(previous_active_idea if previous_active_idea is not None else state.get("active_idea") or {}),
             "last_error": copy.deepcopy(state.get("last_error")),
             "archived_at": v5.core.utc_now(),
             "reason": "owner_run_now_cycle_started",
@@ -174,11 +174,15 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         short = state.get("short") or {}
         if not all(isinstance(row, dict) for row in (article, long_video, short)):
             return False
+        try:
+            attempts = int(short.get("attempt_count") or 0)
+        except (TypeError, ValueError, OverflowError):
+            return False
         if (
             article.get("live") is not True
             or article.get("quality_status") != "passed"
             or long_video.get("verified") is not True
-            or int(short.get("attempt_count") or 0) < v5.v3.MAX_STAGE_ATTEMPTS
+            or attempts < v5.v3.MAX_STAGE_ATTEMPTS
         ):
             return False
         slug = str(article.get("slug") or "").strip()
@@ -241,7 +245,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if not isinstance(posts, list):
             raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
         slot = self._first_free_publication_slot(posts)
-        self._reset_for_run_now(state, slot)
+        self._reset_for_run_now(state, slot, previous_active_idea=previous_active)
         return True
 
     def _run_now_article_phase(self, state: dict):
