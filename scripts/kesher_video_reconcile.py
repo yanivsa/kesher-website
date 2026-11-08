@@ -1296,6 +1296,10 @@ def adopt_verified_public_overview_id(
     # this existing video and retry, never uploading another copy.
     item["youtube_id"] = youtube_id
     item["youtube_url"] = f"https://youtu.be/{youtube_id}"
+    if isinstance(source, dict):
+        for field in ("subcategory", "youtube_metadata", "short_youtube_metadata"):
+            if field in source:
+                item.setdefault("source", {})[field] = source[field]
     if item.get("uploaded") is not True:
         item["status"] = "uploading"
     pipeline.save_state(state)
