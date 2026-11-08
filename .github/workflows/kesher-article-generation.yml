@@ -20,7 +20,7 @@ on:
         type: boolean
 
       existing_session_mode:
-        description: Exact original Nov 7/8 Jules session only; off keeps original article workflow untouched
+        description: Exact existing sessions only; off keeps article worker untouched
         required: false
         default: 'off'
         type: choice
@@ -28,6 +28,8 @@ on:
           - 'off'
           - check
           - nudge
+          - stress-check
+          - stress-nudge
 
 permissions:
   contents: read
@@ -103,18 +105,30 @@ jobs:
           python3 -u scripts/jules_article_runner_v4.py --slot "$KESHER_ARTICLE_SLOT"
 
       - name: Fail-closed recovery unit tests (existing Jules sessions only)
-        if: ${{ inputs.existing_session_mode == 'check' || inputs.existing_session_mode == 'nudge' }}
+        if: ${{ inputs.existing_session_mode != 'off' }}
         run: python -m unittest discover -s tests -p 'test_kesher_jules_exact_session_recovery.py' -v
 
       - name: Read or nudge same existing Jules session WITHOUT creating an article
-        if: ${{ (inputs.existing_session_mode == 'check' || inputs.existing_session_mode == 'nudge') && inputs.test_mode != true }}
+        if: ${{ inputs.existing_session_mode != 'off' && inputs.test_mode != true }}
         env:
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
           KESHER_SLOT: ${{ inputs.slot }}
           KESHER_MODE: ${{ inputs.existing_session_mode }}
         run: |
           set -euo pipefail
-          python -m scripts.kesher_jules_exact_session_recovery --slot "$KESHER_SLOT" --mode "$KESHER_MODE"
+          # The two Nov 8 owner requests have DIFFERENT immutable Jules session IDs.
+          # Only these exact choices can read/nudge a prior session; never create.
+          case "$KESHER_MODE" in
+            check|nudge)
+              python -m scripts.kesher_jules_exact_session_recovery --slot "$KESHER_SLOT" --mode "$KESHER_MODE"
+              ;;
+            stress-check|stress-nudge)
+              test "$KESHER_SLOT" = "2026-11-08" || { echo "Wrong slot for exact stress session"; exit 1; }
+              mode="${KESHER_MODE#stress-}"
+              python -m scripts.kesher_jules_exact_session_recovery --slot "2026-11-08-stress" --mode "$mode"
+              ;;
+            *) echo "Invalid exact session recovery mode"; exit 1 ;;
+          esac
 
       - name: Persist structured article attempt result
         if: ${{ always() && steps.bridge_admission.outcome == 'success' && hashFiles('.kesher-article-result/result.json') != '' }}
