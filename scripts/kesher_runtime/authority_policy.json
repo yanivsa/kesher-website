@@ -2234,6 +2234,26 @@
       "role": "retired",
       "registration_id": 351484777
     },
+    ".github/workflows/kesher-exact-short-qa-recovery.yml": {
+      "capabilities": [
+        "artifact_write",
+        "read"
+      ],
+      "definition_sha256": "9ad8f786f0b5aab1b2f5459af3c8a3891a8f622df1661250f40d76d390909045",
+      "resources": [],
+      "review": {
+        "call_chain": {},
+        "credential_services": {
+          "GITHUB_TOKEN": "github"
+        },
+        "credentials": [
+          "GITHUB_TOKEN"
+        ],
+        "dispatches": [],
+        "note": "Reviewed owner-only manual recovery: reads exactly one immutable same-source Short artifact using GitHub actions:read; verifies original item identity and SHA-256 checksums for every exported file; exports only review media and evidence through GitHub Actions artifact storage. No Git writes, provider tasks, metadata changes, YouTube API calls, secret output, public upload, schedule or auto-trigger. GitHub Actions artifact output is its only permitted write."
+      },
+      "role": "separate_infrastructure"
+    },
     ".github/workflows/kesher-final-attempt-fallback.yml": {
       "capabilities": [
         "read",
