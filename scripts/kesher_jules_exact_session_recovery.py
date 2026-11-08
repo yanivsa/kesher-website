@@ -109,7 +109,7 @@ def nudge_prompt(slot: str) -> str:
     return (
         f"OWNER RESUME OF THIS EXACT EXISTING SESSION ONLY. Publication slot {slot}; "
         f"idea_id={idea}; required keyword={keyword}. Continue and correct your existing "
-        "changes within this SAME session/source branch; do NOT create a separate article "
+        "changes within this SAME session/source branch; Do NOT create a separate article "
         "or Jules session. Finish the already-started article, repair exact brief/content "
         "violations and generated-file integrity issues, cite verified authoritative "
         "sources and include at least three live relevant internal /blog/ links and a "
