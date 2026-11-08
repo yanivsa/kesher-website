@@ -1339,8 +1339,8 @@
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
           "tests/test_jules_article_runner.py": "0e835465783dd94e33ddcf7c9ac8de40f91ec2e367ed72d1d50e175b352196ce",
           "scripts/kesher_daily_pipeline.py": "58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f",
-          "scripts/kesher_jules_exact_session_recovery.py": "9a2effd74e5d86cf093e2acdf522a5c140202c6b62212d0e0d83ae34ad6709fa",
-          "tests/test_kesher_jules_exact_session_recovery.py": "4967ebf4435c37d210727be447adb2c62c1099b127ab3406d1f12391fcde245b"
+          "scripts/kesher_jules_exact_session_recovery.py": "73f4dfff19cd9e7e23cda36ebaed1ccef0a85ac3351c61f76191401ac6febf5d",
+          "tests/test_kesher_jules_exact_session_recovery.py": "553e580d37e2d71426b191b753b78f75bb9531c76a9a001acc2a42aa288f440a"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
