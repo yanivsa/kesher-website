@@ -1759,7 +1759,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "bd10607084b7d3047443d4e36b25148310ef678053d708524509a38557438efa",
+      "definition_sha256": "473fb450b27b30714334ba8c087d1b1c93f1c782c3b1d71bd76f8a6447e5c1bf",
       "resources": [],
       "review": {
         "call_chain": {
