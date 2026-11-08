@@ -1760,24 +1760,8 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_WORKFLOW_FAILED",
-    "message": "article run 42519241414 completed with conclusion=cancelled but no structured result was available",
-    "retryable": true,
-    "retry_at": "2026-11-08T20:50:49.024971+00:00",
-    "at": "2026-11-08T20:45:49.024994+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-11-08T15:51:12.065425+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts"
-      }
-    },
     {
       "at": "2026-11-08T15:55:46.780157+00:00",
       "from": "blocked",
@@ -2583,9 +2567,18 @@
         "run_id": 42519241414,
         "session_id": null
       }
+    },
+    {
+      "at": "2026-11-08T20:50:56.333981+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "owner run-now article retry backoff is active",
+      "details": {
+        "retry_at": "2026-11-08T20:50:49.024971+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-08T20:45:49.025004+00:00",
+  "updated_at": "2026-11-08T20:50:56.333997+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
