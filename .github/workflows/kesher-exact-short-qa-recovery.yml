@@ -1,0 +1,93 @@
+name: Kesher Exact Short Recovery QA Export
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  recover-short-for-independent-qa:
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Recover only the immutable same-source Short for independent QA
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # Read-only: never generate/upload/publish videos or expose credentials.
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13497805127/zip > /tmp/kesher-short-source.zip
+          python3 - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          from zipfile import ZipFile
+
+          item_id = 'video-20261106-124315-eb4a3aaa9d'
+          slug = 'relationship-memory-reconstruction'
+          source_sha = 'eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27'
+          out = Path('kesher-short-recovery-qa')
+          out.mkdir(exist_ok=True)
+          with ZipFile('/tmp/kesher-short-source.zip') as archive:
+              state = json.loads(archive.read('state.json'))
+              items = [x for x in state.get('items', []) if x.get('id') == item_id]
+              assert len(items) == 1, 'Exact Short identity is not unique'
+              item = items[0]
+              assert item.get('type') == 'article_short'
+              assert item.get('source_mode') == 'direct-short', 'Not native Short'
+              assert item.get('source', {}).get('slug') == slug
+              assert item.get('source', {}).get('content_sha256') == source_sha
+              assert item.get('technical_verified') is True
+              assert item.get('uploaded') is not True, 'Already uploaded; verify before further action'
+              assert item.get('status') in ('pending_review', 'approved')
+              expected = [
+                  (item['final_mp4'], item['final_sha256'], 'short-final.mp4'),
+                  (item['visual_review_path'], item['visual_review_sha256'], 'visual-review.png'),
+                  (item['transcript_path'], item['transcript_sha256'], 'transcript-he.txt'),
+                  (item['source_path'], item['source_file_sha256'], 'source-he.txt'),
+                  (item['manifest_path'], item['manifest_sha256'], 'short-manifest.json'),
+              ]
+              frames = item.get('frame_paths') or []
+              assert len(frames) == 8, 'Expected eight visual-review frames'
+              for i, name in enumerate(frames, 1):
+                  assert name.startswith(item_id + '-frames/frame-') and name.endswith('.png')
+                  expected.append((name, item['frame_sha256'][name], f'frame-{i}.png'))
+              for source_name, checksum, output_name in expected:
+                  digest = hashlib.sha256()
+                  with archive.open(source_name) as source, (out / output_name).open('wb') as dest:
+                      while chunk := source.read(1024 * 1024):
+                          digest.update(chunk)
+                          dest.write(chunk)
+                  if digest.hexdigest() != checksum:
+                      raise RuntimeError('SHA256 mismatch: ' + output_name)
+              (out / 'identity.json').write_text(json.dumps({
+                  'source_slug': slug, 'source_sha256': source_sha,
+                  'original_item_id': item_id, 'source_mode': 'direct-short',
+                  'original_run_id': 42205975256, 'file_sha256': item['final_sha256'],
+                  'technical_verified': True, 'visual_review': 'PENDING',
+                  'semantic_review': 'PENDING', 'youtube_upload': 'NOT_ATTEMPTED',
+              }, indent=2), encoding='utf-8')
+          print('EXACT_SHORT_SHA256_EVIDENCE_RECOVERED')
+          PY
+          ffprobe -v error -show_entries stream=codec_type,codec_name,width,height -show_entries format=duration -of json kesher-short-recovery-qa/short-final.mp4 > /tmp/kesher-probe.json
+          python3 - <<'PY'
+          import json
+          data = json.load(open('/tmp/kesher-probe.json'))
+          streams = data['streams']
+          assert any(s.get('codec_type') == 'video' and s.get('width') == 1080 and s.get('height') == 1920 and s.get('codec_name') == 'h264' for s in streams), 'Native 9:16 H264 missing'
+          assert any(s.get('codec_type') == 'audio' for s in streams), 'Audio stream missing'
+          duration = float(data['format']['duration'])
+          assert 90 <= duration <= 98, f'Unexpected duration {duration}'
+          print('NATIVE_SHORT_TECHNICAL_QA_OK', duration)
+          PY
+      - name: Share original Short for independent review, not public upload
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-short-exact-20261106-independent-qa
+          path: kesher-short-recovery-qa/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
