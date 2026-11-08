@@ -1,0 +1,118 @@
+name: Kesher Live Internal Links One-Time QA
+on:
+  push:
+    branches:
+      - audit/live-internal-links-20261108
+    paths:
+      - .github/workflows/kesher-live-internal-links-once.yml
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout audited main snapshot
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Check all planned P1 and P2 internal links on production
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { chromium } from 'playwright';
+          
+          const base = 'https://kesher.saharoni.com';
+          const p1 = JSON.parse(fs.readFileSync('scripts/internal-link-plan.json', 'utf8'));
+          const p2 = JSON.parse(fs.readFileSync('scripts/internal-link-plan-priority2.json', 'utf8'));
+          const rules = JSON.parse(fs.readFileSync('src/data/internalLinkBackfill.json', 'utf8'));
+          const plans = [...p1, ...p2];
+          const errors = [];
+          const targets = new Set(plans.flatMap(x => x.targets));
+          const planned = plans.reduce((sum, x) => sum + x.targets.length, 0);
+          const fail = message => { errors.push(message); console.error('FAIL ' + message); };
+          
+          if (p1.length !== 20 || p2.length !== 14 || planned !== 72 || rules.length !== 34) {
+            fail('Plan dimensions changed: P1=' + p1.length + ' P2=' + p2.length + ' links=' + planned + ' overlay=' + rules.length);
+          }
+          for (const entry of plans) {
+            const rule = rules.find(x => x.source === entry.source);
+            if (!rule) { fail('Missing overlay rule: ' + entry.source); continue; }
+            for (const target of entry.targets) {
+              if (!rule.items.some(x => x.target === target)) fail('Missing overlay target: ' + entry.source + ' => ' + target);
+            }
+          }
+          
+          const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
+          const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+          page.setDefaultTimeout(15000);
+          let validSources = 0, validLinks = 0, validTargets = 0;
+          
+          for (const entry of plans) {
+            const url = base + '/blog/' + entry.source;
+            try {
+              const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+              if (!response || response.status() !== 200) {
+                fail('Source HTTP ' + (response ? response.status() : 'null') + ': ' + url);
+                continue;
+              }
+              await page.locator('h1').first().waitFor({ state: 'visible', timeout: 18000 });
+              await page.locator('[data-kesher-internal-link-backfill]').first().waitFor({ state: 'attached', timeout: 18000 });
+              const attrs = await page.locator('[data-kesher-internal-link-backfill]').first().getAttribute('data-kesher-internal-link-backfill');
+              if (attrs !== entry.source) fail('Source marker differs: ' + entry.source + ' marker=' + attrs);
+              const hrefs = await page.locator('a[href]').evaluateAll(nodes => nodes.map(n => n.getAttribute('href')));
+              let okay = 0;
+              for (const target of entry.targets) {
+                const expected = '/blog/' + target;
+                const count = hrefs.filter(h => {
+                  try {
+                    const parsed = new URL(h, base);
+                    return parsed.host === 'kesher.saharoni.com' && parsed.pathname.replace(/\/$/, '') === expected;
+                  } catch { return false; }
+                }).length;
+                if (count !== 1) fail('Live link count=' + count + ' source=' + entry.source + ' target=' + target);
+                else { okay++; validLinks++; }
+              }
+              if (okay === entry.targets.length && attrs === entry.source) validSources++;
+              console.log('SOURCE ' + entry.source + ' ' + okay + '/' + entry.targets.length + ' title=' + (await page.title()).slice(0, 80));
+            } catch (err) {
+              fail('Source could not render: ' + entry.source + ' => ' + String(err).slice(0, 240));
+            }
+          }
+          
+          for (const target of [...targets].sort()) {
+            const url = base + '/blog/' + target;
+            try {
+              const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+              if (!response || response.status() !== 200) {
+                fail('Target HTTP ' + (response ? response.status() : 'null') + ': ' + url);
+                continue;
+              }
+              await page.locator('h1').first().waitFor({ state: 'visible', timeout: 18000 });
+              const h1 = (await page.locator('h1').first().innerText()).trim();
+              const canonical = await page.locator('link[rel=canonical]').first().getAttribute('href').catch(() => null);
+              const canonicalPath = canonical ? new URL(canonical, base).pathname.replace(/\/$/, '') : null;
+              if (!h1 || canonicalPath !== '/blog/' + target) {
+                fail('Target title/canonical mismatch: ' + target + ' h1=' + h1.slice(0, 50) + ' canonical=' + canonical);
+              } else validTargets++;
+              console.log('TARGET ' + target + ' 200 h1=' + h1.slice(0, 70));
+            } catch (err) {
+              fail('Target could not render: ' + target + ' => ' + String(err).slice(0, 240));
+            }
+          }
+          
+          await browser.close();
+          const summary = 'KESHER_LIVE_LINK_AUDIT sources=' + validSources + '/' + plans.length + ' links=' + validLinks + '/' + planned + ' targets=' + validTargets + '/' + targets.size + ' errors=' + errors.length;
+          console.log(summary);
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '## Production internal-link audit\n\n' + summary + '\n\n' + (errors.length ? errors.map(x => '- ' + x).join('\n') : 'All checks passed.') + '\n');
+          if (errors.length) process.exitCode = 1;
+          NODE
