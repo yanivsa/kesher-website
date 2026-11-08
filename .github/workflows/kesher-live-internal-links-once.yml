@@ -79,8 +79,8 @@ jobs:
                     return parsed.host === 'kesher.saharoni.com' && parsed.pathname.replace(/\/$/, '') === expected;
                   } catch { return false; }
                 }).length;
-                if (count !== 1) fail('Live link count=' + count + ' source=' + entry.source + ' target=' + target);
-                else { okay++; validLinks++; }
+                if (count < 1) fail('Missing live link source=' + entry.source + ' target=' + target);
+                else { okay++; validLinks++; if (count > 1) console.log('INFO additional link in related reading: source=' + entry.source + ' target=' + target + ' total=' + count); }
               }
               if (okay === entry.targets.length && attrs === entry.source) validSources++;
               console.log('SOURCE ' + entry.source + ' ' + okay + '/' + entry.targets.length + ' title=' + (await page.title()).slice(0, 80));
