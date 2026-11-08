@@ -582,6 +582,7 @@
       "status": "human_blocker"
     },
     "e555dbbe10b0424cfe9c6bb41bd3d5cf6338dfaf84a53cc6e42fa7f61b4d3d6c": {
+      "acquisition_started_at": "2026-11-08T12:27:43.998416+00:00",
       "affected": [
         {
           "article_run_id": 42171852912,
@@ -614,7 +615,7 @@
       "failure_class": "SHORT_ATTEMPTS_EXHAUSTED",
       "fingerprint": "56ed950041bb6dea6b7969a059ad05e26e6a5df533509c258b7c9852bfb9fe11",
       "stage": "controller",
-      "status": "intent"
+      "status": "uncertain"
     },
     "f89e81f0ca2d2e94f8c5ed2000b96fb079084e9e6754e14fa7453d9cb905863a": {
       "acquisition_started_at": "2026-11-06T08:31:36.483956+00:00",
