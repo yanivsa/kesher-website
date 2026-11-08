@@ -19,6 +19,16 @@ on:
         default: false
         type: boolean
 
+      existing_session_mode:
+        description: Exact original Nov 7/8 Jules session only; off keeps original article workflow untouched
+        required: false
+        default: 'off'
+        type: choice
+        options:
+          - 'off'
+          - check
+          - nudge
+
 permissions:
   contents: read
   pull-requests: write
@@ -31,7 +41,7 @@ concurrency:
 jobs:
   generate:
     # Bounded manual emergency bridge; explicitly retired by coordinated cutover.
-    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.existing_session_mode == 'off' }}
     runs-on: ubuntu-latest
     timeout-minutes: 75
     env:
@@ -150,3 +160,35 @@ jobs:
             -f child_run_id="$CHILD_RUN_ID" \
             -f child_conclusion="$CHILD_CONCLUSION" \
             -f slot="$SLOT" || echo "::warning::Controller wake-up notification failed; fallback schedule/workflow_run will reconcile."
+
+  exact-jules-recovery:
+    # Never enters the article generation/PR lifecycle. Existing owner session only.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.test_mode != true && (inputs.existing_session_mode == 'check' || inputs.existing_session_mode == 'nudge') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout vetted existing-session recovery
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Set up Python without external dependencies
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+
+      - name: Run fail-closed Jules identity tests BEFORE loading credentials
+        run: python -m unittest discover -s tests -p 'test_kesher_jules_exact_session_recovery.py' -v
+
+      - name: Read or nudge exact pre-existing Jules session
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+          KESHER_SLOT: ${{ inputs.slot }}
+          KESHER_MODE: ${{ inputs.existing_session_mode }}
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_jules_exact_session_recovery \
+            --slot "$KESHER_SLOT" --mode "$KESHER_MODE"
