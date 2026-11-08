@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "short_running",
+  "status": "short_retry_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -53,7 +53,7 @@
     "last_deploy_dispatch_at": "2026-11-06T10:17:13.418292+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 42201489711,
-    "live_verified_at": "2026-11-08T12:10:46.657924+00:00"
+    "live_verified_at": "2026-11-08T12:11:08.176737+00:00"
   },
   "backlog": [
     {
@@ -1766,42 +1766,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-06T06:14:16.272859+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-11-06T06:19:02.891568+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-11-06T06:23:26.790460+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-11-06T06:29:05.908520+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
       "at": "2026-11-06T06:34:32.062363+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2587,9 +2551,42 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-11-08T12:11:08.176756+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-08T12:11:09.104244+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-08T12:11:12.509022+00:00",
+      "from": "long_video_complete",
+      "to": "short_retry_wait",
+      "reason": "SHORT_WORKFLOW_FAILED",
+      "details": {
+        "message": "Short derive run 42477627205 completed with conclusion=failure",
+        "retry_at": "2026-11-08T12:16:12.508998+00:00",
+        "failure_streak": 1,
+        "run_id": 42477627205
+      }
+    },
+    {
+      "at": "2026-11-08T12:11:12.509048+00:00",
+      "from": "short_retry_wait",
+      "to": "short_retry_wait",
+      "reason": "Short retry backoff is active",
+      "details": {
+        "retry_at": "2026-11-08T12:16:12.508998+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-08T12:05:58.270301+00:00",
+  "updated_at": "2026-11-08T12:11:12.509051+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2666,20 +2663,29 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "running",
-    "last_error": null,
-    "next_retry_at": null,
+    "status": "retry_wait",
+    "last_error": {
+      "code": "SHORT_WORKFLOW_FAILED",
+      "message": "Short derive run 42477627205 completed with conclusion=failure",
+      "retryable": true,
+      "retry_at": "2026-11-08T12:16:12.508998+00:00",
+      "at": "2026-11-08T12:11:12.509017+00:00"
+    },
+    "next_retry_at": "2026-11-08T12:16:12.508998+00:00",
     "run_id": 42477627205,
-    "processed_run_id": 42204508523,
+    "processed_run_id": 42477627205,
     "provider_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_run_conclusion": "success",
+    "failure_fingerprint": "SHORT_WORKFLOW_FAILED",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "SHORT_WORKFLOW_FAILED": 1
+    },
+    "last_run_conclusion": "failure",
     "last_dispatch_at": "2026-11-08T11:52:17.925346+00:00",
     "artifact_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1",
     "source_id": "f48f461a-0227-4611-8067-e3e5b0eb66de",
-    "adopted_from_long_item_id": "video-20261106-122551-eb4a3aaa9d"
+    "adopted_from_long_item_id": "video-20261106-122551-eb4a3aaa9d",
+    "last_failed_run_id": 42477627205
   },
   "migration": {
     "v4_short_controller_state": null
