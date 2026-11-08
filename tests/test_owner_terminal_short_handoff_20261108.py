@@ -85,6 +85,7 @@ class OwnerTerminalShortHandoffTests(unittest.TestCase):
         self.assertEqual(archive["cycle"], "2026-11-06")
         self.assertEqual(archive["status"], "blocked")
         self.assertEqual(archive["last_error"]["code"], "SHORT_ATTEMPTS_EXHAUSTED")
+        self.assertEqual(archive["active_idea"]["idea_id"], "parenting-p2-child-not-playing-kindergarten")
         self.assertFalse(archive["short"]["verified"])
         queued = [x for x in state["idea_queue"] if x["idea_id"] == "parenting-p2-child-not-playing-kindergarten"]
         self.assertEqual(len(queued), 1)
