@@ -53,7 +53,7 @@
     "last_deploy_dispatch_at": "2026-11-06T10:17:13.418292+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 42201489711,
-    "live_verified_at": "2026-11-08T12:00:45.829955+00:00"
+    "live_verified_at": "2026-11-08T12:01:04.338185+00:00"
   },
   "backlog": [
     {
@@ -1766,24 +1766,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-05T22:00:51.197634+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-11-05T22:00:51.197641+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-11-05T22:00:51.198914+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
       "at": "2026-11-05T22:01:05.535883+00:00",
       "from": "article_needed",
       "to": "waiting_for_article_window",
@@ -2593,9 +2575,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-11-08T12:01:04.338216+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-08T12:01:05.068984+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-08T12:01:07.859175+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-11-08T11:56:16.171540+00:00",
+  "updated_at": "2026-11-08T12:01:07.859203+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
