@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -47,13 +47,13 @@
     "quality_content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-08T12:40:48.229251+00:00",
+    "quality_checked_at": "2026-11-08T12:46:11.371765+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-06T10:17:13.418292+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 42201489711,
-    "live_verified_at": "2026-11-08T12:40:49.998601+00:00"
+    "live_verified_at": "2026-11-08T12:46:12.632259+00:00"
   },
   "backlog": [
     {
@@ -1763,22 +1763,8 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "SHORT_ATTEMPTS_EXHAUSTED",
-    "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts",
-    "at": "2026-11-08T12:41:27.313493+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-11-06T08:26:25.117711+00:00",
-      "from": "image_retry_wait",
-      "to": "image_retry_wait",
-      "reason": "trusted image retry backoff is active",
-      "details": {
-        "retry_at": "2026-11-06T08:26:31.792161+00:00"
-      }
-    },
     {
       "at": "2026-11-06T08:31:31.479631+00:00",
       "from": "image_retry_wait",
@@ -2535,9 +2521,15 @@
       "details": {
         "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-11-08T12:46:12.632288+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-11-08T12:41:27.313516+00:00",
+  "updated_at": "2026-11-08T12:46:12.632295+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
