@@ -2234,12 +2234,12 @@
       "role": "retired",
       "registration_id": 351484777
     },
-    ".github/workflows/kesher-exact-short-qa-recovery.yml": {
+    ".github/workflows/kesher-short-qa-export.yml": {
       "capabilities": [
         "artifact_write",
         "read"
       ],
-      "definition_sha256": "9ad8f786f0b5aab1b2f5459af3c8a3891a8f622df1661250f40d76d390909045",
+      "definition_sha256": "defcaa99f716521584e43421eb0d54cc3671bc89d9e5ad084fc39af1c10e92eb",
       "resources": [],
       "review": {
         "call_chain": {},
@@ -2250,7 +2250,7 @@
           "GITHUB_TOKEN"
         ],
         "dispatches": [],
-        "note": "Reviewed owner-only manual recovery: reads exactly one immutable same-source Short artifact using GitHub actions:read; verifies original item identity and SHA-256 checksums for every exported file; exports only review media and evidence through GitHub Actions artifact storage. No Git writes, provider tasks, metadata changes, YouTube API calls, secret output, public upload, schedule or auto-trigger. GitHub Actions artifact output is its only permitted write."
+        "note": "Reviewed reusable manual Short QA export: reads one approved immutable native Short state artifact using GitHub actions:read; verifies original item identity and SHA-256 checksums for every exported file; exports only review media and evidence through GitHub Actions artifact storage. No Git writes, provider tasks, metadata changes, YouTube API calls, secret output, public upload, schedule or auto-trigger. GitHub Actions artifact output is its only permitted write."
       },
       "role": "separate_infrastructure"
     },
