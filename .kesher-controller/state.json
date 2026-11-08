@@ -1,13 +1,13 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-08",
-  "status": "article_needed",
+  "status": "article_generating",
   "article": {
     "attempt_count": 0,
     "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 42509249169,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -1727,15 +1727,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-08T14:41:15.607872+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts"
-      }
-    },
-    {
       "at": "2026-11-08T14:45:48.556038+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -2479,9 +2470,18 @@
         "idea_id": "couples-after-work-stress-crossover",
         "publication_slot": "2026-11-08"
       }
+    },
+    {
+      "at": "2026-11-08T18:45:41.860856+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "owner run-now article workflow already active",
+      "details": {
+        "publication_slot": "2026-11-08"
+      }
     }
   ],
-  "updated_at": "2026-11-08T18:40:57.409381+00:00",
+  "updated_at": "2026-11-08T18:45:41.860878+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
