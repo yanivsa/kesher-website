@@ -41,7 +41,7 @@ class ExactSessionRecoveryTests(unittest.TestCase):
 
     def test_fails_closed_on_wrong_keyword_or_bad_pr_url(self):
         payload = self.valid("2026-11-08")
-        payload["title"] = "Kesher article 2026-11-08"
+        payload["title"] = "Kesher article 2026-11-09"
         with self.assertRaises(ValueError):
             m.inspect_identity(payload, "2026-11-08")
         payload = self.valid("2026-11-08")
@@ -55,6 +55,20 @@ class ExactSessionRecoveryTests(unittest.TestCase):
         self.assertEqual(m.inspect_identity(payload, "2026-11-07"),
                          ("COMPLETED", ["https://github.com/yanivsa/kesher-website/pull/1301"]))
         self.assertNotIn("COMPLETED", m.ACTIVE)
+
+    def test_exact_pinned_session_supports_legacy_or_redacted_title(self):
+        for slot in m.ALLOWED:
+            p = self.valid(slot)
+            p["title"] = f"Kesher article {slot}"
+            self.assertEqual(m.inspect_identity(p, slot), ("IN_PROGRESS", []))
+            p.pop("title")
+            self.assertEqual(m.inspect_identity(p, slot), ("IN_PROGRESS", []))
+
+    def test_rejects_foreign_original_prompt_when_present(self):
+        p = self.valid("2026-11-08")
+        p["prompt"] = "Unrelated marketing article about auto insurance"
+        with self.assertRaises(ValueError):
+            m.inspect_identity(p, "2026-11-08")
 
     def test_source_specific_no_duplicate_prompts(self):
         for slot in m.ALLOWED:
