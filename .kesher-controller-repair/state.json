@@ -581,6 +581,41 @@
       "stage": "long_video",
       "status": "human_blocker"
     },
+    "e555dbbe10b0424cfe9c6bb41bd3d5cf6338dfaf84a53cc6e42fa7f61b4d3d6c": {
+      "affected": [
+        {
+          "article_run_id": 42171852912,
+          "article_session_id": null,
+          "artifact_id": null,
+          "content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
+          "cycle": "2026-11-06",
+          "idea_id": "parenting-p2-child-not-playing-kindergarten",
+          "item_id": null,
+          "pr_number": 1287,
+          "slug": "relationship-memory-reconstruction",
+          "source_id": null,
+          "task_id": null
+        }
+      ],
+      "created_at": "2026-11-08T12:27:43.998416+00:00",
+      "exact": {
+        "article_run_id": 42171852912,
+        "article_session_id": null,
+        "artifact_id": null,
+        "content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
+        "cycle": "2026-11-06",
+        "idea_id": "parenting-p2-child-not-playing-kindergarten",
+        "item_id": null,
+        "pr_number": 1287,
+        "slug": "relationship-memory-reconstruction",
+        "source_id": null,
+        "task_id": null
+      },
+      "failure_class": "SHORT_ATTEMPTS_EXHAUSTED",
+      "fingerprint": "56ed950041bb6dea6b7969a059ad05e26e6a5df533509c258b7c9852bfb9fe11",
+      "stage": "controller",
+      "status": "intent"
+    },
     "f89e81f0ca2d2e94f8c5ed2000b96fb079084e9e6754e14fa7453d9cb905863a": {
       "acquisition_started_at": "2026-11-06T08:31:36.483956+00:00",
       "affected": [
