@@ -129,6 +129,8 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             "article": copy.deepcopy(state.get("article") or {}),
             "long_video": copy.deepcopy(state.get("long_video") or {}),
             "short": copy.deepcopy(state.get("short") or {}),
+            "active_idea": copy.deepcopy(state.get("active_idea") or {}),
+            "last_error": copy.deepcopy(state.get("last_error")),
             "archived_at": v5.core.utc_now(),
             "reason": "owner_run_now_cycle_started",
         })
@@ -196,7 +198,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             for row in queued
         ):
             return False
-        if isinstance(state.get("active_idea"), dict):
+        active = state.get("active_idea")
+        # A previous SCHEDULED idea is deferred, not discarded. Another owner's
+        # already-claimed run-now request must never be preempted.
+        if isinstance(active, dict) and active.get("run_now") is True:
             return False
         # Never interrupt an upload, native Short worker or its real heartbeat.
         if self.github.active_workflow_run(v5.SHORT_WORKFLOW, production_only=True):
@@ -214,6 +219,22 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if idx is None:
             return False
         row = copy.deepcopy(queue.pop(idx))
+        previous_active = state.get("active_idea")
+        if prior_status == "blocked" and isinstance(previous_active, dict):
+            # Keep the previous claimed article / PR recoverable behind the
+            # OWNER request; never count it as success and never lose its ID.
+            deferred = copy.deepcopy(previous_active)
+            deferred["status"] = "queued"
+            deferred["run_now"] = False
+            deferred["deferred_reason"] = "OWNER_TERMINAL_SHORT_HANDOFF"
+            deferred["deferred_at"] = v5.core.utc_now()
+            deferred.pop("publication_slot", None)
+            deferred.pop("claimed_at", None)
+            if not any(
+                isinstance(x, dict) and x.get("idea_id") == deferred.get("idea_id")
+                for x in queue
+            ):
+                queue.append(deferred)
         state["idea_queue"] = queue
         state["active_idea"] = row
         posts = self.posts_on_main("main")
