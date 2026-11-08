@@ -126,8 +126,11 @@ class OwnerTerminalShortHandoffTests(unittest.TestCase):
         ctrl = self.controller()
         state = self.blocked_state()
         state["active_idea"]["run_now"] = True
-        self.assertFalse(ctrl._begin_run_now_cycle(state))
-        self.assertEqual(state["idea_queue"][0]["status"], "queued")
+        before = copy.deepcopy(state)
+        # Already-claimed owner run_now is an idempotent no-op, not a new handoff.
+        self.assertFalse(ctrl._terminal_short_handoff_allowed(state))
+        self.assertTrue(ctrl._begin_run_now_cycle(state))
+        self.assertEqual(state, before)
 
 
 if __name__ == "__main__":
