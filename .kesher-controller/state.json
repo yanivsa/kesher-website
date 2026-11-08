@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "article_live",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1763,17 +1763,13 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "controller",
+    "code": "SHORT_ATTEMPTS_EXHAUSTED",
+    "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts",
+    "at": "2026-11-08T13:25:59.202976+00:00"
+  },
   "history": [
-    {
-      "at": "2026-11-06T09:51:27.093065+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "image exhausted 3 total controller dispatch attempts"
-      }
-    },
     {
       "at": "2026-11-06T09:56:27.013336+00:00",
       "from": "blocked",
@@ -2503,9 +2499,18 @@
       "from": "blocked",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-08T13:25:59.202993+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts"
+      }
     }
   ],
-  "updated_at": "2026-11-08T13:25:43.889238+00:00",
+  "updated_at": "2026-11-08T13:25:59.203000+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
