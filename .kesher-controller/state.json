@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-06",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -47,13 +47,13 @@
     "quality_content_sha256": "eb4a3aaa9d541a8c2e98b370035ffa5bc7d69557b3db349bf6181a340ca8fa27",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-08T15:36:36.849405+00:00",
+    "quality_checked_at": "2026-11-08T15:40:44.107405+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-11-06T10:17:13.418292+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 42201489711,
-    "live_verified_at": "2026-11-08T15:36:38.361856+00:00"
+    "live_verified_at": "2026-11-08T15:40:45.530456+00:00"
   },
   "backlog": [
     {
@@ -1763,19 +1763,8 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "SHORT_ATTEMPTS_EXHAUSTED",
-    "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts",
-    "at": "2026-11-08T15:37:07.719809+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-11-08T11:56:11.975609+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-11-08T11:56:12.756989+00:00",
       "from": "article_live",
@@ -2495,9 +2484,15 @@
       "details": {
         "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-11-08T15:40:45.530487+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-11-08T15:37:07.719834+00:00",
+  "updated_at": "2026-11-08T15:40:45.530492+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
