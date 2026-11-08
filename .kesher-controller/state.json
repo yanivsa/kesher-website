@@ -53,7 +53,7 @@
     "last_deploy_dispatch_at": "2026-11-06T10:17:13.418292+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 42201489711,
-    "live_verified_at": "2026-11-08T12:05:43.014774+00:00"
+    "live_verified_at": "2026-11-08T12:05:56.025511+00:00"
   },
   "backlog": [
     {
@@ -1766,30 +1766,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-05T22:01:05.535883+00:00",
-      "from": "article_needed",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
-    {
-      "at": "2026-11-06T06:01:33.445553+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-11-06T06:08:19.406596+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
-    {
       "at": "2026-11-06T06:14:16.272859+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -2593,9 +2569,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-11-08T12:05:56.025531+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-08T12:05:56.434848+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-08T12:05:58.270281+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-11-08T12:01:07.859203+00:00",
+  "updated_at": "2026-11-08T12:05:58.270301+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
