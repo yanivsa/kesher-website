@@ -53,7 +53,7 @@
     "last_deploy_dispatch_at": "2026-11-06T10:17:13.418292+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 42201489711,
-    "live_verified_at": "2026-11-08T12:25:49.616451+00:00"
+    "live_verified_at": "2026-11-08T12:26:20.039998+00:00"
   },
   "backlog": [
     {
@@ -1766,33 +1766,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-06T07:51:13.072919+00:00",
-      "from": "image_retry_wait",
-      "to": "image_retry_wait",
-      "reason": "trusted image retry backoff is active",
-      "details": {
-        "retry_at": "2026-11-06T08:01:24.005519+00:00"
-      }
-    },
-    {
-      "at": "2026-11-06T07:56:18.109338+00:00",
-      "from": "image_retry_wait",
-      "to": "image_retry_wait",
-      "reason": "trusted image retry backoff is active",
-      "details": {
-        "retry_at": "2026-11-06T08:01:24.005519+00:00"
-      }
-    },
-    {
-      "at": "2026-11-06T08:01:42.588021+00:00",
-      "from": "image_retry_wait",
-      "to": "image_retry_wait",
-      "reason": "trusted image retry backoff is active",
-      "details": {
-        "retry_at": "2026-11-06T08:01:24.005519+00:00"
-      }
-    },
-    {
       "at": "2026-11-06T08:06:22.613553+00:00",
       "from": "image_retry_wait",
       "to": "article_image_running",
@@ -2550,9 +2523,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-11-08T12:26:20.040025+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-11-08T12:26:21.260161+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-11-08T12:26:25.789173+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-11-08T12:24:52.419129+00:00",
+  "updated_at": "2026-11-08T12:26:25.789195+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2632,7 +2623,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 42479845407,
+    "run_id": 42480131675,
     "processed_run_id": 42479845407,
     "provider_id": "6261180f-c6fc-47f2-837d-3cbcb12e83c1",
     "failure_fingerprint": null,
