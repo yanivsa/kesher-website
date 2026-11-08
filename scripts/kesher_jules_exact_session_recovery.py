@@ -48,8 +48,21 @@ def session_name(payload: dict) -> str:
 def inspect_identity(payload: dict, slot: str) -> tuple[str, list[str]]:
     if session_name(payload) != f"sessions/{ALLOWED[slot][0]}":
         raise ValueError("Unexpected Jules session ID; aborting without write")
-    if payload.get("title") != expected_title(slot):
-        raise ValueError("Jules title/keyword identity mismatch; aborting without write")
+    title = str(payload.get("title") or "").strip()
+    # Jules v1alpha may return the legacy slot title, an owner-brief keyword
+    # hash from the original prompt, or omit title in a reduced GET response.
+    # The hardcoded 19-digit existing session ID above is the authority.
+    # We still refuse any title for another slot or arbitrary task.
+    if title and not re.fullmatch(
+        rf"Kesher article {re.escape(slot)}(?: kw-[0-9a-f]{{10}})?",
+        title,
+    ):
+        raise ValueError("Jules title/slot identity mismatch; aborting without write")
+    # Corroborate keyword/idea against the original prompt when the API
+    # exposes it. Do not require a field Jules may redact on GET.
+    prompt = str(payload.get("prompt") or "")
+    if prompt and (ALLOWED[slot][1] not in prompt and ALLOWED[slot][2] not in prompt):
+        raise ValueError("Jules source prompt keyword/idea mismatch; aborting without write")
     source_context = payload.get("sourceContext") or {}
     source = str(source_context.get("source") or "")
     if source and source != REPOSITORY_SOURCE:
