@@ -77,6 +77,42 @@ class ExactSessionRecoveryTests(unittest.TestCase):
             self.assertIn("exactly ONE", prompt)
             self.assertIn("CI", prompt)
 
+    def test_owner_stress_session_is_pinned_without_confusing_nov8_legacy(self):
+        key = m.STRESS_SLOT
+        sid, keyword, idea = m.STRESS_SESSION
+        self.assertEqual(sid, "13248247772650112609")
+        self.assertEqual(m.publication_date(key), "2026-11-08")
+        self.assertIn("Kesher article 2026-11-08 kw-", m.expected_title(key))
+        payload = {
+            "name": f"sessions/{sid}",
+            "title": m.expected_title(key),
+            "state": "IN_PROGRESS",
+            "sourceContext": {"source": m.REPOSITORY_SOURCE},
+            "prompt": f"owner idea_id={idea}; primary keyword={keyword}",
+            "outputs": [],
+        }
+        self.assertEqual(m.inspect_identity(payload, key), ("IN_PROGRESS", []))
+        self.assertIn("Do NOT create a separate article", m.nudge_prompt(key))
+        self.assertIn("exactly ONE", m.nudge_prompt(key))
+        self.assertIn("SAME session", m.nudge_prompt(key))
+        payload["name"] = f"sessions/{m.ALLOWED['2026-11-08'][0]}"
+        with self.assertRaises(ValueError):
+            m.inspect_identity(payload, key)
+        payload["name"] = f"sessions/{sid}"
+        payload["prompt"] = "Unrelated auto insurance article"
+        with self.assertRaises(ValueError):
+            m.inspect_identity(payload, key)
+        payload["prompt"] = f"owner idea_id={idea}; primary keyword={keyword}"
+        payload["outputs"] = [{"pullRequest": {"url": "https://github.com/attacker/other/pull/1"}}]
+        with self.assertRaises(ValueError):
+            m.inspect_identity(payload, key)
+
+    def test_owner_stress_session_check_has_zero_creation_capabilities(self):
+        key = m.STRESS_SLOT
+        self.assertIn("sessions/13248247772650112609", f"sessions/{m.source_spec(key)[0]}")
+        with self.assertRaises(ValueError):
+            m.source_spec("2026-11-09-stress")
+
 
 if __name__ == "__main__":
     unittest.main()
