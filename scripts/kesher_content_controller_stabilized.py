@@ -118,6 +118,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         return self.now.date().isoformat()
 
     def _reset_for_run_now(self, state: dict, publication_slot: str) -> None:
+        previous_status = str(state.get("status") or "")
         active = state.get("active_idea")
         if not isinstance(active, dict):
             raise v5.core.ControllerError("IDEA_RUN_NOW_ACTIVE_MISSING")
@@ -147,17 +148,66 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         state["processed_child_notifications"] = []
         state.setdefault("history", []).append({
             "at": v5.core.utc_now(),
-            "from": "complete",
+            "from": previous_status,
             "to": "article_needed",
             "reason": "owner_run_now_cycle_started",
             "details": {"idea_id": active.get("idea_id"), "publication_slot": publication_slot},
         })
         state["history"] = state["history"][-100:]
 
+    def _terminal_short_handoff_allowed(self, state: dict) -> bool:
+        """Archive an exhausted incomplete cycle instead of starving a newer owner request.
+
+        This is NOT a success or public-Short adoption: the prior short remains
+        unverified in immutable owner_cycle_archive. Never reset a live actor,
+        a nonterminal failure, or a stage with missing article/Overview evidence.
+        """
+        if str(state.get("status") or "") != "blocked":
+            return False
+        err = state.get("last_error") or {}
+        if not isinstance(err, dict) or err.get("code") != "SHORT_ATTEMPTS_EXHAUSTED":
+            return False
+        article = state.get("article") or {}
+        long_video = state.get("long_video") or {}
+        short = state.get("short") or {}
+        if not all(isinstance(row, dict) for row in (article, long_video, short)):
+            return False
+        if (
+            article.get("live") is not True
+            or article.get("quality_status") != "passed"
+            or long_video.get("verified") is not True
+            or int(short.get("attempt_count") or 0) < v5.v3.MAX_STAGE_ATTEMPTS
+        ):
+            return False
+        slug = str(article.get("slug") or "").strip()
+        sha = str(article.get("quality_content_sha256") or "").strip()
+        if (
+            not slug
+            or not re.fullmatch(r"[0-9a-f]{64}", sha)
+            or str(long_video.get("source_slug") or "") != slug
+            or str(long_video.get("source_content_sha256") or "") != sha
+        ):
+            return False
+        queued = state.get("idea_queue") or []
+        if not isinstance(queued, list) or not any(
+            isinstance(row, dict)
+            and row.get("run_now") is True
+            and row.get("status") == "queued"
+            for row in queued
+        ):
+            return False
+        if isinstance(state.get("active_idea"), dict):
+            return False
+        # Never interrupt an upload, native Short worker or its real heartbeat.
+        if self.github.active_workflow_run(v5.SHORT_WORKFLOW, production_only=True):
+            return False
+        return True
+
     def _begin_run_now_cycle(self, state: dict) -> bool:
         if self._run_now_active(state):
             return True
-        if str(state.get("status") or "") != "complete":
+        prior_status = str(state.get("status") or "")
+        if prior_status != "complete" and not self._terminal_short_handoff_allowed(state):
             return False
         queue = state.get("idea_queue") if isinstance(state.get("idea_queue"), list) else []
         idx = next((i for i, row in enumerate(queue) if isinstance(row, dict) and row.get("run_now") is True), None)
@@ -2697,6 +2747,12 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             }
             self._safe_save_controller_state(state)
             return state, v5.core.Action("rejected", str(exc))
+        # A terminally exhausted legacy Short must not indefinitely starve a
+        # newer explicit OWNER run-now request. Archive it as INCOMPLETE, never
+        # mark it Done, and preserve its evidence for later targeted recovery.
+        if idea_result is None and self._terminal_short_handoff_allowed(state):
+            if self._begin_run_now_cycle(state):
+                self._safe_save_controller_state(state)
         if idea_result == "run_now_queued":
             try:
                 started = self._begin_run_now_cycle(state)
