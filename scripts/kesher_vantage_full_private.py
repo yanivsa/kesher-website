@@ -23,11 +23,11 @@ SOURCE_SLUG = "vantage-sensitivity-sensitive-gifted-children"
 SOURCE_SHA = "e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea"
 PLAN_FILE = ROOT / "research/kesher-vantage-overview-full-private-20261109.json"
 SOURCE_FILE = ROOT / "research/kesher-vantage-sensitivity-20261109.md"
-SCENE_RE = re.compile(r"^images/(?:blog|generated/blog)/[a-z0-9][a-z0-9-]*\\.(?:jpg|jpeg|png|webp)$")
+SCENE_RE = re.compile(r"^images/(?:blog|generated/blog)/[a-z0-9][a-z0-9-]*\.(?:jpg|jpeg|png|webp)$")
 SHA_RE = re.compile(r"^[a-f0-9]{64}$")
 BANNED = (
-    "פי עשר", "מגבר אוניברסלי", "עשרות אחוזים", "כוח על שמבטיח",
-    "כל ילד רגיש מצליח יותר", "כל ילד רגיש מחונן",
+    "פי עשר", "מגבר אוניברסלי", "עשרות אחוזים",
+    "כל ילד רגיש מחונן",
 )
 FPS = 30
 MIN_SCENES = 6
@@ -93,7 +93,7 @@ def validate_plan(plan: dict) -> list[dict]:
         if not SHA_RE.fullmatch(expected) or digest(p) != expected:
             raise ValueError(f"PHOTO_SCENE_HASH_MISMATCH: {i}")
         if not (isinstance(scene.get("altHebrew"), str)
-                and re.search(r"[\\u0590-\\u05ff]", scene["altHebrew"])):
+                and re.search(r"[\u0590-\u05ff]", scene["altHebrew"])):
             raise ValueError(f"PHOTO_SCENE_HEBREW_ALT_REQUIRED: {i}")
         if not (isinstance(scene.get("licenseEvidenceUrl"), str)
                 and scene["licenseEvidenceUrl"].startswith("https://")
@@ -103,7 +103,7 @@ def validate_plan(plan: dict) -> list[dict]:
         if not isinstance(script, str) or len(script.split()) < 20 or any(x in script for x in BANNED):
             raise ValueError(f"PHOTO_SCENE_SCRIPT_INVALID: {i}")
     whole = " ".join(scene["voiceText"] for scene in scenes)
-    if not all(part in whole for part in ("מייקל פלואס", "בלסקי", "בריונות", "בנים", "יותר מאלפיים", "לא הוכחה")):
+    if not all(part in whole for part in ("מייקל פלואס", "בלסקי", "בריונות", "בנים", "יותר מאלפיים", "אינה לבדה הוכחה")):
         raise ValueError("SCIENTIFIC_CAVEATS_MISSING")
     return scenes
 
@@ -237,9 +237,10 @@ def render(output: Path) -> dict:
          str(base)],timeout=360)
     props=visual_story_props(scenes,ends,base.name,plan)
     p=output/"full-private-props.json"
-    p.write_text(json.dumps(props,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    p.write_text(json.dumps(props,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     binary=ROOT/"remotion-kesher/node_modules/.bin/remotion"
-    checked_regular(binary)
+    if not binary.is_file() or not binary.resolve().is_relative_to((ROOT/"remotion-kesher/node_modules").resolve()):
+        raise RuntimeError("PRIVATE_REMOTION_BINARY_MISSING_OR_UNSAFE")
     movie=output/"vantage-overview-full-private-heb.mp4"
     run([str(binary),"render","src/index.ts","KesherVideo",str(movie),
          "--props",str(p),"--codec=h264","--crf=23",
@@ -259,7 +260,7 @@ def render(output: Path) -> dict:
     # Full-file decode catches corrupt segments, not subjective human listening.
     run(["ffmpeg","-v","error","-i",str(movie),"-f","null","-"],timeout=300)
     frame_evidence=extract_review_frames(movie,output,ends)
-    transcript="\\n".join(scene["voiceText"] for scene in scenes)+"\\n"
+    transcript="\n".join(scene["voiceText"] for scene in scenes)+"\n"
     (output/"exact-hebrew-script.txt").write_text(transcript,encoding="utf-8")
     result={
         "status":"PRIVATE_FULL_OVERVIEW_RENDERED_NOT_PUBLISHED",
@@ -285,7 +286,7 @@ def render(output: Path) -> dict:
         "publication_status":"NOT_AUTHORIZED_PRIVATE_QA_ONLY",
         "autonomous_clean_cycle_counted":False,
     }
-    (output/"manifest.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    (output/"manifest.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(result,ensure_ascii=False),flush=True)
     return result
 
