@@ -3126,8 +3126,7 @@
         "github.state",
         "notebooklm.jobs",
         "youtube.metadata",
-        "youtube.objects",
-        "speech.tts"
+        "youtube.objects"
       ],
       "review": {
         "call_chain": {
@@ -3218,7 +3217,7 @@
           "YOUTUBE_REFRESH_TOKEN"
         ],
         "dispatches": [],
-        "note": "Reviewed existing GitHub manual emergency bridge extended ONLY with explicit owner_preview / owner_publish operations bound to immutable Vantage slug+SHA and existing source item. Original pre-cutover bridge admission remains mandatory; no automatic dispatch/activation; owner_publish requires exact externally approved binary, real audiovisual QA, channel/dedup check, GitHub OAuth and public processing. New tool-only female Hebrew TTS is an uncredentialed external speech service, never a content-writing agent. Keep retired after cutover and do not weaken schema-6 authority."
+        "note": "Reviewed existing GitHub manual emergency bridge extended ONLY with explicit owner_preview / owner_publish operations bound to immutable Vantage slug+SHA and existing source item. Original pre-cutover bridge admission remains mandatory; no automatic dispatch/activation; owner_publish requires exact externally approved binary, real audiovisual QA, channel/dedup check, GitHub OAuth and public processing. New tool-only female Hebrew TTS is a stateless uncredentialed speech renderer: no protected provider account or mutation resources; exact inputs are already source-pinned and publication still requires OWNER QA. It is not a content-writing agent. Keep retired after cutover and do not weaken schema-6 authority."
       },
       "role": "emergency_bridge"
     },
