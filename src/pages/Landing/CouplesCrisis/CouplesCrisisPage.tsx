@@ -162,8 +162,8 @@ const CouplesCrisisPage: React.FC = () => {
   return (
     <main id="main-content" className={styles.page}>
       <MetaTags
-        title="ייעוץ זוגי במשבר | שירה סהרוני – עצירת הסלמה וחידוש התקשורת"
-        description="זוגיות במשבר? כשהשיחות חוזרות על עצמן ונגמרות בכעס או בריחוק, אפשר להתחיל משיחה אחת רגועה. ייעוץ זוגי ממוקד ומעשי באשדוד או אונליין. 500 ₪ לפגישה."
+        title="ייעוץ זוגי לזוגות במצבי משבר | שירה סהרוני"
+        description="כשיש ריבים חוזרים, ריחוק או שיחות שנגמרות בכעס, ייעוץ זוגי לזוגות במצבי משבר יכול לעזור לברר את הקושי, להבין דפוסים ולבחון איך ממשיכים."
         canonical={`${SITE_CONFIG.url}/services/couples/crisis`}
       />
       <SchemaOrg data={schemaData} />
@@ -208,7 +208,7 @@ const CouplesCrisisPage: React.FC = () => {
           </div>
 
           <h1 className={styles.heroTitle}>
-            זוגיות במשבר? אפשר להתחיל משיחה אחת רגועה
+            זוגיות במשבר? ייעוץ זוגי שמתחיל משיחה רגועה
           </h1>
 
           <p className={styles.heroSubtitle}>
