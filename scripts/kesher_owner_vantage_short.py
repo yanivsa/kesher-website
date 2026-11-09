@@ -232,6 +232,18 @@ def already_published(youtube, uploads_playlist):
     return None
 
 
+def verify_voice_license(approve, manifest):
+    """Fail closed if the exact narration voice lacks commercial-use evidence."""
+    # Audio/content QA does NOT grant permission to redistribute a TTS voice.
+    rights = approve.get("voice_license")
+    assert isinstance(rights, dict), "VOICE_LICENSE_NOT_VERIFIED: missing license evidence"
+    proof_url = rights.get("license_evidence_url")
+    assert (rights.get("commercial_use_permitted") is True
+            and rights.get("voice_source") == manifest.get("voice") == VOICE
+            and isinstance(proof_url, str) and proof_url.startswith("https://")
+            and len(proof_url) > 12), "VOICE_LICENSE_NOT_VERIFIED: do not upload without documented commercial rights"
+
+
 def validate_approved_bundle():
     preflight()
     out = Path("owner-vantage-short-output")
@@ -239,15 +251,7 @@ def validate_approved_bundle():
     approve = json.loads(Path("research/kesher-vantage-short-approval.json").read_text(encoding="utf-8"))
     checks = ["audio_review_pass", "visual_review_pass", "semantic_review_pass"]
     assert all(approve.get(k) is True for k in checks), "Real OWNER QA not explicitly approved"
-    # Technical/content QA does NOT grant permission to redistribute a TTS voice.
-    # Fail closed unless the exact voice has documented commercial-use rights.
-    voice_license = approve.get("voice_license") or {}
-    assert isinstance(voice_license, dict), "VOICE_LICENSE_NOT_VERIFIED: invalid license evidence"
-    proof_url = voice_license.get("license_evidence_url")
-    assert (voice_license.get("commercial_use_permitted") is True
-            and voice_license.get("voice_source") == manifest.get("voice") == VOICE
-            and isinstance(proof_url, str) and proof_url.startswith("https://")
-            and len(proof_url) > 12), "VOICE_LICENSE_NOT_VERIFIED: do not upload without documented commercial rights"
+    verify_voice_license(approve, manifest)
     assert (approve["video_sha256"] == manifest["video_sha256"]
             and manifest["video_sha256"] == sha(out / "short.mp4")), "Video changed after QA"
     assert approve["source_sha256"] == SOURCE_SHA == manifest["source_sha256"]
