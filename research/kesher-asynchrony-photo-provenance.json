@@ -1,0 +1,28 @@
+{
+  "source_slug": "gifted-asynchronous-development-inner-loneliness",
+  "content_sha256": "7b6ae2e8dc3182d798edbf19c2d95e576b02ab093c5e2bf04bad91113a716a00",
+  "images": [
+    {
+      "path": "public/images/blog/gifted-asynchrony-parent-child-hero.jpg",
+      "sha256": "29154bbb2380459b950aeac25013ca6a5d250148f823ae4abff7dd1d25f40767",
+      "generated_for": "gifted-asynchronous-development-inner-loneliness",
+      "license_url": "https://openai.com/en-GB/policies/row-terms-of-use/",
+      "method": "Original OpenAI-generated editorial photograph for this user project"
+    },
+    {
+      "path": "public/images/blog/gifted-asynchrony-boardgame-original.jpg",
+      "sha256": "6a68feb5be8d0690adc772e50e5c44da55001396491a78e7bcafcc4a43b64747",
+      "generated_for": "gifted-asynchronous-development-inner-loneliness",
+      "license_url": "https://openai.com/en-GB/policies/row-terms-of-use/",
+      "method": "Original user-requested board game scene, no stock"
+    },
+    {
+      "path": "public/images/blog/gifted-asynchrony-thoughtful-child-original.jpg",
+      "sha256": "1c04a4daf87226812f2f1773deee92483da2248611795ed5faa27409065622cd",
+      "generated_for": "gifted-asynchronous-development-inner-loneliness",
+      "license_url": "https://openai.com/en-GB/policies/row-terms-of-use/",
+      "method": "Original user-project AI photo crop, without poster text"
+    }
+  ],
+  "scope": "Private original media review only, not a passed editorial audit or YouTube publication"
+}
