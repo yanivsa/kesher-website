@@ -3147,27 +3147,6 @@
       "role": "worker",
       "registration_id": 374561059
     },
-    ".github/workflows/kesher-owner-asynchrony-preview.yml": {
-      "capabilities": [
-        "read"
-      ],
-      "definition_sha256": "ef5676973ec6c27a9a502ff92e9cadb6cfd04bce49cac035830a13acb381840d",
-      "resources": [],
-      "review": {
-        "call_chain": {
-          "scripts/kesher_owner_asynchrony_preview.py": "8f337f027a58f773026bebd85ae50aaea3b0b5f090e60319cb3e87b1e7a00a9f",
-          "scripts/kesher_owner_vantage_short.py": "016b0f73870d71be542c52f9e703b16e4d7331306c11cb085e66ed2d6267c252",
-          "research/kesher-asynchrony-photo-provenance.json": "5c0f25bbc8e5ff87d9f16fc6db2588f6bca50cafdbcc6fe35ea1ee0b6307a36d",
-          "research/kesher-gifted-asynchrony-20261109.md": "edb5147b81fefa0703ea09aa4d7345b15976256c72fa76d81d2af7572af9a6e9"
-        },
-        "credential_services": {},
-        "credentials": [],
-        "dispatches": [],
-        "note": "OWNER-reviewed exact immutable read-only one-shot private audiovisual preview. workflow_dispatch accepts only exact hard-coded approved slug/SHA on main. contents:read, no YouTube/Cloudflare/GitHub mutation secrets, no state write, no upload, no schedule; locally executed MIT/Apache/CC-BY licensed voice, source-locked original assets. Requires separate genuine OWNER AV/license QA and new approved protected path for any future public upload. This is explicitly NOT a publisher or a delegated content agent."
-      },
-      "role": "diagnostic",
-      "registration_id": null
-    },
     ".github/workflows/kesher-owner-exact-975.yml": {
       "capabilities": [
         "branch_write",
@@ -3522,13 +3501,18 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "6962a28ef2bd26d3649a0bf679c30272951983556c64b0cef29c2b1edbd01a40",
+      "definition_sha256": "9e1ea1a4ef4fc44b4913c1f417d0ef4d006e41538573f0bafaf10d10a48ece85",
       "resources": [],
       "review": {
         "call_chain": {
           ".github/scripts/validate-article-pr.py": "2f175c5a6067b039755409a19bf1858f2fc56c922413ff94d6052d8ad4572ff3",
           "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
           "package.json": "78c9c96e5b5bddacdb87a7b41d22bb4fe5f835f932987fcd6dcca936e146322a",
+          "remotion-kesher/src/KesherVideo.tsx": "ccf0386bf2d379b553592da9c0157997819bbf11cc039bffb6d1762ce65c2ad7",
+          "remotion-kesher/src/licensedPhotoStory.ts": "0488ba7a47959318d206f692c4e435fdbc72ff08b083dc5865c05291910ea126",
+          "research/kesher-asynchrony-photo-provenance.json": "5c0f25bbc8e5ff87d9f16fc6db2588f6bca50cafdbcc6fe35ea1ee0b6307a36d",
+          "research/kesher-gifted-asynchrony-20261109.md": "edb5147b81fefa0703ea09aa4d7345b15976256c72fa76d81d2af7572af9a6e9",
+          "research/kesher-vantage-photographic-private-preview.json": "a559f56773bab09354175293d56a8cc357cd3fdb4005814e232361e7eb5458d2",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_diagnostics.py": "af9e1479a94410c028bae0404e8596852e01cf12634c513b33b27dd29f998854",
           "scripts/jules_article_runner.py": "e9ac2e1d3125184965a05f531751b3108aba0df3720feed5ea3abef4d7caaeae",
@@ -3551,7 +3535,11 @@
           "scripts/kesher_content_watchdog.py": "94964decde96d244685645186133898d9de7a431d43f228d2e784c09f7b5c2fc",
           "scripts/kesher_daily_pipeline.py": "58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
+          "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
+          "scripts/kesher_owner_asynchrony_preview.py": "8f337f027a58f773026bebd85ae50aaea3b0b5f090e60319cb3e87b1e7a00a9f",
+          "scripts/kesher_owner_vantage_short.py": "016b0f73870d71be542c52f9e703b16e4d7331306c11cb085e66ed2d6267c252",
+          "scripts/kesher_photo_story_private_preview.py": "1eba813eb5b6f05af78138072a3bb7bd37db99b0e8e6171d3a6849a2bda37ac0",
           "scripts/kesher_publication_manifest.py": "733eea18c989bf24277694f73465c765ceb4713cccd22996b293346c65fa5afb",
           "scripts/kesher_runtime/__init__.py": "87abad5c98b1cc707accd87163d96a30b945e8057b5d798eacaebbe07da99cef",
           "scripts/kesher_runtime/article_deploy.py": "44478ec6881ca4e5b6ae766bf33a2dc4bfb8b333ec7957063ab3da8ba208b760",
@@ -3565,9 +3553,14 @@
           "scripts/kesher_runtime/article_verification.py": "5f16c8ed232505c8bcb12e4249631eccc7fc8e845c781cf075030357dbc53987",
           "scripts/kesher_runtime/article_worker.py": "d3475108b0872d95668d3e25fb53c664bf9f342671a68430bfc77ec70e4714f4",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
+          "scripts/kesher_runtime/authority_client.py": "2faf396e363269382163aafcb73bc80863e630bff551d3e22f872fc42b779e36",
           "scripts/kesher_runtime/cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
           "scripts/kesher_runtime/controller.py": "e695d6513ea25b0565517e15be5feb8b0205f0b6cdeb37bb7e8e5c1e0d1604fe",
           "scripts/kesher_runtime/controller_entry.py": "562237507f626c669aba71ecdd9704beab5e6f71bd4f614f2521751c8618bff2",
+          "scripts/kesher_runtime/cutover_auth.py": "27dbbd703912499e0ca553d774bca027844f3e7db116a22d787e54f4ba007a80",
+          "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
+          "scripts/kesher_runtime/cutover_host.py": "9da32d13cd7c8616caeb36160452ba1fcf3981ae611817b6bed72af64b87c99c",
+          "scripts/kesher_runtime/cutover_service.py": "7b5bcc7af5391111ccd7a491ca427e7244edb32a438c5fcd81f196a13df898de",
           "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
           "scripts/kesher_runtime/deployment_observer.py": "00ef07c6db2f5c129187833fdb703be659d382186538fcb4d73aff487dd07bf4",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
@@ -3609,6 +3602,7 @@
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "scripts/requirements-article.txt": "8c620822e39bbd1233c03fd0296879f1f58dbc5a1f4366f6650c3d3c7cb32a77",
+          "tests/fixtures/kesher/schema5-freeze-20261004.json": "e678d1bc8be8aa4bdf1cf083cc6e044fd4d578f186cb7fdca1697ff4aecfcb00",
           "tests/kesher_daily_pipeline_suite.py": "093b6c280488db9661fa6ef2220ee1f0299ba7f0ded63c3eaa3037d9b254c221",
           "tests/test_article_image_contract.py": "f6c36c9d8d0c27a864f4b68600cb8772330e52b9eb214b27e89d46cd6855607c",
           "tests/test_controller_artifact_download.py": "94a173327d416e4921eea6335d734b91f7b38e2cf4fcca17946aa3d667034fff",
@@ -3622,11 +3616,13 @@
           "tests/test_kesher_article_worker.py": "f4530d4e8f7cf24da6ea471a2034467bb0200a33c0e8712c81f23a58c5888f16",
           "tests/test_kesher_audio_preservation.py": "05b60713b8c741d30106925c3be2e453291976a88c86a7bc98e5cfc7046a91c0",
           "tests/test_kesher_autonomous_controller.py": "4a454033ceadb649934039dea316211474cb778a2ebcf11c2ac054a3eac4d371",
+          "tests/test_kesher_backlog_rotation.py": "5fe6309a0183cf2a951a66b38ee42cb426128ac99cd0f2a7cf0331efd8f42670",
           "tests/test_kesher_canonical_state.py": "1b2df228a1bec270e2124babfb977762430da6b1600ed0de9d6f886dac536f0a",
           "tests/test_kesher_command_dispatch.py": "f031fb4b942647bb1a34d1fa168d9b2e62e60820ac162849940a7e05a468204f",
           "tests/test_kesher_content_controller.py": "39dfd6ea04f9968837b016670e0ab43b1800651e8735614eded7f33c958cfcb5",
           "tests/test_kesher_controller_entry.py": "83bc5d5eddb0d0e0b8c1c6e3d7dbb7ce0a7da24f6b2ee1394a6676d3152964d1",
           "tests/test_kesher_controller_queue.py": "4a44cadc1c899aac1135322452edeaa4c558d7147fd2edb5261149f061f6f8ce",
+          "tests/test_kesher_cutover_host.py": "f039248ed3cbad664268ab322a8b5ac020171300e6789d2b9fd24076c62c0baa",
           "tests/test_kesher_daily_pipeline.py": "3a818b7291ed7876a5af7ef37eb7c1bf320ddd488ea5104979e9c0de0ae76238",
           "tests/test_kesher_deployment_artifact.py": "db18baf0cad6af718cac52414b866bbd5dab3cc0310c2b64cdf64a08a62d60dc",
           "tests/test_kesher_deployment_observer.py": "86f6fd8a439e9751777b6eafe1206fd4ff7c725f3d9fd4ff72398ef2bb7755bc",
@@ -3647,9 +3643,12 @@
           "tests/test_kesher_metadata_repair.py": "caeb3fe28a03cc9ed7827362d18b7d8d5a2fc5fe69145927a023245f92d077b2",
           "tests/test_kesher_observe.py": "972d9a5fd360fb32660cb57d527382145faa86b924b1c3bd693292a27b69c3c1",
           "tests/test_kesher_output_artifacts.py": "ab3bb2145d2201f0b6245ebb7454f38e55867ba4a880b96459a879e92d83d7dd",
+          "tests/test_kesher_owner_asynchrony_preview.py": "7eac3ad74aed8cf46c54a6fcf685af48e2175f49ed18a2301a3ff67873fba3c0",
+          "tests/test_kesher_post_freeze_migration.py": "f3f97adec31e7bba754400144c10d495251e10e201ddff1b9c1e679138da9c7c",
           "tests/test_kesher_provider_recovery.py": "98d4b49f4815b56b5ab4d6880543463ddc69a4dbcc347bb3a9d7b72102b301f3",
           "tests/test_kesher_public_delivery.py": "865b95eb166069d4b0a701f371f31ab78c2bf688bd6d23cc38402cdef56e5cc3",
           "tests/test_kesher_publication_manifest.py": "ead92ee643b527e1f074a659f18e77c32dcd666e17a17d87735fd4a4cd9b110f",
+          "tests/test_kesher_real_data_migration.py": "728452ae17a1da930371c0d43531a2eed57ddbae7a8ef7d7fb5219b7a8032344",
           "tests/test_kesher_runtime_migration.py": "f900de0d2f33b710277cda0887890f514996709d4829868fcf8ad065986be510",
           "tests/test_kesher_state_write_safety.py": "1f23f3915cf1f1851ad77b84765efd2825bc5bd9862dba22a9f20046c72aac33",
           "tests/test_kesher_v5_backlog_priority.py": "d534ee995e932c8b194652d52003093c807411af1c2fb6aa3f34bb37c3a5d648",
@@ -3660,27 +3659,12 @@
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "bad021f97c8d1222616a8f984c1a01c750b3d35be29a4732423ed3b5ab3e2ffb",
           "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
-          "tests/test_video_review_schema.py": "5f31d330ffce90b2b243b48a2ea0b4982b1ab7f2a64acf70f1420fd664b6187f",
-          "scripts/kesher_runtime/authority_client.py": "2faf396e363269382163aafcb73bc80863e630bff551d3e22f872fc42b779e36",
-          "scripts/kesher_runtime/cutover_host.py": "9da32d13cd7c8616caeb36160452ba1fcf3981ae611817b6bed72af64b87c99c",
-          "scripts/kesher_runtime/cutover_auth.py": "27dbbd703912499e0ca553d774bca027844f3e7db116a22d787e54f4ba007a80",
-          "scripts/kesher_runtime/cutover_service.py": "7b5bcc7af5391111ccd7a491ca427e7244edb32a438c5fcd81f196a13df898de",
-          "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
-          "tests/test_kesher_cutover_host.py": "f039248ed3cbad664268ab322a8b5ac020171300e6789d2b9fd24076c62c0baa",
-          "tests/test_kesher_post_freeze_migration.py": "f3f97adec31e7bba754400144c10d495251e10e201ddff1b9c1e679138da9c7c",
-          "tests/test_kesher_real_data_migration.py": "728452ae17a1da930371c0d43531a2eed57ddbae7a8ef7d7fb5219b7a8032344",
-          "tests/test_kesher_backlog_rotation.py": "5fe6309a0183cf2a951a66b38ee42cb426128ac99cd0f2a7cf0331efd8f42670",
-          "tests/fixtures/kesher/schema5-freeze-20261004.json": "e678d1bc8be8aa4bdf1cf083cc6e044fd4d578f186cb7fdca1697ff4aecfcb00",
-          "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
-          "scripts/kesher_photo_story_private_preview.py": "1eba813eb5b6f05af78138072a3bb7bd37db99b0e8e6171d3a6849a2bda37ac0",
-          "research/kesher-vantage-photographic-private-preview.json": "a559f56773bab09354175293d56a8cc357cd3fdb4005814e232361e7eb5458d2",
-          "remotion-kesher/src/KesherVideo.tsx": "ccf0386bf2d379b553592da9c0157997819bbf11cc039bffb6d1762ce65c2ad7",
-          "remotion-kesher/src/licensedPhotoStory.ts": "0488ba7a47959318d206f692c4e435fdbc72ff08b083dc5865c05291910ea126"
+          "tests/test_video_review_schema.py": "5f31d330ffce90b2b243b48a2ea0b4982b1ab7f2a64acf70f1420fd664b6187f"
         },
         "credential_services": {},
         "credentials": [],
         "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Pinned diagnostic/test execution receives no protected mutation credential or GitHub write permission."
+        "note": "Reviewed existing read-only CI plus one gated same-repo OWNER source-bound photographic private media preview, no schedule or credential writes, exact SHA, no YouTube mutation, no publisher secrets, immutable call chain and rights evidence. Does not certify editorial QA; public upload remains separately guarded."
       },
       "role": "diagnostic",
       "registration_id": 338050996
