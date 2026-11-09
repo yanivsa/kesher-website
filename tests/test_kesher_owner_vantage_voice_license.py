@@ -1,12 +1,26 @@
-"""Fail-closed regression coverage for KESHER owner-only Short voice licensing."""
+"""Strict exact-license provenance and attribution gates for the OWNER Short."""
 import unittest
-
 from scripts.kesher_owner_vantage_short import VOICE, verify_voice_license
+
+MODEL = "notmax123/BlueTTS2.5-onnx"
+MODEL_URL = "https://huggingface.co/notmax123/BlueTTS2.5-onnx"
+CORPUS_URL = "https://www.openslr.org/141/"
 
 
 class VoiceLicenseGateTests(unittest.TestCase):
     def setUp(self):
-        self.manifest = {"voice": VOICE}
+        self.manifest = {
+            "voice": VOICE,
+            "voice_provenance": {
+                "model_repo": MODEL,
+                "model_revision": "f" * 40,
+                "weights_license": "MIT",
+                "weights_license_url": MODEL_URL,
+                "voice_preset": "libri_female_6147",
+                "reference_license": "CC BY 4.0",
+                "reference_license_url": CORPUS_URL,
+            },
+        }
         self.approval = {
             "audio_review_pass": True,
             "visual_review_pass": True,
@@ -14,33 +28,54 @@ class VoiceLicenseGateTests(unittest.TestCase):
             "voice_license": {
                 "voice_source": VOICE,
                 "commercial_use_permitted": True,
-                "license_evidence_url": "https://example.com/licenses/official-voice-terms",
+                "attribution_in_description": True,
+                "model_repo": MODEL,
+                "model_license": "MIT",
+                "license_evidence_url": MODEL_URL,
+                "voice_reference_corpus": "LibriTTS-R train-clean-100",
+                "reference_license": "CC BY 4.0",
+                "reference_license_url": CORPUS_URL,
             },
         }
 
-    def test_valid_documented_exact_voice_passes(self):
-        verify_voice_license(self.approval, self.manifest)
-
-    def test_missing_license_fails_even_if_three_qa_checks_pass(self):
-        del self.approval["voice_license"]
+    def assert_blocked(self):
         with self.assertRaisesRegex(AssertionError, "VOICE_LICENSE_NOT_VERIFIED"):
             verify_voice_license(self.approval, self.manifest)
+
+    def test_valid_licensed_exact_voice_passes(self):
+        verify_voice_license(self.approval, self.manifest)
+
+    def test_missing_license_fails_even_when_audio_visual_semantic_pass(self):
+        self.approval.pop("voice_license")
+        self.assert_blocked()
 
     def test_explicitly_unverified_license_fails(self):
         self.approval["voice_license"]["commercial_use_permitted"] = False
-        with self.assertRaisesRegex(AssertionError, "VOICE_LICENSE_NOT_VERIFIED"):
-            verify_voice_license(self.approval, self.manifest)
+        self.assert_blocked()
 
-    def test_empty_evidence_url_fails(self):
+    def test_missing_license_evidence_fails(self):
         self.approval["voice_license"]["license_evidence_url"] = None
-        with self.assertRaisesRegex(AssertionError, "VOICE_LICENSE_NOT_VERIFIED"):
-            verify_voice_license(self.approval, self.manifest)
+        self.assert_blocked()
 
-    def test_wrong_voice_fails(self):
-        self.approval["voice_license"]["voice_source"] = "different-neural-voice"
-        with self.assertRaisesRegex(AssertionError, "VOICE_LICENSE_NOT_VERIFIED"):
-            verify_voice_license(self.approval, self.manifest)
+    def test_wrong_or_unlicensed_voice_fails(self):
+        self.approval["voice_license"]["voice_source"] = "he-IL-HilaNeural"
+        self.assert_blocked()
 
+    def test_wrong_model_provenance_fails(self):
+        self.manifest["voice_provenance"]["model_repo"] = "unauthorized/fork"
+        self.assert_blocked()
+
+    def test_wrong_or_missing_reference_license_fails(self):
+        self.approval["voice_license"]["reference_license"] = "CC BY NC"
+        self.assert_blocked()
+
+    def test_missing_cc_by_attribution_fails(self):
+        self.approval["voice_license"]["attribution_in_description"] = False
+        self.assert_blocked()
+
+    def test_unpinned_model_revision_fails(self):
+        self.manifest["voice_provenance"]["model_revision"] = "main"
+        self.assert_blocked()
 
 if __name__ == "__main__":
     unittest.main()
