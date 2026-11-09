@@ -23,5 +23,11 @@
     "ffprobe_codecs": "H264/AAC",
     "voice_source": "Microsoft Edge Read Aloud (he-IL-HilaNeural) via edge-tts",
     "voice_use_rights_note": "Microsoft does not publish explicit standalone commercial redistribution terms for Edge Read Aloud. This evidence asserts audio intelligibility/content QA, NOT legal rights or a commercial voice license."
+  },
+  "voice_license": {
+    "voice_source": "he-IL-HilaNeural",
+    "commercial_use_permitted": false,
+    "license_evidence_url": null,
+    "review_note": "BLOCK: Microsoft Edge Read Aloud / edge-tts redistribution and commercial rights are not explicitly granted by published Microsoft terms. Replace with a verified licensed voice and re-review exact media binary, or document authoritative permission for this voice before changing this flag. Technical QA alone is not license approval."
   }
 }
