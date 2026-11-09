@@ -458,6 +458,83 @@ jobs:
           chmod 600 "$sealed_tmp"
           mv "$sealed_tmp" "$sealed_path"
 
+      # Owner-only review bundle: immutable source, no credentials, no upload.
+      - name: Prepare exact-source Short audio and visual review bundle
+        id: prepare_owner_review
+        if: ${{ always() && github.event_name != 'pull_request' && inputs.derive_slug != '' && inputs.derive_content_sha256 != '' && hashFiles('.kesher-short-v4-state/state.json') != '' }}
+        env:
+          REVIEW_SLUG: ${{ inputs.derive_slug }}
+          REVIEW_SHA: ${{ inputs.derive_content_sha256 }}
+          REVIEW_DIR: ${{ runner.temp }}/kesher-owner-short-review
+        run: |
+          python - <<'PY'
+          import json, os, shutil, subprocess
+          from pathlib import Path
+
+          root = Path(os.environ["KESHER_STATE_DIR"])
+          state = json.loads((root / "state.json").read_text(encoding="utf-8"))
+          slug, sha = os.environ["REVIEW_SLUG"], os.environ["REVIEW_SHA"]
+          matches = [item for item in state.get("items", []) if
+                     item.get("type") == "article_short"
+                     and (item.get("source") or {}).get("slug") == slug
+                     and (item.get("source") or {}).get("content_sha256") == sha]
+          if len(matches) != 1:
+              print("OWNER_REVIEW_UNAVAILABLE: no unique exact source item")
+              raise SystemExit(0)
+          item = matches[0]
+          if item.get("technical_verified") is not True or item.get("status") not in {"pending_review", "approved"}:
+              print("OWNER_REVIEW_UNAVAILABLE: exact source has no technically verified, unuploaded media")
+              raise SystemExit(0)
+          names = ("final_mp4", "visual_review_path", "transcript_path", "source_path")
+          paths = {}
+          for name in names:
+              value = item.get(name)
+              if not isinstance(value, str) or not value or Path(value).name != value:
+                  print(f"OWNER_REVIEW_UNAVAILABLE: invalid {name}")
+                  raise SystemExit(0)
+              candidate = root / value
+              if not candidate.is_file():
+                  print(f"OWNER_REVIEW_UNAVAILABLE: missing {name}")
+                  raise SystemExit(0)
+              paths[name] = candidate
+          output = Path(os.environ["REVIEW_DIR"])
+          output.mkdir(parents=True, exist_ok=True)
+          for name in ("visual_review_path", "transcript_path", "source_path"):
+              shutil.copy2(paths[name], output / paths[name].name)
+          subprocess.run([
+              "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+              "-i", str(paths["final_mp4"]), "-map", "0:a:0", "-vn",
+              "-c:a", "aac", "-b:a", "96k", str(output / "original-voice-review.m4a")
+          ], check=True, timeout=120)
+          evidence = {
+              "source_slug": slug,
+              "content_sha256": sha,
+              "short_item_id": item["id"],
+              "short_item_status_at_export": item["status"],
+              "technical_verified": item["technical_verified"],
+              "media": item.get("media"),
+              "original_voice_review": "original-voice-review.m4a",
+              "subjective_voice_qa": "pending",
+              "visual_semantic_qa": "pending",
+              "not_a_publication_record": True,
+          }
+          (output / "review-evidence.json").write_text(
+              json.dumps(evidence, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write("ready=true\n")
+          print(f"OWNER_REVIEW_READY item={item['id']} source_sha={sha[:12]}")
+          PY
+
+      - name: Persist exact-source Short review evidence privately
+        if: ${{ always() && steps.prepare_owner_review.outputs.ready == 'true' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-short-v4-owner-review
+          path: ${{ runner.temp }}/kesher-owner-short-review
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 6
+
       - name: Persist lightweight Short controller state
         if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-short-v4-state/state.json') != '' }}
         id: persist_controller_state
