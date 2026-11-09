@@ -747,7 +747,7 @@
         "read",
         "status_write"
       ],
-      "definition_sha256": "955d56f33255ca781fdd7afbf285b8dc2b8e506b64907b6e39a3cb19c1fdc465",
+      "definition_sha256": "6780fbd7cd967816f5b79703f2fd4238e52dc9da04ba7fff1f70759693516cbe",
       "resources": [
         "github.statuses"
       ],
@@ -870,7 +870,8 @@
           "tests/test_kesher_real_data_migration.py": "728452ae17a1da930371c0d43531a2eed57ddbae7a8ef7d7fb5219b7a8032344",
           "tests/test_kesher_backlog_rotation.py": "5fe6309a0183cf2a951a66b38ee42cb426128ac99cd0f2a7cf0331efd8f42670",
           "tests/fixtures/kesher/schema5-freeze-20261004.json": "e678d1bc8be8aa4bdf1cf083cc6e044fd4d578f186cb7fdca1697ff4aecfcb00",
-          "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93"
+          "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
+          "tests/test_kesher_owner_media_quality.py": "8645e575a5a2568df2186fd577379b19f062b039896f25b40eedf2939d9c8de6"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -2853,7 +2854,7 @@
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
           "scripts/kesher_runtime/legacy_retirement.py": "90555d274327debeac3e16adb50ac5e011f38cf353f78e888f228040a3027d4c",
           "scripts/kesher_runtime/media_state.py": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65",
-          "scripts/kesher_runtime/media_worker.py": "425a2affb2675c0bbcf5c0a050783090f7e01b72c89a182cea7c5548d6aa5958",
+          "scripts/kesher_runtime/media_worker.py": "4db95d3f8da41da3910501210136fd2641ec579e151a354779a155d01c5db7d6",
           "scripts/kesher_runtime/migration.py": "dffe62f3f56ff66e4afc0e73e15e54b647adb1759d93ceab263a2a0e52b8884c",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
           "scripts/kesher_runtime/output_artifacts.py": "5bd90501e017d00d78f25195800542e7c9f9acf49b2a06b8751ff2f67c7ac5e0",
@@ -3286,7 +3287,7 @@
           "scripts/kesher_runtime/media_observer.py": "3d4b1e761b3c77296f1fcb2b3ed1a57d04bd590ed68b5e963f22277b2a8d6b26",
           "scripts/kesher_runtime/media_publication.py": "85004c226175d94264219892dc8806ab9b4fad01b91ef42728c3862421084c6b",
           "scripts/kesher_runtime/media_state.py": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65",
-          "scripts/kesher_runtime/media_worker.py": "425a2affb2675c0bbcf5c0a050783090f7e01b72c89a182cea7c5548d6aa5958",
+          "scripts/kesher_runtime/media_worker.py": "4db95d3f8da41da3910501210136fd2641ec579e151a354779a155d01c5db7d6",
           "scripts/kesher_runtime/migration.py": "dffe62f3f56ff66e4afc0e73e15e54b647adb1759d93ceab263a2a0e52b8884c",
           "scripts/kesher_runtime/observe.py": "8ace67492f9684e3e8a9313c9bcea9f833b40de0f265fbc16a9c8f821f75d35b",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -3349,7 +3350,7 @@
           "tests/test_kesher_media_worker.py": "7613436dcecdb4de8805cf256fc7e75e7bc43ca0219529499a0c075bd56bdc49",
           "tests/test_kesher_metadata_repair.py": "caeb3fe28a03cc9ed7827362d18b7d8d5a2fc5fe69145927a023245f92d077b2",
           "tests/test_kesher_observe.py": "972d9a5fd360fb32660cb57d527382145faa86b924b1c3bd693292a27b69c3c1",
-          "tests/test_kesher_output_artifacts.py": "89cd90e4d483a94e4b08e10ddbc9c2eea6080d4c870d5dbfc79312706e80408e",
+          "tests/test_kesher_output_artifacts.py": "ab3bb2145d2201f0b6245ebb7454f38e55867ba4a880b96459a879e92d83d7dd",
           "tests/test_kesher_provider_recovery.py": "98d4b49f4815b56b5ab4d6880543463ddc69a4dbcc347bb3a9d7b72102b301f3",
           "tests/test_kesher_public_delivery.py": "865b95eb166069d4b0a701f371f31ab78c2bf688bd6d23cc38402cdef56e5cc3",
           "tests/test_kesher_publication_manifest.py": "ead92ee643b527e1f074a659f18e77c32dcd666e17a17d87735fd4a4cd9b110f",
