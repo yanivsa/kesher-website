@@ -126,6 +126,15 @@ def stage_images(scenes: list[dict]) -> list[dict]:
 
 
 def synthesize_licensed_hebrew(scenes: list[dict], output: Path) -> tuple[Path, list[int], dict]:
+    from huggingface_hub import HfApi
+    # Reuse the EXACT model/G2P revisions independently reviewed for the Short.
+    approved_voice_sha = "95feb5d0cbfc8e5a95bffb067d03537cbf35be3e"
+    approved_hebrew_g2p_sha = "679c56ca449d41873fb8ff7711ddf7563d28198f"
+    hub = HfApi()
+    v_model = hub.model_info("notmax123/BlueTTS2.5-onnx")
+    g_model = hub.model_info("notmax123/RenikudPlus")
+    if v_model.sha != approved_voice_sha or g_model.sha != approved_hebrew_g2p_sha:
+        raise RuntimeError("LICENSED_VOICE_MODEL_REVISION_MOVED: refuse until rights re-reviewed")
     from scripts import kesher_owner_vantage_short as voice
     # Existing, previously deployed MIT/Apache-2.0/CC-BY synthesis, not Edge Read Aloud.
     # Neither its fixed Short source identity nor its YouTube publication entry is invoked.
