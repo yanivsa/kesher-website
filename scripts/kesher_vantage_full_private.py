@@ -145,6 +145,12 @@ def synthesize_licensed_hebrew(scenes: list[dict], output: Path) -> tuple[Path, 
     # Neither its fixed Short source identity nor its YouTube publication entry is invoked.
     voice.SCENES = [(f"Overview scene {i+1}", scene["voiceText"]) for i, scene in enumerate(scenes)]
     files, durations, provenance = voice.speak(output)
+    # Do not archive hundreds of megabytes of downloaded public ONNX weights:
+    # SHA-bound model provenance is recorded, while only generated WAVs are retained.
+    weights_dir = output / "bluetts-model"
+    if (weights_dir.is_dir() and not weights_dir.is_symlink()
+            and weights_dir.resolve().is_relative_to(output.resolve())):
+        shutil.rmtree(weights_dir)
     if len(files) != len(scenes) or len(durations) != len(scenes):
         raise RuntimeError("SPEECH_SEGMENT_COUNT_MISMATCH")
     waveforms = []
