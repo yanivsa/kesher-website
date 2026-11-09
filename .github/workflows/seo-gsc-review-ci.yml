@@ -1,0 +1,61 @@
+name: SEO Draft Review CI (No Deploy)
+on:
+  push:
+    branches:
+      - review/gsc-seo-ci-20261109
+permissions:
+  contents: read
+concurrency:
+  group: seo-gsc-review-ci
+  cancel-in-progress: true
+jobs:
+  seo-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - name: Checkout review branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Chromium for prerender
+        run: npx playwright install chromium
+      - name: Validate TypeScript
+        run: npm run typecheck
+      - name: Lint source
+        run: npm run lint
+      - name: Validate content
+        run: npm run test:content
+      - name: Run application tests
+        run: npm run test
+      - name: Build with prerender
+        run: npm run build
+      - name: Verify prerendered routes and canonical URLs
+        run: npm run verify:dist
+      - name: Check six SEO route metadata and internal links
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import fs from 'node:fs';
+          const targets = [
+            ['/services/premarital-first-year', 'ייעוץ זוגי לפני נישואין | הכנה לקראת החתונה', '/faq/when-to-start-premarital-counseling'],
+            ['/services/couples/crisis', 'ייעוץ זוגי לזוגות במצבי משבר | שירה סהרוני', ''],
+            ['/services/mediation', 'גישור זוגי, משפחתי וגירושין באשדוד | שירה סהרוני', '/faq/couples-mediation-vs-couples-counseling'],
+            ['/faq/when-to-start-couples-counseling', 'מתי כדאי לפנות לייעוץ זוגי? סימני קושי ומשבר', '/services/premarital-first-year'],
+            ['/faq/couples-mediation-vs-couples-counseling', 'גישור וייעוץ זוגי: מה ההבדל ומתי מתאים כל אחד?', ''],
+            ['/blog/why-cant-i-find-a-relationship', 'קושי ביצירת קשר זוגי: למה קשה לי למצוא זוגיות?', '/services/finding-relationship']
+          ];
+          for (const [route, title, link] of targets) {
+            const html = fs.readFileSync('dist' + route + '.html', 'utf8');
+            assert(html.includes(title), route + ': expected title not found');
+            assert(html.includes('https://kesher.saharoni.com' + route), route + ': canonical missing');
+            const h1s = [...html.matchAll(/<h1\b[^>]*>/gi)];
+            assert.equal(h1s.length, 1, route + ': H1 count');
+            if (link) assert(html.includes('href="' + link + '"'), route + ': contextual link missing');
+            console.log('PASS', route);
+          }
+          NODE
