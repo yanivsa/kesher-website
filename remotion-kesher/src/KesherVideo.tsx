@@ -1,7 +1,8 @@
 import React from 'react';
 import {Video} from '@remotion/media';
 import {AbsoluteFill, Easing, Img, interpolate, Sequence, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
-import {ApprovedSourceIdentity, LicensedPhotoStory, validateLicensedPhotoStory} from './licensedPhotoStory';
+import type {ApprovedSourceIdentity, LicensedPhotoStory} from './licensedPhotoStory';
+import {validateLicensedPhotoStory} from './licensedPhotoStory';
 
 export type KesherVideoProps = {
   videoSrc: string;
