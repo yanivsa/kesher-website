@@ -1,0 +1,53 @@
+{
+  "source_slug": "positivity-resonance-marriage-micro-moments",
+  "content_sha256": "0f0aa3e55560774ca2fcb5c72a296cffda23ad29674530b54aa10be92b04f710",
+  "mode": "PRIVATE_PREVIEW_ONLY",
+  "rights_disposition": "Existing site editorial assets; individual commercial-rights validation pending. Never infer released rights from repository membership.",
+  "images": [
+    {
+      "path": "public/images/generated/blog/screens-relationship-intimacy.jpg",
+      "sha256": "fba20600a205b13e45ba5e405d399a6628678bc8bdb3a1dea7bf635a6674bb5f",
+      "alt_hebrew": "מסכים וניתוק בשיחה זוגית",
+      "origin": "prior-local-editorial",
+      "source_url": "https://github.com/yanivsa/kesher-website/tree/main/public/images/generated/blog",
+      "rights_status": "REVIEW_PENDING",
+      "generated_for": "KESHER-site-archive"
+    },
+    {
+      "path": "public/images/generated/blog/couples-communication-life-transitions.jpg",
+      "sha256": "f273a0087fb7f24fca70f965247d71785eda58452a7fecbafb99f096112b2be6",
+      "alt_hebrew": "חיבוק זוגי חם בבית",
+      "origin": "prior-local-editorial",
+      "source_url": "https://github.com/yanivsa/kesher-website/tree/main/public/images/generated/blog",
+      "rights_status": "REVIEW_PENDING",
+      "generated_for": "KESHER-site-archive"
+    },
+    {
+      "path": "public/images/generated/blog/exhausted-couple-communication.jpg",
+      "sha256": "a79feaa84b62bcdacf0e5d8d836f777349e8bfa9ef4f3655c1870a74692b2c2c",
+      "alt_hebrew": "בני זוג ותיקים בשיחה קשובה",
+      "origin": "prior-local-editorial",
+      "source_url": "https://github.com/yanivsa/kesher-website/tree/main/public/images/generated/blog",
+      "rights_status": "REVIEW_PENDING",
+      "generated_for": "KESHER-site-archive"
+    },
+    {
+      "path": "public/images/generated/blog/self-distancing-couple-arguments-hero.jpg",
+      "sha256": "2fa016268c9555efba2bb1fa73eaf8b1349ca84196c51170df79a05a49a43406",
+      "alt_hebrew": "בני זוג משוחחים ומנסים להתקרב",
+      "origin": "adobe-firefly-original-2026-11-09",
+      "source_url": "https://github.com/yanivsa/kesher-website/tree/main/public/images/generated/blog",
+      "rights_status": "REVIEW_PENDING",
+      "generated_for": "KESHER-original-editorial-different-topic"
+    },
+    {
+      "path": "public/images/generated/blog/relationship-memory-reconstruction-editorial-20261106.jpg",
+      "sha256": "4be31acaded77324449746be76a39b9a32d97edf50b071c853d86f4239349ac3",
+      "alt_hebrew": "בני זוג משתפים רגע זיכרון משפחתי",
+      "origin": "adobe-firefly-original-2026-11-06",
+      "source_url": "https://github.com/yanivsa/kesher-website/tree/main/public/images/generated/blog",
+      "rights_status": "REVIEW_PENDING",
+      "generated_for": "KESHER-original-editorial-different-topic"
+    }
+  ]
+}
