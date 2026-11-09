@@ -2,16 +2,16 @@
   "source_slug": "positivity-resonance-marriage-micro-moments",
   "content_sha256": "0f0aa3e55560774ca2fcb5c72a296cffda23ad29674530b54aa10be92b04f710",
   "mode": "PRIVATE_PREVIEW_ONLY",
-  "rights_disposition": "Existing site editorial assets; individual commercial-rights validation pending. Never infer released rights from repository membership.",
+  "rights_disposition": "New original hero generated specifically for this KESHER article via ImageGen; other previously published site photos are restricted to private preview until commercial rights are independently reviewed.",
   "images": [
     {
-      "path": "public/images/generated/blog/screens-relationship-intimacy.jpg",
-      "sha256": "fba20600a205b13e45ba5e405d399a6628678bc8bdb3a1dea7bf635a6674bb5f",
-      "alt_hebrew": "מסכים וניתוק בשיחה זוגית",
-      "origin": "prior-local-editorial",
-      "source_url": "https://github.com/yanivsa/kesher-website/tree/main/public/images/generated/blog",
+      "path": "public/images/blog/positivity-resonance-couple-micro-moments-hero.png",
+      "sha256": "cfb51bfb48cd6a8c598cfa24f3e23a1e28ad369d391b2a0acf45b6ac0759096d",
+      "alt_hebrew": "זוג נשוי מחייך זה לזו מעל כוסות קפה ברגע של תהודה חיובית בבית",
+      "origin": "owner-generated-OpenAI-ImageGen-2026-11-09",
+      "source_url": "https://github.com/yanivsa/kesher-website/blob/owner/positivity-resonance-20261109/public/images/blog/positivity-resonance-couple-micro-moments-hero.png",
       "rights_status": "REVIEW_PENDING",
-      "generated_for": "KESHER-site-archive"
+      "generated_for": "positivity-resonance-marriage-micro-moments"
     },
     {
       "path": "public/images/generated/blog/couples-communication-life-transitions.jpg",
