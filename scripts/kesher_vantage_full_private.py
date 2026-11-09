@@ -135,6 +135,11 @@ def synthesize_licensed_hebrew(scenes: list[dict], output: Path) -> tuple[Path, 
     g_model = hub.model_info("notmax123/RenikudPlus")
     if v_model.sha != approved_voice_sha or g_model.sha != approved_hebrew_g2p_sha:
         raise RuntimeError("LICENSED_VOICE_MODEL_REVISION_MOVED: refuse until rights re-reviewed")
+    # Direct script execution sets sys.path to scripts/, not the repository root.
+    # Import the reviewed sibling implementation deterministically in both modes.
+    import sys
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
     from scripts import kesher_owner_vantage_short as voice
     # Existing, previously deployed MIT/Apache-2.0/CC-BY synthesis, not Edge Read Aloud.
     # Neither its fixed Short source identity nor its YouTube publication entry is invoked.
