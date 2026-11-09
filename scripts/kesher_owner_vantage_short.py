@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """One-source, one-time OWNER media repair. No legacy content agent or bridge."""
 import argparse
-import asyncio
 import hashlib
 import json
 import os
-import shutil
 import subprocess
 import time
 from pathlib import Path
@@ -17,7 +15,7 @@ OVERVIEW_VIDEO_ID = "lnP5GltTLNk"
 OVERVIEW_ITEM_ID = "video-20261109-085219-e264d2962b"
 CHANNEL_ID = "UCx5fEFvdVf28HLAR2dFW64Q"
 ARTICLE = "https://kesher.saharoni.com/blog/" + SLUG
-VOICE = "he-IL-HilaNeural"
+VOICE = "BlueTTS2.5-onnx:libri_female_6147"
 TITLE = "הילד רגיש במיוחד? כך סביבה תומכת יכולה לעזור | שירה סהרוני #Shorts"
 REPO = "yanivsa/kesher-website"
 SCENES = [
@@ -94,20 +92,80 @@ def draw_slide(number, headline, dest):
     canvas.save(dest)
 
 
-async def speak(dirpath):
-    import edge_tts
-    durations = []
-    paths = []
+def _speech_chunks(script):
+    """Keep the licensed model below its per-utterance duration limit."""
+    import re
+    phrases = re.split(r"(?<=[.!?])\s+|(?<=:)\s+|(?<=,)\s+", script)
+    chunks = []
+    for phrase in phrases:
+        if not phrase.strip():
+            continue
+        words = phrase.split()
+        # 12 words or less prevents the ~16s ONNX duration saturation.
+        for offset in range(0, len(words), 12):
+            chunk = " ".join(words[offset:offset + 12]).strip()
+            if chunk:
+                chunks.append(chunk)
+    return chunks
+
+
+def speak(dirpath):
+    """Synthesize locally with MIT-licensed Hebrew ONNX weights; never Edge Read Aloud."""
+    import numpy as np
+    import soundfile as sf
+    from blue_onnx import BlueTTS
+    from huggingface_hub import HfApi, snapshot_download
+
+    model_info = HfApi().model_info("notmax123/BlueTTS2.5-onnx")
+    assert model_info.sha and len(model_info.sha) == 40, "Unpinned Hebrew TTS model revision"
+    assert model_info.card_data and str(model_info.card_data.license).lower() == "mit", "Model weights are not MIT"
+    model_rev = model_info.sha
+    model_dir = Path(snapshot_download(
+        repo_id="notmax123/BlueTTS2.5-onnx",
+        revision=model_rev,
+        local_dir=str(dirpath / "bluetts-model"),
+        allow_patterns=["*.onnx", "*.npz", "*.json", "voices/*.json"],
+        max_workers=4,
+    ))
+    style = model_dir / "voices" / "libri_female_6147.json"
+    assert style.is_file(), "Licensed LibriTTS-R voice style missing"
+    tts = BlueTTS(onnx_dir=str(model_dir), style_json=str(style))
+    paths, durations = [], []
     for idx, (_headline, script) in enumerate(SCENES):
-        path = dirpath / f"voice-{idx:02d}.mp3"
-        client = edge_tts.Communicate(text=script, voice=VOICE, rate="-6%")
-        await client.save(str(path))
-        assert path.stat().st_size > 5000, "Empty or tiny TTS segment"
-        d = duration(path)
-        assert 2 < d < 50, "TTS duration out of bounds"
-        durations.append(d)
+        chunks = _speech_chunks(script)
+        assert chunks, "Missing scene narration"
+        parts = []
+        sample_rate = None
+        for phrase in chunks:
+            arr, sr = tts.synthesize(phrase, lang="he")
+            wave = np.asarray(arr, dtype=np.float32).reshape(-1)
+            assert len(wave) >= 3500 and np.isfinite(wave).all(), "Invalid Hebrew speech output"
+            assert float(np.max(np.abs(wave))) < 1.001, "Out-of-range audio peaks"
+            if sample_rate is None:
+                sample_rate = int(sr)
+            assert sr == sample_rate
+            parts.extend((wave, np.zeros(int(sr * 0.075), dtype=np.float32)))
+        path = dirpath / f"voice-{idx:02d}.wav"
+        sf.write(str(path), np.concatenate(parts), sample_rate, subtype="PCM_16")
+        sec = duration(path)
+        assert 2 < sec < 55, "Invalid speech scene duration"
+        durations.append(sec)
         paths.append(path)
-    return paths, durations
+    license_provenance = {
+        "model_repo": "notmax123/BlueTTS2.5-onnx",
+        "model_revision": model_rev,
+        "weights_license": "MIT",
+        "weights_license_url": "https://huggingface.co/notmax123/BlueTTS2.5-onnx",
+        "voice_preset": "libri_female_6147",
+        "voice_reference_corpus": "LibriTTS-R train-clean-100",
+        "reference_license": "CC BY 4.0",
+        "reference_license_url": "https://www.openslr.org/141/",
+        "voice_reference_attribution": "LibriTTS-R / Google LLC; speaker 6147",
+        "g2p_model": "notmax123/RenikudPlus",
+        "g2p_license_url": "https://huggingface.co/notmax123/RenikudPlus",
+    }
+    print("OWNER_LICENSED_TTS model=" + license_provenance["model_repo"] + " revision=" + model_rev)
+    return paths, durations, license_provenance
 
 
 def ffconcat(dest, files, lengths=None):
@@ -142,7 +200,7 @@ def preview():
     from PIL import Image
     out = Path("owner-vantage-short-output")
     out.mkdir(exist_ok=True)
-    voices, seconds = asyncio.run(speak(out))
+    voices, seconds, licensed_voice = speak(out)
     slides = []
     for idx, (headline, _script) in enumerate(SCENES):
         image = out / f"frame-{idx:02d}.png"
@@ -174,6 +232,7 @@ def preview():
         "overview_video_id": OVERVIEW_VIDEO_ID,
         "overview_item_id": OVERVIEW_ITEM_ID,
         "voice": VOICE,
+        "voice_provenance": licensed_voice,
         "script_segments": [script for _label, script in SCENES],
         "script_sha256": hashlib.sha256("\n".join(script for _, script in SCENES).encode()).hexdigest(),
         "media": meta,
@@ -233,15 +292,36 @@ def already_published(youtube, uploads_playlist):
 
 
 def verify_voice_license(approve, manifest):
-    """Fail closed if the exact narration voice lacks commercial-use evidence."""
-    # Audio/content QA does NOT grant permission to redistribute a TTS voice.
+    """Fail closed on the exact pretrained voice provenance and CC-BY attribution."""
     rights = approve.get("voice_license")
-    assert isinstance(rights, dict), "VOICE_LICENSE_NOT_VERIFIED: missing license evidence"
-    proof_url = rights.get("license_evidence_url")
-    assert (rights.get("commercial_use_permitted") is True
-            and rights.get("voice_source") == manifest.get("voice") == VOICE
-            and isinstance(proof_url, str) and proof_url.startswith("https://")
-            and len(proof_url) > 12), "VOICE_LICENSE_NOT_VERIFIED: do not upload without documented commercial rights"
+    provenance = manifest.get("voice_provenance")
+    assert isinstance(rights, dict) and isinstance(provenance, dict), \
+        "VOICE_LICENSE_NOT_VERIFIED: missing exact license evidence"
+    expected = {
+        "voice_source": VOICE,
+        "model_repo": "notmax123/BlueTTS2.5-onnx",
+        "model_license": "MIT",
+        "license_evidence_url": "https://huggingface.co/notmax123/BlueTTS2.5-onnx",
+        "voice_reference_corpus": "LibriTTS-R train-clean-100",
+        "reference_license": "CC BY 4.0",
+        "reference_license_url": "https://www.openslr.org/141/",
+    }
+    assert all(rights.get(k) == v for k, v in expected.items()), \
+        "VOICE_LICENSE_NOT_VERIFIED: source or evidence mismatch"
+    assert rights.get("commercial_use_permitted") is True, \
+        "VOICE_LICENSE_NOT_VERIFIED: commercial-use flag missing"
+    assert rights.get("attribution_in_description") is True, \
+        "VOICE_LICENSE_NOT_VERIFIED: CC-BY attribution required"
+    assert (manifest.get("voice") == VOICE
+            and provenance.get("model_repo") == expected["model_repo"]
+            and provenance.get("weights_license") == expected["model_license"]
+            and provenance.get("weights_license_url") == expected["license_evidence_url"]
+            and provenance.get("reference_license") == expected["reference_license"]
+            and provenance.get("reference_license_url") == expected["reference_license_url"]
+            and provenance.get("voice_preset") == "libri_female_6147"
+            and isinstance(provenance.get("model_revision"), str)
+            and len(provenance["model_revision"]) == 40), \
+        "VOICE_LICENSE_NOT_VERIFIED: reviewed rendering provenance mismatch"
 
 
 def validate_approved_bundle():
@@ -287,6 +367,7 @@ def publish():
                        + "source_slug=" + SLUG + "\n"
                        + "content_sha256=" + SOURCE_SHA + "\n"
                        + "overview=https://www.youtube.com/watch?v=" + OVERVIEW_VIDEO_ID
+                       + "\nקריינות סינתטית: BlueTTS 2.5 (משקולות MIT), LibriTTS-R / Google LLC, דובר/ת 6147 (CC BY 4.0).\nhttps://huggingface.co/notmax123/BlueTTS2.5-onnx\nhttps://www.openslr.org/141/"
                        + "\n#הדרכתהורים #ילדיםרגישים #Shorts")
         body = {"snippet": {"title": TITLE, "description": description, "categoryId": "22",
                             "tags": ["רגישות יתרון", "הדרכת הורים", "שירה סהרוני"],
