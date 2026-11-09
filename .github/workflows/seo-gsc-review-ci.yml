@@ -67,3 +67,8 @@ jobs:
             console.log('PASS', route);
           }
           NODE
+
+      - name: Validate article hero images (same as main CI)
+        run: python3 .github/scripts/validate-article-images.py
+      - name: Run complete production quality gate (same as main CI)
+        run: npm run check
