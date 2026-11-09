@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PLANS = (
     ROOT / "scripts/internal-link-plan.json",
     ROOT / "scripts/internal-link-plan-priority2.json",
+    ROOT / "scripts/internal-link-plan-priority3.json",
 )
 SLUG = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
