@@ -53,7 +53,7 @@ def source_scripts():
 def source_check(*, public=False):
     entries = json.loads((ROOT / "src/data/postsRecent.json").read_text(encoding="utf-8"))
     selected = [x for x in entries if x.get("slug") == SLUG]
-    if len(selected) != 1 or selected[0].get("image") != "/images/generated/blog/couples-communication-life-transitions.jpg":
+    if len(selected) != 1 or selected[0].get("image") != "/images/blog/positivity-resonance-couple-micro-moments-hero.png":
         raise ValueError("ARTICLE_SOURCE_NOT_UNIQUE_OR_IMAGE_MISMATCH")
     def clean(value):
         parser=TextExtractor();parser.feed(str(value))
@@ -71,7 +71,7 @@ def source_check(*, public=False):
         raise ValueError("FIVE_UNIQUE_IMAGES_REQUIRED")
     for item in images:
         path = str(item.get("path", ""))
-        if not re.fullmatch(r"public/images/generated/blog/[a-z0-9-]+\.jpg", path):
+        if not re.fullmatch(r"public/images/(?:blog/[a-z0-9-]+\.png|generated/blog/[a-z0-9-]+\.jpg)", path):
             raise ValueError("PHOTO_UNSAFE_PATH")
         src = ROOT / path
         if src.is_symlink() or not src.is_file() or sha_file(src) != item["sha256"]:
