@@ -176,3 +176,64 @@ jobs:
           path: ${{ runner.temp }}/kesher-render-proof/
           if-no-files-found: error
           retention-days: 14
+
+
+  owner-asynchrony-private-preview:
+    # Exact same-repo owner PR only. No GitHub provider credentials, no public upload.
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/asynchrony-media-20261109' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout exact OWNER candidate with no credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Source-bound nonpublishing preflight
+        run: python -m scripts.kesher_owner_asynchrony_preview preflight --source-sha 7b6ae2e8dc3182d798edbf19c2d95e576b02ab093c5e2bf04bad91113a716a00
+      - name: Set up Python for licensed local speech
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up pinned Node for repository FFmpeg bundles
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned owner-direct speech and media tools
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          printf '%s\n' "$ffmpeg_dir" "$ffprobe_dir" >> "$GITHUB_PATH"
+          export PATH="$ffmpeg_dir:$ffprobe_dir:$PATH"
+          command -v ffmpeg
+          command -v ffprobe
+          python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 \
+            'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0'
+      - name: Strict identity and no-publication tests
+        run: python -m unittest tests.test_kesher_owner_asynchrony_preview -v
+      - name: Render original private Hebrew Overview and native 9 by 16 Short
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-asynchrony-hf
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_owner_asynchrony_preview preview \
+            --source-sha 7b6ae2e8dc3182d798edbf19c2d95e576b02ab093c5e2bf04bad91113a716a00 \
+            --output owner-asynchrony-media-output
+      - name: Archive reviewable PRIVATE owner outputs only
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-asynchrony-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-asynchrony-media-output/overview.mp4
+            owner-asynchrony-media-output/short.mp4
+            owner-asynchrony-media-output/overview-review-voice.wav
+            owner-asynchrony-media-output/short-review-voice.wav
+            owner-asynchrony-media-output/*-manifest.json
+            owner-asynchrony-media-output/*-visual-contact-sheet.jpg
+            owner-asynchrony-media-output/*-frame-*.jpg
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 60
