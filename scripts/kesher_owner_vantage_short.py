@@ -129,7 +129,17 @@ def speak(dirpath):
     ))
     style = model_dir / "voices" / "libri_female_6147.json"
     assert style.is_file(), "Licensed LibriTTS-R voice style missing"
-    tts = BlueTTS(onnx_dir=str(model_dir), style_json=str(style))
+    g2p_info = HfApi().model_info("notmax123/RenikudPlus")
+    assert g2p_info.sha and len(g2p_info.sha) == 40, "Hebrew G2P model revision not pinned"
+    assert g2p_info.card_data and str(g2p_info.card_data.license).lower() == "apache-2.0", "G2P weights license is not Apache 2.0"
+    from huggingface_hub import hf_hub_download
+    g2p_path = hf_hub_download(
+        repo_id="notmax123/RenikudPlus",
+        filename="model_int8.onnx",
+        revision=g2p_info.sha,
+    )
+    assert Path(g2p_path).is_file(), "Pinned Hebrew G2P model weights unavailable"
+    tts = BlueTTS(onnx_dir=str(model_dir), style_json=str(style), renikud_path=str(g2p_path))
     paths, durations = [], []
     for idx, (_headline, script) in enumerate(SCENES):
         chunks = _speech_chunks(script)
@@ -162,6 +172,8 @@ def speak(dirpath):
         "reference_license_url": "https://www.openslr.org/141/",
         "voice_reference_attribution": "LibriTTS-R / Google LLC; speaker 6147",
         "g2p_model": "notmax123/RenikudPlus",
+        "g2p_revision": g2p_info.sha,
+        "g2p_license": "Apache-2.0",
         "g2p_license_url": "https://huggingface.co/notmax123/RenikudPlus",
     }
     print("OWNER_LICENSED_TTS model=" + license_provenance["model_repo"] + " revision=" + model_rev)
@@ -319,6 +331,10 @@ def verify_voice_license(approve, manifest):
             and provenance.get("reference_license") == expected["reference_license"]
             and provenance.get("reference_license_url") == expected["reference_license_url"]
             and provenance.get("voice_preset") == "libri_female_6147"
+            and provenance.get("g2p_model") == "notmax123/RenikudPlus"
+            and provenance.get("g2p_license") == "Apache-2.0"
+            and isinstance(provenance.get("g2p_revision"), str)
+            and len(provenance["g2p_revision"]) == 40
             and isinstance(provenance.get("model_revision"), str)
             and len(provenance["model_revision"]) == 40), \
         "VOICE_LICENSE_NOT_VERIFIED: reviewed rendering provenance mismatch"

@@ -19,6 +19,9 @@ class VoiceLicenseGateTests(unittest.TestCase):
                 "voice_preset": "libri_female_6147",
                 "reference_license": "CC BY 4.0",
                 "reference_license_url": CORPUS_URL,
+                "g2p_model": "notmax123/RenikudPlus",
+                "g2p_license": "Apache-2.0",
+                "g2p_revision": "d" * 40,
             },
         }
         self.approval = {
@@ -75,6 +78,15 @@ class VoiceLicenseGateTests(unittest.TestCase):
 
     def test_unpinned_model_revision_fails(self):
         self.manifest["voice_provenance"]["model_revision"] = "main"
+        self.assert_blocked()
+
+
+    def test_missing_pinned_g2p_weights_fails(self):
+        self.manifest["voice_provenance"]["g2p_revision"] = None
+        self.assert_blocked()
+
+    def test_unapproved_g2p_weights_fails(self):
+        self.manifest["voice_provenance"]["g2p_license"] = "unknown"
         self.assert_blocked()
 
 if __name__ == "__main__":
