@@ -38,5 +38,5 @@ jobs:
           if [[ "$ready" != true ]]; then echo '::error::CI timeout; no deploy'; exit 1; fi
           actual=$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq '.object.sha')
           if [[ "$actual" != "$EXPECTED_SHA" ]]; then echo '::error::main changed after CI; no deploy'; exit 1; fi
-          gh workflow run deploy.yml --ref main
+          gh workflow run deploy.yml --ref main --repo "$GITHUB_REPOSITORY"
           echo "Canonical production deploy.yml dispatched for $EXPECTED_SHA"
