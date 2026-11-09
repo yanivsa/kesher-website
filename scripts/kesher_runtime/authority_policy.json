@@ -830,7 +830,7 @@
           "tests/test_master_supervisor_live_qa.py": "c371ba857e91156dd2a0f728a791cc82f7f3cba4178704981b631519ec6a7a48",
           "tests/test_master_supervisor_shadow.py": "6cfd8dd67c92c153ce93f9c74785b386b73810c0d9daeffba03d0d536ad84e49",
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
-          "tests/test_media_voice_policy_contract.py": "f0acf97611450ff1870a6fb1d93439c3f60e3fab8a279d809e7476c2a43ab4fc",
+          "tests/test_media_voice_policy_contract.py": "a3974b89676bc59d69888f79fc4abe22893d81540fc886041e69e4228b772f33",
           "tests/test_pipeline_v4.py": "d2e315c85f441bc93a0914d6a56ceb6236947e5aa2ad4cab54a003f2e786b25f",
           "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
           "tests/test_v4_runtime_activation.py": "98b614126a9f1df68acd252ebf56de11472be8b38267e60430b1c7191fd7845e",
@@ -3194,7 +3194,7 @@
           "tests/test_video_reconcile.py": "bad021f97c8d1222616a8f984c1a01c750b3d35be29a4732423ed3b5ab3e2ffb",
           "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc",
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
-          "scripts/kesher_owner_vantage_short.py": "5d1ed025f0cb1ca85d978d0d72dbfb522ba78592b98b877050454778ec2c2957"
+          "scripts/kesher_owner_vantage_short.py": "30e3951fed7f7cdf4a88aae353f15e3149311156def192d4e8ff074069fa4606"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",

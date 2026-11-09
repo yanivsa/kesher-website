@@ -1,0 +1,33 @@
+{
+  "review_version": 1,
+  "source_slug": "vantage-sensitivity-sensitive-gifted-children",
+  "source_sha256": "e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea",
+  "short_item_id": "video-20261109-094900-e264d2962b",
+  "overview_video_id": "lnP5GltTLNk",
+  "video_sha256": "8b2542f44d390494c8cac52e597ae06fb11cc02be0496e8c5eeaa5fabfc134ad",
+  "approved_by": "OWNER",
+  "audio_review_pass": true,
+  "visual_review_pass": true,
+  "semantic_review_pass": true,
+  "review_notes": "OWNER AI-assisted review of EXACT extracted artifact bytes, not a claim of human auditory listening. Descript transcribed the original 53.30s WAV, 5 of 5 approved script paragraphs present in the right order; two plausible ASR mishearings do not establish an audio defect. ffmpeg 48 kHz mono PCM volume mean -21.9 dB and max -3.8 dB, no digital peak clipping or >1.8s silence; the final MP4 audio decodes without errors. Viewed the full five-frame original visual contact sheet, each frame is distinct legible RTL text card with no overlay collisions and topic-relevant original article hero. The approved research wording is cautious: an RCT on 2042 students especially sensitive boys, no universal giftedness/leadership/superiority, no 10x claim. Existing source item preserved and no prior public Short. This approval is based on genuine authorized audio-tool QA and media inspection, not subjective human audition.",
+  "evidence": {
+    "github_preview_run": "https://github.com/yanivsa/kesher-website/actions/runs/42596801103",
+    "artifact_id": 13663208166,
+    "descript_transcript_url": "https://web.descript.com/6030eb1a-e5b1-46a8-b8e9-94f8a199b711/92d66",
+    "descript_transcript_excerpt": "תגית בבגד מגרדת ... זו לא בהכרח חולשה ... רגישות יתרון ... יותר מאלפיים תלמידים ... במיוחד אצל בנים בעלי רגישות גבוהה ... המאמר המלא באתר קשר",
+    "audio_file_sha256": "73b8bad1692d7d7ecbafa14a16058e0fc9fd4e6bf77f84855ef561b7f3d9848f",
+    "visual_contact_sha256": "779474162d9b7bbb2ad3e7e56c6444227221f941f1cd2966d384fb25825f150b",
+    "scientific_source": "research/kesher-vantage-sensitivity-20261109.md",
+    "duration_seconds": 53.333,
+    "resolution": "1080x1920",
+    "ffprobe_codecs": "H264/AAC",
+    "voice_source": "Microsoft Edge Read Aloud (he-IL-HilaNeural) via edge-tts",
+    "voice_use_rights_note": "Microsoft does not publish explicit standalone commercial redistribution terms for Edge Read Aloud. This evidence asserts audio intelligibility/content QA, NOT legal rights or a commercial voice license."
+  },
+  "voice_license": {
+    "voice_source": "he-IL-HilaNeural",
+    "commercial_use_permitted": false,
+    "license_evidence_url": null,
+    "review_note": "BLOCK: Microsoft Edge Read Aloud / edge-tts redistribution and commercial rights are not explicitly granted by published Microsoft terms. Replace with a verified licensed voice and re-review exact media binary, or document authoritative permission for this voice before changing this flag. Technical QA alone is not license approval."
+  }
+}
