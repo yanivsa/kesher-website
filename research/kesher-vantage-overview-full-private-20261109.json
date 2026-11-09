@@ -70,10 +70,10 @@
         "voiceText": "הקשבה אינה ויתור על גבולות. אפשר להבין את הרגש ובכל זאת לשמור על כלל ברור. עוזרים לילד להתכונן לשינויים, למצוא מרחב רגוע, ולהכיר פעילויות שמיטיבות איתו. חשוב לשים לב גם לרגעים הטובים: משחק, סקרנות, קשר חברתי והתקדמות בקצב שמתאים לו."
       },
       {
-        "assetPath": "images/generated/blog/how-to-talk-to-child-about-being-gifted.jpg",
-        "assetSha256": "86a0ec32f24ee120ea3d875c71d70e6e181607a2440007faf7e673bc74bf7b9c",
+        "assetPath": "images/generated/blog/gifted-children-perfectionism-tears.jpg",
+        "assetSha256": "6110d4f80ff693a272f909d4401de51534e9f485374f19bbff544530861a5569",
         "licenseEvidenceUrl": "https://github.com/yanivsa/kesher-website/blob/main/src/data/posts.json",
-        "altHebrew": "אמא ובן משוחחים בשקט ליד שולחן בבית",
+        "altHebrew": "אמא מקשיבה לילדה ותומכת בה בזמן פעילות משותפת בבית",
         "rightsStatus": "awaiting_source_specific_rights",
         "voiceText": "רגישות איננה תקלה, אבל היא גם לא כוח על שמבטיח הצלחה. זו הזמנה להכיר טוב יותר את הילד: מה מציף אותו, מה מרגיע אותו, ובאילו תנאים הוא מצליח לפרוח. למידע נוסף ולכלים מעשיים, קראו את המאמר המלא באתר קשר, של שירה סהרוני."
       }
@@ -95,5 +95,5 @@
     90,
     130
   ],
-  "notes": "This is a full private candidate, not a release. Some legacy image origins lack independently certified commercial rights; private QA only. No video upload, no new YouTube ID, no approval certificate. Original research topic identity unchanged."
+  "notes": "This is a full private candidate, not a release. Some legacy image origins lack independently certified commercial rights; private QA only. No video upload, no new YouTube ID, no approval certificate. Original research topic identity unchanged. Independent OWNER visual inspection of first rendered eight-frame contact sheet rejected the previous scene 8: it showed three unrelated adults. Replaced with photo of mother and child, source-bound and rehashed; this requires a new private render, never a public duplicate."
 }
