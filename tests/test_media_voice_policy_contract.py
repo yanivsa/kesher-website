@@ -8,6 +8,7 @@ from unittest import mock
 
 from scripts import kesher_short_pipeline_v4 as short_pipeline
 from tests.test_media_provenance_contract import bound_short
+from tests.test_kesher_owner_vantage_voice_license import VoiceLicenseGateTests  # Run with existing CI voice-policy suite.
 
 
 ROOT = Path(__file__).resolve().parents[1]
