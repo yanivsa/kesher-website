@@ -3228,7 +3228,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "6962a28ef2bd26d3649a0bf679c30272951983556c64b0cef29c2b1edbd01a40",
+      "definition_sha256": "a8919946deb70f81d2f4665f724d6f3f3ee8db6b0e72369d267271f813b012d3",
       "resources": [],
       "review": {
         "call_chain": {
@@ -3381,7 +3381,13 @@
           "scripts/kesher_photo_story_private_preview.py": "1eba813eb5b6f05af78138072a3bb7bd37db99b0e8e6171d3a6849a2bda37ac0",
           "research/kesher-vantage-photographic-private-preview.json": "a559f56773bab09354175293d56a8cc357cd3fdb4005814e232361e7eb5458d2",
           "remotion-kesher/src/KesherVideo.tsx": "ccf0386bf2d379b553592da9c0157997819bbf11cc039bffb6d1762ce65c2ad7",
-          "remotion-kesher/src/licensedPhotoStory.ts": "0488ba7a47959318d206f692c4e435fdbc72ff08b083dc5865c05291910ea126"
+          "remotion-kesher/src/licensedPhotoStory.ts": "0488ba7a47959318d206f692c4e435fdbc72ff08b083dc5865c05291910ea126",
+          "scripts/kesher_vantage_full_private.py": "8b9cacd313cc48c257a3167a5d07df6b43317912aeca0bbb32f8e8ff608a1a69",
+          "research/kesher-vantage-overview-full-private-20261109.json": "297a5ad7fd65c4f5f855fedcfd615c824c2144453667559381c2330dc68f8727",
+          "research/kesher-vantage-sensitivity-20261109.md": "e39ac6d61b8e8584797a0039b9264e1929fde3952f5c3a8237c8110d3de75cf7",
+          "tests/test_kesher_vantage_full_private_contract.py": "30b0d0494d7d1ec8840a0bcb6f2a7698b7372e2da5c14dde9d9ac18eccd0729d",
+          "scripts/kesher_owner_vantage_short.py": "016b0f73870d71be542c52f9e703b16e4d7331306c11cb085e66ed2d6267c252",
+          "remotion-kesher/src/Root.tsx": "79ca213b77e2a58d0ba72c61830215de2501bd80617d93e0ac3414a709bcb8ed"
         },
         "credential_services": {},
         "credentials": [],
