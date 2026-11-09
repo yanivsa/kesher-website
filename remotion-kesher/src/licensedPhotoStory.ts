@@ -24,7 +24,7 @@ export type ApprovedSourceIdentity = {
 };
 
 const HEX_64 = /^[a-f0-9]{64}$/;
-const SAFE_LOCAL_IMAGE = /^images\/blog\/[a-z0-9][a-z0-9-]*\.(?:jpg|jpeg|png|webp)$/;
+const SAFE_LOCAL_IMAGE = /^images\/(?:blog|generated\/blog)\/[a-z0-9][a-z0-9-]*\.(?:jpg|jpeg|png|webp)$/;
 const HEBREW = /[\u0590-\u05ff]/;
 
 /**
