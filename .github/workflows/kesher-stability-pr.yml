@@ -100,10 +100,14 @@ jobs:
             tests.test_ci_regression_suite_coverage \
             -v
 
+      - name: Check immutable Vantage Overview private safety and research contract
+        if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'owner/vantage-full-private-overview-') }}
+        run: python -m unittest tests.test_kesher_vantage_full_private_contract -v
+
   render-proof:
     if: github.event_name == 'pull_request' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 45
     steps:
       - name: Checkout exact candidate
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -142,6 +146,25 @@ jobs:
         with:
           name: kesher-vantage-visual-only-private-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/kesher-vantage-visual-proof/
+          if-no-files-found: error
+          retention-days: 14
+
+      # Exact topic, private-only corrected full Overview. Never uses YouTube OAuth.
+      # Reuses the already-reviewed MIT/Apache-2/CC-BY voice pipeline from owner Short.
+      - name: Build corrected research-bound Hebrew full Overview PRIVATE (no upload)
+        if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'owner/vantage-full-private-overview-') }}
+        run: |
+          set -euo pipefail
+          npm ci --prefix remotion-kesher --no-audit --no-fund
+          python -m pip install 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' Pillow==11.3.0
+          python scripts/kesher_vantage_full_private.py --output "$RUNNER_TEMP/kesher-vantage-full-review"
+
+      - name: Archive corrected Vantage full Overview PRIVATE review only
+        if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'owner/vantage-full-private-overview-') && success() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-vantage-research-corrected-private-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/kesher-vantage-full-review/
           if-no-files-found: error
           retention-days: 14
 
