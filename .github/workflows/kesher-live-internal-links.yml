@@ -1,0 +1,40 @@
+name: Kesher live internal-link audit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/kesher-live-internal-links.yml
+      - scripts/verify-live-internal-links.py
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kesher-live-internal-links-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout source with reviewed link plans
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+
+      - name: Verify live Priority-1 and Priority-2 article links
+        run: python3 scripts/verify-live-internal-links.py
+
+      - name: Preserve per-link live audit evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-live-internal-links-${{ github.run_id }}
+          path: live-internal-link-audit.json
+          if-no-files-found: warn
+          retention-days: 30
