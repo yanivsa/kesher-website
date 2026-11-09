@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "purpose": "PRIVATE_FULL_OVERVIEW_QA_CANDIDATE",
+  "no_publication": true,
+  "not_editorial_approval": true,
+  "existing_public_overview_id": "lnP5GltTLNk",
+  "content_source": "research/kesher-vantage-sensitivity-20261109.md",
+  "sourceBinding": {
+    "slug": "vantage-sensitivity-sensitive-gifted-children",
+    "contentSha256": "e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea"
+  },
+  "licensedPhotoStory": {
+    "sourceSlug": "vantage-sensitivity-sensitive-gifted-children",
+    "contentSha256": "e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea",
+    "scenes": [
+      {
+        "assetPath": "images/generated/blog/child-tantrum-regulation.jpg",
+        "assetSha256": "2649b9de1f0fc82f502e99b55736ae42bbb89db64b668de7b8be659fb1e55b00",
+        "licenseEvidenceUrl": "https://github.com/yanivsa/kesher-website/blob/main/src/data/posts.json",
+        "altHebrew": "הורה מלווה ילדה ברגע של הצפה רגשית",
+        "rightsStatus": "awaiting_source_specific_rights",
+        "voiceText": "ילדה חוזרת הביתה ממסיבה רועשת, ומתקשה להירגע. תגית קטנה בבגד מציקה לה, ורעש שנראה לנו רגיל הופך לעומס. קל לפרש את הבכי כעקשנות, אבל לפני שמחליטים מה הבעיה, כדאי לשאול מה הילדה חוותה ומה יכול לעזור לה."
+      },
+      {
+        "assetPath": "images/blog/vantage-sensitivity-parenting-hero.jpg",
+        "assetSha256": "f4241a22e527a4c80d8a51966b15ff40acb5d3c0ea9944151f9bf0eaa960ff90",
+        "licenseEvidenceUrl": "https://github.com/yanivsa/kesher-website/blob/main/src/data/posts.json",
+        "altHebrew": "אמא מקשיבה לבתה ומתבוננת בתגית הבגד",
+        "rightsStatus": "awaiting_asset_license_certificate",
+        "voiceText": "כשהסביבה אומרת לנו שהילד רגיש מדי ושצריך לחשל אותו, אפשר לבחור בשאלה אחרת: האם הוא זקוק כרגע להפחתת עומס, למילים שמסבירות את החוויה, או למבוגר רגוע לידו? אין כאן תווית או אבחון. המטרה היא להבין את הקושי בלי להקטין אותו."
+      },
+      {
+        "assetPath": "images/blog/gifted-asynchrony-parent-child-hero.jpg",
+        "assetSha256": "29154bbb2380459b950aeac25013ca6a5d250148f823ae4abff7dd1d25f40767",
+        "licenseEvidenceUrl": "https://github.com/yanivsa/kesher-website/blob/main/src/data/posts.json",
+        "altHebrew": "אמא וילד מנהלים שיחה רגועה ליד מחשב",
+        "rightsStatus": "awaiting_source_specific_rights",
+        "voiceText": "הפסיכולוגים מייקל פלואס וג׳יי בלסקי הציעו את המושג רגישות יתרון. הרעיון הוא שאנשים שונים אינם מפיקים בהכרח אותה תועלת מהתנסויות חיוביות. חלקם עשויים להגיב במיוחד לסביבה תומכת או להתערבות מיטיבה. זו אפשרות מחקרית, לא הבטחה לתוצאה, ולא סימן למחוננות."
+      },
+      {
+        "assetPath": "images/generated/blog/gifted-children-first-days-adjustment.jpg",
+        "assetSha256": "e0decff8e8663fa61fd78a49e6d1ab063287718f6d5a31fbbc8db2c8d9e60097",
+        "licenseEvidenceUrl": "https://github.com/yanivsa/kesher-website/blob/main/src/data/posts.json",
+        "altHebrew": "ילדים הולכים יחד לבית הספר בסביבה ירוקה",
+        "rightsStatus": "awaiting_source_specific_rights",
+        "voiceText": "מה אומרים המחקרים בפועל? במחקר מבוקר שבו השתתפו יותר מאלפיים תלמידים נבדקה תוכנית נגד בריונות. בקרב בנים בעלי רגישות גבוהה במיוחד נמצאה תגובה חיובית בולטת יותר לתוכנית. הממצא מעניין, אבל הוא מוגבל להקשר שנחקר. הוא לא מוכיח שכל ילד רגיש מצליח יותר בכל תחום."
+      },
+      {
+        "assetPath": "images/generated/blog/child-perfectionism-fear-of-failure.jpg",
+        "assetSha256": "4086b018900accc6167bb465bfb6a04253f0a098795ae8b1bf17c8fb12559516",
+        "licenseEvidenceUrl": "https://github.com/yanivsa/kesher-website/blob/main/src/data/posts.json",
+        "altHebrew": "אמא עוזרת לילד במלאכת יצירה בבית",
+        "rightsStatus": "awaiting_source_specific_rights",
+        "voiceText": "חשוב גם להפריד בין המושגים. רגישות לרעש, למגע או לשינויים אינה לבדה הוכחה לרגישות יתרון, למחוננות או להפרעה רפואית. אנשים שונים יכולים להגיב בדרכים שונות. אם הקושי מתמשך ופוגע בחיי היום יום, כדאי לקבל הערכה מקצועית ולא להסתפק בהסבר אחד."
+      },
+      {
+        "assetPath": "images/generated/blog/parental-hostile-attributions-editorial-20261105.jpg",
+        "assetSha256": "6549186e4cbaa79cc32268fe093d2e73367fdcafa81b46ff66a37a603faf7f68",
+        "licenseEvidenceUrl": "https://github.com/yanivsa/kesher-website/blob/main/src/data/posts.json",
+        "altHebrew": "אבא כורע ומקשיב לילד קטן בחדר מואר",
+        "rightsStatus": "firefly_origin_in_posts_verified_license_qa_pending",
+        "voiceText": "מה אפשר לעשות בבית? להתחיל בהתבוננות. מה קרה לפני ההצפה? אולי היה רעש, שינוי לא צפוי או יום ארוך במיוחד. אפשר לומר לילד: אני רואה שהיה לך קשה עם הרעש. בוא נמצא רגע מקום שקט. אחר כך נחזור ונחליט יחד מה הצעד הבא."
+      },
+      {
+        "assetPath": "images/generated/blog/prepare-toddler-for-daycare-adobe-v2.jpg",
+        "assetSha256": "3aa58355df9eb655a7dc437e55487a35fb678ba255f444f81c6ad78a4e79e22c",
+        "licenseEvidenceUrl": "https://github.com/yanivsa/kesher-website/blob/main/src/data/posts.json",
+        "altHebrew": "אבא מסייע לפעוט להתכונן לגן ברוגע",
+        "rightsStatus": "firefly_origin_in_posts_verified_license_qa_pending",
+        "voiceText": "הקשבה אינה ויתור על גבולות. אפשר להבין את הרגש ובכל זאת לשמור על כלל ברור. עוזרים לילד להתכונן לשינויים, למצוא מרחב רגוע, ולהכיר פעילויות שמיטיבות איתו. חשוב לשים לב גם לרגעים הטובים: משחק, סקרנות, קשר חברתי והתקדמות בקצב שמתאים לו."
+      },
+      {
+        "assetPath": "images/generated/blog/how-to-talk-to-child-about-being-gifted.jpg",
+        "assetSha256": "86a0ec32f24ee120ea3d875c71d70e6e181607a2440007faf7e673bc74bf7b9c",
+        "licenseEvidenceUrl": "https://github.com/yanivsa/kesher-website/blob/main/src/data/posts.json",
+        "altHebrew": "אמא ובן משוחחים בשקט ליד שולחן בבית",
+        "rightsStatus": "awaiting_source_specific_rights",
+        "voiceText": "רגישות איננה תקלה, אבל היא גם לא כוח על שמבטיח הצלחה. זו הזמנה להכיר טוב יותר את הילד: מה מציף אותו, מה מרגיע אותו, ובאילו תנאים הוא מצליח לפרוח. למידע נוסף ולכלים מעשיים, קראו את המאמר המלא באתר קשר, של שירה סהרוני."
+      }
+    ]
+  },
+  "voice": {
+    "source": "BlueTTS2.5-onnx:libri_female_6147",
+    "model_repo": "notmax123/BlueTTS2.5-onnx",
+    "voice_reference_corpus": "LibriTTS-R train-clean-100",
+    "voice_license_status": "pin_and_verify_at_generation; reviewer approval pending"
+  },
+  "research": [
+    "https://pubmed.ncbi.nlm.nih.gov/23025924/",
+    "https://www.psychologicalscience.org/journals/clinical/2167702618782194/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC5959990/"
+  ],
+  "editorial_rights_status": "QUALITY_HOLD pending full human voice/image-specific commercial evidence",
+  "target_duration_range_seconds": [
+    90,
+    130
+  ],
+  "notes": "This is a full private candidate, not a release. Some legacy image origins lack independently certified commercial rights; private QA only. No video upload, no new YouTube ID, no approval certificate. Original research topic identity unchanged."
+}
