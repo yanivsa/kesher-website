@@ -28,6 +28,8 @@ jobs:
         run: npm run typecheck
       - name: Lint source
         run: npm run lint
+      - name: Generate derived site content (CI workspace only)
+        run: npm run generate
       - name: Validate content
         run: npm run test:content
       - name: Run application tests
