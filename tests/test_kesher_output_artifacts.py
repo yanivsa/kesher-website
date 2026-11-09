@@ -112,6 +112,12 @@ class OutputArtifactTests(unittest.TestCase):
             source_file_sha256='e' * 64,
             frame_sha256={f'frames/frame-{n}.png': format(n, 'x') * 64 for n in range(1, 9)},
         )
+        # CanonicalMediaState deep-copies the initial item; update its durable
+        # projection as well as the archive test item, then persist once.
+        self.state.item.update({key: self.item[key] for key in (
+            'transcript_sha256', 'visual_review_sha256',
+            'source_file_sha256', 'frame_sha256',
+        )})
         self.state.persist()
         approval_dir = Path(self.temp.name) / 'owner-quality'
         approval_dir.mkdir()
