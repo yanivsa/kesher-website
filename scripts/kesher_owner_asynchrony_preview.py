@@ -99,10 +99,15 @@ def make_image(src: Path, target: Path, kind: str):
     im = Image.open(src).convert("RGB")
     size = (1280, 720) if kind == "overview" else (1080, 1920)
     if kind == "overview":
-        # Preserve eyes and full expression in the portrait-source close-up.
-        # Default center crop hid the eyes and showed only mouth/chin in real frames.
-        centering = (0.5, 0.0) if im.height > im.width else (0.5, 0.5)
-        panel = ImageOps.fit(im, size, method=Image.Resampling.LANCZOS, centering=centering)
+        if im.height > im.width:
+            # Keep the full original portrait, including eyes and face, rather than
+            # cropping a tall source into a chin-only 16:9 close-up.
+            background = ImageOps.fit(im, size, method=Image.Resampling.LANCZOS).filter(ImageFilter.GaussianBlur(38))
+            foreground = ImageOps.contain(im, (size[0] - 32, size[1] - 32), method=Image.Resampling.LANCZOS)
+            background.paste(foreground, ((size[0] - foreground.width) // 2, (size[1] - foreground.height) // 2))
+            panel = background
+        else:
+            panel = ImageOps.fit(im, size, method=Image.Resampling.LANCZOS, centering=(0.5, 0.5))
     else:
         background = ImageOps.fit(im, size, method=Image.Resampling.LANCZOS).filter(ImageFilter.GaussianBlur(35))
         foreground = ImageOps.contain(im, (1060, 1530), method=Image.Resampling.LANCZOS)
