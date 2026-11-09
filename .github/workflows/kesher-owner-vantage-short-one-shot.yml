@@ -1,0 +1,104 @@
+name: KESHER OWNER Vantage Short One-Shot
+run-name: OWNER Vantage Short ${{ inputs.operation }} ${{ github.sha }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Preview-only or publish approved immutable preview
+        required: true
+        type: choice
+        default: preview
+        options:
+          - preview
+          - publish
+      source_sha256:
+        description: Exact unchanged published article SHA256
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+concurrency:
+  group: kesher-owner-vantage-short-20261109-once
+  cancel-in-progress: false
+
+jobs:
+  owner_one_shot:
+    if: >-
+      github.repository == 'yanivsa/kesher-website' &&
+      github.ref == 'refs/heads/main' &&
+      inputs.source_sha256 == 'e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea'
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    env:
+      SOURCE_SHA: ${{ inputs.source_sha256 }}
+      PREVIEW_NAME: kesher-owner-vantage-short-preview-e264d2962b
+    steps:
+      - name: Checkout verified main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Setup Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Ensure ffmpeg and Hebrew fonts available
+        run: |
+          set -euo pipefail
+          command -v ffmpeg
+          command -v ffprobe
+          test -f /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf
+      - name: Install pinned direct media dependencies
+        run: |
+          python -m pip install --disable-pip-version-check \
+            edge-tts==7.3.1 Pillow==11.3.0 requests==2.32.5 \
+            google-auth==2.40.3 google-api-python-client==2.181.0
+      - name: Exact research identity and scientific preflight
+        run: python scripts/kesher_owner_vantage_short.py preflight --source-sha "$SOURCE_SHA"
+      - name: OWNER render original Hebrew female narration and native portrait preview
+        if: inputs.operation == 'preview'
+        run: python scripts/kesher_owner_vantage_short.py preview --source-sha "$SOURCE_SHA"
+      - name: Persist immutable original visual/voice review material (NOT public)
+        if: inputs.operation == 'preview'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-owner-vantage-short-preview-e264d2962b
+          path: |
+            owner-vantage-short-output/short.mp4
+            owner-vantage-short-output/review-voice.wav
+            owner-vantage-short-output/visual-contact-sheet.jpg
+            owner-vantage-short-output/manifest.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
+          overwrite: false
+      - name: Restore previously reviewed exact binary for one-time publication
+        if: inputs.operation == 'publish'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p owner-vantage-short-output
+          artifact_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=${PREVIEW_NAME}&per_page=100" \
+             --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[0].id')"
+          test -n "$artifact_id" && test "$artifact_id" != "null"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+             > "$RUNNER_TEMP/owner-vantage-preview.zip"
+          unzip -oq "$RUNNER_TEMP/owner-vantage-preview.zip" -d owner-vantage-short-output
+          test -s owner-vantage-short-output/short.mp4
+          test -s owner-vantage-short-output/manifest.json
+          test -s owner-vantage-short-output/review-voice.wav
+          test -s owner-vantage-short-output/visual-contact-sheet.jpg
+      - name: Assert independently approved exact media and publish only through GitHub OAuth
+        if: inputs.operation == 'publish'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/kesher_owner_vantage_short.py publish --source-sha "$SOURCE_SHA"
