@@ -6,7 +6,7 @@ Owner-authored, single immutable source. This document is editorial input, NOT p
 - canonical_article_url: `https://kesher.saharoni.com/blog/vantage-sensitivity-sensitive-gifted-children`
 - article_source: `src/data/manualPostsNov2026.ts`
 - original_photo: `public/images/blog/vantage-sensitivity-parenting-hero.jpg`
-- authoritative_content_sha256: COMPUTE from exact article content using the repository's canonical source hashing path after merge; refuse any upload with a mismatched SHA.
+- authoritative_content_sha256: `e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea` (computed via the exact canonical `clean_article_html` + `sha256_text` contract from `scripts/kesher_daily_pipeline.py` over the current article revision; re-check against merged main before upload).
 - provider identities / uploaded YouTube IDs: NONE at authoring time, inspect durable state prior to every attempt.
 - NOTE: This is an entirely distinct topic from stress-crossover-after-work; never reuse its Video/Short IDs.
 - Do not use Jules, Make or Composio for YouTube uploads; use GitHub Actions OAuth secrets and existing allowed media pipeline only after safety gates.
