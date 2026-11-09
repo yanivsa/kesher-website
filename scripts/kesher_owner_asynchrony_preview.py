@@ -115,11 +115,29 @@ def make_image(src: Path, target: Path, kind: str):
         panel = background
     panel.save(target, "JPEG", quality=92, optimize=True)
 
+def motion_filter(kind: str, seconds: float, reverse: bool = False) -> str:
+    """True output-frame-indexed Ken Burns motion, even with looped source images.
+
+    The prior zoompan used zoom's implicit state with d=1: re-reading a still
+    frame reset its zoom, producing nearly static output. The monotonic 'on'
+    counter is continuous per output frame; never trust ffmpeg success alone.
+    """
+    import math
+    if kind not in SOURCE_KINDS or not 2.0 < seconds < 160.0:
+        raise ValueError("INVALID_MOTION_PLAN")
+    w,h = ((1280,720) if kind == "overview" else (1080,1920))
+    frame_count = max(2, math.ceil(seconds * FPS))
+    step = 0.10 / (frame_count - 1)
+    zoom = (f"max(1.0,1.10-{step:.10f}*on)" if reverse
+            else f"min(1.10,1.0+{step:.10f}*on)")
+    pan = (f"0.75-0.50*min(on/{frame_count-1},1)" if reverse
+           else f"0.25+0.50*min(on/{frame_count-1},1)")
+    return ("zoompan=z='" + zoom + "':x='(iw-iw/zoom)*(" + pan + ")':"
+            + f"y='ih/2-(ih/zoom/2)':d=1:s={w}x{h}:fps={FPS},format=yuv420p[v]")
+
+
 def encode_scene(photo: Path, wav: Path, dest: Path, kind: str, seconds: float, reverse: bool):
-    w,h = ((1280,720) if kind=="overview" else (1080,1920))
-    zoom = ("min(zoom+0.00014,1.085)" if not reverse else "if(eq(on,0),1.075,max(zoom-0.00012,1.0))")
-    expr = ("zoompan=z='" + zoom + "':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':"
-            + f"d=1:s={w}x{h}:fps={FPS},format=yuv420p[v]")
+    expr = motion_filter(kind, seconds, reverse)
     run(["ffmpeg","-hide_banner","-v","error","-y","-loop","1","-framerate",str(FPS),
          "-i",str(photo),"-i",str(wav),"-filter_complex",expr,
          "-map","[v]","-map","1:a","-t",f"{seconds:.4f}",
@@ -127,6 +145,7 @@ def encode_scene(photo: Path, wav: Path, dest: Path, kind: str, seconds: float, 
          "-c:a","aac","-b:a","128k","-movflags","+faststart",str(dest)])
     if not dest.is_file() or dest.stat().st_size < 10000:
         raise RuntimeError("EMPTY_SCENE")
+
 
 def join_scenes(parts: list[Path], dest: Path):
     lst = dest.with_suffix(".ffconcat")
