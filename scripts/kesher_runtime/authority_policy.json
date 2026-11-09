@@ -912,14 +912,19 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "3b903acfa33cabd9f00a5f9ffc2ca6a0ddc4d2a28b616246ec010da5220ce728",
+      "definition_sha256": "4b76277bbadbe41f87fa14eabd9024fae6e943e776dabdc30e77ee16f08a92b7",
       "resources": [],
       "review": {
-        "call_chain": {},
+        "call_chain": {
+          "scripts/live-internal-link-audit.py": "eddd6ae769595e655354cb8daf7d100249020d850388e871552819f6a5171915",
+          "scripts/internal-link-plan.json": "64cc7333240511bb1d82e4f67ee49dca536e18d5cddc8c98de54ab429dbb7b45",
+          "scripts/internal-link-plan-priority2.json": "add74c5b5d679ad8a5a0f4089a0c8ada24de76b70efce793ddf893e607a8e273",
+          "scripts/internal-link-plan-priority3.json": "58ace5e7064c74cece948d00da600133fcd4b89dbea17dc72cf5e5d4775e7f08"
+        },
         "credential_services": {},
         "credentials": [],
         "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Pinned diagnostic/test execution receives no protected mutation credential or GitHub write permission."
+        "note": "Reviewed read-only weekly SEO audit now checks production Priority 1-3 internal links by HTTP and HTML, uploads a report, and uses no protected mutation credentials. Exact workflow, local audit script, and three plan files are hash pinned."
       },
       "role": "diagnostic",
       "registration_id": 348622894

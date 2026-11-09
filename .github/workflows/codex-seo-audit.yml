@@ -33,6 +33,9 @@ jobs:
       OUTPUT_ROOT: ${{ github.workspace }}/codex-seo-output
 
     steps:
+      - name: Checkout site audit plans
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
@@ -46,6 +49,12 @@ jobs:
             --user-agent "Mozilla/5.0 (compatible; Kesher-CodexSEO-Audit/1.0)" \
             --output /dev/null \
             "${TARGET_URL}"
+
+      - name: Audit planned production internal links (Priority 1-3)
+        run: |
+          set -euo pipefail
+          python3 scripts/live-internal-link-audit.py --self-test
+          python3 scripts/live-internal-link-audit.py --base-url https://kesher.saharoni.com --output live-internal-link-audit.json
 
       - name: Fetch pinned Codex SEO release
         run: |
@@ -225,5 +234,6 @@ jobs:
             codex-seo-run.json
             codex-seo-sitemap.json
             codex-seo-compatibility.json
+            live-internal-link-audit.json
           if-no-files-found: warn
           retention-days: 30
