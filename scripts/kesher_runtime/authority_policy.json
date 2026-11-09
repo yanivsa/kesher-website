@@ -1496,7 +1496,7 @@
           "playwright.config.ts": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c",
           "remotion-kesher/package-lock.json": "055b1708e3255442c84bdf5f27553059e5652a412a2d5d9f6966a95467d2de2c",
           "remotion-kesher/package.json": "3d5f0bb968dd34bb46f6abb03fa83dd91939fd768f0fd46d66be4558c7d61c4d",
-          "remotion-kesher/src/KesherVideo.tsx": "f00672be16e10ba890f24adb282c9d8bc4843a18a2a7ed267aa6fe3912ed13f9",
+          "remotion-kesher/src/KesherVideo.tsx": "ccf0386bf2d379b553592da9c0157997819bbf11cc039bffb6d1762ce65c2ad7",
           "remotion-kesher/src/Root.tsx": "79ca213b77e2a58d0ba72c61830215de2501bd80617d93e0ac3414a709bcb8ed",
           "remotion-kesher/src/index.ts": "5462d3268136731ce43bfd7c5072ea1ba48b51fec94fa30076f5044f4b39e4a2",
           "scripts/article_claim_quality.py": "c5bf5977c2ec432e58d6c3d14e4ab75714bcbc701f34b880630fd4e72662f585",
@@ -1566,7 +1566,8 @@
           "scripts/kesher_runtime/cutover_service.py": "7b5bcc7af5391111ccd7a491ca427e7244edb32a438c5fcd81f196a13df898de",
           "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
           "scripts/hebrew-prose-audit.cjs": "0b9378a7f5c977657b0b75663b69b992291c192963c1b1a171f8121997d6ee64",
-          "scripts/kesher_runtime/article_prose_audit.py": "8506e33f2da9ba77731130dc1aae42c0c068e98fd93e1d2ab04564d38b1e408c"
+          "scripts/kesher_runtime/article_prose_audit.py": "8506e33f2da9ba77731130dc1aae42c0c068e98fd93e1d2ab04564d38b1e408c",
+          "remotion-kesher/src/licensedPhotoStory.ts": "0488ba7a47959318d206f692c4e435fdbc72ff08b083dc5865c05291910ea126"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -2838,7 +2839,7 @@
           "package.json": "78c9c96e5b5bddacdb87a7b41d22bb4fe5f835f932987fcd6dcca936e146322a",
           "remotion-kesher/package-lock.json": "055b1708e3255442c84bdf5f27553059e5652a412a2d5d9f6966a95467d2de2c",
           "remotion-kesher/package.json": "3d5f0bb968dd34bb46f6abb03fa83dd91939fd768f0fd46d66be4558c7d61c4d",
-          "remotion-kesher/src/KesherVideo.tsx": "f00672be16e10ba890f24adb282c9d8bc4843a18a2a7ed267aa6fe3912ed13f9",
+          "remotion-kesher/src/KesherVideo.tsx": "ccf0386bf2d379b553592da9c0157997819bbf11cc039bffb6d1762ce65c2ad7",
           "remotion-kesher/src/Root.tsx": "79ca213b77e2a58d0ba72c61830215de2501bd80617d93e0ac3414a709bcb8ed",
           "remotion-kesher/src/index.ts": "5462d3268136731ce43bfd7c5072ea1ba48b51fec94fa30076f5044f4b39e4a2",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
@@ -2895,7 +2896,8 @@
           "scripts/kesher_runtime/cutover_host.py": "9da32d13cd7c8616caeb36160452ba1fcf3981ae611817b6bed72af64b87c99c",
           "scripts/kesher_runtime/cutover_auth.py": "27dbbd703912499e0ca553d774bca027844f3e7db116a22d787e54f4ba007a80",
           "scripts/kesher_runtime/cutover_service.py": "7b5bcc7af5391111ccd7a491ca427e7244edb32a438c5fcd81f196a13df898de",
-          "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4"
+          "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
+          "remotion-kesher/src/licensedPhotoStory.ts": "0488ba7a47959318d206f692c4e435fdbc72ff08b083dc5865c05291910ea126"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
