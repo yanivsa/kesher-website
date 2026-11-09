@@ -1,0 +1,42 @@
+name: One-time approved Kesher SEO deploy dispatcher
+on:
+  push:
+    branches:
+      - ops/deploy-approved-gsc-seo-20261109
+permissions:
+  contents: read
+  actions: write
+jobs:
+  dispatch:
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/ops/deploy-approved-gsc-seo-20261109' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Verify exact main and successful CI then dispatch existing deploy.yml
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_SHA: "3f40020abdf8b9e1e0e9b67f10200b3f89201fcf"
+        shell: bash
+        run: |
+          set -euo pipefail
+          ready=false
+          for attempt in $(seq 1 80); do
+            actual=$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq '.object.sha')
+            if [[ "$actual" != "$EXPECTED_SHA" ]]; then
+              echo "::error::main moved since approval, aborting deployment: $actual"
+              exit 1
+            fi
+            ci=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs?branch=main&per_page=40" --jq '.workflow_runs | map(select(.name == "CI" and .head_sha == "3f40020abdf8b9e1e0e9b67f10200b3f89201fcf")) | .[0].conclusion // "pending"')
+            echo "Verified main $actual; main CI state $ci (attempt $attempt)"
+            if [[ "$ci" == "success" ]]; then ready=true; break; fi
+            if [[ "$ci" == "failure" || "$ci" == "cancelled" || "$ci" == "timed_out" ]]; then
+              echo "::error::CI did not pass; no production deployment"
+              exit 1
+            fi
+            sleep 15
+          done
+          if [[ "$ready" != true ]]; then echo '::error::CI timeout; no deploy'; exit 1; fi
+          actual=$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq '.object.sha')
+          if [[ "$actual" != "$EXPECTED_SHA" ]]; then echo '::error::main changed after CI; no deploy'; exit 1; fi
+          gh workflow run deploy.yml --ref main
+          echo "Canonical production deploy.yml dispatched for $EXPECTED_SHA"
