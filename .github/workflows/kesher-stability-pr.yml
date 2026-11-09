@@ -127,6 +127,24 @@ jobs:
           node -e 'for (const name of ["@ffmpeg-installer/ffmpeg", "@ffprobe-installer/ffprobe"]) require("fs").appendFileSync(process.env.GITHUB_PATH, require("path").dirname(require(name).path) + "\n")'
       - name: Prove real rendering preserves source audio and in-content signature
         run: python tests/real_media_render.py --output "$RUNNER_TEMP/kesher-render-proof"
+      # Same existing stability workflow. PR-only private artifact, zero YouTube calls.
+      # No source narration, so this step cannot certify scientific/audio QA.
+      - name: Render source-locked photographic Overview motion proof (private)
+        if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'owner/licensed-photo-story-overview-') }}
+        run: |
+          set -euo pipefail
+          npm ci --prefix remotion-kesher --no-audit --no-fund
+          python scripts/kesher_photo_story_private_preview.py --output "$RUNNER_TEMP/kesher-vantage-visual-proof"
+
+      - name: Archive photographic Overview PRIVATE proof (not for publication)
+        if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'owner/licensed-photo-story-overview-') && success() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-vantage-visual-only-private-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/kesher-vantage-visual-proof/
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Retain synthetic render evidence
         if: success()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
