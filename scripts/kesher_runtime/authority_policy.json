@@ -3350,7 +3350,7 @@
           "tests/test_kesher_media_worker.py": "7613436dcecdb4de8805cf256fc7e75e7bc43ca0219529499a0c075bd56bdc49",
           "tests/test_kesher_metadata_repair.py": "caeb3fe28a03cc9ed7827362d18b7d8d5a2fc5fe69145927a023245f92d077b2",
           "tests/test_kesher_observe.py": "972d9a5fd360fb32660cb57d527382145faa86b924b1c3bd693292a27b69c3c1",
-          "tests/test_kesher_output_artifacts.py": "1645424b2d884fc2b7ad107c03ee743ecc2ef2a5c10d9ba2de8968f42f0d4dfa",
+          "tests/test_kesher_output_artifacts.py": "ab3bb2145d2201f0b6245ebb7454f38e55867ba4a880b96459a879e92d83d7dd",
           "tests/test_kesher_provider_recovery.py": "98d4b49f4815b56b5ab4d6880543463ddc69a4dbcc347bb3a9d7b72102b301f3",
           "tests/test_kesher_public_delivery.py": "865b95eb166069d4b0a701f371f31ab78c2bf688bd6d23cc38402cdef56e5cc3",
           "tests/test_kesher_publication_manifest.py": "ead92ee643b527e1f074a659f18e77c32dcd666e17a17d87735fd4a4cd9b110f",
