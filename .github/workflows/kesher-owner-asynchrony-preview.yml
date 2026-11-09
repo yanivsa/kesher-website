@@ -1,0 +1,74 @@
+name: KESHER OWNER asynchrony private media preview
+run-name: asynchrony-owner-preview-${{ inputs.source_sha }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: Exact article SHA
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kesher-owner-asynchrony-private-preview
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout immutable trusted main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Exact user-authorized source preflight without provider secrets
+        env:
+          OWNER_SOURCE_SHA: ${{ inputs.source_sha }}
+        run: |
+          set -euo pipefail
+          test "$OWNER_SOURCE_SHA" = "7b6ae2e8dc3182d798edbf19c2d95e576b02ab093c5e2bf04bad91113a716a00"
+          test "$GITHUB_REF" = "refs/heads/main"
+          python -m scripts.kesher_owner_asynchrony_preview preflight --source-sha "$OWNER_SOURCE_SHA"
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Install local licensed Hebrew voice and media tools
+        run: |
+          set -euo pipefail
+          python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 \
+            'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0'
+          command -v ffmpeg
+          command -v ffprobe
+      - name: Run source-identity and upload-denial tests
+        run: python -m unittest tests.test_kesher_owner_asynchrony_preview -v
+      - name: Render actual source-bound PRIVATE Overview and Short
+        env:
+          OWNER_SOURCE_SHA: ${{ inputs.source_sha }}
+          HF_HOME: ${{ runner.temp }}/kesher-owner-asynchrony-hf-cache
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_owner_asynchrony_preview preview \
+            --source-sha "$OWNER_SOURCE_SHA" --output owner-asynchrony-media-output
+      - name: Archive OWNER review evidence only
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-owner-asynchrony-private-7b6ae2e8dc31
+          path: |
+            owner-asynchrony-media-output/overview.mp4
+            owner-asynchrony-media-output/short.mp4
+            owner-asynchrony-media-output/overview-review-voice.wav
+            owner-asynchrony-media-output/short-review-voice.wav
+            owner-asynchrony-media-output/*-manifest.json
+            owner-asynchrony-media-output/*-visual-contact-sheet.jpg
+            owner-asynchrony-media-output/*-frame-*.jpg
+          if-no-files-found: error
+          retention-days: 60
+          compression-level: 0
+          overwrite: false
