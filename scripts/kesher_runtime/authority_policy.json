@@ -3228,7 +3228,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "c0dc755268eb5512d18bfd853c6d1a1cb374d4b5a5877fb5f5176b18ac67e88c",
+      "definition_sha256": "6962a28ef2bd26d3649a0bf679c30272951983556c64b0cef29c2b1edbd01a40",
       "resources": [],
       "review": {
         "call_chain": {
@@ -3377,7 +3377,11 @@
           "tests/test_kesher_real_data_migration.py": "728452ae17a1da930371c0d43531a2eed57ddbae7a8ef7d7fb5219b7a8032344",
           "tests/test_kesher_backlog_rotation.py": "5fe6309a0183cf2a951a66b38ee42cb426128ac99cd0f2a7cf0331efd8f42670",
           "tests/fixtures/kesher/schema5-freeze-20261004.json": "e678d1bc8be8aa4bdf1cf083cc6e044fd4d578f186cb7fdca1697ff4aecfcb00",
-          "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93"
+          "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
+          "scripts/kesher_photo_story_private_preview.py": "1eba813eb5b6f05af78138072a3bb7bd37db99b0e8e6171d3a6849a2bda37ac0",
+          "research/kesher-vantage-photographic-private-preview.json": "a559f56773bab09354175293d56a8cc357cd3fdb4005814e232361e7eb5458d2",
+          "remotion-kesher/src/KesherVideo.tsx": "ccf0386bf2d379b553592da9c0157997819bbf11cc039bffb6d1762ce65c2ad7",
+          "remotion-kesher/src/licensedPhotoStory.ts": "0488ba7a47959318d206f692c4e435fdbc72ff08b083dc5865c05291910ea126"
         },
         "credential_services": {},
         "credentials": [],
