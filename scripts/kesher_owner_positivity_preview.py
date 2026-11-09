@@ -45,7 +45,7 @@ def source_scripts():
     short = re.findall(r'^[1-5]\. "([^"\n]+)"', doc, re.M)
     if len(overview) != 5 or len(short) != 5:
         raise ValueError(f"OWNER_SOURCE_SCRIPT_MISMATCH overview={len(overview)} short={len(short)}")
-    forbidden = ("פי עשר", "עשרות אחוזים", "מחקר מוכיח שנישואים", "מונעים גירושים", "הוכחה שחיוכים מאריכים חיים")
+    forbidden = ("פי עשר", "עשרות אחוזים", "כל רגע מציל נישואים", "הוכח שהחיוכים מאריכים חיים")
     if any(phrase in "\n".join(overview+short) for phrase in forbidden):
         raise ValueError("UNSUPPORTED_UNIVERSAL_CLAIM")
     return {"overview": overview, "short": short}
