@@ -101,23 +101,79 @@ class OutputArtifactTests(unittest.TestCase):
         self.assertEqual(prepare_bundle(self.worker, self.item, self.root, self.bundle)['status'], 'archived')
 
     def test_publish_after_archive_never_reenters_generation_and_uses_exact_restored_item(self):
+        # The fixture now exercises the real OWNER quality gate with exact bound
+        # review evidence, rather than assuming technical validation implies QA.
+        from scripts.kesher_runtime.media_worker import require_owner_media_quality
+        import json
+
+        self.item.update(
+            transcript_sha256='c' * 64,
+            visual_review_sha256='d' * 64,
+            source_file_sha256='e' * 64,
+            frame_sha256={f'frames/frame-{n}.png': format(n, 'x') * 64 for n in range(1, 9)},
+        )
+        self.state.persist()
+        approval_dir = Path(self.temp.name) / 'owner-quality'
+        approval_dir.mkdir()
+        approval = {
+            'schema_version': 1,
+            'source_slug': self.source['slug'],
+            'content_sha256': self.source['content_sha256'],
+            'media_kind': 'overview',
+            'media_item_id': self.item['id'],
+            'final_sha256': self.item['final_sha256'],
+            'manifest_sha256': self.item['manifest_sha256'],
+            'transcript_sha256': self.item['transcript_sha256'],
+            'visual_review_sha256': self.item['visual_review_sha256'],
+            'source_file_sha256': self.item['source_file_sha256'],
+            'frame_sha256': self.item['frame_sha256'],
+            'reviewed_by': 'OWNER',
+            'reviewed_at': '2026-11-09T15:00:00Z',
+            'checks': {x: 'approved' for x in ('visual', 'semantic', 'audio', 'metadata', 'licensing')},
+            'methods': {
+                'visual': 'full_motion_and_frames',
+                'semantic': 'research_vs_exact_transcript',
+                'audio': 'authorized_audio_tool_with_script_comparison',
+            },
+            'review_notes': {
+                key: 'נבדקה ראיית הביקורת המקורית והמקור המחקרי המדויק'
+                for key in ('visual', 'semantic', 'audio', 'licensing')
+            },
+            'rights': {
+                'commercial_use_permitted': True,
+                'voice_license_url': 'https://example.org/test-voice-licence',
+                'visual_license_url': 'https://example.org/test-image-licence',
+            },
+        }
+        (approval_dir / (self.source['slug'] + '--overview.json')).write_text(
+            json.dumps(approval, ensure_ascii=False), encoding='utf-8'
+        )
         self.upload()
         complete_bundle(self.worker, 71, download=self.download)
         shutil.rmtree(self.root)
         restore_bundle(self.worker, self.item, self.root, download=self.download)
+
         def upload(*, slug, item_id, state):
             self.assertEqual(slug, self.source['slug'])
             self.assertEqual(item_id, self.item['id'])
             self.assertEqual((self.root / state.item['final_mp4']).read_bytes(), b'rendered-output')
             state.item.update(youtube_id='restored-video', status='uploaded', uploaded=True)
             state.persist()
+
+        # Only the approval-directory locator is substituted in this isolated
+        # filesystem fixture. The production validator executes unchanged.
+        def quality(item, kind):
+            return require_owner_media_quality(item, kind, approval_root=approval_dir)
+
         with patch.object(core, 'STATE_DIR', self.root), patch.object(core, 'article_by_slug', return_value=self.source), \
                 patch.object(core, 'auth_preflight', side_effect=AssertionError('publish cannot enter provider')), \
                 patch.object(core, 'ffprobe', return_value={'duration': 100}), \
                 patch('scripts.kesher_e2e_delivery_guard._signature_verified', return_value=True), \
+                patch('scripts.kesher_runtime.media_worker.require_owner_media_quality', side_effect=quality) as checked, \
                 patch.object(core, 'upload_only', side_effect=upload) as uploader:
             result = run_media(self.worker, phase='publish', encryption_key='test-only-encryption-key-for-fixtures')
         self.assertEqual(result.status, 'uploaded')
+        checked.assert_called_once()
         self.assertEqual(uploader.call_count, 1)
 
     def test_publish_without_archive_refuses_before_auth_or_any_external_call(self):
