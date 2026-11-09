@@ -153,7 +153,7 @@ jobs:
             tests.test_kesher_free_stock_broll \
             -v
 
-      - name: OWNER preview scientifically safe and legible Hebrew Short
+      - name: OWNER render locally with MIT BlueTTS Hebrew model and CC BY licensed reference voice
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_preview' }}
         env:
           OWNER_SLUG: ${{ inputs.derive_slug }}
@@ -162,15 +162,16 @@ jobs:
           set -euo pipefail
           test "$OWNER_SLUG" = "vantage-sensitivity-sensitive-gifted-children"
           test "$OWNER_SHA" = "e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea"
-          python -m pip install edge-tts==7.3.1 Pillow==11.3.0 requests==2.32.5 \
-            google-auth==2.40.3 google-api-python-client==2.181.0
+          python -m pip install 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' \
+            Pillow==11.3.0 requests==2.32.5 google-auth==2.40.3 \
+            google-api-python-client==2.181.0
           python scripts/kesher_owner_vantage_short.py preview --source-sha "$OWNER_SHA"
 
       - name: Preserve independently reviewable OWNER source-locked preview
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_preview' && success() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: kesher-owner-vantage-short-preview-e264d2962b
+          name: kesher-owner-vantage-short-preview-bluetts-e264d2962b
           path: |
             owner-vantage-short-output/short.mp4
             owner-vantage-short-output/review-voice.wav
@@ -192,7 +193,7 @@ jobs:
           test "$OWNER_SLUG" = "vantage-sensitivity-sensitive-gifted-children"
           test "$OWNER_SHA" = "e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea"
           mkdir -p owner-vantage-short-output
-          artifact_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-owner-vantage-short-preview-e264d2962b&per_page=100" \
+          artifact_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-owner-vantage-short-preview-bluetts-e264d2962b&per_page=100" \
             --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[0].id')"
           test -n "$artifact_id" && test "$artifact_id" != "null"
           gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$RUNNER_TEMP/owner-review.zip"
