@@ -343,7 +343,7 @@ test('relocation and premarital service pages expose their practical article hub
     .toHaveAttribute('href', '/services/couples-aliyah-relocation');
 
   await page.goto('/services/premarital-first-year');
-  await expect(page.getByRole('heading', { name: 'ייעוץ זוגי לפני חתונה והכנה לנישואים' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'ייעוץ זוגי לפני נישואין: הכנה לחיים המשותפים' })).toBeVisible();
   await page.getByRole('link', { name: /12 שאלות שחייבים לשאול לפני החתונה/ }).click();
   await expect(page).toHaveURL(/\/blog\/premarital-questions-before-wedding$/);
   await expect(page.getByRole('link', { name: 'פגישות הכנה לנישואים' }))
@@ -529,7 +529,7 @@ test('booking listener rejects Calendly-shaped messages from an untrusted origin
 test('couples crisis landing page (/services/couples/crisis) captures crisis intent and trackable embed', async ({ page }) => {
   await page.goto('/services/couples/crisis?gclid=test_crisis_gclid&utm_source=google&utm_campaign=crisis_search');
 
-  await expect(page.getByRole('heading', { name: 'זוגיות במשבר? אפשר להתחיל משיחה אחת רגועה', level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'זוגיות במשבר? ייעוץ זוגי שמתחיל משיחה רגועה', level: 1 })).toBeVisible();
   await expect(page.getByText('500 ₪').first()).toBeVisible();
   await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ זוגי עם שירה סהרוני"]')).toBeVisible();
 
