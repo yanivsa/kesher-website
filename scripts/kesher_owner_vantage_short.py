@@ -60,7 +60,6 @@ def preflight():
     text = "\n".join(row[1] for row in SCENES)
     assert all(value not in text for value in PROHIBITED), "Prohibited overclaim"
     assert "יותר מאלפיים" in text and "בנים" in text, "RCT scope missing"
-    assert Path("research/kesher-vantage-short-approval.json").exists() is False or True
 
 
 def draw_slide(number, headline, dest):
@@ -114,11 +113,11 @@ async def speak(dirpath):
 def ffconcat(dest, files, lengths=None):
     lines = ["ffconcat version 1.0"]
     for idx, file in enumerate(files):
-        lines.append("file " + json.dumps(str(file.resolve())))
+        lines.append("file '" + str(file.resolve()) + "'")
         if lengths is not None:
             lines.append(f"duration {lengths[idx]:.5f}")
     if lengths is not None:
-        lines.append("file " + json.dumps(str(files[-1].resolve())))
+        lines.append("file '" + str(files[-1].resolve()) + "'")
     dest.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
