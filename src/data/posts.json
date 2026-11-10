@@ -163,11 +163,12 @@
       }
     ],
     "controllerManaged": true,
-    "image": "/images/generated/blog/baby-cries-at-daycare.png",
-    "imageAlt": "איור עריכתי מקומי של הורה ופעוט בכניסה למסגרת ילדים, עם דלת פתוחה וקוביות משחק, ברגע פרידה תומך.",
-    "imageProvider": "LocalEditorial",
-    "imageSourceUrl": "local-editorial://baby-cries-at-daycare/5",
-    "imageIsFallback": false
+    "image": "/images/generated/blog/baby-cries-at-daycare-photo.jpg",
+    "imageAlt": "מטפלת במעון מחזיקה תינוק בחיקה ברוגע, והורה עם תיק עומד ליד דלת המעון ברקע.",
+    "imageProvider": "Adobe Firefly",
+    "imageSourceUrl": "local://public/images/generated/blog/baby-cries-at-daycare-photo.jpg",
+    "imageIsFallback": false,
+    "imageCredit": "תמונת מערכת מקורית שנוצרה עבור KESHER באמצעות Adobe Firefly; נובמבר 2026"
   },
   {
     "id": "we-language-relationships",
