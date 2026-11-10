@@ -230,6 +230,42 @@ def classify(cfg, records):
     return matches
 
 
+def scan_video_records(yt, ids):
+    """Read all upload IDs, retry omitted batch records individually, fail closed.
+
+    Processing details are needed only for final public verification, not for
+    source dedup. A missing record is never treated as proof of absence.
+    """
+    records = {}
+    require(len(ids) == len(set(ids)), "DUPLICATE_UPLOAD_PLAYLIST_ID")
+
+    def collect(requested):
+        rows = yt.videos().list(part="snippet,status", id=",".join(requested)).execute().get("items", [])
+        for row in rows:
+            vid = row.get("id")
+            require(vid in requested and vid not in records, "UNEXPECTED_OR_DUPLICATE_VIDEO_RECORD")
+            require((row.get("snippet") or {}).get("channelId") == CHANNEL, "UNEXPECTED_CHANNEL")
+            records[vid] = row
+
+    for i in range(0, len(ids), 50):
+        collect(ids[i:i+50])
+    missing = [vid for vid in ids if vid not in records]
+    if missing:
+        print("OWNER_DEDUP_BATCH_OMISSIONS " + str(len(missing)), flush=True)
+        for vid in missing:
+            collect([vid])
+    missing = [vid for vid in ids if vid not in records]
+    if missing:
+        # Public repository logs must not expose private/unlisted video IDs.
+        fingerprints = [hashlib.sha256(vid.encode()).hexdigest()[:12] for vid in missing]
+        print("OWNER_DEDUP_UNRESOLVED " + json.dumps({
+            "playlist_count": len(ids), "observed_count": len(records),
+            "missing_count": len(missing), "missing_id_fingerprints": fingerprints,
+        }), flush=True)
+    require(not missing and set(records) == set(ids), "INCOMPLETE_VIDEO_DEDUP_SCAN")
+    return [records[vid] for vid in ids]
+
+
 def scan(yt, cfg):
     rows = yt.channels().list(part="id,contentDetails", mine=True).execute().get("items", [])
     require(len(rows) == 1 and rows[0]["id"] == CHANNEL, "WRONG_YOUTUBE_CHANNEL")
@@ -244,13 +280,7 @@ def scan(yt, cfg):
             break
         require(token not in seen_tokens and len(seen_tokens) < 200, "INCOMPLETE_DEDUP_SCAN")
         seen_tokens.add(token)
-    require(len(ids) == len(set(ids)), "DUPLICATE_UPLOAD_PLAYLIST_ID")
-    records = []
-    for i in range(0, len(ids), 50):
-        records.extend(yt.videos().list(part="snippet,status,processingDetails",
-                       id=",".join(ids[i:i+50])).execute().get("items", []))
-    require({x["id"] for x in records} == set(ids), "INCOMPLETE_VIDEO_DEDUP_SCAN")
-    return classify(cfg, records)
+    return classify(cfg, scan_video_records(yt, ids))
 
 
 def verify_public(yt, cfg, kind, vid, expected):

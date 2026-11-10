@@ -206,6 +206,40 @@ class OwnerReviewedPublishTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             p.classify(cfg, [ambiguous])
 
+    def test_dedup_batch_omission_recovered_by_exact_individual_read(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        yt = Mock()
+        a = {"id": "abcdefghijk", "snippet": {"channelId": p.CHANNEL}}
+        b = {"id": "12345678901", "snippet": {"channelId": p.CHANNEL}}
+        yt.videos.return_value.list.return_value.execute.side_effect = [
+            {"items": [a]}, {"items": [b]},
+        ]
+        self.assertEqual(p.scan_video_records(yt, [a["id"], b["id"]]), [a, b])
+        self.assertEqual(yt.videos.return_value.list.call_args_list[-1].kwargs,
+                         {"part": "snippet,status", "id": b["id"]})
+
+    def test_dedup_unresolved_individual_record_fails_closed(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        yt = Mock()
+        a = {"id": "abcdefghijk", "snippet": {"channelId": p.CHANNEL}}
+        yt.videos.return_value.list.return_value.execute.side_effect = [
+            {"items": [a]}, {"items": []},
+        ]
+        with self.assertRaisesRegex(RuntimeError, "INCOMPLETE_VIDEO_DEDUP_SCAN"):
+            p.scan_video_records(yt, [a["id"], "12345678901"])
+
+    def test_dedup_wrong_channel_or_duplicate_record_fails_closed(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        yt = Mock()
+        a = {"id": "abcdefghijk", "snippet": {"channelId": p.CHANNEL}}
+        yt.videos.return_value.list.return_value.execute.return_value = {"items": [a, a]}
+        with self.assertRaisesRegex(RuntimeError, "UNEXPECTED_OR_DUPLICATE_VIDEO_RECORD"):
+            p.scan_video_records(yt, [a["id"]])
+        yt.videos.return_value.list.return_value.execute.return_value = {
+            "items": [dict(a, snippet={"channelId": "wrong"})]}
+        with self.assertRaisesRegex(RuntimeError, "UNEXPECTED_CHANNEL"):
+            p.scan_video_records(yt, [a["id"]])
+
     def test_wrong_archive_digest_fails_before_extraction(self):
         from scripts import kesher_owner_reviewed_publish as p
         with tempfile.TemporaryDirectory() as tmp:
