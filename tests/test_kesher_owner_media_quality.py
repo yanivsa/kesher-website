@@ -413,6 +413,15 @@ class OwnerReviewedPublishTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "ARTIFACT_FILE_SET_MISMATCH"):
                 p.archive_files(archive, out, cfg)
 
+    def test_guarded_owner_publish_installs_photo_validation_dependency(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        workflow = (p.ROOT / ".github/workflows/kesher-short-v4.yml").read_text(encoding="utf-8")
+        step = workflow.split("- name: OWNER publish exact independently reviewed artifact, no generation", 1)[1].split("\n      - name:", 1)[0]
+        self.assertIn("inputs.operation == 'owner_reviewed_publish'", step)
+        self.assertIn("Pillow==11.3.0", step)
+        self.assertIn("python -m unittest tests.test_kesher_owner_media_quality -v", step)
+        self.assertIn("python -m scripts.kesher_owner_reviewed_publish", step)
+
     def test_wrong_archive_digest_fails_before_extraction(self):
         from scripts import kesher_owner_reviewed_publish as p
         with tempfile.TemporaryDirectory() as tmp:

@@ -246,7 +246,7 @@ jobs:
           OWNER_SHA: ${{ inputs.derive_content_sha256 }}
         run: |
           set -euo pipefail
-          python -m pip install requests==2.32.5 google-auth==2.40.3 google-api-python-client==2.181.0
+          python -m pip install requests==2.32.5 google-auth==2.40.3 google-api-python-client==2.181.0 Pillow==11.3.0
           python -m unittest tests.test_kesher_owner_media_quality -v
           python -m scripts.kesher_owner_reviewed_publish --slug "$OWNER_SLUG" --source-sha "$OWNER_SHA"
 
