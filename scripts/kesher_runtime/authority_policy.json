@@ -3250,7 +3250,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "e7ef2005f4d2fad32895cd75a48f5d1b52037cf1e87189f941cf912ed32b6118",
+      "definition_sha256": "f01dde039b73d0dcb61a818e6ddc06f9e9d455b438ce7072555264cb844c6bbf",
       "resources": [],
       "review": {
         "call_chain": {
@@ -3262,7 +3262,7 @@
           "remotion-kesher/src/Root.tsx": "79ca213b77e2a58d0ba72c61830215de2501bd80617d93e0ac3414a709bcb8ed",
           "research/kesher-asynchrony-photo-provenance.json": "5c0f25bbc8e5ff87d9f16fc6db2588f6bca50cafdbcc6fe35ea1ee0b6307a36d",
           "research/kesher-gifted-asynchrony-20261109.md": "3e8d6d2a4e5326852feaf225459a9c95b8ed8f8d1d70333918b2b5d652d08de1",
-          "research/kesher-kindergarten-play-media-20261110.json": "111f202ae94d506d650634cc1db764ec413d84f4ef740558e62c06fc58db048",
+          "research/kesher-kindergarten-play-media-20261110.json": "1111f202ae94d506d650634cc1db764ec413d84f4ef740558e62c06fc58db048",
           "research/kesher-kindergarten-play-photo-provenance.json": "db86a5719c62ac5db40d939757030d8fbbbd7174d5d1ebd56639bf04c3e95e13",
           "research/kesher-productive-failure-20261110.md": "1d81bbab0f9afba03b85e29fcf999d9b5e7156e34d23394e1eb6a6c46e83c50e",
           "research/kesher-productive-failure-photo-provenance.json": "cb3a6897e0bc1c9575bca8eb97b02305378cb2986df173e4f76d04241f3da3d0",
