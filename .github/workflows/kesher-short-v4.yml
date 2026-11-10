@@ -228,8 +228,13 @@ jobs:
           OWNER_SHA: ${{ inputs.derive_content_sha256 }}
         run: |
           set -euo pipefail
-          test "$OWNER_SLUG" = "positivity-resonance-marriage-micro-moments"
-          test "$OWNER_SHA" = "6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f"
+          case "$OWNER_SLUG" in
+            positivity-resonance-marriage-micro-moments)
+              test "$OWNER_SHA" = "6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f" ;;
+            changing-kindergarten-midyear)
+              test "$OWNER_SHA" = "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a" ;;
+            *) exit 1 ;;
+          esac
           python -m pip install requests==2.32.5 google-auth==2.40.3 google-api-python-client==2.181.0
           python -m unittest tests.test_kesher_owner_positivity_youtube_probe -v
           python -m scripts.kesher_owner_positivity_youtube_probe \
