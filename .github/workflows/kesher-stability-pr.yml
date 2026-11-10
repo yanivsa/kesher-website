@@ -656,7 +656,7 @@ jobs:
       - name: Exact source, photo and private-only contract
         run: |
           set -euo pipefail
-          python -m unittest tests.test_kesher_owner_midyear_kindergarten_preview -v
+          python -m unittest tests.test_kesher_owner_midyear_kindergarten_preview tests.test_kesher_owner_midyear_kindergarten_repair -v
           python -m scripts.kesher_owner_midyear_kindergarten_preview preflight --source-sha 5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a
       - name: Verify exact source probe and absence of prior private production
         id: admission
@@ -685,20 +685,30 @@ jobs:
             exit 0
           fi
           test "$count" = 0
-          test "${{ github.event.action }}" = opened
-          echo 'render=true' >> "$GITHUB_OUTPUT"
+          test "$(gh api repos/yanivsa/kesher-website/actions/artifacts/13796052703 --jq .name)" = owner-midyear-kindergarten-failed-private-evidence-42886961234-1
+          test "$(gh api repos/yanivsa/kesher-website/actions/artifacts/13796052703 --jq .expired)" = false
+          echo 'render=false' >> "$GITHUB_OUTPUT"
+          echo 'repair=true' >> "$GITHUB_OUTPUT"
       - name: Render original private Hebrew Overview and native 9 by 16 Short
         if: ${{ steps.admission.outputs.render == 'true' }}
         env:
           HF_HOME: ${{ runner.temp }}/owner-midyear-kindergarten-hf
         run: python -m scripts.kesher_owner_midyear_kindergarten_preview preview --source-sha 5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a
+      - name: Recover exact failed private archive and repair only Short duration
+        if: ${{ steps.admission.outputs.repair == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13796052703/zip > "$RUNNER_TEMP/midyear-failed.zip"
+          python -m scripts.kesher_owner_midyear_kindergarten_repair --archive "$RUNNER_TEMP/midyear-failed.zip" --output owner-midyear-kindergarten-media-output
       - name: Independently transcribe exact final Hebrew MP4 audio
-        if: ${{ steps.admission.outputs.render == 'true' }}
+        if: ${{ steps.admission.outputs.repair == 'true' }}
         env:
           HF_HOME: ${{ runner.temp }}/owner-midyear-kindergarten-asr-hf
         run: python -m scripts.kesher_owner_midyear_kindergarten_preview asr --source-sha 5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a
       - name: Archive reviewable PRIVATE owner outputs only
-        if: ${{ steps.admission.outputs.render == 'true' }}
+        if: ${{ steps.admission.outputs.repair == 'true' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: owner-midyear-kindergarten-private-evidence-5b0d6c5e8ba2
@@ -715,7 +725,7 @@ jobs:
           compression-level: 0
           retention-days: 60
       - name: Preserve failed private render evidence for targeted recovery (never publish)
-        if: ${{ failure() && steps.admission.outputs.render == 'true' }}
+        if: ${{ failure() && steps.admission.outputs.repair == 'true' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: owner-midyear-kindergarten-failed-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
