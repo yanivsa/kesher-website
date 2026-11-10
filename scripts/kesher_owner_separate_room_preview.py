@@ -123,6 +123,73 @@ def preview(out):
         (out / f"{kind}-manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print("OWNER_PRIVATE_PREVIEW_READY", kind, manifest["video_sha256"], media, flush=True)
 
+
+# Recover the exact failed private bundle; never regenerate the Overview.
+RECOVERY_ARCHIVE_SHA = "52cd7534f91fa9d5b2d3154f244483ca6c1016c8536c389e947196a451ab885a"
+RECOVERY_OVERVIEW_SHA = "4d53ae34495d49a7e91ef58148ff386437ff43b86e8a57f3e283c563bddc0e3a"
+RECOVERY_SHORT_SHA = "77591c8143da555f3bc25b8b253ad4f6a17f568b7337d3985ff60e94afcc7b72"
+RECOVERY_SHORT_AUDIO_SHA = "4f2ee751efd5cd056c639eec4669b0c1208ddf2da9057e5f2b5ad7ef90375f31"
+RECOVERY_TEMPO = "0.86"
+
+def recover(archive, out):
+    import zipfile
+    if sha_file(archive) != RECOVERY_ARCHIVE_SHA:
+        raise ValueError("RECOVERY_ARCHIVE_IDENTITY_MISMATCH")
+    scripts, provenance = source_check(public=True)
+    if out.exists():
+        raise ValueError("PREVIEW_EXISTS")
+    expected = {"overview.mp4", "short.mp4", "overview-manifest.json",
+                "overview-review-voice.wav", "short-review-voice.wav",
+                "overview-visual-contact-sheet.jpg"} | {f"overview-frame-{i:02d}.jpg" for i in range(1, 9)}
+    with zipfile.ZipFile(archive) as z:
+        if set(z.namelist()) != expected or len(z.namelist()) != len(expected):
+            raise ValueError("RECOVERY_ARCHIVE_SCOPE_MISMATCH")
+        out.mkdir(parents=True)
+        for name in expected:
+            (out / name).write_bytes(z.read(name))
+    original = out / "short.mp4"
+    overview = json.loads((out / "overview-manifest.json").read_text())
+    if (overview["source_slug"], overview["content_sha256"], overview["canonical_content_sha256"], overview["article_body_sha256"], overview["source_file_sha256"]) != (SLUG, SOURCE_SHA, SOURCE_SHA, BODY_SHA, PLAN_SHA):
+        raise ValueError("RECOVERY_SOURCE_MISMATCH")
+    if overview["script_segments"] != scripts["overview"] or overview["visual_sources"] != provenance["images"][:6] or overview["public"] is not False or overview["uploaded"] is not False:
+        raise ValueError("RECOVERY_MANIFEST_MISMATCH")
+    if sha_file(out / "overview.mp4") != RECOVERY_OVERVIEW_SHA or overview["video_sha256"] != RECOVERY_OVERVIEW_SHA or sha_file(original) != RECOVERY_SHORT_SHA or sha_file(out / "short-review-voice.wav") != RECOVERY_SHORT_AUDIO_SHA:
+        raise ValueError("RECOVERY_BINARY_MISMATCH")
+    if sha_file(out / "overview-review-voice.wav") != overview["audio_sha256"] or sha_file(out / "overview-visual-contact-sheet.jpg") != overview["contact_sha256"] or [sha_file(out / f"overview-frame-{i:02d}.jpg") for i in range(1, 9)] != overview["frame_sha256"]:
+        raise ValueError("RECOVERY_REVIEW_EVIDENCE_MISMATCH")
+    info = overview["voice_provenance"]
+    if (info["model_revision"], info["g2p_revision"], info["weights_license"], info["reference_license"], info["g2p_license"]) != (MODEL_SHA, G2P_SHA, "MIT", "CC BY 4.0", "Apache-2.0"):
+        raise ValueError("RECOVERY_VOICE_RIGHTS_MISMATCH")
+    verify_video(out / "overview.mp4", "overview")
+    repaired = out / "short-paced.mp4"
+    subprocess.run(["ffmpeg", "-hide_banner", "-v", "error", "-y", "-i", str(original),
+                    "-filter_complex", f"[0:v]setpts=PTS/{RECOVERY_TEMPO},fps=25[v];[0:a]atempo={RECOVERY_TEMPO}[a]",
+                    "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-threads", "4", "-preset", "veryfast",
+                    "-crf", "22", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", str(repaired)], check=True)
+    media = verify_video(repaired, "short")
+    repaired.replace(original)
+    wav = out / "short-review-voice.wav"
+    subprocess.run(["ffmpeg", "-hide_banner", "-v", "error", "-y", "-i", str(original), "-map", "0:a:0", "-ac", "1", "-ar", "16000", "-c:a", "pcm_s16le", str(wav)], check=True)
+    frames, contact = review_frames(original, out, "short")
+    manifest = {
+        "source_slug": SLUG, "content_sha256": SOURCE_SHA, "canonical_content_sha256": SOURCE_SHA, "article_body_sha256": BODY_SHA,
+        "kind": "short", "media_item_id": f"owner-short-20261111-{SOURCE_SHA[:12]}",
+        "source_file": str(PLAN.relative_to(ROOT)), "source_file_sha256": PLAN_SHA,
+        "script_segments": scripts["short"], "script_sha256": sha_bytes("\n".join(scripts["short"]).encode()),
+        "visual_sources": provenance["images"][6:], "voice_provenance": info,
+        "voice_model": overview["voice_model"], "video_sha256": sha_file(original),
+        "audio_sha256": sha_file(wav), "audio_review_source": "decoded_final_mp4_audio",
+        "contact_sha256": sha_file(contact), "frame_sha256": [sha_file(x) for x in frames],
+        "media": media, "composition": "native_full_frame_9_16_no_padding",
+        "recovery": {"run_id": 42923277500, "artifact_id": 13811884120, "archive_sha256": RECOVERY_ARCHIVE_SHA,
+                     "original_short_sha256": RECOVERY_SHORT_SHA, "preserved_overview_sha256": RECOVERY_OVERVIEW_SHA,
+                     "tempo": RECOVERY_TEMPO, "method": "same_scenes_pitch_preserving_pacing_no_regeneration"},
+        "owner_editorial_qa": "PENDING_GENUINE_INDEPENDENT_REVIEW", "uploaded": False, "public": False,
+    }
+    (out / "short-manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print("OWNER_PRIVATE_RECOVERY_READY", "overview", RECOVERY_OVERVIEW_SHA, "short", manifest["video_sha256"], media, flush=True)
+
+
 def transcribe(out):
     from faster_whisper import WhisperModel
     from scripts.kesher_owner_positivity_asr import similarity
@@ -149,8 +216,9 @@ def transcribe(out):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("operation", choices=["preflight", "preview", "asr"])
+    p.add_argument("operation", choices=["preflight", "preview", "recover", "asr"])
     p.add_argument("--source-sha", required=True)
+    p.add_argument("--archive", type=Path)
     p.add_argument("--output", type=Path, default=Path("owner-separate-room-media-output"))
     a = p.parse_args()
     if a.source_sha != SOURCE_SHA:
@@ -160,5 +228,9 @@ if __name__ == "__main__":
         print("SOURCE_PREFLIGHT_OK", SLUG, SOURCE_SHA)
     elif a.operation == "preview":
         preview(a.output)
+    elif a.operation == "recover":
+        if a.archive is None:
+            raise SystemExit("EXACT_RECOVERY_ARCHIVE_REQUIRED")
+        recover(a.archive, a.output)
     else:
         transcribe(a.output)

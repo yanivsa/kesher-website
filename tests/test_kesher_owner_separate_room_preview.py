@@ -15,3 +15,17 @@ class SeparateRoomPrivatePreviewTests(unittest.TestCase):
             self.assertNotIn(forbidden, text)
         self.assertIn('"uploaded": False, "public": False', text)
         self.assertIn("PENDING_GENUINE_INDEPENDENT_REVIEW", text)
+
+    def test_recovery_rejects_wrong_archive_without_output(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            archive = root / "wrong.zip"
+            archive.write_bytes(b"not the reviewed archive")
+            with self.assertRaisesRegex(ValueError, "RECOVERY_ARCHIVE_IDENTITY_MISMATCH"):
+                p.recover(archive, root / "output")
+            self.assertFalse((root / "output").exists())
+    def test_recovery_preserves_duration_gate_and_overview(self):
+        self.assertEqual(p.RECOVERY_TEMPO, "0.86")
+        self.assertEqual(p.RECOVERY_OVERVIEW_SHA, "4d53ae34495d49a7e91ef58148ff386437ff43b86e8a57f3e283c563bddc0e3a")
+        self.assertGreater(25.262969 / float(p.RECOVERY_TEMPO), 28)

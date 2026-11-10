@@ -812,10 +812,17 @@ jobs:
           set -euo pipefail
           python -m unittest tests.test_kesher_owner_separate_room_preview -v
           python -m scripts.kesher_owner_separate_room_preview preflight --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0
-      - name: Render original private Hebrew Overview and native 9 by 16 Short
+      - name: Fetch exact failed private artifact for targeted recovery
         env:
-          HF_HOME: ${{ runner.temp }}/owner-separate-room-hf
-        run: python -m scripts.kesher_owner_separate_room_preview preview --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42923277500 --jq .head_sha)" = 049dec7bd23b75a5c6fbe25adf8b571442e1c6f6
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42923277500 --jq .conclusion)" = failure
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13811884120/zip > "$RUNNER_TEMP/separate-room-recovery.zip"
+          printf '%s  %s\n' 52cd7534f91fa9d5b2d3154f244483ca6c1016c8536c389e947196a451ab885a "$RUNNER_TEMP/separate-room-recovery.zip" | sha256sum -c -
+      - name: Preserve exact Overview and repair only Short pacing
+        run: python -m scripts.kesher_owner_separate_room_preview recover --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0 --archive "${{ runner.temp }}/separate-room-recovery.zip"
       - name: Independently transcribe exact final Hebrew MP4 audio
         env:
           HF_HOME: ${{ runner.temp }}/owner-separate-room-asr-hf
