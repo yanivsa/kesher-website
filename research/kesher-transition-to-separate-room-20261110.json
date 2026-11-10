@@ -1,0 +1,39 @@
+{
+  "source_slug": "transition-to-separate-room",
+  "content_sha256": "4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0",
+  "approved_topic": "separate-room-transition-20261019-v1",
+  "prior_pr": 1156,
+  "prior_draft_head": "0e17539e508cf8d6119ad5f9e042b104e1a6ae5c",
+  "review_date": "2026-11-10",
+  "safety_review": {
+    "infant_room_sharing": "Ministry of Health: at least six months, preferably one year; AAP 2022: no specific evidence for safe transition before one year",
+    "infant_sleep_space": "separate, firm flat surface, supine, no loose bedding or soft objects; toddler behavioral advice explicitly separated",
+    "sources": [
+      "https://me.health.gov.il/parenting/raising-children/safe-environment/home-safety/sudden-infant-death-syndrome-prevention/",
+      "https://doi.org/10.1542/peds.2022-057990",
+      "https://www.nhs.uk/baby/health/sleep-and-young-children/"
+    ]
+  },
+  "hero": {
+    "path": "/images/generated/blog/transition-to-separate-room-photo.jpg",
+    "provider": "Adobe Firefly",
+    "request_id": "538684ec-3b8e-42a6-862f-626264e0695c",
+    "sha256": "f3efb6c10a6d5ca762f0ea2e855ed0ef2afd26ad90af56afa01cbff44c32c86d",
+    "dimensions": [
+      1200,
+      675
+    ],
+    "license": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+    "visual_review": "Actual final JPEG inspected: awake clothed toddler on own low bed, father seated beside him reading, no infant or bed-sharing."
+  },
+  "dedup": {
+    "prior_public_http": 404,
+    "existing_article_count": 0,
+    "old_pr_reused": true
+  },
+  "quality": {
+    "word_count": 897,
+    "h3_count": 6,
+    "source_contract": "Hebrew visible text and exact canonical source hash independently checked; full CI and deployment pending"
+  }
+}
