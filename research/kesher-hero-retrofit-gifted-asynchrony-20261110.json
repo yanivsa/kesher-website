@@ -1,0 +1,23 @@
+{
+  "source_slug": "gifted-children-asynchronous-development",
+  "content_sha256": "89f40658331d5f91ec8ed107477e694b3af2b3cc2c9cc9b4ee3be18156344a67",
+  "old_image": {
+    "path": "/images/generated/blog/gifted-children-asynchronous-development.png",
+    "sha256": "e2719f16775e759f6e854d338441e405ca7bc0d97d7a1e119873d60e6681c4f4",
+    "visual": "actual flat vector inspected"
+  },
+  "new_image": {
+    "path": "/images/generated/blog/gifted-children-asynchronous-development-photo.jpg",
+    "provider": "Adobe Firefly",
+    "request_id": "ccfb14e5-3383-41ca-a6e0-cf345db0bb2d",
+    "sha256": "20a7416b4ca20dcb76e48f0b08b3e2b8738caaa0f2e735da61f9314f54cdd292",
+    "dimensions": [
+      1200,
+      675
+    ],
+    "license": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+    "visual_review": "Actual final JPEG: school-age child mildly frustrated by a complex model, father calmly beside him; realistic, no text/logo, no distress sensationalism."
+  },
+  "review_date": "2026-11-10",
+  "scope": "image metadata only; canonical source unchanged"
+}
