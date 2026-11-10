@@ -791,7 +791,7 @@ jobs:
           test "$(gh api repos/yanivsa/kesher-website/actions/runs/42920640111 --jq .workflow_id)" = 349292838
           test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-separate-room-private-evidence-4751cfeae272 --jq .total_count)" = 0
       - name: Set up Python for licensed local speech
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583e3e4b97
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: '3.12'
       - name: Set up pinned Node for repository FFmpeg bundles
