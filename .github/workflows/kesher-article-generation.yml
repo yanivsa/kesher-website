@@ -19,13 +19,28 @@ on:
         default: false
         type: boolean
 
+      existing_session_mode:
+        description: Exact existing sessions only; off keeps article worker untouched
+        required: false
+        default: 'off'
+        type: choice
+        options:
+          - 'off'
+          - check
+          - nudge
+          - stress-check
+          - stress-nudge
+
 permissions:
   contents: read
   pull-requests: write
   actions: write
 
 concurrency:
-  group: kesher-article-generation-${{ github.event_name }}-${{ inputs.slot || github.sha }}
+  # A read-only GET of the SAME pinned existing stress session need not wait for
+  # an unrelated long-running article poll. Mutation/nudge and all actual
+  # generation retain the original per-slot concurrency group unchanged.
+  group: kesher-article-generation-${{ github.event_name }}-${{ (inputs.existing_session_mode == 'stress-check' && 'readonly-stress-20261108') || (inputs.slot || github.sha) }}
   cancel-in-progress: false
 
 jobs:
@@ -81,6 +96,7 @@ jobs:
           echo "Resolved slot=$slot test_mode=$test_mode trigger=$trigger topic_brief_bytes=$(wc -c < "$brief_file")"
 
       - name: Run exactly one autonomous Jules article text attempt with evidence contract
+        if: ${{ inputs.existing_session_mode == 'off' }}
         id: article_worker
         continue-on-error: true
         env:
@@ -90,6 +106,32 @@ jobs:
           set -euo pipefail
           mkdir -p "$(dirname "$KESHER_ARTICLE_RESULT_PATH")"
           python3 -u scripts/jules_article_runner_v4.py --slot "$KESHER_ARTICLE_SLOT"
+
+      - name: Fail-closed recovery unit tests (existing Jules sessions only)
+        if: ${{ inputs.existing_session_mode != 'off' }}
+        run: python -m unittest discover -s tests -p 'test_kesher_jules_exact_session_recovery.py' -v
+
+      - name: Read or nudge same existing Jules session WITHOUT creating an article
+        if: ${{ inputs.existing_session_mode != 'off' && inputs.test_mode != true }}
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+          KESHER_SLOT: ${{ inputs.slot }}
+          KESHER_MODE: ${{ inputs.existing_session_mode }}
+        run: |
+          set -euo pipefail
+          # The two Nov 8 owner requests have DIFFERENT immutable Jules session IDs.
+          # Only these exact choices can read/nudge a prior session; never create.
+          case "$KESHER_MODE" in
+            check|nudge)
+              python -m scripts.kesher_jules_exact_session_recovery --slot "$KESHER_SLOT" --mode "$KESHER_MODE"
+              ;;
+            stress-check|stress-nudge)
+              test "$KESHER_SLOT" = "2026-11-08" || { echo "Wrong slot for exact stress session"; exit 1; }
+              mode="${KESHER_MODE#stress-}"
+              python -m scripts.kesher_jules_exact_session_recovery --slot "2026-11-08-stress" --mode "$mode"
+              ;;
+            *) echo "Invalid exact session recovery mode"; exit 1 ;;
+          esac
 
       - name: Persist structured article attempt result
         if: ${{ always() && steps.bridge_admission.outcome == 'success' && hashFiles('.kesher-article-result/result.json') != '' }}
@@ -134,7 +176,7 @@ jobs:
           exit 1
 
       - name: Notify canonical Kesher Content Controller on completion
-        if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' && inputs.test_mode != true }}
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' && inputs.test_mode != true && inputs.existing_session_mode == 'off' }}
         continue-on-error: true
         timeout-minutes: 2
         env:

@@ -1,0 +1,42 @@
+{
+  "purpose": "PRIVATE_VISUAL_PROOF_ONLY",
+  "no_publication": true,
+  "not_editorial_approval": true,
+  "synthetic_audio_only": true,
+  "expected_source_video_id": "lnP5GltTLNk",
+  "sourceBinding": {
+    "slug": "vantage-sensitivity-sensitive-gifted-children",
+    "contentSha256": "e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea"
+  },
+  "licensedPhotoStory": {
+    "sourceSlug": "vantage-sensitivity-sensitive-gifted-children",
+    "contentSha256": "e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea",
+    "scenes": [
+      {
+        "assetPath": "images/blog/vantage-sensitivity-parenting-hero.jpg",
+        "assetSha256": "f4241a22e527a4c80d8a51966b15ff40acb5d3c0ea9944151f9bf0eaa960ff90",
+        "licenseEvidenceUrl": "https://github.com/yanivsa/kesher-website/blob/main/research/kesher-vantage-sensitivity-20261109.md",
+        "altHebrew": "אמא מקשיבה לילדה רגישה בביתה",
+        "startFrame": 0,
+        "endFrame": 180
+      },
+      {
+        "assetPath": "images/generated/blog/parental-hostile-attributions-editorial-20261105.jpg",
+        "assetSha256": "6549186e4cbaa79cc32268fe093d2e73367fdcafa81b46ff66a37a603faf7f68",
+        "licenseEvidenceUrl": "https://helpx.adobe.com/creative-cloud/apps/generative-ai/generative-credits-faq.html",
+        "altHebrew": "הורה משוחח ברוגע עם ילד צעיר בסביבה ביתית",
+        "startFrame": 180,
+        "endFrame": 360
+      },
+      {
+        "assetPath": "images/generated/blog/prepare-toddler-for-daycare-adobe-v2.jpg",
+        "assetSha256": "3aa58355df9eb655a7dc437e55487a35fb678ba255f444f81c6ad78a4e79e22c",
+        "licenseEvidenceUrl": "https://helpx.adobe.com/creative-cloud/apps/generative-ai/generative-credits-faq.html",
+        "altHebrew": "אבא מסייע לילד צעיר להתכונן ברוגע ליום בגן",
+        "startFrame": 360,
+        "endFrame": 540
+      }
+    ]
+  },
+  "review_notes": "Preview only. The original Vantage hero is described as original in editorial research; author-level commercial rights must still be independently approved. Other two photographs have repository metadata identifying Adobe Firefly outputs and Adobe's general commercial terms, but no full asset-specific rights certificate is inferred. This 18-second proof uses synthetic audio; no scientific narration, no human audition, no full Overview QA, no published replacement."
+}

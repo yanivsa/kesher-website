@@ -1,0 +1,36 @@
+{
+  "source_slug": "positivity-resonance-marriage-micro-moments",
+  "content_sha256": "6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f",
+  "images": [
+    {
+      "path": "public/images/blog/positivity-owner-scene-01-20261110.jpg",
+      "sha256": "cc9a5766729401739d296ff857ed590e739b60c24eb88926705911ae171ab9a2",
+      "generated_for": "positivity-resonance-marriage-micro-moments",
+      "provider": "Adobe Firefly",
+      "generation_reference": "https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:603b2ec3-ab81-4da4-9853-7246b3b1e8fa",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/ee/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "commercial use of Firefly-generated outputs under Adobe Firefly terms; editorial source-generated artificial persons"
+    },
+    {
+      "path": "public/images/blog/positivity-owner-scene-02-20261110.jpg",
+      "sha256": "9d6e797be780d2b84588919235135f2cc84282b48e7ed8e90243ba62a8b50243",
+      "generated_for": "positivity-resonance-marriage-micro-moments",
+      "provider": "Adobe Firefly",
+      "generation_reference": "https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:cc81a540-02b2-481e-b713-82e4717bd962",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/ee/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "commercial use of Firefly-generated outputs under Adobe Firefly terms; editorial source-generated artificial persons"
+    },
+    {
+      "path": "public/images/blog/positivity-owner-scene-03-20261110.jpg",
+      "sha256": "3e4c972c9352c5c55afcf846c8f48358c351664f3cd2d51e1be73f7842b40626",
+      "generated_for": "positivity-resonance-marriage-micro-moments",
+      "provider": "Adobe Firefly",
+      "generation_reference": "https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:0b6e2f6d-cc4e-44b6-a355-00fb0e80ca61",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/ee/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "commercial use of Firefly-generated outputs under Adobe Firefly terms; editorial source-generated artificial persons"
+    }
+  ]
+}

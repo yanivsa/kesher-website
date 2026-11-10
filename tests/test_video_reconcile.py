@@ -47,6 +47,92 @@ def technically_verified(item: dict, status: str = "approved") -> None:
 
 
 class VideoReconcileTests(unittest.TestCase):
+    def test_public_overview_adoption_binds_existing_id_without_upload(self) -> None:
+        source = {
+            "slug": "today", "content_sha256": "a" * 64,
+            "canonical_url": "https://kesher.saharoni.com/blog/today",
+        }
+        item = {
+            "id": "long-1", "type": "video_overview", "source": source,
+            "status": "uploading", "technical_verified": True, "uploaded": False,
+            "youtube_metadata": {"title": "הסרטון שלנו", "description": "תיאור בעברית"},
+        }
+        pipeline.save_state({"version": 1, "items": [item]})
+        video_id = "VPUSEiBk2es"
+        remote = {"items": [{
+            "id": video_id, "snippet": {
+                "channelId": pipeline.YOUTUBE_CHANNEL_ID,
+                "title": item["youtube_metadata"]["title"],
+                "description": item["youtube_metadata"]["description"],
+            },
+            "status": {"privacyStatus": "public"},
+            "processingDetails": {"processingStatus": "succeeded"},
+        }]}
+        proof = {"channel_id": pipeline.YOUTUBE_CHANNEL_ID, "privacy_status": "public",
+                 "processing_status": "succeeded"}
+        with (
+            mock.patch.object(reconcile, "current_source_snapshot", return_value=source),
+            mock.patch.object(pipeline, "youtube_access_token", return_value="test-token"),
+            mock.patch.object(pipeline, "verify_authenticated_channel"),
+            mock.patch.object(pipeline, "youtube_get", return_value=remote),
+            mock.patch.object(pipeline, "verify_public_upload", return_value=proof) as verify,
+        ):
+            self.assertEqual(
+                reconcile.adopt_verified_public_overview_id("today", "a" * 64, "long-1", video_id), 0
+            )
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["youtube_id"], video_id)
+        self.assertTrue(saved["uploaded"])
+        self.assertEqual(saved["status"], "uploaded")
+        verify.assert_called_once()
+        self.assertIn("adopt-public", (Path(__file__).resolve().parents[1] / ".github/workflows/kesher-daily-video.yml").read_text())
+
+    def test_public_overview_adoption_preserves_id_but_not_public_status_on_tag_drift(self) -> None:
+        source = {"slug": "today", "content_sha256": "b" * 64}
+        item = {
+            "id": "long-2", "type": "video_overview", "source": source,
+            "status": "uploading", "technical_verified": True, "uploaded": False,
+            "youtube_metadata": {"title": "כותרת", "description": "תיאור"},
+        }
+        pipeline.save_state({"version": 1, "items": [item]})
+        video_id = "VPUSEiBk2es"
+        remote = {"items": [{"id": video_id, "snippet": {
+            "channelId": pipeline.YOUTUBE_CHANNEL_ID, "title": "כותרת", "description": "תיאור",
+        }, "status": {"privacyStatus": "public"},
+            "processingDetails": {"processingStatus": "succeeded"}}]}
+        with (
+            mock.patch.object(reconcile, "current_source_snapshot", return_value=source),
+            mock.patch.object(pipeline, "youtube_access_token", return_value="test-token"),
+            mock.patch.object(pipeline, "verify_authenticated_channel"),
+            mock.patch.object(pipeline, "youtube_get", return_value=remote),
+            mock.patch.object(pipeline, "verify_public_upload",
+                              side_effect=pipeline.PipelineError("PUBLIC_METADATA_INVALID: remote tags differ")),
+        ):
+            with self.assertRaisesRegex(pipeline.PipelineError, "remote tags differ"):
+                reconcile.adopt_verified_public_overview_id("today", "b" * 64, "long-2", video_id)
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["youtube_id"], video_id)
+        self.assertFalse(saved["uploaded"])
+        self.assertEqual(saved["status"], "uploading")
+
+    def test_public_overview_adoption_rejects_wrong_source_before_remote_lookup(self) -> None:
+        with (
+            mock.patch.object(reconcile, "current_source_snapshot",
+                              return_value={"content_sha256": "a" * 64}),
+            mock.patch.object(pipeline, "youtube_access_token") as token,
+        ):
+            with self.assertRaisesRegex(pipeline.PipelineError, "SOURCE_CHANGED"):
+                reconcile.adopt_verified_public_overview_id(
+                    "today", "b" * 64, "long-1", "VPUSEiBk2es"
+                )
+            token.assert_not_called()
+
+    def test_public_adoption_restores_lightweight_state_without_heavy_media(self) -> None:
+        workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/kesher-daily-video.yml").read_text(encoding="utf-8")
+        self.assertIn('if [ "${RESTORE_OPERATION:-}" = "adopt-public" ]; then', workflow)
+        self.assertIn('Adopt-public: authoritative lightweight state restored; no media hydration needed.', workflow)
+        self.assertLess(workflow.index('if [ "${RESTORE_OPERATION:-}" = "adopt-public" ]; then'), workflow.index("restore_args=(--requires-durable-media-restore)"))
+
     def test_video_workflow_declares_video_overview_media_mode(self) -> None:
         workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/kesher-daily-video.yml").read_text(encoding="utf-8")
         self.assertIn("KESHER_MEDIA_MODE: video_overview", workflow)

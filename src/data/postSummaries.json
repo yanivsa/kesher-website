@@ -1,12 +1,39 @@
 [
   {
-    "id": "child-not-playing-kindergarten",
-    "title": "הילד לא משחק בגן ויושב בצד: לתת זמן או להתערב?",
-    "date": "2026-11-06",
+    "id": "self-distancing-couple-arguments",
+    "title": "איך להירגע באמצע ריב זוגי? שינוי קטן בדיבור הפנימי שיכול לעזור",
+    "date": "2026-11-09",
+    "category": "ייעוץ זוגי",
+    "subcategory": "תקשורת ופתרון קונפליקטים",
+    "excerpt": "איך להירגע בזמן ריב זוגי לפני שעונים בכעס? הכירו תרגיל פשוט של דיבור פנימי בשם הפרטי, עם דוגמאות, גבולות השיטה וארבעה צעדים מעשיים.",
+    "image": "/images/generated/blog/self-distancing-couple-arguments-hero.jpg"
+  },
+  {
+    "id": "vantage-sensitivity-sensitive-gifted-children",
+    "title": "הילד מרגיש הכול בעוצמה? רגישות יתרון והכוח של סביבה תומכת",
+    "date": "2026-11-09",
     "category": "הדרכת הורים",
-    "subcategory": "הדרכת הורים",
-    "excerpt": "כשילד יושב בצד בגן ולא מצטרף למשחק, האינסטינקט ההורי הוא לדאוג או להתערב. האם זו אסטרטגיית הסתגלות, ביישנות או קושי חברתי מתמשך? מתי נכון לתת לו זמן, אילו שאלות לשאול את הצוות החינוכי, ומתי כדאי לשקול לפנות להדרכה מקצועית.",
-    "image": "/images/generated/blog/child-not-playing-kindergarten.jpg"
+    "subcategory": "ילדים רגישים ומחוננים",
+    "excerpt": "רגישות לרעש, תגיות והצפה רגשית אינה בהכרח חולשה. מה תיאוריית רגישות היתרון של מייקל פלואס באמת מצאה, ואיך הורים יכולים לסייע?",
+    "image": "/images/blog/vantage-sensitivity-parenting-hero.jpg"
+  },
+  {
+    "id": "stress-crossover-after-work",
+    "title": "חזרתם מהעבודה וכל דבר קטן הופך לריב? כך סטרס עובר בין בני זוג",
+    "date": "2026-11-08",
+    "category": "ייעוץ זוגי",
+    "subcategory": "תקשורת ופתרון קונפליקטים",
+    "excerpt": "גם כשהיום במשרד נגמר, העומס לא תמיד נעלם. מה מחקרי הקורטיזול בזוגות באמת מצאו, ואיך בונים מעבר רגוע והוגן מהעבודה לבית?",
+    "image": "/images/blog/stress-crossover-after-work-hero.png"
+  },
+  {
+    "id": "relationship-memory-reconstruction",
+    "title": "האם באמת תמיד היה רע? כך משבר בהווה משנה את זיכרונות הזוגיות",
+    "date": "2026-11-06",
+    "category": "ייעוץ זוגי",
+    "subcategory": "זיכרון תקשורת ומשבר",
+    "excerpt": "כשהקשר כואב בהווה, גם הזיכרונות מתחילת הדרך עלולים להיצבע אחרת. מה מלמד המחקר על שחזור זיכרונות זוגיים, ואיך בודקים את הסיפור המשותף בלי למחוק כאב אמיתי?",
+    "image": "/images/generated/blog/relationship-memory-reconstruction-editorial-20261106.jpg"
   },
   {
     "id": "parental-hostile-attributions",
@@ -33,7 +60,7 @@
     "category": "הנחיית הורים",
     "subcategory": "גיל הרך",
     "excerpt": "מאבקי הבוקר מתארכים, הבכי בשער קורע לב, ואתם תוהים אם זו סתם תקופה או משהו עמוק יותר. ילד לא רוצה ללכת לגן מסיבות שונות, וכדי לעזור לו למצוא שוב את השקט, כדאי לשים לב לכמה נורות אזהרה.",
-    "image": "/images/generated/blog/child-does-not-want-kindergarten.png"
+    "image": "/images/generated/blog/child-does-not-want-kindergarten-photo.jpg"
   },
   {
     "id": "baby-cries-at-daycare",
@@ -42,7 +69,7 @@
     "category": "הדרכת הורים",
     "subcategory": "הגיל הרך",
     "excerpt": "הפרידה בבוקר מלווה בבכי קורע לב, ובמהלך היום אתם תוהים אם התינוק שלכם בוכה במעון יותר מהרגיל. האם זו הסתגלות טבעית, או נורת אזהרה שמצריכה בירור מול הצוות?",
-    "image": "/images/generated/blog/baby-cries-at-daycare.png"
+    "image": "/images/generated/blog/baby-cries-at-daycare-photo.jpg"
   },
   {
     "id": "we-language-relationships",

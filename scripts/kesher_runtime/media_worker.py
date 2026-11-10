@@ -29,6 +29,89 @@ class MediaRunResult:
     reason: str
 
 
+def require_owner_media_quality(item: dict, kind: str, *, approval_root: Path | None = None) -> None:
+    """Fail closed before FIRST upload unless OWNER reviewed these exact media bytes.
+
+    GitHub-reviewed approval JSON is an immutable media/source-bound receipt, not
+    an automatic inference from ffprobe success or a generated ASR transcript.
+    No external reviewer, paid service, new workflow or upload is invoked.
+    Existing YouTube videos are reconciled by the caller before reaching here.
+    """
+    import json
+    import re
+
+    def reject(code: str) -> None:
+        raise StateInvalid(code)
+
+    if kind not in {"overview", "short"} or item.get("technical_verified") is not True:
+        reject("EDITORIAL_QA_MEDIA_NOT_VALIDATED")
+    source = item.get("source") or {}
+    slug = str(source.get("slug") or "")
+    source_sha = str(source.get("content_sha256") or "")
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug) or not re.fullmatch(r"[a-f0-9]{64}", source_sha):
+        reject("EDITORIAL_QA_SOURCE_IDENTITY_INVALID")
+    if item.get("type") != ("video_overview" if kind == "overview" else "article_short"):
+        reject("EDITORIAL_QA_MEDIA_KIND_MISMATCH")
+    root = approval_root if approval_root is not None else Path(__file__).resolve().parents[2] / "research" / "owner-media-quality"
+    approval_path = root / f"{slug}--{kind}.json"
+    if approval_path.is_symlink() or not approval_path.is_file():
+        reject("EDITORIAL_QA_PENDING: no reviewed OWNER approval for exact media")
+    if approval_path.stat().st_size > 16_384:
+        reject("EDITORIAL_QA_INVALID_APPROVAL_SIZE")
+    try:
+        approval = json.loads(approval_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        reject("EDITORIAL_QA_INVALID_APPROVAL")
+    if not isinstance(approval, dict) or approval.get("schema_version") != 1:
+        reject("EDITORIAL_QA_INVALID_APPROVAL")
+    exact = {
+        "source_slug": slug,
+        "content_sha256": source_sha,
+        "media_kind": kind,
+        "media_item_id": item.get("id"),
+    }
+    exact.update({key: item.get(key) for key in (
+        "final_sha256", "manifest_sha256", "transcript_sha256",
+        "visual_review_sha256", "source_file_sha256",
+    )})
+    for key, expected in exact.items():
+        if approval.get(key) != expected or not isinstance(expected, str) or not expected:
+            reject("EDITORIAL_QA_EXACT_IDENTITY_MISMATCH")
+    for key in ("final_sha256", "manifest_sha256", "transcript_sha256",
+                "visual_review_sha256", "source_file_sha256"):
+        if not re.fullmatch(r"[a-f0-9]{64}", str(exact[key])):
+            reject("EDITORIAL_QA_INVALID_EVIDENCE_HASH")
+    frames = item.get("frame_sha256")
+    if (not isinstance(frames, dict) or len(frames) != 8
+            or any(not re.fullmatch(r"[a-f0-9]{64}", str(v)) for v in frames.values())
+            or approval.get("frame_sha256") != frames):
+        reject("EDITORIAL_QA_FRAME_HASH_MISMATCH")
+    if approval.get("reviewed_by") != "OWNER" or not str(approval.get("reviewed_at") or ""):
+        reject("EDITORIAL_QA_OWNER_ATTESTATION_MISSING")
+    checks = approval.get("checks") or {}
+    if any(checks.get(key) != "approved" for key in ("visual", "semantic", "audio", "metadata", "licensing")):
+        reject("EDITORIAL_QA_HOLD: required review did not pass")
+    methods = approval.get("methods") or {}
+    if (methods.get("visual") != "full_motion_and_frames"
+            or methods.get("semantic") != "research_vs_exact_transcript"
+            or methods.get("audio") not in {"direct_playback", "authorized_audio_tool_with_script_comparison"}):
+        reject("EDITORIAL_QA_METHOD_NOT_VERIFIED")
+    notes = approval.get("review_notes") or {}
+    if any(len(re.findall(r"[\u0590-\u05ff]", str(notes.get(key) or ""))) < 12
+           for key in ("visual", "semantic", "audio", "licensing")):
+        reject("EDITORIAL_QA_NOTES_MISSING")
+    rights = approval.get("rights") or {}
+    if rights.get("commercial_use_permitted") is not True:
+        reject("EDITORIAL_QA_LICENSE_HOLD")
+    if any(not isinstance(rights.get(key), str)
+           or not rights[key].startswith("https://")
+           or len(rights[key]) > 2048
+           for key in ("voice_license_url", "visual_license_url")):
+        reject("EDITORIAL_QA_LICENSE_EVIDENCE_MISSING")
+
+
+
+
 def _file(root: Path, name: str | None) -> Path | None:
     if not name:
         return None
@@ -162,6 +245,9 @@ def _publish(state, core, guard) -> MediaRunResult:
         raise StateInvalid('SIGNATURE_PROVENANCE_INVALID: current bytes must preserve source duration and audio')
     if target.kind == 'short' and not guard._short_origin_verified(item):
         raise StateInvalid('SHORT_PROVENANCE_INVALID: restored output requires independent origin and signature proof')
+    # Editorial quality and licensing are independent of the technical/byte gates.
+    # Never upgrade pending/rejected review evidence to APPROVED on a green render.
+    require_owner_media_quality(item, target.kind)
     item['status'] = 'uploading' if item.get('upload_session_uri') else 'approved'
     state.persist()
     core.upload_only(slug=target.source.slug, item_id=item['id'], state=state)

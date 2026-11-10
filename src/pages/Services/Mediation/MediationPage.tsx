@@ -51,8 +51,8 @@ const MediationPage: React.FC = () => {
     <div className={styles.page}>
       <MetaTags
         canonical={`${SITE_CONFIG.url}/services/mediation`}
-        title="גישור גירושין ומשפחתי באשדוד | מגשרת מוסמכת"
-        description="גישור גירושין וגישור משפחתי באשדוד ובאונליין: שיחה מסודרת עם מגשרת ניטרלית לבניית הסכמות מעשיות סביב הורות, כסף, אחריות והמשך הדרך."
+        title="גישור זוגי, משפחתי וגירושין באשדוד | שירה סהרוני"
+        description="גישור זוגי ומשפחתי באשדוד ובאונליין: בירור מחלוקות והגעה להסכמות בנושאי הורות ואחריות. באתר גם הסבר על ההבדל בין גישור לייעוץ זוגי."
         image="/images/generated/services/mediation-room.jpg"
       />
       <SchemaOrg data={schemaData} />
@@ -61,9 +61,9 @@ const MediationPage: React.FC = () => {
         <div className={`container ${styles.heroGrid}`}>
           <div>
             <span className={styles.eyebrow}><FiMessageCircle aria-hidden="true" /> גישור בגובה העיניים</span>
-            <h1>גישור משפחתי וגירושין באשדוד ובאונליין</h1>
+            <h1>גישור זוגי, משפחתי וגירושין באשדוד ובאונליין</h1>
             <p className={styles.lead}>
-              גישור משפחתי וגישור גירושין הם תהליכים שבהם צדדים שמתקשים להגיע להסכמה מנהלים שיחה מסודרת בנוכחות מגשרת ניטרלית. המגשרת מסייעת למפות את הנושאים, לשמוע את הצרכים של כל צד ולבנות הסכמות מעשיות — בלי להכריע במקומם.
+              גישור משפחתי וגישור גירושין הם תהליכים שבהם צדדים שמתקשים להגיע להסכמה מנהלים שיחה מסודרת בנוכחות מגשרת ניטרלית. המגשרת מסייעת למפות את הנושאים, לשמוע את הצרכים של כל צד ולבנות הסכמות מעשיות — בלי להכריע במקומם. אם אתם מתלבטים בין מסגרות, קראו גם <Link to="/faq/couples-mediation-vs-couples-counseling">מה ההבדל בין גישור זוגי לייעוץ זוגי?</Link>
             </p>
             <div className={styles.heroActions}>
               <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>קביעת פגישת ייעוץ</Link>

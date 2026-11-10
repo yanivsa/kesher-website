@@ -17,6 +17,10 @@ on:
           - release
           - derive
           - historical
+          - owner_preview
+          - owner_publish
+          - owner_source_probe
+          - owner_reviewed_publish
       rebuild_item_id:
         description: Exact technically rejected item to rebuild with Remotion
         required: false
@@ -151,8 +155,103 @@ jobs:
             tests.test_kesher_free_stock_broll \
             -v
 
+      - name: OWNER render locally with MIT BlueTTS Hebrew model and CC BY licensed reference voice
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_preview' }}
+        env:
+          OWNER_SLUG: ${{ inputs.derive_slug }}
+          OWNER_SHA: ${{ inputs.derive_content_sha256 }}
+        run: |
+          set -euo pipefail
+          test "$OWNER_SLUG" = "vantage-sensitivity-sensitive-gifted-children"
+          test "$OWNER_SHA" = "e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea"
+          python -m pip install 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' \
+            Pillow==11.3.0 requests==2.32.5 google-auth==2.40.3 \
+            google-api-python-client==2.181.0
+          python scripts/kesher_owner_vantage_short.py preview --source-sha "$OWNER_SHA"
+
+      - name: Preserve independently reviewable OWNER source-locked preview
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_preview' && success() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-owner-vantage-short-preview-bluetts-e264d2962b
+          path: |
+            owner-vantage-short-output/short.mp4
+            owner-vantage-short-output/review-voice.wav
+            owner-vantage-short-output/visual-contact-sheet.jpg
+            owner-vantage-short-output/manifest.json
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+          overwrite: false
+
+      - name: Restore previously reviewed exact owner preview
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_publish' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OWNER_SLUG: ${{ inputs.derive_slug }}
+          OWNER_SHA: ${{ inputs.derive_content_sha256 }}
+        run: |
+          set -euo pipefail
+          test "$OWNER_SLUG" = "vantage-sensitivity-sensitive-gifted-children"
+          test "$OWNER_SHA" = "e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea"
+          mkdir -p owner-vantage-short-output
+          artifact_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-owner-vantage-short-preview-bluetts-e264d2962b&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[0].id')"
+          test -n "$artifact_id" && test "$artifact_id" != "null"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$RUNNER_TEMP/owner-review.zip"
+          unzip -oq "$RUNNER_TEMP/owner-review.zip" -d owner-vantage-short-output
+          test -s owner-vantage-short-output/short.mp4
+          test -s owner-vantage-short-output/review-voice.wav
+          test -s owner-vantage-short-output/visual-contact-sheet.jpg
+          test -s owner-vantage-short-output/manifest.json
+
+      - name: Enforce exact independently approved QA then GitHub-native YouTube OAuth publication
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_publish' }}
+        env:
+          OWNER_SHA: ${{ inputs.derive_content_sha256 }}
+          GITHUB_TOKEN: ${{ github.token }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          set -euo pipefail
+          python -m pip install requests==2.32.5 google-auth==2.40.3 google-api-python-client==2.181.0 Pillow==11.3.0
+          python scripts/kesher_owner_vantage_short.py publish --source-sha "$OWNER_SHA"
+
+      - name: OWNER read-only authenticated YouTube source/dedup probe — no upload
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_source_probe' }}
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          OWNER_SLUG: ${{ inputs.derive_slug }}
+          OWNER_SHA: ${{ inputs.derive_content_sha256 }}
+        run: |
+          set -euo pipefail
+          test "$OWNER_SLUG" = "positivity-resonance-marriage-micro-moments"
+          test "$OWNER_SHA" = "6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f"
+          python -m pip install requests==2.32.5 google-auth==2.40.3 google-api-python-client==2.181.0
+          python -m unittest tests.test_kesher_owner_positivity_youtube_probe -v
+          python -m scripts.kesher_owner_positivity_youtube_probe \
+            --slug "$OWNER_SLUG" --source-sha "$OWNER_SHA"
+
+      - name: OWNER publish exact independently reviewed artifact, no generation
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_reviewed_publish' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          OWNER_SLUG: ${{ inputs.derive_slug }}
+          OWNER_SHA: ${{ inputs.derive_content_sha256 }}
+        run: |
+          set -euo pipefail
+          python -m pip install requests==2.32.5 google-auth==2.40.3 google-api-python-client==2.181.0 Pillow==11.3.0
+          python -m unittest tests.test_kesher_owner_media_quality -v
+          python -m scripts.kesher_owner_reviewed_publish --slug "$OWNER_SLUG" --source-sha "$OWNER_SHA"
+
       - name: Restore newest valid Short V4 durable state
-        if: ${{ github.event_name != 'pull_request' && inputs.operation != 'preflight' }}
+        if: ${{ github.event_name != 'pull_request' && inputs.operation != 'preflight' && inputs.operation != 'owner_preview' && inputs.operation != 'owner_publish' && inputs.operation != 'owner_source_probe' && inputs.operation != 'owner_reviewed_publish' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -458,6 +557,83 @@ jobs:
           chmod 600 "$sealed_tmp"
           mv "$sealed_tmp" "$sealed_path"
 
+      # Owner-only review bundle: immutable source, no credentials, no upload.
+      - name: Prepare exact-source Short audio and visual review bundle
+        id: prepare_owner_review
+        if: ${{ always() && github.event_name != 'pull_request' && inputs.derive_slug != '' && inputs.derive_content_sha256 != '' && hashFiles('.kesher-short-v4-state/state.json') != '' }}
+        env:
+          REVIEW_SLUG: ${{ inputs.derive_slug }}
+          REVIEW_SHA: ${{ inputs.derive_content_sha256 }}
+          REVIEW_DIR: ${{ runner.temp }}/kesher-owner-short-review
+        run: |
+          python - <<'PY'
+          import json, os, shutil, subprocess
+          from pathlib import Path
+
+          root = Path(os.environ["KESHER_STATE_DIR"])
+          state = json.loads((root / "state.json").read_text(encoding="utf-8"))
+          slug, sha = os.environ["REVIEW_SLUG"], os.environ["REVIEW_SHA"]
+          matches = [item for item in state.get("items", []) if
+                     item.get("type") == "article_short"
+                     and (item.get("source") or {}).get("slug") == slug
+                     and (item.get("source") or {}).get("content_sha256") == sha]
+          if len(matches) != 1:
+              print("OWNER_REVIEW_UNAVAILABLE: no unique exact source item")
+              raise SystemExit(0)
+          item = matches[0]
+          if item.get("technical_verified") is not True or item.get("status") not in {"pending_review", "approved"}:
+              print("OWNER_REVIEW_UNAVAILABLE: exact source has no technically verified, unuploaded media")
+              raise SystemExit(0)
+          names = ("final_mp4", "visual_review_path", "transcript_path", "source_path")
+          paths = {}
+          for name in names:
+              value = item.get(name)
+              if not isinstance(value, str) or not value or Path(value).name != value:
+                  print(f"OWNER_REVIEW_UNAVAILABLE: invalid {name}")
+                  raise SystemExit(0)
+              candidate = root / value
+              if not candidate.is_file():
+                  print(f"OWNER_REVIEW_UNAVAILABLE: missing {name}")
+                  raise SystemExit(0)
+              paths[name] = candidate
+          output = Path(os.environ["REVIEW_DIR"])
+          output.mkdir(parents=True, exist_ok=True)
+          for name in ("visual_review_path", "transcript_path", "source_path"):
+              shutil.copy2(paths[name], output / paths[name].name)
+          subprocess.run([
+              "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+              "-i", str(paths["final_mp4"]), "-map", "0:a:0", "-vn",
+              "-c:a", "aac", "-b:a", "96k", str(output / "original-voice-review.m4a")
+          ], check=True, timeout=120)
+          evidence = {
+              "source_slug": slug,
+              "content_sha256": sha,
+              "short_item_id": item["id"],
+              "short_item_status_at_export": item["status"],
+              "technical_verified": item["technical_verified"],
+              "media": item.get("media"),
+              "original_voice_review": "original-voice-review.m4a",
+              "subjective_voice_qa": "pending",
+              "visual_semantic_qa": "pending",
+              "not_a_publication_record": True,
+          }
+          (output / "review-evidence.json").write_text(
+              json.dumps(evidence, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write("ready=true\n")
+          print(f"OWNER_REVIEW_READY item={item['id']} source_sha={sha[:12]}")
+          PY
+
+      - name: Persist exact-source Short review evidence privately
+        if: ${{ always() && steps.prepare_owner_review.outputs.ready == 'true' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-short-v4-owner-review
+          path: ${{ runner.temp }}/kesher-owner-short-review
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 6
+
       - name: Persist lightweight Short controller state
         if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-short-v4-state/state.json') != '' }}
         id: persist_controller_state
@@ -526,7 +702,7 @@ jobs:
           PY
 
       - name: Notify canonical Kesher Content Controller on completion
-        if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' }}
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' && inputs.operation != 'owner_source_probe' && inputs.operation != 'owner_reviewed_publish' }}
         continue-on-error: true
         timeout-minutes: 2
         env:

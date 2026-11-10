@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "source_slug": "baby-cries-at-daycare",
+  "source_content_sha256": "a5235343e96db545406e691c4d03c3796b2a61deab3a81875119999cf102667b",
+  "generated_at": "2026-11-10",
+  "provider": "Adobe Firefly",
+  "request_id": "42f3ccbe-5eb4-4a79-b0ec-aff7277369e4",
+  "original_sha256": "26d3356d6ad1c360ef1eb94e765b34751863a05b15c49f4a37a871a830032b79",
+  "original_dimensions": [
+    2016,
+    1152
+  ],
+  "final_path": "public/images/generated/blog/baby-cries-at-daycare-photo.jpg",
+  "final_sha256": "43c578651220334c985d940c0c03662f2d0a9d99dbd96215815b4d222274d804",
+  "final_dimensions": [
+    1200,
+    675
+  ],
+  "transform": "center fit 16:9 from 2016x1152, Lanczos to 1200x675, JPEG quality 90 progressive optimized",
+  "commercial_use_permitted": true,
+  "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+  "review": "OWNER inspected actual old flat vector, original Firefly photograph and final crop. Calm daycare caregiver securely holds infant with soft toy; parent with bag near doorway in background; realistic skin and anatomy, natural light, no text/logos/blank padding, no real child identity. Illustrates soothing after separation, not extreme distress.",
+  "previous_hero_path": "/images/generated/blog/baby-cries-at-daycare.png",
+  "previous_hero_sha256": "ef423f9bbb060f201b4b72768d1c7f5b23ab6f7f909703db998ca091021ae5d0",
+  "article_content_changed": false,
+  "post_summary_generation": "Ran normal generate-post-summaries.cjs on full exact baseline and edited catalog (160 entries each); only target image differs. Committed summaries contain 156 entries; preserve unrelated existing staleness and apply only exact target generated image."
+}

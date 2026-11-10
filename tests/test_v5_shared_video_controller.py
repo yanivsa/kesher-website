@@ -475,5 +475,8 @@ class V5SharedVideoControllerTests(unittest.TestCase):
         self.assertEqual(gh.dispatches, [])
 
 
+# Run the new fail-closed owner handoff suite in the existing mandatory CI cohort.
+from tests.test_owner_terminal_short_handoff_20261108 import OwnerTerminalShortHandoffTests
+
 if __name__ == "__main__":
     unittest.main()
