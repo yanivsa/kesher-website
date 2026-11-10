@@ -369,3 +369,86 @@ jobs:
           if-no-files-found: error
           compression-level: 0
           retention-days: 60
+
+  owner-relationship-7500-private-preview:
+    # Exact same-repo OWNER branch, read-only private evidence; no upload credentials.
+    permissions:
+      contents: read
+      actions: read
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/relationship-7500-media-20261110' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout exact OWNER candidate with no credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Set up Python for licensed local speech
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up pinned Node for repository FFmpeg bundles
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned owner-direct speech and media tools
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          printf '%s\n' "$ffmpeg_dir" "$ffprobe_dir" >> "$GITHUB_PATH"
+          export PATH="$ffmpeg_dir:$ffprobe_dir:$PATH"
+          command -v ffmpeg
+          command -v ffprobe
+          python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' 'faster-whisper==1.2.1' 'av<19'
+      - name: Exact source preflight and targeted private Short safety repair
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HF_HOME: ${{ runner.temp }}/owner-7500-hf
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_owner_7500_preview preflight --source-sha 797750526c533f41e661123dc86339da3f0a5721d5eff820d70937ee7f6d5bdd
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13765047330/zip > "$RUNNER_TEMP/owner-7500-reviewed-input.zip"
+          python -m scripts.kesher_owner_7500_preview repair --source-sha 797750526c533f41e661123dc86339da3f0a5721d5eff820d70937ee7f6d5bdd --archive "$RUNNER_TEMP/owner-7500-reviewed-input.zip"
+      - name: Transcribe repaired final Short audio offline; preserve Overview evidence
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-7500-asr-hf
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_owner_7500_preview asr-short --source-sha 797750526c533f41e661123dc86339da3f0a5721d5eff820d70937ee7f6d5bdd
+      - name: Archive reviewable PRIVATE outputs only
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-7500-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-7500-media-output/overview.mp4
+            owner-7500-media-output/short.mp4
+            owner-7500-media-output/*-review-voice.wav
+            owner-7500-media-output/*-manifest.json
+            owner-7500-media-output/*-visual-contact-sheet.jpg
+            owner-7500-media-output/*-frame-*.jpg
+            owner-7500-media-output/*-asr.txt
+            owner-7500-media-output/asr-review.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 60
+      - name: Preserve failed private render evidence for targeted recovery (never publish)
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-7500-failed-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-7500-media-output/overview.mp4
+            owner-7500-media-output/short.mp4
+            owner-7500-media-output/*-review-voice.wav
+            owner-7500-media-output/*-manifest.json
+            owner-7500-media-output/*-visual-contact-sheet.jpg
+            owner-7500-media-output/*-frame-*.jpg
+            owner-7500-media-output/*-asr.txt
+            owner-7500-media-output/asr-review.json
+          if-no-files-found: ignore
+          compression-level: 0
+          retention-days: 14

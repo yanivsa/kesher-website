@@ -3245,7 +3245,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "fceb99524525249753c04f7b662fb77a8bbaad89308b3a4db52b1ca6753bf111",
+      "definition_sha256": "bf90e2a3d490c365490c1aaaeb6095c42cc0712ed8f86c58231fdd20048d0c62",
       "resources": [],
       "review": {
         "call_chain": {
@@ -3259,6 +3259,8 @@
           "research/kesher-gifted-asynchrony-20261109.md": "3e8d6d2a4e5326852feaf225459a9c95b8ed8f8d1d70333918b2b5d652d08de1",
           "research/kesher-productive-failure-20261110.md": "1d81bbab0f9afba03b85e29fcf999d9b5e7156e34d23394e1eb6a6c46e83c50e",
           "research/kesher-productive-failure-photo-provenance.json": "cb3a6897e0bc1c9575bca8eb97b02305378cb2986df173e4f76d04241f3da3d0",
+          "research/kesher-relationship-code-7500-20261110.md": "a777ac07c1133284457b586b44b9e9f3feb262cb20e1b03953acfc3dcce58085",
+          "research/kesher-relationship-code-7500-photo-provenance.json": "515d0365773398df5b680f95ddbe0bcad90182a4e6f4bb76dd581ebf41c0cfb3",
           "research/kesher-vantage-overview-full-private-20261109.json": "297a5ad7fd65c4f5f855fedcfd615c824c2144453667559381c2330dc68f8727",
           "research/kesher-vantage-photographic-private-preview.json": "a559f56773bab09354175293d56a8cc357cd3fdb4005814e232361e7eb5458d2",
           "research/kesher-vantage-sensitivity-20261109.md": "e39ac6d61b8e8584797a0039b9264e1929fde3952f5c3a8237c8110d3de75cf7",
@@ -3286,6 +3288,7 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
+          "scripts/kesher_owner_7500_preview.py": "542da818848234c3fcd3f90ea950e621bbd599ef432d02542fe38c5d0a8d0984",
           "scripts/kesher_owner_asynchrony_preview.py": "277b4f1e4f44e4cef421d59864e46cda1784dd20cabf815f6594d27fe3be61a2",
           "scripts/kesher_owner_positivity_asr.py": "743a4425f026c9c6ed153c7479c01ddd634a733a6434e62440d8a2ae520c0c1c",
           "scripts/kesher_owner_positivity_preview.py": "baf564c273d1b4408f39dce5241e415c40501ffcd61ab97d59c02a057366c8bc",
