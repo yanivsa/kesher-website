@@ -13,6 +13,7 @@ const routes = [
   '/'
 ];
 const port = 4179;
+const previewOrigins = [`http://127.0.0.1:${port}`, `http://localhost:${port}`];
 let viteExitCode = null;
 const vite = spawn(process.execPath, [
   path.join(ROOT, 'node_modules/vite/bin/vite.js'),
@@ -47,11 +48,20 @@ const stopVite = () => {
 
 const hasNonAscii = (value) => /[^\x00-\x7F]/.test(value);
 
+const normalizePreviewOrigins = (html) => previewOrigins.reduce(
+  (normalized, origin) => normalized.split(origin).join(''),
+  html,
+);
+
 const clientSnapshot = async (page) => {
   await page.evaluate(() => {
     document.getElementById('root')?.setAttribute('data-kesher-render', 'client-snapshot');
   });
-  return page.content();
+  // Newer Vite builds may materialize runtime preload URLs against the preview
+  // origin. That origin dies when prerender completes, so persisting it makes
+  // the later preview/public HTML request dead localhost resources. Persist
+  // root-relative asset URLs instead; public canonical URLs are unaffected.
+  return normalizePreviewOrigins(await page.content());
 };
 
 const writeRoute = (route, html) => {

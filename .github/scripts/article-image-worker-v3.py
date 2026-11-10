@@ -28,7 +28,7 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from scripts.kesher_article_contract import (
     IMAGE_EVIDENCE_FIELDS, IMAGE_PROVIDER_RULES, article_sha256, exact_field,
-    image_proof_errors, replace_image_evidence,
+    image_proof_errors, image_visual_identity, replace_image_evidence,
 )
 
 CORE_PATH = Path(__file__).with_name("article-image-worker.py")
@@ -357,6 +357,83 @@ def commit_files(
     return str(new_commit["sha"])
 
 
+def restore_prior_trusted_image(repo, pr, post, head_posts, base_posts, token) -> bool:
+    """Recover one exact proven artifact without authorizing replacement generation."""
+    body = str(pr.get("body") or "")
+    prior = str(exact_field(body, "Image Evidence Head") or "").strip()
+    current_head = str(pr["head"]["sha"])
+    if not re.fullmatch(r"[a-f0-9]{40}", prior) or prior == current_head:
+        return False
+    historical_posts = core.posts_at(repo, prior, token)
+    matches = [row for row in historical_posts if isinstance(row, dict) and row.get("id") == post.get("id")]
+    if len(matches) != 1:
+        return False
+    historical = matches[0]
+    if image_visual_identity(post) != image_visual_identity(historical):
+        return False
+    historical_pr = {**pr, "head": {**pr["head"], "sha": prior}}
+    if not trusted_image_present(repo, historical_pr, historical, token):
+        return False
+    image_path = "public" + historical["image"]
+    data = core.decode_content(core.github_content(repo, image_path, prior, token))
+    if image_proof_errors(historical, body, prior, data):
+        return False
+    # Preserve existing publication uniqueness barriers, including decoded pixels.
+    for published in base_posts:
+        image = str(published.get("image") or "")
+        if not image:
+            continue
+        if image == historical["image"]:
+            return False
+        published_data = core.decode_content(core.github_content(repo, "public" + image, pr["base"]["sha"], token))
+        from scripts.kesher_article_contract import image_pixel_sha256
+        if hashlib.sha256(published_data).digest() == hashlib.sha256(data).digest() or image_pixel_sha256(published_data) == image_pixel_sha256(data):
+            return False
+
+    image_fields = (
+        "image", "imageAlt", "imageProvider", "imageSourceUrl",
+        "imageIsFallback", "imageCredit", "imageCreditUrl",
+    )
+    current_has_image = bool(str(post.get("image") or "").strip() or str(post.get("imageAlt") or "").strip())
+    if current_has_image:
+        if not str(post.get("image") or "").strip() or not str(post.get("imageAlt") or "").strip():
+            return False
+        if any(post.get(field) != historical.get(field) for field in image_fields):
+            return False
+        evidence = {label: exact_field(body, label) or "" for label in IMAGE_EVIDENCE_FIELDS}
+        evidence["Image Article SHA-256"] = article_sha256(post)
+        evidence["Image Evidence Head"] = current_head
+        refreshed_body = replace_image_evidence(body, evidence)
+        refreshed_pr = {**pr, "body": refreshed_body}
+        if not trusted_image_present(repo, refreshed_pr, post, token):
+            return False
+        core.patch_pr_body(repo, int(pr["number"]), refreshed_body, token)
+        # The workflow treats this marker as a successful image-stage mutation and
+        # dispatches fresh CI. No branch/file commit or provider generation occurred.
+        print(f"ARTICLE_IMAGE_COMMITTED id={post['id']} provider={evidence['Image Provider']} sha={current_head} recovery=evidence-refresh")
+        return True
+
+    restored_post = dict(post)
+    for field in image_fields:
+        if field in historical:
+            restored_post[field] = historical[field]
+        else:
+            restored_post.pop(field, None)
+    restored = [restored_post if row is post else row for row in head_posts]
+    files = {
+        image_path: (data, True),
+        "src/data/posts.json": ((json.dumps(restored, ensure_ascii=False, indent=2) + "\n").encode(), False),
+        "src/data/postSummaries.json": ((json.dumps(summaries(restored), ensure_ascii=False, indent=2) + "\n").encode(), False),
+    }
+    new_sha = commit_files(repo, pr, token, files, [])
+    evidence = {label: exact_field(body, label) or "" for label in IMAGE_EVIDENCE_FIELDS}
+    evidence["Image Article SHA-256"] = article_sha256(restored_post)
+    evidence["Image Evidence Head"] = new_sha
+    core.patch_pr_body(repo, int(pr["number"]), replace_image_evidence(body, evidence), token)
+    print(f"ARTICLE_IMAGE_COMMITTED id={post['id']} provider={evidence['Image Provider']} sha={new_sha} recovery=same-artifact")
+    return True
+
+
 def ensure_image(repo: str, pr: dict[str, Any], token: str) -> bool:
     if pr.get("state") != "open" or pr.get("draft"):
         return False
@@ -386,6 +463,12 @@ def ensure_image(repo: str, pr: dict[str, Any], token: str) -> bool:
         core.patch_pr_body(repo, int(pr["number"]), replace_image_evidence(pr.get("body") or "", evidence), token)
         print(f"ARTICLE_IMAGE_PRESENT id={post.get('id')} trusted=yes evidence_refreshed=yes")
         return False
+
+    if restore_prior_trusted_image(repo, pr, post, head_posts, base_posts, token):
+        return True
+
+    if os.environ.get("KESHER_IMAGE_RECOVERY_ONLY", "").lower() == "true":
+        raise RuntimeError("IMAGE_RECOVERY_PROOF_INVALID: replacement generation forbidden")
 
     candidate = choose_candidate(repo, post, pr["head"]["sha"], token)
     if candidate is None:
@@ -463,6 +546,10 @@ def main() -> int:
     repo, number = sys.argv[1], int(sys.argv[2])
     token = os.environ["GITHUB_TOKEN"]
     pr = core.request_json("GET", f"https://api.github.com/repos/{repo}/pulls/{number}", token)
+    if os.environ.get("KESHER_IMAGE_RECOVERY_ONLY", "").lower() == "true":
+        expected = os.environ.get("KESHER_IMAGE_EXPECTED_HEAD", "")
+        if not re.fullmatch(r"[a-f0-9]{40}", expected) or pr.get("head", {}).get("sha") != expected:
+            raise RuntimeError("IMAGE_RECOVERY_HEAD_CHANGED")
     ensure_image(repo, pr, token)
     return 0
 

@@ -11,6 +11,9 @@ except ImportError:
     from kesher_article_contract import forbidden_article_paths
 
 
+OWNED_METADATA_ENFORCEMENT_DATE = date(2026, 10, 20)
+
+
 class ArticleNormalizationError(RuntimeError):
     pass
 
@@ -47,6 +50,7 @@ def extract_target_article(
     slot: str,
     *,
     recent_posts: list[dict[str, Any]] | None = None,
+    source_slot: str | None = None,
 ) -> dict[str, Any]:
     """Extract exactly one new article for *slot* from an arbitrarily dirty head.
 
@@ -59,6 +63,16 @@ def extract_target_article(
         target_date = date.fromisoformat(slot)
     except ValueError as exc:
         raise ArticleNormalizationError(f"invalid publication slot: {slot}") from exc
+    source_date = target_date
+    if source_slot is not None:
+        try:
+            source_date = date.fromisoformat(source_slot)
+        except ValueError as exc:
+            raise ArticleNormalizationError(f"invalid source publication slot: {source_slot}") from exc
+        if source_date >= target_date:
+            raise ArticleNormalizationError(
+                f"source publication slot must precede target slot: {source_slot} -> {slot}"
+            )
 
     base_ids = {
         _post_id(post)
@@ -70,15 +84,21 @@ def extract_target_article(
         for post in head_posts
         if _post_id(post)
         and _post_id(post) not in base_ids
-        and _post_date(post) == target_date
+        and _post_date(post) == source_date
     ]
     if len(candidates) != 1:
         raise ArticleNormalizationError(
             f"expected exactly one new article for {slot}, found {len(candidates)}"
         )
     extracted = copy.deepcopy(candidates[0])
+    if source_slot is not None:
+        extracted["date"] = target_date.isoformat()
     if extracted.get("controllerManaged") is False:
         extracted["controllerManaged"] = True
+    if _post_date(extracted) >= OWNED_METADATA_ENFORCEMENT_DATE:
+        extracted["controllerManaged"] = True
+        if not str(extracted.get("slug") or "").strip():
+            extracted["slug"] = _post_id(extracted)
     if "subcategory" in extracted and extracted["subcategory"] is None:
         del extracted["subcategory"]
     return extracted

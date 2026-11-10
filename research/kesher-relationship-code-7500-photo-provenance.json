@@ -1,0 +1,84 @@
+{
+  "source_slug": "relationship-code-7500",
+  "content_sha256": "797750526c533f41e661123dc86339da3f0a5721d5eff820d70937ee7f6d5bdd",
+  "canonical_content_sha256": "a8a7c93632f826aa04c382bf3b3944ebb3da1ac386ef5e7970c6e91da5046d19",
+  "images": [
+    {
+      "path": "public/images/generated/blog/relationship-code-7500-photo.jpg",
+      "sha256": "427a30aff288371b53c5467069023610d033173e2ca3567c6b03df0ff4b98166",
+      "generated_for": "relationship-code-7500",
+      "provider": "Adobe Firefly",
+      "generation_reference": "d5e138df-d3ed-42d3-9acf-f51bb804d186",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "commercial use of Firefly-generated outputs under Adobe Firefly terms; original synthetic editorial subjects",
+      "scene": "couple after disagreement",
+      "dimensions": [
+        1200,
+        675
+      ]
+    },
+    {
+      "path": "public/images/blog/relationship-code-7500-repair-wide.jpg",
+      "sha256": "b1936986ba503345b8a5dd88567555a015f0670c5c3616f41bcce3288e9f582b",
+      "generated_for": "relationship-code-7500",
+      "provider": "Adobe Firefly",
+      "generation_reference": "9c2dd792-2046-448b-9c7e-46ef9aac1fdd",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "commercial use of Firefly-generated outputs under Adobe Firefly terms; original synthetic editorial subjects",
+      "scene": "calm constructive conversation",
+      "dimensions": [
+        2016,
+        1152
+      ]
+    },
+    {
+      "path": "public/images/blog/relationship-code-7500-pause-wide.jpg",
+      "sha256": "e7923998f6d0f57deef6b1cf4301c8236ddb56a6c6087564ca2c76d34c001192",
+      "generated_for": "relationship-code-7500",
+      "provider": "Adobe Firefly",
+      "generation_reference": "b12e99c5-8ff7-4b34-810c-808214e71e68",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "commercial use of Firefly-generated outputs under Adobe Firefly terms; original synthetic editorial subjects",
+      "scene": "calming pause by window",
+      "dimensions": [
+        2016,
+        1152
+      ]
+    },
+    {
+      "path": "public/images/blog/relationship-code-7500-reflect-vertical.jpg",
+      "sha256": "5d6c826ad6b418cf31c322ef16da7a3b4c3f7a42f6a09078983bfd75312f869b",
+      "generated_for": "relationship-code-7500",
+      "provider": "Adobe Firefly",
+      "generation_reference": "9cdeb615-4f2f-475a-ae69-111b7e402a65",
+      "crop_reference": "67f9df1d-a7d5-4785-bb13-0f2f75d0959d",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "commercial use of Firefly-generated outputs under Adobe Firefly terms; original synthetic editorial subjects",
+      "scene": "native portrait reflection",
+      "dimensions": [
+        1080,
+        1920
+      ]
+    },
+    {
+      "path": "public/images/blog/relationship-code-7500-dialogue-vertical.jpg",
+      "sha256": "52162f13e12a47d02a80c3b2400ae1f603e920b64413f805b37cb4af4199ab75",
+      "generated_for": "relationship-code-7500",
+      "provider": "Adobe Firefly",
+      "generation_reference": "5d0847ff-c02e-4afa-a71e-7d2486eaae31",
+      "crop_reference": "bdd1acb4-7dd3-41b8-8b35-cdd9aa51cd5a",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "commercial use of Firefly-generated outputs under Adobe Firefly terms; original synthetic editorial subjects",
+      "scene": "native portrait two-person dialogue",
+      "dimensions": [
+        1080,
+        1920
+      ]
+    }
+  ]
+}

@@ -468,6 +468,28 @@ def nested_identifier(payload: Any, keys: tuple[str, ...]) -> str | None:
     return None
 
 
+def prune_notebooklm_sources(notebook_id: str, keep_count: int = 35) -> None:
+    """Ensure NotebookLM notebook does not exceed Google's hard 50-source quota."""
+    try:
+        payload = run_notebooklm(["source", "list", "--notebook", notebook_id], timeout=120)
+        sources = payload.get("sources") if isinstance(payload, dict) else None
+        if not isinstance(sources, list) or len(sources) <= keep_count:
+            return
+        excess = len(sources) - keep_count
+        print(f"NOTEBOOKLM_CAPACITY_MANAGEMENT: total_sources={len(sources)} pruning_excess={excess}")
+        for src in sources[:excess]:
+            sid = src.get("id") or src.get("source_id")
+            if not sid:
+                continue
+            try:
+                run_notebooklm(["source", "delete", sid, "-y", "--notebook", notebook_id], timeout=60)
+                print(f"NOTEBOOKLM_PRUNED_SOURCE: source_id={sid}")
+            except Exception as err:
+                print(f"WARN: failed to delete source {sid}: {err}")
+    except Exception as exc:
+        print(f"WARN: prune_notebooklm_sources failed: {exc}")
+
+
 def auth_preflight() -> dict[str, Any]:
     try:
         version = importlib.metadata.version("notebooklm-py")
@@ -843,9 +865,40 @@ def legacy_external_effect(
     return receipt
 
 
-def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
+def _authorize_exact_recovery_provider_advance(item: dict[str, Any], stage: str) -> None:
+    if not is_recovery_mode():
+        return
+    target_item_id = (os.environ.get("TARGET_ITEM_ID") or "").strip()
+    target_slug = (os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
+    target_sha = (os.environ.get("TARGET_CONTENT_SHA256") or "").strip()
+    source = item.get("source") or {}
+    if not target_item_id or not target_slug or not target_sha:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: exact recovery identity is incomplete")
+    if str(item.get("id") or "").strip() != target_item_id:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: recovery item mismatch")
+    if str(source.get("slug") or "").strip() != target_slug:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: recovery slug mismatch")
+    if str(source.get("content_sha256") or "").strip() != target_sha:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: recovery content hash mismatch")
+    if stage == "source":
+        if item.get("status") != "source_selected":
+            raise PipelineError("RECOVERY_MODE_VIOLATION: source creation requires source_selected")
+        if item.get("source_id") or item.get("task_id") or item.get("artifact_id"):
+            raise PipelineError("RECOVERY_MODE_VIOLATION: provider identifiers already exist before source recovery")
+    elif stage == "generation":
+        if item.get("status") != "source_added" or not item.get("source_id"):
+            raise PipelineError("RECOVERY_MODE_VIOLATION: generation recovery requires one bound source")
+        if item.get("task_id") or item.get("artifact_id"):
+            raise PipelineError("RECOVERY_MODE_VIOLATION: provider generation identifier already exists")
+    else:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: unknown recovery provider stage")
+
+
+def add_source(state: dict[str, Any], item: dict[str, Any], *, allow_exact_recovery: bool = False) -> None:
     if is_recovery_mode():
-        raise PipelineError("RECOVERY_MODE_VIOLATION: add_source forbidden in same-identity recovery mode")
+        if not allow_exact_recovery:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: add_source forbidden without exact recovery authorization")
+        _authorize_exact_recovery_provider_advance(item, "source")
     from scripts.kesher_runtime.media_state import CanonicalMediaState
     from scripts.kesher_runtime.legacy_retirement import media_mutation
     media_mutation(state)
@@ -855,10 +908,18 @@ def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
         title = f"kesher:{state.context.target.key}:{item.get('fresh_generation_attempt', 1)}"
 
     def create_source():
-        payload = run_notebooklm(
-            ["source", "add", body, "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
-            timeout=180,
-        )
+        try:
+            payload = run_notebooklm(
+                ["source", "add", body, "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
+                timeout=180,
+            )
+        except PipelineError as exc:
+            print(f"WARN: source add failed ({exc}), pruning older notebook sources and retrying...")
+            prune_notebooklm_sources(NOTEBOOK_ID, keep_count=25)
+            payload = run_notebooklm(
+                ["source", "add", body, "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
+                timeout=180,
+            )
         source_id = nested_identifier(payload, ("source_id", "sourceId", "id"))
         if not source_id:
             raise PipelineError("NotebookLM source add returned no source ID")
@@ -878,9 +939,11 @@ def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
     print(f"SOURCE_ADDED item={item['id']} source_id={source_id}")
 
 
-def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
+def start_generation(state: dict[str, Any], item: dict[str, Any], *, allow_exact_recovery: bool = False) -> None:
     if is_recovery_mode():
-        raise PipelineError("RECOVERY_MODE_VIOLATION: start_generation forbidden in same-identity recovery mode")
+        if not allow_exact_recovery:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: start_generation forbidden without exact recovery authorization")
+        _authorize_exact_recovery_provider_advance(item, "generation")
     from scripts.kesher_runtime.media_state import CanonicalMediaState
     from scripts.kesher_runtime.legacy_retirement import media_mutation
     media_mutation(state)
@@ -1546,8 +1609,10 @@ def run_generation(
         if item.get("uploaded") is True or item["status"] in {"pending_review", "approved", "rejected", "uploading", "uploaded", "superseded"}:
             print(f"NO_GENERATION recovery mode active_item={item['id']} status={item['status']}")
             return 0
-        if is_recovery_mode() and item["status"] in {"source_selected", "source_added"}:
-            raise PipelineError(f"RECOVERY_MODE_VIOLATION: target item {target_item_id} has invalid status {item['status']} for recovery; provider source creation/generation forbidden")
+        if item["status"] == "source_selected":
+            add_source(state, item, allow_exact_recovery=True)
+        if item["status"] == "source_added":
+            start_generation(state, item, allow_exact_recovery=True)
         if item["status"] == "generating":
             if not item.get("task_id") or not item.get("source_id"):
                 raise PipelineError("RECOVERY_MODE_VIOLATION: generating item missing required task_id or source_id")
@@ -1749,6 +1814,89 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
     validate_and_manifest(state, item, raw_path)
     print(f"REMOTION_REBUILT item={item_id} status={item['status']}")
     return 0
+
+
+def durable_media_restore_required(
+    state: dict[str, Any],
+    *,
+    operation: str = "",
+    target_item_id: str = "",
+    target_slug: str = "",
+) -> bool:
+    """Return whether exact local media bytes must be hydrated for this invocation.
+
+    The lightweight state is sufficient for provider polling and fresh technical
+    retries. Local MP4/evidence bytes are required only when the next legal step
+    consumes those bytes directly (render/review/upload), plus the explicit final
+    wrong-voice fallback which revalidates the third provider artifact in place.
+    """
+    op = (operation or os.environ.get("OPERATION") or "").strip().lower()
+    if op in {"upload", "rebuild"}:
+        return True
+
+    items = [row for row in (state.get("items") or []) if isinstance(row, dict)]
+    requested_id = (target_item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
+    requested_slug = (
+        target_slug
+        or os.environ.get("TARGET_SLUG")
+        or os.environ.get("DERIVE_SLUG")
+        or ""
+    ).strip()
+
+    if requested_id:
+        candidates = [row for row in items if str(row.get("id") or "").strip() == requested_id]
+    elif requested_slug:
+        candidates = [
+            row
+            for row in items
+            if str((row.get("source") or {}).get("slug") or "").strip() == requested_slug
+            and row.get("uploaded") is not True
+            and row.get("status") != "superseded"
+        ]
+    else:
+        candidates = [
+            row
+            for row in items
+            if row.get("uploaded") is not True and row.get("status") != "superseded"
+        ]
+
+    if any(str(row.get("status") or "") in {"downloaded", "pending_review", "approved", "uploading"}
+           for row in candidates):
+        return True
+
+    try:
+        contract = json.loads(PRODUCTION_CONTRACT_FILE.read_text(encoding="utf-8"))
+        voice_policy = contract["video"]["voice_policy"]
+        female_attempts = int(voice_policy["female_attempts_before_fallback"])
+        final_male_fallback = (
+            voice_policy["fallback_voice_after_failed_female_attempts"] == "male"
+            and voice_policy["accept_male_on_final_female_attempt"] is True
+        )
+    except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
+        raise PipelineError(f"Voice fallback policy is unreadable: {type(exc).__name__}") from exc
+
+    if final_male_fallback:
+        for row in candidates:
+            technical_note = str((row.get("review_notes") or {}).get("technical") or "")
+            wrong_voice = (
+                row.get("failure_signature") == "wrong_narrator_gender"
+                or "Detected male voice" in technical_note
+            )
+            try:
+                attempt = int(row.get("fresh_generation_attempt") or 1)
+            except (TypeError, ValueError):
+                attempt = 1
+            if (
+                row.get("status") == "rejected"
+                and row.get("technical_verified") is not True
+                and wrong_voice
+                and attempt >= female_attempts
+                and bool(str(row.get("raw_mp4") or "").strip())
+                and bool(str(row.get("task_id") or "").strip())
+            ):
+                return True
+
+    return False
 
 
 def prune_uploaded_media() -> int:
@@ -2348,7 +2496,6 @@ def verify_single_upload_authority(
 
 
 def upload_only(slug: str | None = None, item_id: str | None = None, *, state: dict | None = None) -> int:
-    state_provided = state is not None
     state = load_state() if state is None else state
     item = existing_item(state, item_id, slug)
     target_slug = slug or str((item.get("source") or {}).get("slug") or "")
@@ -2362,7 +2509,7 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
     is_long = item_type in {"video_overview", None}
 
     if is_long:
-        if not state_provided and STATE_FILE.is_file() and item.get("id"):
+        if STATE_FILE.is_file() and item.get("id"):
             auth_state = load_state()
             state = auth_state
             auth_items_by_id = {str(r.get("id")): r for r in auth_state.get("items", []) if isinstance(r, dict)}
@@ -2520,9 +2667,12 @@ def build_parser() -> argparse.ArgumentParser:
     mode.add_argument("--review-item")
     mode.add_argument("--remotion-rebuild-item")
     mode.add_argument("--prune-uploaded-media", action="store_true")
+    mode.add_argument("--prune-sources", action="store_true")
+    mode.add_argument("--requires-durable-media-restore", action="store_true")
     mode.add_argument("--report-json", action="store_true")
     parser.add_argument("--slug")
     parser.add_argument("--item-id")
+    parser.add_argument("--operation", choices=("full", "generate", "recovery", "upload", "rebuild", "preflight"))
     parser.add_argument("--max-wait-seconds", type=int, default=3600)
     parser.add_argument("--require-israel-hour", type=int, choices=range(24))
     parser.add_argument("--visual-status", choices=sorted(ALLOWED_REVIEW))
@@ -2556,6 +2706,19 @@ def main() -> int:
         return rebuild_rejected_with_remotion(args.remotion_rebuild_item)
     if args.prune_uploaded_media:
         return prune_uploaded_media()
+    if args.prune_sources:
+        prune_notebooklm_sources(NOTEBOOK_ID)
+        return 0
+    if args.requires_durable_media_restore:
+        state = load_state()
+        required = durable_media_restore_required(
+            state,
+            operation=args.operation or "",
+            target_item_id=args.item_id or "",
+            target_slug=args.slug or "",
+        )
+        print("true" if required else "false")
+        return 0
     if args.report_json:
         return report()
     return run_generation(

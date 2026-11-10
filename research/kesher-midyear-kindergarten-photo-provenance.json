@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "source_slug": "changing-kindergarten-midyear",
+  "content_sha256": "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a",
+  "canonical_content_sha256": "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a",
+  "article_body_sha256": "3364783a30bba0069f18a000c03c07d74420e0bf39100bd25fcb4b9fcbefa5eb",
+  "images": [
+    {
+      "path": "public/images/generated/blog/changing-kindergarten-midyear-photo.jpg",
+      "sha256": "a225ea6bcb4aeca485933ecb93e4ba1f4dec110b3e2133c7dfd7db1e698b7098",
+      "dimensions": [
+        1200,
+        675
+      ],
+      "generated_for": "changing-kindergarten-midyear",
+      "provider": "Adobe Firefly",
+      "request_id": "17b893b2-37b2-4cf9-aba4-f5c942efbf70",
+      "original_sha256": "66585fe4b856dbfab9ce6b8626316a4ef7d4418fdbcf0e4c338e21f90951ba87",
+      "original_dimensions": [
+        2016,
+        1152
+      ],
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "commercial_use_permitted": true,
+      "review": "Actual final photo inspected: orientation at new classroom cubby with parent and teacher."
+    },
+    {
+      "path": "public/images/blog/changing-kindergarten-midyear-wide-farewell.jpg",
+      "sha256": "c5cf4bb2483b55bb37fd02e29fe71448fdc680564dd92e8188cdde57f3dda7d9",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "generated_for": "changing-kindergarten-midyear",
+      "provider": "Adobe Firefly",
+      "request_id": "9740e830-6182-4431-a672-849601f94e7c",
+      "original_sha256": "9f5bb9c0b57cf8efd79e9ea0ca139b042160da2cb577748abc83d877fb2e52e6",
+      "original_dimensions": [
+        2016,
+        1152
+      ],
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "commercial_use_permitted": true,
+      "review": "Actual final photo inspected: child hands drawing to former teacher, natural farewell."
+    },
+    {
+      "path": "public/images/blog/changing-kindergarten-midyear-wide-pickup.jpg",
+      "sha256": "940404cc7296de6fc4ee607f5da6b66c1d3cdb110aba6c037abce0f94deecc71",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "generated_for": "changing-kindergarten-midyear",
+      "provider": "Adobe Firefly",
+      "request_id": "04d256f5-7963-4cad-8563-c8dfb034ae23",
+      "original_sha256": "f54a7f20b0c2cb8cbad11f47f2c1558af65d745fd2db54a0658e0d53726b0708",
+      "original_dimensions": [
+        2016,
+        1152
+      ],
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "commercial_use_permitted": true,
+      "review": "Actual final photo inspected: child playing at low table while parent and teacher talk nearby."
+    },
+    {
+      "path": "public/images/blog/changing-kindergarten-midyear-wide-goodbye.jpg",
+      "sha256": "be3f9555280f0ec775df3f134c05bf253b413b22b547aca60aaf8b5d0d7cab67",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "generated_for": "changing-kindergarten-midyear",
+      "provider": "Adobe Firefly",
+      "request_id": "b8f757e6-7339-407d-8bce-4a4cd78c0d3f",
+      "original_sha256": "088da5b723523c3f73e7cb78d2793e6d4ea58c0fc2ae562d9b9d827425ac498d",
+      "original_dimensions": [
+        2016,
+        1152
+      ],
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "commercial_use_permitted": true,
+      "review": "Actual final photo inspected: father bends to say goodbye, teacher kneels at child level, natural safe doorway scene."
+    },
+    {
+      "path": "public/images/blog/changing-kindergarten-midyear-wide-play.jpg",
+      "sha256": "26675ee5e1fbfb2df08e227471072b65e79cd2f6960bd3dbe32c0f5803a304ec",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "generated_for": "changing-kindergarten-midyear",
+      "provider": "Adobe Firefly",
+      "request_id": "f3d59263-db0b-491e-9365-f3a3d32b7c1c",
+      "original_sha256": "9c7d0638d0332c8916883062c306ac30129504c12d8741af3b6803119db670f6",
+      "original_dimensions": [
+        2016,
+        1152
+      ],
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "commercial_use_permitted": true,
+      "review": "Actual final photo inspected: teacher supports child joining peers at low block-play table, natural classroom interaction."
+    },
+    {
+      "path": "public/images/blog/changing-kindergarten-midyear-vertical-arrival.jpg",
+      "sha256": "81845f55294941ce0bc6cd3e6e11725c27c2851ce9c987212a49cef0e2fa88af",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "generated_for": "changing-kindergarten-midyear",
+      "provider": "Adobe Firefly",
+      "request_id": "28c7e00a-b2c9-4f9a-be20-5310531edddc",
+      "original_sha256": "9d14108e57eb6fd533d28b05f69d7e8498f9037a59db58af7a4ea95574ed6b7e",
+      "original_dimensions": [
+        1072,
+        1920
+      ],
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "commercial_use_permitted": true,
+      "review": "Actual final photo inspected: child and father greeted at new preschool doorway, native full frame."
+    },
+    {
+      "path": "public/images/blog/changing-kindergarten-midyear-vertical-farewell.jpg",
+      "sha256": "7319783cb3d36cc7d1d69035e5ecea571ec69bbc87887fb8ce2a7b069475b211",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "generated_for": "changing-kindergarten-midyear",
+      "provider": "Adobe Firefly",
+      "request_id": "7e869f2a-4511-47c8-bcfc-53ad26e1b308",
+      "original_sha256": "5a157249552a948c784886b51e28cceddc275bc761f0816d6795e0560e878977",
+      "original_dimensions": [
+        1072,
+        1920
+      ],
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "commercial_use_permitted": true,
+      "review": "Actual final photo inspected: child hands drawing to former teacher, native full frame."
+    },
+    {
+      "path": "public/images/blog/changing-kindergarten-midyear-vertical-play.jpg",
+      "sha256": "0f444231bb70bf1224a1401ae3c098d00deaf11ff1ecf2875da7662a8c293a31",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "generated_for": "changing-kindergarten-midyear",
+      "provider": "Adobe Firefly",
+      "request_id": "5da02334-21a3-486e-9489-6054348c2468",
+      "original_sha256": "400641752d2208a6e9e49f70773373b900e8ab6c4a1c61a1f1205ce236657b8a",
+      "original_dimensions": [
+        1072,
+        1920
+      ],
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "commercial_use_permitted": true,
+      "review": "Actual final photo inspected: teacher gently invites child into block play, native full frame."
+    },
+    {
+      "path": "public/images/blog/changing-kindergarten-midyear-vertical-pickup.jpg",
+      "sha256": "a7f5cdbc93c8f4f0e8dd91073a9711f3a7d2ba1536939010457e3c87b42abccd",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "generated_for": "changing-kindergarten-midyear",
+      "provider": "Adobe Firefly",
+      "request_id": "e6824dc4-9faf-439b-b19c-95b09b09938e",
+      "original_sha256": "70794c93490b6efc3d44d233f3a7dc6d04601e0024051f862e91f93ef7afb56f",
+      "original_dimensions": [
+        1072,
+        1920
+      ],
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "commercial_use_permitted": true,
+      "review": "Actual final photo inspected: parent and teacher converse at pickup, child relaxed nearby, native vertical composition."
+    }
+  ]
+}

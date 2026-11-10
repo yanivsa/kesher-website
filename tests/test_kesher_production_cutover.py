@@ -138,6 +138,10 @@ class ProductionCutoverTests(unittest.TestCase):
         from scripts.kesher_runtime.authority_topology import policy
         evidence = json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())
         rules = policy(ROOT)
+        # These read-only Master Owner workflows were added on October 31 and
+        # have no registration in the immutable October 4 inventory.
+        del rules['workflows']['.github/workflows/kesher-master-intent-shadow.yml']
+        del rules['workflows']['.github/workflows/kesher-master-owner-foundation-ci.yml']
         # Project only this immutable October 4 fixture; October 6 metadata
         # authority remains classified in the current policy and refusal test.
         del rules['workflows']['.github/workflows/kesher-exact-short-metadata-recovery-20261006.yml']
@@ -146,9 +150,13 @@ class ProductionCutoverTests(unittest.TestCase):
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
         del rules['workflows']['.github/workflows/kesher-targeted-media-recovery-dispatch.yml']
         del rules['workflows']['.github/workflows/kesher-controller-liveness.yml']
+        # This immutable October 4 inventory predates the October 25 advisory reviewer.
+        # Never invent its GitHub registration ID in historical evidence; project the
+        # policy to the exact definition set that existed when the fixture was captured.
+        del rules['workflows']['.github/workflows/kesher-video-advisory-review.yml']
         rows = reconcile_registrations(evidence['workflows'], rules)
         self.assertEqual(len(rows), 111)
-        self.assertEqual(len(rules['registrations']), 43)
+        self.assertEqual(len(rules['registrations']), 57)
         for changed in (rows[:-1], rows + [{'id':999999999,'path':'.github/workflows/unknown.yml','state':'active'}]):
             with self.assertRaises(StateInvalid): reconcile_registrations(changed, rules)
         changed = copy.deepcopy(rows); changed[0]['id'] = 999999999
@@ -171,9 +179,16 @@ class ProductionCutoverTests(unittest.TestCase):
         from scripts.kesher_runtime.authority_topology import policy,check_definitions,classify_registered
         import hashlib
         rules=policy(ROOT);del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
+        # These read-only Master Owner workflows were added on October 31 and
+        # have no registration in the immutable October 4 inventory.
+        del rules['workflows']['.github/workflows/kesher-master-intent-shadow.yml']
+        del rules['workflows']['.github/workflows/kesher-master-owner-foundation-ci.yml']
         # This immutable October 4 snapshot predates the metadata workflow.
         del rules['workflows']['.github/workflows/kesher-exact-short-metadata-recovery-20261006.yml']
         del rules['workflows']['.github/workflows/kesher-controller-liveness.yml']
+        # The October 4 final snapshot also predates the October 25 advisory reviewer;
+        # its real registration must be observed after merge, never guessed here.
+        del rules['workflows']['.github/workflows/kesher-video-advisory-review.yml']
         rows=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-final-20261004.json').read_text())['workflows']
         self.assertEqual(len(reconcile_registrations(rows,rules)),112)
         path='.github/workflows/kesher-targeted-media-recovery-dispatch.yml'
@@ -271,7 +286,7 @@ class CredentialGatewayTests(unittest.TestCase):
         context['protected_resources']={k:v for k,v in protected.items() if k!='youtube'}
         with self.assertRaises(StateInvalid):adapter.targets()
 
-    def test_batch_recertification_78_targets_bounds_reads_and_rejects_bridge_race(self):
+    def test_batch_recertification_92_targets_bounds_reads_and_rejects_bridge_race(self):
         from scripts.kesher_runtime.github_drain import GithubDrain
         from scripts.kesher_runtime.authority_topology import policy
         from tests.test_kesher_github_drain import Journal
@@ -280,7 +295,7 @@ class CredentialGatewayTests(unittest.TestCase):
         rows=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())['workflows']
         targets=[r for r in rows if r['path'] in rules['registrations'] or
                  rules['workflows'][r['path']]['role'] in {'retired','emergency_bridge'}]
-        self.assertEqual(len(targets),78)
+        self.assertEqual(len(targets),92)
         for r in targets:r['state']='disabled_manually'
         journal=Journal();drains=journal.document['github_exclusion']['drains']
         for r in targets:
@@ -304,7 +319,7 @@ class CredentialGatewayTests(unittest.TestCase):
                 raise AssertionError(path)
         native=Native();drain=GithubDrain(native,'owner/repo',journal=journal,authority=lambda:'epoch-one',registered=lambda:rows)
         pairs=[(r['id'],r['path']) for r in targets]
-        self.assertEqual(len(drain.observe_many(pairs)),78)
+        self.assertEqual(len(drain.observe_many(pairs)),92)
         self.assertEqual(len(native.calls),18)
         native.race=True
         with self.assertRaisesRegex(StateInvalid,'RUN_AFTER_PROOF'):drain.observe_many(pairs)
@@ -554,9 +569,17 @@ class CredentialGatewayTests(unittest.TestCase):
         from tests.test_kesher_git_exclusion import EpochGit
         from tests.test_kesher_external_exclusion import ProtectedService
         rules=policy(ROOT)
+        # These read-only Master Owner workflows were added on October 31 and
+        # have no registration in the immutable October 4 inventory.
+        del rules['workflows']['.github/workflows/kesher-master-intent-shadow.yml']
+        del rules['workflows']['.github/workflows/kesher-master-owner-foundation-ci.yml']
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
         del rules['workflows']['.github/workflows/kesher-targeted-media-recovery-dispatch.yml']
         del rules['workflows']['.github/workflows/kesher-controller-liveness.yml']
+        # This refusal fixture starts from the immutable October 4 registration snapshot.
+        # The October 25 advisory workflow has no historical registration in that evidence;
+        # project it out rather than fabricating an ID, while retaining the explicit Oct6 overlay below.
+        del rules['workflows']['.github/workflows/kesher-video-advisory-review.yml']
         evidence=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())
         # Retain the current metadata writer in this unseparated-authority
         # refusal test rather than treating the dated fixture as current.

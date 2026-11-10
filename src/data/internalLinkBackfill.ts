@@ -1,7 +1,9 @@
 import rules from './internalLinkBackfill.json';
+import manualRules from './internalLinkBackfillManual';
 
 type BackfillItem = {
-  target: string;
+  target?: string;
+  href?: string;
   anchor: string;
   before: string;
   after: string;
@@ -18,7 +20,10 @@ type LinkablePost = {
   content: string;
 };
 
-const backfillRules = rules as BackfillRule[];
+const backfillRules = [
+  ...(rules as BackfillRule[]),
+  ...(manualRules as BackfillRule[]),
+];
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -36,12 +41,11 @@ const escapeText = (value: string) => value
   .replace(/</g, '&lt;')
   .replace(/>/g, '&gt;');
 
-const hasInternalTarget = (content: string, target: string) => {
-  const slug = escapeRegExp(target);
-  const pattern = new RegExp(
-    `href=["'](?:https:\\/\\/kesher\\.saharoni\\.com)?\\/blog\\/${slug}(?:[?#][^"']*)?["']`,
-    'i',
-  );
+const itemHref = (item: BackfillItem) => item.href ?? `/blog/${item.target}`;
+
+const hasInternalTarget = (content: string, item: BackfillItem) => {
+  const href = escapeRegExp(itemHref(item));
+  const pattern = new RegExp(`href=["'](?:https:\\/\\/kesher\\.saharoni\\.com)?${href}(?:[?#][^"']*)?["']`, 'i');
   return pattern.test(content);
 };
 
@@ -57,13 +61,10 @@ const findInsertionOffset = (content: string, headingNeedle: string) => {
 };
 
 const renderItem = (item: BackfillItem) =>
-  `${escapeText(item.before)}<a href="/blog/${item.target}">${escapeText(item.anchor)}</a>${escapeText(item.after)}`;
+  `${escapeText(item.before)}<a href="${itemHref(item)}">${escapeText(item.anchor)}</a>${escapeText(item.after)}`;
 
-export const applyInternalLinkBackfill = <T extends LinkablePost>(post: T): T => {
-  const rule = backfillRules.find((candidate) => candidate.source === post.id);
-  if (!rule) return post;
-
-  const missingItems = rule.items.filter((item) => !hasInternalTarget(post.content, item.target));
+const applyBackfillRule = <T extends LinkablePost>(post: T, rule: BackfillRule): T => {
+  const missingItems = rule.items.filter((item) => !hasInternalTarget(post.content, item));
   if (missingItems.length === 0) return post;
 
   const insertionOffset = findInsertionOffset(post.content, rule.afterHeadingIncludes);
@@ -74,6 +75,11 @@ export const applyInternalLinkBackfill = <T extends LinkablePost>(post: T): T =>
     ...post,
     content: `${post.content.slice(0, insertionOffset)}${paragraph}${post.content.slice(insertionOffset)}`,
   };
+};
+
+export const applyInternalLinkBackfill = <T extends LinkablePost>(post: T): T => {
+  const matchingRules = backfillRules.filter((candidate) => candidate.source === post.id);
+  return matchingRules.reduce((currentPost, rule) => applyBackfillRule(currentPost, rule), post);
 };
 
 export const internalLinkBackfillRules = backfillRules;

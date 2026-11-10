@@ -87,12 +87,172 @@
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-11-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/faq</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/when-to-start-couples-counseling</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/how-many-couples-counseling-sessions</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/does-partner-have-to-come-couples-counseling</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/what-to-expect-couples-counseling</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/is-couples-counseling-only-for-crisis</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/can-trust-be-rebuilt-after-infidelity</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/couples-mediation-vs-couples-counseling</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/parent-guidance-vs-child-therapy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/what-age-parent-guidance</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/parent-guidance-adhd-child</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/what-does-premarital-counseling-include</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/premarital-counseling-parents-divorced</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/premarital-preparation-with-adhd</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/when-to-start-premarital-counseling</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/first-year-guidance-without-crisis</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/premarital-counseling-topics</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/couples-counseling-aliyah-relocation-when</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/partner-wants-to-return-relocation</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/couples-counseling-online-during-relocation</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/late-singleness-guidance-who-is-it-for</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/late-singleness-counseling-only-for-dating</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/guidance-matchmaking-dating-apps</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/counseling-at-start-of-new-relationship</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/finding-relationship-guidance-includes</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/prepare-adhd-child-for-first-grade</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/first-grade-preparation-without-adhd</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/gifted-child-parent-guidance</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/gifted-and-adhd-guidance</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/gifted-program-preparation-includes</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/guidance-for-aliyah-returning-family</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/do-you-work-online</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/faq/how-to-book-first-session</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -113,6 +273,31 @@
   </url>
   <url>
     <loc>https://kesher.saharoni.com/parenting-adhd-ashdod</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/couples-counseling-after-infidelity</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/parenting-guidance-divorce</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/parenting-guidance-early-childhood</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/couples-adhd</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/couples-second-chapter</loc>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>
@@ -140,6 +325,66 @@
     <loc>https://kesher.saharoni.com/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/family-chores-quality-time-with-kids</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/gifted-test-first-emotional-preparation-parents</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/child-not-selected-gifted-program-parent-response</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/after-gifted-identification-next-steps-family</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/how-to-talk-to-child-about-being-gifted</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/gifted-child-pressure-to-achieve-parent-guide</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/gifted-child-bored-at-school-parent-guide</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/gifted-child-emotional-sensitivity-myths</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/self-distancing-couple-arguments</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/vantage-sensitivity-sensitive-gifted-children</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/child-argues-every-request-boundaries</loc>
@@ -180,6 +425,156 @@
   <url>
     <loc>https://kesher.saharoni.com/blog/potty-training-regression</loc>
     <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/stress-crossover-after-work</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/relationship-memory-reconstruction</loc>
+    <lastmod>2026-11-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/parental-hostile-attributions</loc>
+    <lastmod>2026-11-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/prepare-toddler-for-daycare</loc>
+    <lastmod>2026-11-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/child-does-not-want-kindergarten</loc>
+    <lastmod>2026-11-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/baby-cries-at-daycare</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/we-language-relationships</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/stool-withholding-potty-training</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/couples-social-baseline-theory</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/good-news-response-relationship</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/gifted-children-asynchronous-development</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/poop-only-in-diaper</loc>
+    <lastmod>2026-10-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/first-grade-adjustment-difficulties</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/shared-laughter-couples-intimacy</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/first-grade-adjustment</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/toilet-fear-children</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/first-grade-maturity</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/municipal-kindergarten-adjustment</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/daycare-adjustment-difficulties</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/changing-kindergarten-midyear</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/child-poops-in-pants</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/potty-training-constipation</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/potty-training-age-4</loc>
+    <lastmod>2026-10-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -329,7 +724,7 @@
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/how-to-identify-a-gifted-child-parents-guide</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -864,12 +1259,6 @@
   <url>
     <loc>https://kesher.saharoni.com/blog/when-everyone-around-you-gets-married</loc>
     <lastmod>2026-10-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://kesher.saharoni.com/blog/transition-to-separate-room</loc>
-    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

@@ -383,7 +383,7 @@ class V4Controller(legacy.BestEffortController):
             core.GitHubClient.dispatch(
                 self.github,
                 v3.IMAGE_WORKFLOW,
-                {"pr_number": str(number)},
+                {"pr_number": str(number), "recovery_only": "true", "expected_head_sha": head_sha},
             )
             image.update({
                 "evidence_rebind_head_sha": head_sha,
@@ -401,6 +401,57 @@ class V4Controller(legacy.BestEffortController):
             return core.Action(
                 "dispatch_image_rebind",
                 "rebind trusted image evidence to the current PR head",
+                {"pr_number": str(number)},
+            )
+
+        # Trusted normalization can intentionally remove the image asset because
+        # it only preserves the reviewed publication paths. If the prior immutable
+        # image head still passes the full bytes/pixels proof and the current
+        # editorial article differs only by image/imageAlt, dispatch the image
+        # worker as a same-artifact reattach. This does not consume generation
+        # budget and cannot authorize a changed article or unproven historical blob.
+        prior_check = getattr(self.github, "article_pr_prior_image_recoverable", None)
+        prior_recoverable, _prior_evidence = prior_check(pr) if callable(prior_check) else (False, {})
+        if (
+            prior_recoverable
+            and re.fullmatch(r"[a-f0-9]{40}", head_sha)
+            and str(image.get("evidence_rebind_head_sha") or "") != head_sha
+        ):
+            active = self.github.active_image_run(number)
+            if active:
+                image["run_id"] = active.get("id")
+                image["status"] = "running"
+                core.transition(
+                    state,
+                    "article_image_rebinding",
+                    "prior trusted image artifact reattach already active",
+                    pr_number=number,
+                    head_sha=head_sha,
+                )
+                return core.Action("wait", "prior trusted image artifact reattach workflow active")
+
+            core.GitHubClient.dispatch(
+                self.github,
+                v3.IMAGE_WORKFLOW,
+                {"pr_number": str(number), "recovery_only": "true", "expected_head_sha": head_sha},
+            )
+            image.update({
+                "evidence_rebind_head_sha": head_sha,
+                "evidence_rebind_dispatched_at": core.utc_now(),
+                "evidence_rebind_mode": "reattach_prior_trusted_artifact",
+                "status": "running",
+                "next_retry_at": None,
+            })
+            core.transition(
+                state,
+                "article_image_rebinding",
+                "prior trusted image artifact proved against current normalized article and must be reattached",
+                pr_number=number,
+                head_sha=head_sha,
+            )
+            return core.Action(
+                "dispatch_image_rebind",
+                "reattach prior trusted image artifact to current normalized PR head",
                 {"pr_number": str(number)},
             )
 

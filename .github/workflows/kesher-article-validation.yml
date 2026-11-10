@@ -98,6 +98,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python -m scripts.kesher_runtime.article_validation content "$COMMAND_ID"
+      - name: Report Hebrew prose quality
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -m scripts.kesher_runtime.article_prose_audit "$COMMAND_ID"
       - name: Run full repository quality gate
         run: |
           set -euo pipefail

@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "source_slug": "changing-kindergarten-midyear",
+  "content_sha256": "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a",
+  "media_kind": "short",
+  "media_item_id": "owner-short-20261110-5b0d6c5e8ba2",
+  "final_sha256": "ca2c1f9f5ad64b8de93d5956dda543a1530cec988aef70185ee2ee230ae981e4",
+  "manifest_sha256": "0d9192eda3f58eb2b47a96c7ac64ff3a38862777a20e1571de28a3accb3f5cc4",
+  "transcript_sha256": "0cef8c9d8d51bf79efc823167bf35737d45a43d191a3407ebc8de79bacb39f51",
+  "visual_review_sha256": "46c6c2da6e3bb24ed0a1ea6d8fb8fa74eb150c17e5d86ffcb66a6147e18f6e6d",
+  "source_file_sha256": "67300d9d38420b81217e84df9a89a3a7d37bcc53a2bfbabc599edd87fc7c5cf2",
+  "frame_sha256": {
+    "short-frame-01.jpg": "abcd4711e3b5d8098be1b40b9805c1b58cbacedab3799ee9042805a81ae7edff",
+    "short-frame-02.jpg": "b9b3281146766818cc86531c0626622f6cdf6ad098736049c13ac6027f4a9eec",
+    "short-frame-03.jpg": "1430f389b25d1b4dca074581d9cd5b7fa36fe309283c5f5d965439b7796d7c4b",
+    "short-frame-04.jpg": "13c7d306b015a1f0ace3464d4777b1a7e6a61c142294cf69d3b73814bcd35d51",
+    "short-frame-05.jpg": "d9054255a9a4f43b2acde1f07f6024f5bfe3dd262a5c5f2e90f556c12c4a3f10",
+    "short-frame-06.jpg": "3ec79974555cf4716ea4b9a8c9afe4f36f8af3448d2a54cca3a7ec9a029f3d8c",
+    "short-frame-07.jpg": "1117812233b38498492082f290713bb480f7200e83331cf559ba5f6b244cdc31",
+    "short-frame-08.jpg": "fb1a0a7753513683a9d4547b6e5317024402c5b30d9affa2c7d05e5faf29d33c"
+  },
+  "reviewed_by": "OWNER",
+  "reviewed_at": "2026-11-10T20:00:00Z",
+  "checks": {
+    "visual": "approved",
+    "semantic": "approved",
+    "audio": "approved",
+    "metadata": "approved",
+    "licensing": "approved"
+  },
+  "methods": {
+    "visual": "full_motion_and_frames",
+    "semantic": "research_vs_exact_transcript",
+    "audio": "authorized_audio_tool_with_script_comparison"
+  },
+  "review_notes": {
+    "visual": "נבדקו שמונת הפריימים וגליון התמונות בפועל, פענוח מלא ומדידת תנועה. מסגרת אנכית מקורית מלאה, תמונות גן ריאליסטיות, ללא טקסט חופף או רצועות טשטוש. חותמות הזמן המקוריות עולות באופן תקין; אזהרת עיגול ב-null muxer נפתרה בבדיקת timebase מקורית.",
+    "semantic": "התמלול הסופי הושווה לתסריט ולהנחיות UNICEF, AAP, AACAP ו-Head Start. ההמלצות מותאמות למעבר גן באמצע השנה, ללא הבטחת זמן הסתגלות, ללא אבחנה, עם תיאום צוות והפניה לרופא הילדים במצוקה משמעותית. ההנחיות אינן מוצגות כניסוי סיבתי ייעודי למעבר באמצע השנה.",
+    "audio": "תמלול faster-whisper של האודיו הסופי הושווה לתסריט ולתמלול Descript עצמאי של השורט המקורי. כל חבילות האודיו המקוריות נשמרו, המשפט המסכם נלקח מהווידאו ונבדק גם בתמלול המקורי שלו. ההפניה למאמר והמסר השלם מופיעים בתמלול הסופי. אין קליפינג או טענה להאזנה אנושית סובייקטיבית.",
+    "metadata": "כותרת ותיאור בעברית משקפים את התוכן, כוללים קישור למאמר החי ומזהה מקור קנוני. השורט מפנה לסרטון המלא לאחר אימות מזהה ציבורי.",
+    "licensing": "תשע תמונות מקוריות לנושא עם מזהי יצירה ונתוני מקור Adobe Firefly, תנאי שימוש מסחרי נבדקו. BlueTTS2.5-onnx MIT, RenikudPlus Apache-2.0, סגנון קול LibriTTS-R דוברת 6147 CC BY 4.0 עם ייחוס וקישורי רישוי בתיאור. אין שימוש ב-Edge-TTS או בקול המוצג כאדם אמיתי."
+  },
+  "rights": {
+    "commercial_use_permitted": true,
+    "voice_license_url": "https://www.openslr.org/141/",
+    "visual_license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html"
+  },
+  "evidence": {
+    "github_run": 42889104063,
+    "github_artifact_id": 13797277927,
+    "video_sha256": "ca2c1f9f5ad64b8de93d5956dda543a1530cec988aef70185ee2ee230ae981e4",
+    "audio_sha256": "e8c10324b5ce8d694b7040a4feec04d2432f4be109da5dc5651d72d3afb6fb5a",
+    "independent_asr_engine": "faster-whisper==1.2.1 / small Hebrew exact final + Descript original source audio and exact packet/PCM splice verification",
+    "independent_asr_similarity": 0.9809,
+    "human_listening": false,
+    "final_video_duration_s": 30.279,
+    "actual_final_audio_pcm_sha256": "b3b30e17d3b6e3bbffda7a4ae5aa2800f276903c7b467ad1836eff033d3a39f1",
+    "descript_source_audio_review_url": "https://web.descript.com/ebe28cf0-26af-4a27-8627-de8f5601ca0b",
+    "decoded_frames": 757,
+    "black_frames": 0,
+    "moving_frame_ratio": 0.9920739762219286,
+    "decoded_audio_peak": 0.948968231678009,
+    "clipped_samples": 0,
+    "voice_model_license_url": "https://huggingface.co/notmax123/BlueTTS2.5-onnx",
+    "g2p_license_url": "https://huggingface.co/notmax123/RenikudPlus",
+    "photo_provenance_path": "research/kesher-midyear-kindergarten-photo-provenance.json",
+    "channel": "UCx5fEFvdVf28HLAR2dFW64Q",
+    "publish_action": "NOT_AUTHORIZED_BY_CERTIFICATE_ALONE",
+    "source_binding": {
+      "artifact_body_sha256": "3364783a30bba0069f18a000c03c07d74420e0bf39100bd25fcb4b9fcbefa5eb",
+      "canonical_content_sha256": "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a",
+      "method": "recomputed_same_committed_post_body_and_canonical_source",
+      "verified_at": "2026-11-10T20:00:00Z",
+      "source_deploy_sha": "be26cd0a94b98a2c37e48fe754de55c8df46bd29"
+    }
+  }
+}

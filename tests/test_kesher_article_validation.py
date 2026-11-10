@@ -188,6 +188,7 @@ class ValidationWorkerTests(unittest.TestCase):
                          'image_data': f.image, 'image_path': 'public' + f.post['image'],
                          'paths': [row['filename'] for row in f.files]}
         self.git = Mock()
+        self.git.blob.side_effect = lambda ref, path: json.dumps([]).encode() if ref == CODE and path == 'src/data/postSummaries.json' else b''
         self.git.inspect.side_effect = lambda *args: copy.deepcopy(self.snapshot)
         self.main = CODE
         self.run, self.jobs = fixture()[2:]
@@ -322,7 +323,8 @@ class ValidationWorkflowContractTests(unittest.TestCase):
                 '    def test_jules_review_api_timeout_remains_blocked_from_upload(self):\n'
                 '        self.fail("obsolete timeout assertion executed")\n')
             modules = ('test_video_pending_evidence_repair', 'test_video_exact_item_binding',
-                       'test_video_exact_item_callers', 'test_canonical_article', 'test_canonical_media',
+                       'test_video_exact_item_callers', 'test_video_state_first_restore',
+                       'test_canonical_article', 'test_canonical_media',
                        'test_canonical_controller', 'test_canonical_authority', 'test_new_publication_regression')
             for module in modules:
                 (tests / (module + '.py')).write_text(

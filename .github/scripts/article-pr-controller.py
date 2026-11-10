@@ -15,6 +15,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -229,28 +230,49 @@ def verify_check(checks: dict) -> dict | None:
     return sorted(candidates, key=lambda item: item.get("completed_at") or item.get("started_at") or "")[-1]
 
 
+TRANSIENT_IMAGE_HTTP_CODES = frozenset({429, 500, 502, 503, 504})
+IMAGE_FETCH_MAX_ATTEMPTS = 3
+
+
 def image_loader(entry: dict, token: str) -> bytes:
     request = urllib.request.Request(
         entry["raw_url"],
         headers={"Authorization": f"Bearer {token}", "User-Agent": "kesher-article-controller"},
     )
-    with urllib.request.urlopen(request, timeout=30) as response:
-        return response.read()
+    for attempt in range(1, IMAGE_FETCH_MAX_ATTEMPTS + 1):
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                return response.read()
+        except urllib.error.HTTPError as exc:
+            if exc.code not in TRANSIENT_IMAGE_HTTP_CODES or attempt >= IMAGE_FETCH_MAX_ATTEMPTS:
+                raise
+        except (urllib.error.URLError, TimeoutError):
+            if attempt >= IMAGE_FETCH_MAX_ATTEMPTS:
+                raise
+        time.sleep(attempt)
+    raise RuntimeError("unreachable image fetch retry state")
 
 
 def existing_repair_attempts(repo: str, number: int, token: str) -> tuple[int, set[str]]:
-    comments = request_json(
-        "GET",
-        f"https://api.github.com/repos/{repo}/issues/{number}/comments?per_page=100",
-        token,
-    )
     total = 0
     heads: set[str] = set()
-    if isinstance(comments, list):
+    page = 1
+    while True:
+        suffix = "" if page == 1 else f"&page={page}"
+        comments = request_json(
+            "GET",
+            f"https://api.github.com/repos/{repo}/issues/{number}/comments?per_page=100{suffix}",
+            token,
+        )
+        if not isinstance(comments, list):
+            raise RuntimeError("PR_REPAIR_HISTORY_UNREADABLE")
         for comment in comments:
             for match in REPAIR_MARKER.finditer(comment.get("body") or ""):
                 total = max(total, int(match.group(1)))
                 heads.add(match.group(2).lower())
+        if len(comments) < 100:
+            break
+        page += 1
     return total, heads
 
 
@@ -378,6 +400,9 @@ def process(repo: str, number: int, github_token: str, jules_key: str) -> int:
     validator = load_validator()
     base_posts = validator.fetch_posts(repo, (pr.get("base") or {}).get("sha") or "", github_token)
     head_posts = validator.fetch_posts(repo, sha, github_token)
+    published_catalog = validator.fetch_repo_json(
+        repo, pr["base"]["sha"], github_token, "src/data/postSummaries.json",
+    )
     errors = validator.evaluate(
         pr,
         files,
@@ -385,6 +410,7 @@ def process(repo: str, number: int, github_token: str, jules_key: str) -> int:
         base_posts,
         head_posts,
         lambda entry: image_loader(entry, github_token),
+        published_catalog=published_catalog,
     )
     if not errors:
         merge_and_deploy(repo, pr, github_token)
@@ -393,6 +419,19 @@ def process(repo: str, number: int, github_token: str, jules_key: str) -> int:
     print(f"PR #{number} failed article gate: " + " | ".join(errors))
     verify = verify_check(checks)
     if not verify or verify.get("status") != "completed":
+        # A deterministic publication error (for example an invented internal link)
+        # is independent of the pending verify result. Ask the bounded same-PR
+        # repair owner to fix it now instead of repeatedly deferring auto-merge.
+        # A verify-only failure still waits, and image-only errors remain owned by
+        # the trusted image worker because the V3 adapter declines those repairs.
+        verify_only_marker = "Fresh successful verify check is required on the current head"
+        deterministic_errors = [error for error in errors if error != verify_only_marker]
+        if deterministic_errors:
+            repaired = send_jules_repair(
+                repo, pr, deterministic_errors, verify, github_token, jules_key
+            )
+            if repaired:
+                return 0
         print("Fresh verify is not terminal yet; waiting for CI instead of spending a repair attempt.")
         return 0
 

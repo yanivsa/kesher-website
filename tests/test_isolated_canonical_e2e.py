@@ -463,12 +463,28 @@ class IsolatedCanonicalE2ETests(unittest.TestCase):
             "number": 1130,
             "html_url": "https://github.com/yanivsa/kesher-website/pull/1130",
             "title": "Publish Kesher article: oct15-flawed-h3",
-            "head": {"sha": "head_bad_sha"},
+            "head": {"sha": "a" * 40, "ref": "same-article-branch"},
+            "body": "https://jules.google.com/task/12345",
             "base": {"sha": "base_sha"},
             "post_data": post_bad,
         }]
-        st_bad, act_bad = run_tick(dt.datetime(2026, 10, 15, 0, 40, tzinfo=core.ISRAEL_TZ))
-        self.assertEqual(act_bad.kind, "wait")
+        # Keep the production repair adapter real; isolate only its HTTP boundary.
+        import io
+        sim_gh.repo = "yanivsa/kesher-website"
+        sim_gh.token = "isolated-test-token"
+        repair_writes = []
+        def repair_http(request, **kwargs):
+            if request.method == "GET":
+                return io.BytesIO(b"[]")
+            repair_writes.append(request.full_url)
+            return io.BytesIO(b"{}")
+        with mock.patch.dict(os.environ, {"JULES_API_KEY": "isolated-test-key"}), mock.patch("urllib.request.urlopen", side_effect=repair_http):
+            st_bad, act_bad = run_tick(dt.datetime(2026, 10, 15, 0, 40, tzinfo=core.ISRAEL_TZ))
+        self.assertEqual(act_bad.kind, "request_text_repair")
+        self.assertEqual(repair_writes, [
+            "https://jules.googleapis.com/v1alpha/sessions/12345:sendMessage",
+            "https://api.github.com/repos/yanivsa/kesher-website/issues/1130/comments",
+        ])
         self.assertIn("at least five H3 sections", act_bad.reason)
         # Image attempts were NOT consumed:
         self.assertEqual(int(st_bad["image"].get("attempt_count") or 0), 0)

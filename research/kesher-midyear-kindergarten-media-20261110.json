@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "source_slug": "changing-kindergarten-midyear",
+  "content_sha256": "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a",
+  "source_article": "https://kesher.saharoni.com/blog/changing-kindergarten-midyear",
+  "status": "PRIVATE_PREVIEW_ONLY",
+  "research": [
+    {
+      "url": "https://www.unicef.org/parenting/child-care/how-prepare-your-child-preschool",
+      "scope": "Practical guidance on preschool entry: visit, play, routine, feelings and predictable goodbye. Not a midyear-specific causal trial."
+    },
+    {
+      "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/soothing-your-childs-separation-anxiety.aspx",
+      "scope": "AAP guidance: brief consistent goodbye, specific return promise, practice separation, consult pediatrician if concerned."
+    },
+    {
+      "url": "https://aacap.org/AACAP/AACAP/Families_and_Youth/Facts_for_Families/FFF-Guide/Starting-School-082.aspx",
+      "scope": "Child-specific preparation and coordinated gradual support when significant separation difficulty."
+    },
+    {
+      "url": "https://headstart.gov/publication/supporting-transitions-both-big-and-small",
+      "scope": "Developmentally appropriate discussion, predictability, familiar routines and visits."
+    }
+  ],
+  "editorial_scope": "Existing approved article; no new post or body changes. Distinguish midyear transfer from first preschool entry. No universal adjustment timeline, no causal claim that a goodbye prevents or causes a disorder. If severe distress, safety concerns or persistent impairment, coordinate with staff and pediatrician.",
+  "scripts": {
+    "overview": [
+      "הילד עובר גן באמצע השנה? לא חייבים להתחיל מאפס. הוא נפרד מחברים, מצוות ומסדר יום מוכר, ובגן החדש כולם כבר מכירים. אפשר לעזור לו להרגיש בטוח, בלי לדרוש ממנו להסתגל מיד.",
+      "לפני המעבר, ספרו לו בשפה פשוטה מה משתנה ומה נשאר אותו דבר. למשל, בעוד כמה ימים נלך לגן חדש, ואני אאסוף אותך אחרי ארוחת הצהריים. אם אפשר, בקרו יחד בגן והכירו את הגננת ואת המקום שבו יניח את התיק.",
+      "בגן הישן, אפשר להכין ציור לצוות או להיפרד מחבר קרוב. אם מתאים לילד ולמשפחה, שמרו על קשר עם חבר אחד. לא חייבים לערוך טקס גדול, ובמצב של חשש לפגיעה, בטיחות הילד קודמת לכל.",
+      "ביום הראשון, תאמו מראש עם הגננת כיצד תיראה הפרידה. אמרו שלום ברור, ספרו מתי תחזרו וקיימו את ההבטחה. אל תיעלמו בלי לומר שלום. אפשר להישאר זמן קצר אם הצוות והילד זקוקים לכך, ולהתאים את הקצב.",
+      "בימים הבאים, שאלו את הצוות מה קורה אחרי שאתם יוצאים. האם הילד אוכל, משחק, נרגע ומוצא אדם מוכר? אל תדרשו ממנו חברים חדשים ביום הראשון. שגרה צפויה והזמנה קטנה למשחק יכולות לעזור.",
+      "אם המצוקה חזקה, מתמשכת, או פוגעת בשינה, באכילה או בתפקוד, פנו לצוות ולרופא הילדים. אין זמן הסתגלות אחד שמתאים לכולם. המטרה היא ילד שמרגיש בטוח גם כשהסביבה משתנה. למאמר המלא, הקישור בתיאור."
+    ],
+    "short": [
+      "מעבר גן באמצע שנה? הילד לא חייב להסתגל ביום הראשון. הנה שלושה דברים שאפשר לעשות.",
+      "ספרו מה משתנה ומה נשאר קבוע. אם אפשר, בקרו בגן החדש יחד והכירו את הגננת.",
+      "אפשרו פרידה קטנה מהגן הישן. ביום הראשון, אמרו שלום ברור וספרו מתי תחזרו. אל תיעלמו בלי להיפרד.",
+      "בדקו עם הצוות מה קורה אחרי שאתם יוצאים. אם המצוקה חזקה או מתמשכת, התייעצו עם רופא הילדים. המאמר המלא בקישור בתיאור."
+    ]
+  },
+  "visual_plan": {
+    "overview": [
+      "new classroom orientation with parent and teacher",
+      "parent and child exploring cubby",
+      "child gives farewell drawing to former teacher",
+      "clear goodbye at new preschool doorway",
+      "teacher gently invites child to small group play",
+      "parent calmly talking with teacher at pickup"
+    ],
+    "short": [
+      "native vertical child joining play at new preschool",
+      "native vertical child and parent entering new classroom",
+      "native vertical child giving farewell drawing",
+      "native vertical calm pickup conversation"
+    ]
+  },
+  "qa_pending": [
+    "private render, actual visual/audio/semantic QA, rights and publication admission"
+  ],
+  "article_body_sha256": "3364783a30bba0069f18a000c03c07d74420e0bf39100bd25fcb4b9fcbefa5eb",
+  "canonical_content_sha256": "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a",
+  "scene_indices": {
+    "overview": [
+      0,
+      0,
+      1,
+      3,
+      4,
+      2
+    ],
+    "short": [
+      7,
+      5,
+      6,
+      8
+    ]
+  },
+  "dedup_evidence": {
+    "source_slug": "changing-kindergarten-midyear",
+    "content_sha256": "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a",
+    "run_id": 42885523761,
+    "job_id": 130072725528,
+    "head_sha": "be26cd0a94b98a2c37e48fe754de55c8df46bd29",
+    "workflow_id": 349292838,
+    "complete": true,
+    "uploaded_video_count": 225,
+    "resolved_video_count": 215,
+    "confirmed_deleted_count": 10,
+    "candidates": [],
+    "verified_at": "2026-11-10T19:29:02Z",
+    "read_only": true
+  }
+}

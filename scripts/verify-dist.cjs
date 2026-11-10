@@ -8,7 +8,15 @@ const routes = [...STATIC_ROUTES, ...posts.filter(isPublishable).map(blogRoute)]
 const errors = [];
 const canonicalTargets = new Map();
 const SITE_ORIGIN = 'https://kesher.saharoni.com';
+const PREVIEW_ORIGIN_PATTERN = /https?:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?/gi;
 const hasNonAscii = (value) => /[^\x00-\x7F]/.test(value);
+
+const assertNoPreviewOrigin = (html, route) => {
+  const matches = [...new Set(html.match(PREVIEW_ORIGIN_PATTERN) || [])];
+  if (matches.length) {
+    errors.push(`Local preview origin leaked into prerendered HTML: ${route} -> ${matches.join(', ')}`);
+  }
+};
 
 for (const route of routes) {
   const clean = route.replace(/^\//, '');
@@ -29,6 +37,7 @@ for (const route of routes) {
   }
 
   const html = fs.readFileSync(file, 'utf8');
+  assertNoPreviewOrigin(html, route);
   if (!/<h1[\s>]/.test(html)) errors.push(`Missing h1 in prerendered HTML: ${route}`);
   const descriptions = html.match(/<meta name="description"/g) || [];
   const canonicalTags = html.match(/<link\b[^>]*\brel=["']canonical["'][^>]*>/gi) || [];
@@ -63,6 +72,7 @@ if (todaysUnicodeBlog.length === 0) {
 }
 
 const notFound = fs.readFileSync(path.join(ROOT, 'dist/404.html'), 'utf8');
+assertNoPreviewOrigin(notFound, '/404.html');
 if (!notFound.includes('noindex, nofollow')) errors.push('404 page is not noindex');
 
 if (errors.length) {

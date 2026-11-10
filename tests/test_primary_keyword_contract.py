@@ -20,6 +20,30 @@ from scripts.kesher_primary_keyword_contract import (
 
 
 class TestPrimaryKeywordContract(unittest.TestCase):
+    def test_queued_first_grade_topics_accept_relevant_slugs_and_reject_unrelated_slugs(self):
+        for slug, keyword in [
+            ("first-grade-maturity", "בשלות לכיתה א"),
+            ("emotional-preparation-first-grade", "הכנה רגשית לכיתה א"),
+            ("first-grade-adjustment", "הסתגלות לכיתה א"),
+        ]:
+            with self.subTest(keyword=keyword):
+                self.assertEqual(slug_represents_keyword(slug, keyword), (True, ""))
+                self.assertFalse(slug_represents_keyword("stock-market-investments", keyword)[0])
+                self.assertFalse(slug_represents_keyword("investment-grade-bonds", keyword)[0])
+
+    def test_midyear_kindergarten_topic_accepts_relevant_slug_only(self):
+        self.assertEqual(slug_represents_keyword("changing-kindergarten-midyear", "מעבר גן באמצע שנה"), (True, ""))
+        self.assertFalse(slug_represents_keyword("stock-market-investments", "מעבר גן באמצע שנה")[0])
+
+    def test_kindergarten_refusal_topic_accepts_relevant_slug_only(self):
+        self.assertEqual(slug_represents_keyword("child-does-not-want-kindergarten", "ילד לא רוצה ללכת לגן"), (True, ""))
+        self.assertFalse(slug_represents_keyword("stock-market-investments", "ילד לא רוצה ללכת לגן")[0])
+
+    def test_daycare_prep_and_play_topics_accept_relevant_slugs(self):
+        self.assertEqual(slug_represents_keyword("prepare-toddler-daycare", "הכנה למעון"), (True, ""))
+        self.assertEqual(slug_represents_keyword("child-not-playing-kindergarten", "ילד לא משחק בגן"), (True, ""))
+        self.assertEqual(slug_represents_keyword("good-news-response-relationship", "תגובה לבשורות טובות בזוגיות"), (True, ""))
+
     def setUp(self):
         self.posts_file = Path(__file__).resolve().parent.parent / "src" / "data" / "posts.json"
 

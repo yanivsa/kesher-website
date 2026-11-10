@@ -12,6 +12,11 @@ on:
         description: Authoritative Israel publication slot (YYYY-MM-DD)
         required: true
         type: string
+      source_slot:
+        description: Optional exact prior owner slot to rehome (YYYY-MM-DD)
+        required: false
+        default: ''
+        type: string
 
 permissions:
   contents: write
@@ -57,14 +62,21 @@ jobs:
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ inputs.pr_number }}
           SLOT: ${{ inputs.slot }}
+          SOURCE_SLOT: ${{ inputs.source_slot || '' }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from datetime import date
           import os
           slot = os.environ['SLOT']
-          if date.fromisoformat(slot).isoformat() != slot:
+          source_slot = os.environ.get('SOURCE_SLOT', '').strip()
+          target = date.fromisoformat(slot)
+          if target.isoformat() != slot:
               raise SystemExit(f'invalid slot: {slot}')
+          if source_slot:
+              source = date.fromisoformat(source_slot)
+              if source.isoformat() != source_slot or source >= target:
+                  raise SystemExit(f'invalid source slot rehome: {source_slot} -> {slot}')
           PY
 
           gh api "repos/${REPO}/pulls/${PR_NUMBER}" > /tmp/pr.json
@@ -113,7 +125,10 @@ jobs:
           base = json.loads(Path('/tmp/main-posts.json').read_text(encoding='utf-8'))
           recent = json.loads(Path('/tmp/main-posts-recent.json').read_text(encoding='utf-8'))
           head = json.loads(Path('/tmp/head-posts.json').read_text(encoding='utf-8'))
-          article = extract_target_article(base, head, os.environ['SLOT'], recent_posts=recent)
+          source_slot = os.environ.get('SOURCE_SLOT', '').strip() or None
+          article = extract_target_article(
+              base, head, os.environ['SLOT'], recent_posts=recent, source_slot=source_slot
+          )
 
           # Pipeline V4 ownership: the trusted image worker is the only image
           # mutator. Discard any legacy/untrusted article-image attachment here.

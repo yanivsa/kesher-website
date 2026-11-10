@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -10,6 +11,31 @@ from scripts import jules_article_runner_v4 as runner
 
 
 class JulesArticleRunnerV4Tests(unittest.TestCase):
+    def test_real_exact_pr_candidate_accepts_canonical_url_and_enforces_owned_quality(self):
+        pr = {"number": 1209, "state": "open", "base": {"sha": "a" * 40}, "head": {"sha": "b" * 40}}
+        post = {"id": "changing-kindergarten-midyear", "date": "2026-10-25", "content": "<p>תוכן</p>"}
+        with mock.patch.object(runner.v3.core, "request_json", return_value=pr), mock.patch.object(runner, "_github_posts_at_ref", side_effect=[[], [post]]):
+            actual, candidate = runner._exact_pr_candidate("token", "https://github.com/yanivsa/kesher-website/pull/1209")
+        self.assertEqual(actual["number"], 1209)
+        self.assertIs(candidate.get("controllerManaged"), True)
+        self.assertNotIn("controllerManaged", post)
+        errors = runner.article_quality.full_article_violations(candidate)
+        self.assertTrue(any("evidence_missing" in x for x in errors), errors)
+
+    def test_real_same_pr_wait_accepts_canonical_url(self):
+        with mock.patch.object(runner.v3.core, "request_json", side_effect=[{"state": "COMPLETED"}, {"head": {"sha": "b" * 40}}]):
+            self.assertTrue(runner._wait_for_same_pr_repair("token", "key", "sessions/1", "https://github.com/yanivsa/kesher-website/pull/1209", "a" * 40))
+
+    def test_both_pr_paths_reject_wrong_host_repo_and_suffix_before_network(self):
+        urls = ["https://githubXcom/yanivsa/kesher-website/pull/1209", "https://github.com/other/repo/pull/1209", "https://github.com/yanivsa/kesher-website/pull/1209/extra"]
+        for url in urls:
+            with self.subTest(url=url), mock.patch.object(runner.v3.core, "request_json") as request:
+                with self.assertRaises(runner.v3.core.ArticleRunnerError):
+                    runner._exact_pr_candidate("token", url)
+                with self.assertRaises(runner.v3.core.ArticleRunnerError):
+                    runner._wait_for_same_pr_repair("token", "key", "sessions/1", url, "a" * 40)
+                request.assert_not_called()
+
     def test_failure_diagnostic_is_persisted_for_preserved_session(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "result.json"
@@ -144,6 +170,72 @@ class JulesArticleRunnerV4Tests(unittest.TestCase):
             prompt = runner.build_prompt("2026-10-19", "POLICY")
         self.assertIn("Primary Keyword == 'גמילה מטיטול'", prompt)
         self.assertNotIn("date == 2026-10-19", prompt)
+
+
+    def test_post_pr_quality_repair_reuses_same_session_and_same_pr(self):
+        initial = {"number": 1201, "head": {"sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
+        bad = {"id": "transition-to-municipal-kindergarten"}
+        fixed = {"id": "transition-to-municipal-kindergarten"}
+        with tempfile.TemporaryDirectory() as td:
+            path = Path(td) / "result.json"
+            path.write_text(json.dumps({
+                "slot": "2026-10-25",
+                "outcome": "PR_CREATED",
+                "session_id": "sessions/15753735730558289470",
+                "pr_url": "https://github.com/yanivsa/kesher-website/pull/1201",
+            }), encoding="utf-8")
+            with mock.patch.dict(os.environ, {
+                "GITHUB_TOKEN": "token",
+                "JULES_API_KEY": "key",
+                "KESHER_ARTICLE_RESULT_PATH": str(path),
+            }, clear=False), mock.patch.object(
+                runner, "_exact_pr_candidate", side_effect=[(initial, bad), (initial, fixed)]
+            ), mock.patch.object(
+                runner.article_quality, "full_article_violations", side_effect=[
+                    ["evidence_missing: missing", "internal_blog_links: found 0"], []
+                ]
+            ), mock.patch.object(
+                runner.v3.core, "send_message"
+            ) as send_message, mock.patch.object(
+                runner, "_wait_for_same_pr_repair", return_value=True
+            ) as wait_repair:
+                ok = runner.enforce_post_pr_quality()
+
+            self.assertTrue(ok)
+            send_message.assert_called_once()
+            self.assertEqual(send_message.call_args.args[1], "15753735730558289470")
+            self.assertIn("SAME PR", send_message.call_args.args[2])
+            wait_repair.assert_called_once_with(
+                "token", "key", "sessions/15753735730558289470",
+                "https://github.com/yanivsa/kesher-website/pull/1201",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            )
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(payload["pre_pr_quality_status"], "passed")
+            self.assertTrue(payload["pre_pr_quality_repaired"])
+
+    def test_post_pr_quality_passes_without_repair_when_contract_is_clean(self):
+        article = {"id": "transition-to-municipal-kindergarten"}
+        with tempfile.TemporaryDirectory() as td:
+            path = Path(td) / "result.json"
+            path.write_text(json.dumps({
+                "slot": "2026-10-25",
+                "outcome": "PR_CREATED",
+                "session_id": "sessions/1",
+                "pr_url": "https://github.com/yanivsa/kesher-website/pull/1201",
+            }), encoding="utf-8")
+            with mock.patch.dict(os.environ, {
+                "GITHUB_TOKEN": "token",
+                "JULES_API_KEY": "key",
+                "KESHER_ARTICLE_RESULT_PATH": str(path),
+            }, clear=False), mock.patch.object(
+                runner, "_exact_pr_candidate", return_value=({"number": 1201}, article)
+            ), mock.patch.object(
+                runner.article_quality, "full_article_violations", return_value=[]
+            ), mock.patch.object(runner.v3.core, "send_message") as send_message:
+                ok = runner.enforce_post_pr_quality()
+            self.assertTrue(ok)
+            send_message.assert_not_called()
 
 
 if __name__ == "__main__":

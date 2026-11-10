@@ -2,21 +2,27 @@ name: Kesher Stability PR Validation
 
 on:
   pull_request:
+  workflow_run:
+    workflows: ["Kesher Article Normalizer"]
+    types: [completed]
 
 permissions:
   contents: read
 
 concurrency:
-  group: kesher-stability-${{ github.ref }}
+  group: kesher-stability-${{ github.event.workflow_run.head_sha || github.ref }}
   cancel-in-progress: true
 
 jobs:
   validate:
+    if: github.event_name == 'pull_request' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout pull-request merge commit
+      - name: Checkout exact candidate
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Set up Python 3.12
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
@@ -31,6 +37,7 @@ jobs:
           set -euo pipefail
           python -m unittest \
             tests.test_article_image_contract \
+            tests.test_trusted_image_recovery_boundary \
             tests.test_kesher_article_public \
             tests.test_kesher_publication_manifest \
             tests.test_kesher_autonomous_controller \
@@ -70,6 +77,7 @@ jobs:
             tests.kesher_daily_pipeline_suite \
             tests.test_video_review_policy \
             tests.test_video_review_schema \
+            tests.test_advisory_review_retry_identity \
             tests.test_video_reconcile \
             tests.test_kesher_content_controller \
             tests.test_kesher_controller_queue \
@@ -87,16 +95,24 @@ jobs:
             tests.test_article_normalization_head_tracking \
             tests.test_article_image_fallback_pool_and_cascade \
             tests.test_controller_child_failure_recovery \
+            tests.test_controller_repair \
+            tests.test_kesher_recovery_e2e \
             tests.test_ci_regression_suite_coverage \
             -v
 
+      - name: Check immutable Vantage Overview private safety and research contract
+        if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'owner/vantage-full-private-overview-') }}
+        run: python -m unittest tests.test_kesher_vantage_full_private_contract -v
+
   render-proof:
+    if: github.event_name == 'pull_request' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 45
     steps:
-      - name: Checkout exact pull-request merge candidate
+      - name: Checkout exact candidate
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
           persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
@@ -115,6 +131,43 @@ jobs:
           node -e 'for (const name of ["@ffmpeg-installer/ffmpeg", "@ffprobe-installer/ffprobe"]) require("fs").appendFileSync(process.env.GITHUB_PATH, require("path").dirname(require(name).path) + "\n")'
       - name: Prove real rendering preserves source audio and in-content signature
         run: python tests/real_media_render.py --output "$RUNNER_TEMP/kesher-render-proof"
+      # Same existing stability workflow. PR-only private artifact, zero YouTube calls.
+      # No source narration, so this step cannot certify scientific/audio QA.
+      - name: Render source-locked photographic Overview motion proof (private)
+        if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'owner/licensed-photo-story-overview-') }}
+        run: |
+          set -euo pipefail
+          npm ci --prefix remotion-kesher --no-audit --no-fund
+          python scripts/kesher_photo_story_private_preview.py --output "$RUNNER_TEMP/kesher-vantage-visual-proof"
+
+      - name: Archive photographic Overview PRIVATE proof (not for publication)
+        if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'owner/licensed-photo-story-overview-') && success() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-vantage-visual-only-private-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/kesher-vantage-visual-proof/
+          if-no-files-found: error
+          retention-days: 14
+
+      # Exact topic, private-only corrected full Overview. Never uses YouTube OAuth.
+      # Reuses the already-reviewed MIT/Apache-2/CC-BY voice pipeline from owner Short.
+      - name: Build corrected research-bound Hebrew full Overview PRIVATE (no upload)
+        if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'owner/vantage-full-private-overview-') }}
+        run: |
+          set -euo pipefail
+          npm ci --prefix remotion-kesher --no-audit --no-fund
+          python -m pip install 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' Pillow==11.3.0
+          python scripts/kesher_vantage_full_private.py --output "$RUNNER_TEMP/kesher-vantage-full-review"
+
+      - name: Archive corrected Vantage full Overview PRIVATE review only
+        if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'owner/vantage-full-private-overview-') && success() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-vantage-research-corrected-private-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/kesher-vantage-full-review/
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Retain synthetic render evidence
         if: success()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
@@ -122,4 +175,594 @@ jobs:
           name: synthetic-render-proof-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/kesher-render-proof/
           if-no-files-found: error
+          retention-days: 14
+
+
+  owner-asynchrony-private-preview:
+    # Exact same-repo owner PR only. No GitHub provider credentials, no public upload.
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/asynchrony-media-20261109' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout exact OWNER candidate with no credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Source-bound nonpublishing preflight
+        run: python -m scripts.kesher_owner_asynchrony_preview preflight --source-sha 7b6ae2e8dc3182d798edbf19c2d95e576b02ab093c5e2bf04bad91113a716a00
+      - name: Set up Python for licensed local speech
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up pinned Node for repository FFmpeg bundles
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned owner-direct speech and media tools
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          printf '%s\n' "$ffmpeg_dir" "$ffprobe_dir" >> "$GITHUB_PATH"
+          export PATH="$ffmpeg_dir:$ffprobe_dir:$PATH"
+          command -v ffmpeg
+          command -v ffprobe
+          python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 \
+            'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0'
+      - name: Strict identity and no-publication tests
+        run: python -m unittest tests.test_kesher_owner_asynchrony_preview -v
+      - name: Render original private Hebrew Overview and native 9 by 16 Short
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-asynchrony-hf
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_owner_asynchrony_preview preview \
+            --source-sha 7b6ae2e8dc3182d798edbf19c2d95e576b02ab093c5e2bf04bad91113a716a00 \
+            --output owner-asynchrony-media-output
+      - name: Archive reviewable PRIVATE owner outputs only
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-asynchrony-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-asynchrony-media-output/overview.mp4
+            owner-asynchrony-media-output/short.mp4
+            owner-asynchrony-media-output/overview-review-voice.wav
+            owner-asynchrony-media-output/short-review-voice.wav
+            owner-asynchrony-media-output/*-manifest.json
+            owner-asynchrony-media-output/*-visual-contact-sheet.jpg
+            owner-asynchrony-media-output/*-frame-*.jpg
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 60
+
+  owner-positivity-private-preview:
+    # Exact same-repo owner PR only. No GitHub provider credentials, no public upload.
+    if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'owner/positivity-media-20261110' || github.head_ref == 'owner/positivity-independent-asr-20261110') && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout exact OWNER candidate with no credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Source-bound nonpublishing preflight
+        run: python -m scripts.kesher_owner_positivity_preview preflight --source-sha 6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f
+      - name: Set up Python for licensed local speech
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up pinned Node for repository FFmpeg bundles
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned owner-direct speech and media tools
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          printf '%s\n' "$ffmpeg_dir" "$ffprobe_dir" >> "$GITHUB_PATH"
+          export PATH="$ffmpeg_dir:$ffprobe_dir:$PATH"
+          command -v ffmpeg
+          command -v ffprobe
+          python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 \
+            'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0'
+      - name: Strict identity and no-publication tests
+        run: python -m unittest tests.test_kesher_owner_positivity_preview -v
+      - name: Render original private Hebrew Overview and native 9 by 16 Short
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-positivity-hf
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_owner_positivity_preview preview \
+            --source-sha 6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f \
+            --output owner-positivity-media-output
+      - name: Independently transcribe original Hebrew voice OFFLINE for owner review
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-positivity-asr-hf
+        run: |
+          set -euo pipefail
+          python -m pip install 'faster-whisper==1.2.1' 'av<19'
+          python -m unittest tests.test_kesher_owner_positivity_asr -v
+          python -m scripts.kesher_owner_positivity_asr \
+            --source-sha 6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f \
+            --output owner-positivity-media-output
+      - name: Archive reviewable PRIVATE owner outputs only
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-positivity-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-positivity-media-output/overview.mp4
+            owner-positivity-media-output/short.mp4
+            owner-positivity-media-output/overview-review-voice.wav
+            owner-positivity-media-output/short-review-voice.wav
+            owner-positivity-media-output/*-manifest.json
+            owner-positivity-media-output/*-visual-contact-sheet.jpg
+            owner-positivity-media-output/*-frame-*.jpg
+            owner-positivity-media-output/*-asr.txt
+            owner-positivity-media-output/asr-review.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 60
+
+
+  owner-productive-failure-private-preview:
+    # Exact same-repo owner PR, private evidence only. Read-only prior artifact; no upload credentials.
+    permissions:
+      contents: read
+      actions: read
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/productive-failure-media-20261110' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout exact OWNER candidate with no credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Set up Python for licensed local speech
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up pinned Node for repository FFmpeg bundles
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned owner-direct speech and media tools
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          printf '%s\n' "$ffmpeg_dir" "$ffprobe_dir" >> "$GITHUB_PATH"
+          export PATH="$ffmpeg_dir:$ffprobe_dir:$PATH"
+          command -v ffmpeg
+          command -v ffprobe
+          python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' 'faster-whisper==1.2.1' 'av<19'
+      - name: Exact source preflight and targeted private Short visual repair
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_owner_productive_failure_preview preflight --source-sha 37f9b2e3ef91fa1b77b923f35281df9a66014d243389bb08e7fa1954bc86ab50
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13757158570/zip > "$RUNNER_TEMP/productive-failure-reviewed-input.zip"
+          python -m scripts.kesher_owner_productive_failure_preview repair --source-sha 37f9b2e3ef91fa1b77b923f35281df9a66014d243389bb08e7fa1954bc86ab50 --archive "$RUNNER_TEMP/productive-failure-reviewed-input.zip"
+      - name: Archive reviewable PRIVATE outputs only
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-productive-failure-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-productive-failure-media-output/overview.mp4
+            owner-productive-failure-media-output/short.mp4
+            owner-productive-failure-media-output/*-review-voice.wav
+            owner-productive-failure-media-output/*-manifest.json
+            owner-productive-failure-media-output/*-visual-contact-sheet.jpg
+            owner-productive-failure-media-output/*-frame-*.jpg
+            owner-productive-failure-media-output/*-asr.txt
+            owner-productive-failure-media-output/asr-review.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 60
+
+  owner-relationship-7500-private-preview:
+    # Exact same-repo OWNER branch, read-only private evidence; no upload credentials.
+    permissions:
+      contents: read
+      actions: read
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/relationship-7500-media-20261110' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout exact OWNER candidate with no credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Set up Python for licensed local speech
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up pinned Node for repository FFmpeg bundles
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned owner-direct speech and media tools
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          printf '%s\n' "$ffmpeg_dir" "$ffprobe_dir" >> "$GITHUB_PATH"
+          export PATH="$ffmpeg_dir:$ffprobe_dir:$PATH"
+          command -v ffmpeg
+          command -v ffprobe
+          python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' 'faster-whisper==1.2.1' 'av<19'
+      - name: Exact source preflight and targeted private Short safety repair
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HF_HOME: ${{ runner.temp }}/owner-7500-hf
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_owner_7500_preview preflight --source-sha 797750526c533f41e661123dc86339da3f0a5721d5eff820d70937ee7f6d5bdd
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13765047330/zip > "$RUNNER_TEMP/owner-7500-reviewed-input.zip"
+          python -m scripts.kesher_owner_7500_preview repair --source-sha 797750526c533f41e661123dc86339da3f0a5721d5eff820d70937ee7f6d5bdd --archive "$RUNNER_TEMP/owner-7500-reviewed-input.zip"
+      - name: Transcribe repaired final Short audio offline; preserve Overview evidence
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-7500-asr-hf
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_owner_7500_preview asr-short --source-sha 797750526c533f41e661123dc86339da3f0a5721d5eff820d70937ee7f6d5bdd
+      - name: Archive reviewable PRIVATE outputs only
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-7500-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-7500-media-output/overview.mp4
+            owner-7500-media-output/short.mp4
+            owner-7500-media-output/*-review-voice.wav
+            owner-7500-media-output/*-manifest.json
+            owner-7500-media-output/*-visual-contact-sheet.jpg
+            owner-7500-media-output/*-frame-*.jpg
+            owner-7500-media-output/*-asr.txt
+            owner-7500-media-output/asr-review.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 60
+      - name: Preserve failed private render evidence for targeted recovery (never publish)
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-7500-failed-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-7500-media-output/overview.mp4
+            owner-7500-media-output/short.mp4
+            owner-7500-media-output/*-review-voice.wav
+            owner-7500-media-output/*-manifest.json
+            owner-7500-media-output/*-visual-contact-sheet.jpg
+            owner-7500-media-output/*-frame-*.jpg
+            owner-7500-media-output/*-asr.txt
+            owner-7500-media-output/asr-review.json
+          if-no-files-found: ignore
+          compression-level: 0
+          retention-days: 14
+
+  owner-kindergarten-play-private-preview:
+    # Exact same-repo OWNER branch; private evidence only, no publisher credentials.
+    permissions:
+      contents: read
+      actions: read
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/kindergarten-play-media-20261110' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout exact OWNER candidate with no credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Set up Python for licensed local speech
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up pinned Node for repository FFmpeg bundles
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned owner-direct speech and media tools
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          printf '%s\n' "$ffmpeg_dir" "$ffprobe_dir" >> "$GITHUB_PATH"
+          export PATH="$ffmpeg_dir:$ffprobe_dir:$PATH"
+          python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' 'faster-whisper==1.2.1' 'av<19'
+      - name: Exact source, photo and private-only contract
+        run: |
+          set -euo pipefail
+          python -m unittest tests.test_kesher_owner_kindergarten_play_preview -v
+          python -m scripts.kesher_owner_kindergarten_play_preview preflight --source-sha 60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa
+      - name: Verify existing exact private archive instead of rendering duplicate media
+        if: ${{ github.event.action != 'opened' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          sha256sum -c <<'CHECKSUMS'
+          1111f202ae94d506d650634cc1db764ec413d84f4ef740558e62c06fc58db048  research/kesher-kindergarten-play-media-20261110.json
+          db86a5719c62ac5db40d939757030d8fbbbd7174d5d1ebd56639bf04c3e95e13  research/kesher-kindergarten-play-photo-provenance.json
+          58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f  scripts/kesher_daily_pipeline.py
+          4c9ca0a38bc0f0078ef2875f2ed2342b8e043cfd29e7819cbbbf5c8416e67ebf  scripts/kesher_owner_kindergarten_play_preview.py
+          743a4425f026c9c6ed153c7479c01ddd634a733a6434e62440d8a2ae520c0c1c  scripts/kesher_owner_positivity_asr.py
+          baf564c273d1b4408f39dce5241e415c40501ffcd61ab97d59c02a057366c8bc  scripts/kesher_owner_positivity_preview.py
+          016b0f73870d71be542c52f9e703b16e4d7331306c11cb085e66ed2d6267c252  scripts/kesher_owner_vantage_short.py
+          53d41192533c211b4dd35e1b018f0242dd3e146b401a791eef8ad4b4672a2355  tests/test_kesher_owner_kindergarten_play_preview.py
+          CHECKSUMS
+          actual="$(gh api repos/yanivsa/kesher-website/actions/artifacts/13787755454 --jq '[.id, .digest, .expired, .workflow_run.head_sha] | @tsv')"
+          expected="$(printf '%s\t%s\t%s\t%s' 13787755454 sha256:bfd6fca1b962555d34ae02e652ec02775ccfd9e3d21d43c2b4ade2557c5b6ccb false aa96fd2356d95f89efb6fe9e5c27ffb22bc7f073)"
+          test "$actual" = "$expected"
+          echo 'EXACT_PRIVATE_ARCHIVE_REUSED: 13787755454; no new media generated'
+      - name: Repair only the ambiguous closing sentence from the exact reviewed Short
+        id: targeted_audio_repair
+        if: ${{ github.event.action != 'opened' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python -m unittest tests.test_kesher_owner_kindergarten_audio_repair -v
+          count="$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-kindergarten-play-targeted-audio-repair-60374e686f78 --jq '.total_count')"
+          if [ "$count" = 1 ]; then
+            test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-kindergarten-play-targeted-audio-repair-60374e686f78 --jq '.artifacts[0].expired')" = false
+            echo 'Existing exact targeted repair archive retained; no duplicate repair'
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          test "$count" = 0
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13787755454/zip > "$RUNNER_TEMP/kindergarten-original.zip"
+          python -m scripts.kesher_owner_kindergarten_audio_repair --archive "$RUNNER_TEMP/kindergarten-original.zip" --output owner-kindergarten-play-repaired-output
+          echo 'ready=true' >> "$GITHUB_OUTPUT"
+      - name: Independently transcribe the repaired final audio
+        if: ${{ steps.targeted_audio_repair.outputs.ready == 'true' }}
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-kindergarten-play-asr-hf
+        run: python -m scripts.kesher_owner_kindergarten_play_preview asr --source-sha 60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa --output owner-kindergarten-play-repaired-output
+      - name: Archive exact targeted repair and unchanged Short for private QA
+        if: ${{ steps.targeted_audio_repair.outputs.ready == 'true' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-kindergarten-play-targeted-audio-repair-60374e686f78
+          path: |
+            owner-kindergarten-play-repaired-output/overview.mp4
+            owner-kindergarten-play-repaired-output/short.mp4
+            owner-kindergarten-play-repaired-output/*-review-voice.wav
+            owner-kindergarten-play-repaired-output/*-manifest.json
+            owner-kindergarten-play-repaired-output/*-visual-contact-sheet.jpg
+            owner-kindergarten-play-repaired-output/*-frame-*.jpg
+            owner-kindergarten-play-repaired-output/*-asr.txt
+            owner-kindergarten-play-repaired-output/asr-review.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 60
+      - name: Prove exact approved publication bundle without YouTube credentials or upload
+        if: ${{ github.event.action != 'opened' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python -m unittest tests.test_kesher_owner_media_quality -v
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13788929727/zip > "$RUNNER_TEMP/kindergarten-approved.zip"
+          python - <<'PY'
+          import os, tempfile
+          from pathlib import Path
+          from scripts import kesher_owner_reviewed_publish as p
+          cfg = p.source_config("child-not-playing-kindergarten", "60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa")
+          with tempfile.TemporaryDirectory() as tmp:
+              dest = Path(tmp)
+              p.archive_files(Path(os.environ["RUNNER_TEMP"]) / "kindergarten-approved.zip", dest, cfg)
+              p.verify_live_article(cfg)
+              for kind in p.KINDS:
+                  p.validate_bundle(cfg, dest, kind)
+              print("EXACT_APPROVED_KINDERGARTEN_BUNDLE_PASS_NO_UPLOAD", flush=True)
+          PY
+      - name: Render original private Hebrew Overview and native 9 by 16 Short
+        if: ${{ github.event.action == 'opened' }}
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-kindergarten-play-hf
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_owner_kindergarten_play_preview preview --source-sha 60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa
+      - name: Independently transcribe exact final Hebrew MP4 audio
+        if: ${{ github.event.action == 'opened' }}
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-kindergarten-play-asr-hf
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_owner_kindergarten_play_preview asr --source-sha 60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa
+      - name: Archive reviewable PRIVATE owner outputs only
+        if: ${{ github.event.action == 'opened' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-kindergarten-play-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-kindergarten-play-media-output/overview.mp4
+            owner-kindergarten-play-media-output/short.mp4
+            owner-kindergarten-play-media-output/*-review-voice.wav
+            owner-kindergarten-play-media-output/*-manifest.json
+            owner-kindergarten-play-media-output/*-visual-contact-sheet.jpg
+            owner-kindergarten-play-media-output/*-frame-*.jpg
+            owner-kindergarten-play-media-output/*-asr.txt
+            owner-kindergarten-play-media-output/asr-review.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 60
+      - name: Preserve failed private render evidence for targeted recovery (never publish)
+        if: ${{ failure() && github.event.action == 'opened' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-kindergarten-play-failed-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-kindergarten-play-media-output/overview.mp4
+            owner-kindergarten-play-media-output/short.mp4
+            owner-kindergarten-play-media-output/*-review-voice.wav
+            owner-kindergarten-play-media-output/*-manifest.json
+            owner-kindergarten-play-media-output/*-visual-contact-sheet.jpg
+            owner-kindergarten-play-media-output/*-frame-*.jpg
+            owner-kindergarten-play-media-output/*-asr.txt
+            owner-kindergarten-play-media-output/asr-review.json
+          if-no-files-found: ignore
+          compression-level: 0
+          retention-days: 14
+
+  owner-midyear-kindergarten-private-preview:
+    # Exact same-repo OWNER branch; private evidence only, no publisher credentials.
+    permissions:
+      contents: read
+      actions: read
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/midyear-kindergarten-media-20261110' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout exact OWNER candidate with no credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Set up Python for licensed local speech
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up pinned Node for repository FFmpeg bundles
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned owner-direct speech and media tools
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          printf '%s\n' "$ffmpeg_dir" "$ffprobe_dir" >> "$GITHUB_PATH"
+          export PATH="$ffmpeg_dir:$ffprobe_dir:$PATH"
+          python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' 'faster-whisper==1.2.1' 'av<19'
+      - name: Exact source, photo and private-only contract
+        run: |
+          set -euo pipefail
+          python -m unittest tests.test_kesher_owner_midyear_kindergarten_preview tests.test_kesher_owner_midyear_kindergarten_repair tests.test_kesher_owner_midyear_kindergarten_cta_repair -v
+          python -m scripts.kesher_owner_midyear_kindergarten_preview preflight --source-sha 5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a
+      - name: Verify exact source probe and absence of prior private production
+        id: admission
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("research/kesher-midyear-kindergarten-media-20261110.json").read_text())
+          e=p["dedup_evidence"]
+          assert e["source_slug"] == "changing-kindergarten-midyear"
+          assert e["content_sha256"] == "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a"
+          assert e["candidates"] == [] and e["complete"] is True
+          PY
+          run_id="$(python -c 'import json; print(json.load(open("research/kesher-midyear-kindergarten-media-20261110.json"))["dedup_evidence"]["run_id"])')"
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/"$run_id" --jq .conclusion)" = success
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/"$run_id" --jq .head_sha)" = be26cd0a94b98a2c37e48fe754de55c8df46bd29
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/"$run_id" --jq .workflow_id)" = 349292838
+          count="$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-midyear-kindergarten-final-evidence-5b0d6c5e8ba2 --jq .total_count)"
+          if [ "$count" = 1 ]; then
+            test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-midyear-kindergarten-final-evidence-5b0d6c5e8ba2 --jq '.artifacts[0].expired')" = false
+            test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-midyear-kindergarten-final-evidence-5b0d6c5e8ba2 --jq '.artifacts[0].id')" = 13797277927
+            gh api repos/yanivsa/kesher-website/actions/artifacts/13797277927/zip > "$RUNNER_TEMP/midyear-final.zip"
+            python -m unittest tests.test_kesher_owner_media_quality -v
+            python - "$RUNNER_TEMP/midyear-final.zip" <<'PY'
+          import sys, tempfile
+          from pathlib import Path
+          from scripts import kesher_owner_reviewed_publish as publisher
+          cfg=publisher.source_config("changing-kindergarten-midyear", "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a")
+          with tempfile.TemporaryDirectory() as tmp:
+              dest=Path(tmp)
+              publisher.archive_files(Path(sys.argv[1]), dest, cfg)
+              publisher.verify_live_article(cfg)
+              for kind in publisher.KINDS:
+                  publisher.validate_bundle(cfg, dest, kind)
+          print("MIDYEAR_EXACT_REVIEWED_BUNDLE_ADMISSION_PASS_NO_UPLOAD")
+          PY
+            echo 'Exact private archive and both OWNER approvals verified; no duplicate rendering'
+            echo 'render=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          test "$count" = 0
+          test "$(gh api repos/yanivsa/kesher-website/actions/artifacts/13796284317 --jq .name)" = owner-midyear-kindergarten-private-evidence-5b0d6c5e8ba2
+          test "$(gh api repos/yanivsa/kesher-website/actions/artifacts/13796284317 --jq .expired)" = false
+          echo 'render=false' >> "$GITHUB_OUTPUT"
+          echo 'repair=false' >> "$GITHUB_OUTPUT"
+          echo 'cta=true' >> "$GITHUB_OUTPUT"
+      - name: Render original private Hebrew Overview and native 9 by 16 Short
+        if: ${{ steps.admission.outputs.render == 'true' }}
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-midyear-kindergarten-hf
+        run: python -m scripts.kesher_owner_midyear_kindergarten_preview preview --source-sha 5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a
+      - name: Recover exact failed private archive and repair only Short duration
+        if: ${{ steps.admission.outputs.repair == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13796052703/zip > "$RUNNER_TEMP/midyear-failed.zip"
+          python -m scripts.kesher_owner_midyear_kindergarten_repair --archive "$RUNNER_TEMP/midyear-failed.zip" --output owner-midyear-kindergarten-media-output
+      - name: Recover exact repaired pair and replace only incomplete Overview CTA
+        if: ${{ steps.admission.outputs.cta == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13796284317/zip > "$RUNNER_TEMP/midyear-repaired.zip"
+          python -m scripts.kesher_owner_midyear_kindergarten_cta_repair --archive "$RUNNER_TEMP/midyear-repaired.zip" --output owner-midyear-kindergarten-media-output
+      - name: Independently transcribe exact final Hebrew MP4 audio
+        if: ${{ steps.admission.outputs.cta == 'true' }}
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-midyear-kindergarten-asr-hf
+        run: python -m scripts.kesher_owner_midyear_kindergarten_preview asr --source-sha 5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a
+      - name: Archive reviewable PRIVATE owner outputs only
+        if: ${{ steps.admission.outputs.cta == 'true' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-midyear-kindergarten-final-evidence-5b0d6c5e8ba2
+          path: |
+            owner-midyear-kindergarten-media-output/overview.mp4
+            owner-midyear-kindergarten-media-output/short.mp4
+            owner-midyear-kindergarten-media-output/*-review-voice.wav
+            owner-midyear-kindergarten-media-output/*-manifest.json
+            owner-midyear-kindergarten-media-output/*-visual-contact-sheet.jpg
+            owner-midyear-kindergarten-media-output/*-frame-*.jpg
+            owner-midyear-kindergarten-media-output/*-asr.txt
+            owner-midyear-kindergarten-media-output/asr-review.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 60
+      - name: Preserve failed private render evidence for targeted recovery (never publish)
+        if: ${{ failure() && steps.admission.outputs.cta == 'true' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-midyear-kindergarten-failed-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-midyear-kindergarten-media-output/overview.mp4
+            owner-midyear-kindergarten-media-output/short.mp4
+            owner-midyear-kindergarten-media-output/*-review-voice.wav
+            owner-midyear-kindergarten-media-output/*-manifest.json
+            owner-midyear-kindergarten-media-output/*-visual-contact-sheet.jpg
+            owner-midyear-kindergarten-media-output/*-frame-*.jpg
+            owner-midyear-kindergarten-media-output/*-asr.txt
+            owner-midyear-kindergarten-media-output/asr-review.json
+          if-no-files-found: ignore
+          compression-level: 0
           retention-days: 14

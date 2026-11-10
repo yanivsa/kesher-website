@@ -8,6 +8,21 @@ import BlogPost from '../src/pages/Blog/BlogPost';
 const pillar = posts.find((post) => post.id === 'how-to-identify-a-gifted-child-parents-guide');
 
 describe('gifted-child SEO topic cluster', () => {
+  it('keeps editorial cluster posts outside the daily controller publication slot', () => {
+    const editorialIds = [
+      'how-to-talk-to-child-about-being-gifted',
+      'gifted-test-accepted-what-next',
+      'gifted-test-not-accepted-parent-response',
+      'gifted-test-emotional-preparation',
+    ];
+
+    for (const id of editorialIds) {
+      const post = posts.find((row) => row.id === id);
+      expect(post).toBeDefined();
+      expect(post?.controllerManaged).toBe(false);
+    }
+  });
+
   it('targets the broad "מה זה ילד מחונן" search intent on the pillar page', () => {
     expect(pillar).toBeDefined();
     expect(pillar?.title).toContain('מה זה ילד מחונן');

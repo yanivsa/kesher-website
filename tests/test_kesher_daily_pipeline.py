@@ -292,6 +292,83 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(len(saved), 2)
         self.assertNotEqual(saved[0]["source"]["content_sha256"], saved[1]["source"]["content_sha256"])
 
+    def test_exact_recovery_advances_source_selected_item_without_duplicate(self) -> None:
+        post = hebrew_post("shared-laughter-couples-intimacy", "2026-10-30")
+        self.write_posts([post])
+        source = pipeline.source_metadata(post)
+        item = pipeline.new_item(source)
+        item["status"] = "source_selected"
+        item["source_id"] = None
+        item["task_id"] = None
+        item["artifact_id"] = None
+        original_id = item["id"]
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+
+        def fake_add_source(state, current, *, allow_exact_recovery=False):
+            self.assertTrue(allow_exact_recovery)
+            self.assertEqual(current["id"], original_id)
+            current["source_id"] = "source-exact"
+            current["status"] = "source_added"
+
+        def fake_start_generation(state, current, *, allow_exact_recovery=False):
+            self.assertTrue(allow_exact_recovery)
+            self.assertEqual(current["id"], original_id)
+            current["task_id"] = "task-exact"
+            current["artifact_id"] = "task-exact"
+            current["status"] = "generating"
+
+        with mock.patch.dict(os.environ, {
+            "TARGET_ITEM_ID": original_id,
+            "TARGET_SLUG": source["slug"],
+            "TARGET_CONTENT_SHA256": source["content_sha256"],
+            "OPERATION": "recovery",
+            "KESHER_RECOVERY_MODE": "true",
+        }, clear=False), mock.patch.object(pipeline, "auth_preflight"), mock.patch.object(
+            pipeline, "add_source", side_effect=fake_add_source
+        ) as add_source, mock.patch.object(
+            pipeline, "start_generation", side_effect=fake_start_generation
+        ) as start_generation, mock.patch.object(
+            pipeline, "wait_for_generation", return_value=False
+        ):
+            self.assertEqual(pipeline.run_generation(0, None, slug=source["slug"], item_id=original_id), 0)
+
+        add_source.assert_called_once()
+        start_generation.assert_called_once()
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(len(saved), 1)
+        self.assertEqual(saved[0]["id"], original_id)
+        self.assertEqual(saved[0]["source"]["content_sha256"], source["content_sha256"])
+
+    def test_exact_recovery_refuses_source_selected_with_existing_provider_identifier(self) -> None:
+        row = hebrew_post("shared-laughter-couples-intimacy", "2026-10-30")
+        self.write_posts([row])
+        source = pipeline.source_metadata(row)
+        item = pipeline.new_item(source)
+        item.update({
+            "status": "source_selected",
+            "source_id": None,
+            "task_id": "already-started",
+            "artifact_id": "already-started",
+        })
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+
+        with mock.patch.dict(os.environ, {
+            "TARGET_ITEM_ID": item["id"],
+            "TARGET_SLUG": source["slug"],
+            "TARGET_CONTENT_SHA256": source["content_sha256"],
+            "OPERATION": "recovery",
+            "KESHER_RECOVERY_MODE": "true",
+        }, clear=False), mock.patch.object(pipeline, "auth_preflight"), mock.patch.object(
+            pipeline, "run_notebooklm"
+        ) as provider_call:
+            with self.assertRaisesRegex(pipeline.PipelineError, "provider identifiers already exist"):
+                pipeline.run_generation(0, None, slug=source["slug"], item_id=item["id"])
+
+        provider_call.assert_not_called()
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(len(saved), 1)
+        self.assertEqual(saved[0]["id"], item["id"])
+
     def test_active_item_concurrency_prevention(self) -> None:
         source = pipeline.source_metadata(hebrew_post())
         self.write_posts([hebrew_post()])
@@ -1701,6 +1778,29 @@ class YoutubeMetadataRecoveryTest(unittest.TestCase):
         self.assertEqual(res, 0)
         self.assertTrue(item["uploaded"])
         self.assertEqual(item["status"], "uploaded")
+
+    def test_prune_notebooklm_sources_deletes_excess_sources(self) -> None:
+        sources = [{"id": f"src-{i}", "title": f"Title {i}"} for i in range(50)]
+        deleted = []
+        def fake_run(args, timeout=120):
+            if args[0] == "source" and args[1] == "list":
+                return {"sources": sources, "count": 50}
+            if args[0] == "source" and args[1] == "delete":
+                deleted.append(args[2])
+                return {"status": "ok"}
+            return {}
+
+        with mock.patch.object(pipeline, "run_notebooklm", side_effect=fake_run):
+            pipeline.prune_notebooklm_sources("test-nb", keep_count=35)
+
+        self.assertEqual(len(deleted), 15)
+        self.assertEqual(deleted, [f"src-{i}" for i in range(15)])
+
+    def test_prune_notebooklm_sources_no_action_when_within_limit(self) -> None:
+        sources = [{"id": f"src-{i}", "title": f"Title {i}"} for i in range(10)]
+        with mock.patch.object(pipeline, "run_notebooklm", return_value={"sources": sources, "count": 10}) as run_mock:
+            pipeline.prune_notebooklm_sources("test-nb", keep_count=35)
+        self.assertEqual(run_mock.call_count, 1)
 
 
 if __name__ == "__main__":

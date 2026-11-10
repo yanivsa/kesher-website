@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "source_slug": "productive-failure-parents-learning-resilience",
+  "content_sha256": "3c591714830cf7787c453be6b11eab3d7eb8e743eed97da69d449acc9a80b5bf",
+  "media_kind": "short",
+  "media_item_id": "owner-short-20261110-37f9b2e3ef91",
+  "final_sha256": "ddfb66e82698a895f6d9b2d686dfa8faf0258bcabb5aab9b717af830a5216e3e",
+  "manifest_sha256": "37fc0c32b7e5467832b24b468c15038d51c26d8b004bd746d94d918d71eaecac",
+  "transcript_sha256": "b8b70be80a8429e40cfcf5a7e48e4ed05b531e7bca182ab7e6948361721d3c9a",
+  "visual_review_sha256": "eb0479239440a76796c9ec00a5c245e90b4c88c40569002f6292dea62de5fa48",
+  "source_file_sha256": "1d81bbab0f9afba03b85e29fcf999d9b5e7156e34d23394e1eb6a6c46e83c50e",
+  "frame_sha256": {
+    "short-frame-01.jpg": "af23b358c2dcf917fdefbad4b1f01e2d7b40c5e9f51408b36e7e87cd67662f14",
+    "short-frame-02.jpg": "e9155a1169e1f2a6981434da01c671e5482b2323a9784beb9f02464157e3f3e1",
+    "short-frame-03.jpg": "26985e813089e4cc638036473830ef5074e91faccbc6171cae92d4335919ab60",
+    "short-frame-04.jpg": "b3a3a35d5017f38af678a27310ba062d1b131740cb7fa636cc640e957dda6389",
+    "short-frame-05.jpg": "85c119fdd2fe3e3e090abe2b5e59c8aa2d2ad8d8b4c0dc0b32d80a30f300caa4",
+    "short-frame-06.jpg": "b476c215e967b1073248299b702ad0c630f6720a715cfeebb28c3651d4f243f4",
+    "short-frame-07.jpg": "7e3087a732fa11f4dc18b63a689f014b97be9c1eb2f28cd8508759d5fef6dc34",
+    "short-frame-08.jpg": "d0fce65a5f42372234bb9fb1fc7a692dcd0c199ecb595dd8f24bd840efea6b06"
+  },
+  "reviewed_by": "OWNER",
+  "reviewed_at": "2026-11-10T11:15:00Z",
+  "checks": {
+    "visual": "approved",
+    "semantic": "approved",
+    "audio": "approved",
+    "metadata": "approved",
+    "licensing": "approved"
+  },
+  "methods": {
+    "visual": "full_motion_and_frames",
+    "semantic": "research_vs_exact_transcript",
+    "audio": "authorized_audio_tool_with_script_comparison"
+  },
+  "review_notes": {
+    "visual": "נבדקו שמונת הפריימים בפועל וגליון התמונות מהגרסה המתוקנת, וכן פענוח כל 760 הפריימים ומדידת תנועה. שלוש תמונות מקוריות רלוונטיות בחיתוך מלא 9:16: ילד מתלבט, ידיים מנסות, הורה וילד לומדים. ללא רצועות טשטוש, טקסט חופף או פריימים שחורים.",
+    "semantic": "הושווה תמלול פס הקול הסופי לתסריט ולמטא-אנליזה המקורית של Sinha ו-Kapur (2021, 53 מחקרים ו-166 השוואות, DOI 10.3102/00346543211019105). נשמרו היתרון הממוצע, ההסתייגות לפי גיל וסוג משימה, הצורך בידע קודם ובהסבר לאחר ניסיון, וההנחיה לעזור מיד בעת הצפה. הדוגמה הביתית מוצגת כהתאמה מעשית ולא כהבטחה מחקרית לכל ילד.",
+    "audio": "נבדק פס הקול שחולץ מה-MP4 הסופי באמצעות FFmpeg, תמלול עצמאי ב-Descript בעברית והשוואה לתסריט ולתמלול faster-whisper. כל הטענות וההנחיות המהותיות נשמרו. שגיאות תמלול קלות בשם קאפור אינן הוכחה לכשל שמיעתי. פענוח מלא ללא שגיאות, ללא טענה להאזנה סובייקטיבית אנושית. ב-Short המתוקן חבילות AAC ודגימות PCM זהות בדיוק לגרסה שנבדקה.",
+    "metadata": "כותרת ותיאור בעברית משקפים את התוכן, קישור ישיר למאמר החי ומזהה מקור קנוני; Short כולל הפניה לסרטון המלא בערוץ. אין הבטחה מטעה.",
+    "licensing": "תמונות מקוריות שנוצרו לנושא באמצעות Adobe Firefly לפי תנאי שימוש מסחרי; BlueTTS2.5-onnx במשקולות MIT, RenikudPlus Apache-2.0 ודוגמת LibriTTS-R דוברת 6147 CC BY 4.0 עם ייחוס Google LLC. נבדקו מזהי הגרסאות המדויקים ומקורות הרישוי."
+  },
+  "rights": {
+    "commercial_use_permitted": true,
+    "voice_license_url": "https://www.openslr.org/141/",
+    "visual_license_url": "https://helpx.adobe.com/ee/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html"
+  },
+  "evidence": {
+    "github_run": 42805342726,
+    "github_artifact_id": 13757967291,
+    "video_sha256": "ddfb66e82698a895f6d9b2d686dfa8faf0258bcabb5aab9b717af830a5216e3e",
+    "audio_sha256": "254d1b6a40974a30304bf762678bb846facae016a8515e40932a2b1b4686ac4b",
+    "independent_asr_engine": "faster-whisper==1.2.1 / small / Hebrew + independent Descript final MP4 audio",
+    "independent_asr_similarity": 0.9767,
+    "human_listening": false,
+    "speech_duration_s": 30.278821,
+    "final_video_duration_s": 30.4,
+    "actual_final_audio_pcm_sha256": "14efb65c113e682bc8d4ccc6c077fed57119400bd350d1898301b0abcfcc80b6",
+    "actual_final_audio_aac_sha256": "92cba18305a9c229891f682279472716c489fc56228bbbcdafaeba9923466d9b",
+    "descript_final_audio_review_url": "https://web.descript.com/239dd37e-7fdb-4b07-b2ef-d395a035f13a/8befc",
+    "decoded_frames": 760,
+    "black_frames": 0,
+    "moving_frame_ratio": 0.999,
+    "voice_model_license_url": "https://huggingface.co/notmax123/BlueTTS2.5-onnx",
+    "g2p_license_url": "https://huggingface.co/notmax123/RenikudPlus",
+    "photo_provenance_path": "research/kesher-productive-failure-photo-provenance.json",
+    "channel": "UCx5fEFvdVf28HLAR2dFW64Q",
+    "publish_action": "NOT_AUTHORIZED_BY_CERTIFICATE_ALONE",
+    "source_binding": {
+      "artifact_body_sha256": "37f9b2e3ef91fa1b77b923f35281df9a66014d243389bb08e7fa1954bc86ab50",
+      "canonical_content_sha256": "3c591714830cf7787c453be6b11eab3d7eb8e743eed97da69d449acc9a80b5bf",
+      "method": "recomputed_same_committed_post_body_and_canonical_source",
+      "verified_at": "2026-11-10T11:15:00Z",
+      "source_deploy_sha": "a05e2b893313da41a5a4eeaf55df8074d699defe"
+    }
+  }
+}

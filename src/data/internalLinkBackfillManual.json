@@ -1,0 +1,86 @@
+[
+  {
+    "source": "child-meltdown-after-school",
+    "afterHeadingIncludes": "למה זה קורה דווקא בבית?",
+    "items": [
+      {
+        "target": "family-chores-quality-time-with-kids",
+        "anchor": "שיתוף ילדים במטלות הבית כדרך לבנות שיתוף פעולה",
+        "before": "כשהילד כבר רגוע ופנוי יותר, אפשר לחזק תחושת שותפות גם דרך ",
+        "after": " — במשימה קטנה, מותאמת גיל וללא מאבק."
+      }
+    ]
+  },
+  {
+    "source": "prepare-for-first-grade",
+    "afterHeadingIncludes": "לתרגל עצמאות במנות קטנות",
+    "items": [
+      {
+        "target": "family-chores-quality-time-with-kids",
+        "anchor": "שיתוף ילדים במטלות הבית",
+        "before": "דרך יומיומית נוספת לתרגל עצמאות, מסוגלות ושייכות היא ",
+        "after": " באמצעות משימות קצרות שמתאימות לגיל."
+      }
+    ]
+  },
+  {
+    "source": "healing-after-infidelity",
+    "afterHeadingIncludes": "",
+    "items": [
+      {
+        "href": "/couples-counseling-after-infidelity",
+        "anchor": "ייעוץ זוגי אחרי בגידה ושיקום אמון",
+        "before": "אם אתם נמצאים בתוך משבר כזה ורוצים להבין איך נראה תהליך ממוקד, אפשר לקרוא גם על ",
+        "after": "."
+      }
+    ]
+  },
+  {
+    "source": "couples-adhd-partner",
+    "afterHeadingIncludes": "",
+    "items": [
+      {
+        "href": "/couples-adhd",
+        "anchor": "ייעוץ זוגי כש-ADHD משפיע על הקשר",
+        "before": "כשהדפוס הזה כבר משפיע על הזוגיות עצמה, אפשר לקרוא גם על ",
+        "after": "."
+      }
+    ]
+  },
+  {
+    "source": "public-tantrums-emotional-regulation",
+    "afterHeadingIncludes": "",
+    "items": [
+      {
+        "href": "/parenting-guidance-early-childhood",
+        "anchor": "הדרכת הורים לגיל הרך",
+        "before": "כשהתפרצויות, גבולות ושגרה הופכים למאבק חוזר, אפשר לקרוא גם על ",
+        "after": "."
+      }
+    ]
+  },
+  {
+    "source": "siblings-fairness-vs-equality",
+    "afterHeadingIncludes": "איך עונים ל\"למה הוא קיבל יותר?\" בלי להצטדק",
+    "items": [
+      {
+        "target": "sibling-rivalry-parent-intervention",
+        "anchor": "מתי לא כדאי להיכנס לתפקיד השופט במריבות אחים",
+        "before": "כשהוויכוח כבר הופך למאבק בין האחים עצמם, חשוב לדעת גם ",
+        "after": " כדי לא לחזק בטעות תפקידי צודק ואשם."
+      }
+    ]
+  },
+  {
+    "source": "sibling-rivalry-parent-intervention",
+    "afterHeadingIncludes": "למה הניסיון שלנו לעשות צדק רק מחמיר את המצב?",
+    "items": [
+      {
+        "target": "siblings-fairness-vs-equality",
+        "anchor": "ההבדל בין שוויון להוגנות בין אחים",
+        "before": "חלק מהיציאה מתפקיד השופט הוא להבין את ",
+        "after": " — בלי לנסות לחלק כל דבר בדיוק חצי-חצי."
+      }
+    ]
+  }
+]

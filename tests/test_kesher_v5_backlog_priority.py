@@ -42,6 +42,22 @@ class KesherV5BacklogPriorityTests(unittest.TestCase):
 
         self.assertEqual([row["cycle"] for row in ordered], ["2026-09-03"])
 
+    def test_deploy_exhaustion_is_rechecked_because_public_reality_can_change(self):
+        rows = [
+            {
+                "cycle": "2026-09-06",
+                "media": {
+                    "article_live": False,
+                    "article_deploy_status": "exhausted",
+                    "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED",
+                },
+            }
+        ]
+
+        ordered = runtime.ordered_recoverable_backlog(rows)
+
+        self.assertEqual([row["cycle"] for row in ordered], ["2026-09-06"])
+
     def test_incomplete_actionable_current_cycle_blocks_backlog(self):
         self.assertFalse(
             runtime.backlog_may_run(

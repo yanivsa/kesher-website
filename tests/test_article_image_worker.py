@@ -275,7 +275,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertIn("run-name: Kesher Image PR", workflow)
         self.assertIn("ref: main", workflow)
         self.assertIn("persist-credentials: false", workflow)
-        self.assertIn("article-image-worker-v4.py", workflow)
+        self.assertIn("article-image-worker-v5.py", workflow)
         self.assertIn("GOOGLE_API_KEY", workflow)
         self.assertNotIn("UNSPLASH_ACCESS_KEY", workflow)
         self.assertIn("PEXELS_API_KEY", workflow)

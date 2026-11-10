@@ -15,6 +15,11 @@ on:
           - upload
           - rebuild
           - recovery
+          - adopt-public
+      adopt_youtube_id:
+        description: Existing public YouTube video ID, exact-source verification only; no upload
+        required: false
+        type: string
       rebuild_item_id:
         description: Exact visually rejected item to rebuild with Remotion
         required: false
@@ -31,6 +36,11 @@ on:
         description: Exact durable video item ID for upload identity lock
         required: false
         type: string
+      skip_jules_advisory:
+        description: Skip optional Jules advisory review for direct-owner takeover
+        required: false
+        default: true
+        type: boolean
 
 permissions:
   actions: write
@@ -122,52 +132,178 @@ jobs:
         if: ${{ github.event_name != 'pull_request' && inputs.operation != 'preflight' }}
         env:
           GH_TOKEN: ${{ github.token }}
+          RESTORE_OPERATION: ${{ inputs.operation }}
+          RESTORE_TARGET_ITEM_ID: ${{ inputs.target_item_id || inputs.rebuild_item_id }}
+          RESTORE_TARGET_SLUG: ${{ inputs.target_slug }}
         run: |
           set -euo pipefail
           mkdir -p "$KESHER_STATE_DIR"
-          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
-            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[].id' > /tmp/artifacts.txt
+          KESHER_STATE_FILE="$KESHER_STATE_DIR/state.json"
 
-          if [ ! -s /tmp/artifacts.txt ]; then
-            echo "No previous state artifact exists; starting with an empty state."
-            exit 0
+          # Prefer the small controller-state artifact. It is enough for provider
+          # polling and fresh retries and avoids downloading multi-GB rejected media.
+          : > /tmp/controller-artifacts.tsv
+          if ! gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-controller-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[] | [.id, (.workflow_run.id // 0)] | @tsv' \
+            > /tmp/controller-artifacts.tsv 2>/dev/null; then
+            : > /tmp/controller-artifacts.tsv
           fi
 
-          restored="false"
-          while read -r artifact_id; do
-            [ -n "$artifact_id" ] || continue
-            echo "Attempting to restore state artifact ${artifact_id}..."
-            archive="$(mktemp /tmp/kesher-video-state.XXXXXX.zip)"
+          lightweight_restored="false"
+          controller_run_id=""
+          while IFS=$'\t' read -r artifact_id artifact_run_id; do
+            [ -n "${artifact_id:-}" ] || continue
+            echo "Attempting to restore lightweight controller state artifact ${artifact_id}..."
+            archive="$(mktemp /tmp/kesher-video-controller-state.XXXXXX.zip)"
             if ! gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive" 2>/dev/null; then
-              echo "Failed to download artifact ${artifact_id}; skipping."
+              echo "Failed to download lightweight artifact ${artifact_id}; skipping."
               rm -f "$archive"
               continue
             fi
             temp_extract="$(mktemp -d)"
             if ! unzip -oq "$archive" -d "$temp_extract" 2>/dev/null; then
-              echo "Failed to unzip artifact ${artifact_id}; skipping."
+              echo "Failed to unzip lightweight artifact ${artifact_id}; skipping."
               rm -f "$archive"
               rm -rf "$temp_extract"
               continue
             fi
             if [ -s "$temp_extract/state.json" ] && python -c 'import json, sys; state=json.load(sys.stdin); assert state.get("version") == 1 and isinstance(state.get("items"), list)' < "$temp_extract/state.json" 2>/dev/null; then
-              cp -r "$temp_extract/"* "$KESHER_STATE_DIR/" || true
+              cp "$temp_extract/state.json" "$KESHER_STATE_FILE"
+              for sealed in notebooklm-storage-state.json.enc google-oauth2.json.enc; do
+                if [ -s "$temp_extract/$sealed" ]; then
+                  cp "$temp_extract/$sealed" "$KESHER_STATE_DIR/$sealed"
+                fi
+              done
+              controller_run_id="${artifact_run_id:-0}"
               rm -f "$archive"
               rm -rf "$temp_extract"
-              python -u scripts/kesher_daily_pipeline.py --report-json > /tmp/kesher-state-report.json
-              echo "Restored valid state artifact ${artifact_id}."
-              restored="true"
+              echo "Restored valid lightweight controller state artifact ${artifact_id}."
+              lightweight_restored="true"
               break
             fi
-            echo "Artifact ${artifact_id} is missing or invalid; skipping."
+            echo "Lightweight artifact ${artifact_id} is missing or invalid; skipping."
             rm -f "$archive"
             rm -rf "$temp_extract"
-          done < /tmp/artifacts.txt
+          done < /tmp/controller-artifacts.tsv
 
-          if [ "$restored" != "true" ]; then
-            echo "Durable video-state artifacts exist but none is trustworthy; refusing a fresh state to prevent duplicate generation." >&2
+          # Backward-compatible migration path: repositories without a valid
+          # lightweight artifact still restore the legacy durable artifact exactly.
+          if [ "$lightweight_restored" != "true" ]; then
+            gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
+              --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[].id' > /tmp/artifacts.txt
+
+            if [ ! -s /tmp/artifacts.txt ]; then
+              echo "No previous state artifact exists; starting with an empty state."
+              exit 0
+            fi
+
+            restored="false"
+            while read -r artifact_id; do
+              [ -n "$artifact_id" ] || continue
+              echo "Attempting to restore state artifact ${artifact_id}..."
+              archive="$(mktemp /tmp/kesher-video-state.XXXXXX.zip)"
+              if ! gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive" 2>/dev/null; then
+                echo "Failed to download artifact ${artifact_id}; skipping."
+                rm -f "$archive"
+                continue
+              fi
+              temp_extract="$(mktemp -d)"
+              if ! unzip -oq "$archive" -d "$temp_extract" 2>/dev/null; then
+                echo "Failed to unzip artifact ${artifact_id}; skipping."
+                rm -f "$archive"
+                rm -rf "$temp_extract"
+                continue
+              fi
+              if [ -s "$temp_extract/state.json" ] && python -c 'import json, sys; state=json.load(sys.stdin); assert state.get("version") == 1 and isinstance(state.get("items"), list)' < "$temp_extract/state.json" 2>/dev/null; then
+                cp -a "$temp_extract/." "$KESHER_STATE_DIR/"
+                rm -f "$archive"
+                rm -rf "$temp_extract"
+                python -u scripts/kesher_daily_pipeline.py --report-json > /tmp/kesher-state-report.json
+                echo "Restored valid state artifact ${artifact_id}."
+                restored="true"
+                break
+              fi
+              echo "Artifact ${artifact_id} is missing or invalid; skipping."
+              rm -f "$archive"
+              rm -rf "$temp_extract"
+            done < /tmp/artifacts.txt
+
+            if [ "$restored" != "true" ]; then
+              echo "Durable video-state artifacts exist but none is trustworthy; refusing a fresh state to prevent duplicate generation." >&2
+              exit 1
+            fi
+            exit 0
+          fi
+
+          python -u scripts/kesher_daily_pipeline.py --report-json > /tmp/kesher-state-report.json
+          # Adopting an already-public YouTube ID is strictly metadata-only.
+          # Never require an MP4 or route this no-upload operation to the generation parser.
+          if [ "${RESTORE_OPERATION:-}" = "adopt-public" ]; then
+            echo "Adopt-public: authoritative lightweight state restored; no media hydration needed."
+            exit 0
+          fi
+          restore_args=(--requires-durable-media-restore)
+          if [ -n "${RESTORE_OPERATION:-}" ]; then restore_args+=(--operation "$RESTORE_OPERATION"); fi
+          if [ -n "${RESTORE_TARGET_ITEM_ID:-}" ]; then restore_args+=(--item-id "$RESTORE_TARGET_ITEM_ID"); fi
+          if [ -n "${RESTORE_TARGET_SLUG:-}" ]; then restore_args+=(--slug "$RESTORE_TARGET_SLUG"); fi
+          needs_heavy="$(python -u scripts/kesher_daily_pipeline.py "${restore_args[@]}" | tail -n 1)"
+          if [ "$needs_heavy" = "false" ]; then
+            echo "Skipping durable media hydration; lightweight state is sufficient for this operation."
+            exit 0
+          fi
+          if [ "$needs_heavy" != "true" ]; then
+            echo "Durable media restore policy returned an invalid decision: $needs_heavy" >&2
             exit 1
           fi
+
+          echo "Durable media hydration is required for this exact operation."
+          cp "$KESHER_STATE_FILE" /tmp/kesher-lightweight-state.json
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[] | [.id, (.workflow_run.id // 0)] | @tsv' \
+            > /tmp/durable-artifacts.tsv
+          : > /tmp/durable-candidates.txt
+          if [ -n "${controller_run_id:-}" ] && [ "$controller_run_id" != "0" ]; then
+            awk -F '\t' -v run="$controller_run_id" '$2 == run {print $1}' /tmp/durable-artifacts.tsv >> /tmp/durable-candidates.txt
+          fi
+          awk -F '\t' -v run="${controller_run_id:-0}" '$2 != run {print $1}' /tmp/durable-artifacts.tsv >> /tmp/durable-candidates.txt
+
+          hydrated="false"
+          while read -r artifact_id; do
+            [ -n "$artifact_id" ] || continue
+            echo "Attempting to hydrate durable media artifact ${artifact_id}..."
+            archive="$(mktemp /tmp/kesher-video-state.XXXXXX.zip)"
+            if ! gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive" 2>/dev/null; then
+              echo "Failed to download durable artifact ${artifact_id}; skipping."
+              rm -f "$archive"
+              continue
+            fi
+            temp_extract="$(mktemp -d)"
+            if ! unzip -oq "$archive" -d "$temp_extract" 2>/dev/null; then
+              echo "Failed to unzip durable artifact ${artifact_id}; skipping."
+              rm -f "$archive"
+              rm -rf "$temp_extract"
+              continue
+            fi
+            if [ -s "$temp_extract/state.json" ] \
+              && python -c 'import json, sys; state=json.load(sys.stdin); assert state.get("version") == 1 and isinstance(state.get("items"), list)' < "$temp_extract/state.json" 2>/dev/null \
+              && cmp -s /tmp/kesher-lightweight-state.json "$temp_extract/state.json"; then
+              cp -a "$temp_extract/." "$KESHER_STATE_DIR/"
+              rm -f "$archive"
+              rm -rf "$temp_extract"
+              echo "Hydrated durable media from exact matching artifact ${artifact_id}."
+              hydrated="true"
+              break
+            fi
+            echo "Durable artifact ${artifact_id} does not match the authoritative lightweight state; skipping."
+            rm -f "$archive"
+            rm -rf "$temp_extract"
+          done < /tmp/durable-candidates.txt
+
+          if [ "$hydrated" != "true" ]; then
+            echo "Heavy media is required but no durable artifact exactly matches the authoritative lightweight state." >&2
+            exit 1
+          fi
+          python -u scripts/kesher_daily_pipeline.py --report-json > /tmp/kesher-state-report.json
 
       - name: Seed an exact orphaned-task recovery state
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') }}
@@ -278,6 +414,33 @@ jobs:
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') }}
         run: python -u scripts/kesher_daily_pipeline.py --preflight
 
+      - name: Prune historical NotebookLM sources
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') }}
+        continue-on-error: true
+        run: python -u scripts/kesher_daily_pipeline.py --prune-sources
+
+      - name: Adopt and verify existing exact public YouTube Overview without uploading
+        if: ${{ inputs.operation == 'adopt-public' }}
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          ADOPT_YOUTUBE_ID: ${{ inputs.adopt_youtube_id }}
+          ADOPT_SLUG: ${{ inputs.target_slug }}
+          ADOPT_SHA: ${{ inputs.target_content_sha256 }}
+          ADOPT_ITEM: ${{ inputs.target_item_id }}
+        run: |
+          set -euo pipefail
+          test -n "$ADOPT_YOUTUBE_ID"
+          test -n "$ADOPT_SLUG"
+          test -n "$ADOPT_SHA"
+          test -n "$ADOPT_ITEM"
+          python -u scripts/kesher_video_reconcile.py \
+            --adopt-verified-public-overview-id "$ADOPT_YOUTUBE_ID" \
+            --slug "$ADOPT_SLUG" \
+            --content-sha256 "$ADOPT_SHA" \
+            --item-id "$ADOPT_ITEM"
+
       - name: Prepare exact daily Video Overview generation
         id: prepare_generation
         if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery' }}
@@ -314,7 +477,7 @@ jobs:
           python -u scripts/kesher_daily_pipeline.py --remotion-rebuild-item "${{ inputs.rebuild_item_id }}"
 
       - name: Detect pending advisory Jules review
-        if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' || inputs.operation == 'recovery' }}
+        if: ${{ (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' || inputs.operation == 'recovery') && inputs.skip_jules_advisory != true }}
         id: pending
         continue-on-error: true
         run: |
@@ -328,19 +491,6 @@ jobs:
               output.write(f"found={str(found).lower()}\n")
               output.write(f"item_id={item['id']}\n")
           PYCODE
-
-      - name: Publish immutable evidence bundle for advisory Jules review
-        if: ${{ steps.pending.outputs.found == 'true' }}
-        id: review_artifact
-        continue-on-error: true
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        with:
-          name: kesher-video-review-${{ github.run_id }}
-          path: ${{ env.KESHER_STATE_DIR }}
-          if-no-files-found: error
-          retention-days: 1
-          compression-level: 0
-          include-hidden-files: true
 
       - name: Publish minimal evidence branch for advisory Jules review
         if: ${{ steps.pending.outputs.found == 'true' }}
@@ -372,35 +522,29 @@ jobs:
             echo "evidence_root=${evidence_root}"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Jules performs strict advisory review
+      - name: Dispatch strict advisory Jules review
         if: ${{ steps.pending.outputs.found == 'true' && steps.review_branch.outputs.branch != '' }}
         continue-on-error: true
-        env:
-          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
-        run: |
-          set -euo pipefail
-          python -u scripts/jules_video_reviewer_v3.py \
-            --state-dir "$KESHER_STATE_DIR" \
-            --target-slug "$TARGET_SLUG" \
-            --target-content-sha256 "$TARGET_CONTENT_SHA256" \
-            --item-id "${{ steps.pending.outputs.item_id }}" \
-            --review-branch "${{ steps.review_branch.outputs.branch }}" \
-            --evidence-root "${{ steps.review_branch.outputs.evidence_root }}" \
-            --timeout-seconds 900
-
-      - name: Delete temporary Jules evidence branch
-        if: ${{ always() && steps.review_branch.outputs.branch != '' }}
+        timeout-minutes: 2
         env:
           GH_TOKEN: ${{ github.token }}
           REVIEW_BRANCH: ${{ steps.review_branch.outputs.branch }}
-        run: gh api --method DELETE "repos/${GITHUB_REPOSITORY}/git/refs/heads/${REVIEW_BRANCH}" || true
-
-      - name: Delete completed Jules review artifact
-        if: ${{ always() && steps.review_artifact.outputs.artifact-id != '' }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REVIEW_ARTIFACT_ID: ${{ steps.review_artifact.outputs.artifact-id }}
-        run: gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${REVIEW_ARTIFACT_ID}" || true
+          EVIDENCE_ROOT: ${{ steps.review_branch.outputs.evidence_root }}
+          REVIEW_ITEM_ID: ${{ steps.pending.outputs.item_id }}
+        run: |
+          set -euo pipefail
+          if gh workflow run kesher-video-advisory-review.yml \
+            --ref main \
+            -f review_branch="$REVIEW_BRANCH" \
+            -f evidence_root="$EVIDENCE_ROOT" \
+            -f item_id="$REVIEW_ITEM_ID" \
+            -f target_slug="$TARGET_SLUG" \
+            -f target_content_sha256="$TARGET_CONTENT_SHA256"; then
+            echo "Advisory Jules review dispatched asynchronously for ${REVIEW_ITEM_ID}."
+          else
+            echo "::warning::Advisory Jules review dispatch failed; publication remains governed by the technical gate."
+            gh api --method DELETE "repos/${GITHUB_REPOSITORY}/git/refs/heads/${REVIEW_BRANCH}" || true
+          fi
 
       - name: Prepare technically verified upload
         id: prepare_upload
@@ -484,7 +628,10 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: kesher-video-controller-state
-          path: ${{ env.KESHER_STATE_DIR }}/state.json
+          path: |
+            ${{ env.KESHER_STATE_DIR }}/state.json
+            ${{ env.KESHER_STATE_DIR }}/notebooklm-storage-state.json.enc
+            ${{ env.KESHER_STATE_DIR }}/google-oauth2.json.enc
           if-no-files-found: error
           retention-days: 14
           compression-level: 9

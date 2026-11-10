@@ -17,6 +17,43 @@ from scripts.kesher_runtime.article_verification import reject, validate_rendere
 from scripts.kesher_runtime.identity import SourceIdentity, digest, require_sha
 
 
+def apply_topic_overrides(posts: list[dict], overrides: dict[str, dict]) -> list[dict]:
+    """Return the effective post rows rendered by the site topic override layer."""
+    return [
+        {**post, **overrides.get(str(post.get('id') or ''), {})}
+        for post in posts
+    ]
+
+
+def load_site_posts(root: Path) -> list[dict]:
+    """Resolve the exact content catalog used by the site build."""
+    loader = root / 'scripts' / 'load-posts.cjs'
+    resolved = subprocess.run(
+        [
+            'node',
+            '-e',
+            (
+                "const path=require('path'); "
+                "const {loadPosts}=require(path.resolve(process.argv[1])); "
+                "process.stdout.write(JSON.stringify(loadPosts()));"
+            ),
+            str(loader),
+        ],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=True,
+        timeout=30,
+    )
+    try:
+        posts = json.loads(resolved.stdout)
+    except json.JSONDecodeError as exc:
+        reject('ARTICLE_SOURCE_MISMATCH', f'Site publication catalog emitted invalid JSON: {exc}')
+    if not isinstance(posts, list):
+        reject('ARTICLE_SOURCE_MISMATCH', 'Site publication catalog is not an array')
+    return posts
+
+
 def generate(dist: Path, posts: list[dict], sha: str, *, exclusions: list[dict] | None = None,
              source_heroes: dict[str, bytes] | None = None) -> dict:
     require_sha(sha, 40)
@@ -75,14 +112,22 @@ def generate(dist: Path, posts: list[dict], sha: str, *, exclusions: list[dict] 
 
 
 def _apply_backfill(posts: list[dict], root: Path) -> list[dict]:
-    backfill_path = root / 'src' / 'data' / 'internalLinkBackfill.json'
-    if not backfill_path.is_file():
-        return posts
-    try:
-        rules = json.loads(backfill_path.read_text(encoding='utf-8'))
-    except Exception:
-        return posts
-    rule_map = {r['source']: r for r in rules if isinstance(r, dict) and 'source' in r}
+    rules = []
+    for filename in ('internalLinkBackfill.json', 'internalLinkBackfillManual.json'):
+        backfill_path = root / 'src' / 'data' / filename
+        if not backfill_path.is_file():
+            continue
+        try:
+            loaded = json.loads(backfill_path.read_text(encoding='utf-8'))
+        except Exception:
+            continue
+        if isinstance(loaded, list):
+            rules.extend(loaded)
+    rule_map: dict[str, list[dict]] = {}
+    for rule in rules:
+        if not isinstance(rule, dict) or 'source' not in rule:
+            continue
+        rule_map.setdefault(str(rule['source']), []).append(rule)
     if not rule_map:
         return posts
 
@@ -100,33 +145,32 @@ def _apply_backfill(posts: list[dict], root: Path) -> list[dict]:
 
     applied = []
     for post in posts:
-        rule = rule_map.get(post.get('id'))
-        if not rule or not isinstance(post.get('content'), str):
+        post_rules = rule_map.get(str(post.get('id') or ''), [])
+        if not post_rules or not isinstance(post.get('content'), str):
             applied.append(post)
             continue
-        content = post['content']
-        missing = [it for it in rule.get('items', []) if not has_internal_target(content, it.get('target', ''))]
-        if not missing:
-            applied.append(post)
-            continue
-        needle = str(rule.get('afterHeadingIncludes') or '').strip()
-        offset = None
-        for m in re.finditer(r'<h3\b[^>]*>([\s\S]*?)<\/h3>', content, re.I):
-            if needle in decode_heading_text(m.group(1)):
-                offset = m.end()
-                break
-        if offset is None:
-            applied.append(post)
-            continue
-        rendered_items = [
-            f"{escape_text(it.get('before', ''))}<a href=\"/blog/{it.get('target', '')}\">{escape_text(it.get('anchor', ''))}</a>{escape_text(it.get('after', ''))}"
-            for it in missing
-        ]
-        post_id = post["id"]
-        paragraph = f'<p data-kesher-internal-link-backfill="{post_id}">' + " ".join(rendered_items) + '</p>'
-        p_copy = dict(post)
-        p_copy['content'] = content[:offset] + paragraph + content[offset:]
-        applied.append(p_copy)
+        current = dict(post)
+        for rule in post_rules:
+            content = current['content']
+            missing = [it for it in rule.get('items', []) if not has_internal_target(content, it.get('target', ''))]
+            if not missing:
+                continue
+            needle = str(rule.get('afterHeadingIncludes') or '').strip()
+            offset = None
+            for m in re.finditer(r'<h3\b[^>]*>([\s\S]*?)<\/h3>', content, re.I):
+                if needle in decode_heading_text(m.group(1)):
+                    offset = m.end()
+                    break
+            if offset is None:
+                continue
+            rendered_items = [
+                f"{escape_text(it.get('before', ''))}<a href=\"/blog/{it.get('target', '')}\">{escape_text(it.get('anchor', ''))}</a>{escape_text(it.get('after', ''))}"
+                for it in missing
+            ]
+            post_id = current["id"]
+            paragraph = f'<p data-kesher-internal-link-backfill="{post_id}">' + " ".join(rendered_items) + '</p>'
+            current['content'] = content[:offset] + paragraph + content[offset:]
+        applied.append(current)
     return applied
 
 
@@ -140,10 +184,11 @@ def main():
     if checkout != args.sha:
         reject('ARTICLE_SOURCE_MISMATCH', 'Deployment SHA differs from actual checkout')
     root = Path(subprocess.run(['git', 'rev-parse', '--show-toplevel'], capture_output=True, text=True, check=True, timeout=15).stdout.strip())
-    posts_path = args.posts.resolve().relative_to(root)
     def committed(path):
         return subprocess.run(['git', 'show', f'{args.sha}:{path}'], capture_output=True, check=True, timeout=15).stdout
-    posts = json.loads(committed(posts_path.as_posix()))
+    # Resolve publication rows through the same catalog loader used by the site.
+    # The checkout SHA is validated above, so these bytes are the exact deploy source.
+    posts = load_site_posts(root)
     # Use the site's existing publication selector, not another Python copy of
     # its changing word/heading policy. Non-rendered legacy rows remain explicit.
     policy = Path(__file__).resolve().with_name('content-policy.cjs')

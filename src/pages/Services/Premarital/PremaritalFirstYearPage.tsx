@@ -65,8 +65,8 @@ const PremaritalFirstYearPage: React.FC = () => (
   <div className={styles.page}>
     <MetaTags
         canonical={`${SITE_CONFIG.url}/services/premarital-first-year`}
-      title="ייעוץ זוגי לפני חתונה | הכנה לנישואים והשנה הראשונה"
-      description="ייעוץ זוגי לפני חתונה והכנה לנישואים סביב כסף, חלוקת תפקידים, משפחות המוצא, אינטימיות, גבולות וקונפליקטים, עם אפשרות לליווי בשנה הראשונה."
+      title="ייעוץ זוגי לפני נישואין | הכנה לקראת החתונה"
+      description="ייעוץ זוגי לפני נישואין ולקראת החתונה: שיחות על כסף, חלוקת אחריות, משפחות, תקשורת וגבולות לפני החיים המשותפים, לצד אפשרות לליווי בשנה הראשונה."
       image="/images/generated/services/premarital-first-year.webp"
     />
     <SchemaOrg data={schemaData} />
@@ -75,7 +75,7 @@ const PremaritalFirstYearPage: React.FC = () => (
       <div className={`container ${styles.heroGrid}`}>
         <div>
           <span className={styles.eyebrow}><FiHeart aria-hidden="true" /> לא רק להתכונן לחתונה — להתכונן לחיים יחד</span>
-          <h1>ייעוץ זוגי לפני חתונה והכנה לנישואים</h1>
+          <h1>ייעוץ זוגי לפני נישואין: הכנה לחיים המשותפים</h1>
           <p className={styles.lead}>
             ייעוץ זוגי לפני חתונה הוא סדרת פגישות ממוקדת שעוזרת לנהל מראש את השיחות החשובות על כסף, חלוקת תפקידים, משפחות המוצא, אינטימיות, גבולות וקונפליקטים. המטרה אינה להסכים על הכול, אלא לבנות דרך לקבל החלטות ולחזור לשיחה גם כשיש פערים.
           </p>
@@ -153,6 +153,7 @@ const PremaritalFirstYearPage: React.FC = () => (
             <span className={styles.cardIcon}><FiCalendar aria-hidden="true" /></span>
             <h3>לפני החתונה</h3>
             <p>סדרת פגישות ממוקדת שמתחילה במפת הציפיות של כל אחד וממשיכה לנושאים שחשוב להסדיר לפני שמתחילים את החיים המשותפים.</p>
+            <p><Link to="/faq/when-to-start-premarital-counseling">מתי כדאי להתחיל פגישות הכנה לנישואים?</Link></p>
             <ul className={styles.plainList}>
               <li>איתור פערים לפני שהם נהפכים להפתעה</li>
               <li>שיחות שאפשר לקיים בבית בין הפגישות</li>

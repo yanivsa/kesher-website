@@ -1,14 +1,34 @@
-"""Shared read-only Jules settling gate without legacy media imports."""
+"""Shared article settling gate for legacy Jules and exact Master-owned PRs."""
+import re
+
 from .identity import digest
 from .jules import JulesError, session_name
 
 SOURCE_CONTEXT = {'source': 'sources/github/yanivsa/kesher-website', 'githubRepoContext': {'startingBranch': 'main'}}
+MASTER_ORIGIN = 'Kesher-Origin: master-active-supervisor'
+MASTER_BRANCH = re.compile(r'^master/kesher-article/[0-9]{4}-[0-9]{2}-[0-9]{2}-[^/\s]+$')
+
+
+def is_master_article_pr(pr: dict) -> bool:
+    """Recognize only an explicitly marked Master branch; either signal alone fails closed."""
+    if not isinstance(pr, dict):
+        return False
+    head = pr.get('head') or {}
+    body = pr.get('body') or ''
+    return (isinstance(head.get('ref'), str) and MASTER_BRANCH.fullmatch(head['ref']) is not None
+            and isinstance(body, str) and any(line.strip() == MASTER_ORIGIN for line in body.splitlines()))
 
 
 def assert_article_quiescent(context, api, pr: dict, *, settled_head_sha=None) -> list[str]:
-    """A cached settling receipt never replaces the pre-mutation live read."""
-    state = context.store.load().state
+    """Prove the exact PR is safe to mutate; Master PRs do not depend on Jules."""
     settled_head_sha = settled_head_sha or pr['head']['sha']
+    if is_master_article_pr(pr):
+        evidence = {'number': pr['number'], 'head_sha': pr['head']['sha'],
+                    'settled_head_sha': settled_head_sha, 'origin': 'master-active-supervisor', 'sessions': []}
+        context.checkpoint('article_quiescence_' + digest(evidence)[:24], evidence, phase='STARTED')
+        return []
+
+    state = context.store.load().state
     proofs = [receipt['evidence'] for command in state['commands'].values()
               if command['target'] == context.target.to_dict() and command['outcome'] == 'succeeded'
               for name, receipt in command['receipts'].items() if name == 'article_pr_settled'

@@ -31,11 +31,16 @@ SEMANTIC_KEYWORD_DICTIONARY: dict[str, set[str]] = {
     "מעבר לפעוטון": {"toddler", "daycare", "nursery", "transition"},
     "הסתגלות למעון": {"daycare", "nursery", "adaptation", "transition"},
     "הסתגלות לפעוטון": {"toddler", "daycare", "nursery", "adaptation", "transition"},
+    "הכנה למעון": {"daycare", "nursery", "preparation", "prepare", "transition"},
     "מעבר לגן": {"kindergarten", "preschool", "daycare", "transition"},
+    "מעבר גן באמצע שנה": {"kindergarten", "preschool"},
     "הסתגלות לגן": {"kindergarten", "preschool", "adaptation", "transition"},
+    "ילד לא רוצה ללכת לגן": {"child", "kindergarten", "preschool", "refusal", "morning"},
+    "ילד לא משחק בגן": {"child", "kindergarten", "preschool", "play", "playing", "social"},
     "מעבר למיטת מעבר": {"toddler", "bed", "crib", "transition"},
     "מעבר לחדר נפרד": {"separate", "room", "baby", "transition"},
     # Gifted children / Education
+    "כיתה א": {"first-grade"},
     "ילד מחונן": {"gifted", "child", "giftedness"},
     "ילדים מחוננים": {"gifted", "children", "giftedness"},
     "מחוננות": {"gifted", "giftedness"},
@@ -48,6 +53,7 @@ SEMANTIC_KEYWORD_DICTIONARY: dict[str, set[str]] = {
     "משבר זוגי": {"crisis", "couples", "relationship", "marriage"},
     "ריבים בזוגיות": {"fights", "arguments", "conflict", "couples"},
     "תקשורת זוגית": {"communication", "couples", "conversation"},
+    "תגובה לבשורות טובות בזוגיות": {"couples", "relationship", "good", "news", "response", "acr"},
     "בגידה": {"infidelity", "affair", "cheating", "betrayal"},
     "שיקום אמון": {"trust", "repair", "infidelity"},
     "שחיקה בזוגיות": {"burnout", "wear", "couples", "relationship"},
@@ -77,6 +83,8 @@ SEMANTIC_KEYWORD_DICTIONARY: dict[str, set[str]] = {
     "שגרת שינה": {"sleep", "bedtime", "routine"},
     "בעיות שינה": {"sleep", "problems", "insomnia"},
     "מריבות בין אחים": {"siblings", "rivalry", "fights"},
+    # Toddler soiling accidents (poop in pants)
+    "ילד עושה קקי במכנסיים": {"poop", "pooping", "soiling", "accident"},
     # Aliyah & Relocation
     "רילוקיישן": {"relocation", "moving", "transition"},
     "עלייה": {"aliyah", "immigration"},
@@ -207,6 +215,12 @@ def parse_owner_semantic_stems(topic_brief: str) -> set[str] | None:
     return None
 
 
+def _has_slug_concept(slug: str, tokens: set[str], stem: str) -> bool:
+    if "-" in stem:
+        return re.search(rf"(?:^|-){re.escape(stem)}(?:-|$)", slug) is not None
+    return any(stem in token for token in tokens)
+
+
 def slug_represents_keyword(slug: str, keyword: str, *, trusted_stems: set[str] | None = None) -> tuple[bool, str]:
     """Verify that slug is valid kebab-case and semantically maps to the Primary Keyword."""
     clean_slug = str(slug or "").strip().lower()
@@ -220,7 +234,7 @@ def slug_represents_keyword(slug: str, keyword: str, *, trusted_stems: set[str] 
 
     # 1. Explicit trusted stems if supplied
     if trusted_stems:
-        if any(stem in slug_tokens or any(stem in token for token in slug_tokens) for stem in trusted_stems):
+        if any(_has_slug_concept(clean_slug, slug_tokens, stem) for stem in trusted_stems):
             return True, ""
         return False, (
             f"Slug '{clean_slug}' does not contain trusted semantic concepts "
@@ -230,7 +244,7 @@ def slug_represents_keyword(slug: str, keyword: str, *, trusted_stems: set[str] 
     # 2. Direct dictionary match
     expected_stems = SEMANTIC_KEYWORD_DICTIONARY.get(norm_kw)
     if expected_stems:
-        if any(stem in slug_tokens or any(stem in token for token in slug_tokens) for stem in expected_stems):
+        if any(_has_slug_concept(clean_slug, slug_tokens, stem) for stem in expected_stems):
             return True, ""
         return False, (
             f"Slug '{clean_slug}' does not contain expected semantic concepts "
@@ -240,7 +254,7 @@ def slug_represents_keyword(slug: str, keyword: str, *, trusted_stems: set[str] 
     # 3. Check partial dictionary matches (sub-phrase matching)
     for dict_kw, stems in SEMANTIC_KEYWORD_DICTIONARY.items():
         if dict_kw in norm_kw or norm_kw in dict_kw:
-            if any(stem in slug_tokens or any(stem in token for token in slug_tokens) for stem in stems):
+            if any(_has_slug_concept(clean_slug, slug_tokens, stem) for stem in stems):
                 return True, ""
 
     # Unknown Primary Keyword without trusted semantic mapping: fail closed

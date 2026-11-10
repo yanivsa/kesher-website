@@ -5,16 +5,322 @@
     <link>https://kesher.saharoni.com/blog</link>
     <description>מאמרים מקצועיים, תובנות וכלים מעשיים בנושאי ייעוץ זוגי, הדרכת הורים וגישור משפחתי מאת שירה סהרוני.</description>
     <language>he-IL</language>
-    <lastBuildDate>Mon, 19 Oct 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 09 Nov 2026 00:00:00 GMT</lastBuildDate>
     <managingEditor>shira@saharoni.com (Shira Saharoni)</managingEditor>
     <webMaster>shira@saharoni.com (Shira Saharoni)</webMaster>
     <atom:link href="https://kesher.saharoni.com/rss.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>איך לעשות מעבר לחדר נפרד בלי שהלילה יהפוך למאבק</title>
-      <link>https://kesher.saharoni.com/blog/transition-to-separate-room</link>
-      <guid isPermaLink="true">https://kesher.saharoni.com/blog/transition-to-separate-room</guid>
-      <pubDate>Mon, 19 Oct 2026 00:00:00 GMT</pubDate>
-      <description>ההחלטה להעביר את התינוק או הפעוט לחדר משלו מלווה לעיתים קרובות בחששות: מתי הזמן הנכון, איך מכינים אותו רגשית, ומה עושים כשהוא מתעורר ומבקש לחזור למיטה שלכם? כך תעשו את זה נכון ובהדרגה.</description>
+      <title>הילד מרגיש הכול בעוצמה? רגישות יתרון והכוח של סביבה תומכת</title>
+      <link>https://kesher.saharoni.com/blog/vantage-sensitivity-sensitive-gifted-children</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/vantage-sensitivity-sensitive-gifted-children</guid>
+      <pubDate>Mon, 09 Nov 2026 00:00:00 GMT</pubDate>
+      <description>רגישות לרעש, תגיות והצפה רגשית אינה בהכרח חולשה. מה תיאוריית רגישות היתרון של מייקל פלואס באמת מצאה, ואיך הורים יכולים לסייע?</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>איך להירגע באמצע ריב זוגי? שינוי קטן בדיבור הפנימי שיכול לעזור</title>
+      <link>https://kesher.saharoni.com/blog/self-distancing-couple-arguments</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/self-distancing-couple-arguments</guid>
+      <pubDate>Mon, 09 Nov 2026 00:00:00 GMT</pubDate>
+      <description>איך להירגע בזמן ריב זוגי לפני שעונים בכעס? הכירו תרגיל פשוט של דיבור פנימי בשם הפרטי, עם דוגמאות, גבולות השיטה וארבעה צעדים מעשיים.</description>
+      <category>ייעוץ זוגי</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>חזרתם מהעבודה וכל דבר קטן הופך לריב? כך סטרס עובר בין בני זוג</title>
+      <link>https://kesher.saharoni.com/blog/stress-crossover-after-work</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/stress-crossover-after-work</guid>
+      <pubDate>Sun, 08 Nov 2026 00:00:00 GMT</pubDate>
+      <description>גם כשהיום במשרד נגמר, העומס לא תמיד נעלם. מה מחקרי הקורטיזול בזוגות באמת מצאו, ואיך בונים מעבר רגוע והוגן מהעבודה לבית?</description>
+      <category>ייעוץ זוגי</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>האם באמת תמיד היה רע? כך משבר בהווה משנה את זיכרונות הזוגיות</title>
+      <link>https://kesher.saharoni.com/blog/relationship-memory-reconstruction</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/relationship-memory-reconstruction</guid>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+      <description>כשהקשר כואב בהווה, גם הזיכרונות מתחילת הדרך עלולים להיצבע אחרת. מה מלמד המחקר על שחזור זיכרונות זוגיים, ואיך בודקים את הסיפור המשותף בלי למחוק כאב אמיתי?</description>
+      <category>ייעוץ זוגי</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>הכנה למעון: איך להכין פעוט שהיה עד עכשיו עם מטפלת?</title>
+      <link>https://kesher.saharoni.com/blog/prepare-toddler-for-daycare</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/prepare-toddler-for-daycare</guid>
+      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <description>איך מכינים פעוט שרגיל ליחס אישי בסביבה המוכרת של הבית למעבר למעון או לגן? צעדים מעשיים שכדאי לעשות בשבועות שלפני הכניסה למסגרת הקבוצתית, מה כדאי לשאול את הצוות, ואיך אפשר לעזור להם ולנו בהסתגלות למסגרת החדשה.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>הילד עושה לי דווקא? מלכודת ייחוס הכוונות שמדליקה את הכעס ההורי</title>
+      <link>https://kesher.saharoni.com/blog/parental-hostile-attributions</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/parental-hostile-attributions</guid>
+      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <description>כשהילד מסרב להתלבש או מתעלם, קל לפרש זאת כהתרסה מכוונת. מה מלמדים מחקרי ייחוס כוונות ועוררות הורית, ואיך מחליפים מאבק כוח בגבול רגוע וברור?</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>ילד לא רוצה ללכת לגן: מה לבדוק לפני שאומרים שזה יעבור?</title>
+      <link>https://kesher.saharoni.com/blog/child-does-not-want-kindergarten</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/child-does-not-want-kindergarten</guid>
+      <pubDate>Wed, 04 Nov 2026 00:00:00 GMT</pubDate>
+      <description>מאבקי הבוקר מתארכים, הבכי בשער קורע לב, ואתם תוהים אם זו סתם תקופה או משהו עמוק יותר. ילד לא רוצה ללכת לגן מסיבות שונות, וכדי לעזור לו למצוא שוב את השקט, כדאי לשים לב לכמה נורות אזהרה.</description>
+      <category>הנחיית הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>איך לריב בלי לפגוע? שפת אנחנו בזוגיות יכולה לשנות את התמונה</title>
+      <link>https://kesher.saharoni.com/blog/we-language-relationships</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/we-language-relationships</guid>
+      <pubDate>Tue, 03 Nov 2026 00:00:00 GMT</pubDate>
+      <description>רגעים של מתח או קונפליקט בין בני זוג נוטים להסלים מהר. מה היה קורה אם במקום להטיח האשמות זה בזה, היינו מתייחסים לבעיה כמשהו משותף? הכירו את &apos;שפת אנחנו&apos; – לא פתרון קל ומיידי, אבל גישה שמחקרים מראים שעשויה לרכך את הדינמיקה ברגעים מאתגרים.</description>
+      <category>ייעוץ זוגי</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>תינוק בוכה במעון: מתי זו הסתגלות רגילה ומתי זו נורת אזהרה?</title>
+      <link>https://kesher.saharoni.com/blog/baby-cries-at-daycare</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/baby-cries-at-daycare</guid>
+      <pubDate>Tue, 03 Nov 2026 00:00:00 GMT</pubDate>
+      <description>הפרידה בבוקר מלווה בבכי קורע לב, ובמהלך היום אתם תוהים אם התינוק שלכם בוכה במעון יותר מהרגיל. האם זו הסתגלות טבעית, או נורת אזהרה שמצריכה בירור מול הצוות?</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>תיאוריית הבסיס החברתי בזוגיות: למה הכול מרגיש כבד יותר כשאנחנו מרגישים לבד?</title>
+      <link>https://kesher.saharoni.com/blog/couples-social-baseline-theory</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/couples-social-baseline-theory</guid>
+      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
+      <description>תיאוריית הבסיס החברתי בזוגיות מציעה שהמוח מצפה לזמינות של קשרים קרובים ומשאבים חברתיים. מה באמת הראו מחקרי אחיזת היד, תפיסת המאמץ והגלוקוז — ואיך אפשר לתרגם את הרעיון לצעד זוגי קטן בלי להפוך תיאוריה להבטחה?</description>
+      <category>ייעוץ זוגי</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>התאפקות קקי בגמילה: למה הוא מחזיק כל כך הרבה זמן ואיך לשחרר את הלחץ?</title>
+      <link>https://kesher.saharoni.com/blog/stool-withholding-potty-training</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/stool-withholding-potty-training</guid>
+      <pubDate>Mon, 02 Nov 2026 00:00:00 GMT</pubDate>
+      <description>ילדים רבים בשלב הגמילה מסוגלים להתאפק שעות ואפילו ימים. למה זה קורה, ואיך אפשר לעזור להם לשחרר במקום להעצים את הלחץ והמאבק סביב העניין.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>הילד מדבר כמו בן 13 ומתפרק כמו בן 7? מה הורים לילדים מחוננים חייבים לדעת על א־סינכרוניות</title>
+      <link>https://kesher.saharoni.com/blog/gifted-children-asynchronous-development</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/gifted-children-asynchronous-development</guid>
+      <pubDate>Sun, 01 Nov 2026 00:00:00 GMT</pubDate>
+      <description>ילד מחונן יכול לחשוב ברמה מתקדמת מאוד ובאותו זמן להזדקק לעזרה בוויסות, בחברה או בתסכול. מהי התפתחות א־סינכרונית, איפה הורים טועים, ומה עושים בזמן הצפה בלי לבייש את הילד.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>למה תגובה לבשורות טובות בזוגיות חשובה לא פחות מריבים, ואיך להגיב נכון</title>
+      <link>https://kesher.saharoni.com/blog/good-news-response-relationship</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/good-news-response-relationship</guid>
+      <pubDate>Sun, 01 Nov 2026 00:00:00 GMT</pubDate>
+      <description>כולם מדברים על איך לריב נכון, אבל מחקרי קפיטליזציה מזכירים רגע חשוב נוסף: איך אנחנו מגיבים כשבן או בת הזוג מביאים בשורה טובה. ארבעת סגנונות התגובה וכלי פשוט לתגובה אקטיבית־בונה.</description>
+      <category>זוגיות</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>קקי רק בחיתול: למה הילד מסרב לעשות בשירותים ומה עושים?</title>
+      <link>https://kesher.saharoni.com/blog/poop-only-in-diaper</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/poop-only-in-diaper</guid>
+      <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
+      <description>הילד עושה פיפי בשירותים אבל מבקש חיתול לקקי? למה זה קורה, איך להימנע ממאבקי כוח, ומהם הצעדים ההדרגתיים שיעזרו לו להרגיש בטוח לעשות קקי באסלה.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>צחוק משותף בזוגיות: למה הסנכרון הקטן הזה קשור לאינטימיות וקרבה</title>
+      <link>https://kesher.saharoni.com/blog/shared-laughter-couples-intimacy</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/shared-laughter-couples-intimacy</guid>
+      <pubDate>Fri, 30 Oct 2026 00:00:00 GMT</pubDate>
+      <description>מחקר על 71 זוגות מצא שדווקא רגעים של צחוק בו־זמני קשורים לאיכות הקשר, לקרבה ולתמיכה. מה אפשר ללמוד מזה על אינטימיות — ומה המדע עדיין לא הוכיח?</description>
+      <category>זוגיות</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>קשיי הסתגלות לכיתה א׳: בכי, כעס, כאבי בטן וסירוב — מה עושים?</title>
+      <link>https://kesher.saharoni.com/blog/first-grade-adjustment-difficulties</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/first-grade-adjustment-difficulties</guid>
+      <pubDate>Fri, 30 Oct 2026 00:00:00 GMT</pubDate>
+      <description>המעבר לכיתה א&apos; יכול להיות מלווה בבכי, כעס או סירוב ללכת לבית הספר. איך נבדיל בין קושי זמני לנורות אזהרה, ומתי כדאי לפנות לצוות החינוכי.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>פחד מאסלה אצל ילדים: איך עוזרים בלי לחץ ובלי מאבק?</title>
+      <link>https://kesher.saharoni.com/blog/toilet-fear-children</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/toilet-fear-children</guid>
+      <pubDate>Thu, 29 Oct 2026 00:00:00 GMT</pubDate>
+      <description>הילד בוכה, מסרב להתקרב לאסלה, ואתם מוצאים את עצמכם במאבק יומיומי. פחד מאסלה אצל ילדים הוא שלב שעלול לתקוע את הגמילה ולתסכל את כולם. איך מזהים שמדובר בחשש אמיתי, למה לחץ רק מחמיר את המצב, ואיך אפשר לעזור להם לעשות את זה ברוגע ובהדרגתיות בלי להפוך את השירותים לזירת קרב?</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>למה הסתגלות לכיתה א׳ קשה לפעמים ומה עושים כשהילד בוכה?</title>
+      <link>https://kesher.saharoni.com/blog/first-grade-adjustment</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/first-grade-adjustment</guid>
+      <pubDate>Thu, 29 Oct 2026 00:00:00 GMT</pubDate>
+      <description>המעבר למסגרת בית הספר עשוי לעורר עייפות ושינויים בהתנהגות. נבחן מה יכול להיות חלק מתהליך הסתגלות טבעי ואיך כדאי לתמוך בילדים בשבועות הראשונים, בבית ומול הצוות החינוכי.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>בשלות לכיתה א: מתי כדאי לחכות ומתי הילד באמת מוכן למעבר?</title>
+      <link>https://kesher.saharoni.com/blog/first-grade-maturity</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/first-grade-maturity</guid>
+      <pubDate>Wed, 28 Oct 2026 00:00:00 GMT</pubDate>
+      <description>ההתלבטות אם הילד מוכן לעלות לכיתה א מלווה הורים רבים. מהם הסימנים הרגשיים, החברתיים והתפקודיים שכדאי לשים לב אליהם, ומתי כדאי להתייעץ כדי לקבל החלטה שקולה שלא מבוססת רק על גיל או ציפיות הסביבה?</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>קשיי הסתגלות לגן: למה הבכי מתעכב ואיך להתמודד?</title>
+      <link>https://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/kindergarten-adjustment-difficulties</guid>
+      <pubDate>Tue, 27 Oct 2026 00:00:00 GMT</pubDate>
+      <description>ילדים רבים מפגינים בכי, היצמדות ורגרסיה לא רק בימים הראשונים, אלא דווקא אחרי תקופת התלהבות ראשונית. איך להבחין בין קושי חולף לבין נורות אזהרה שמחייבות פנייה לצוות, ומה אפשר לעשות בבית כדי להקל?</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>הסתגלות לגן עירייה: מתי הבכי טבעי ומתי כדאי להתערב?</title>
+      <link>https://kesher.saharoni.com/blog/municipal-kindergarten-adjustment</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/municipal-kindergarten-adjustment</guid>
+      <pubDate>Mon, 26 Oct 2026 00:00:00 GMT</pubDate>
+      <description>הימים הראשונים בגן עירייה מביאים איתם בכי, עייפות והסתגרות. מה נחשב להסתגלות סבירה, אילו פעולות יכולות לעזור לילד להתרגל לשגרה החדשה, ומתי כדאי לערב איש מקצוע?</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>מעבר גן באמצע שנה: איך לעזור לילד להיפרד ולהתחיל מחדש?</title>
+      <link>https://kesher.saharoni.com/blog/changing-kindergarten-midyear</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/changing-kindergarten-midyear</guid>
+      <pubDate>Sun, 25 Oct 2026 00:00:00 GMT</pubDate>
+      <description>ילד שעוזב צוות וחברים ונכנס למסגרת חדשה יכול להרגיש חוסר ודאות וקושי. איך כדאי להכין אותו לקראת מעבר גן באמצע שנה ולתמוך בהסתגלות שלו.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>מעבר לגן עירייה: איך מכינים את הילד לשינוי הגדול בלי להעביר לו את הלחץ שלנו</title>
+      <link>https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/transition-to-municipal-kindergarten</guid>
+      <pubDate>Sun, 25 Oct 2026 00:00:00 GMT</pubDate>
+      <description>המעבר מגן פרטי קטן ועוטף לגן עירייה עם יותר ילדים ופחות אנשי צוות יכול להיות מלחיץ. איך נכין את הילדים לשגרה החדשה, לצוות החדש ולעצמאות הנדרשת מהם, מבלי לייצר אצלם חרדה מוקדמת?</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>קשיי הסתגלות למעון: מתי לתת זמן ומתי צריך לבדוק מה לא עובד?</title>
+      <link>https://kesher.saharoni.com/blog/daycare-adjustment-difficulties</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/daycare-adjustment-difficulties</guid>
+      <pubDate>Sun, 25 Oct 2026 00:00:00 GMT</pubDate>
+      <description>הפרידות בבוקר קשות, הילד בוכה בכל פעם שמגיעים למעון, וההתנהגות שלו בבית השתנתה. איך מבחינים בין תהליך טבעי של קשיי הסתגלות למעון לבין מצב שדורש התערבות? הנה מה שאפשר לעשות.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>מטלות בית עם ילדים: פחות עומס, יותר זמן איכות</title>
+      <link>https://kesher.saharoni.com/blog/family-chores-quality-time-with-kids</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/family-chores-quality-time-with-kids</guid>
+      <pubDate>Sat, 24 Oct 2026 00:00:00 GMT</pubDate>
+      <description>איך להפוך מטלות בית לזמן איכות עם הילדים? רעיונות לפי גיל, התמודדות עם סירוב ודרך פשוטה להפחית עומס ולחזק שייכות בבית.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>למה ילד עושה קקי במכנסיים אחרי שנגמל, ואיך להגיב נכון?</title>
+      <link>https://kesher.saharoni.com/blog/child-poops-in-pants</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/child-poops-in-pants</guid>
+      <pubDate>Fri, 23 Oct 2026 00:00:00 GMT</pubDate>
+      <description>פספוסי קקי אצל ילדים שכבר נגמלו יכולים לעורר תסכול ודאגה רבה. למה זה קורה דווקא עכשיו, איך להבדיל בין קושי רגשי לבעיה פיזית, ומה הדרך הכי טובה להגיב כדי לעזור לילד?</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>ילד מחונן ורגישות רגשית: מה באמת קשור למחוננות ומה עלול להיות מיתוס</title>
+      <link>https://kesher.saharoni.com/blog/gifted-child-emotional-sensitivity-myths</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/gifted-child-emotional-sensitivity-myths</guid>
+      <pubDate>Fri, 23 Oct 2026 00:00:00 GMT</pubDate>
+      <description>האם ילדים מחוננים רגישים יותר, חרדתיים יותר או מתקשים חברתית? כך מפרידים בין מאפיינים אפשריים לבין סטריאוטיפים ובודקים את הילד עצמו לפני שמסבירים הכול דרך המחוננות.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>ילד מחונן משתעמם בבית הספר: מה הורים יכולים לעשות בלי להיכנס למלחמה עם המערכת</title>
+      <link>https://kesher.saharoni.com/blog/gifted-child-bored-at-school-parent-guide</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/gifted-child-bored-at-school-parent-guide</guid>
+      <pubDate>Fri, 23 Oct 2026 00:00:00 GMT</pubDate>
+      <description>הילד אומר שמשעמם לו בבית הספר? כך בודקים אם חסר אתגר, מבדילים בין שעמום לקושי אחר, מדברים עם הצוות ובונים מענה בלי להפוך כל שיעור למאבק.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>ילד מחונן ולחץ להצטיין: איך הורים תומכים בלי להפוך יכולת לחובה</title>
+      <link>https://kesher.saharoni.com/blog/gifted-child-pressure-to-achieve-parent-guide</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/gifted-child-pressure-to-achieve-parent-guide</guid>
+      <pubDate>Fri, 23 Oct 2026 00:00:00 GMT</pubDate>
+      <description>כשהילד המחונן מרגיש שהוא חייב להצליח תמיד, גם מחמאה יכולה להפוך ללחץ. כך בונים בבית ציפיות בריאות, יחס גמיש לטעויות ומקום למאמץ, מנוחה ובקשת עזרה.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>איך לדבר עם ילד על זה שהוא מחונן — בלי להפוך את המחוננות לזהות מלחיצה</title>
+      <link>https://kesher.saharoni.com/blog/how-to-talk-to-child-about-being-gifted</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/how-to-talk-to-child-about-being-gifted</guid>
+      <pubDate>Fri, 23 Oct 2026 00:00:00 GMT</pubDate>
+      <description>האם לומר לילד שהוא מחונן? כך מסבירים את המשמעות בגובה העיניים, נמנעים מתווית של ״הילד החכם״ ומשאירים מקום לטעות, למאמץ ולזהות רחבה.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>עצירות בגמילה מחיתולים: למה הילד מתאפק ומה אפשר לעשות?</title>
+      <link>https://kesher.saharoni.com/blog/potty-training-constipation</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/potty-training-constipation</guid>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+      <description>תקופת המעבר לשירותים מביאה איתה לפעמים אתגרים לא צפויים, כשאחד המוכרים שבהם הוא התאפקות שמובילה לעצירות. למה זה קורה, איך אפשר להקל על הילד, ומתי מומלץ לפנות לייעוץ רפואי?</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>הילד עבר את מבחן המחוננים — ומה עכשיו? מדריך להורים אחרי התוצאה</title>
+      <link>https://kesher.saharoni.com/blog/after-gifted-identification-next-steps-family</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/after-gifted-identification-next-steps-family</guid>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+      <description>הילד עבר את מבחן המחוננים? לפני שהופכים את התוצאה לתווית, בדקו התאמה למסגרת, ציפיות, קול הילד, אחים ולחץ להצטיין. מדריך להורים לשלב שאחרי.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>הילד לא עבר את מבחן המחוננים — איך מגיבים כהורים?</title>
+      <link>https://kesher.saharoni.com/blog/child-not-selected-gifted-program-parent-response</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/child-not-selected-gifted-program-parent-response</guid>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+      <description>הילד לא עבר את מבחן המחוננים? כך מגיבים בלי לפגוע בביטחון, מפרידים בין תוצאה לזהות, מתמודדים עם אכזבה הורית וממשיכים לטפח סקרנות ויכולת.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>מבחן מחוננים ראשון: איך להכין את הילד רגשית — בלי להפוך את הבית למכון הכנה</title>
+      <link>https://kesher.saharoni.com/blog/gifted-test-first-emotional-preparation-parents</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/gifted-test-first-emotional-preparation-parents</guid>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+      <description>איך מכינים ילד רגשית למבחן מחוננים? מדריך להורים על הורדת לחץ, שיחה נכונה, שגרה ומה עושים לפני ואחרי המבחן — בלי אימון לשאלות.</description>
+      <category>הדרכת הורים</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
+    <item>
+      <title>גמילה מחיתולים בגיל 4: מתי לתת עוד זמן ומתי כדאי לבדוק?</title>
+      <link>https://kesher.saharoni.com/blog/potty-training-age-4</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/potty-training-age-4</guid>
+      <pubDate>Tue, 20 Oct 2026 00:00:00 GMT</pubDate>
+      <description>גמילה מחיתולים בגיל 4: איך מבדילים בין פספוסים זמניים לקושי שמצריך בדיקה, למה חשוב לשלול עצירות, ואיך לעזור בלי לחץ או מאבקי כוח.</description>
       <category>הדרכת הורים</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
@@ -361,11 +667,11 @@
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>מה זה ילד מחונן ואיך מזהים? מדריך להורים</title>
+      <title>מה זה ילד מחונן? הגדרה, מאפיינים ומה חשוב להורים לדעת</title>
       <link>https://kesher.saharoni.com/blog/how-to-identify-a-gifted-child-parents-guide</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/how-to-identify-a-gifted-child-parents-guide</guid>
       <pubDate>Mon, 21 Sep 2026 00:00:00 GMT</pubDate>
-      <description>מה זה ילד מחונן, אילו סימנים יכולים להצביע על מחוננות, ומה חשוב לדעת לפני אבחון? מדריך להורים על יכולות גבוהות, צרכים רגשיים ותהליך האיתור הרשמי.</description>
+      <description>מה זה ילד מחונן, איך מגדירים מחוננות בישראל ומה מבחן האיתור כן ולא אומר? מדריך להורים עם דגש על ביטחון רגשי, ציפיות ותמיכה בבית.</description>
       <category>הדרכת הורים</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>

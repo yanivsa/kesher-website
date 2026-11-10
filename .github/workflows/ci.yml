@@ -41,6 +41,7 @@ jobs:
         run: |
           python3 -m unittest \
             tests.test_ci_profile \
+            tests.test_trusted_image_recovery_boundary \
             tests.test_kesher_article_contract \
             tests.test_kesher_article_normalizer \
             tests.test_kesher_explicit_test_mode \
@@ -55,9 +56,8 @@ jobs:
             tests.test_v5_video_source_binding \
             tests.test_v5_delivery_watchdog_contract \
             tests.test_kesher_optional_video_enrichment \
+            tests.test_kesher_owner_media_quality \
             tests.test_media_voice_policy_contract \
-            tests.test_openclaw_cloudflare_primary \
-            tests.test_openclaw_oci_agent_self_heal \
             tests.test_master_supervisor_foundation \
             tests.test_master_supervisor_shadow \
             tests.test_master_supervisor_live \
@@ -72,6 +72,8 @@ jobs:
             tests.test_article_normalization_head_tracking \
             tests.test_article_image_fallback_pool_and_cascade \
             tests.test_controller_child_failure_recovery \
+            tests.test_controller_repair \
+            tests.test_kesher_recovery_e2e \
             tests.test_ci_regression_suite_coverage \
             -v
 

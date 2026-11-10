@@ -253,7 +253,7 @@ def _observed_slot(state: dict, slot: str, data: dict, *, advance_backlog=True) 
     return row
 
 
-def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
+def _reconcile(state: dict, observed: Observation, *, now: str, plan_actions: bool) -> Decision:
     validate_state(state)
     timestamp(now)
     data = observed.value
@@ -304,7 +304,7 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
         source_row = proposed['sources'][source.key]
         article_verified = _record_verification(source_row['article'], entry['article'], source, now=now, main_sha=data['main_sha'])
         verified = [article_verified]
-        if not article_verified:
+        if plan_actions and not article_verified:
             action = _eligible(proposed, source, entry['article'], source_row.setdefault('recovery', {}),
                                now=now, default_operation='deploy_article', inputs={'deploy_sha': data['main_sha']})
             if action:
@@ -323,7 +323,7 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
                     raise StateInvalid('Independent technical receipt has invalid file size')
                 row['receipts'].setdefault('technical:' + digest(technical), technical)
             verified.append(_record_verification(row, result, target, now=now, main_sha=data['main_sha']))
-            if article_verified:
+            if plan_actions and article_verified:
                 action = _eligible(proposed, target, result, row.setdefault('recovery', {}), now=now, default_operation='publish')
                 if action:
                     eligible.append(action)
@@ -403,7 +403,7 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
                               for command in _commands(proposed, target))
                 if not settled:
                     operation = 'settle_article'
-            if operation:
+            if plan_actions and operation:
                 inputs = {'pr_number': str(pr['number']), 'pr_head_sha': pr['head_sha']}
                 if operation in {'validate_article', 'merge_article'}:
                     inputs.update(pr_body_sha256=pr.get('body_sha256', digest('')), validation_base_sha=data['main_sha'])
@@ -419,10 +419,14 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
             continue
         if slot == data['current_slot'] and data.get('article_creation_allowed') is False:
             continue
-        action = _eligible(proposed, target, {'status': 'absent'}, row.setdefault('recovery', {}),
-                           now=now, default_operation='create_article')
-        if action:
-            eligible.append(action)
+        if plan_actions:
+            action = _eligible(proposed, target, {'status': 'absent'}, row.setdefault('recovery', {}),
+                               now=now, default_operation='create_article')
+            if action:
+                eligible.append(action)
+    if not plan_actions:
+        validate_transition(state, proposed)
+        return Decision(proposed, None, 'facts_only')
     current = [action for action in eligible if action[0].slot == data['current_slot']]
     backlog = sorted((action for action in eligible if action[0].slot != data['current_slot']), key=lambda action: action[0].slot)
     scheduler = proposed.setdefault('scheduler', {})
@@ -445,6 +449,16 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
             command_id = min(pending, key=lambda row: (row['created_at'], row['id']))['id']
     validate_transition(state, proposed)
     return Decision(proposed, command_id, 'exact_command' if command_id else 'waiting_or_complete')
+
+
+def reconcile_facts(state: dict, observed: Observation, *, now: str) -> dict:
+    """Reconcile fresh product facts without choosing or creating a production action."""
+    return _reconcile(state, observed, now=now, plan_actions=False).state
+
+
+def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
+    """Legacy canonical decision path; behavior remains unchanged during migration."""
+    return _reconcile(state, observed, now=now, plan_actions=True)
 
 
 def run_tick(store, observed: Observation, *, now: str, dispatch) -> Decision:

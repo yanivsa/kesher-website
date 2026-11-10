@@ -155,7 +155,9 @@ def validate_content(context, github, git):
         return git.blob(context.code_sha, url.removeprefix(base_prefix))
 
     errors = gate.evaluate_content(pr, [{'filename': name} for name in value['paths']],
-                                   value['base_posts'], value['head_posts'], image_loader)
+                                   value['base_posts'], value['head_posts'], image_loader,
+                                   published_catalog=json.loads(git.blob(
+                                       context.code_sha, 'src/data/postSummaries.json')))
     if errors:
         print(json.dumps({'article_content_errors': errors}, ensure_ascii=False), file=sys.stderr)
         raise JulesError('CI_CONTENT_INVALID')

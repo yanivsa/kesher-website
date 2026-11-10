@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-11-10",
+  "purpose": "Retrospective image-only remediation; preserve article and media identity",
+  "pull_request": "https://github.com/yanivsa/kesher-website/pull/1286",
+  "original_image_commit": "20b578f58a7a25ff91dffa521e01ccbffc6b2672",
+  "reviewed_head": "7788369ad795fe676a1eeb573b98ed7b43e85515",
+  "reviewed_base": "0792325059bc41c5c413c44d81c1c06bbcda1c03",
+  "provider": "Adobe Firefly",
+  "origin_evidence": "Original PR #1286 (2026-11-06) and both exact post imageCredit fields identify these as original Adobe Firefly editorial images created for KESHER. Original generation request IDs were not retained in the accessible record; no IDs or stock license certificates are asserted.",
+  "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+  "license_review": "Official Adobe FAQ checked 2026-11-10: commercial use permitted for non-beta Firefly output and beta output unless explicitly restricted. Original PR identifies Firefly generation; no third-party stock, logo, or reference image claimed. Asset-specific provenance rests on original creation record and exact GitHub bytes, not a fabricated task ID.",
+  "images": [
+    {
+      "source_slug": "couples-social-baseline-theory",
+      "source_content_sha256": "35b906afcdcee04a2d6a71a52647dd47e7edde654cecb4ee1bd298f9b3d08ab5",
+      "previous_hero_path": "/images/generated/blog/couples-social-baseline-theory.png",
+      "previous_hero_sha256": "7dcd65e300c7fa78f833b5c0ccde8916449f4ac6f77e8199a897dd5c99139e5d",
+      "final_path": "public/images/generated/blog/couples-social-baseline-theory-editorial-20261106.jpg",
+      "final_sha256": "8225d85082e7c68a2418e11af33c56f95591b6a2a65cc58f4b7dae8e10674064",
+      "git_blob_sha": "98f6b46dc502ddc010fa75133a55f047b473e55e",
+      "dimensions": [
+        1600,
+        914
+      ],
+      "review": "Actual exact JPEG inspected: seated adult couple in a quiet domestic setting, supportive hand contact, natural lighting and expression, no text/logo, wide crop. Fits social support/handholding research; not a clinical claim."
+    },
+    {
+      "source_slug": "good-news-response-relationship",
+      "source_content_sha256": "0b2187efb154c1faeb005b853f91edaccdb3e30430ae3de560a3d3846b08150b",
+      "previous_hero_path": "/images/generated/blog/good-news-response-relationship.png",
+      "previous_hero_sha256": "54bf56ffd5054fc1cfdf9293c79a137a8fdaf8f05fb44205cdbe08f893908991",
+      "final_path": "public/images/generated/blog/good-news-response-relationship-editorial-20261106.jpg",
+      "final_sha256": "b19b566c4e26bb4853e977042e5812e1c33d183bd2461d129ae408e027b958af",
+      "git_blob_sha": "54fe3ff4ff947d331facf0986d096e87d13f9285",
+      "dimensions": [
+        1600,
+        914
+      ],
+      "review": "Actual exact JPEG inspected: smiling adult couple at kitchen table, engaged listening and open hand gesture, natural domestic light, no text/logo, wide crop. Fits active-constructive response to positive news."
+    }
+  ],
+  "scope_verification": "Compared full exact base/head catalogs: 151 posts and 156 summaries unchanged in count/order. Only five image fields on each target post and the two corresponding summary image paths differ. All article text, title, date, slug, source and existing videos preserved. Exact old live hero bytes and manifest source identities independently checked. Both new JPEGs decoded and SHA256 verified.",
+  "prior_exact_ci": {
+    "head": "7788369ad795fe676a1eeb573b98ed7b43e85515",
+    "ci_run": 42839721366,
+    "stability_run": 42839721401,
+    "conclusion": "success",
+    "profile": "article",
+    "rendered_routes": 229
+  },
+  "next_gate": "Full pre-merge quality gate on new exact head including browser preview, mobile/accessibility/security regressions; then safe merge, guarded production deploy and independent exact target HTTP/canonical/source/image verification. No publication or preview deployment claimed by this record."
+}

@@ -6,6 +6,8 @@ import copy
 import hashlib
 import json
 import re
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Mapping
 
 MAX_QUEUE = 100
@@ -13,6 +15,8 @@ MAX_HISTORY = 50
 MAX_TOPIC_BRIEF = 15500
 MAX_KEYWORD = 200
 IDEA_ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
+SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
+_PUBLISHED_POST_FILES = ("src/data/posts.json", "src/data/postsRecent.json")
 
 
 class IdeaQueueError(RuntimeError):
@@ -37,6 +41,56 @@ def _fingerprint(idea_id: str, topic_brief: str, keyword: str) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _normalized_phrase(value: Any) -> str:
+    text = str(value or "").casefold()
+    text = re.sub(r"[^\w\u0590-\u05ff]+", " ", text, flags=re.UNICODE)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _published_title_keyword_conflicts(keyword: str, *, root: Path | None = None) -> list[str]:
+    """Return published slugs whose visible title already owns the exact SEO phrase.
+
+    The Primary Keyword contract is intentionally strict: an exact phrase already
+    present in another published title is treated as an SEO/content collision. The
+    detector reads only versioned main-site post catalogs from the trusted checkout;
+    it never depends on Jules prose or heuristic parsing of agent responses.
+    """
+    normalized_keyword = _normalized_phrase(keyword)
+    if not normalized_keyword:
+        return []
+    needle = f" {normalized_keyword} "
+    repo_root = root or Path(__file__).resolve().parents[1]
+    seen_files = 0
+    conflicts: set[str] = set()
+    for relative in _PUBLISHED_POST_FILES:
+        path = repo_root / relative
+        if not path.is_file():
+            continue
+        seen_files += 1
+        try:
+            rows = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+            raise IdeaQueueError("IDEA_PUBLISHED_INDEX_INVALID") from exc
+        if not isinstance(rows, list):
+            raise IdeaQueueError("IDEA_PUBLISHED_INDEX_INVALID")
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            title = _normalized_phrase(row.get("title"))
+            if needle not in f" {title} ":
+                continue
+            slug = _clean(row.get("slug") or row.get("id"))
+            if slug:
+                conflicts.add(slug)
+    if seen_files == 0:
+        raise IdeaQueueError("IDEA_PUBLISHED_INDEX_MISSING")
+    return sorted(conflicts)
+
+
 def ensure_fields(state: dict[str, Any]) -> None:
     if not isinstance(state.get("idea_queue"), list):
         state["idea_queue"] = []
@@ -58,8 +112,6 @@ def carry_forward(state: dict[str, Any], previous: Any) -> None:
         state["idea_queue"] = copy.deepcopy(previous_queue)[-MAX_QUEUE:]
     if isinstance(previous_history, list):
         state["idea_history"] = copy.deepcopy(previous_history)[-MAX_HISTORY:]
-    # An unfinished active idea belongs to its claimed publication slot. Preserve it
-    # fail-closed instead of claiming another idea on top of it.
     if isinstance(previous_active, dict) and str(previous_active.get("status") or "") != "complete":
         state["active_idea"] = copy.deepcopy(previous_active)
 
@@ -74,9 +126,7 @@ def _all_records(state: dict[str, Any]) -> list[dict[str, Any]]:
     return rows
 
 
-def ingest_from_env(
-    state: dict[str, Any], env: Mapping[str, str], *, now_iso: str
-) -> str | None:
+def ingest_from_env(state: dict[str, Any], env: Mapping[str, str], *, now_iso: str) -> str | None:
     """Append one owner idea idempotently. Returns queued/duplicate/None."""
     idea_id = _clean(env.get("KESHER_IDEA_ID"))
     topic_brief = _clean(env.get("KESHER_IDEA_TOPIC_BRIEF"))
@@ -116,11 +166,7 @@ def ingest_from_env(
         raise IdeaQueueError("IDEA_ID_CONFLICT")
 
     queue_full = len(state["idea_queue"]) >= MAX_QUEUE
-    idle_run_now = (
-        run_now
-        and str(state.get("status") or "") == "complete"
-        and not isinstance(state.get("active_idea"), dict)
-    )
+    idle_run_now = run_now and str(state.get("status") or "") == "complete" and not isinstance(state.get("active_idea"), dict)
     if queue_full and not idle_run_now:
         raise IdeaQueueError("IDEA_QUEUE_FULL")
 
@@ -152,14 +198,189 @@ def claim_next(state: dict[str, Any], cycle: str, *, now_iso: str) -> dict[str, 
     return row
 
 
+def _fresh_stage() -> dict[str, Any]:
+    return {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": None,
+        "next_retry_at": None,
+        "run_id": None,
+        "processed_run_id": None,
+        "provider_id": None,
+        "failure_fingerprint": None,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+    }
+
+
+def _article_has_durable_identity(state: dict[str, Any]) -> bool:
+    article = state.get("article") if isinstance(state.get("article"), dict) else {}
+    if article.get("live") is True or article.get("public") is True:
+        return True
+    for field in (
+        "pr_number",
+        "pr_url",
+        "slug",
+        "url",
+        "quality_content_sha256",
+        "current_pr_head_sha",
+    ):
+        if str(article.get(field) or "").strip():
+            return True
+    return False
+
+
+def _keyword_conflict_recovery_eligible(state: dict[str, Any]) -> bool:
+    """Permit rejection only before first dispatch or after exact terminal exhaustion.
+
+    This prevents a catalog refresh from changing ownership while a worker or PR may
+    still be active. A first-attempt preflight is race-free; terminal exhaustion is
+    also safe because the controller has already stopped dispatching that idea.
+    """
+    if _article_has_durable_identity(state):
+        return False
+    article = state.get("article") if isinstance(state.get("article"), dict) else {}
+    attempts = int(article.get("attempts") or article.get("attempt_count") or 0)
+    if attempts == 0 and str(article.get("status") or "pending") not in {"running", "in_progress"}:
+        return True
+    last_error = state.get("last_error") if isinstance(state.get("last_error"), dict) else {}
+    return (
+        str(state.get("status") or "") == "blocked"
+        and str(last_error.get("stage") or "") == "article"
+        and str(last_error.get("code") or "") == "ARTICLE_ATTEMPTS_EXHAUSTED"
+        and str(article.get("status") or "") == "exhausted"
+        and attempts >= 3
+    )
+
+
+def recover_primary_keyword_conflict(
+    state: dict[str, Any],
+    *,
+    now_iso: str,
+    root: Path | None = None,
+) -> str | None:
+    """Reject a proven published Primary Keyword collision and advance the queue.
+
+    Returns ``advanced`` when a replacement was claimed, ``blocked`` when the
+    conflicting idea was rejected but no replacement exists, and ``None`` when no
+    safe collision recovery applies.
+    """
+    ensure_fields(state)
+    active = state.get("active_idea")
+    if not isinstance(active, dict) or str(active.get("status") or "") in {"complete", "rejected"}:
+        return None
+    current_cycle = _clean(state.get("cycle"))
+    publication_slot = _clean(active.get("publication_slot"))
+    if current_cycle and publication_slot and publication_slot != current_cycle:
+        # A prior-cycle claimed idea must be finalized only by the existing verified
+        # backlog path. Its now-published title is completion evidence, not a collision.
+        return None
+    if not _keyword_conflict_recovery_eligible(state):
+        return None
+
+    keyword = _clean(active.get("required_primary_keyword"))
+    if not keyword:
+        return None
+    conflicts = _published_title_keyword_conflicts(keyword, root=root)
+    if not conflicts:
+        return None
+
+    article = state.get("article") if isinstance(state.get("article"), dict) else {}
+    prior_attempts = int(article.get("attempts") or article.get("attempt_count") or 0)
+    prior_status = str(state.get("status") or "")
+    previous_error = copy.deepcopy(state.get("last_error"))
+    replacement_slot = publication_slot or current_cycle
+
+    rejected = copy.deepcopy(active)
+    rejected.update({
+        "status": "rejected",
+        "rejected_at": now_iso,
+        "rejection_code": "PRIMARY_KEYWORD_CONFLICT",
+        "rejection_message": f"Primary Keyword already owned by published article(s): {', '.join(conflicts)}",
+        "conflicting_slugs": conflicts,
+        "prior_article_attempts": prior_attempts,
+    })
+    state["idea_history"].append(rejected)
+    state["idea_history"] = state["idea_history"][-MAX_HISTORY:]
+    state["active_idea"] = None
+
+    replacement = claim_next(state, replacement_slot, now_iso=now_iso) if replacement_slot else None
+    history = state.get("history") if isinstance(state.get("history"), list) else []
+    if replacement is None:
+        state["status"] = "blocked"
+        state["last_error"] = {
+            "stage": "article",
+            "code": "PRIMARY_KEYWORD_CONFLICT_NO_REPLACEMENT",
+            "message": f"Rejected {rejected.get('idea_id')} because '{keyword}' already exists; no queued replacement is available",
+            "at": now_iso,
+        }
+        history.append({
+            "at": now_iso,
+            "from": prior_status,
+            "to": "blocked",
+            "reason": "primary_keyword_conflict_rejected",
+            "details": {
+                "rejected_idea_id": rejected.get("idea_id"),
+                "required_primary_keyword": keyword,
+                "conflicting_slugs": conflicts,
+                "prior_article_attempts": prior_attempts,
+                "previous_error": previous_error,
+            },
+        })
+        state["history"] = history[-100:]
+        state["updated_at"] = now_iso
+        return "blocked"
+
+    article_stage = _fresh_stage()
+    article_stage.update({"attempts": 0, "deploy_attempts": 0})
+    state["article"] = article_stage
+    state["image"] = _fresh_stage()
+    state["long_video"] = _fresh_stage()
+    state["short"] = _fresh_stage()
+    state.pop("video", None)
+    state["pending_dispatches"] = {}
+    state["status"] = "article_needed"
+    state["last_error"] = None
+    history.append({
+        "at": now_iso,
+        "from": prior_status,
+        "to": "article_needed",
+        "reason": "primary_keyword_conflict_advanced",
+        "details": {
+            "rejected_idea_id": rejected.get("idea_id"),
+            "required_primary_keyword": keyword,
+            "conflicting_slugs": conflicts,
+            "prior_article_attempts": prior_attempts,
+            "previous_error": previous_error,
+            "replacement_idea_id": replacement.get("idea_id"),
+            "replacement_primary_keyword": replacement.get("required_primary_keyword"),
+            "publication_slot": replacement.get("publication_slot"),
+        },
+    })
+    state["history"] = history[-100:]
+    state["updated_at"] = now_iso
+    return "advanced"
+
+
 def article_dispatch_inputs(state: dict[str, Any], inputs: Mapping[str, Any] | None) -> dict[str, str]:
     payload = {str(k): str(v) for k, v in dict(inputs or {}).items() if v is not None}
+    recovery = recover_primary_keyword_conflict(state, now_iso=_utc_now())
+    if recovery == "blocked":
+        raise IdeaQueueError("PRIMARY_KEYWORD_CONFLICT_NO_REPLACEMENT")
     active = state.get("active_idea")
     if not isinstance(active, dict):
         return payload
     slot = str(payload.get("slot") or "").strip()
     claimed_slot = str(active.get("publication_slot") or "").strip()
-    if not slot or slot != claimed_slot:
+    if not claimed_slot:
+        raise IdeaQueueError("IDEA_SLOT_MISMATCH")
+    # Legacy/base controller dispatch paths may omit slot after an idea has already
+    # been durably claimed. The claimed publication_slot is authoritative in that
+    # case. An explicitly conflicting slot still fails closed.
+    if not slot:
+        slot = claimed_slot
+        payload["slot"] = claimed_slot
+    elif slot != claimed_slot:
         raise IdeaQueueError("IDEA_SLOT_MISMATCH")
     brief = _clean(active.get("topic_brief"))
     keyword = _clean(active.get("required_primary_keyword"))
@@ -171,26 +392,182 @@ def article_dispatch_inputs(state: dict[str, Any], inputs: Mapping[str, Any] | N
     return payload
 
 
+def _resume_status_before_slot_mismatch(state: dict[str, Any]) -> str | None:
+    """Recover the exact pre-block status from durable history, never guess it."""
+    history = state.get("history")
+    if not isinstance(history, list):
+        return None
+    for row in reversed(history):
+        if not isinstance(row, dict):
+            continue
+        if str(row.get("reason") or "") != "IDEA_SLOT_MISMATCH":
+            continue
+        if str(row.get("to") or "") != "blocked":
+            continue
+        prior = str(row.get("from") or "").strip()
+        if prior and prior != "blocked":
+            return prior
+    return None
+
+
+def _verified_stale_active_completion(
+    state: dict[str, Any], active: dict[str, Any]
+) -> tuple[dict[str, str], str] | None:
+    """Return exact prior-cycle outputs only when durable backlog identity is complete.
+
+    This is deliberately narrow. It exists solely to heal a stale claimed owner
+    idea after daily rollover when the previous cycle has already been verified
+    end-to-end. Any missing or ambiguous evidence fails closed and leaves state
+    untouched.
+    """
+    current_cycle = str(state.get("cycle") or "").strip()
+    publication_slot = str(active.get("publication_slot") or "").strip()
+    last_error = state.get("last_error")
+    if (
+        str(state.get("status") or "") != "blocked"
+        or not isinstance(last_error, dict)
+        or str(last_error.get("code") or "") != "IDEA_SLOT_MISMATCH"
+        or not current_cycle
+        or not publication_slot
+        or publication_slot == current_cycle
+    ):
+        return None
+
+    backlog = state.get("backlog")
+    if not isinstance(backlog, list):
+        return None
+    matches = [
+        row for row in backlog
+        if isinstance(row, dict) and str(row.get("cycle") or "") == publication_slot
+    ]
+    if len(matches) != 1:
+        return None
+
+    row = matches[0]
+    article = row.get("article")
+    media = row.get("media")
+    if not isinstance(article, dict) or not isinstance(media, dict):
+        return None
+
+    slug = str(article.get("slug") or row.get("exact_slug") or "").strip()
+    exact_slug = str(row.get("exact_slug") or "").strip()
+    article_url = str(article.get("url") or "").strip()
+    article_sha = str(article.get("quality_content_sha256") or "").strip().lower()
+    media_slug = str(media.get("source_slug") or "").strip()
+    media_sha = str(media.get("source_content_sha256") or "").strip().lower()
+    media_article_url = str(media.get("article_url") or "").strip()
+    long_url = str(media.get("long_youtube_url") or "").strip()
+    short_url = str(media.get("short_youtube_url") or "").strip()
+
+    if not slug or not exact_slug or slug != exact_slug or media_slug != slug:
+        return None
+    if not SHA256_RE.fullmatch(article_sha) or media_sha != article_sha:
+        return None
+    if str(article.get("quality_status") or "") != "passed":
+        return None
+    if not article_url or media_article_url != article_url or media.get("article_live") is not True:
+        return None
+    if media.get("complete") is not True:
+        return None
+    if str(media.get("long_status") or "") != "complete" or not long_url:
+        return None
+    if str(media.get("short_status") or "") != "complete" or not short_url:
+        return None
+    if media.get("short_width") != 1080 or media.get("short_height") != 1920:
+        return None
+
+    history = state.get("history")
+    delivery_verified = False
+    if isinstance(history, list):
+        for event in reversed(history):
+            if not isinstance(event, dict):
+                continue
+            details = event.get("details") if isinstance(event.get("details"), dict) else {}
+            if (
+                str(event.get("reason") or "")
+                == "prior-cycle article media delivery verified without disturbing current cycle"
+                and str(details.get("backlog_cycle") or "") == publication_slot
+                and str(details.get("source_slug") or "") == slug
+            ):
+                delivery_verified = True
+                break
+    if not delivery_verified:
+        return None
+
+    resume_status = _resume_status_before_slot_mismatch(state)
+    if not resume_status:
+        return None
+
+    return {
+        "slug": slug,
+        "content_sha256": article_sha,
+        "article_url": article_url,
+        "long_url": long_url,
+        "short_url": short_url,
+    }, resume_status
+
+
 def finalize_if_complete(state: dict[str, Any], *, now_iso: str) -> bool:
     ensure_fields(state)
+    collision_recovery = recover_primary_keyword_conflict(state, now_iso=now_iso)
+    if collision_recovery is not None:
+        return True
     active = state.get("active_idea")
-    if state.get("status") != "complete" or not isinstance(active, dict):
+    if not isinstance(active, dict):
         return False
-    slug = str((state.get("article") or {}).get("slug") or "").strip()
-    article_url = str((state.get("article") or {}).get("url") or "").strip()
-    if not slug and article_url:
-        slug = article_url.rstrip("/").split("/")[-1].strip()
-    outputs = {
-        "slug": slug,
-        "article_url": article_url,
-        "long_url": str((state.get("long_video") or {}).get("youtube_url") or "").strip(),
-        "short_url": str((state.get("short") or {}).get("youtube_url") or "").strip(),
-    }
-    if not (outputs["article_url"] and outputs["long_url"] and outputs["short_url"]):
+
+    if state.get("status") == "complete":
+        slug = str((state.get("article") or {}).get("slug") or "").strip()
+        article_url = str((state.get("article") or {}).get("url") or "").strip()
+        if not slug and article_url:
+            slug = article_url.rstrip("/").split("/")[-1].strip()
+        outputs = {
+            "slug": slug,
+            "article_url": article_url,
+            "long_url": str((state.get("long_video") or {}).get("youtube_url") or "").strip(),
+            "short_url": str((state.get("short") or {}).get("youtube_url") or "").strip(),
+        }
+        if not (outputs["article_url"] and outputs["long_url"] and outputs["short_url"]):
+            return False
+        done = copy.deepcopy(active)
+        done.update({"status": "complete", "completed_at": now_iso, "outputs": outputs})
+        state["idea_history"].append(done)
+        state["idea_history"] = state["idea_history"][-MAX_HISTORY:]
+        state["active_idea"] = None
+        return True
+
+    verified = _verified_stale_active_completion(state, active)
+    if verified is None:
         return False
+    outputs, resume_status = verified
+
     done = copy.deepcopy(active)
-    done.update({"status": "complete", "completed_at": now_iso, "outputs": outputs})
+    done.update({
+        "status": "complete",
+        "completed_at": now_iso,
+        "outputs": outputs,
+        "completion_source": "verified_backlog",
+    })
     state["idea_history"].append(done)
     state["idea_history"] = state["idea_history"][-MAX_HISTORY:]
     state["active_idea"] = None
+    prior_status = str(state.get("status") or "")
+    state["status"] = resume_status
+    state["last_error"] = None
+    history = state.get("history")
+    if not isinstance(history, list):
+        history = []
+    history.append({
+        "at": now_iso,
+        "from": prior_status,
+        "to": resume_status,
+        "reason": "stale_active_idea_finalized_from_verified_backlog",
+        "details": {
+            "publication_slot": str(active.get("publication_slot") or ""),
+            "idea_id": str(active.get("idea_id") or ""),
+            "source_slug": outputs["slug"],
+            "content_sha256": outputs["content_sha256"],
+        },
+    })
+    state["history"] = history[-100:]
     return True
