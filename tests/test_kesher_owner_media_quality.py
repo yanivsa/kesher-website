@@ -470,8 +470,9 @@ class OwnerReviewedPublishTests(unittest.TestCase):
         with patch.object(p, "sha", return_value=p.midyear_cta.SHORT_SHA):
             p.validate_midyear_repair(short, Path("short.mp4"), "short")
         short["composition"] = "blurred_padding"
-        with self.assertRaisesRegex(RuntimeError, "MIDYEAR_SHORT_EXACT_NATIVE_MEDIA_MISMATCH"):
-            p.validate_midyear_repair(short, Path("short.mp4"), "short")
+        with patch.object(p, "sha", return_value=p.midyear_cta.SHORT_SHA):
+            with self.assertRaisesRegex(RuntimeError, "MIDYEAR_SHORT_EXACT_NATIVE_MEDIA_MISMATCH"):
+                p.validate_midyear_repair(short, Path("short.mp4"), "short")
 
     def test_guarded_owner_publish_installs_photo_validation_dependency(self):
         from scripts import kesher_owner_reviewed_publish as p
