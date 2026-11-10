@@ -288,6 +288,64 @@ class OwnerReviewedPublishTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "INCOMPLETE_VIDEO_DEDUP_SCAN"):
             p.scan_video_records(yt, [vid], {vid}, "uploads")
 
+    def test_productive_exact_repaired_source_and_metadata(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        cfg = p.CONFIG[p.productive.SLUG]
+        self.assertEqual(cfg["artifact"], 13757967291)
+        self.assertEqual(cfg["canonical_sha"], p.productive.CANONICAL_SHA)
+        self.assertIn("Adobe Firefly", p.metadata(cfg, "overview")["description"])
+        self.assertNotIn("OpenAI", p.metadata(cfg, "overview")["description"])
+        manifest = {"canonical_content_sha256": p.productive.CANONICAL_SHA,
+                    "visual_repair": {"input_artifact_id": 13757158570,
+                        "input_archive_sha256": p.productive.REPAIR_ARCHIVE_SHA,
+                        "original_video_sha256": p.productive.REPAIR_SHORT_SHA,
+                        "audio_packets_preserved": True,
+                        "scene_frame_boundaries": [0,128,267,331,407,506,701,760],
+                        "composition": "full_frame_9_16_editorial_focus_crops_no_blurred_padding",
+                        "audio_packet_sha256": "92cba18305a9c229891f682279472716c489fc56228bbbcdafaeba9923466d9b"}}
+        with patch.object(p.productive, "_audio_packets", return_value=manifest["visual_repair"]["audio_packet_sha256"]):
+            p.validate_productive_repair(manifest, Path("short.mp4"), "short")
+        with patch.object(p.productive, "_audio_packets", return_value="0"*64):
+            with self.assertRaisesRegex(RuntimeError, "PRODUCTIVE_SHORT_AUDIO_PACKET_MISMATCH"):
+                p.validate_productive_repair(manifest, Path("short.mp4"), "short")
+        changed = copy.deepcopy(manifest)
+        changed["visual_repair"]["composition"] = "blurred_padding"
+        with self.assertRaisesRegex(RuntimeError, "PRODUCTIVE_SHORT_NATIVE_REPAIR_EVIDENCE_MISMATCH"):
+            p.validate_productive_repair(changed, Path("short.mp4"), "short")
+        changed = copy.deepcopy(manifest)
+        changed["canonical_content_sha256"] = "0"*64
+        with self.assertRaisesRegex(RuntimeError, "PRODUCTIVE_CANONICAL_MANIFEST_MISMATCH"):
+            p.validate_productive_repair(changed, Path("short.mp4"), "short")
+
+    def test_productive_archive_requires_asr_evidence(self):
+        import hashlib
+        import zipfile
+        from scripts import kesher_owner_reviewed_publish as p
+        cfg = dict(p.CONFIG[p.productive.SLUG])
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            archive = root / "candidate.zip"
+            names = {"asr-review.json"}
+            for kind in p.KINDS:
+                names.update((f"{kind}.mp4", f"{kind}-manifest.json",
+                              f"{kind}-review-voice.wav", f"{kind}-visual-contact-sheet.jpg",
+                              f"{kind}-asr.txt"))
+                names.update(f"{kind}-frame-{i:02d}.jpg" for i in range(1,9))
+            with zipfile.ZipFile(archive, "w") as z:
+                for name in names:
+                    z.writestr(name, b"test")
+            cfg["zip_sha"] = hashlib.sha256(archive.read_bytes()).hexdigest()
+            out = root / "out"
+            out.mkdir()
+            p.archive_files(archive, out, cfg)
+            self.assertEqual({x.name for x in out.iterdir()}, names)
+            with zipfile.ZipFile(archive, "w") as z:
+                for name in names - {"short-asr.txt"}:
+                    z.writestr(name, b"test")
+            cfg["zip_sha"] = hashlib.sha256(archive.read_bytes()).hexdigest()
+            with self.assertRaisesRegex(RuntimeError, "ARTIFACT_FILE_SET_MISMATCH"):
+                p.archive_files(archive, out, cfg)
+
     def test_wrong_archive_digest_fails_before_extraction(self):
         from scripts import kesher_owner_reviewed_publish as p
         with tempfile.TemporaryDirectory() as tmp:
