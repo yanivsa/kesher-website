@@ -3,7 +3,7 @@
   "source_slug": "changing-kindergarten-midyear",
   "content_sha256": "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a",
   "source_article": "https://kesher.saharoni.com/blog/changing-kindergarten-midyear",
-  "status": "SCRIPT_ONLY_NO_RENDER_OR_UPLOAD",
+  "status": "PRIVATE_PREVIEW_ONLY",
   "research": [
     {
       "url": "https://www.unicef.org/parenting/child-care/how-prepare-your-child-preschool",
@@ -49,16 +49,46 @@
       "parent calmly talking with teacher at pickup"
     ],
     "short": [
+      "native vertical child joining play at new preschool",
       "native vertical child and parent entering new classroom",
       "native vertical child giving farewell drawing",
-      "native vertical clear goodbye and teacher greeting",
       "native vertical calm pickup conversation"
     ]
   },
   "qa_pending": [
-    "authenticated full source dedup",
-    "source-bound additional original photo assets and exact provenance",
     "private render, actual visual/audio/semantic QA, rights and publication admission"
   ],
-  "article_body_sha256": "3364783a30bba0069f18a000c03c07d74420e0bf39100bd25fcb4b9fcbefa5eb"
+  "article_body_sha256": "3364783a30bba0069f18a000c03c07d74420e0bf39100bd25fcb4b9fcbefa5eb",
+  "canonical_content_sha256": "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a",
+  "scene_indices": {
+    "overview": [
+      0,
+      0,
+      1,
+      3,
+      4,
+      2
+    ],
+    "short": [
+      7,
+      5,
+      6,
+      8
+    ]
+  },
+  "dedup_evidence": {
+    "source_slug": "changing-kindergarten-midyear",
+    "content_sha256": "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a",
+    "run_id": 42885523761,
+    "job_id": 130072725528,
+    "head_sha": "be26cd0a94b98a2c37e48fe754de55c8df46bd29",
+    "workflow_id": 349292838,
+    "complete": true,
+    "uploaded_video_count": 225,
+    "resolved_video_count": 215,
+    "confirmed_deleted_count": 10,
+    "candidates": [],
+    "verified_at": "2026-11-10T19:29:02Z",
+    "read_only": true
+  }
 }
