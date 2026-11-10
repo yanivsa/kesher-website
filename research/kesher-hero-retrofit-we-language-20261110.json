@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "source_slug": "we-language-relationships",
+  "source_content_sha256": "349c806f14d7acb42e5ccf64adc14a3872d161278898a9a7190324eacac8fdcf",
+  "generated_at": "2026-11-10",
+  "provider": "Adobe Firefly",
+  "request_id": "98e56920-48b8-4a2e-bb60-dfcf903ef21a",
+  "original_asset_urn": "urn:aaid:ps:US:aa201995-9e34-4922-945c-2a5e19a691ac",
+  "final_path": "public/images/generated/blog/we-language-relationships-photo.jpg",
+  "final_sha256": "9803bdd2734b3ffbd88515b5c2d54573afa43568716bc66f56eb254440887b5c",
+  "final_dimensions": [
+    1200,
+    685
+  ],
+  "transform": "Adobe asset_inline_preview JPEG rendition, max longer edge 1200 px, requested JPEG quality 90; no manual retouching or invented original-byte hash.",
+  "commercial_use_permitted": true,
+  "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+  "review": "OWNER inspected actual previous flat vector and actual final Adobe JPEG: two adults at a kitchen table, serious but attentive conversation, open gestures, notebook and cups, natural window light; relevant to cooperative conflict communication, no text, logos, padding or identifiable real people.",
+  "previous_hero_path": "/images/generated/blog/we-language-relationships.png",
+  "previous_hero_sha256": "63a70fb3fd1a42d52ca86f73056b74ca3a7957572a8d8e7cf1dcddcf57c35440",
+  "article_content_changed": false,
+  "post_summary_generation": "Updated only the existing target summary image according to the repository generator projection; other summary fields and all other rows preserved. Full repository CI required before merge."
+}
