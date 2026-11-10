@@ -13,6 +13,7 @@ from pathlib import Path
 
 from scripts import kesher_owner_asynchrony_preview as gifted
 from scripts import kesher_owner_positivity_preview as positivity
+from scripts import kesher_owner_productive_failure_preview as productive
 from scripts.kesher_owner_vantage_short import youtube_client
 from scripts.kesher_daily_pipeline import clean_article_html, source_metadata
 from scripts.kesher_runtime.bridge_admission import main as bridge_admission
@@ -45,6 +46,18 @@ CONFIG = {
         },
         "intro": "מהי תהודה חיובית בזוגיות? מחקר תצפיתי על רגעי חיבור ותרגיל קצר שאפשר לנסות בבית, בלי הבטחות מופרזות.",
         "tags": ["תהודה חיובית", "ייעוץ זוגי", "זוגיות", "שירה סהרוני"],
+    },
+    productive.SLUG: {
+        "module": productive, "date": "20261110", "artifact": 13757967291,
+        "canonical_sha": "3c591714830cf7787c453be6b11eab3d7eb8e743eed97da69d449acc9a80b5bf",
+        "run": 42805342726,
+        "zip_sha": "08962f9d423d0310ebb92c5c8e0dba29a9cd9e753563068917232c90c13b5529",
+        "titles": {
+            "overview": "כישלון פורה: למה לא לפתור לילד כל קושי בשיעורי הבית?",
+            "short": "הילד נתקע בשיעורי הבית? נסו לשאול את זה #Shorts",
+        },
+        "intro": "מהו כישלון פורה, מתי כדאי לתת לילד לנסות לפני שמסבירים, ומתי דווקא לעזור מיד? דוגמה מעשית וממצאים ממחקרי למידה, בלי להבטיח פתרון שמתאים לכל ילד.",
+        "tags": ["כישלון פורה", "שיעורי בית", "למידה", "הדרכת הורים", "שירה סהרוני"],
     },
 }
 
@@ -101,9 +114,9 @@ def archive_files(archive, dest, cfg):
         expected.update((f"{kind}.mp4", f"{kind}-manifest.json",
                          f"{kind}-review-voice.wav", f"{kind}-visual-contact-sheet.jpg"))
         expected.update(f"{kind}-frame-{i:02d}.jpg" for i in range(1, 9))
-        if cfg["module"] is positivity:
+        if cfg["module"] in (positivity, productive):
             expected.add(f"{kind}-asr.txt")
-    if cfg["module"] is positivity:
+    if cfg["module"] in (positivity, productive):
         expected.add("asr-review.json")
     with zipfile.ZipFile(archive) as z:
         names = z.namelist()
@@ -114,6 +127,26 @@ def archive_files(archive, dest, cfg):
         for name in sorted(expected):
             require(Path(name).name == name, "UNSAFE_ARTIFACT_PATH")
             (dest / name).write_bytes(z.read(name))
+
+
+def validate_productive_repair(manifest, video, kind):
+    require(manifest.get("canonical_content_sha256") == productive.CANONICAL_SHA,
+            "PRODUCTIVE_CANONICAL_MANIFEST_MISMATCH")
+    if kind == "short":
+        repair = manifest.get("visual_repair") or {}
+        require(repair.get("input_artifact_id") == 13757158570
+                and repair.get("input_archive_sha256") == productive.REPAIR_ARCHIVE_SHA
+                and repair.get("original_video_sha256") == productive.REPAIR_SHORT_SHA
+                and repair.get("audio_packets_preserved") is True
+                and repair.get("scene_frame_boundaries") == [0,128,267,331,407,506,701,760]
+                and repair.get("composition") == "full_frame_9_16_editorial_focus_crops_no_blurred_padding"
+                and repair.get("audio_packet_sha256") == "92cba18305a9c229891f682279472716c489fc56228bbbcdafaeba9923466d9b",
+                "PRODUCTIVE_SHORT_NATIVE_REPAIR_EVIDENCE_MISMATCH")
+        require(productive._audio_packets(video) == repair["audio_packet_sha256"],
+                "PRODUCTIVE_SHORT_AUDIO_PACKET_MISMATCH")
+    else:
+        require(sha(video) == productive.REPAIR_OVERVIEW_SHA,
+                "PRODUCTIVE_OVERVIEW_REUSE_MISMATCH")
 
 
 def validate_bundle(cfg, directory, kind):
@@ -146,7 +179,7 @@ def validate_bundle(cfg, directory, kind):
     contact = directory / f"{kind}-visual-contact-sheet.jpg"
     frames = {f"{kind}-frame-{i:02d}.jpg": sha(directory / f"{kind}-frame-{i:02d}.jpg")
               for i in range(1, 9)}
-    transcript = (directory / f"{kind}-asr.txt" if module is positivity else
+    transcript = (directory / f"{kind}-asr.txt" if module in (positivity, productive) else
                   root / "evidence" / f"{slug}--{kind}-descript-transcript.txt")
     require(sha(video) == manifest["video_sha256"]
             and sha(wav) == manifest["audio_sha256"] == evidence["audio_sha256"]
@@ -169,6 +202,8 @@ def validate_bundle(cfg, directory, kind):
             and manifest["visual_sources"] == provenance["images"],
             "REVIEWED_SOURCE_OR_VISUALS_CHANGED")
     module.verify_video(video, kind)
+    if module is productive:
+        validate_productive_repair(manifest, video, kind)
     item = {
         "technical_verified": True, "source": {"slug": slug, "content_sha256": source_sha},
         "type": "video_overview" if kind == "overview" else "article_short",
@@ -195,7 +230,7 @@ def metadata(cfg, kind, overview_id=None):
         + "\nhttps://www.openslr.org/141/"
         + "\nhttps://creativecommons.org/licenses/by/4.0/"
         + ("\nתמונות מקוריות שנוצרו עבור KESHER באמצעות Adobe Firefly."
-           if module is positivity else "\nתמונות מקוריות שנוצרו עבור KESHER באמצעות OpenAI.")
+           if module in (positivity, productive) else "\nתמונות מקוריות שנוצרו עבור KESHER באמצעות OpenAI.")
     )
     if kind == "short":
         require(isinstance(overview_id, str) and re.fullmatch(r"[A-Za-z0-9_-]{11}", overview_id),
