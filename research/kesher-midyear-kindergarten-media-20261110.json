@@ -59,5 +59,6 @@
     "authenticated full source dedup",
     "source-bound additional original photo assets and exact provenance",
     "private render, actual visual/audio/semantic QA, rights and publication admission"
-  ]
+  ],
+  "article_body_sha256": "3364783a30bba0069f18a000c03c07d74420e0bf39100bd25fcb4b9fcbefa5eb"
 }

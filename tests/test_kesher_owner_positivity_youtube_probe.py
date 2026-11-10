@@ -1,6 +1,6 @@
 import unittest
 from pathlib import Path
-from scripts.kesher_owner_positivity_youtube_probe import SLUG,SHA,CHANNEL,KIND_MARKERS,MIDYEAR_SLUG,MIDYEAR_SHA,midyear_candidates
+from scripts.kesher_owner_positivity_youtube_probe import SLUG,SHA,CHANNEL,KIND_MARKERS,MIDYEAR_SLUG,MIDYEAR_SHA,MIDYEAR_BODY_SHA,midyear_candidates
 class PositivityYoutubeReadOnlyTests(unittest.TestCase):
     def test_bound_identity(self):
         self.assertEqual(SLUG,"positivity-resonance-marriage-micro-moments")
@@ -14,13 +14,15 @@ class PositivityYoutubeReadOnlyTests(unittest.TestCase):
             return {"id": vid, "snippet": {"channelId": CHANNEL, "title": title, "description": desc}, "status": {"privacyStatus": privacy}}
         rows = [record("abcdefghijk", "מעבר לגן באמצע השנה", ""),
                 record("bcdefghijkl", "כותרת אחרת", "https://kesher.saharoni.com/blog/" + MIDYEAR_SLUG, "private"),
-                record("cdefghijklm", "מעבר לגן עירייה", "transition-to-municipal-kindergarten")]
+                record("cdefghijklm", "מעבר לגן עירייה", "transition-to-municipal-kindergarten"),
+                record("defghijklmn", "כותרת ישנה", "content_sha256=" + MIDYEAR_BODY_SHA)]
         result = midyear_candidates(rows)
-        self.assertEqual(len(result), 2)
+        self.assertEqual(len(result), 3)
         self.assertEqual(result[0]["public_id"], "abcdefghijk")
         self.assertIsNone(result[1]["public_id"])
         self.assertIsNone(result[1]["title"])
         self.assertEqual(len(result[1]["id_fingerprint"]), 12)
+        self.assertEqual(result[2]["public_id"], "defghijklmn")
         rows[0]["snippet"]["channelId"] = "wrong"
         with self.assertRaisesRegex(RuntimeError, "UNEXPECTED_CHANNEL"):
             midyear_candidates(rows)

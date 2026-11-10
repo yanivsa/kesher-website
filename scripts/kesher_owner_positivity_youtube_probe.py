@@ -13,6 +13,7 @@ SHA = "6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f"
 CHANNEL = "UCx5fEFvdVf28HLAR2dFW64Q"
 MIDYEAR_SLUG = "changing-kindergarten-midyear"
 MIDYEAR_SHA = "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a"
+MIDYEAR_BODY_SHA = "3364783a30bba0069f18a000c03c07d74420e0bf39100bd25fcb4b9fcbefa5eb"
 MIDYEAR_TITLE = "מעבר גן באמצע שנה: איך לעזור לילד להיפרד ולהתחיל מחדש?"
 KIND_MARKERS = {"overview": "owner-overview-20261110-6bb5723bbadc",
                 "short": "owner-short-20261110-6bb5723bbadc"}
@@ -64,7 +65,8 @@ def midyear_candidates(records):
         normalized = re.sub(r"[^\w\s]", " ", title)
         normalized = " ".join(normalized.split())
         title_match = bool(re.search(r"מעבר (?:ל)?גן באמצע (?:ה)?שנה", normalized))
-        if MIDYEAR_SLUG not in desc and MIDYEAR_SHA not in desc and not title_match and title != MIDYEAR_TITLE:
+        if (MIDYEAR_SLUG not in desc and MIDYEAR_SHA not in desc and MIDYEAR_BODY_SHA not in desc
+                and not title_match and title != MIDYEAR_TITLE):
             continue
         privacy = (row.get("status") or {}).get("privacyStatus")
         vid = row["id"]
