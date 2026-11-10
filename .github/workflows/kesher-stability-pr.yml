@@ -309,3 +309,57 @@ jobs:
           if-no-files-found: error
           compression-level: 0
           retention-days: 60
+
+
+  owner-productive-failure-private-preview:
+    # Exact same-repo owner PR, private evidence only. No upload credentials.
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/productive-failure-media-20261110' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout exact OWNER candidate with no credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Set up Python for licensed local speech
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up pinned Node for repository FFmpeg bundles
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned owner-direct speech and media tools
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          printf '%s\\n' "$ffmpeg_dir" "$ffprobe_dir" >> "$GITHUB_PATH"
+          python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' 'faster-whisper==1.2.1' 'av<19'
+      - name: Exact source preflight and private render
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-productive-failure-hf
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_owner_productive_failure_preview preflight --source-sha 37f9b2e3ef91fa1b77b923f35281df9a66014d243389bb08e7fa1954bc86ab50
+          python -m scripts.kesher_owner_productive_failure_preview preview --source-sha 37f9b2e3ef91fa1b77b923f35281df9a66014d243389bb08e7fa1954bc86ab50
+          python -m scripts.kesher_owner_productive_failure_preview asr --source-sha 37f9b2e3ef91fa1b77b923f35281df9a66014d243389bb08e7fa1954bc86ab50
+      - name: Archive reviewable PRIVATE outputs only
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-productive-failure-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-productive-failure-media-output/overview.mp4
+            owner-productive-failure-media-output/short.mp4
+            owner-productive-failure-media-output/*-review-voice.wav
+            owner-productive-failure-media-output/*-manifest.json
+            owner-productive-failure-media-output/*-visual-contact-sheet.jpg
+            owner-productive-failure-media-output/*-frame-*.jpg
+            owner-productive-failure-media-output/*-asr.txt
+            owner-productive-failure-media-output/asr-review.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 60

@@ -1,0 +1,37 @@
+{
+  "source_slug": "productive-failure-parents-learning-resilience",
+  "content_sha256": "37f9b2e3ef91fa1b77b923f35281df9a66014d243389bb08e7fa1954bc86ab50",
+  "canonical_content_sha256": "3c591714830cf7787c453be6b11eab3d7eb8e743eed97da69d449acc9a80b5bf",
+  "images": [
+    {
+      "path": "public/images/generated/blog/productive-failure-learning-hero.jpg",
+      "sha256": "0c5de4655f3db5d21381f63dcfa78741755f890dac932588400167c8e8843f83",
+      "generated_for": "productive-failure-parents-learning-resilience",
+      "provider": "Adobe Firefly",
+      "generation_reference": "https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:cfb86cb7-dad7-4202-9fdd-3e5ed448b675",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/ee/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "commercial use of Firefly-generated outputs under Adobe Firefly terms; original synthetic editorial subjects"
+    },
+    {
+      "path": "public/images/blog/productive-failure-scene-2.jpg",
+      "sha256": "7fcfdf8e615a0545ba20440cd0ca1ef1a1c7fe1445727e2d74db533a839caf4b",
+      "generated_for": "productive-failure-parents-learning-resilience",
+      "provider": "Adobe Firefly",
+      "generation_reference": "https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:25a6a169-d6e6-4750-8719-bc842ed53592",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/ee/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "commercial use of Firefly-generated outputs under Adobe Firefly terms; original synthetic editorial subjects"
+    },
+    {
+      "path": "public/images/blog/productive-failure-scene-3.jpg",
+      "sha256": "bf2d1ad0d2484b17a56c1907ba3e529a1f2efe655b036d787fa2633afb98fa63",
+      "generated_for": "productive-failure-parents-learning-resilience",
+      "provider": "Adobe Firefly",
+      "generation_reference": "https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:b1a6e7a9-0950-4650-b0f7-ad45e3376967",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/ee/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "commercial use of Firefly-generated outputs under Adobe Firefly terms; original synthetic editorial subjects"
+    }
+  ]
+}
