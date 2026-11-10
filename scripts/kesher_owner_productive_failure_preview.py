@@ -19,6 +19,7 @@ def source_scripts():
     overview = re.findall(r'^\d+\. (.+)$', doc, re.M)
     short_text = doc.split("## Short script",1)[1].strip()
     short = re.split(r'(?<=[.!?])\s+', short_text)
+    short = [short[0]+" "+short[1], *short[2:]]
     if len(overview) != 6 or len(short) < 4 or len(short) > 8:
         raise ValueError("SOURCE_SCRIPT_SHAPE")
     if "לא לכל ילד" not in short_text or "לא היו זהות בכל גיל" not in " ".join(overview):
