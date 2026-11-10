@@ -240,6 +240,54 @@ class OwnerReviewedPublishTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "UNEXPECTED_CHANNEL"):
             p.scan_video_records(yt, [a["id"]])
 
+    def test_deleted_marker_requires_exact_channel_playlist_and_unavailable_status(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        vid, playlist = "abcdefghijk", "UUx5fEFvdVf28HLAR2dFW64Q"
+        row = {"contentDetails": {"videoId": vid}, "snippet": {
+            "channelId": p.CHANNEL, "playlistId": playlist,
+            "resourceId": {"kind": "youtube#video", "videoId": vid},
+            "title": "Deleted video"}, "status": {"privacyStatus": "privacyStatusUnspecified"}}
+        self.assertTrue(p.deleted_upload_marker(row, playlist))
+        for key, value in (("title", "Private video"), ("videoOwnerChannelId", p.CHANNEL),
+                           ("playlistId", "wrong"), ("channelId", "wrong")):
+            changed = copy.deepcopy(row)
+            changed["snippet"][key] = value
+            self.assertFalse(p.deleted_upload_marker(changed, playlist))
+        changed = copy.deepcopy(row)
+        changed["status"]["privacyStatus"] = "private"
+        self.assertFalse(p.deleted_upload_marker(changed, playlist))
+
+    def test_confirmed_deleted_tombstone_accounted_but_unknown_missing_fails(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        yt = Mock()
+        a = {"id": "abcdefghijk", "snippet": {"channelId": p.CHANNEL}}
+        b = "12345678901"
+        yt.videos.return_value.list.return_value.execute.side_effect = [
+            {"items": [a]}, {"items": []}]
+        err = Exception("not found")
+        err.resp = SimpleNamespace(status=404)
+        err.content = json.dumps({"error": {"code": 404, "errors": [{
+            "reason": "videoNotFound", "domain": "youtube.playlistItem", "location": "videoId"}]}}).encode()
+        yt.playlistItems.return_value.list.return_value.execute.side_effect = err
+        self.assertEqual(p.scan_video_records(yt, [a["id"], b], {b}, "uploads"), [a])
+        yt.videos.return_value.list.return_value.execute.side_effect = [
+            {"items": [a]}, {"items": []}]
+        with self.assertRaisesRegex(RuntimeError, "INCOMPLETE_VIDEO_DEDUP_SCAN"):
+            p.scan_video_records(yt, [a["id"], b], set(), "uploads")
+
+    def test_deleted_marker_alone_and_generic_404_cannot_waive_missing(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        yt = Mock()
+        vid = "abcdefghijk"
+        yt.videos.return_value.list.return_value.execute.side_effect = [
+            {"items": []}, {"items": []}]
+        err = Exception("generic 404")
+        err.resp = SimpleNamespace(status=404)
+        err.content = b'{"error":{"code":404,"errors":[{"reason":"playlistNotFound"}]}}'
+        yt.playlistItems.return_value.list.return_value.execute.side_effect = err
+        with self.assertRaisesRegex(RuntimeError, "INCOMPLETE_VIDEO_DEDUP_SCAN"):
+            p.scan_video_records(yt, [vid], {vid}, "uploads")
+
     def test_wrong_archive_digest_fails_before_extraction(self):
         from scripts import kesher_owner_reviewed_publish as p
         with tempfile.TemporaryDirectory() as tmp:

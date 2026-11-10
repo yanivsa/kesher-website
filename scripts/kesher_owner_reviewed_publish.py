@@ -230,7 +230,46 @@ def classify(cfg, records):
     return matches
 
 
-def scan_video_records(yt, ids):
+def deleted_upload_marker(row, playlist):
+    """Recognize only YouTube's authenticated uploads-playlist tombstone."""
+    snippet = row.get("snippet") or {}
+    resource = snippet.get("resourceId") or {}
+    video_id = (row.get("contentDetails") or {}).get("videoId")
+    return (
+        isinstance(video_id, str) and re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id)
+        and snippet.get("channelId") == CHANNEL
+        and snippet.get("playlistId") == playlist
+        and resource.get("kind") == "youtube#video"
+        and resource.get("videoId") == video_id
+        and snippet.get("title") == "Deleted video"
+        and not snippet.get("videoOwnerChannelId")
+        and (row.get("status") or {}).get("privacyStatus") == "privacyStatusUnspecified"
+    )
+
+
+def confirm_deleted_upload(yt, playlist, video_id):
+    """Require explicit API videoNotFound, not an empty or transient response."""
+    try:
+        yt.playlistItems().list(part="snippet,contentDetails,status",
+                                playlistId=playlist, videoId=video_id,
+                                maxResults=1).execute()
+    except Exception as exc:
+        if getattr(getattr(exc, "resp", None), "status", None) != 404:
+            return False
+        try:
+            error = json.loads(exc.content)["error"]
+            return error.get("code") == 404 and any(
+                item.get("reason") == "videoNotFound"
+                and item.get("domain") == "youtube.playlistItem"
+                and item.get("location") == "videoId"
+                for item in error.get("errors", [])
+            )
+        except (AttributeError, TypeError, ValueError, KeyError):
+            return False
+    return False
+
+
+def scan_video_records(yt, ids, deleted_candidates=None, playlist=None):
     """Read all upload IDs, retry omitted batch records individually, fail closed.
 
     Processing details are needed only for final public verification, not for
@@ -255,6 +294,15 @@ def scan_video_records(yt, ids):
         for vid in missing:
             collect([vid])
     missing = [vid for vid in ids if vid not in records]
+    # Every ID is accounted for by a video record or a current, explicit
+    # authenticated tombstone plus an independent exact-ID API 404 reason.
+    deleted = set()
+    for vid in missing:
+        if playlist and vid in (deleted_candidates or set()) and confirm_deleted_upload(yt, playlist, vid):
+            deleted.add(vid)
+    missing = [vid for vid in missing if vid not in deleted]
+    if deleted:
+        print("OWNER_DEDUP_CONFIRMED_DELETED " + str(len(deleted)), flush=True)
     if missing:
         # Public repository logs must not expose private/unlisted video IDs.
         fingerprints = [hashlib.sha256(vid.encode()).hexdigest()[:12] for vid in missing]
@@ -262,8 +310,9 @@ def scan_video_records(yt, ids):
             "playlist_count": len(ids), "observed_count": len(records),
             "missing_count": len(missing), "missing_id_fingerprints": fingerprints,
         }), flush=True)
-    require(not missing and set(records) == set(ids), "INCOMPLETE_VIDEO_DEDUP_SCAN")
-    return [records[vid] for vid in ids]
+    require(not missing and set(records).isdisjoint(deleted)
+            and set(records) | deleted == set(ids), "INCOMPLETE_VIDEO_DEDUP_SCAN")
+    return [records[vid] for vid in ids if vid in records]
 
 
 def scan(yt, cfg):
@@ -271,16 +320,21 @@ def scan(yt, cfg):
     require(len(rows) == 1 and rows[0]["id"] == CHANNEL, "WRONG_YOUTUBE_CHANNEL")
     playlist = rows[0]["contentDetails"]["relatedPlaylists"]["uploads"]
     ids, seen_tokens, token = [], set(), None
+    deleted_candidates = set()
     while True:
-        page = yt.playlistItems().list(part="contentDetails", playlistId=playlist,
+        page = yt.playlistItems().list(part="snippet,contentDetails,status", playlistId=playlist,
                                        maxResults=50, pageToken=token).execute()
-        ids.extend(x["contentDetails"]["videoId"] for x in page.get("items", []))
+        for row in page.get("items", []):
+            vid = row["contentDetails"]["videoId"]
+            ids.append(vid)
+            if deleted_upload_marker(row, playlist):
+                deleted_candidates.add(vid)
         token = page.get("nextPageToken")
         if not token:
             break
         require(token not in seen_tokens and len(seen_tokens) < 200, "INCOMPLETE_DEDUP_SCAN")
         seen_tokens.add(token)
-    return classify(cfg, scan_video_records(yt, ids))
+    return classify(cfg, scan_video_records(yt, ids, deleted_candidates, playlist))
 
 
 def verify_public(yt, cfg, kind, vid, expected):
