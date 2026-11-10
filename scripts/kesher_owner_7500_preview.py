@@ -21,7 +21,7 @@ def source_scripts():
     overview = re.findall(r'^\d+\. (.+)$', doc, re.M)
     short_text = doc.split("## Short script",1)[1].strip().splitlines()[0]
     parts = re.split(r'(?<=[.!?])\s+', short_text)
-    if len(overview) != 7 or len(parts) != 7:
+    if len(overview) != 7 or len(parts) != 7 or len(short_text.split()) < 85:
         raise ValueError("SOURCE_SCRIPT_SHAPE")
     short = [parts[0]+" "+parts[1], parts[2]+" "+parts[3], parts[4], parts[5]+" "+parts[6]]
     if "בטיחות קודמת" not in short_text or "אינה אבחנה" not in " ".join(overview) or "מטאפורה" not in overview[0]:

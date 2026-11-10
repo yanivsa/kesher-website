@@ -432,3 +432,20 @@ jobs:
           if-no-files-found: error
           compression-level: 0
           retention-days: 60
+      - name: Preserve failed private render evidence for targeted recovery (never publish)
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-7500-failed-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-7500-media-output/overview.mp4
+            owner-7500-media-output/short.mp4
+            owner-7500-media-output/*-review-voice.wav
+            owner-7500-media-output/*-manifest.json
+            owner-7500-media-output/*-visual-contact-sheet.jpg
+            owner-7500-media-output/*-frame-*.jpg
+            owner-7500-media-output/*-asr.txt
+            owner-7500-media-output/asr-review.json
+          if-no-files-found: ignore
+          compression-level: 0
+          retention-days: 14
