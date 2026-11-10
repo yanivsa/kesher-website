@@ -3267,7 +3267,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "9dde2409ee14b9d0a1f4335fdaf09f97cbec2c86009f62fa5b000d419e2c8b2d",
+      "definition_sha256": "910150066a6628e71948fa56f48657e465dc2726565c2a6516244e581e4b313b",
       "resources": [],
       "review": {
         "call_chain": {
@@ -3287,6 +3287,8 @@
           "tests/test_kesher_owner_midyear_kindergarten_preview.py": "2e9b0f7a771b903c998943b4e67db8b9942e1699b027be9f90f2da829a1ecd63",
           "scripts/kesher_owner_midyear_kindergarten_repair.py": "665955a7626b5eeb07458087f1d9414f323df0414599d4d132391e74a0153a86",
           "tests/test_kesher_owner_midyear_kindergarten_repair.py": "cb411af46d5bea1a8a2af9225650cc88f705fbdc5dc1e34168d7735a8a63c13b",
+          "scripts/kesher_owner_midyear_kindergarten_cta_repair.py": "482d4958e70de9598a0e09e4cb6eb26b9c88074ac07fc9096d36c11cf904544e",
+          "tests/test_kesher_owner_midyear_kindergarten_cta_repair.py": "82cff096b6539ec8efc40c6d1c31b79b6f65f7789c1e055bcf75bf6660aca6be",
           "research/kesher-productive-failure-20261110.md": "1d81bbab0f9afba03b85e29fcf999d9b5e7156e34d23394e1eb6a6c46e83c50e",
           "research/kesher-productive-failure-photo-provenance.json": "cb3a6897e0bc1c9575bca8eb97b02305378cb2986df173e4f76d04241f3da3d0",
           "research/kesher-relationship-code-7500-20261110.md": "a777ac07c1133284457b586b44b9e9f3feb262cb20e1b03953acfc3dcce58085",
