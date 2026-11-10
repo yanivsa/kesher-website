@@ -145,6 +145,21 @@ class ArticlePublicTests(unittest.TestCase):
                     article=replace(self.responses[self.url], body=changed),
                     manifest=replace(self.responses[SITE + '/.well-known/kesher-publication.json'], body=json.dumps(manifest).encode()))
 
+    def test_metadata_mismatch_reports_slug_and_keys_without_values(self):
+        changed = self.html.decode().replace(
+            'name="description" content="תקציר בעברית"',
+            'name="description" content="REDACTED_TEST_VALUE"',
+        ).replace(
+            'name="og:title" content="כותרת בעברית | שירה סהרוני"',
+            'name="og:title" content="REDACTED_TEST_VALUE"',
+        ).encode()
+        with self.assertRaises(self.av.ArticleVerificationError) as caught:
+            self.av.validate_rendered_html(changed, self.post, deploy_sha=SHA)
+        self.assertEqual(caught.exception.failure_class, 'ARTICLE_CONTENT_MISMATCH')
+        self.assertIn('slug=' + self.identity.slug, str(caught.exception))
+        self.assertIn('keys=description,og:title', str(caught.exception))
+        self.assertNotIn('REDACTED_TEST_VALUE', str(caught.exception))
+
     def test_wrong_remote_image_bytes_cannot_be_authorized_by_manifest(self):
         changed = copy.deepcopy(self.manifest)
         changed['articles'][self.identity.slug]['hero']['sha256'] = hashlib.sha256(b'wrong').hexdigest()
