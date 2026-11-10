@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "source_slug": "stool-withholding-potty-training",
+  "source_content_sha256": "b66776d3b085aa1994ef636734b8c9935c3ae83c65c9bfb84a2017ccac2b7734",
+  "generated_at": "2026-11-10",
+  "provider": "Adobe Firefly",
+  "request_id": "1597b949-dd19-4d80-b414-c3c2d8f59c8a",
+  "original_asset_urn": "urn:aaid:ps:US:d8e08e47-744b-47f4-ad6b-f0e2d8830510",
+  "final_path": "public/images/generated/blog/stool-withholding-potty-training-photo.jpg",
+  "final_sha256": "3699dcc522bf1b7611cf7cdce657e51480f1ec9dc6df2d4b2e3b7504cb10ac39",
+  "final_dimensions": [
+    1200,
+    685
+  ],
+  "transform": "Adobe asset_inline_preview JPEG rendition, max longer edge 1200 px, requested JPEG quality 90; no invented original-byte hash.",
+  "commercial_use_permitted": true,
+  "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+  "review": "OWNER inspected actual previous flat vector and actual final JPEG: fully clothed young child and calm father reading together in a home bathroom beside a step stool and child potty; natural warm light, relevant to reducing pressure during toilet training, no exposed body, distress, text, logo or padding.",
+  "previous_hero_path": "/images/generated/blog/stool-withholding-potty-training.png",
+  "previous_hero_sha256": "6eb41e0cb5c933a7a04b58f33f6e6fbd55d206d3a251d341bd4b4024914b37c5",
+  "article_content_changed": false,
+  "post_summary_generation": "Actual normal generator before/after 161 rows; only target image differs. Preserve unrelated existing summary staleness."
+}
