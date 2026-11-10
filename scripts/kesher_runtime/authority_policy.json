@@ -3240,7 +3240,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "5348080cfb42030a70b5fb0cb228dc9198cc97eb7a1cf3fc96ced487e00dcd81",
+      "definition_sha256": "fceb99524525249753c04f7b662fb77a8bbaad89308b3a4db52b1ca6753bf111",
       "resources": [],
       "review": {
         "call_chain": {
@@ -3252,6 +3252,8 @@
           "remotion-kesher/src/licensedPhotoStory.ts": "0488ba7a47959318d206f692c4e435fdbc72ff08b083dc5865c05291910ea126",
           "research/kesher-asynchrony-photo-provenance.json": "5c0f25bbc8e5ff87d9f16fc6db2588f6bca50cafdbcc6fe35ea1ee0b6307a36d",
           "research/kesher-gifted-asynchrony-20261109.md": "3e8d6d2a4e5326852feaf225459a9c95b8ed8f8d1d70333918b2b5d652d08de1",
+          "research/kesher-productive-failure-20261110.md": "1d81bbab0f9afba03b85e29fcf999d9b5e7156e34d23394e1eb6a6c46e83c50e",
+          "research/kesher-productive-failure-photo-provenance.json": "cb3a6897e0bc1c9575bca8eb97b02305378cb2986df173e4f76d04241f3da3d0",
           "research/kesher-vantage-overview-full-private-20261109.json": "297a5ad7fd65c4f5f855fedcfd615c824c2144453667559381c2330dc68f8727",
           "research/kesher-vantage-photographic-private-preview.json": "a559f56773bab09354175293d56a8cc357cd3fdb4005814e232361e7eb5458d2",
           "research/kesher-vantage-sensitivity-20261109.md": "e39ac6d61b8e8584797a0039b9264e1929fde3952f5c3a8237c8110d3de75cf7",
@@ -3282,6 +3284,7 @@
           "scripts/kesher_owner_asynchrony_preview.py": "277b4f1e4f44e4cef421d59864e46cda1784dd20cabf815f6594d27fe3be61a2",
           "scripts/kesher_owner_positivity_asr.py": "743a4425f026c9c6ed153c7479c01ddd634a733a6434e62440d8a2ae520c0c1c",
           "scripts/kesher_owner_positivity_preview.py": "baf564c273d1b4408f39dce5241e415c40501ffcd61ab97d59c02a057366c8bc",
+          "scripts/kesher_owner_productive_failure_preview.py": "33133377fe1259638109f51b4d017d56999a8b37f2b94691685f833370130207",
           "scripts/kesher_owner_vantage_short.py": "016b0f73870d71be542c52f9e703b16e4d7331306c11cb085e66ed2d6267c252",
           "scripts/kesher_photo_story_private_preview.py": "1eba813eb5b6f05af78138072a3bb7bd37db99b0e8e6171d3a6849a2bda37ac0",
           "scripts/kesher_publication_manifest.py": "733eea18c989bf24277694f73465c765ceb4713cccd22996b293346c65fa5afb",
