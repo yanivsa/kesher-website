@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import subprocess
 import unittest
 
 from scripts import kesher_article_contract as contract
@@ -34,7 +35,19 @@ class ArticleContractTests(unittest.TestCase):
         posts = json.loads((root / "src/data/postsRecent.json").read_text(encoding="utf-8"))
         matches = [post for post in posts if post.get("slug") == "child-not-playing-kindergarten"]
         self.assertEqual(len(matches), 1)
-        source = source_metadata(matches[0])
+        # The actual site selector, not just source_metadata, must accept it.
+        selected = subprocess.run(
+            ["node", "-e", (
+                "const {loadPosts}=require('./scripts/load-posts.cjs');"
+                "const {isPublishable}=require('./scripts/content-policy.cjs');"
+                "process.stdout.write(JSON.stringify(loadPosts().filter(p=>"
+                "p.slug==='child-not-playing-kindergarten' && isPublishable(p))));"
+            )], cwd=root, capture_output=True, text=True, encoding="utf-8",
+            check=True, timeout=30,
+        )
+        eligible = json.loads(selected.stdout)
+        self.assertEqual(len(eligible), 1, "Approved article must render in the site catalog")
+        source = source_metadata(eligible[0])
         self.assertEqual(source["slug"], "child-not-playing-kindergarten")
         self.assertEqual(source["canonical_url"], "https://kesher.saharoni.com/blog/child-not-playing-kindergarten")
         self.assertEqual(source["content_sha256"], "60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa")
