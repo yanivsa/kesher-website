@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "source_slug": "child-not-playing-kindergarten",
+  "content_sha256": "60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa",
+  "media_kind": "overview",
+  "media_item_id": "owner-overview-20261110-60374e686f78",
+  "final_sha256": "b4ab42789a64e302d8fc57759cc6a58efd9032b1626b9d8d017fa0b75ef23288",
+  "manifest_sha256": "800a3860610d44893721a99d1cd5b676893c657929c75496e191065d733d19ee",
+  "transcript_sha256": "5debc6f4616c1224a5b6ded076fbf181fc1b4322052e025a262a52c9469bf5c7",
+  "visual_review_sha256": "c94381eb63a5da6022b007546c062339fc0832203f77d916bc790ecd3aa7f34b",
+  "source_file_sha256": "1111f202ae94d506d650634cc1db764ec413d84f4ef740558e62c06fc58db048",
+  "frame_sha256": {
+    "overview-frame-01.jpg": "e40bfecd5e9db4eea5d8e68520c108ba38dde82cf7dda0856f832b92b85729f8",
+    "overview-frame-02.jpg": "b5b95116f92355fd60bb4f8b3385b63b0bd001264f4923a5411e5cc884d0aa96",
+    "overview-frame-03.jpg": "21ad207a741d0c9aad7cdba2eb32d74bb528300325d4e1973aa5c6e2799e0f9b",
+    "overview-frame-04.jpg": "2aa008a95981a575846e84493b40a86d8aabd0df07c39b2e1e39f0dcba245748",
+    "overview-frame-05.jpg": "1cb1a65af37b8b3c79eba76e7053a89ea7341f9b80563c13dc3cf98a9b088023",
+    "overview-frame-06.jpg": "c1504452f89d3fc2335b76822d8e8e79ffb75b3cccf4e03d53948cac568ac9de",
+    "overview-frame-07.jpg": "5dd83d8f88170bbe4ccf96c692dcf4b5c0f5104bdaec01443271a21b53a3ad6d",
+    "overview-frame-08.jpg": "68835dd20c7c3cc9a65ba273612dd79b82ab4ae2e2bffc75af05ecdae934ad9f"
+  },
+  "reviewed_by": "OWNER",
+  "reviewed_at": "2026-11-10T18:18:00Z",
+  "checks": {
+    "visual": "approved",
+    "semantic": "approved",
+    "audio": "approved",
+    "metadata": "approved",
+    "licensing": "approved"
+  },
+  "methods": {
+    "visual": "full_motion_and_frames",
+    "semantic": "research_vs_exact_transcript",
+    "audio": "authorized_audio_tool_with_script_comparison"
+  },
+  "review_notes": {
+    "visual": "נבדקו בפועל שמונת הפריימים וגליון התמונות, פענוח כל 1990 הפריימים ומדידת תנועה. תמונות מקוריות ריאליסטיות של ילד מתבונן, גננת מציעה תפקיד קטן ותרגול בבית; אין טקסט חופף או פריימים שחורים. כל חבילות הווידאו נשמרו בדיוק בתיקון האודיו.",
+    "semantic": "הושווה התמלול המדויק לתסריט ולמחקר Coplan ועמיתיו (2004, DOI 10.1037/0012-1649.40.2.244, שני מדגמים 119 ו-127 ילדים), סקירת Rubin ועמיתיו (2009, DOI 10.1146/annurev.psych.60.110707.163642) והנחיות CDC. נשמרת ההבחנה בין רצון להצטרף עם חשש לבין העדפת משחק לבד; אין אבחנה או הבטחה, יש בחירה, עזרה בלי כפייה והפניה לרופא הילדים במצוקה מתמשכת.",
+    "audio": "תמלול עצמאי ב-Descript של ה-MP4 המתוקן ותמלול faster-whisper מהאודיו הסופי מאשרים את משפט הסיום המתוקן ואת ההפניה למאמר. השוואה לתסריט ולתמלול המקורי: ההבחנה המחקרית וההסתייגות לא אבחנה נשמרו; זיהוי המילה הבחנה כאבחנה בתמלול המתוקן אינו כשל מוכח (התמלול המקורי זיהה אותה נכון וה-PCM מחוץ לתיקון נשמר לפני קידוד AAC, מתאם פענוח מעל 0.9998). פענוח מלא ללא שגיאות או קליפינג. אין טענה להאזנה אנושית סובייקטיבית.",
+    "metadata": "כותרת ותיאור בעברית משקפים את התוכן ללא קליקבייט מטעה, קישור ישיר למאמר החי ומזהה מקור קנוני; תיאור Short כולל הפניה לסרטון המלא בערוץ לאחר אימות מזהה הסרטון.",
+    "licensing": "תמונות מקוריות שנוצרו לנושא באמצעות Adobe Firefly לפי תנאי שימוש מסחרי. BlueTTS2.5-onnx MIT, RenikudPlus Apache-2.0, סגנון קול LibriTTS-R דוברת 6147 CC BY 4.0 עם ייחוס Google LLC וקישורי רישוי בתיאור. נבדקו מקורות הרישוי והגרסאות המדויקות; אין Edge-TTS או קול המוצג כאדם אמיתי."
+  },
+  "rights": {
+    "commercial_use_permitted": true,
+    "voice_license_url": "https://www.openslr.org/141/",
+    "visual_license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html"
+  },
+  "evidence": {
+    "github_run": 42872924288,
+    "github_artifact_id": 13788929727,
+    "video_sha256": "b4ab42789a64e302d8fc57759cc6a58efd9032b1626b9d8d017fa0b75ef23288",
+    "audio_sha256": "b7a8260e5d350001960770edf893486ebb77753f20f1dac23569beaffccf124a",
+    "independent_asr_engine": "faster-whisper==1.2.1 / small Hebrew + independent Descript exact final MP4",
+    "independent_asr_similarity": 0.9815,
+    "human_listening": false,
+    "final_video_duration_s": 79.582,
+    "actual_final_audio_pcm_sha256": "3e624ce143eb015957dc378eb619387ec0d158277d73d14f0e986d5b43e3f4c5",
+    "actual_final_audio_aac_sha256": "2beb29dd85fa8b30317154ee47b126a6f5199fb86bdf323261901623488feb20",
+    "descript_final_audio_review_url": "https://web.descript.com/fb9a843c-a7c3-41fb-8c87-0ba23c0f7167/2545d",
+    "descript_transcript_sha256": "057ca8f57280082dad05bc69577b480899923d7aada2f15f536e5be0cd23524d",
+    "decoded_frames": 1990,
+    "black_frames": 0,
+    "moving_frame_ratio": 0.9044746,
+    "voice_model_license_url": "https://huggingface.co/notmax123/BlueTTS2.5-onnx",
+    "g2p_license_url": "https://huggingface.co/notmax123/RenikudPlus",
+    "photo_provenance_path": "research/kesher-kindergarten-play-photo-provenance.json",
+    "channel": "UCx5fEFvdVf28HLAR2dFW64Q",
+    "publish_action": "NOT_AUTHORIZED_BY_CERTIFICATE_ALONE",
+    "source_binding": {
+      "artifact_body_sha256": "11d0e48e8b5becbfd150e6fd125325fd2f18a4f1fb9b6a925e331c7c2f0e42bf",
+      "canonical_content_sha256": "60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa",
+      "method": "recomputed_same_committed_post_body_and_canonical_source",
+      "verified_at": "2026-11-10T18:18:00Z",
+      "source_deploy_sha": "47da5c49d247a2f2b9b307680a60db062ee4a60a"
+    }
+  }
+}

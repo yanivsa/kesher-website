@@ -452,3 +452,171 @@ jobs:
           if-no-files-found: ignore
           compression-level: 0
           retention-days: 14
+
+  owner-kindergarten-play-private-preview:
+    # Exact same-repo OWNER branch; private evidence only, no publisher credentials.
+    permissions:
+      contents: read
+      actions: read
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/kindergarten-play-media-20261110' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout exact OWNER candidate with no credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Set up Python for licensed local speech
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up pinned Node for repository FFmpeg bundles
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned owner-direct speech and media tools
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          printf '%s\n' "$ffmpeg_dir" "$ffprobe_dir" >> "$GITHUB_PATH"
+          export PATH="$ffmpeg_dir:$ffprobe_dir:$PATH"
+          python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' 'faster-whisper==1.2.1' 'av<19'
+      - name: Exact source, photo and private-only contract
+        run: |
+          set -euo pipefail
+          python -m unittest tests.test_kesher_owner_kindergarten_play_preview -v
+          python -m scripts.kesher_owner_kindergarten_play_preview preflight --source-sha 60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa
+      - name: Verify existing exact private archive instead of rendering duplicate media
+        if: ${{ github.event.action != 'opened' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          sha256sum -c <<'CHECKSUMS'
+          1111f202ae94d506d650634cc1db764ec413d84f4ef740558e62c06fc58db048  research/kesher-kindergarten-play-media-20261110.json
+          db86a5719c62ac5db40d939757030d8fbbbd7174d5d1ebd56639bf04c3e95e13  research/kesher-kindergarten-play-photo-provenance.json
+          58161a35a6576b967a7a886e39b35f6e33e2b8c9839aee92c72c872f0f2cef6f  scripts/kesher_daily_pipeline.py
+          4c9ca0a38bc0f0078ef2875f2ed2342b8e043cfd29e7819cbbbf5c8416e67ebf  scripts/kesher_owner_kindergarten_play_preview.py
+          743a4425f026c9c6ed153c7479c01ddd634a733a6434e62440d8a2ae520c0c1c  scripts/kesher_owner_positivity_asr.py
+          baf564c273d1b4408f39dce5241e415c40501ffcd61ab97d59c02a057366c8bc  scripts/kesher_owner_positivity_preview.py
+          016b0f73870d71be542c52f9e703b16e4d7331306c11cb085e66ed2d6267c252  scripts/kesher_owner_vantage_short.py
+          53d41192533c211b4dd35e1b018f0242dd3e146b401a791eef8ad4b4672a2355  tests/test_kesher_owner_kindergarten_play_preview.py
+          CHECKSUMS
+          actual="$(gh api repos/yanivsa/kesher-website/actions/artifacts/13787755454 --jq '[.id, .digest, .expired, .workflow_run.head_sha] | @tsv')"
+          expected="$(printf '%s\t%s\t%s\t%s' 13787755454 sha256:bfd6fca1b962555d34ae02e652ec02775ccfd9e3d21d43c2b4ade2557c5b6ccb false aa96fd2356d95f89efb6fe9e5c27ffb22bc7f073)"
+          test "$actual" = "$expected"
+          echo 'EXACT_PRIVATE_ARCHIVE_REUSED: 13787755454; no new media generated'
+      - name: Repair only the ambiguous closing sentence from the exact reviewed Short
+        id: targeted_audio_repair
+        if: ${{ github.event.action != 'opened' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python -m unittest tests.test_kesher_owner_kindergarten_audio_repair -v
+          count="$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-kindergarten-play-targeted-audio-repair-60374e686f78 --jq '.total_count')"
+          if [ "$count" = 1 ]; then
+            test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-kindergarten-play-targeted-audio-repair-60374e686f78 --jq '.artifacts[0].expired')" = false
+            echo 'Existing exact targeted repair archive retained; no duplicate repair'
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          test "$count" = 0
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13787755454/zip > "$RUNNER_TEMP/kindergarten-original.zip"
+          python -m scripts.kesher_owner_kindergarten_audio_repair --archive "$RUNNER_TEMP/kindergarten-original.zip" --output owner-kindergarten-play-repaired-output
+          echo 'ready=true' >> "$GITHUB_OUTPUT"
+      - name: Independently transcribe the repaired final audio
+        if: ${{ steps.targeted_audio_repair.outputs.ready == 'true' }}
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-kindergarten-play-asr-hf
+        run: python -m scripts.kesher_owner_kindergarten_play_preview asr --source-sha 60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa --output owner-kindergarten-play-repaired-output
+      - name: Archive exact targeted repair and unchanged Short for private QA
+        if: ${{ steps.targeted_audio_repair.outputs.ready == 'true' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-kindergarten-play-targeted-audio-repair-60374e686f78
+          path: |
+            owner-kindergarten-play-repaired-output/overview.mp4
+            owner-kindergarten-play-repaired-output/short.mp4
+            owner-kindergarten-play-repaired-output/*-review-voice.wav
+            owner-kindergarten-play-repaired-output/*-manifest.json
+            owner-kindergarten-play-repaired-output/*-visual-contact-sheet.jpg
+            owner-kindergarten-play-repaired-output/*-frame-*.jpg
+            owner-kindergarten-play-repaired-output/*-asr.txt
+            owner-kindergarten-play-repaired-output/asr-review.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 60
+      - name: Prove exact approved publication bundle without YouTube credentials or upload
+        if: ${{ github.event.action != 'opened' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python -m unittest tests.test_kesher_owner_media_quality -v
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13788929727/zip > "$RUNNER_TEMP/kindergarten-approved.zip"
+          python - <<'PY'
+          import os, tempfile
+          from pathlib import Path
+          from scripts import kesher_owner_reviewed_publish as p
+          cfg = p.source_config("child-not-playing-kindergarten", "60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa")
+          with tempfile.TemporaryDirectory() as tmp:
+              dest = Path(tmp)
+              p.archive_files(Path(os.environ["RUNNER_TEMP"]) / "kindergarten-approved.zip", dest, cfg)
+              p.verify_live_article(cfg)
+              for kind in p.KINDS:
+                  p.validate_bundle(cfg, dest, kind)
+              print("EXACT_APPROVED_KINDERGARTEN_BUNDLE_PASS_NO_UPLOAD", flush=True)
+          PY
+      - name: Render original private Hebrew Overview and native 9 by 16 Short
+        if: ${{ github.event.action == 'opened' }}
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-kindergarten-play-hf
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_owner_kindergarten_play_preview preview --source-sha 60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa
+      - name: Independently transcribe exact final Hebrew MP4 audio
+        if: ${{ github.event.action == 'opened' }}
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-kindergarten-play-asr-hf
+        run: |
+          set -euo pipefail
+          python -m scripts.kesher_owner_kindergarten_play_preview asr --source-sha 60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa
+      - name: Archive reviewable PRIVATE owner outputs only
+        if: ${{ github.event.action == 'opened' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-kindergarten-play-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-kindergarten-play-media-output/overview.mp4
+            owner-kindergarten-play-media-output/short.mp4
+            owner-kindergarten-play-media-output/*-review-voice.wav
+            owner-kindergarten-play-media-output/*-manifest.json
+            owner-kindergarten-play-media-output/*-visual-contact-sheet.jpg
+            owner-kindergarten-play-media-output/*-frame-*.jpg
+            owner-kindergarten-play-media-output/*-asr.txt
+            owner-kindergarten-play-media-output/asr-review.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 60
+      - name: Preserve failed private render evidence for targeted recovery (never publish)
+        if: ${{ failure() && github.event.action == 'opened' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-kindergarten-play-failed-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-kindergarten-play-media-output/overview.mp4
+            owner-kindergarten-play-media-output/short.mp4
+            owner-kindergarten-play-media-output/*-review-voice.wav
+            owner-kindergarten-play-media-output/*-manifest.json
+            owner-kindergarten-play-media-output/*-visual-contact-sheet.jpg
+            owner-kindergarten-play-media-output/*-frame-*.jpg
+            owner-kindergarten-play-media-output/*-asr.txt
+            owner-kindergarten-play-media-output/asr-review.json
+          if-no-files-found: ignore
+          compression-level: 0
+          retention-days: 14

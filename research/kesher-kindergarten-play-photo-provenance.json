@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "source_slug": "child-not-playing-kindergarten",
+  "content_sha256": "60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa",
+  "canonical_content_sha256": "60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa",
+  "article_body_sha256": "11d0e48e8b5becbfd150e6fd125325fd2f18a4f1fb9b6a925e331c7c2f0e42bf",
+  "images": [
+    {
+      "path": "public/images/generated/blog/child-not-playing-kindergarten-photo.jpg",
+      "sha256": "4ce025760fba5241e77f0e428a21b678980348ec3834c8e82c4c6a3e1574f9d5",
+      "generation_reference": "e8702636-0042-42f2-9acc-aebd1c192b77",
+      "crop_reference": "1d9701d8-f3d8-40ea-a833-306e26e2f347",
+      "dimensions": [
+        1200,
+        675
+      ],
+      "scene": "quiet child observing peers in preschool; original reviewed article hero",
+      "generated_for": "child-not-playing-kindergarten",
+      "provider": "Adobe Firefly",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "Original synthetic editorial photograph; commercial use under Adobe Firefly terms; no third-party stock or identifiable real subject.",
+      "visual_review": "Actual final JPEG inspected; topic-matched natural classroom/home scene, no text/logo or blank padding."
+    },
+    {
+      "path": "public/images/blog/child-not-playing-kindergarten-wide-teacher.jpg",
+      "sha256": "fd98440d6cb0b12ff3b689cccfb86780f62dcc8fa4a43d83498dc5fa00ef59b2",
+      "original_sha256": "91e4c8ccda6ad6f34460f00e3942c9060e3062ef01ec300cd3ef9f003f1a097d",
+      "generation_reference": "a1ce347b-2c76-4ce2-b681-5c2e3ebf6eaf",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "scene": "teacher gently offers a small role in block play",
+      "transform": "center crop and Lanczos resize from 2016x1152",
+      "generated_for": "child-not-playing-kindergarten",
+      "provider": "Adobe Firefly",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "Original synthetic editorial photograph; commercial use under Adobe Firefly terms; no third-party stock or identifiable real subject.",
+      "visual_review": "Actual final JPEG inspected; topic-matched natural classroom/home scene, no text/logo or blank padding."
+    },
+    {
+      "path": "public/images/blog/child-not-playing-kindergarten-wide-home.jpg",
+      "sha256": "93b71cc2654c7c53597c13929b9ad4621736bf3a469b6cec9444d5f2b8e8c872",
+      "original_sha256": "c03919b918eb9894d6884f4022c6cac290def72bb48c2b8c3df67d6cfc7f344a",
+      "generation_reference": "bc9e5ac5-8672-408e-9eb2-a0f755004c38",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "scene": "parent and child practice with toy figures at home",
+      "transform": "center crop and Lanczos resize from 2016x1152",
+      "generated_for": "child-not-playing-kindergarten",
+      "provider": "Adobe Firefly",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "Original synthetic editorial photograph; commercial use under Adobe Firefly terms; no third-party stock or identifiable real subject.",
+      "visual_review": "Actual final JPEG inspected; topic-matched natural classroom/home scene, no text/logo or blank padding."
+    },
+    {
+      "path": "public/images/blog/child-not-playing-kindergarten-vertical-observe.jpg",
+      "sha256": "d2c8451c154e9a2db1baea4de57ee142433939884df02d4506e90e50456f3339",
+      "original_sha256": "192cdcda0f1e2884c47b759c7a84907401e76512bf1fea2c624ec5095432703f",
+      "generation_reference": "c34bd753-af75-4698-91ad-7efcf57aef6e",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "scene": "native portrait child calmly observing block play",
+      "transform": "0.75% horizontal Lanczos rescale from 1072x1920; no padding",
+      "generated_for": "child-not-playing-kindergarten",
+      "provider": "Adobe Firefly",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "Original synthetic editorial photograph; commercial use under Adobe Firefly terms; no third-party stock or identifiable real subject.",
+      "visual_review": "Actual final JPEG inspected; topic-matched natural classroom/home scene, no text/logo or blank padding."
+    },
+    {
+      "path": "public/images/blog/child-not-playing-kindergarten-vertical-join.jpg",
+      "sha256": "7a6fec46ba4a76fe96a45905d3d4e300ebf9a344608e5bcd21ab3e709c449ed3",
+      "original_sha256": "9370a747d574a1a00313576b040cd59cb59d024dc1acec4d93039555dda6b44d",
+      "generation_reference": "d9829711-272a-4145-9494-2c7e8ff4035b",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "scene": "native portrait teacher at child eye level offers blocks",
+      "transform": "0.75% horizontal Lanczos rescale from 1072x1920; no padding",
+      "generated_for": "child-not-playing-kindergarten",
+      "provider": "Adobe Firefly",
+      "generated_at": "2026-11-10",
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "license": "Original synthetic editorial photograph; commercial use under Adobe Firefly terms; no third-party stock or identifiable real subject.",
+      "visual_review": "Actual final JPEG inspected; topic-matched natural classroom/home scene, no text/logo or blank padding."
+    }
+  ]
+}
