@@ -374,6 +374,7 @@ jobs:
     # Exact same-repo OWNER branch, read-only private evidence; no upload credentials.
     permissions:
       contents: read
+      actions: read
     if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/relationship-7500-media-20261110' && github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -403,19 +404,21 @@ jobs:
           command -v ffmpeg
           command -v ffprobe
           python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' 'faster-whisper==1.2.1' 'av<19'
-      - name: Exact source preflight and private native media render
+      - name: Exact source preflight and targeted private Short safety repair
         env:
+          GH_TOKEN: ${{ github.token }}
           HF_HOME: ${{ runner.temp }}/owner-7500-hf
         run: |
           set -euo pipefail
           python -m scripts.kesher_owner_7500_preview preflight --source-sha 797750526c533f41e661123dc86339da3f0a5721d5eff820d70937ee7f6d5bdd
-          python -m scripts.kesher_owner_7500_preview preview --source-sha 797750526c533f41e661123dc86339da3f0a5721d5eff820d70937ee7f6d5bdd
-      - name: Transcribe actual final MP4 audio offline for OWNER review
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13765047330/zip > "$RUNNER_TEMP/owner-7500-reviewed-input.zip"
+          python -m scripts.kesher_owner_7500_preview repair --source-sha 797750526c533f41e661123dc86339da3f0a5721d5eff820d70937ee7f6d5bdd --archive "$RUNNER_TEMP/owner-7500-reviewed-input.zip"
+      - name: Transcribe repaired final Short audio offline; preserve Overview evidence
         env:
           HF_HOME: ${{ runner.temp }}/owner-7500-asr-hf
         run: |
           set -euo pipefail
-          python -m scripts.kesher_owner_7500_preview asr --source-sha 797750526c533f41e661123dc86339da3f0a5721d5eff820d70937ee7f6d5bdd
+          python -m scripts.kesher_owner_7500_preview asr-short --source-sha 797750526c533f41e661123dc86339da3f0a5721d5eff820d70937ee7f6d5bdd
       - name: Archive reviewable PRIVATE outputs only
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
