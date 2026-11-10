@@ -442,6 +442,37 @@ class OwnerReviewedPublishTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "KINDERGARTEN_CANONICAL_MANIFEST_MISMATCH"):
             p.validate_kindergarten_repair(short, Path("short.mp4"), "short")
 
+    def test_midyear_exact_historical_source_and_repair(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        cfg = p.source_config(p.midyear.SLUG, p.midyear.CANONICAL_SHA)
+        self.assertEqual(cfg["artifact"], 13797277927)
+        self.assertEqual(cfg["source_catalog"], "posts.json")
+        self.assertEqual(p.verify_source_binding(cfg)["slug"], p.midyear.SLUG)
+        self.assertEqual(p.artifact_identity(cfg), p.midyear.CANONICAL_SHA)
+        self.assertEqual(p.body_identity(cfg), p.midyear.BODY_SHA)
+        self.assertIn("Adobe Firefly", p.metadata(cfg, "overview")["description"])
+        self.assertIn(p.midyear.ARTICLE, p.metadata(cfg, "short", "abcdefghijk")["description"])
+        manifest = {"canonical_content_sha256": cfg["canonical_sha"],
+                    "article_body_sha256": p.midyear.BODY_SHA,
+                    "targeted_cta_repair": copy.deepcopy(p.MIDYEAR_CTA_EVIDENCE)}
+        with patch.object(p, "sha", return_value="e1234a8be83905aa7079c3c01f384c7aae1aba728d9f2ff3d8ce86e8446e0451"), \
+             patch.object(p.midyear_repair, "packet_hashes", return_value=["packet"]), \
+             patch.object(p.midyear_repair, "sha", return_value=p.MIDYEAR_CTA_EVIDENCE["video_packet_hashes_sha256"]):
+            p.validate_midyear_repair(manifest, Path("overview.mp4"), "overview")
+        changed = copy.deepcopy(manifest)
+        changed["targeted_cta_repair"]["original_short_preserved"] = False
+        with self.assertRaisesRegex(RuntimeError, "MIDYEAR_CTA_REPAIR_MISMATCH"):
+            p.validate_midyear_repair(changed, Path("overview.mp4"), "overview")
+        short = {"canonical_content_sha256": cfg["canonical_sha"],
+                 "article_body_sha256": p.midyear.BODY_SHA,
+                 "composition": "native_full_frame_9_16_no_padding",
+                 "targeted_duration_repair": {"original_video_and_audio_packets_preserved": True}}
+        with patch.object(p, "sha", return_value=p.midyear_cta.SHORT_SHA):
+            p.validate_midyear_repair(short, Path("short.mp4"), "short")
+        short["composition"] = "blurred_padding"
+        with self.assertRaisesRegex(RuntimeError, "MIDYEAR_SHORT_EXACT_NATIVE_MEDIA_MISMATCH"):
+            p.validate_midyear_repair(short, Path("short.mp4"), "short")
+
     def test_guarded_owner_publish_installs_photo_validation_dependency(self):
         from scripts import kesher_owner_reviewed_publish as p
         workflow = (p.ROOT / ".github/workflows/kesher-short-v4.yml").read_text(encoding="utf-8")

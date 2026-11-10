@@ -680,7 +680,23 @@ jobs:
           count="$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-midyear-kindergarten-final-evidence-5b0d6c5e8ba2 --jq .total_count)"
           if [ "$count" = 1 ]; then
             test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-midyear-kindergarten-final-evidence-5b0d6c5e8ba2 --jq '.artifacts[0].expired')" = false
-            echo 'Exact private archive exists; no duplicate rendering'
+            test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-midyear-kindergarten-final-evidence-5b0d6c5e8ba2 --jq '.artifacts[0].id')" = 13797277927
+            gh api repos/yanivsa/kesher-website/actions/artifacts/13797277927/zip > "$RUNNER_TEMP/midyear-final.zip"
+            python -m unittest tests.test_kesher_owner_media_quality -v
+            python - "$RUNNER_TEMP/midyear-final.zip" <<'PY'
+          import sys, tempfile
+          from pathlib import Path
+          from scripts import kesher_owner_reviewed_publish as publisher
+          cfg=publisher.source_config("changing-kindergarten-midyear", "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a")
+          with tempfile.TemporaryDirectory() as tmp:
+              dest=Path(tmp)
+              publisher.archive_files(Path(sys.argv[1]), dest, cfg)
+              publisher.verify_live_article(cfg)
+              for kind in publisher.KINDS:
+                  publisher.validate_bundle(cfg, dest, kind)
+          print("MIDYEAR_EXACT_REVIEWED_BUNDLE_ADMISSION_PASS_NO_UPLOAD")
+          PY
+            echo 'Exact private archive and both OWNER approvals verified; no duplicate rendering'
             echo 'render=false' >> "$GITHUB_OUTPUT"
             exit 0
           fi

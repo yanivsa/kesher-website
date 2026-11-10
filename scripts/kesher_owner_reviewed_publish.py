@@ -17,6 +17,9 @@ from scripts import kesher_owner_productive_failure_preview as productive
 from scripts import kesher_owner_7500_preview as code7500
 from scripts import kesher_owner_kindergarten_play_preview as kindergarten
 from scripts import kesher_owner_kindergarten_audio_repair as kindergarten_repair
+from scripts import kesher_owner_midyear_kindergarten_preview as midyear
+from scripts import kesher_owner_midyear_kindergarten_repair as midyear_repair
+from scripts import kesher_owner_midyear_kindergarten_cta_repair as midyear_cta
 from scripts.kesher_owner_vantage_short import youtube_client
 from scripts.kesher_daily_pipeline import clean_article_html, source_metadata
 from scripts.kesher_runtime.bridge_admission import main as bridge_admission
@@ -87,6 +90,19 @@ CONFIG = {
         "intro": "ילד יושב בצד בגן: איך מבדילים בין משחק עצמאי רגוע לבין ילד שרוצה להצטרף אבל חושש? שאלות לגננת, צעד קטן בלי לחץ ומתי לפנות לרופא הילדים.",
         "tags": ["ילד לא משחק בגן", "ילד יושב בצד בגן", "ביישנות ילדים", "הדרכת הורים", "שירה סהרוני"],
     },
+    midyear.SLUG: {
+        "module": midyear, "date": "20261110", "artifact": 13797277927,
+        "canonical_sha": midyear.CANONICAL_SHA, "body_sha": midyear.BODY_SHA,
+        "artifact_identity_sha": midyear.SOURCE_SHA, "run": 42889104063,
+        "zip_sha": "89d38d449772bc1a5b4983b27677e26c5716a5c7de3214d4c8b385dea789fb06",
+        "source_catalog": "posts.json",
+        "titles": {
+            "overview": "מעבר גן באמצע שנה: איך לעזור לילד להרגיש בטוח בגן החדש?",
+            "short": "הילד עובר גן באמצע שנה? 3 צעדים שיעזרו #Shorts",
+        },
+        "intro": "מעבר גן באמצע שנה: איך להכין את הילד, להיפרד מהגן הישן, לתאם פרידה עם הגננת ולבדוק מה קורה אחרי שיוצאים. אין זמן הסתגלות אחד שמתאים לכולם.",
+        "tags": ["מעבר גן באמצע שנה", "הסתגלות לגן חדש", "הדרכת הורים", "שירה סהרוני"],
+    },
 }
 
 
@@ -125,7 +141,9 @@ def verify_source_binding(cfg, post=None):
     """
     module = cfg["module"]
     if post is None:
-        posts = json.loads((ROOT / "src/data/postsRecent.json").read_text(encoding="utf-8"))
+        catalog = cfg.get("source_catalog", "postsRecent.json")
+        require(catalog in {"postsRecent.json", "posts.json"}, "UNAPPROVED_SOURCE_CATALOG")
+        posts = json.loads((ROOT / "src/data" / catalog).read_text(encoding="utf-8"))
         selected = [x for x in posts if x.get("slug") == module.SLUG]
         require(len(selected) == 1, "ARTICLE_SOURCE_NOT_UNIQUE")
         post = selected[0]
@@ -150,9 +168,9 @@ def archive_files(archive, dest, cfg):
         expected.update((f"{kind}.mp4", f"{kind}-manifest.json",
                          f"{kind}-review-voice.wav", f"{kind}-visual-contact-sheet.jpg"))
         expected.update(f"{kind}-frame-{i:02d}.jpg" for i in range(1, 9))
-        if cfg["module"] in (positivity, productive, code7500, kindergarten):
+        if cfg["module"] in (positivity, productive, code7500, kindergarten, midyear):
             expected.add(f"{kind}-asr.txt")
-    if cfg["module"] in (positivity, productive, code7500, kindergarten):
+    if cfg["module"] in (positivity, productive, code7500, kindergarten, midyear):
         expected.add("asr-review.json")
     with zipfile.ZipFile(archive) as z:
         names = z.namelist()
@@ -256,6 +274,49 @@ def validate_kindergarten_repair(manifest, video, kind):
                 "KINDERGARTEN_UNCHANGED_NATIVE_SHORT_MISMATCH")
 
 
+MIDYEAR_CTA_EVIDENCE = {
+    "input_artifact_id": 13796284317,
+    "input_archive_sha256": "1bf0c28f2c9006416cfca78d92981a45025c210eb0662c9c173ab16ca77fe1c7",
+    "original_overview_sha256": "e33c65f89e0864b02a927c9c7f0db152baaab2319171d43124db8f9a6ddbe607",
+    "unchanged_short_sha256": "ca2c1f9f5ad64b8de93d5956dda543a1530cec988aef70185ee2ee230ae981e4",
+    "overview_cut_samples": [
+        3542112,
+        3637368
+    ],
+    "short_cut_samples": [
+        1096326,
+        1186290
+    ],
+    "sample_rate": 44100,
+    "video_packet_hashes_sha256": "13319b11e1d486cd4d917afc69ad7bc90ffeb76394282064bdaac71af794a0b5",
+    "original_pcm_sha256": "223344f765740efc6d63547b65605b73deaa014616222864db3a93cca75c090e",
+    "edited_pcm_sha256": "b4df89b08dca31ac430613eecdf1b377f65cd84b73ed19e825b38fba24972e1b",
+    "outside_cut_pcm_sha256": "3ecb7fe261b82b4ed8d57a0c6e2ad12d8517692a3a9a43d8256e5b5a2cf83dc3",
+    "outside_cut_pcm_preserved_before_aac_encode": True,
+    "video_packets_preserved": True,
+    "original_short_preserved": True,
+    "method": "replace incomplete CTA with exact independently transcribed Short sentence at silent boundaries; no new TTS"
+}
+
+
+def validate_midyear_repair(manifest, video, kind):
+    require(manifest.get("canonical_content_sha256") == midyear.CANONICAL_SHA
+            and manifest.get("article_body_sha256") == midyear.BODY_SHA,
+            "MIDYEAR_CANONICAL_MANIFEST_MISMATCH")
+    if kind == "overview":
+        require(manifest.get("targeted_cta_repair") == MIDYEAR_CTA_EVIDENCE
+                and sha(video) == "e1234a8be83905aa7079c3c01f384c7aae1aba728d9f2ff3d8ce86e8446e0451",
+                "MIDYEAR_CTA_REPAIR_MISMATCH")
+        require(midyear_repair.sha("\n".join(midyear_repair.packet_hashes(video, "v:0")).encode())
+                == MIDYEAR_CTA_EVIDENCE["video_packet_hashes_sha256"],
+                "MIDYEAR_OVERVIEW_VIDEO_PACKETS_CHANGED")
+    else:
+        require(sha(video) == midyear_cta.SHORT_SHA
+                and manifest.get("composition") == "native_full_frame_9_16_no_padding"
+                and (manifest.get("targeted_duration_repair") or {}).get("original_video_and_audio_packets_preserved") is True,
+                "MIDYEAR_SHORT_EXACT_NATIVE_MEDIA_MISMATCH")
+
+
 def validate_bundle(cfg, directory, kind):
     module = cfg["module"]
     slug, artifact_body_sha = module.SLUG, body_identity(cfg)
@@ -286,7 +347,7 @@ def validate_bundle(cfg, directory, kind):
     contact = directory / f"{kind}-visual-contact-sheet.jpg"
     frames = {f"{kind}-frame-{i:02d}.jpg": sha(directory / f"{kind}-frame-{i:02d}.jpg")
               for i in range(1, 9)}
-    transcript = (directory / f"{kind}-asr.txt" if module in (positivity, productive, code7500, kindergarten) else
+    transcript = (directory / f"{kind}-asr.txt" if module in (positivity, productive, code7500, kindergarten, midyear) else
                   root / "evidence" / f"{slug}--{kind}-descript-transcript.txt")
     require(sha(video) == manifest["video_sha256"]
             and sha(wav) == manifest["audio_sha256"] == evidence["audio_sha256"]
@@ -311,6 +372,10 @@ def validate_bundle(cfg, directory, kind):
         independent = root / 'evidence' / f'{slug}--{kind}-descript-transcript.txt'
         require(sha(independent) == evidence.get('descript_transcript_sha256'),
                 'KINDERGARTEN_INDEPENDENT_TRANSCRIPT_MISMATCH')
+    if module is midyear:
+        scripts = {k: list(v) for k, v in scripts.items()}
+        scripts["overview"][-1] = scripts["overview"][-1].replace(midyear_cta.OLD, midyear_cta.NEW)
+        scripts["short"].append(midyear_repair.CLOSING)
     require(manifest["script_segments"] == scripts[kind]
             and manifest["visual_sources"] == provenance["images"],
             "REVIEWED_SOURCE_OR_VISUALS_CHANGED")
@@ -321,6 +386,8 @@ def validate_bundle(cfg, directory, kind):
         validate_7500_repair(manifest, video, kind)
     if module is kindergarten:
         validate_kindergarten_repair(manifest, video, kind)
+    if module is midyear:
+        validate_midyear_repair(manifest, video, kind)
     item = {
         "technical_verified": True, "source": {"slug": slug, "content_sha256": source_sha},
         "type": "video_overview" if kind == "overview" else "article_short",
@@ -347,7 +414,7 @@ def metadata(cfg, kind, overview_id=None):
         + "\nhttps://www.openslr.org/141/"
         + "\nhttps://creativecommons.org/licenses/by/4.0/"
         + ("\nתמונות מקוריות שנוצרו עבור KESHER באמצעות Adobe Firefly."
-           if module in (positivity, productive, code7500, kindergarten) else "\nתמונות מקוריות שנוצרו עבור KESHER באמצעות OpenAI.")
+           if module in (positivity, productive, code7500, kindergarten, midyear) else "\nתמונות מקוריות שנוצרו עבור KESHER באמצעות OpenAI.")
     )
     if kind == "short":
         require(isinstance(overview_id, str) and re.fullmatch(r"[A-Za-z0-9_-]{11}", overview_id),
