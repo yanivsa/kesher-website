@@ -312,7 +312,10 @@ jobs:
 
 
   owner-productive-failure-private-preview:
-    # Exact same-repo owner PR, private evidence only. No upload credentials.
+    # Exact same-repo owner PR, private evidence only. Read-only prior artifact; no upload credentials.
+    permissions:
+      contents: read
+      actions: read
     if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/productive-failure-media-20261110' && github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -342,14 +345,14 @@ jobs:
           command -v ffmpeg
           command -v ffprobe
           python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' 'faster-whisper==1.2.1' 'av<19'
-      - name: Exact source preflight and private render
+      - name: Exact source preflight and targeted private Short visual repair
         env:
-          HF_HOME: ${{ runner.temp }}/owner-productive-failure-hf
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           python -m scripts.kesher_owner_productive_failure_preview preflight --source-sha 37f9b2e3ef91fa1b77b923f35281df9a66014d243389bb08e7fa1954bc86ab50
-          python -m scripts.kesher_owner_productive_failure_preview preview --source-sha 37f9b2e3ef91fa1b77b923f35281df9a66014d243389bb08e7fa1954bc86ab50
-          python -m scripts.kesher_owner_productive_failure_preview asr --source-sha 37f9b2e3ef91fa1b77b923f35281df9a66014d243389bb08e7fa1954bc86ab50
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13757158570/zip > "$RUNNER_TEMP/productive-failure-reviewed-input.zip"
+          python -m scripts.kesher_owner_productive_failure_preview repair --source-sha 37f9b2e3ef91fa1b77b923f35281df9a66014d243389bb08e7fa1954bc86ab50 --archive "$RUNNER_TEMP/productive-failure-reviewed-input.zip"
       - name: Archive reviewable PRIVATE outputs only
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:

@@ -91,9 +91,126 @@ def transcribe(out):
     (out/"asr-review.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("ASR_EVIDENCE_READY_NO_PUBLICATION",flush=True)
 
+
+# Exact previous private artifact. The original Overview, both WAVs and ASR
+# evidence are reused; only the Short's padded visual composition is replaced.
+REPAIR_ARCHIVE_SHA = "c7bcb8acc2ff876e028b977fa100d0439822421ddc4ade24c9740e73e2b513fe"
+REPAIR_SHORT_SHA = "61dc7879e0735a73d1c7de4d2b9d6b37ac25884e954d922bc1f9d61bb16c55d7"
+REPAIR_OVERVIEW_SHA = "f81a4ab1cd1432b5674d14d1b3f5ed8bcfbc335d22ef8180295db6421cf4f831"
+REPAIR_FPS = 25
+
+def _run_bytes(args):
+    import subprocess
+    return subprocess.check_output(args, stderr=subprocess.PIPE)
+
+def _run_checked(args):
+    import subprocess
+    subprocess.run(args, check=True)
+
+def _audio_packets(video):
+    return sha_bytes(_run_bytes(["ffmpeg","-v","error","-i",str(video),
+                                 "-map","0:a:0","-c:a","copy","-f","adts","-"]))
+
+def _native_portrait(src, target, index):
+    from PIL import Image, ImageOps
+    # Editorial focus: child struggling, hands trying, parent/child learning.
+    # Use actual full-frame portrait crops, not blurred letterbox padding.
+    center = ((0.29,0.5),(0.52,0.5),(0.5,0.5))[index]
+    im=Image.open(src).convert("RGB")
+    ImageOps.fit(im,(1080,1920),method=Image.Resampling.LANCZOS,
+                 centering=center).save(target,"JPEG",quality=94,optimize=True)
+
+def repair_short(archive, out):
+    import shutil, zipfile
+    import numpy as np
+    from scripts.kesher_owner_positivity_preview import motion_filter
+    scripts,provenance=source_check()
+    if out.exists() or sha_file(archive)!=REPAIR_ARCHIVE_SHA:
+        raise ValueError("EXACT_REPAIR_ARCHIVE_REQUIRED")
+    expected={"asr-review.json"}
+    for kind in SOURCE_KINDS:
+        expected.update((f"{kind}.mp4",f"{kind}-manifest.json",f"{kind}-review-voice.wav",
+                         f"{kind}-visual-contact-sheet.jpg",f"{kind}-asr.txt"))
+        expected.update(f"{kind}-frame-{i:02d}.jpg" for i in range(1,9))
+    with zipfile.ZipFile(archive) as z:
+        names=z.namelist()
+        if len(names)!=len(set(names)) or set(names)!=expected or sum(x.file_size for x in z.infolist())>=100_000_000:
+            raise ValueError("REPAIR_ARCHIVE_FILE_SET_MISMATCH")
+        out.mkdir(parents=True)
+        for name in sorted(expected):
+            if Path(name).name!=name: raise ValueError("UNSAFE_REPAIR_ARCHIVE_PATH")
+            (out/name).write_bytes(z.read(name))
+    for kind,video_sha in (("overview",REPAIR_OVERVIEW_SHA),("short",REPAIR_SHORT_SHA)):
+        m=json.loads((out/f"{kind}-manifest.json").read_text(encoding="utf-8"))
+        if (m["source_slug"]!=SLUG or m["content_sha256"]!=SOURCE_SHA
+            or m["canonical_content_sha256"]!=CANONICAL_SHA or m["kind"]!=kind
+            or m["source_file_sha256"]!=sha_file(RESEARCH) or m["script_segments"]!=scripts[kind]
+            or m["visual_sources"]!=provenance["images"] or m["public"] is not False
+            or m["uploaded"] is not False or m["video_sha256"]!=video_sha
+            or sha_file(out/f"{kind}.mp4")!=video_sha
+            or sha_file(out/f"{kind}-review-voice.wav")!=m["audio_sha256"]
+            or sha_file(out/f"{kind}-visual-contact-sheet.jpg")!=m["contact_sha256"]
+            or [sha_file(out/f"{kind}-frame-{i:02d}.jpg") for i in range(1,9)]!=m["frame_sha256"]):
+            raise ValueError("REPAIR_SOURCE_EVIDENCE_MISMATCH")
+    asr=json.loads((out/"asr-review.json").read_text(encoding="utf-8"))
+    for kind in SOURCE_KINDS:
+        if sha_file(out/f"{kind}-asr.txt")!=asr["media"][kind]["transcript_sha256"]:
+            raise ValueError("REPAIR_ASR_EVIDENCE_MISMATCH")
+    work=out/"short-visual-repair"; work.mkdir()
+    old=work/"original-short.mp4"; shutil.copy2(out/"short.mp4",old)
+    audio_sha=_audio_packets(old)
+    raw=_run_bytes(["ffmpeg","-v","error","-i",str(old),"-map","0:v:0",
+                    "-vf","scale=160:90,format=gray","-f","rawvideo","-"])
+    frames=np.frombuffer(raw,dtype=np.uint8).reshape(-1,90,160)
+    differences=np.abs(np.diff(frames.astype(np.int16),axis=0)).mean(axis=(1,2))
+    boundaries=[0]+[i+1 for i,d in enumerate(differences) if d>18]+[len(frames)]
+    # Exact immutable original had seven scenes and 760 frames at 25 fps.
+    if boundaries!=[0,128,267,331,407,506,701,760]:
+        raise ValueError("REPAIR_SCENE_BOUNDARIES_CHANGED "+str(boundaries))
+    indices=[0,1,2,0,2,1,2]
+    parts=[]
+    for i,index in enumerate(indices):
+        count=boundaries[i+1]-boundaries[i]
+        crop=work/f"crop-{i}.jpg"; part=work/f"part-{i}.mp4"
+        _native_portrait(ROOT/provenance["images"][index]["path"],crop,index)
+        expr=motion_filter("short",count/REPAIR_FPS,i%2==1)
+        _run_checked(["ffmpeg","-hide_banner","-v","error","-y","-loop","1",
+                      "-framerate",str(REPAIR_FPS),"-i",str(crop),"-filter_complex",expr,
+                      "-map","[v]","-frames:v",str(count),"-an","-c:v","libx264",
+                      "-preset","veryfast","-crf","23","-movflags","+faststart",str(part)])
+        parts.append(part)
+    visual=work/"visual.mp4"; join_scenes(parts,visual)
+    repaired=work/"repaired.mp4"
+    _run_checked(["ffmpeg","-hide_banner","-v","error","-y","-i",str(visual),"-i",str(old),
+                  "-map","0:v:0","-map","1:a:0","-c","copy","-movflags","+faststart",str(repaired)])
+    if _audio_packets(repaired)!=audio_sha:
+        raise ValueError("REPAIR_AUDIO_PACKET_BYTES_CHANGED")
+    new_raw=_run_bytes(["ffmpeg","-v","error","-i",str(repaired),"-map","0:v:0",
+                        "-vf","scale=160:90,format=gray","-f","rawvideo","-"])
+    if len(new_raw)!=len(raw):
+        raise ValueError("REPAIR_FRAME_COUNT_CHANGED")
+    shutil.copy2(repaired,out/"short.mp4")
+    media=verify_video(out/"short.mp4","short")
+    review,contact=review_frames(out/"short.mp4",out,"short")
+    mpath=out/"short-manifest.json"; m=json.loads(mpath.read_text(encoding="utf-8"))
+    m.update({"video_sha256":sha_file(out/"short.mp4"),"contact_sha256":sha_file(contact),
+              "frame_sha256":[sha_file(x) for x in review],"media":media,
+              "visual_repair":{"input_artifact_id":13757158570,"input_archive_sha256":REPAIR_ARCHIVE_SHA,
+                 "original_video_sha256":REPAIR_SHORT_SHA,"audio_packet_sha256":audio_sha,
+                 "audio_packets_preserved":True,"scene_frame_boundaries":boundaries,
+                 "composition":"full_frame_9_16_editorial_focus_crops_no_blurred_padding"}})
+    mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    if sha_file(out/"overview.mp4")!=REPAIR_OVERVIEW_SHA:
+        raise ValueError("REPAIR_OVERVIEW_CHANGED")
+    print("OWNER_TARGETED_SHORT_VISUAL_REPAIR_READY",m["video_sha256"],media,
+          "AAC_PACKET_SHA",audio_sha,"OVERVIEW_UNCHANGED",flush=True)
+
 if __name__=="__main__":
-    p=argparse.ArgumentParser(); p.add_argument("operation",choices=["preflight","preview","asr"]); p.add_argument("--source-sha",required=True); p.add_argument("--output",type=Path,default=Path("owner-productive-failure-media-output")); a=p.parse_args()
+    p=argparse.ArgumentParser(); p.add_argument("operation",choices=["preflight","preview","asr","repair"]); p.add_argument("--source-sha",required=True); p.add_argument("--output",type=Path,default=Path("owner-productive-failure-media-output")); p.add_argument("--archive",type=Path); a=p.parse_args()
     if a.source_sha!=SOURCE_SHA: raise SystemExit("EXACT_SOURCE_SHA_REQUIRED")
     if a.operation=="preflight": source_check(); print("SOURCE_PREFLIGHT_OK",SLUG,SOURCE_SHA,CANONICAL_SHA)
     elif a.operation=="preview": preview(a.output)
-    else: transcribe(a.output)
+    elif a.operation=="asr": transcribe(a.output)
+    else:
+        if a.archive is None: raise SystemExit("EXACT_REPAIR_ARCHIVE_REQUIRED")
+        repair_short(a.archive,a.output)
