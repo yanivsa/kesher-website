@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source_slug": "positivity-resonance-marriage-micro-moments",
-  "content_sha256": "6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f",
+  "content_sha256": "65e7b616d7c77983a013d3b7b9c4e4f7fe6101b311c2c02fb17a6a8f49b31c3f",
   "media_kind": "short",
   "media_item_id": "owner-short-20261110-6bb5723bbadc",
   "final_sha256": "fa9b1d3539f9ddea84fabf8572987f4e3a1b56624b82a913a7c0eaa174870489",
@@ -57,6 +57,13 @@
     "g2p_license_url": "https://huggingface.co/notmax123/RenikudPlus",
     "photo_provenance_path": "research/kesher-positivity-photo-provenance.json",
     "channel": "UCx5fEFvdVf28HLAR2dFW64Q",
-    "publish_action": "NOT_AUTHORIZED_BY_CERTIFICATE_ALONE"
+    "publish_action": "NOT_AUTHORIZED_BY_CERTIFICATE_ALONE",
+    "source_binding": {
+      "artifact_body_sha256": "6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f",
+      "canonical_content_sha256": "65e7b616d7c77983a013d3b7b9c4e4f7fe6101b311c2c02fb17a6a8f49b31c3f",
+      "method": "recomputed_same_committed_post_body_and_canonical_source",
+      "verified_at": "2026-11-10T09:29:00Z",
+      "source_deploy_sha": "58489fefdd7a936011d06c9695888a506da26311"
+    }
   }
 }
