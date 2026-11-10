@@ -216,11 +216,12 @@
     "serviceLabel": "הדרכת הורים",
     "controllerManaged": true,
     "slug": "stool-withholding-potty-training",
-    "image": "/images/generated/blog/stool-withholding-potty-training.png",
-    "imageAlt": "איור עריכתי מקומי של הורה וילד בחדר רחצה ביתי, לצד אסלה ושרפרף, באווירה רגועה ותומכת.",
-    "imageProvider": "LocalEditorial",
-    "imageSourceUrl": "local-editorial://stool-withholding-potty-training/4",
-    "imageIsFallback": false
+    "image": "/images/generated/blog/stool-withholding-potty-training-photo.jpg",
+    "imageAlt": "אב וילד לבוש קוראים יחד ספר בחדר הרחצה ליד סיר גמילה ושרפרף, באווירה רגועה.",
+    "imageProvider": "Adobe Firefly",
+    "imageSourceUrl": "local://public/images/generated/blog/stool-withholding-potty-training-photo.jpg",
+    "imageIsFallback": false,
+    "imageCredit": "תמונת מערכת מקורית שנוצרה עבור KESHER באמצעות Adobe Firefly; נובמבר 2026"
   },
   {
     "id": "couples-social-baseline-theory",
