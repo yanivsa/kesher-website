@@ -781,7 +781,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
-      - name: Verify exact authenticated source probe and no prior private production
+      - name: Verify exact authenticated source probe and existing private production
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -789,7 +789,7 @@ jobs:
           test "$(gh api repos/yanivsa/kesher-website/actions/runs/42920640111 --jq .conclusion)" = success
           test "$(gh api repos/yanivsa/kesher-website/actions/runs/42920640111 --jq .head_sha)" = f0c31debb380540e16ddd6a87499793f67e241ac
           test "$(gh api repos/yanivsa/kesher-website/actions/runs/42920640111 --jq .workflow_id)" = 349292838
-          test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-separate-room-private-evidence-4751cfeae272 --jq .total_count)" = 0
+          test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-separate-room-private-evidence-4751cfeae272 --jq .total_count)" = 1
       - name: Set up Python for licensed local speech
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
@@ -812,51 +812,30 @@ jobs:
           set -euo pipefail
           python -m unittest tests.test_kesher_owner_separate_room_preview -v
           python -m scripts.kesher_owner_separate_room_preview preflight --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0
-      - name: Fetch exact failed private artifact for targeted recovery
+      - name: Fetch exact final private evidence without regenerating media
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42923277500 --jq .head_sha)" = 049dec7bd23b75a5c6fbe25adf8b571442e1c6f6
-          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42923277500 --jq .conclusion)" = failure
-          gh api repos/yanivsa/kesher-website/actions/artifacts/13811884120/zip > "$RUNNER_TEMP/separate-room-recovery.zip"
-          printf '%s  %s\n' 52cd7534f91fa9d5b2d3154f244483ca6c1016c8536c389e947196a451ab885a "$RUNNER_TEMP/separate-room-recovery.zip" | sha256sum -c -
-      - name: Preserve exact Overview and repair only Short pacing
-        run: python -m scripts.kesher_owner_separate_room_preview recover --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0 --archive "${{ runner.temp }}/separate-room-recovery.zip"
-      - name: Independently transcribe exact final Hebrew MP4 audio
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42924814047 --jq .conclusion)" = success
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42924814047 --jq .head_sha)" = a3dde7bded5e235b3a8656b9d59d6fc5a2b0d882
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13813995846/zip > "$RUNNER_TEMP/separate-room-final.zip"
+          printf '%s  %s\n' a56dea3b812f87a5cde9b81771235866a2c57b4c7f6977077371259312679b27 "$RUNNER_TEMP/separate-room-final.zip" | sha256sum -c -
+          mkdir owner-separate-room-media-output
+          unzip -q "$RUNNER_TEMP/separate-room-final.zip" overview.mp4 short.mp4 overview-manifest.json short-manifest.json overview-review-voice.wav short-review-voice.wav -d owner-separate-room-media-output
+          cd owner-separate-room-media-output
+          printf '%s  %s\n' 4d53ae34495d49a7e91ef58148ff386437ff43b86e8a57f3e283c563bddc0e3a overview.mp4 1c5eb7a6c9b83a7e0647d85fe738759161924cada7b9826a0f3c63a3d8f1bb30 short.mp4 dc023e56c1cd81d3f98edc893640c8946cd11b4d5f7523f31e473b03f5548c80 overview-review-voice.wav 2e79c7316281fa1312f063e8501220133be122bce59aef9bf58cecad447c1065 short-review-voice.wav | sha256sum -c -
+      - name: Independent medium-model Hebrew review of exact final audio
         env:
-          HF_HOME: ${{ runner.temp }}/owner-separate-room-asr-hf
-        run: python -m scripts.kesher_owner_separate_room_preview asr --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0
-      - name: Archive reviewable PRIVATE owner outputs only
+          HF_HOME: ${{ runner.temp }}/owner-separate-room-independent-asr
+        run: python -m scripts.kesher_owner_separate_room_preview asr --asr-model medium --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0
+      - name: Archive independent private audio QA only, no media duplication
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: owner-separate-room-private-evidence-4751cfeae272
+          name: owner-separate-room-independent-audio-qa-4751cfeae272
           path: |
-            owner-separate-room-media-output/overview.mp4
-            owner-separate-room-media-output/short.mp4
-            owner-separate-room-media-output/*-review-voice.wav
-            owner-separate-room-media-output/*-manifest.json
-            owner-separate-room-media-output/*-visual-contact-sheet.jpg
-            owner-separate-room-media-output/*-frame-*.jpg
             owner-separate-room-media-output/*-asr.txt
             owner-separate-room-media-output/asr-review.json
           if-no-files-found: error
           compression-level: 0
           retention-days: 60
-      - name: Preserve failed private render evidence for targeted recovery (never publish)
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        with:
-          name: owner-separate-room-failed-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            owner-separate-room-media-output/overview.mp4
-            owner-separate-room-media-output/short.mp4
-            owner-separate-room-media-output/*-review-voice.wav
-            owner-separate-room-media-output/*-manifest.json
-            owner-separate-room-media-output/*-visual-contact-sheet.jpg
-            owner-separate-room-media-output/*-frame-*.jpg
-            owner-separate-room-media-output/*-asr.txt
-            owner-separate-room-media-output/asr-review.json
-          if-no-files-found: ignore
-          compression-level: 0
-          retention-days: 14

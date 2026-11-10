@@ -190,12 +190,14 @@ def recover(archive, out):
     print("OWNER_PRIVATE_RECOVERY_READY", "overview", RECOVERY_OVERVIEW_SHA, "short", manifest["video_sha256"], media, flush=True)
 
 
-def transcribe(out):
+def transcribe(out, model_name="small"):
+    if model_name not in ("small", "medium"):
+        raise ValueError("UNREVIEWED_ASR_MODEL")
     from faster_whisper import WhisperModel
     from scripts.kesher_owner_positivity_asr import similarity
-    model = WhisperModel("small", device="cpu", compute_type="int8", download_root=str(out / "asr-model-cache"))
+    model = WhisperModel(model_name, device="cpu", compute_type="int8", download_root=str(out / "asr-model-cache"))
     report = {"source_slug": SLUG, "content_sha256": SOURCE_SHA, "canonical_content_sha256": SOURCE_SHA, "article_body_sha256": BODY_SHA,
-              "engine": "faster-whisper==1.2.1 / small Hebrew", "audio_source": "decoded_final_mp4_audio",
+              "engine": f"faster-whisper==1.2.1 / {model_name} Hebrew", "audio_source": "decoded_final_mp4_audio",
               "review": "PENDING_OWNER_EDITORIAL_CONFIRMATION", "media": {}}
     for kind in KINDS:
         m = json.loads((out / f"{kind}-manifest.json").read_text())
@@ -219,6 +221,7 @@ if __name__ == "__main__":
     p.add_argument("operation", choices=["preflight", "preview", "recover", "asr"])
     p.add_argument("--source-sha", required=True)
     p.add_argument("--archive", type=Path)
+    p.add_argument("--asr-model", choices=["small", "medium"], default="small")
     p.add_argument("--output", type=Path, default=Path("owner-separate-room-media-output"))
     a = p.parse_args()
     if a.source_sha != SOURCE_SHA:
@@ -233,4 +236,4 @@ if __name__ == "__main__":
             raise SystemExit("EXACT_RECOVERY_ARCHIVE_REQUIRED")
         recover(a.archive, a.output)
     else:
-        transcribe(a.output)
+        transcribe(a.output, a.asr_model)
