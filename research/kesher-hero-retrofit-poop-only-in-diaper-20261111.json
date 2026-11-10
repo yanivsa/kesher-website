@@ -1,0 +1,23 @@
+{
+  "source_slug": "poop-only-in-diaper",
+  "content_sha256": "519994afd4c919ecfc61f4624de6144a7a27be09dda638c448fdbae0d91d3b1d",
+  "old_image": {
+    "path": "/images/generated/blog/poop-only-in-diaper.png",
+    "sha256": "67513b35c1a7851825c6b3bca65b4b29b9d3614f5a718b5968ff877f98c3a148",
+    "visual": "actual live flat vector inspected"
+  },
+  "new_image": {
+    "path": "/images/generated/blog/poop-only-in-diaper-photo.jpg",
+    "provider": "Adobe Firefly",
+    "request_id": "b3ced4b8-fe4d-4771-8310-5d736c95cd4c",
+    "sha256": "d5501cfa706f703e678e32e87bcca54d7216ad4ad8622fcd08adc2c4371b195d",
+    "dimensions": [
+      1200,
+      675
+    ],
+    "license": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+    "visual_review": "Actual final JPEG: fully clothed preschool child holding a clean diaper, calm parent at eye level, bathroom setting, no nudity or distress, no text/logo."
+  },
+  "review_date": "2026-11-11",
+  "scope": "image metadata only; canonical source unchanged"
+}
