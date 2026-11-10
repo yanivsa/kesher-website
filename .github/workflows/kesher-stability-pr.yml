@@ -766,3 +766,90 @@ jobs:
           if-no-files-found: ignore
           compression-level: 0
           retention-days: 14
+
+  owner-separate-room-private-preview:
+    # Exact same-repo OWNER branch; private evidence only, no publisher credentials.
+    permissions:
+      contents: read
+      actions: read
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/separate-room-media-20261111' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout exact OWNER candidate with no credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Verify exact authenticated source probe and no prior private production
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42920640111 --jq .conclusion)" = success
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42920640111 --jq .head_sha)" = f0c31debb380540e16ddd6a87499793f67e241ac
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42920640111 --jq .workflow_id)" = 349292838
+          test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-separate-room-private-evidence-4751cfeae272 --jq .total_count)" = 0
+      - name: Set up Python for licensed local speech
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583e3e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up pinned Node for repository FFmpeg bundles
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned owner-direct speech and media tools
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          printf '%s\n' "$ffmpeg_dir" "$ffprobe_dir" >> "$GITHUB_PATH"
+          python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' 'faster-whisper==1.2.1' 'av<19'
+      - name: Exact source, photo and private-only contract
+        run: |
+          set -euo pipefail
+          python -m unittest tests.test_kesher_owner_separate_room_preview -v
+          python -m scripts.kesher_owner_separate_room_preview preflight --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0
+      - name: Render original private Hebrew Overview and native 9 by 16 Short
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-separate-room-hf
+        run: python -m scripts.kesher_owner_separate_room_preview preview --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0
+      - name: Independently transcribe exact final Hebrew MP4 audio
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-separate-room-asr-hf
+        run: python -m scripts.kesher_owner_separate_room_preview asr --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0
+      - name: Archive reviewable PRIVATE owner outputs only
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-separate-room-private-evidence-4751cfeae272
+          path: |
+            owner-separate-room-media-output/overview.mp4
+            owner-separate-room-media-output/short.mp4
+            owner-separate-room-media-output/*-review-voice.wav
+            owner-separate-room-media-output/*-manifest.json
+            owner-separate-room-media-output/*-visual-contact-sheet.jpg
+            owner-separate-room-media-output/*-frame-*.jpg
+            owner-separate-room-media-output/*-asr.txt
+            owner-separate-room-media-output/asr-review.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 60
+      - name: Preserve failed private render evidence for targeted recovery (never publish)
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-separate-room-failed-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            owner-separate-room-media-output/overview.mp4
+            owner-separate-room-media-output/short.mp4
+            owner-separate-room-media-output/*-review-voice.wav
+            owner-separate-room-media-output/*-manifest.json
+            owner-separate-room-media-output/*-visual-contact-sheet.jpg
+            owner-separate-room-media-output/*-frame-*.jpg
+            owner-separate-room-media-output/*-asr.txt
+            owner-separate-room-media-output/asr-review.json
+          if-no-files-found: ignore
+          compression-level: 0
+          retention-days: 14

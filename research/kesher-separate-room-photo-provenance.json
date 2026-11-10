@@ -1,0 +1,204 @@
+{
+  "source_slug": "transition-to-separate-room",
+  "content_sha256": "4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0",
+  "canonical_content_sha256": "4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0",
+  "article_body_sha256": "9df3fef6d555e3d5efa8de74cc865dedbe9fdceade297611054623dbd18d0a52",
+  "plan_sha256": "c02d9165667e9121cb8d49a1f18b5177c1dd7d46a2e4f397496b148b31707d81",
+  "article_hero_sha256": "f3efb6c10a6d5ca762f0ea2e855ed0ef2afd26ad90af56afa01cbff44c32c86d",
+  "dedup_evidence": {
+    "run_id": 42920640111,
+    "head_sha": "f0c31debb380540e16ddd6a87499793f67e241ac",
+    "workflow_id": 349292838,
+    "source_slug": "transition-to-separate-room",
+    "content_sha256": "4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0",
+    "complete": true,
+    "candidates": [],
+    "uploaded_video_count": 225,
+    "resolved_video_count": 215,
+    "confirmed_deleted": 10,
+    "no_youtube_mutation": true
+  },
+  "images": [
+    {
+      "scene": "overview-0",
+      "path": "public/images/blog/transition-to-separate-room-overview-0.jpg",
+      "sha256": "925872cb9790656c1800dc2ab4729fbd536094c57e3361fdabacee6f7385f36f",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_sha256": "f3efb6c10a6d5ca762f0ea2e855ed0ef2afd26ad90af56afa01cbff44c32c86d",
+      "source_page": "https://kesher.saharoni.com/images/generated/blog/transition-to-separate-room-photo.jpg",
+      "source_download_url": "https://kesher.saharoni.com/images/generated/blog/transition-to-separate-room-photo.jpg",
+      "provider": "Adobe Firefly",
+      "credit": "KESHER original article hero",
+      "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "commercial_use_permitted": true,
+      "generated_for": "transition-to-separate-room",
+      "visual_review": "Original article photograph: awake older child and father at bedtime, no infant."
+    },
+    {
+      "scene": "overview-1",
+      "path": "public/images/blog/transition-to-separate-room-overview-1.jpg",
+      "sha256": "7c5e7d50c311f0b95dfb9dff9aa057cf49f1b62afec93cc34ca3887088adcb35",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_sha256": "f4082017e73368e95243c6d83e8a5140c8c6599d4c07e2863dfbdb12832e811f",
+      "source_page": "https://www.pexels.com/photo/man-in-white-t-shirt-and-brown-pants-standing-beside-white-wooden-crib-7491414/",
+      "source_download_url": "https://images.pexels.com/photos/7491414/pexels-photo-7491414.jpeg?cs=srgb&dl=pexels-mart-production-7491414.jpg&fm=jpg",
+      "provider": "Pexels",
+      "credit": "MART PRODUCTION",
+      "license_url": "https://www.pexels.com/legal-pages/license",
+      "commercial_use_permitted": true,
+      "generated_for": "transition-to-separate-room",
+      "visual_review": "Empty separate crib, flat bare mattress, no baby, toys, bumpers or soft objects inside; adult beside crib. No claim that an adult bed is pictured."
+    },
+    {
+      "scene": "overview-2",
+      "path": "public/images/blog/transition-to-separate-room-overview-2.jpg",
+      "sha256": "2e5471a84ab74d433997f367c4040f8d0b3fe8b25b262f270a4fcf464a938c51",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_sha256": "da3d62f50144b441204eea36b2d2325d432026c918d3cbf18280abb7bc45fe5d",
+      "source_page": "https://www.pexels.com/photo/father-and-son-playing-with-toys-in-the-child-room-12788217/",
+      "source_download_url": "https://images.pexels.com/photos/12788217/pexels-photo-12788217.jpeg?cs=srgb&dl=pexels-mizunokozuki-12788217.jpg&fm=jpg",
+      "provider": "Pexels",
+      "credit": "Mizuno K",
+      "license_url": "https://www.pexels.com/legal-pages/license",
+      "commercial_use_permitted": true,
+      "generated_for": "transition-to-separate-room",
+      "visual_review": "Father and awake preschool-age child playing in child's room; faces and hands retained in revised wide crop."
+    },
+    {
+      "scene": "overview-3",
+      "path": "public/images/blog/transition-to-separate-room-overview-3.jpg",
+      "sha256": "9e2fd037659349ec122a0c1c0e9b91e1548a81811b5baa0b68eecf52a0352124",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_sha256": "1b0d30981941136871541990142ea7ec9df78fe15dc42a437cfdb6621935cbe1",
+      "source_page": "https://www.pexels.com/photo/a-father-reading-bedtime-story-to-his-daughter-6591658/",
+      "source_download_url": "https://images.pexels.com/photos/6591658/pexels-photo-6591658.jpeg?cs=srgb&dl=pexels-cottonbro-6591658.jpg&fm=jpg",
+      "provider": "Pexels",
+      "credit": "cottonbro studio",
+      "license_url": "https://www.pexels.com/legal-pages/license",
+      "commercial_use_permitted": true,
+      "generated_for": "transition-to-separate-room",
+      "visual_review": "Father reading to older child in bed, clearly not infant; book and calm bedtime routine."
+    },
+    {
+      "scene": "overview-4",
+      "path": "public/images/blog/transition-to-separate-room-overview-4.jpg",
+      "sha256": "82db8bbd42f7d8d3ba0d550834e92ec25ce24166c9db1f1c390dca13279db58a",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_sha256": "6856d77b8ae8e80462627e174c4d3960a4e01faf32d4d2fd7bbd2d9722e9a6ea",
+      "source_page": "https://www.pexels.com/photo/a-father-tucking-her-daughter-to-bed-6591655/",
+      "source_download_url": "https://images.pexels.com/photos/6591655/pexels-photo-6591655.jpeg?cs=srgb&dl=pexels-cottonbro-6591655.jpg&fm=jpg",
+      "provider": "Pexels",
+      "credit": "cottonbro studio",
+      "license_url": "https://www.pexels.com/legal-pages/license",
+      "commercial_use_permitted": true,
+      "generated_for": "transition-to-separate-room",
+      "visual_review": "Older child awake in bed with parent seated nearby, calm reassurance; not an infant sleep scene."
+    },
+    {
+      "scene": "overview-5",
+      "path": "public/images/blog/transition-to-separate-room-overview-5.jpg",
+      "sha256": "c6d08a5b39e5d28ecfc6940aca8efd3bdf6e8eccd63900e0ee89176667426e25",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "source_sha256": "bff0dc7030606728bb37c4318e4e86de1a5963ebb7165126153f2483ee6f9c7d",
+      "source_page": "https://www.pexels.com/photo/father-and-son-sitting-on-the-bed-in-the-bedroom-12788604/",
+      "source_download_url": "https://images.pexels.com/photos/12788604/pexels-photo-12788604.jpeg?cs=srgb&dl=pexels-mizunokozuki-12788604.jpg&fm=jpg",
+      "provider": "Pexels",
+      "credit": "Mizuno K",
+      "license_url": "https://www.pexels.com/legal-pages/license",
+      "commercial_use_permitted": true,
+      "generated_for": "transition-to-separate-room",
+      "visual_review": "Father and awake preschool-age child in child's room, gentle interaction, both faces visible in revised crop."
+    },
+    {
+      "scene": "short-0",
+      "path": "public/images/blog/transition-to-separate-room-short-0.jpg",
+      "sha256": "ec8da465fdc45e1daf00051438ae9174160e3eb33a245017d14619dbbcedc29c",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "source_sha256": "da3d62f50144b441204eea36b2d2325d432026c918d3cbf18280abb7bc45fe5d",
+      "source_page": "https://www.pexels.com/photo/father-and-son-playing-with-toys-in-the-child-room-12788217/",
+      "source_download_url": "https://images.pexels.com/photos/12788217/pexels-photo-12788217.jpeg?cs=srgb&dl=pexels-mizunokozuki-12788217.jpg&fm=jpg",
+      "provider": "Pexels",
+      "credit": "Mizuno K",
+      "license_url": "https://www.pexels.com/legal-pages/license",
+      "commercial_use_permitted": true,
+      "generated_for": "transition-to-separate-room",
+      "visual_review": "Awake preschool-age child playing with parent in child's room, full-frame portrait."
+    },
+    {
+      "scene": "short-1",
+      "path": "public/images/blog/transition-to-separate-room-short-1.jpg",
+      "sha256": "302276036df33225a7fb94eb987be689567a475118118851a1c81829a35ed86f",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "source_sha256": "f4082017e73368e95243c6d83e8a5140c8c6599d4c07e2863dfbdb12832e811f",
+      "source_page": "https://www.pexels.com/photo/man-in-white-t-shirt-and-brown-pants-standing-beside-white-wooden-crib-7491414/",
+      "source_download_url": "https://images.pexels.com/photos/7491414/pexels-photo-7491414.jpeg?cs=srgb&dl=pexels-mart-production-7491414.jpg&fm=jpg",
+      "provider": "Pexels",
+      "credit": "MART PRODUCTION",
+      "license_url": "https://www.pexels.com/legal-pages/license",
+      "commercial_use_permitted": true,
+      "generated_for": "transition-to-separate-room",
+      "visual_review": "Close-up of empty crib and bare mattress; no infant or soft objects, revised portrait crop."
+    },
+    {
+      "scene": "short-2",
+      "path": "public/images/blog/transition-to-separate-room-short-2.jpg",
+      "sha256": "3545bbecb1694784608affb631d840929c80293a7319a8da301b0b12822313a9",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "source_sha256": "96d471d2497afbe8fe6c1903096f325c82472f296b3dcc4f008fcdf91e717da2",
+      "source_page": "https://www.pexels.com/photo/father-reading-a-bedtime-story-to-his-son-12788229/",
+      "source_download_url": "https://images.pexels.com/photos/12788229/pexels-photo-12788229.jpeg?cs=srgb&dl=pexels-mizunokozuki-12788229.jpg&fm=jpg",
+      "provider": "Pexels",
+      "credit": "Mizuno K",
+      "license_url": "https://www.pexels.com/legal-pages/license",
+      "commercial_use_permitted": true,
+      "generated_for": "transition-to-separate-room",
+      "visual_review": "Awake older child and father reading in child's room, full-frame portrait."
+    },
+    {
+      "scene": "short-3",
+      "path": "public/images/blog/transition-to-separate-room-short-3.jpg",
+      "sha256": "890375dc9f55b768b8824715b1eeb43c80791d7d2b19ae341940973cf68b0ffe",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "source_sha256": "bff0dc7030606728bb37c4318e4e86de1a5963ebb7165126153f2483ee6f9c7d",
+      "source_page": "https://www.pexels.com/photo/father-and-son-sitting-on-the-bed-in-the-bedroom-12788604/",
+      "source_download_url": "https://images.pexels.com/photos/12788604/pexels-photo-12788604.jpeg?cs=srgb&dl=pexels-mizunokozuki-12788604.jpg&fm=jpg",
+      "provider": "Pexels",
+      "credit": "Mizuno K",
+      "license_url": "https://www.pexels.com/legal-pages/license",
+      "commercial_use_permitted": true,
+      "generated_for": "transition-to-separate-room",
+      "visual_review": "Awake preschool-age child and father sitting in child's room, calm full-frame portrait."
+    }
+  ],
+  "rights_note": "Pexels permits free commercial use and modification; photographs are neutral illustrative scenes, not endorsements or representations of the subjects having a disorder. Original article hero is Firefly with verified commercial use. All final crops individually inspected. No infant depicted in a sleep scene."
+}
