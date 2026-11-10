@@ -2492,7 +2492,7 @@
         "call_chain": {
           ".github/prompts/jules-remotion-video-upgrade.md": "b77ed706da6ca440bebb8fd4102b2ded5f0b96628039c372e50fe3fab3e13d6a",
           ".github/workflows/kesher-daily-video.yml": "f13d619d1e221da557223b55ceecdcf58c1bcdf759a354304ed24b2a9e9cb902",
-          ".github/workflows/kesher-short-v4.yml": "9483c08d28bbbee1261b7fbe4c0f59d01e3dab4ed61b28cb533ab0de5fa527a3",
+          ".github/workflows/kesher-short-v4.yml": "f551db8831b7c5d13fff22b5cf4f0d23d506ea0983cc42acb183f5f172188350",
           "config/kesher-production-contract.json": "f6b7622a1ec3cbd49683893d560cebf13dd312e13a6a0000cdcd5af24a28de8d",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-free-stock-source-20261001.py.txt": "a60b2592a5e3b845b81735047fddcd140da9e0c1954a4d1257f1c88a10570d2f",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-goal-request-20261001.json.txt": "138a9faadef4e60f3b9a5f229571e3ca3f7cec53ebbfdca456ece5bbb44787a1",
@@ -2621,7 +2621,7 @@
               "youtube_metadata",
               "youtube_upload"
             ],
-            "definition_sha256": "9483c08d28bbbee1261b7fbe4c0f59d01e3dab4ed61b28cb533ab0de5fa527a3",
+            "definition_sha256": "f551db8831b7c5d13fff22b5cf4f0d23d506ea0983cc42acb183f5f172188350",
             "inputs": {
               "derive_slug": "$.github/kesher-goal-request.json.target_slug",
               "operation": "full"
@@ -3012,7 +3012,7 @@
       "review": {
         "call_chain": {
           ".github/workflows/kesher-daily-video.yml": "f13d619d1e221da557223b55ceecdcf58c1bcdf759a354304ed24b2a9e9cb902",
-          ".github/workflows/kesher-short-v4.yml": "9483c08d28bbbee1261b7fbe4c0f59d01e3dab4ed61b28cb533ab0de5fa527a3",
+          ".github/workflows/kesher-short-v4.yml": "f551db8831b7c5d13fff22b5cf4f0d23d506ea0983cc42acb183f5f172188350",
           "package-lock.json": "e034a4b7b1d831b4f7521916ed45010dd079bffc564016b89b3ef570eb9c257f",
           "package.json": "78c9c96e5b5bddacdb87a7b41d22bb4fe5f835f932987fcd6dcca936e146322a",
           "scripts/article_claim_quality.py": "c5bf5977c2ec432e58d6c3d14e4ab75714bcbc701f34b880630fd4e72662f585",
@@ -3135,7 +3135,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "9483c08d28bbbee1261b7fbe4c0f59d01e3dab4ed61b28cb533ab0de5fa527a3",
+      "definition_sha256": "f551db8831b7c5d13fff22b5cf4f0d23d506ea0983cc42acb183f5f172188350",
       "registration_id": 349292838,
       "resources": [
         "github.dispatch",
@@ -3170,7 +3170,7 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
-          "scripts/kesher_owner_positivity_youtube_probe.py": "b98834f9f71656535a14d100c9931c54610c263d5268a9330e233aae3b8b781c",
+          "scripts/kesher_owner_positivity_youtube_probe.py": "77101a3f0156ade12b3ebdb96f076b4c2001094c542db6fd10b5bfe7f5514f57",
           "scripts/kesher_owner_reviewed_publish.py": "d98ce1302523d315cda0ed2984e4dc99e8b385e4b4b5560c5d390577ef22e57e",
           "scripts/kesher_owner_asynchrony_preview.py": "277b4f1e4f44e4cef421d59864e46cda1784dd20cabf815f6594d27fe3be61a2",
           "scripts/kesher_owner_positivity_preview.py": "baf564c273d1b4408f39dce5241e415c40501ffcd61ab97d59c02a057366c8bc",
@@ -3216,7 +3216,7 @@
           "scripts/requirements-video-cloud.txt": "682a6c18a81ae81f328fc3f91b0b58d77a3a494c14577e6b681c2f1a1a95f1ec",
           "tests/test_kesher_canonical_state.py": "1b2df228a1bec270e2124babfb977762430da6b1600ed0de9d6f886dac536f0a",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
-          "tests/test_kesher_owner_positivity_youtube_probe.py": "d7469defda7e450fb35bfd7ee48835dee87e0bc1bb7511a22ecf2faf7e63ac36",
+          "tests/test_kesher_owner_positivity_youtube_probe.py": "0c5b452f4ac7d55bbc56e37eeb2f0de78ef7b5f02f4e04443f03cb9c598b32c0",
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
           "tests/test_notebooklm_auth_precedence.py": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
           "tests/test_pipeline_v4.py": "d2e315c85f441bc93a0914d6a56ceb6236947e5aa2ad4cab54a003f2e786b25f",
@@ -3973,7 +3973,7 @@
           "tests/test_short_pipeline_v4.py": "8f5cc1baa0b43a3a793dc4d38a53f50dc98bd7ecf2c0f5b447ed25bf807f803e",
           "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
           "tests/test_v4_runtime_activation.py": "98b614126a9f1df68acd252ebf56de11472be8b38267e60430b1c7191fd7845e",
-          ".github/workflows/kesher-short-v4.yml": "9483c08d28bbbee1261b7fbe4c0f59d01e3dab4ed61b28cb533ab0de5fa527a3",
+          ".github/workflows/kesher-short-v4.yml": "f551db8831b7c5d13fff22b5cf4f0d23d506ea0983cc42acb183f5f172188350",
           ".github/workflows/kesher-targeted-media-recovery-dispatch.yml": "ef12e7b71a5146700dfa2aef609129539b9461a317a77ac3e85c38ee446690a3",
           ".github/kesher-media-recovery-request.json": "016485d8aa02e28178dc033ce1e67a49a210fab0d65042739931a1f442090541",
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93"
@@ -4025,7 +4025,7 @@
               "youtube_metadata",
               "youtube_upload"
             ],
-            "definition_sha256": "9483c08d28bbbee1261b7fbe4c0f59d01e3dab4ed61b28cb533ab0de5fa527a3",
+            "definition_sha256": "f551db8831b7c5d13fff22b5cf4f0d23d506ea0983cc42acb183f5f172188350",
             "inputs": {
               "derive_slug": "$.github/kesher-media-recovery-request.json.target_slug",
               "operation": "full"

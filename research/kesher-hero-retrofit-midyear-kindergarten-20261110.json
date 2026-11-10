@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "source_slug": "changing-kindergarten-midyear",
+  "source_content_sha256": "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a",
+  "generated_at": "2026-11-10",
+  "provider": "Adobe Firefly",
+  "request_id": "17b893b2-37b2-4cf9-aba4-f5c942efbf70",
+  "original_sha256": "66585fe4b856dbfab9ce6b8626316a4ef7d4418fdbcf0e4c338e21f90951ba87",
+  "original_dimensions": [
+    2016,
+    1152
+  ],
+  "final_path": "public/images/generated/blog/changing-kindergarten-midyear-photo.jpg",
+  "final_sha256": "a225ea6bcb4aeca485933ecb93e4ba1f4dec110b3e2133c7dfd7db1e698b7098",
+  "final_dimensions": [
+    1200,
+    675
+  ],
+  "transform": "center fit 16:9 from 2016x1152, Lanczos 1200x675, JPEG quality 90 progressive optimized",
+  "commercial_use_permitted": true,
+  "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+  "review": "OWNER inspected actual old flat vector and final original Firefly photo: child with teal backpack explores unfamiliar preschool cubby with teacher kneeling and father nearby, other children playing in background; natural light and anatomy, no text/logos/blank padding, no real child identity. Calm transition, not sensational distress.",
+  "previous_hero_path": "/images/generated/blog/changing-kindergarten-midyear.png",
+  "previous_hero_sha256": "0c9fb37a16cad28ffdfe382a05a376c572d4fa4d52661b18f7467a7ed8b96b59",
+  "article_content_changed": false,
+  "post_summary_generation": "Ran normal generate-post-summaries.cjs on full exact baseline and edited catalog; only target image differs. Preserve unrelated committed summary entries."
+}

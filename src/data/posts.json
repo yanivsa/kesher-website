@@ -713,8 +713,8 @@
     "author": "שירה סהרוני",
     "category": "הדרכת הורים",
     "subcategory": "הגיל הרך",
-    "imageProvider": "LocalEditorial",
-    "imageSourceUrl": "local-editorial://changing-kindergarten-midyear/1",
+    "imageProvider": "Adobe Firefly",
+    "imageSourceUrl": "local://public/images/generated/blog/changing-kindergarten-midyear-photo.jpg",
     "imageIsFallback": false,
     "controllerManaged": true,
     "slug": "changing-kindergarten-midyear",
@@ -729,8 +729,9 @@
         "note": "הנחיות להיכרות מוקדמת עם המסגרת, לתרגול השגרה ולתכנון פרידה קצרה וחיובית."
       }
     ],
-    "image": "/images/generated/blog/changing-kindergarten-midyear.png",
-    "imageAlt": "איור עריכתי מקומי של הורה ופעוט בכניסה למסגרת ילדים, עם דלת פתוחה וקוביות משחק, ברגע פרידה תומך."
+    "image": "/images/generated/blog/changing-kindergarten-midyear-photo.jpg",
+    "imageAlt": "ילד עם תיק גב בגן חדש, גננת כורעת לידו ומראה לו את מקום התיק, ואביו יושב לצדו.",
+    "imageCredit": "תמונת מערכת מקורית שנוצרה עבור KESHER באמצעות Adobe Firefly; נובמבר 2026"
   },
   {
     "id": "child-poops-in-pants",
