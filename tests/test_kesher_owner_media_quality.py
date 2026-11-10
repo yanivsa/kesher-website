@@ -160,7 +160,10 @@ class OwnerReviewedPublishTests(unittest.TestCase):
     def test_exact_source_and_metadata(self):
         from scripts import kesher_owner_reviewed_publish as p
         for slug, cfg in p.CONFIG.items():
-            self.assertIs(p.source_config(slug, cfg["module"].SOURCE_SHA), cfg)
+            self.assertIs(p.source_config(slug, cfg["canonical_sha"]), cfg)
+            with self.assertRaises(RuntimeError):
+                p.source_config(slug, cfg["module"].SOURCE_SHA)
+            self.assertIn("content_sha256=" + cfg["canonical_sha"], p.metadata(cfg, "overview")["description"])
             with self.assertRaises(RuntimeError):
                 p.source_config(slug, "0" * 64)
             overview = p.metadata(cfg, "overview")
@@ -171,6 +174,24 @@ class OwnerReviewedPublishTests(unittest.TestCase):
             self.assertIn("https://www.youtube.com/watch?v=abcdefghijk", short["description"])
             with self.assertRaises(RuntimeError):
                 p.metadata(cfg, "short")
+
+    def test_recompute_both_hashes_from_exact_committed_post(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        for cfg in p.CONFIG.values():
+            post = p.verify_source_binding(cfg)
+            for key in ("title", "excerpt", "content"):
+                changed = dict(post)
+                changed[key] += " שינוי"
+                with self.assertRaisesRegex(RuntimeError, "CANONICAL_SOURCE_BINDING_MISMATCH"):
+                    p.verify_source_binding(cfg, changed)
+
+    def test_legacy_body_hash_is_not_a_public_identity(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        cfg = p.CONFIG[p.gifted.SLUG]
+        meta = p.metadata(cfg, "overview")
+        meta["description"] = meta["description"].replace(cfg["canonical_sha"], cfg["module"].SOURCE_SHA)
+        with self.assertRaisesRegex(RuntimeError, "AMBIGUOUS_EXISTING_SOURCE_VIDEO"):
+            p.classify(cfg, [{"id": "abcdefghijk", "snippet": dict(meta, channelId=p.CHANNEL)}])
 
     def test_dedup_exact_ambiguous_and_duplicate(self):
         from scripts import kesher_owner_reviewed_publish as p

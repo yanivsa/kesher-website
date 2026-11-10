@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source_slug": "gifted-asynchronous-development-inner-loneliness",
-  "content_sha256": "7b6ae2e8dc3182d798edbf19c2d95e576b02ab093c5e2bf04bad91113a716a00",
+  "content_sha256": "c4bc90e101bd495f5f91d17793f59e216eb544ee828f4632b8fe5d7fedb259f3",
   "media_kind": "overview",
   "media_item_id": "owner-overview-20261109-7b6ae2e8dc31",
   "final_sha256": "d999f2054cb254229a80ffb76357accd54765ca1c94877bac4139138ecf606cd",
@@ -52,6 +52,13 @@
     "g2p_license_url": "https://huggingface.co/notmax123/RenikudPlus",
     "cc_by_license_url": "https://creativecommons.org/licenses/by/4.0/",
     "audio_sha256": "a57f9d85080edc120c73fdbf458a256f30b67d0fe79a299c015b72f8fa534c7b",
-    "motion_review": "visual checked all frames plus 20 representative time slices; source still photos with gentle 10 percent pan and zoom"
+    "motion_review": "visual checked all frames plus 20 representative time slices; source still photos with gentle 10 percent pan and zoom",
+    "source_binding": {
+      "artifact_body_sha256": "7b6ae2e8dc3182d798edbf19c2d95e576b02ab093c5e2bf04bad91113a716a00",
+      "canonical_content_sha256": "c4bc90e101bd495f5f91d17793f59e216eb544ee828f4632b8fe5d7fedb259f3",
+      "method": "recomputed_same_committed_post_body_and_canonical_source",
+      "verified_at": "2026-11-10T09:29:00Z",
+      "source_deploy_sha": "58489fefdd7a936011d06c9695888a506da26311"
+    }
   }
 }

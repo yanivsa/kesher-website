@@ -14,6 +14,7 @@ from pathlib import Path
 from scripts import kesher_owner_asynchrony_preview as gifted
 from scripts import kesher_owner_positivity_preview as positivity
 from scripts.kesher_owner_vantage_short import youtube_client
+from scripts.kesher_daily_pipeline import clean_article_html, source_metadata
 from scripts.kesher_runtime.bridge_admission import main as bridge_admission
 from scripts.kesher_runtime.media_worker import require_owner_media_quality
 
@@ -23,6 +24,7 @@ KINDS = ("overview", "short")
 CONFIG = {
     gifted.SLUG: {
         "module": gifted, "date": "20261109", "artifact": 13710593150,
+        "canonical_sha": "c4bc90e101bd495f5f91d17793f59e216eb544ee828f4632b8fe5d7fedb259f3",
         "run": 42699460010,
         "zip_sha": "6704e43b29bfd9a7c08386964b1f8d83a35e9be839e7cb582527f7b1a9f3cfb8",
         "titles": {
@@ -34,6 +36,7 @@ CONFIG = {
     },
     positivity.SLUG: {
         "module": positivity, "date": "20261110", "artifact": 13745350527,
+        "canonical_sha": "65e7b616d7c77983a013d3b7b9c4e4f7fe6101b311c2c02fb17a6a8f49b31c3f",
         "run": 42778087294,
         "zip_sha": "c4401eb33f3a6937c78455ea30d76af162a1dd96af98368e4a4e5d494531da76",
         "titles": {
@@ -58,9 +61,32 @@ def sha(path):
 
 def source_config(slug, source_sha):
     cfg = CONFIG.get(slug)
-    require(cfg is not None and cfg["module"].SOURCE_SHA == source_sha,
+    require(cfg is not None and cfg["canonical_sha"] == source_sha,
             "EXACT_APPROVED_SOURCE_REQUIRED")
     return cfg
+
+
+def verify_source_binding(cfg, post=None):
+    """Bind the immutable preview's body digest to the actual canonical source.
+
+    The older preview hash covers only cleaned article content. The production
+    source contract covers title, excerpt, that content, and canonical URL.
+    Both must be recomputed from the same exact committed post; neither is an
+    interchangeable alias or an exemption from the production identity gate.
+    """
+    module = cfg["module"]
+    if post is None:
+        posts = json.loads((ROOT / "src/data/postsRecent.json").read_text(encoding="utf-8"))
+        selected = [x for x in posts if x.get("slug") == module.SLUG]
+        require(len(selected) == 1, "ARTICLE_SOURCE_NOT_UNIQUE")
+        post = selected[0]
+    source = source_metadata(post)
+    body_sha = hashlib.sha256(clean_article_html(str(post["content"])).encode("utf-8")).hexdigest()
+    require(source["slug"] == module.SLUG
+            and source["canonical_url"] == module.ARTICLE
+            and source["content_sha256"] == cfg["canonical_sha"]
+            and body_sha == module.SOURCE_SHA, "CANONICAL_SOURCE_BINDING_MISMATCH")
+    return post
 
 
 def item_id(cfg, kind):
@@ -92,7 +118,9 @@ def archive_files(archive, dest, cfg):
 
 def validate_bundle(cfg, directory, kind):
     module = cfg["module"]
-    slug, source_sha = module.SLUG, module.SOURCE_SHA
+    slug, artifact_body_sha = module.SLUG, module.SOURCE_SHA
+    source_sha = cfg["canonical_sha"]
+    verify_source_binding(cfg)
     root = ROOT / "research/owner-media-quality"
     approval = json.loads((root / f"{slug}--{kind}.json").read_text(encoding="utf-8"))
     manifest_path = directory / f"{kind}-manifest.json"
@@ -100,8 +128,13 @@ def validate_bundle(cfg, directory, kind):
     evidence = approval["evidence"]
     require(evidence.get("github_artifact_id") == cfg["artifact"]
             and evidence.get("github_run") == cfg["run"], "ARTIFACT_APPROVAL_MISMATCH")
+    binding = evidence.get("source_binding") or {}
+    require(binding.get("artifact_body_sha256") == artifact_body_sha
+            and binding.get("canonical_content_sha256") == source_sha
+            and binding.get("method") == "recomputed_same_committed_post_body_and_canonical_source"
+            and bool(binding.get("verified_at")), "CANONICAL_APPROVAL_BINDING_MISMATCH")
     require(manifest.get("source_slug") == slug
-            and manifest.get("content_sha256") == source_sha
+            and manifest.get("content_sha256") == artifact_body_sha
             and manifest.get("kind") == kind
             and manifest.get("media_item_id") == item_id(cfg, kind)
             and manifest.get("uploaded") is False and manifest.get("public") is False,
@@ -154,7 +187,7 @@ def metadata(cfg, kind, overview_id=None):
         cfg["intro"] + "\n\nלמאמר המלא והמקורות: " + module.ARTICLE
         + "\n\nקראו עוד באתר KESHER — שירה סהרוני."
         + "\nKESHER_OWNER_MEDIA_ITEM=" + item_id(cfg, kind)
-        + "\nsource_slug=" + module.SLUG + "\ncontent_sha256=" + module.SOURCE_SHA
+        + "\nsource_slug=" + module.SLUG + "\ncontent_sha256=" + cfg["canonical_sha"]
         + "\nקריינות סינתטית: BlueTTS 2.5 (MIT), RenikudPlus (Apache 2.0), "
           "LibriTTS-R / Google LLC, דוברת 6147 (CC BY 4.0)."
         + "\nhttps://huggingface.co/notmax123/BlueTTS2.5-onnx"
@@ -183,13 +216,13 @@ def classify(cfg, records):
         require(snip.get("channelId") == CHANNEL, "UNEXPECTED_CHANNEL")
         desc = str(snip.get("description") or "")
         title = str(snip.get("title") or "")
-        relevant = (module.SLUG in desc or module.SOURCE_SHA in desc
+        relevant = (module.SLUG in desc or module.SOURCE_SHA in desc or cfg["canonical_sha"] in desc
                     or title in cfg["titles"].values())
         if not relevant:
             continue
         exact = [k for k in KINDS if "KESHER_OWNER_MEDIA_ITEM=" + item_id(cfg, k) in desc]
         require(len(exact) == 1 and "source_slug=" + module.SLUG in desc
-                and "content_sha256=" + module.SOURCE_SHA in desc,
+                and "content_sha256=" + cfg["canonical_sha"] in desc,
                 "AMBIGUOUS_EXISTING_SOURCE_VIDEO")
         kind = exact[0]
         require(kind not in matches, "DUPLICATE_SOURCE_VIDEO_IDENTITY")
@@ -245,7 +278,7 @@ def verify_public(yt, cfg, kind, vid, expected):
                     url = "https://www.youtube.com/" + ("shorts/" if kind == "short" else "watch?v=") + vid
                     print("OWNER_PUBLIC_VERIFIED " + json.dumps({
                         "kind": kind, "url": url, "id": vid, "source_slug": cfg["module"].SLUG,
-                        "content_sha256": cfg["module"].SOURCE_SHA, "privacy": "public",
+                        "content_sha256": cfg["canonical_sha"], "privacy": "public",
                         "processing": "succeeded", "channel": CHANNEL, "player": "verified",
                         "article": cfg["module"].ARTICLE,
                     }, ensure_ascii=False), flush=True)
@@ -258,6 +291,7 @@ def verify_live_article(cfg):
     """Require production manifest, exact source marker and actual live hero bytes."""
     import requests
     module = cfg["module"]
+    post = verify_source_binding(cfg)
     module.source_check(public=True)
     site = "https://kesher.saharoni.com"
     manifest_response = requests.get(site + "/.well-known/kesher-publication.json", timeout=30)
@@ -266,27 +300,26 @@ def verify_live_article(cfg):
     row = manifest.get("articles", {}).get(module.SLUG) or {}
     identity = row.get("identity") or {}
     require(identity.get("slug") == module.SLUG
-            and identity.get("content_sha256") == module.SOURCE_SHA
+            and identity.get("content_sha256") == cfg["canonical_sha"]
             and row.get("canonical_url") == module.ARTICLE,
             "LIVE_ARTICLE_SOURCE_IDENTITY_MISMATCH")
-    posts = json.loads((ROOT / "src/data/postsRecent.json").read_text(encoding="utf-8"))
-    selected = [x for x in posts if x.get("slug") == module.SLUG]
-    require(len(selected) == 1 and row.get("title") == selected[0]["title"],
-            "LIVE_ARTICLE_TITLE_MISMATCH")
+    require(row.get("title") == post["title"], "LIVE_ARTICLE_TITLE_MISMATCH")
     hero = row.get("hero") or {}
-    require(hero.get("path") == selected[0]["image"]
+    require(hero.get("path") == post["image"]
             and hero["path"].startswith("/images/generated/blog/"),
             "LIVE_ARTICLE_HERO_IDENTITY_MISMATCH")
     page = requests.get(module.ARTICLE, timeout=30)
     require(page.status_code == 200
-            and f'<meta name="kesher:content-sha256" content="{module.SOURCE_SHA}">' in page.text
+            and f'<meta name="kesher:content-sha256" content="{cfg["canonical_sha"]}">' in page.text
+            and hashlib.sha256(page.content).hexdigest() == row.get("html_sha256")
             and f'rel="canonical" href="{module.ARTICLE}"' in page.text,
             "LIVE_ARTICLE_CONTENT_MARKER_MISMATCH")
     image = requests.get(site + hero["path"], timeout=30)
     require(image.status_code == 200 and image.headers.get("Content-Type", "").startswith("image/")
-            and hashlib.sha256(image.content).hexdigest() == hero.get("sha256"),
+            and hashlib.sha256(image.content).hexdigest() == hero.get("sha256")
+            and sha(ROOT / "public" / hero["path"].lstrip("/")) == hero.get("sha256"),
             "LIVE_ARTICLE_HERO_BYTES_MISMATCH")
-    print("OWNER_ARTICLE_LIVE_VERIFIED " + module.ARTICLE + " " + module.SOURCE_SHA, flush=True)
+    print("OWNER_ARTICLE_LIVE_VERIFIED " + module.ARTICLE + " " + cfg["canonical_sha"], flush=True)
 
 
 def publish(cfg, directory):
