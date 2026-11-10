@@ -390,11 +390,12 @@
         "url": "https://publications.aap.org/pediatrics/article-abstract/99/6/821/63346/Toilet-Training-Stool-Toileting-Refusal-and"
       }
     ],
-    "imageProvider": "LocalEditorial",
-    "imageSourceUrl": "local-editorial://poop-only-in-diaper/7",
+    "imageProvider": "Adobe Firefly",
+    "imageSourceUrl": "local://public/images/generated/blog/poop-only-in-diaper-photo.jpg",
     "imageIsFallback": false,
-    "image": "/images/generated/blog/poop-only-in-diaper.png",
-    "imageAlt": "איור עריכתי מקומי של הורה וילד בחדר רחצה ביתי, לצד אסלה ושרפרף, באווירה רגועה ותומכת."
+    "image": "/images/generated/blog/poop-only-in-diaper-photo.jpg",
+    "imageAlt": "ילד לבוש מחזיק חיתול נקי בחדר הרחצה והורה יושב לידו ומקשיב ברוגע",
+    "imageCredit": "תמונה מקורית שנוצרה באמצעות Adobe Firefly"
   },
   {
     "id": "first-grade-adjustment-difficulties",
