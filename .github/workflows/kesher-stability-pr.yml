@@ -240,7 +240,7 @@ jobs:
 
   owner-positivity-private-preview:
     # Exact same-repo owner PR only. No GitHub provider credentials, no public upload.
-    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/positivity-media-20261110' && github.event.pull_request.head.repo.full_name == github.repository }}
+    if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'owner/positivity-media-20261110' || github.head_ref == 'owner/positivity-independent-asr-20261110') && github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -282,6 +282,16 @@ jobs:
           python -m scripts.kesher_owner_positivity_preview preview \
             --source-sha 6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f \
             --output owner-positivity-media-output
+      - name: Independently transcribe original Hebrew voice OFFLINE for owner review
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-positivity-asr-hf
+        run: |
+          set -euo pipefail
+          python -m pip install 'faster-whisper==1.2.1' 'av<19'
+          python -m unittest tests.test_kesher_owner_positivity_asr -v
+          python -m scripts.kesher_owner_positivity_asr \
+            --source-sha 6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f \
+            --output owner-positivity-media-output
       - name: Archive reviewable PRIVATE owner outputs only
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
@@ -294,6 +304,8 @@ jobs:
             owner-positivity-media-output/*-manifest.json
             owner-positivity-media-output/*-visual-contact-sheet.jpg
             owner-positivity-media-output/*-frame-*.jpg
+            owner-positivity-media-output/*-asr.txt
+            owner-positivity-media-output/asr-review.json
           if-no-files-found: error
           compression-level: 0
           retention-days: 60
