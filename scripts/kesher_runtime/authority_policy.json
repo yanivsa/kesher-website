@@ -871,7 +871,7 @@
           "tests/test_kesher_backlog_rotation.py": "5fe6309a0183cf2a951a66b38ee42cb426128ac99cd0f2a7cf0331efd8f42670",
           "tests/fixtures/kesher/schema5-freeze-20261004.json": "e678d1bc8be8aa4bdf1cf083cc6e044fd4d578f186cb7fdca1697ff4aecfcb00",
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
-          "tests/test_kesher_owner_media_quality.py": "3e35bded627ef479fd0e72fc4172b134c518bbfdcb8bf970de90b882b64c1dec"
+          "tests/test_kesher_owner_media_quality.py": "8f852a759b18b281df2fe6e16fd7a76def9d81ef7c1079a56f820a2fecd5023b"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -3162,11 +3162,11 @@
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
           "scripts/kesher_owner_positivity_youtube_probe.py": "b98834f9f71656535a14d100c9931c54610c263d5268a9330e233aae3b8b781c",
-          "scripts/kesher_owner_reviewed_publish.py": "f73ca9e87c81fa9062f64207d916bd92684389b2e2d67e75798f416511210f42",
+          "scripts/kesher_owner_reviewed_publish.py": "e6613a6c9f615dfd411e13dcaaabac87c0d7465de98615efe4281d6ec96b6816",
           "scripts/kesher_owner_asynchrony_preview.py": "277b4f1e4f44e4cef421d59864e46cda1784dd20cabf815f6594d27fe3be61a2",
           "scripts/kesher_owner_positivity_preview.py": "baf564c273d1b4408f39dce5241e415c40501ffcd61ab97d59c02a057366c8bc",
           "scripts/kesher_runtime/media_worker.py": "4db95d3f8da41da3910501210136fd2641ec579e151a354779a155d01c5db7d6",
-          "tests/test_kesher_owner_media_quality.py": "3e35bded627ef479fd0e72fc4172b134c518bbfdcb8bf970de90b882b64c1dec",
+          "tests/test_kesher_owner_media_quality.py": "8f852a759b18b281df2fe6e16fd7a76def9d81ef7c1079a56f820a2fecd5023b",
           "scripts/kesher_owner_vantage_short.py": "016b0f73870d71be542c52f9e703b16e4d7331306c11cb085e66ed2d6267c252",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
           "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc",
