@@ -124,11 +124,12 @@
       "https://www.apa.org/topics/parenting/school-anxiety"
     ],
     "slug": "child-does-not-want-kindergarten",
-    "imageProvider": "LocalEditorial",
-    "imageSourceUrl": "local-editorial://child-does-not-want-kindergarten/0",
+    "imageProvider": "Adobe Firefly",
+    "imageSourceUrl": "local://public/images/generated/blog/child-does-not-want-kindergarten-photo.jpg",
     "imageIsFallback": false,
-    "image": "/images/generated/blog/child-does-not-want-kindergarten.png",
-    "imageAlt": "איור עריכתי מקומי של הורה ופעוט בכניסה למסגרת ילדים, עם דלת פתוחה וקוביות משחק, ברגע פרידה תומך."
+    "image": "/images/generated/blog/child-does-not-want-kindergarten-photo.jpg",
+    "imageAlt": "ילד עם תיק גב מהסס בפתח הגן, אמו כורעת לצדו ומחזיקה בידו, והגננת ממתינה ברקע.",
+    "imageCredit": "תמונת מערכת מקורית שנוצרה עבור KESHER באמצעות Adobe Firefly; נובמבר 2026"
   },
   {
     "id": "baby-cries-at-daycare",
