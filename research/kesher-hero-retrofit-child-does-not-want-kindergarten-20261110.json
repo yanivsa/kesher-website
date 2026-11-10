@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "source_slug": "child-does-not-want-kindergarten",
+  "source_content_sha256": "45359ff036c561742ec20c4b21967112641989734f92dd1ddb339e4ce14a3b49",
+  "generated_at": "2026-11-10",
+  "provider": "Adobe Firefly",
+  "request_id": "9e94afc5-8a58-4117-b488-ea44993e8a8c",
+  "original_sha256": "03ae1d24a9d8acde099abe743b974c5c2814ed4279dd3f82ff30e6c4f5fbd84d",
+  "original_dimensions": [
+    1152,
+    896
+  ],
+  "final_path": "public/images/generated/blog/child-does-not-want-kindergarten-photo.jpg",
+  "final_sha256": "2bcd1166f693dfe15e5b09167019f871f600931b1583e985bace41ed2f4875c1",
+  "final_dimensions": [
+    1200,
+    675
+  ],
+  "transform": "crop original (0,0,1152,648), resize Lanczos to 1200x675, JPEG quality 90 progressive; exact 16:9",
+  "commercial_use_permitted": true,
+  "license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+  "review": "OWNER visually inspected actual old vector, original Firefly photo and final 16:9 crop; child hesitates at preschool entrance, parent crouches and holds hand, teacher in background; realistic photo, no text/logos, no blank padding; original synthetic editorial image, no real child identity.",
+  "previous_hero_path": "/images/generated/blog/child-does-not-want-kindergarten.png",
+  "previous_hero_sha256": "010a99ee0b149ce6087c37431744aa609f22f147c35f5394f4df876de42f801f",
+  "article_content_changed": false,
+  "post_summary_generation": "Ran repository scripts/generate-post-summaries.cjs against exact main baseline and updated catalog; only target image differs between generated outputs. Existing committed summary is stale by three unrelated entries, so preserved its other entries and applied only the exact generated target image."
+}

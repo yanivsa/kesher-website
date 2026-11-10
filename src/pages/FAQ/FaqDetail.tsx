@@ -45,8 +45,8 @@ const FaqDetail: React.FC = () => {
   return (
     <div className={styles.faq}>
       <MetaTags
-        title={`${faq.question} | שירה סהרוני`}
-        description={faq.answer}
+        title={faq.seoTitle ?? `${faq.question} | שירה סהרוני`}
+        description={faq.metaDescription ?? faq.answer}
         canonical={url}
       />
       <SchemaOrg data={schema} />
@@ -72,6 +72,9 @@ const FaqDetail: React.FC = () => {
             <h2>רוצים להמשיך מכאן?</h2>
             <p>אם השאלה הזו מעסיקה אתכם, אפשר לקרוא עוד על הליווי שמתאים לנושא, או פשוט לקבוע פגישה ראשונה.</p>
             <Link className={styles.ctaBtn} to={faq.related.href}>{faq.related.label}</Link>
+            {faq.additionalRelated && (
+              <p>{faq.additionalRelated.intro} <Link to={faq.additionalRelated.href}>{faq.additionalRelated.label}</Link>.</p>
+            )}
           </div>
         )}
 

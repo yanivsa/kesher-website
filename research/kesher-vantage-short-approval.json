@@ -1,0 +1,43 @@
+{
+  "review_version": 2,
+  "source_slug": "vantage-sensitivity-sensitive-gifted-children",
+  "source_sha256": "e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea",
+  "short_item_id": "video-20261109-094900-e264d2962b",
+  "overview_video_id": "lnP5GltTLNk",
+  "video_sha256": "565493085375415c07f019b849d8ffe6bdd43bc3e900204f9ddb1694cb202e68",
+  "approved_by": "OWNER",
+  "audio_review_pass": true,
+  "visual_review_pass": true,
+  "semantic_review_pass": true,
+  "review_notes": "Exact 2026-11-09 BlueTTS licensed Hebrew native preview (not old Edge voice). OWNER inspected the original five-frame visual contact sheet, all title panels readable RTL with no overlap; original article photo relevant. Independent authorized Descript transcription from original 35.483s WAV retained all five paragraphs in source order, accurate scientific hedges; one minor ASR spelling glitch (כוח על→כוחל) is NOT actual audio failure evidence. Source script exact paragraph hashes match manifest and no voice content omission or overclaims. ffprobe and ffmpeg decoding verified H264 AAC 1080x1920 35.5333s, PCM mono 48k, mean -19.1dB max -0.4dB (no digital hard clipping). No subjective human listening claimed. Model MIT, source voice reference CC-BY-4.0 with description attribution, RenikudPlus Apache-2.0 exact SHA. NOT a new autonomous cycle.",
+  "evidence": {
+    "github_preview_run": "https://github.com/yanivsa/kesher-website/actions/runs/42606990198",
+    "artifact_id": 13669205302,
+    "descript_transcript_url": "https://web.descript.com/2285262d-9817-4a55-b42d-6db3b79e25b1/2b672",
+    "descript_transcript_exact": "תגית בבגד מגרדת, רעש בכיתה מציף והערה קטנה נשארת בלב. זו לא בהכרח חולשה. מייקל פלואס וג'יי בלסקי הציעו רעיון שנקרא רגישות יתרון. יש אנשים שעשויים להפיק יותר תועלת מחוויות חיוביות ותומכות. במחקר מבוקר עם יותר מאלפיים תלמידים, ההשפעה של תוכנית נגד בריונות בלטה במיוחד אצל בנים בעלי רגישות גבוהה. זו לא הבטחה ליתרון בכל תחום. במקום לומר תפסיק להיות רגיש, נסו לומר אני רואה שהרעש קשה לך. בוא נמצא מקום שקט ואת הגבול נשאיר ברור. רגישות היא לא כוחל וגם לא תקלה. עזרו לילד לגלות מה טוב לו. המאמר המלא באתר קשר.",
+    "audio_file_sha256": "25654a3e0c200e7f049c1ccc1cc280f76d82171aed41cd25a47f7af4d6a4144b",
+    "visual_contact_sha256": "779474162d9b7bbb2ad3e7e56c6444227221f941f1cd2966d384fb25825f150b",
+    "scientific_source": "research/kesher-vantage-sensitivity-20261109.md",
+    "script_sha256": "5feeaeed5ddc5345140b3c84caf23a682dda41845f03725afaac84b4b34a794e",
+    "duration_seconds": 35.533,
+    "resolution": "1080x1920",
+    "codecs": "H.264/AAC",
+    "original_audio": "35.483s, PCM 48k mono, mean -19.1dB, peak -0.4dB, no clipping",
+    "voice_source": "BlueTTS2.5-onnx:libri_female_6147",
+    "voice_model_revision": "95feb5d0cbfc8e5a95bffb067d03537cbf35be3e",
+    "hebrew_g2p_revision": "679c56ca449d41873fb8ff7711ddf7563d28198f",
+    "voice_qa_method": "Independent Descript original-WAV transcription crosschecked against exact author-written script, plus original 5-frame visual review and actual ffprobe/ffmpeg decode. No subjective human audition claimed."
+  },
+  "voice_license": {
+    "voice_source": "BlueTTS2.5-onnx:libri_female_6147",
+    "model_repo": "notmax123/BlueTTS2.5-onnx",
+    "model_license": "MIT",
+    "license_evidence_url": "https://huggingface.co/notmax123/BlueTTS2.5-onnx",
+    "voice_reference_corpus": "LibriTTS-R train-clean-100",
+    "reference_license": "CC BY 4.0",
+    "reference_license_url": "https://www.openslr.org/141/",
+    "commercial_use_permitted": true,
+    "attribution_in_description": true,
+    "review_note": "MIT model weights and Apache-2.0 G2P. LibriTTS-R voice reference released under CC BY 4.0, requires source attribution in public YouTube description. No claim of voice human consent or endorsement; license terms and chain are recorded, unlike old unlicensed Edge Read Aloud."
+  }
+}

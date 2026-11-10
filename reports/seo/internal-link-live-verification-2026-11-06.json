@@ -1,0 +1,32 @@
+{
+  "audit_date_utc": "2026-11-06",
+  "site": "https://kesher.saharoni.com",
+  "environment": "Cloudflare Pages production",
+  "deployed_main_commit": "b9cea3970fb6049b84e1156eba449cb971c670d9",
+  "verification_method": "Cloudflare Browser Rendering Crawl API, render=false; HTML anchor matches against committed Priority 1 and Priority 2 plans; HTTP status from crawl metadata",
+  "crawl_job_id": "82e68478-b4d2-42b8-895f-52fc1c085997",
+  "crawl_status": "completed",
+  "pages": {
+    "sources_and_targets": 47,
+    "http_200": 47,
+    "failed": 0
+  },
+  "planned_links": {
+    "priority_1": {
+      "expected": 46,
+      "present": 46
+    },
+    "priority_2": {
+      "expected": 26,
+      "present": 26
+    },
+    "total": {
+      "expected": 72,
+      "present": 72
+    }
+  },
+  "notes": [
+    "A planned link from gifted-children-social-difficulties to how-to-identify-a-gifted-child-parents-guide appears twice in the complete page HTML: once inside the contextual article backfill and once separately under the 'להעמקה בנושא' related-articles section. No repeated contextual injection was found.",
+    "This is a dated read-only production verification, not evidence that future deployments will always remain unchanged."
+  ]
+}
