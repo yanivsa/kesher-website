@@ -3267,7 +3267,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "26024b4ad7c2c0bd98853a1b2790b11750a557c535d059b4b454ff9d4ffd5447",
+      "definition_sha256": "3c44e32a27a80473e02f16482d96cac5c0b6baf9d7f595d68543e0f3e7e2648e",
       "resources": [],
       "review": {
         "call_chain": {
@@ -3446,7 +3446,13 @@
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "bad021f97c8d1222616a8f984c1a01c750b3d35be29a4732423ed3b5ab3e2ffb",
           "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
-          "tests/test_video_review_schema.py": "5f31d330ffce90b2b243b48a2ea0b4982b1ab7f2a64acf70f1420fd664b6187f"
+          "tests/test_video_review_schema.py": "5f31d330ffce90b2b243b48a2ea0b4982b1ab7f2a64acf70f1420fd664b6187f",
+          "scripts/kesher_owner_reviewed_publish.py": "d98ce1302523d315cda0ed2984e4dc99e8b385e4b4b5560c5d390577ef22e57e",
+          "tests/test_kesher_owner_media_quality.py": "d15628fe16ea01a570be5701beb8d6a9d8ac3ce38beb0017b8c9589617404671",
+          "research/owner-media-quality/evidence/child-not-playing-kindergarten--overview-descript-transcript.txt": "057ca8f57280082dad05bc69577b480899923d7aada2f15f536e5be0cd23524d",
+          "research/owner-media-quality/child-not-playing-kindergarten--overview.json": "1fbbe7732201c7c7751e9fb2fe98a0f6943df032dd65ef473faeeb70dc7d549f",
+          "research/owner-media-quality/evidence/child-not-playing-kindergarten--short-descript-transcript.txt": "199d927ee76d981d7933bf6182ba85f3aa4f4a974820b6081a25635942163052",
+          "research/owner-media-quality/child-not-playing-kindergarten--short.json": "8283d13f3fd2afcb8462aaf82b7dc771dcc96cbabeaf6ba405fcf74805905faa"
         },
         "credential_services": {},
         "credentials": [],

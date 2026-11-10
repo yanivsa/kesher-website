@@ -551,6 +551,27 @@ jobs:
           if-no-files-found: error
           compression-level: 0
           retention-days: 60
+      - name: Prove exact approved publication bundle without YouTube credentials or upload
+        if: ${{ github.event.action != 'opened' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python -m unittest tests.test_kesher_owner_media_quality -v
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13788929727/zip > "$RUNNER_TEMP/kindergarten-approved.zip"
+          python - <<'PY'
+          import os, tempfile
+          from pathlib import Path
+          from scripts import kesher_owner_reviewed_publish as p
+          cfg = p.source_config("child-not-playing-kindergarten", "60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa")
+          with tempfile.TemporaryDirectory() as tmp:
+              dest = Path(tmp)
+              p.archive_files(Path(os.environ["RUNNER_TEMP"]) / "kindergarten-approved.zip", dest, cfg)
+              p.verify_live_article(cfg)
+              for kind in p.KINDS:
+                  p.validate_bundle(cfg, dest, kind)
+              print("EXACT_APPROVED_KINDERGARTEN_BUNDLE_PASS_NO_UPLOAD", flush=True)
+          PY
       - name: Render original private Hebrew Overview and native 9 by 16 Short
         if: ${{ github.event.action == 'opened' }}
         env:
