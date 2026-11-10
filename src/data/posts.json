@@ -190,11 +190,12 @@
         "note": "נמצא מתאם בין שימוש במונחים כמו 'אנחנו' למדדים רגשיים ופיזיולוגיים מתונים יותר."
       }
     ],
-    "image": "/images/generated/blog/we-language-relationships.png",
-    "imageAlt": "איור עריכתי מקומי של שני בני זוג יושבים זה מול זה בשיחה רגועה בבית, עם שפת גוף פתוחה וקשובה.",
-    "imageProvider": "LocalEditorial",
-    "imageSourceUrl": "local-editorial://we-language-relationships/6",
-    "imageIsFallback": false
+    "image": "/images/generated/blog/we-language-relationships-photo.jpg",
+    "imageAlt": "בני זוג יושבים ליד שולחן במטבח, משוחחים ומקשיבים זה לזה במחוות ידיים פתוחות.",
+    "imageProvider": "Adobe Firefly",
+    "imageSourceUrl": "local://public/images/generated/blog/we-language-relationships-photo.jpg",
+    "imageIsFallback": false,
+    "imageCredit": "תמונת מערכת מקורית שנוצרה עבור KESHER באמצעות Adobe Firefly; נובמבר 2026"
   },
   {
     "id": "stool-withholding-potty-training",
