@@ -890,7 +890,7 @@
           "scripts/kesher_owner_midyear_kindergarten_cta_repair.py": "482d4958e70de9598a0e09e4cb6eb26b9c88074ac07fc9096d36c11cf904544e",
           "tests/test_kesher_owner_midyear_kindergarten_cta_repair.py": "82cff096b6539ec8efc40c6d1c31b79b6f65f7789c1e055bcf75bf6660aca6be",
           "research/owner-media-quality/changing-kindergarten-midyear--overview.json": "c30f0fa6b3fe28bcbcdd975e7f6502341e77125c02688d2bf7d9f0379a92504d",
-          "research/owner-media-quality/changing-kindergarten-midyear--short.json": "cbc4c8a2f13d529d59aa802282365deb64ac56788227247a32b3a43b4fc2d9a7"
+          "research/owner-media-quality/changing-kindergarten-midyear--short.json": "b0941933a53b9c4d9bd370fae52eeffcdcf9ab08fbb150f140ca7bb4ff7a9331"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -3256,7 +3256,7 @@
           "scripts/kesher_owner_midyear_kindergarten_cta_repair.py": "482d4958e70de9598a0e09e4cb6eb26b9c88074ac07fc9096d36c11cf904544e",
           "tests/test_kesher_owner_midyear_kindergarten_cta_repair.py": "82cff096b6539ec8efc40c6d1c31b79b6f65f7789c1e055bcf75bf6660aca6be",
           "research/owner-media-quality/changing-kindergarten-midyear--overview.json": "c30f0fa6b3fe28bcbcdd975e7f6502341e77125c02688d2bf7d9f0379a92504d",
-          "research/owner-media-quality/changing-kindergarten-midyear--short.json": "cbc4c8a2f13d529d59aa802282365deb64ac56788227247a32b3a43b4fc2d9a7"
+          "research/owner-media-quality/changing-kindergarten-midyear--short.json": "b0941933a53b9c4d9bd370fae52eeffcdcf9ab08fbb150f140ca7bb4ff7a9331"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
@@ -3482,7 +3482,7 @@
           "research/owner-media-quality/evidence/child-not-playing-kindergarten--short-descript-transcript.txt": "199d927ee76d981d7933bf6182ba85f3aa4f4a974820b6081a25635942163052",
           "research/owner-media-quality/child-not-playing-kindergarten--short.json": "8283d13f3fd2afcb8462aaf82b7dc771dcc96cbabeaf6ba405fcf74805905faa",
           "research/owner-media-quality/changing-kindergarten-midyear--overview.json": "c30f0fa6b3fe28bcbcdd975e7f6502341e77125c02688d2bf7d9f0379a92504d",
-          "research/owner-media-quality/changing-kindergarten-midyear--short.json": "cbc4c8a2f13d529d59aa802282365deb64ac56788227247a32b3a43b4fc2d9a7"
+          "research/owner-media-quality/changing-kindergarten-midyear--short.json": "b0941933a53b9c4d9bd370fae52eeffcdcf9ab08fbb150f140ca7bb4ff7a9331"
         },
         "credential_services": {},
         "credentials": [],
