@@ -156,5 +156,45 @@ class OwnerMediaQualityGateTests(unittest.TestCase):
         self.assertEqual(state.item["status"], "pending_review")
 
 
+class OwnerReviewedPublishTests(unittest.TestCase):
+    def test_exact_source_and_metadata(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        for slug, cfg in p.CONFIG.items():
+            self.assertIs(p.source_config(slug, cfg["module"].SOURCE_SHA), cfg)
+            with self.assertRaises(RuntimeError):
+                p.source_config(slug, "0" * 64)
+            overview = p.metadata(cfg, "overview")
+            short = p.metadata(cfg, "short", "abcdefghijk")
+            self.assertIn(cfg["module"].ARTICLE, overview["description"])
+            self.assertIn(cfg["module"].ARTICLE, short["description"])
+            self.assertIn("https://creativecommons.org/licenses/by/4.0/", short["description"])
+            self.assertIn("https://www.youtube.com/watch?v=abcdefghijk", short["description"])
+            with self.assertRaises(RuntimeError):
+                p.metadata(cfg, "short")
+
+    def test_dedup_exact_ambiguous_and_duplicate(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        cfg = p.CONFIG[p.gifted.SLUG]
+        meta = p.metadata(cfg, "overview")
+        row = {"id": "abcdefghijk", "snippet": dict(meta, channelId=p.CHANNEL)}
+        self.assertEqual(p.classify(cfg, [row]), {"overview": row})
+        with self.assertRaises(RuntimeError):
+            p.classify(cfg, [row, dict(row, id="12345678901")])
+        ambiguous = {"id": "12345678901", "snippet": {
+            "channelId": p.CHANNEL, "description": cfg["module"].ARTICLE}}
+        with self.assertRaises(RuntimeError):
+            p.classify(cfg, [ambiguous])
+
+    def test_wrong_archive_digest_fails_before_extraction(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            archive = root / "wrong.zip"
+            archive.write_bytes(b"not the reviewed artifact")
+            with self.assertRaisesRegex(RuntimeError, "ARTIFACT_DIGEST_MISMATCH"):
+                p.archive_files(archive, root, p.CONFIG[p.gifted.SLUG])
+            self.assertEqual(list(root.iterdir()), [archive])
+
+
 if __name__ == "__main__":
     unittest.main()
