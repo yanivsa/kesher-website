@@ -510,6 +510,47 @@ jobs:
           expected="$(printf '%s\t%s\t%s\t%s' 13787755454 sha256:bfd6fca1b962555d34ae02e652ec02775ccfd9e3d21d43c2b4ade2557c5b6ccb false aa96fd2356d95f89efb6fe9e5c27ffb22bc7f073)"
           test "$actual" = "$expected"
           echo 'EXACT_PRIVATE_ARCHIVE_REUSED: 13787755454; no new media generated'
+      - name: Repair only the ambiguous closing sentence from the exact reviewed Short
+        id: targeted_audio_repair
+        if: ${{ github.event.action != 'opened' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python -m unittest tests.test_kesher_owner_kindergarten_audio_repair -v
+          count="$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-kindergarten-play-targeted-audio-repair-60374e686f78 --jq '.total_count')"
+          if [ "$count" = 1 ]; then
+            test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-kindergarten-play-targeted-audio-repair-60374e686f78 --jq '.artifacts[0].expired')" = false
+            echo 'Existing exact targeted repair archive retained; no duplicate repair'
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          test "$count" = 0
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13787755454/zip > "$RUNNER_TEMP/kindergarten-original.zip"
+          python -m scripts.kesher_owner_kindergarten_audio_repair --archive "$RUNNER_TEMP/kindergarten-original.zip" --output owner-kindergarten-play-repaired-output
+          echo 'ready=true' >> "$GITHUB_OUTPUT"
+      - name: Independently transcribe the repaired final audio
+        if: ${{ steps.targeted_audio_repair.outputs.ready == 'true' }}
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-kindergarten-play-asr-hf
+        run: python -m scripts.kesher_owner_kindergarten_play_preview asr --source-sha 60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa --output owner-kindergarten-play-repaired-output
+      - name: Archive exact targeted repair and unchanged Short for private QA
+        if: ${{ steps.targeted_audio_repair.outputs.ready == 'true' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: owner-kindergarten-play-targeted-audio-repair-60374e686f78
+          path: |
+            owner-kindergarten-play-repaired-output/overview.mp4
+            owner-kindergarten-play-repaired-output/short.mp4
+            owner-kindergarten-play-repaired-output/*-review-voice.wav
+            owner-kindergarten-play-repaired-output/*-manifest.json
+            owner-kindergarten-play-repaired-output/*-visual-contact-sheet.jpg
+            owner-kindergarten-play-repaired-output/*-frame-*.jpg
+            owner-kindergarten-play-repaired-output/*-asr.txt
+            owner-kindergarten-play-repaired-output/asr-review.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 60
       - name: Render original private Hebrew Overview and native 9 by 16 Short
         if: ${{ github.event.action == 'opened' }}
         env:

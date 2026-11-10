@@ -3250,7 +3250,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "f01dde039b73d0dcb61a818e6ddc06f9e9d455b438ce7072555264cb844c6bbf",
+      "definition_sha256": "26024b4ad7c2c0bd98853a1b2790b11750a557c535d059b4b454ff9d4ffd5447",
       "resources": [],
       "review": {
         "call_chain": {
@@ -3297,6 +3297,7 @@
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
           "scripts/kesher_owner_7500_preview.py": "542da818848234c3fcd3f90ea950e621bbd599ef432d02542fe38c5d0a8d0984",
           "scripts/kesher_owner_asynchrony_preview.py": "277b4f1e4f44e4cef421d59864e46cda1784dd20cabf815f6594d27fe3be61a2",
+          "scripts/kesher_owner_kindergarten_audio_repair.py": "aff21f591ea9db5dc4950147cab41154c52d59e6f110dfd7160cbef208c06215",
           "scripts/kesher_owner_kindergarten_play_preview.py": "4c9ca0a38bc0f0078ef2875f2ed2342b8e043cfd29e7819cbbbf5c8416e67ebf",
           "scripts/kesher_owner_positivity_asr.py": "743a4425f026c9c6ed153c7479c01ddd634a733a6434e62440d8a2ae520c0c1c",
           "scripts/kesher_owner_positivity_preview.py": "baf564c273d1b4408f39dce5241e415c40501ffcd61ab97d59c02a057366c8bc",
@@ -3408,6 +3409,7 @@
           "tests/test_kesher_observe.py": "972d9a5fd360fb32660cb57d527382145faa86b924b1c3bd693292a27b69c3c1",
           "tests/test_kesher_output_artifacts.py": "ab3bb2145d2201f0b6245ebb7454f38e55867ba4a880b96459a879e92d83d7dd",
           "tests/test_kesher_owner_asynchrony_preview.py": "a5642fb80f4608c2d9b47fc9087fe787f2ae9827e6c95485ad2892f84d7391ae",
+          "tests/test_kesher_owner_kindergarten_audio_repair.py": "8fea6ca600b0d7d26cb8fddb38a02bee6ed6d78cc54ab348af105061357b6304",
           "tests/test_kesher_owner_kindergarten_play_preview.py": "53d41192533c211b4dd35e1b018f0242dd3e146b401a791eef8ad4b4672a2355",
           "tests/test_kesher_owner_positivity_asr.py": "37b54a8e39f3363c55f39783e54a71c9d77e3df87c1484325512f822dba27c68",
           "tests/test_kesher_owner_positivity_preview.py": "6da77982107c3a3b07c7724617c6e77790e005a3c71327a864b894ad5e833fa5",
