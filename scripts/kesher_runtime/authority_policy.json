@@ -3233,7 +3233,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "c8b5a0d8ac46a25bcc134c9a2ae6f529bc2caa7607e573cf5a99decf9e611d86",
+      "definition_sha256": "5348080cfb42030a70b5fb0cb228dc9198cc97eb7a1cf3fc96ced487e00dcd81",
       "resources": [],
       "review": {
         "call_chain": {

@@ -240,7 +240,7 @@ jobs:
 
   owner-positivity-private-preview:
     # Exact same-repo owner PR only. No GitHub provider credentials, no public upload.
-    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/positivity-media-20261110' && github.event.pull_request.head.repo.full_name == github.repository }}
+    if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'owner/positivity-media-20261110' || github.head_ref == 'owner/positivity-independent-asr-20261110') && github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
