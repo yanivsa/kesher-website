@@ -17,19 +17,24 @@ queue-aware entrypoint.
 
 from __future__ import annotations
 
+import base64
 import copy
+import hashlib
 import json
 import os
 import re
 import sys
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
 if __package__:
+    from . import kesher_article_contract as article_contract
     from . import kesher_content_controller as core
     from . import kesher_content_controller_entry as entry
 else:
+    import kesher_article_contract as article_contract
     import kesher_content_controller as core
     import kesher_content_controller_entry as entry
 
@@ -39,7 +44,7 @@ IMAGE_WORKFLOW = "kesher-article-image.yml"
 IMAGE_WORKFLOW_NAME = "Kesher Trusted Article Image"
 MAX_STAGE_ATTEMPTS = 3
 BACKOFF_MINUTES = (5, 15)
-IMAGE_PROVIDERS = {"Gemini", "Unsplash", "Pexels", "Local", "LocalEditorial"}
+IMAGE_PROVIDERS = set(article_contract.IMAGE_PROVIDER_RULES)
 IMAGE_RESULTS = {"generated", "stock", "local_fallback"}
 
 
@@ -116,18 +121,15 @@ def normalize_state(existing: dict[str, Any] | None, day) -> dict[str, Any]:
     return state
 
 
-def exact_field(body: str, label: str) -> str | None:
-    values: list[str] = []
-    pattern = re.compile(rf"^\s*(?:[-*]\s*)?{re.escape(label)}\s*:\s*(.*?)\s*$")
-    for line in (body or "").splitlines():
-        match = pattern.match(line)
-        if match:
-            values.append(match.group(1).strip())
-    return values[0] if len(values) == 1 else None
-
+exact_field = article_contract.exact_field
 
 class V3GitHubClient(core.GitHubClient):
-    def article_pr_image_ready(self, pr: dict[str, Any]) -> tuple[bool, dict[str, str]]:
+    def _article_pr_image_proof(
+        self,
+        pr: dict[str, Any],
+        *,
+        require_head: bool,
+    ) -> tuple[bool, dict[str, str]]:
         try:
             base_posts = self.contents_json("src/data/posts.json", str((pr.get("base") or {}).get("sha") or "main"))
             head_posts = self.contents_json("src/data/posts.json", str((pr.get("head") or {}).get("sha") or ""))
@@ -135,46 +137,198 @@ class V3GitHubClient(core.GitHubClient):
             return False, {}
         if not isinstance(base_posts, list) or not isinstance(head_posts, list):
             return False, {}
-        base_ids = {row.get("id") for row in base_posts if isinstance(row, dict)}
-        new_posts = [row for row in head_posts if isinstance(row, dict) and row.get("id") not in base_ids]
+        base_ids = {core.canonical_slug(row) for row in base_posts if isinstance(row, dict)}
+        new_posts = [row for row in head_posts if isinstance(row, dict) and core.canonical_slug(row) not in base_ids]
         if len(new_posts) != 1:
             return False, {}
         post = new_posts[0]
-        image = str(post.get("image") or "")
-        image_alt = str(post.get("imageAlt") or "")
+        head_sha = str((pr.get("head") or {}).get("sha") or "")
         body = str(pr.get("body") or "")
-        provider = exact_field(body, "Image Provider") or ""
-        result = exact_field(body, "Image Generation Result") or ""
-        sha256 = exact_field(body, "Image SHA-256") or ""
-        dimensions = exact_field(body, "Image Dimensions") or ""
-        visual = exact_field(body, "Image Visual Match") or ""
-        source = exact_field(body, "Image Source URL") or ""
-        if not (
-            image.startswith("/images/generated/blog/")
-            and len(image_alt) >= 20
-            and exact_field(body, "Image Pipeline Version") == "2"
-            and provider in IMAGE_PROVIDERS
-            and result in IMAGE_RESULTS
-            and re.fullmatch(r"[a-f0-9]{64}", sha256)
-            and re.fullmatch(r"\d+x\d+", dimensions)
-            and len(visual) >= 24
-            and source
+        evidence_head = str(article_contract.exact_field(body, "Image Evidence Head") or "").strip().lower()
+        effective_head = head_sha
+        if require_head and evidence_head and head_sha.lower() != evidence_head:
+            curr = head_sha
+            for _ in range(6):
+                try:
+                    commit_payload = self.request("GET", f"{self.api}/commits/{curr}", allow_404=True)
+                    parents = [
+                        str(p.get("sha") or "").strip().lower()
+                        for p in (commit_payload.get("parents") or [])
+                        if isinstance(p, dict)
+                    ]
+                    if len(parents) < 2:
+                        break
+                    curr = parents[0]
+                    if curr == evidence_head:
+                        effective_head = evidence_head
+                        break
+                except Exception:
+                    break
+        if article_contract.image_proof_errors(post, body, effective_head, require_head=require_head):
+            return False, {}
+        quoted = urllib_quote("public" + post["image"])
+        try:
+            payload = self.request(
+                "GET", f"{self.api}/contents/{quoted}?ref={urllib_quote(head_sha)}", allow_404=True,
+            )
+            if not isinstance(payload, dict):
+                return False, {}
+            # Contents API omits inline bytes above 1 MiB. Fetch the exact blob
+            # returned for this head, never a mutable download URL.
+            if payload.get("encoding") != "base64" and re.fullmatch(r"[a-f0-9]{40}", str(payload.get("sha") or "")):
+                payload = self.request("GET", f"{self.api}/git/blobs/{payload['sha']}", allow_404=True)
+            if not isinstance(payload, dict) or payload.get("encoding") != "base64" or not payload.get("content"):
+                return False, {}
+            data = base64.b64decode(payload["content"])
+        except (core.ControllerError, ValueError, TypeError):
+            return False, {}
+        if article_contract.image_proof_errors(
+            post,
+            body,
+            effective_head,
+            data,
+            require_head=require_head,
         ):
             return False, {}
-        quoted = urllib_quote("public/" + image.lstrip("/"))
-        payload = self.request(
-            "GET",
-            f"{self.api}/contents/{quoted}?ref={urllib_quote(str((pr.get('head') or {}).get('sha') or ''))}",
-            allow_404=True,
-        )
-        if not isinstance(payload, dict) or not payload.get("sha"):
-            return False, {}
+        actual_sha = hashlib.sha256(data).hexdigest()
+        actual_pixels = None
+        try:
+            actual_pixels = article_contract.image_pixel_sha256(data)
+        except Exception:
+            pass
+        post_img = str(post.get("image") or "").strip()
+        body_source = str(article_contract.exact_field(body, "Image Source URL") or "").strip()
+        comparison_posts = list(base_posts)
+        try:
+            recent_posts = self.contents_json("src/data/postsRecent.json", str((pr.get("base") or {}).get("sha") or "main"))
+            if isinstance(recent_posts, list):
+                comparison_posts.extend([p for p in recent_posts if isinstance(p, dict)])
+        except Exception:
+            pass
+        for base_post in comparison_posts:
+            if not isinstance(base_post, dict):
+                continue
+            base_img = str(base_post.get("image") or "").strip()
+            if base_img and base_img == post_img:
+                return False, {}
+            if body_source and base_img and body_source == f"local://public{base_img}":
+                return False, {}
+            base_sha = str(base_post.get("imageSha256") or "").strip()
+            if base_sha and base_sha == actual_sha:
+                return False, {}
+            if base_img:
+                local_base = Path(__file__).resolve().parents[1] / "public" / base_img.lstrip("/")
+                if local_base.is_file():
+                    try:
+                        base_bytes = local_base.read_bytes()
+                        if hashlib.sha256(base_bytes).hexdigest() == actual_sha:
+                            return False, {}
+                        if actual_pixels and article_contract.image_pixel_sha256(base_bytes) == actual_pixels:
+                            return False, {}
+                    except Exception:
+                        return False, {}
         return True, {
-            "provider": provider,
-            "sha256": sha256,
-            "source": source,
-            "article_id": str(post.get("id") or ""),
+            "provider": article_contract.exact_field(body, "Image Provider"),
+            "sha256": article_contract.exact_field(body, "Image SHA-256"),
+            "source": article_contract.exact_field(body, "Image Source URL"),
+            "article_id": str(post["id"]),
+            "article_sha256": article_contract.article_sha256(post),
+            "head_sha": head_sha,
         }
+
+    def article_pr_image_ready(self, pr: dict[str, Any]) -> tuple[bool, dict[str, str]]:
+        return self._article_pr_image_proof(pr, require_head=True)
+
+    def article_pr_image_rebindable(self, pr: dict[str, Any]) -> tuple[bool, dict[str, str]]:
+        """Return true only when exact article/pixels proof is valid except for head binding."""
+        return self._article_pr_image_proof(pr, require_head=False)
+
+    def article_pr_prior_image_recoverable(self, pr: dict[str, Any]) -> tuple[bool, dict[str, str]]:
+        """Prove an immutable prior image artifact can be reattached to this normalized article.
+
+        Recovery is deliberately narrower than ordinary rebind: the current head
+        must have lost only ``image``/``imageAlt`` while its exact editorial record
+        remains identical to the historically proven image head.
+        """
+        body = str(pr.get("body") or "")
+        evidence_head = str(article_contract.exact_field(body, "Image Evidence Head") or "").strip().lower()
+        current_head = str((pr.get("head") or {}).get("sha") or "").strip().lower()
+        if (
+            not re.fullmatch(r"[a-f0-9]{40}", evidence_head)
+            or not re.fullmatch(r"[a-f0-9]{40}", current_head)
+            or evidence_head == current_head
+        ):
+            return False, {}
+
+        historical_pr = dict(pr)
+        historical_pr["head"] = dict(pr.get("head") or {})
+        historical_pr["head"]["sha"] = evidence_head
+        proven, evidence = self._article_pr_image_proof(historical_pr, require_head=True)
+        if not proven:
+            return False, {}
+
+        try:
+            base_ref = str((pr.get("base") or {}).get("sha") or "main")
+            base_posts = self.contents_json("src/data/posts.json", base_ref)
+            current_posts = self.contents_json("src/data/posts.json", current_head)
+            historical_posts = self.contents_json("src/data/posts.json", evidence_head)
+        except core.ControllerError:
+            return False, {}
+        if not all(isinstance(rows, list) for rows in (base_posts, current_posts, historical_posts)):
+            return False, {}
+
+        article_id = str(evidence.get("article_id") or "").strip()
+        if not article_id:
+            return False, {}
+        current_matches = [row for row in current_posts if isinstance(row, dict) and str(row.get("id") or "").strip() == article_id]
+        historical_matches = [row for row in historical_posts if isinstance(row, dict) and str(row.get("id") or "").strip() == article_id]
+        if len(current_matches) != 1 or len(historical_matches) != 1:
+            return False, {}
+        current_post = current_matches[0]
+        historical_post = historical_matches[0]
+
+        if article_contract.image_visual_identity(current_post) != article_contract.image_visual_identity(historical_post):
+            return False, {}
+
+        base_ids = {core.canonical_slug(row) for row in base_posts if isinstance(row, dict)}
+        current_new = [row for row in current_posts if isinstance(row, dict) and core.canonical_slug(row) not in base_ids]
+        if len(current_new) != 1 or str(current_new[0].get("id") or "").strip() != article_id:
+            return False, {}
+
+        # A bounded editorial repair may change the article SHA while preserving
+        # the exact already-proven hero. In that case permit only an evidence
+        # refresh: every image metadata field must still match the historical
+        # artifact, and the current-head bytes must independently satisfy the
+        # complete image proof after rebinding only article/head evidence.
+        image_fields = (
+            "image", "imageAlt", "imageProvider", "imageSourceUrl",
+            "imageIsFallback", "imageCredit", "imageCreditUrl",
+        )
+        current_has_image = bool(
+            str(current_post.get("image") or "").strip()
+            or str(current_post.get("imageAlt") or "").strip()
+        )
+        if current_has_image:
+            if not str(current_post.get("image") or "").strip() or not str(current_post.get("imageAlt") or "").strip():
+                return False, {}
+            if any(current_post.get(field) != historical_post.get(field) for field in image_fields):
+                return False, {}
+            refreshed_evidence = {
+                label: article_contract.exact_field(body, label) or ""
+                for label in article_contract.IMAGE_EVIDENCE_FIELDS
+            }
+            refreshed_evidence["Image Article SHA-256"] = article_contract.article_sha256(current_post)
+            refreshed_evidence["Image Evidence Head"] = current_head
+            refreshed_pr = dict(pr)
+            refreshed_pr["body"] = article_contract.replace_image_evidence(body, refreshed_evidence)
+            current_proven, _ = self._article_pr_image_proof(refreshed_pr, require_head=True)
+            if not current_proven:
+                return False, {}
+            return True, {**evidence, "recovery_mode": "refresh_prior_trusted_evidence"}
+
+        # Existing recovery path: normalization removed the image fields entirely,
+        # so the worker may reattach the exact historical artifact.
+        return True, {**evidence, "recovery_mode": "reattach_prior_trusted_artifact"}
 
     def active_image_run(self, pr_number: int) -> dict[str, Any] | None:
         expected = f"Kesher Image PR {pr_number}"
@@ -403,25 +557,23 @@ class V3Controller(core.Controller):
     def _tick(self, state: dict[str, Any]) -> core.Action:
         # Intercept the article-PR state because the base controller predates the
         # explicit image stage.
-        if self.article_slot_open():
-            posts = self.github.contents_json("src/data/posts.json", "main")
-            if not isinstance(posts, list):
-                raise core.ControllerError("ARTICLE_SOURCE_INVALID")
-            todays = core.today_articles(posts, self.now.date())
-            if not todays:
-                open_prs = self.github.open_article_prs(self.now.date().isoformat())
-                if len(open_prs) > 1:
-                    core.block(
-                        state,
-                        "article",
-                        "DUPLICATE_ARTICLE_PRS",
-                        f"{len(open_prs)} open article PRs modify posts.json",
-                    )
-                    return core.Action("blocked", "duplicate article PRs")
-                if len(open_prs) == 1:
-                    return self._handle_open_article_pr(state, open_prs[0])
+        posts = self.posts_on_main("main")
+        todays = self._reconcile_existing_current_day_article(state, posts)
+        if not todays and self.article_slot_open():
+            open_prs = self.github.open_article_prs(self.now.date().isoformat())
+            if len(open_prs) > 1:
+                core.block(
+                    state,
+                    "article",
+                    "DUPLICATE_ARTICLE_PRS",
+                    f"{len(open_prs)} open article PRs modify posts.json",
+                )
+                return core.Action("blocked", "duplicate article PRs")
+            if len(open_prs) == 1:
+                return self._handle_open_article_pr(state, open_prs[0])
 
-        original_dispatch = self.github.dispatch
+        has_dispatch = hasattr(self.github, "dispatch")
+        original_dispatch = getattr(self.github, "dispatch", None)
 
         def guarded_dispatch(workflow: str, inputs: dict[str, str] | None = None) -> None:
             if workflow == core.ARTICLE_WORKFLOW:
@@ -437,13 +589,18 @@ class V3Controller(core.Controller):
                         "ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED",
                         f"article deployment exhausted {MAX_STAGE_ATTEMPTS} recovery attempts",
                     )
-            original_dispatch(workflow, inputs)
+            if original_dispatch:
+                original_dispatch(workflow, inputs)
 
-        self.github.dispatch = guarded_dispatch  # type: ignore[method-assign]
+        if has_dispatch:
+            self.github.dispatch = guarded_dispatch  # type: ignore[method-assign]
         try:
             return super()._tick(state)
         finally:
-            self.github.dispatch = original_dispatch  # type: ignore[method-assign]
+            if has_dispatch:
+                self.github.dispatch = original_dispatch  # type: ignore[method-assign]
+            elif hasattr(self.github, "dispatch"):
+                delattr(self.github, "dispatch")
 
 
 # Patch the queue-aware entrypoint so image workflow completions are correlated
@@ -453,7 +610,7 @@ _original_adopt_latest = entry.adopt_latest_dispatched_children
 
 
 def v3_trigger_stage(workflow_name: str):
-    if workflow_name == IMAGE_WORKFLOW_NAME:
+    if workflow_name in {IMAGE_WORKFLOW_NAME, "Kesher Article Hero Image"}:
         return "image", IMAGE_WORKFLOW
     return _original_trigger_stage(workflow_name)
 
@@ -483,6 +640,8 @@ def v3_adopt_latest(github: Any, state: dict[str, Any] | None, cycle: str) -> bo
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     core.STATE_SCHEMA_VERSION = STATE_SCHEMA_VERSION
     core.GitHubClient = V3GitHubClient
     core.Controller = V3Controller

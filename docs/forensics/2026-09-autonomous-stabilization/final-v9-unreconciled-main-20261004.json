@@ -1,0 +1,135 @@
+{
+  "reconciled_main_sha": "7ae5b097e9be2dbe8e6287b1be9dfa2cdc9f6ac7",
+  "latest_observed_main_sha": "e79cccab32c046cc80a560ca43d0185b3b124f0b",
+  "commits": [
+    "e79cccab32c046cc80a560ca43d0185b3b124f0b feat: prepare Kesher for public ChatGPT plugin submission",
+    "55368ee35e9b13628cb20b0d98ca5b6481508c1d fix: inspect prior-day article PR state safely (#1042)"
+  ],
+  "paths": [
+    {
+      "status": "A",
+      "path": "chatgpt-plugin/assets/icon.svg",
+      "main_sha256": "31aaaeaa353ead4c9929ff4f7ba69a1b8abb0c0d2623588e3ca07d2dca151770"
+    },
+    {
+      "status": "A",
+      "path": "chatgpt-plugin/plugin.json",
+      "main_sha256": "7cea58ac10e1eaf6ddb1fcb53fe23c1aa9b66cc27ca5173212d88ae052c46adc"
+    },
+    {
+      "status": "A",
+      "path": "chatgpt-plugin/skills/calm-conversation-plan/SKILL.md",
+      "main_sha256": "4cbce13cb00c04a333ceb5926293df03c6acd9f1793a791f2ce54fd1fa2db044"
+    },
+    {
+      "status": "A",
+      "path": "chatgpt-plugin/skills/calm-conversation-plan/agents/openai.yaml",
+      "main_sha256": "cb888265352676a2f1f99cb61f66c9450f09e898f2f57d12480480d989747732"
+    },
+    {
+      "status": "A",
+      "path": "chatgpt-plugin/skills/choose-support-path/SKILL.md",
+      "main_sha256": "447c18a1482ad2defec2a97d49c29fa3f92bacacebfd905126e804ce21bde873"
+    },
+    {
+      "status": "A",
+      "path": "chatgpt-plugin/skills/choose-support-path/agents/openai.yaml",
+      "main_sha256": "c10a29eba73f8e7bf1033a725115a96cd00314b527ff8bf774c5afec9d3f3082"
+    },
+    {
+      "status": "A",
+      "path": "chatgpt-plugin/skills/mediation-prep/SKILL.md",
+      "main_sha256": "0961e438a01f977693c6f9b96d3877d57c7d0ed00f8a699b1fb59a5191478baf"
+    },
+    {
+      "status": "A",
+      "path": "chatgpt-plugin/skills/mediation-prep/agents/openai.yaml",
+      "main_sha256": "cc381fada2f596985fd2deeac1d30902ad0892bad5d04b417e3d6e47aba72bff"
+    },
+    {
+      "status": "A",
+      "path": "chatgpt-plugin/skills/parenting-routine-builder/SKILL.md",
+      "main_sha256": "18cadf59d784ff49217ee6283943ae4fa95e7196c329190fde7c3e06f94f1a9f"
+    },
+    {
+      "status": "A",
+      "path": "chatgpt-plugin/skills/parenting-routine-builder/agents/openai.yaml",
+      "main_sha256": "a06af903df9dbaf0ed3487f30809f0bf9da96762abe9095019c6ec9cae668213"
+    },
+    {
+      "status": "A",
+      "path": "docs/audits/chatgpt-plugin-submission-2026-10-04.md",
+      "main_sha256": "923255bfff60923aee2b57252e655510cf13155bddc66d2d734e1c2caaed419e"
+    },
+    {
+      "status": "M",
+      "path": "package.json",
+      "main_sha256": "e10875bd5d8469972488a1a8897537788acef49c03562245872a780ad801e250"
+    },
+    {
+      "status": "A",
+      "path": "scripts/build_chatgpt_plugin_zip.py",
+      "main_sha256": "209e2ad9d4f701d6641486450927a0c7da950392a5286f0754bcabb90d3ad7e3"
+    },
+    {
+      "status": "M",
+      "path": "scripts/jules_article_runner_v3.py",
+      "main_sha256": "c425e3d2cb06913960169b6fe618e082bc975f0dbf0b63c5068e1b6dcff8b531"
+    },
+    {
+      "status": "A",
+      "path": "scripts/validate-chatgpt-plugin.cjs",
+      "main_sha256": "e332a956d0b05ab741c8a43493c36ee9cc5efcf65a9fb696b8498b958069af4c"
+    },
+    {
+      "status": "M",
+      "path": "src/pages/Legal/PrivacyPolicy.tsx",
+      "main_sha256": "3a91f870d8b2e73ea218633b08c08945cf1b9153a6ca1db67db014eef9b66f74"
+    },
+    {
+      "status": "M",
+      "path": "src/pages/Legal/TermsOfUse.tsx",
+      "main_sha256": "78653e42071c0ff65d5c90a2402b3c5da9be990c6865c4de5ccf0599d950ef35"
+    },
+    {
+      "status": "M",
+      "path": "tests/test_jules_article_runner.py",
+      "main_sha256": "d541c542fd04b4c3f92ce6788222d1d2c8e06062b637d8323b156e373b47bd7a"
+    }
+  ],
+  "shortstat": "18 files changed, 703 insertions(+), 12 deletions(-)",
+  "patch_sha256": "e9fc136829e55b39618ac169084d19fd95477dc471fc01bfd30d2b8c6e71dba4",
+  "classification": "Outside permitted late content/request/generated-only reconciliation: production Jules runner, root execution/gate configuration, new plugin packaging/validator code and legal pages. Not applied; no new review or policy acceptance inferred.",
+  "prior_jules_runner_callchain_bindings": [
+    {
+      "workflow": ".github/workflows/ci.yml",
+      "role": "separate_infrastructure",
+      "reviewed_sha256": "9a55c5343577e0e7e134c1a6f6a3b10eda09ba9b70bb7d2a44c1af7d497f1e53"
+    },
+    {
+      "workflow": ".github/workflows/kesher-article-generation.yml",
+      "role": "retired",
+      "reviewed_sha256": "9a55c5343577e0e7e134c1a6f6a3b10eda09ba9b70bb7d2a44c1af7d497f1e53"
+    },
+    {
+      "workflow": ".github/workflows/kesher-article-worker.yml",
+      "role": "worker",
+      "reviewed_sha256": "9a55c5343577e0e7e134c1a6f6a3b10eda09ba9b70bb7d2a44c1af7d497f1e53"
+    },
+    {
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "role": "diagnostic",
+      "reviewed_sha256": "9a55c5343577e0e7e134c1a6f6a3b10eda09ba9b70bb7d2a44c1af7d497f1e53"
+    }
+  ],
+  "required_three_authoritative_paths_exact_latest_main": true,
+  "final_v9_created": false,
+  "push_performed": false,
+  "draft_pr_created": false,
+  "production_state_written": false,
+  "production_activated": false,
+  "public_completion_inferred": false,
+  "patch_path": "final-v9-unreconciled-main-20261004.patch.gz",
+  "compressed_patch_sha256": "f0b36e4f430fcbef21f1c5219851feb0432091a5e3c75b57050ed2d6d2eb5a74",
+  "compressed_patch_replays_exact_raw_diff": true
+}

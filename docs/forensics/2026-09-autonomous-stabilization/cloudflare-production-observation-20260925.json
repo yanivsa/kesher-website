@@ -1,0 +1,41 @@
+{
+  "observed_date": "2026-09-25",
+  "mode": "read-only",
+  "project_name": "kesher-website",
+  "project_id": "41773648-4870-407a-b868-5f05f2a2da57",
+  "production_branch": "main",
+  "production_domains": [
+    "kesher-website.pages.dev",
+    "kesher.saharoni.com",
+    "shira.saharoni.com"
+  ],
+  "canonical_deployment": {
+    "id": "09abc41c-27b5-4275-9e1d-becae26d6702",
+    "environment": "production",
+    "url": "https://09abc41c.kesher-website.pages.dev",
+    "aliases": [
+      "https://kesher.saharoni.com",
+      "https://shira.saharoni.com"
+    ],
+    "created_on": "2026-09-25T08:19:02.448319Z",
+    "stage": "deploy",
+    "stage_status": "success",
+    "stage_ended_on": "2026-09-25T08:19:03.983307Z",
+    "is_skipped": false,
+    "trigger_type": "ad_hoc",
+    "branch": "main",
+    "commit_hash": "a695babbcf7b5ec01fb6b08ab43094d9ae74ecd4",
+    "commit_dirty": true
+  },
+  "github_main_on_followup": "a695babbcf7b5ec01fb6b08ab43094d9ae74ecd4",
+  "evidence_scope": "Authenticated Cloudflare project/deployment metadata and GitHub ref GETs only; no build-byte, publication-manifest or A+B+C verification.",
+  "implications": [
+    "Use canonical_deployment identity, not just newest workflow success, for exact production observation.",
+    "Deployment metadata includes generated-working-tree dirty state; this alone neither proves nor disproves source/artifact integrity.",
+    "Preserve existing project/domain configuration; this stabilization does not require creating another Cloudflare project."
+  ],
+  "sources": [
+    "https://developers.cloudflare.com/api/resources/pages/subresources/projects/subresources/deployments/methods/create/",
+    "https://developers.cloudflare.com/workers/wrangler/commands/pages/"
+  ]
+}

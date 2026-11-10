@@ -1,0 +1,1942 @@
+{
+  "scope": "only independently reviewed final-v8 changes; capability sets preserved",
+  "changed_paths": [
+    ".github/workflows/ci.yml",
+    ".github/workflows/deploy.yml",
+    ".github/workflows/kesher-article-deploy.yml",
+    ".github/workflows/kesher-article-merge.yml",
+    ".github/workflows/kesher-article-validation.yml",
+    ".github/workflows/kesher-article-worker.yml",
+    ".github/workflows/kesher-content-controller.yml",
+    ".github/workflows/kesher-media-worker.yml",
+    "package.json",
+    "playwright.config.ts",
+    "public/llms-full.txt",
+    "scripts/kesher_runtime/media_worker.py",
+    "tests/automation-gates-controller-shim.cjs",
+    "tests/test_kesher_media_worker.py"
+  ],
+  "updates": [
+    {
+      "type": "definition",
+      "workflow": ".github/workflows/ci.yml",
+      "path": ".github/workflows/ci.yml",
+      "before": "6cd01365c4496db72036756ea09968b9a70cb0705d52465bbbb51b29d7da422c",
+      "after": "3bc325952133ddb59939716718523c82409de5341107cfc346c7ebd641b8ff91"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/ci.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "definition",
+      "workflow": ".github/workflows/deploy.yml",
+      "path": ".github/workflows/deploy.yml",
+      "before": "f1bdf24770da587a168f61ed28349f8fec79dde2f605b80830f102dc089a335c",
+      "after": "2cf607bf29d597dbced25678d32f27e618ab9b4861a528dda3bd1553b3e899f9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/deploy.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-daily-industry-benchmarking.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-daily-mobile-review.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-daily-seo-geo-review.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-nightly-site-fixes.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-weekly-content-review.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "definition",
+      "workflow": ".github/workflows/kesher-article-deploy.yml",
+      "path": ".github/workflows/kesher-article-deploy.yml",
+      "before": "ce8827fc0e69b0974283014441c19a2a19c4ade3e61999a49bcb142ca5680a62",
+      "after": "260c753ad9548b7e6be71182bae21069b4c24de95721434dcc5bd9721cd5f774"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-deploy.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "definition",
+      "workflow": ".github/workflows/kesher-article-merge.yml",
+      "path": ".github/workflows/kesher-article-merge.yml",
+      "before": "b1a763c8b643a550840b12ce853875623d9fc0f9e8e51351e15c92aecc3646f0",
+      "after": "aea529e3780995b99035392af45e5d0a230274127bf65823382ad7240fa1727e"
+    },
+    {
+      "type": "definition",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": ".github/workflows/kesher-article-validation.yml",
+      "before": "ab327b377354c81d23aeab272d8a3cbf50e89989f4cac384d78425fa2d13eabe",
+      "after": "0f24b13f929cb711df39710e5adb96794dbbed5f945641a6c4777f3fb3539342"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "definition",
+      "workflow": ".github/workflows/kesher-article-worker.yml",
+      "path": ".github/workflows/kesher-article-worker.yml",
+      "before": "dcd83edc990ab8c316661a73fde2338fdf6e2e811f174e1fba44789044dc8bae",
+      "after": "9237dedebd94325b2088998918cf1c170186e89c3483b7451ef9a620b728ed11"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-worker.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "definition",
+      "workflow": ".github/workflows/kesher-content-controller.yml",
+      "path": ".github/workflows/kesher-content-controller.yml",
+      "before": "befa18ed3ea3f37daa6c40e999f074273ef018f376ecaaa1d266d515eccaf089",
+      "after": "9e9f736fd1f1fc67ac6031aa18989b206cddb4a00adf7fd28efb3c1499b952ca"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-current-gifted-completion.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-daily-video.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-live-e2e-test.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "definition",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": ".github/workflows/kesher-media-worker.yml",
+      "before": "0b611c407895a115e2688cc483184594d27d6f8f1ae30038498821d82b1958a6",
+      "after": "ba4a58ce87592ef2e20233bd75c94b74ff5ad9e71bc39115609c7ca00aa27053"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "scripts/kesher_runtime/media_worker.py",
+      "before": "5754f0fc3d57514ef9c06077b88f0d3e92cf544dccc5582b7b60d904ed5f67ff",
+      "after": "7c342fa2120f3ead79f620183e1c6624e175c0d026409e40f11c9247403e3356"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-short-v4.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "scripts/kesher_runtime/media_worker.py",
+      "before": "5754f0fc3d57514ef9c06077b88f0d3e92cf544dccc5582b7b60d904ed5f67ff",
+      "after": "7c342fa2120f3ead79f620183e1c6624e175c0d026409e40f11c9247403e3356"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "tests/test_kesher_media_worker.py",
+      "before": "04eb1b9ef88964004204356edaff248237d7e76d4a090e16248f3b36f31b4de9",
+      "after": "5fab355b3a06889fa06ca4c249ab5f1853e0e540295b870871be520ecf19c328"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-video-evidence-repair.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/normalize-article-pr.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/repair-existing-article-heroes.yml",
+      "path": "package.json",
+      "before": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22",
+      "after": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379"
+    },
+    {
+      "type": "new_reviewed_dependency",
+      "workflow": ".github/workflows/kesher-content-controller.yml",
+      "path": "scripts/requirements-article.txt",
+      "after": "144b57ba6e3e980a627d1cbf04c6eede9bd8435d58c3fff8ecc9bdc76b911eac"
+    },
+    {
+      "type": "new_reviewed_dependency",
+      "workflow": ".github/workflows/kesher-article-merge.yml",
+      "path": "scripts/requirements-article.txt",
+      "after": "144b57ba6e3e980a627d1cbf04c6eede9bd8435d58c3fff8ecc9bdc76b911eac"
+    },
+    {
+      "type": "new_reviewed_dependency",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "scripts/requirements-article.txt",
+      "after": "144b57ba6e3e980a627d1cbf04c6eede9bd8435d58c3fff8ecc9bdc76b911eac"
+    },
+    {
+      "type": "new_reviewed_dependency",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "remotion-kesher/package.json",
+      "after": "3d5f0bb968dd34bb46f6abb03fa83dd91939fd768f0fd46d66be4558c7d61c4d"
+    },
+    {
+      "type": "new_reviewed_dependency",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "remotion-kesher/package-lock.json",
+      "after": "055b1708e3255442c84bdf5f27553059e5652a412a2d5d9f6966a95467d2de2c"
+    },
+    {
+      "type": "new_reviewed_dependency",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "remotion-kesher/src/KesherVideo.tsx",
+      "after": "f00672be16e10ba890f24adb282c9d8bc4843a18a2a7ed267aa6fe3912ed13f9"
+    },
+    {
+      "type": "new_reviewed_dependency",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "remotion-kesher/src/Root.tsx",
+      "after": "79ca213b77e2a58d0ba72c61830215de2501bd80617d93e0ac3414a709bcb8ed"
+    },
+    {
+      "type": "new_reviewed_dependency",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "remotion-kesher/src/index.ts",
+      "after": "5462d3268136731ce43bfd7c5072ea1ba48b51fec94fa30076f5044f4b39e4a2"
+    },
+    {
+      "type": "new_reviewed_dependency",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "remotion-kesher/package.json",
+      "after": "3d5f0bb968dd34bb46f6abb03fa83dd91939fd768f0fd46d66be4558c7d61c4d"
+    },
+    {
+      "type": "new_reviewed_dependency",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "remotion-kesher/package-lock.json",
+      "after": "055b1708e3255442c84bdf5f27553059e5652a412a2d5d9f6966a95467d2de2c"
+    },
+    {
+      "type": "new_reviewed_dependency",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "remotion-kesher/src/KesherVideo.tsx",
+      "after": "f00672be16e10ba890f24adb282c9d8bc4843a18a2a7ed267aa6fe3912ed13f9"
+    },
+    {
+      "type": "new_reviewed_dependency",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "remotion-kesher/src/Root.tsx",
+      "after": "79ca213b77e2a58d0ba72c61830215de2501bd80617d93e0ac3414a709bcb8ed"
+    },
+    {
+      "type": "new_reviewed_dependency",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "remotion-kesher/src/index.ts",
+      "after": "5462d3268136731ce43bfd7c5072ea1ba48b51fec94fa30076f5044f4b39e4a2"
+    },
+    {
+      "type": "new_reviewed_gate",
+      "workflow": ".github/workflows/ci.yml",
+      "path": "playwright.config.ts",
+      "after": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c"
+    },
+    {
+      "type": "new_reviewed_gate",
+      "workflow": ".github/workflows/ci.yml",
+      "path": "tests/automation-gates.test.cjs",
+      "after": "d35eb1b58dfff4ff536d13625bdd1ffe8ff2a90949d7e70bda359e22bdf503f0"
+    },
+    {
+      "type": "new_reviewed_gate",
+      "workflow": ".github/workflows/deploy.yml",
+      "path": "playwright.config.ts",
+      "after": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c"
+    },
+    {
+      "type": "new_reviewed_gate",
+      "workflow": ".github/workflows/deploy.yml",
+      "path": "tests/automation-gates.test.cjs",
+      "after": "d35eb1b58dfff4ff536d13625bdd1ffe8ff2a90949d7e70bda359e22bdf503f0"
+    },
+    {
+      "type": "new_reviewed_gate",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "playwright.config.ts",
+      "after": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c"
+    },
+    {
+      "type": "new_reviewed_gate",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "tests/automation-gates.test.cjs",
+      "after": "d35eb1b58dfff4ff536d13625bdd1ffe8ff2a90949d7e70bda359e22bdf503f0"
+    },
+    {
+      "type": "new_reviewed_gate",
+      "workflow": ".github/workflows/kesher-article-deploy.yml",
+      "path": "playwright.config.ts",
+      "after": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c"
+    },
+    {
+      "type": "new_reviewed_gate",
+      "workflow": ".github/workflows/kesher-article-deploy.yml",
+      "path": "tests/automation-gates.test.cjs",
+      "after": "d35eb1b58dfff4ff536d13625bdd1ffe8ff2a90949d7e70bda359e22bdf503f0"
+    }
+  ],
+  "followup_updates": [
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/ci.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/ci.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/ci.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/ci.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/ci.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/deploy.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/deploy.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/deploy.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/deploy.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/deploy.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-daily-industry-benchmarking.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/jules-daily-industry-benchmarking.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-daily-mobile-review.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/jules-daily-mobile-review.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-daily-seo-geo-review.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/jules-daily-seo-geo-review.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-nightly-site-fixes.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/jules-nightly-site-fixes.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-weekly-content-review.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/jules-weekly-content-review.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-deploy.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-deploy.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-deploy.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-deploy.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/kesher-article-deploy.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-merge.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-merge.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-merge.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-worker.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-worker.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-worker.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-worker.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/kesher-article-worker.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-backlog-media-recovery.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-backlog-media-recovery.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-content-controller-v6.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-content-controller-v6.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-content-controller-v6.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-content-controller.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-content-controller.yml",
+      "path": "scripts/kesher_runtime/controller.py",
+      "before": "0f1baff1b86b395e6707981e3bf41abcd7e3c4adc468fe26b9f9c560177cac30",
+      "after": "68085d20aca74ca5e254c47a485429a9a4ec3873904821cd0722568589d6b367"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-content-controller.yml",
+      "path": "scripts/kesher_runtime/media_audit.py",
+      "before": "9289d9384fb075c1dfb0096413478ac05372b50332771870216a9ec8a41cda10",
+      "after": "4d2affee1981ef26f098c209087ac8bcab00cc837883e0fe03e4bab789a1be67"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-content-controller.yml",
+      "path": "scripts/kesher_runtime/media_observer.py",
+      "before": "f225a50b4a495120b1b159e6005dd7ae0c7ec4ea0a7f6f4bdc217ea950ac9168",
+      "after": "3d4b1e761b3c77296f1fcb2b3ed1a57d04bd590ed68b5e963f22277b2a8d6b26"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-content-controller.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-content-controller.yml",
+      "path": "scripts/kesher_runtime/policy.py",
+      "before": "b342ab3d38522e94f394db7564f62af7934c3ce413664585a3b8044f2b1aed71",
+      "after": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-content-controller.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-current-gifted-completion.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-current-gifted-completion.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-current-gifted-completion.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/kesher-current-gifted-completion.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-daily-video.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-daily-video.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-daily-video.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/kesher-daily-video.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-final-attempt-fallback.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-final-attempt-fallback.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-gifted-direct-recovery.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-gifted-direct-recovery.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-live-e2e-test.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-live-e2e-test.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-live-e2e-test.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/kesher-live-e2e-test.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-master-supervisor.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-master-supervisor.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-master-supervisor.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "scripts/kesher_runtime/media_worker.py",
+      "before": "7c342fa2120f3ead79f620183e1c6624e175c0d026409e40f11c9247403e3356",
+      "after": "425a2affb2675c0bbcf5c0a050783090f7e01b72c89a182cea7c5548d6aa5958"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-short-v4.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-short-v4.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-short-v4.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-short-v4.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/kesher-short-v4.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "scripts/kesher_runtime/controller.py",
+      "before": "0f1baff1b86b395e6707981e3bf41abcd7e3c4adc468fe26b9f9c560177cac30",
+      "after": "68085d20aca74ca5e254c47a485429a9a4ec3873904821cd0722568589d6b367"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "scripts/kesher_runtime/media_audit.py",
+      "before": "9289d9384fb075c1dfb0096413478ac05372b50332771870216a9ec8a41cda10",
+      "after": "4d2affee1981ef26f098c209087ac8bcab00cc837883e0fe03e4bab789a1be67"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "scripts/kesher_runtime/media_observer.py",
+      "before": "f225a50b4a495120b1b159e6005dd7ae0c7ec4ea0a7f6f4bdc217ea950ac9168",
+      "after": "3d4b1e761b3c77296f1fcb2b3ed1a57d04bd590ed68b5e963f22277b2a8d6b26"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "scripts/kesher_runtime/media_worker.py",
+      "before": "7c342fa2120f3ead79f620183e1c6624e175c0d026409e40f11c9247403e3356",
+      "after": "425a2affb2675c0bbcf5c0a050783090f7e01b72c89a182cea7c5548d6aa5958"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "scripts/kesher_runtime/policy.py",
+      "before": "b342ab3d38522e94f394db7564f62af7934c3ce413664585a3b8044f2b1aed71",
+      "after": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "tests/test_article_image_contract.py",
+      "before": "3d9f7942f340623a44ed30f2faac1219915da35ccc8a8ea08fb116bbf7a5f077",
+      "after": "8c404a9f3258d12eae907021ab074c4d4eedfe5f20a32dfc762c61e0b0de0356"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "tests/test_kesher_media_audit.py",
+      "before": "595082695df8042630eaa92591ded87549309bc6258972519f0088903258c131",
+      "after": "5b68d12be4d0b81594eecc288de2abc17e266f705d9282f498a3cf5d919b3f47"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "tests/test_kesher_media_worker.py",
+      "before": "5fab355b3a06889fa06ca4c249ab5f1853e0e540295b870871be520ecf19c328",
+      "after": "7613436dcecdb4de8805cf256fc7e75e7bc43ca0219529499a0c075bd56bdc49"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-target-slug-regression-check.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-target-slug-regression-check.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-video-evidence-repair.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-video-evidence-repair.yml",
+      "path": "scripts/kesher_runtime/media_state.py",
+      "before": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+      "after": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-video-evidence-repair.yml",
+      "path": "scripts/kesher_runtime/provider.py",
+      "before": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21",
+      "after": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/kesher-video-evidence-repair.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/normalize-article-pr.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/normalize-article-pr.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/normalize-article-pr.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/repair-existing-article-heroes.yml",
+      "path": "package.json",
+      "before": "f75d3321e62df9d34a1a2159aa74865ff007f3729889e2e76acceb70da4b5379",
+      "after": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/repair-existing-article-heroes.yml",
+      "path": "scripts/kesher_article_contract.py",
+      "before": "7bf3d2a8134f75d04e264d8ce7c09614a444ff1c48399279d62e50d73c610ce0",
+      "after": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f"
+    },
+    {
+      "type": "new_reviewed_regression",
+      "workflow": ".github/workflows/repair-existing-article-heroes.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "after": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea"
+    }
+  ],
+  "final_changed_paths": [
+    ".github/workflows/ci.yml",
+    ".github/workflows/deploy.yml",
+    ".github/workflows/kesher-article-deploy.yml",
+    ".github/workflows/kesher-article-merge.yml",
+    ".github/workflows/kesher-article-validation.yml",
+    ".github/workflows/kesher-article-worker.yml",
+    ".github/workflows/kesher-content-controller.yml",
+    ".github/workflows/kesher-media-worker.yml",
+    "package.json",
+    "playwright.config.ts",
+    "public/llms-full.txt",
+    "scripts/kesher_article_contract.py",
+    "scripts/kesher_runtime/authority_policy.json",
+    "scripts/kesher_runtime/controller.py",
+    "scripts/kesher_runtime/media_audit.py",
+    "scripts/kesher_runtime/media_observer.py",
+    "scripts/kesher_runtime/media_state.py",
+    "scripts/kesher_runtime/media_worker.py",
+    "scripts/kesher_runtime/policy.py",
+    "scripts/kesher_runtime/provider.py",
+    "tests/automation-gates-controller-shim.cjs",
+    "tests/test_article_image_contract.py",
+    "tests/test_kesher_generation_attempts.py",
+    "tests/test_kesher_media_audit.py",
+    "tests/test_kesher_media_worker.py"
+  ],
+  "validation_correction_updates": [
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/ci.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/ci.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/ci.yml",
+      "path": "tests/test_media_provenance_contract.py",
+      "before": "a52ab3ee6a0c9c51c93def98572af5854c3e54adcff20337cbe7fea606d74889",
+      "after": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/deploy.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/deploy.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-daily-industry-benchmarking.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-daily-mobile-review.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-daily-seo-geo-review.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-nightly-site-fixes.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/jules-weekly-content-review.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "definition",
+      "workflow": ".github/workflows/kesher-article-deploy.yml",
+      "path": ".github/workflows/kesher-article-deploy.yml",
+      "before": "260c753ad9548b7e6be71182bae21069b4c24de95721434dcc5bd9721cd5f774",
+      "after": "388147d9c4d43b0347e1eb8fffd0e00280245ee745776481ea5da21ac9699bde"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-deploy.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-deploy.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "tests/test_media_provenance_contract.py",
+      "before": "a52ab3ee6a0c9c51c93def98572af5854c3e54adcff20337cbe7fea606d74889",
+      "after": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/ArticleShort.types.ts",
+      "after": "2d00a9949a1189c34641186325828585cab830aee4d8b35ffd4194d59e256963"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/index.ts",
+      "after": "957e481dd33a29b4a55ae0e95dbf763b7e48c37c427ca4bd1275faf34bc07a74"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/kesher-overview/theme.ts",
+      "after": "e538504fdedf07e753b21472e3010d4d0a6474d44a8f63af392f0bf50b05dc50"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/kesher-overview/types.ts",
+      "after": "fb8c9cbf959bfe834731d4677dd47aee86be0380def30f171d4fa6eff45ad208"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/ArticleShort.tsx",
+      "after": "5051ebef5ebabcb2bef064a1cc46900c7d120501466b51e7896505dc9fde7975"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/Root.tsx",
+      "after": "d1ae7b05f5e330837e037aecab11757f814940e95dde5525922114905fe6c101"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/components/EnhancementAssetOverlay.tsx",
+      "after": "1c66580f563a53c11818d8e084820909d334bafff2a6056a1206b63183cbc5f8"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/components/FullScreenSignatureOutro.tsx",
+      "after": "089b6d24b3ca274304cdb174329d9b60798209dbbfab6070caf74a38fea5c609"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/components/RemotionSignature.tsx",
+      "after": "0588c2dabce1c5ab2c35bccd6f62d69aa95d50db88e36ab2b354196b679a4bf6"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/kesher-overview/KesherOverview.tsx",
+      "after": "0d85fc16a1ab1764ae9c7934dbb8e3db9abcb7cf5a28058ea5ec9fef17a0b1b8"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/kesher-overview/VisualShell.tsx",
+      "after": "21c1c05d26bfeeca04d31866c66d6877be354e5cdbec413558d80818f64f0650"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/kesher-overview/scenes/ConnectionScene.tsx",
+      "after": "eabc242a790eb4e11f6a5ade399a91e80efbb0ea239da5189f36aba42827a967"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/kesher-overview/scenes/ConversationScene.tsx",
+      "after": "73b3bf8496096590cd66228a15f385be50effb440cda5c8ea380609e2e28adf5"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/kesher-overview/scenes/DefenseScene.tsx",
+      "after": "5a222ceb4c6eeec27811f868827b8f508b77430545bfbe9e2deee04446f1844f"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/kesher-overview/scenes/DistanceScene.tsx",
+      "after": "3e38437676418bde24744d058fd0a68b9245bfcc066719c31906e7df38dac208"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "src/remotion/kesher-overview/scenes/OpeningScene.tsx",
+      "after": "05129feede87996bbe43b21e632acee2b1f26a988f453bb0b5963377b2eb9b6b"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-worker.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-article-worker.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-backlog-media-recovery.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-content-controller-v6.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-content-controller-v6.yml",
+      "path": "tests/test_media_provenance_contract.py",
+      "before": "a52ab3ee6a0c9c51c93def98572af5854c3e54adcff20337cbe7fea606d74889",
+      "after": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-content-controller.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-current-gifted-completion.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-current-gifted-completion.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-daily-video.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-daily-video.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-daily-video.yml",
+      "path": "tests/test_media_provenance_contract.py",
+      "before": "a52ab3ee6a0c9c51c93def98572af5854c3e54adcff20337cbe7fea606d74889",
+      "after": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+      "path": "tests/test_media_provenance_contract.py",
+      "before": "a52ab3ee6a0c9c51c93def98572af5854c3e54adcff20337cbe7fea606d74889",
+      "after": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+      "path": "tests/test_media_provenance_contract.py",
+      "before": "a52ab3ee6a0c9c51c93def98572af5854c3e54adcff20337cbe7fea606d74889",
+      "after": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-final-attempt-fallback.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-gifted-direct-recovery.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "path": "tests/test_media_provenance_contract.py",
+      "before": "a52ab3ee6a0c9c51c93def98572af5854c3e54adcff20337cbe7fea606d74889",
+      "after": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-live-e2e-test.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-live-e2e-test.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "definition",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": ".github/workflows/kesher-media-worker.yml",
+      "before": "ba4a58ce87592ef2e20233bd75c94b74ff5ad9e71bc39115609c7ca00aa27053",
+      "after": "b37106a4db49917614fc9701a3adcb1258bc2d08519d936cd2f4bd9cf6a3f0c4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/ArticleShort.types.ts",
+      "after": "2d00a9949a1189c34641186325828585cab830aee4d8b35ffd4194d59e256963"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/index.ts",
+      "after": "957e481dd33a29b4a55ae0e95dbf763b7e48c37c427ca4bd1275faf34bc07a74"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/kesher-overview/theme.ts",
+      "after": "e538504fdedf07e753b21472e3010d4d0a6474d44a8f63af392f0bf50b05dc50"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/kesher-overview/types.ts",
+      "after": "fb8c9cbf959bfe834731d4677dd47aee86be0380def30f171d4fa6eff45ad208"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/ArticleShort.tsx",
+      "after": "5051ebef5ebabcb2bef064a1cc46900c7d120501466b51e7896505dc9fde7975"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/Root.tsx",
+      "after": "d1ae7b05f5e330837e037aecab11757f814940e95dde5525922114905fe6c101"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/components/EnhancementAssetOverlay.tsx",
+      "after": "1c66580f563a53c11818d8e084820909d334bafff2a6056a1206b63183cbc5f8"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/components/FullScreenSignatureOutro.tsx",
+      "after": "089b6d24b3ca274304cdb174329d9b60798209dbbfab6070caf74a38fea5c609"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/components/RemotionSignature.tsx",
+      "after": "0588c2dabce1c5ab2c35bccd6f62d69aa95d50db88e36ab2b354196b679a4bf6"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/kesher-overview/KesherOverview.tsx",
+      "after": "0d85fc16a1ab1764ae9c7934dbb8e3db9abcb7cf5a28058ea5ec9fef17a0b1b8"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/kesher-overview/VisualShell.tsx",
+      "after": "21c1c05d26bfeeca04d31866c66d6877be354e5cdbec413558d80818f64f0650"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/kesher-overview/scenes/ConnectionScene.tsx",
+      "after": "eabc242a790eb4e11f6a5ade399a91e80efbb0ea239da5189f36aba42827a967"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/kesher-overview/scenes/ConversationScene.tsx",
+      "after": "73b3bf8496096590cd66228a15f385be50effb440cda5c8ea380609e2e28adf5"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/kesher-overview/scenes/DefenseScene.tsx",
+      "after": "5a222ceb4c6eeec27811f868827b8f508b77430545bfbe9e2deee04446f1844f"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/kesher-overview/scenes/DistanceScene.tsx",
+      "after": "3e38437676418bde24744d058fd0a68b9245bfcc066719c31906e7df38dac208"
+    },
+    {
+      "type": "reviewed_existing_production_renderer",
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "src/remotion/kesher-overview/scenes/OpeningScene.tsx",
+      "after": "05129feede87996bbe43b21e632acee2b1f26a988f453bb0b5963377b2eb9b6b"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+      "path": "tests/test_media_provenance_contract.py",
+      "before": "a52ab3ee6a0c9c51c93def98572af5854c3e54adcff20337cbe7fea606d74889",
+      "after": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-short-v4.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-short-v4.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-short-v4.yml",
+      "path": "tests/test_media_provenance_contract.py",
+      "before": "a52ab3ee6a0c9c51c93def98572af5854c3e54adcff20337cbe7fea606d74889",
+      "after": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "tests/test_media_provenance_contract.py",
+      "before": "a52ab3ee6a0c9c51c93def98572af5854c3e54adcff20337cbe7fea606d74889",
+      "after": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-target-slug-regression-check.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-video-evidence-repair.yml",
+      "path": "scripts/kesher_short_pipeline_v4.py",
+      "before": "463cf4b7d8ba7327c628027d8a2d25469dfba7e87f33ef9acd6ae2d0f02ba463",
+      "after": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/kesher-video-evidence-repair.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/normalize-article-pr.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    },
+    {
+      "type": "call_chain",
+      "workflow": ".github/workflows/repair-existing-article-heroes.yml",
+      "path": "tests/test_kesher_generation_attempts.py",
+      "before": "68b4d4769848f617b1dbd01000c3931ab8a6e4c0ec01d7c495b53c6247ef61ea",
+      "after": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+    }
+  ],
+  "final_whitespace_updates": [
+    {
+      "workflow": ".github/workflows/kesher-article-merge.yml",
+      "path": "scripts/kesher_runtime/article_quiescence.py",
+      "before": "0750fac4fee1341273ce0bf3c8ef8dda864c9e062eee03c70d1c732dc578b71c",
+      "after": "e7a2bc24c5fbc7346be96c313809f11d9632bca770238adf9208a39143bd68df",
+      "reason": "only remove extra blank line at EOF; AST byte-independent equality verified"
+    },
+    {
+      "workflow": ".github/workflows/kesher-article-worker.yml",
+      "path": "scripts/kesher_runtime/article_quiescence.py",
+      "before": "0750fac4fee1341273ce0bf3c8ef8dda864c9e062eee03c70d1c732dc578b71c",
+      "after": "e7a2bc24c5fbc7346be96c313809f11d9632bca770238adf9208a39143bd68df",
+      "reason": "only remove extra blank line at EOF; AST byte-independent equality verified"
+    },
+    {
+      "workflow": ".github/workflows/kesher-content-controller.yml",
+      "path": "scripts/kesher_runtime/article_quiescence.py",
+      "before": "0750fac4fee1341273ce0bf3c8ef8dda864c9e062eee03c70d1c732dc578b71c",
+      "after": "e7a2bc24c5fbc7346be96c313809f11d9632bca770238adf9208a39143bd68df",
+      "reason": "only remove extra blank line at EOF; AST byte-independent equality verified"
+    },
+    {
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "scripts/kesher_runtime/article_quiescence.py",
+      "before": "0750fac4fee1341273ce0bf3c8ef8dda864c9e062eee03c70d1c732dc578b71c",
+      "after": "e7a2bc24c5fbc7346be96c313809f11d9632bca770238adf9208a39143bd68df",
+      "reason": "only remove extra blank line at EOF; AST byte-independent equality verified"
+    }
+  ],
+  "bounded_main_updates": [
+    {
+      "type": "bounded_main_read_reconciliation",
+      "workflow": ".github/workflows/ci.yml",
+      "path": "scripts/kesher_content_controller.py",
+      "before": "13f9577a3e82519663064dda31c985367c30c90106aaf410b3aa3361e203c10b",
+      "after": "5471b3d7ca5e2bc276d21c77fcddc1d8949f581991e3a34fef520a9428cbfe78",
+      "review": "exact main contents_json function and regression preserved; no capability, mutator, CAS or downgrade scope change"
+    },
+    {
+      "type": "bounded_main_read_reconciliation",
+      "workflow": ".github/workflows/kesher-content-controller-v6.yml",
+      "path": "scripts/kesher_content_controller.py",
+      "before": "13f9577a3e82519663064dda31c985367c30c90106aaf410b3aa3361e203c10b",
+      "after": "5471b3d7ca5e2bc276d21c77fcddc1d8949f581991e3a34fef520a9428cbfe78",
+      "review": "exact main contents_json function and regression preserved; no capability, mutator, CAS or downgrade scope change"
+    },
+    {
+      "type": "bounded_main_read_reconciliation",
+      "workflow": ".github/workflows/kesher-content-controller.yml",
+      "path": "scripts/kesher_content_controller.py",
+      "before": "13f9577a3e82519663064dda31c985367c30c90106aaf410b3aa3361e203c10b",
+      "after": "5471b3d7ca5e2bc276d21c77fcddc1d8949f581991e3a34fef520a9428cbfe78",
+      "review": "exact main contents_json function and regression preserved; no capability, mutator, CAS or downgrade scope change"
+    },
+    {
+      "type": "bounded_main_read_reconciliation",
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "path": "scripts/kesher_content_controller.py",
+      "before": "13f9577a3e82519663064dda31c985367c30c90106aaf410b3aa3361e203c10b",
+      "after": "5471b3d7ca5e2bc276d21c77fcddc1d8949f581991e3a34fef520a9428cbfe78",
+      "review": "exact main contents_json function and regression preserved; no capability, mutator, CAS or downgrade scope change"
+    },
+    {
+      "type": "bounded_main_read_reconciliation",
+      "workflow": ".github/workflows/kesher-master-supervisor.yml",
+      "path": "scripts/kesher_content_controller.py",
+      "before": "13f9577a3e82519663064dda31c985367c30c90106aaf410b3aa3361e203c10b",
+      "after": "5471b3d7ca5e2bc276d21c77fcddc1d8949f581991e3a34fef520a9428cbfe78",
+      "review": "exact main contents_json function and regression preserved; no capability, mutator, CAS or downgrade scope change"
+    },
+    {
+      "type": "bounded_main_read_reconciliation",
+      "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+      "path": "scripts/kesher_content_controller.py",
+      "before": "13f9577a3e82519663064dda31c985367c30c90106aaf410b3aa3361e203c10b",
+      "after": "5471b3d7ca5e2bc276d21c77fcddc1d8949f581991e3a34fef520a9428cbfe78",
+      "review": "exact main contents_json function and regression preserved; no capability, mutator, CAS or downgrade scope change"
+    },
+    {
+      "type": "bounded_main_read_reconciliation",
+      "workflow": ".github/workflows/kesher-short-v4.yml",
+      "path": "scripts/kesher_content_controller.py",
+      "before": "13f9577a3e82519663064dda31c985367c30c90106aaf410b3aa3361e203c10b",
+      "after": "5471b3d7ca5e2bc276d21c77fcddc1d8949f581991e3a34fef520a9428cbfe78",
+      "review": "exact main contents_json function and regression preserved; no capability, mutator, CAS or downgrade scope change"
+    },
+    {
+      "type": "bounded_main_read_reconciliation",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "scripts/kesher_content_controller.py",
+      "before": "13f9577a3e82519663064dda31c985367c30c90106aaf410b3aa3361e203c10b",
+      "after": "5471b3d7ca5e2bc276d21c77fcddc1d8949f581991e3a34fef520a9428cbfe78",
+      "review": "exact main contents_json function and regression preserved; no capability, mutator, CAS or downgrade scope change"
+    },
+    {
+      "type": "bounded_main_read_reconciliation",
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "tests/test_kesher_content_controller.py",
+      "before": "a1d17c3a7c9e0442a5c953ad8609c4802aaf4b738c8367ae2bffff75e73da6f5",
+      "after": "5f51efabb2d5f736084bcdca14220c301b4c7e10439471130dcbf22b2be39cf2",
+      "review": "exact main contents_json function and regression preserved; no capability, mutator, CAS or downgrade scope change"
+    }
+  ]
+}

@@ -12,6 +12,10 @@ from __future__ import annotations
 
 import argparse
 import base64
+import copy
+import hashlib
+import html
+from html.parser import HTMLParser
 import io
 import json
 import os
@@ -48,6 +52,7 @@ ACTIVE_VIDEO_STATUSES = {
     "pending_review", "approved", "uploading",
 }
 MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF = 3
+MAX_DEPLOY_ATTEMPTS = 5
 MAX_VIDEO_START_ATTEMPTS_BEFORE_LONG_BACKOFF = 4
 ISRAEL_TZ = ZoneInfo("Asia/Jerusalem")
 HEBCAL_ASHDOD_URL = (
@@ -82,32 +87,321 @@ def parse_timestamp(value: Any) -> datetime | None:
     return parsed.astimezone(timezone.utc)
 
 
+REVIEWED_ADOPTABLE_POST_FREEZE_IDENTITIES: frozenset[tuple[str, str, str]] = frozenset({
+    (
+        "2026-10-06",
+        "child-meltdown-after-school",
+        "4f5b0dfa23a56b7088fd332cc3f538a6d0bca9b1e7c09b601d43ec6e8d464e9a",
+    ),
+    (
+        "2026-10-09",
+        "how-to-repair-after-couple-fight",
+        "317b282607c03c6183ca4d7cd1791c2aa4c2f9bb6b6f5832e0227c413ef5121a",
+    ),
+    (
+        "2026-10-10",
+        "child-argues-every-request-boundaries",
+        "e0594f772f3f11baacc0ae5c53b7ef9ce9f88f871ee3b6e8c8f67b024b8b8bbc",
+    ),
+    (
+        "2026-10-12",
+        "relocation-loneliness-accompanying-partner",
+        "93bd8eb7d057faf9ede979e86c891504604c80766287f170b011f05065bd326c",
+    ),
+    (
+        "2026-10-13",
+        "when-everyone-around-you-gets-married",
+        "667857b17833c378ca3a8f4614b8934c04744d201a53761b781b331b921125e3",
+    ),
+})
+REVIEWED_AMBIGUOUS_POST_FREEZE_DATES: frozenset[str] = frozenset({
+    "2026-10-04",
+    "2026-10-07",
+    "2026-10-08",
+})
+
+
+class _CatalogTextExtractor(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.parts: list[str] = []
+
+    def handle_data(self, data: str) -> None:
+        value = re.sub(r"\s+", " ", data).strip()
+        if value:
+            self.parts.append(value)
+
+
+def _clean_catalog_html(value: str) -> str:
+    parser = _CatalogTextExtractor()
+    parser.feed(value)
+    return html.unescape("\n\n".join(parser.parts))
+
+
 def canonical_slug(post: dict[str, Any]) -> str:
     return str(post.get("slug") or post.get("id") or "").strip()
 
 
-def today_articles(posts: list[dict[str, Any]], day: date) -> list[dict[str, Any]]:
+def _post_source_sha256(post: dict[str, Any]) -> str:
+    slug = canonical_slug(post)
+    title = str(post.get("title") or "").strip()
+    excerpt_raw = str(post.get("excerpt") or "").strip()
+    content_raw = str(post.get("content") or "").strip()
+    if slug and title and excerpt_raw and content_raw:
+        excerpt = _clean_catalog_html(excerpt_raw)
+        article_text = _clean_catalog_html(content_raw)
+        canonical_url = f"{SITE_URL}/blog/{slug}"
+        body = "\n\n".join(part for part in (title, excerpt, article_text, f"מקור: {canonical_url}") if part)
+        return hashlib.sha256(body.encode("utf-8")).hexdigest()
+    explicit = str(post.get("content_sha256") or "").strip()
+    if explicit:
+        return explicit
+    if content_raw:
+        return hashlib.sha256(" ".join(content_raw.split()).encode("utf-8")).hexdigest()
+    return ""
+
+
+def is_controller_adoptable_post(
+    post: dict[str, Any],
+    *,
+    state_slug: str = "",
+    state_content_sha256: str = "",
+) -> bool:
+    """Return True if a post is owned/adoptable by the autonomous daily controller.
+
+    Editorial/manual posts with `controllerManaged: false` remain excluded by
+    default across both catalogs. Only an exact state-disambiguated identity or
+    an exact immutable `(date, slug, content_sha256)` entry in
+    `REVIEWED_ADOPTABLE_POST_FREEZE_IDENTITIES` may be adopted.
+    """
+    if not isinstance(post, dict):
+        return False
+    slug = canonical_slug(post)
+    post_date = str(post.get("date") or "").strip()
+    if not slug or not post_date:
+        return False
+    if post.get("controllerManaged") is not False:
+        return True
+    sha = _post_source_sha256(post)
+    if state_slug and state_content_sha256 and slug == state_slug and sha == state_content_sha256:
+        return True
+    return (post_date, slug, sha) in REVIEWED_ADOPTABLE_POST_FREEZE_IDENTITIES
+
+
+def today_articles(
+    posts: list[dict[str, Any]],
+    day: date,
+    *,
+    state_slug: str = "",
+    state_content_sha256: str = "",
+) -> list[dict[str, Any]]:
     """Return same-day articles owned by the autonomous daily controller.
 
     Editorial/manual publications may legitimately share the same public date as
     the daily autonomous article. Such posts opt out explicitly with
     `controllerManaged: false`, so the controller's one-article-per-cycle
-    invariant applies only to controller-managed publications.
+    invariant applies only to controller-managed or explicitly reviewed
+    post-freeze recovery publications.
     """
     expected = day.isoformat()
     return [
         post for post in posts
         if isinstance(post, dict)
-        and post.get("controllerManaged") is not False
         and str(post.get("date") or "").strip() == expected
-        and canonical_slug(post)
+        and is_controller_adoptable_post(
+            post,
+            state_slug=state_slug,
+            state_content_sha256=state_content_sha256,
+        )
     ]
 
 
-def article_is_public(html_text: str, expected_title: str) -> bool:
+def merge_catalog_posts(primary: Any, secondary: Any = None) -> list[dict[str, Any]]:
+    """Combine posts.json and postsRecent.json into one logical catalog deduplicated by canonical slug/id.
+
+    Never rewrites `controllerManaged: false` on any post.
+    """
+    primary_list = [p for p in primary if isinstance(p, dict)] if isinstance(primary, list) else []
+    secondary_list = [p for p in secondary if isinstance(p, dict)] if isinstance(secondary, list) else []
+
+    rows: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for catalog in (primary_list, secondary_list):
+        for post in catalog:
+            key = canonical_slug(post)
+            if key:
+                if key in seen:
+                    continue
+                seen.add(key)
+            rows.append(copy.deepcopy(post))
+    return rows
+
+
+def _validate_catalog_post_list(raw: Any, catalog_name: str) -> list[dict[str, Any]]:
+    if not isinstance(raw, list):
+        raise ControllerError(
+            f"ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE: {catalog_name} is not a JSON list"
+        )
+    validated: list[dict[str, Any]] = []
+    seen_in_catalog: set[str] = set()
+    for idx, item in enumerate(raw):
+        if not isinstance(item, dict):
+            raise ControllerError(
+                f"ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE: {catalog_name}[{idx}] is not an object"
+            )
+        slug = canonical_slug(item)
+        if not slug:
+            raise ControllerError(
+                f"ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE: {catalog_name}[{idx}] missing canonical slug/id"
+            )
+        raw_date = str(item.get("date") or "").strip()
+        try:
+            date.fromisoformat(raw_date)
+        except ValueError as exc:
+            raise ControllerError(
+                f"ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE: {catalog_name}[{idx}] invalid date {raw_date!r}"
+            ) from exc
+        if slug in seen_in_catalog:
+            raise ControllerError(
+                f"ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE: duplicate slug {slug!r} in {catalog_name}"
+            )
+        seen_in_catalog.add(slug)
+        validated.append(item)
+    return validated
+
+
+def posts_on_main(github: Any, ref: str = "main") -> list[dict[str, Any]]:
+    """Read unified publication catalog from posts.json and postsRecent.json (fail-closed)."""
+    try:
+        posts_raw = github.contents_json("src/data/posts.json", ref)
+        recent_raw = github.contents_json("src/data/postsRecent.json", ref)
+    except Exception as exc:
+        if isinstance(exc, ControllerError) and str(exc).startswith("ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE"):
+            raise
+        raise ControllerError(
+            f"ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE: failed reading unified catalog at {ref}: {exc}"
+        ) from exc
+
+    posts = _validate_catalog_post_list(posts_raw, "src/data/posts.json")
+    recent = _validate_catalog_post_list(recent_raw, "src/data/postsRecent.json")
+    primary_slugs = {canonical_slug(p) for p in posts}
+    recent_slugs = {canonical_slug(p) for p in recent}
+    overlap = sorted(primary_slugs & recent_slugs)
+    if overlap:
+        raise ControllerError(
+            f"ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE: duplicate slug(s) across posts.json and postsRecent.json: {', '.join(overlap)}"
+        )
+    return merge_catalog_posts(posts, recent)
+
+
+def article_is_public(
+    html_text: str,
+    expected_title: str,
+    expected_slug: str | None = None,
+    expected_content_sha256: str | None = None,
+    expected_hero_path: str | None = None,
+    expected_hero_sha256: str | None = None,
+    hero_fetcher: Any | None = None,
+) -> bool:
     page = re.sub(r"\s+", " ", html_text)
     title = re.sub(r"\s+", " ", expected_title.strip())
-    return bool(title) and title in page
+    if not title or title not in page:
+        return False
+
+    if expected_slug:
+        slug = expected_slug.strip()
+        expected_url = f"{SITE_URL}/blog/{slug}".rstrip("/")
+        canonical_match = re.search(
+            r'<link[^>]+rel=["\']canonical["\'][^>]+href=["\']([^"\']+)["\']|<link[^>]+href=["\']([^"\']+)["\'][^>]+rel=["\']canonical["\']',
+            html_text,
+            re.IGNORECASE,
+        )
+        if not canonical_match:
+            return False
+        canonical_url = (canonical_match.group(1) or canonical_match.group(2) or "").strip()
+        if not canonical_url or canonical_url.rstrip("/") != expected_url:
+            return False
+
+        og_match = re.search(
+            r'<meta[^>]+property=["\']og:url["\'][^>]+content=["\']([^"\']+)["\']|<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:url["\']',
+            html_text,
+            re.IGNORECASE,
+        )
+        if og_match:
+            og_url = (og_match.group(1) or og_match.group(2) or "").strip()
+            if not og_url or og_url.rstrip("/") != expected_url:
+                return False
+
+    if expected_content_sha256:
+        expected_sha = expected_content_sha256.strip().lower()
+        meta_sha_match = re.search(
+            r'<meta[^>]+(?:name|property)=["\'](?:kesher:content-sha256|content-sha256)["\'][^>]+content=["\']([^"\']+)["\']|<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:name|property)=["\'](?:kesher:content-sha256|content-sha256)["\']',
+            html_text,
+            re.IGNORECASE,
+        )
+        meta_sha = ""
+        if meta_sha_match:
+            meta_sha = (meta_sha_match.group(1) or meta_sha_match.group(2) or "").strip().lower()
+
+        data_sha_match = re.search(
+            r'data-content-sha256=["\']([^"\']+)["\']',
+            html_text,
+            re.IGNORECASE,
+        )
+        data_sha = data_sha_match.group(1).strip().lower() if data_sha_match else ""
+        observed_shas = [value for value in (meta_sha, data_sha) if value]
+        if not observed_shas or any(value != expected_sha for value in observed_shas):
+            return False
+
+    if expected_hero_path:
+        hero = expected_hero_path.strip()
+        if hero not in html_text:
+            return False
+        og_img_match = re.search(
+            r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']|<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
+            html_text,
+            re.IGNORECASE,
+        )
+        if og_img_match:
+            og_img = (og_img_match.group(1) or og_img_match.group(2) or "").strip()
+            if hero not in og_img:
+                return False
+
+        if expected_hero_sha256:
+            expected_h_sha = expected_hero_sha256.strip().lower()
+            hero_url = hero if hero.startswith(("http://", "https://")) else f"{SITE_URL}/{hero.lstrip('/')}"
+            try:
+                if hero_fetcher is not None:
+                    if callable(hero_fetcher):
+                        fetch_res = hero_fetcher(hero_url)
+                    elif hasattr(hero_fetcher, "get_bytes"):
+                        fetch_res = hero_fetcher.get_bytes(hero_url)
+                    elif hasattr(hero_fetcher, "get"):
+                        fetch_res = hero_fetcher.get(hero_url)
+                    else:
+                        return False
+                    if isinstance(fetch_res, tuple) and len(fetch_res) == 2:
+                        status, data = fetch_res
+                    else:
+                        status, data = 200, fetch_res
+                    hero_bytes = data.encode("utf-8") if isinstance(data, str) else data
+                else:
+                    req = urllib.request.Request(
+                        hero_url,
+                        headers={"User-Agent": "Kesher-Content-Controller/2.0"},
+                    )
+                    with urllib.request.urlopen(req, timeout=30) as resp:
+                        status = int(resp.status)
+                        hero_bytes = resp.read()
+                if status != 200 or not hero_bytes:
+                    return False
+                actual_h_sha = hashlib.sha256(hero_bytes).hexdigest().lower()
+                if actual_h_sha != expected_h_sha:
+                    return False
+            except Exception:
+                return False
+
+    return True
 
 
 def verified_youtube_item(item: dict[str, Any], slug: str) -> bool:
@@ -166,15 +460,69 @@ def new_cycle_state(day: date, old: dict[str, Any] | None = None) -> dict[str, A
     backlog = list((old or {}).get("backlog") or [])
     if isinstance(old, dict) and old.get("cycle") and old.get("cycle") != day.isoformat():
         prev_article = old.get("article") if isinstance(old.get("article"), dict) else {}
+        prev_long = old.get("long_video") if isinstance(old.get("long_video"), dict) else (old.get("video") if isinstance(old.get("video"), dict) else {})
+        prev_short = old.get("short") if isinstance(old.get("short"), dict) else {}
         prev_status = str(old.get("status") or "")
-        # If previous cycle ended without completing the article (and had an open PR or active session/attempts)
-        if prev_status not in {"complete", "article_live"} and (
-            prev_article.get("pr_number") or prev_article.get("last_jules_session_id") or int(prev_article.get("attempts") or 0) > 0
-        ):
+
+        article_delivered = bool(
+            prev_article.get("public") is True
+            or prev_article.get("live") is True
+            or prev_article.get("status") in {"verified", "published"}
+        )
+        long_delivered = bool(
+            prev_long.get("public") is True
+            or bool(prev_long.get("youtube_id"))
+            or prev_long.get("status") == "completed"
+        )
+        short_delivered = bool(
+            prev_short.get("public") is True
+            or bool(prev_short.get("youtube_id"))
+            or prev_short.get("status") == "completed"
+        )
+        full_delivered = bool(
+            prev_status == "complete"
+            and article_delivered
+            and long_delivered
+            and short_delivered
+        )
+
+        has_prior_activity = bool(
+            prev_article.get("slug")
+            or prev_article.get("pr_number")
+            or prev_article.get("last_jules_session_id")
+            or int(prev_article.get("attempts") or 0) > 0
+            or prev_status in {"article_live", "blocked", "video_needed", "long_video_needed", "short_needed", "exhausted"}
+            or prev_long.get("run_id")
+            or prev_short.get("run_id")
+        )
+
+        # A prior cycle may be omitted from backlog ONLY when the complete required contract is proven:
+        # Article public exact identity AND Long public exact identity AND Short public exact identity.
+        if not full_delivered and has_prior_activity:
             backlog.append({
                 "cycle": old.get("cycle"),
                 "status": prev_status,
-                "article": prev_article,
+                "exact_slug": prev_article.get("slug"),
+                "content_sha256": prev_article.get("content_sha256"),
+                "article": copy.deepcopy(prev_article),
+                "long_video": copy.deepcopy(prev_long),
+                "short": copy.deepcopy(prev_short),
+                "media_identities": {
+                    "long_video_id": prev_long.get("youtube_id"),
+                    "short_video_id": prev_short.get("youtube_id"),
+                },
+                "counters": {
+                    "article_attempts": prev_article.get("attempts", 0),
+                    "article_generation_attempts": prev_article.get("generation_attempts", 0),
+                    "merge_dispatch_count": prev_article.get("merge_dispatch_count", 0),
+                    "deploy_attempts": prev_article.get("deploy_attempts", 0),
+                    "long_attempts": prev_long.get("attempts", 0),
+                    "short_attempts": prev_short.get("attempts", 0),
+                },
+                "terminal_state": {
+                    "blocked": prev_status == "blocked",
+                    "article_exhausted": prev_article.get("status") == "exhausted",
+                },
                 "archived_at": utc_now(),
             })
     return {
@@ -225,7 +573,26 @@ def migrate_same_cycle_state(existing: dict[str, Any], day: date) -> dict[str, A
     return migrated
 
 
+def has_unresolved_media_blocker(state: dict[str, Any]) -> bool:
+    """Return True if an unresolved authoritative media blocker controls global state."""
+    last_error = state.get("last_error") or {}
+    stage = str(last_error.get("stage") or "")
+    if stage in {"long_video", "short", "video", "media", "image"} and state.get("status") == "blocked":
+        return True
+    for stage_key in ("long_video", "short", "video", "image"):
+        stage_state = state.get(stage_key) or {}
+        if isinstance(stage_state, dict) and stage_state.get("status") in {"blocked", "exhausted"}:
+            return True
+    return False
+
+
 def transition(state: dict[str, Any], status: str, reason: str, **details: Any) -> None:
+    if has_unresolved_media_blocker(state) and status in {
+        "article_live", "complete", "waiting_for_article_window", "article_deploying", "article_generating"
+    }:
+        state["updated_at"] = utc_now()
+        return
+
     previous = state.get("status")
     if previous != status or details:
         event: dict[str, Any] = {
@@ -338,6 +705,9 @@ class GitHubClient:
         self.repo = repo
         self.token = token
         self.api = f"https://api.github.com/repos/{repo}"
+        self._controller_state_loaded = False
+        self._controller_state_sha: str | None = None
+        self._controller_state_document: dict[str, Any] | None = None
 
     def request(
         self,
@@ -348,9 +718,14 @@ class GitHubClient:
         raw: bool = False,
         allow_404: bool = False,
     ) -> Any:
+        from scripts.kesher_runtime.legacy_retirement import github_mutation
+        github_mutation(self.repo, method, url)
         data = None if body is None else json.dumps(body, ensure_ascii=False).encode("utf-8")
         last: Exception | None = None
-        for attempt in range(4):
+        # A lost response to a mutation does not prove the server rejected it.
+        # The command owner must reconcile before retrying a dispatch/write.
+        read_only = method.upper() in {"GET", "HEAD"}
+        for attempt in range(4 if read_only else 1):
             request = urllib.request.Request(
                 url, data=data, method=method,
                 headers={
@@ -374,8 +749,16 @@ class GitHubClient:
                     raise ControllerError(
                         f"GITHUB_HTTP_{exc.code}: {method} {url} failed: {detail}"
                     ) from exc
+                if not read_only:
+                    raise ControllerError(
+                        f"GITHUB_MUTATION_UNCERTAIN: {method} {url} HTTP {exc.code}; reconcile before retry"
+                    ) from exc
                 last = exc
-            except urllib.error.URLError as exc:
+            except (urllib.error.URLError, TimeoutError, ConnectionError) as exc:
+                if not read_only:
+                    raise ControllerError(
+                        f"GITHUB_MUTATION_UNCERTAIN: {method} {url}; reconcile before retry"
+                    ) from exc
                 last = exc
             time.sleep(2 ** attempt)
         raise ControllerError(f"GITHUB_TRANSIENT_FAILURE: {method} {url}: {last}")
@@ -465,6 +848,9 @@ class GitHubClient:
         except (UnicodeDecodeError, json.JSONDecodeError) as exc:
             raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}") from exc
 
+    def posts_on_main(self, ref: str = "main") -> list[dict[str, Any]]:
+        return posts_on_main(self, ref)
+
     def open_article_prs(self, target_slot: str | None = None) -> list[dict[str, Any]]:
         prs = self.request("GET", f"{self.api}/pulls?state=open&per_page=100")
         if not isinstance(prs, list):
@@ -495,8 +881,11 @@ class GitHubClient:
                     base_posts = self.contents_json("src/data/posts.json", base_sha)
                     head_posts = self.contents_json("src/data/posts.json", head_sha)
                     if isinstance(base_posts, list) and isinstance(head_posts, list):
-                        base_ids = {row.get("id") for row in base_posts if isinstance(row, dict)}
-                        new_posts = [row for row in head_posts if isinstance(row, dict) and row.get("id") not in base_ids]
+                        base_ids = {canonical_slug(row) for row in base_posts if isinstance(row, dict)}
+                        new_posts = [
+                            row for row in head_posts
+                            if isinstance(row, dict) and canonical_slug(row) not in base_ids
+                        ]
                         if not any(str(row.get("date") or "").strip() == target_slot for row in new_posts):
                             continue
                 except ControllerError:
@@ -578,6 +967,8 @@ class GitHubClient:
         })
 
     def load_controller_state(self) -> dict[str, Any] | None:
+        self._controller_state_loaded = False
+        self._controller_state_document = None
         self.ensure_state_ref()
         quoted = urllib.parse.quote(STATE_PATH, safe="/")
         payload = self.request(
@@ -586,41 +977,49 @@ class GitHubClient:
             allow_404=True,
         )
         if payload is None:
+            self._controller_state_sha = None
+            self._controller_state_loaded = True
             return None
         if not isinstance(payload, dict) or payload.get("encoding") != "base64":
             raise ControllerError("CONTROLLER_STATE_INVALID")
         state = json.loads(base64.b64decode(payload.get("content") or "").decode("utf-8"))
         if not isinstance(state, dict):
             raise ControllerError("CONTROLLER_STATE_INVALID")
+        from scripts.kesher_runtime.legacy_retirement import validate_legacy_read
+        validate_legacy_read(state)
+        if not payload.get("sha"):
+            raise ControllerError("CONTROLLER_STATE_REVISION_MISSING")
+        self._controller_state_sha = str(payload["sha"])
+        self._controller_state_document = copy.deepcopy(state)
+        self._controller_state_loaded = True
         return state
 
     def save_controller_state(self, state: dict[str, Any]) -> None:
-        self.ensure_state_ref()
+        if not self._controller_state_loaded:
+            raise ControllerError("CONTROLLER_STATE_NOT_LOADED")
+        from scripts.kesher_runtime.legacy_retirement import validate_legacy_read
+        validate_legacy_read(self._controller_state_document)
+        validate_legacy_read(state)
         quoted = urllib.parse.quote(STATE_PATH, safe="/")
-        max_attempts = 4
-        for attempt in range(max_attempts):
-            current = self.request(
-                "GET",
-                f"{self.api}/contents/{quoted}?ref={urllib.parse.quote(STATE_REF, safe='')}",
-                allow_404=True,
-            )
-            body: dict[str, Any] = {
-                "message": f"state: Kesher controller {state.get('cycle')} {state.get('status')}",
-                "content": base64.b64encode(
-                    (json.dumps(state, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
-                ).decode("ascii"),
-                "branch": STATE_REF,
-            }
-            if isinstance(current, dict) and current.get("sha"):
-                body["sha"] = current["sha"]
-            try:
-                self.request("PUT", f"{self.api}/contents/{quoted}", body)
-                return
-            except ControllerError as exc:
-                if "GITHUB_HTTP_409" in str(exc) and attempt + 1 < max_attempts:
-                    time.sleep(1.0 + attempt * 1.5)
-                    continue
-                raise
+        body: dict[str, Any] = {
+            "message": f"state: Kesher controller {state.get('cycle')} {state.get('status')}",
+            "content": base64.b64encode(
+                (json.dumps(state, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+            ).decode("ascii"),
+            "branch": STATE_REF,
+        }
+        if self._controller_state_sha is not None:
+            body["sha"] = self._controller_state_sha
+        # Use the revision on which this tick was based. On conflict, discard
+        # its plan; rebinding this payload to a fresh SHA would lose updates.
+        self._controller_state_loaded = False
+        receipt = self.request("PUT", f"{self.api}/contents/{quoted}", body)
+        written_sha = (receipt.get("content") or {}).get("sha") if isinstance(receipt, dict) else None
+        if not written_sha:
+            raise ControllerError("CONTROLLER_STATE_WRITE_RECEIPT_MISSING")
+        self._controller_state_sha = str(written_sha)
+        self._controller_state_document = copy.deepcopy(state)
+        self._controller_state_loaded = True
 
     def newest_video_state(self) -> dict[str, Any]:
         payload = self.request(
@@ -673,14 +1072,29 @@ class PublicSiteClient:
         except urllib.error.HTTPError as exc:
             return int(exc.code), exc.read().decode("utf-8", errors="replace")
 
+    def get_bytes(self, url: str) -> tuple[int, bytes]:
+        request = urllib.request.Request(
+            url, headers={"User-Agent": "Kesher-Content-Controller/2.0"}
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                return int(response.status), response.read()
+        except urllib.error.HTTPError as exc:
+            return int(exc.code), exc.read()
+        except Exception:
+            return 500, b""
+
 
 def fetch_ashdod_sunset(day: date) -> datetime:
     request = urllib.request.Request(
         HEBCAL_ASHDOD_URL.format(date=day.isoformat()),
         headers={"User-Agent": "Kesher-Content-Controller/2.0"},
     )
-    with urllib.request.urlopen(request, timeout=20) as response:
-        payload = json.load(response)
+    try:
+        with urllib.request.urlopen(request, timeout=20) as response:
+            payload = json.load(response)
+    except Exception as exc:
+        raise ControllerError(f"HEBCAL_SUNSET_UNAVAILABLE: {exc}") from exc
     raw = ((payload or {}).get("times") or {}).get("sunset")
     if not raw:
         raise ControllerError("HEBCAL_SUNSET_MISSING")
@@ -724,6 +1138,32 @@ class Controller:
             sunset = fetch_ashdod_sunset(self.now.date())
         return article_window_open(self.now, sunset)
 
+    def posts_on_main(self, ref: str = "main") -> list[dict[str, Any]]:
+        getter = getattr(self.github, "posts_on_main", None)
+        if callable(getter):
+            return getter(ref)
+        return posts_on_main(self.github, ref)
+
+    def posts_for_cycle(self, cycle: str | date | None = None, *, ref: str = "main") -> list[dict[str, Any]]:
+        target = self.now.date() if cycle is None else (
+            cycle if isinstance(cycle, date) else date.fromisoformat(str(cycle).strip())
+        )
+        return today_articles(self.posts_on_main(ref), target)
+
+    def _posts_for_date(
+        self,
+        cycle: str | date,
+        posts: list[dict[str, Any]] | None = None,
+    ) -> list[dict[str, Any]]:
+        expected = cycle.isoformat() if isinstance(cycle, date) else str(cycle).strip()
+        catalog = self.posts_on_main("main") if posts is None else posts
+        return [
+            post for post in catalog
+            if isinstance(post, dict)
+            and str(post.get("date") or "").strip() == expected
+            and canonical_slug(post)
+        ]
+
     def tick(self) -> tuple[dict[str, Any], Action]:
         state = self.state()
         try:
@@ -747,6 +1187,73 @@ class Controller:
             return None
         return getter(run_id)
 
+    def _reconcile_existing_current_day_article(
+        self,
+        state: dict[str, Any],
+        posts: list[dict[str, Any]] | None = None,
+    ) -> list[dict[str, Any]]:
+        if posts is None:
+            posts = self.posts_on_main("main")
+        article_state = state.setdefault("article", {})
+        state_slug = str(article_state.get("slug") or "").strip()
+        state_sha = str(article_state.get("quality_content_sha256") or "").strip()
+        todays = today_articles(
+            posts,
+            self.now.date(),
+            state_slug=state_slug,
+            state_content_sha256=state_sha,
+        )
+
+        if len(todays) == 1:
+            post = todays[0]
+            slug = canonical_slug(post)
+            title = str(post.get("title") or "").strip()
+            url = f"{SITE_URL}/blog/{slug}"
+            sha = _post_source_sha256(post)
+            article_state.update({
+                "slug": slug,
+                "title": title,
+                "url": url,
+                "published_date": str(post.get("date") or ""),
+            })
+            if sha:
+                article_state["quality_content_sha256"] = sha
+            worker_outcome = str((article_state.get("last_worker_result") or {}).get("outcome") or "")
+            last_error_stage = str((state.get("last_error") or {}).get("stage") or "")
+            if (
+                article_state.get("status") in {"running", "retry_wait", "failed", "exhausted", "blocked"}
+                or article_state.get("last_error")
+                or last_error_stage in {"article", "image"}
+                or worker_outcome == "ARTICLE_ALREADY_PUBLISHED"
+                or state.get("status") in {"blocked", "article_retry_wait", "article_generating"}
+            ):
+                clear_failure(article_state)
+                article_state["last_error"] = None
+                article_state["next_retry_at"] = None
+                article_state["failure_fingerprint"] = None
+                article_state["same_failure_streak"] = 0
+                article_state["attempt_count"] = 0
+                article_state["attempts"] = 0
+                article_state["reconciled_existing_article"] = True
+                if article_state.get("status") in {"running", "retry_wait", "failed", "exhausted", "blocked"}:
+                    article_state["status"] = "complete" if article_state.get("live") is True else "pending"
+                post_image = str(post.get("image") or post.get("hero_image") or "").strip()
+                if post_image:
+                    image_state = state.setdefault("image", {})
+                    clear_failure(image_state)
+                    image_state["status"] = "complete"
+                    image_state["last_error"] = None
+                    image_state["next_retry_at"] = None
+                    image_state["image_path"] = post_image
+                if last_error_stage in {"article", "image"}:
+                    state["last_error"] = None
+                    if state.get("status") in {"blocked", "article_retry_wait", "article_generating"}:
+                        state["status"] = "article_live" if article_state.get("live") is True else "article_deploying" if article_state.get("status") == "deploying" else "article_needed"
+                elif article_state.get("last_error") or worker_outcome == "ARTICLE_ALREADY_PUBLISHED":
+                    if state.get("status") in {"article_retry_wait", "article_generating"}:
+                        state["status"] = "article_live" if article_state.get("live") is True else "article_deploying" if article_state.get("status") == "deploying" else "article_needed"
+        return todays
+
     def _reconcile_completed_article_run(self, state: dict[str, Any]) -> Action | None:
         article_state = state["article"]
         run_id = article_state.get("run_id")
@@ -765,7 +1272,43 @@ class Controller:
             if session_id:
                 article_state["last_jules_session_id"] = session_id
             outcome = str(result.get("outcome") or "ARTICLE_RESULT_INVALID")
-            if outcome in {"PR_CREATED", "ARTICLE_ALREADY_IN_PROGRESS", "ARTICLE_ALREADY_PUBLISHED"}:
+            if outcome == "ARTICLE_ALREADY_PUBLISHED":
+                clear_failure(article_state)
+                article_state["last_error"] = None
+                article_state["next_retry_at"] = None
+                article_state["reconcile_already_published"] = True
+                article_state["attempts"] = max(0, int(article_state.get("attempts") or 0) - 1)
+                if "attempt_count" in article_state:
+                    article_state["attempt_count"] = max(0, int(article_state.get("attempt_count") or 0) - 1)
+                result_slug = str(result.get("slug") or "").strip()
+                if result_slug:
+                    article_state["slug"] = result_slug
+                if isinstance(state.get("last_error"), dict) and state["last_error"].get("stage") == "article":
+                    state["last_error"] = None
+                adopted = self._reconcile_existing_current_day_article(state)
+                if len(adopted) == 1:
+                    transition(
+                        state,
+                        "article_reconciled",
+                        "article worker reported ARTICLE_ALREADY_PUBLISHED; adopted published article without strike",
+                        run_id=run_id,
+                        outcome=outcome,
+                        slug=article_state.get("slug"),
+                    )
+                    return None
+                article_state["next_retry_at"] = (
+                    datetime.now(timezone.utc) + timedelta(minutes=2)
+                ).isoformat()
+                transition(
+                    state,
+                    "article_result_wait",
+                    "article worker reported progress; waiting for GitHub/main reconciliation",
+                    run_id=run_id,
+                    outcome=outcome,
+                    pr_url=result.get("pr_url"),
+                )
+                return Action("wait", f"article worker outcome {outcome}; reconciling reality")
+            if outcome in {"PR_CREATED", "ARTICLE_ALREADY_IN_PROGRESS"}:
                 clear_failure(article_state)
                 article_state["next_retry_at"] = (
                     datetime.now(timezone.utc) + timedelta(minutes=2)
@@ -853,21 +1396,48 @@ class Controller:
         )
 
     def _tick(self, state: dict[str, Any]) -> Action:
-        if not self.article_slot_open():
-            transition(state, "waiting_for_article_window", "publication slot has not opened")
-            return Action("wait", "article window not open")
-
-        posts = self.github.contents_json("src/data/posts.json", "main")
-        if not isinstance(posts, list):
-            raise ControllerError("ARTICLE_SOURCE_INVALID")
-        todays = today_articles(posts, self.now.date())
+        posts = self.posts_on_main("main")
+        todays = self._reconcile_existing_current_day_article(state, posts)
         if len(todays) > 1:
             block(state, "article", "DUPLICATE_ARTICLE_DATE",
                   f"{len(todays)} articles share Israel date {self.now.date()}")
             return Action("blocked", "duplicate published articles")
 
-        open_prs = self.github.open_article_prs(self.now.date().isoformat())
         if not todays:
+            # A terminal article budget is a durable tombstone for this cycle.
+            # Child workflow wake-ups must never replay an older retryable worker
+            # result after auto-merge/article attempts were already exhausted.
+            # A real same-day article, reconciled above, still takes precedence.
+            article_state = state.get("article") if isinstance(state.get("article"), dict) else {}
+            last_error = state.get("last_error") if isinstance(state.get("last_error"), dict) else {}
+            terminal_article_exhausted = bool(
+                article_state.get("status") == "exhausted"
+                or int(article_state.get("merge_dispatch_count") or 0) >= 3
+                or (
+                    state.get("status") == "blocked"
+                    and last_error.get("stage") == "article"
+                    and last_error.get("code") == "ARTICLE_ATTEMPTS_EXHAUSTED"
+                )
+            )
+            if terminal_article_exhausted:
+                message = "article cycle has durable terminal attempt exhaustion; stale worker recovery is forbidden"
+                already_terminal = bool(
+                    state.get("status") == "blocked"
+                    and article_state.get("status") == "exhausted"
+                    and last_error.get("stage") == "article"
+                    and last_error.get("code") == "ARTICLE_ATTEMPTS_EXHAUSTED"
+                )
+                article_state["status"] = "exhausted"
+                state["article"] = article_state
+                if not already_terminal:
+                    block(state, "article", "ARTICLE_ATTEMPTS_EXHAUSTED", message)
+                return Action("blocked", message)
+
+            if not self.article_slot_open():
+                transition(state, "waiting_for_article_window", "publication slot has not opened")
+                return Action("wait", "article window not open")
+
+            open_prs = self.github.open_article_prs(self.now.date().isoformat())
             if len(open_prs) > 1:
                 block(state, "article", "DUPLICATE_ARTICLE_PRS",
                       f"{len(open_prs)} open article PRs modify posts.json")
@@ -891,22 +1461,24 @@ class Controller:
             if reconciled is not None:
                 return reconciled
 
-            if not retry_ready(state["article"], self.now):
-                retry_at = state["article"].get("next_retry_at")
-                transition(state, "article_retry_wait", "article retry backoff is active", retry_at=retry_at)
-                return Action("wait", f"article retry scheduled for {retry_at}")
+            todays = self._reconcile_existing_current_day_article(state, posts)
+            if not todays:
+                if not retry_ready(state["article"], self.now):
+                    retry_at = state["article"].get("next_retry_at")
+                    transition(state, "article_retry_wait", "article retry backoff is active", retry_at=retry_at)
+                    return Action("wait", f"article retry scheduled for {retry_at}")
 
-            inputs = {"slot": self.now.date().isoformat()}
-            self.github.dispatch(ARTICLE_WORKFLOW, inputs)
-            attempts = int(state["article"].get("attempts") or 0) + 1
-            state["article"].update({
-                "attempts": attempts,
-                "last_dispatch_at": utc_now(),
-                "next_retry_at": None,
-            })
-            transition(state, "article_generating", "single article worker attempt dispatched",
-                       attempt=attempts)
-            return Action("dispatch_article", "no article or PR exists and retry window is open", inputs)
+                inputs = {"slot": self.now.date().isoformat()}
+                self.github.dispatch(ARTICLE_WORKFLOW, inputs)
+                attempts = int(state["article"].get("attempts") or 0) + 1
+                state["article"].update({
+                    "attempts": attempts,
+                    "last_dispatch_at": utc_now(),
+                    "next_retry_at": None,
+                })
+                transition(state, "article_generating", "single article worker attempt dispatched",
+                           attempt=attempts)
+                return Action("dispatch_article", "no article or PR exists and retry window is open", inputs)
 
         article = todays[0]
         slug = canonical_slug(article)
@@ -917,35 +1489,56 @@ class Controller:
             "published_date": str(article.get("date") or ""),
         })
         clear_failure(state["article"])
-        if open_prs:
-            block(state, "article", "STALE_OR_DUPLICATE_ARTICLE_PR",
-                  f"published article exists while {len(open_prs)} article PR(s) remain open")
-            return Action("blocked", "published article plus open article PR")
 
-        status, page = self.site.get(url)
-        if status != 200 or not article_is_public(page, title):
-            if self.github.active_workflow_run(DEPLOY_WORKFLOW):
-                transition(state, "article_deploying", "deployment already active")
-                return Action("wait", "deployment active")
-            next_deploy = parse_timestamp(state["article"].get("next_deploy_retry_at"))
-            if next_deploy and self.now.astimezone(timezone.utc) < next_deploy:
-                transition(state, "article_deploy_wait", "deploy retry backoff is active",
-                           retry_at=next_deploy.isoformat())
-                return Action("wait", f"deploy retry scheduled for {next_deploy.isoformat()}")
-            attempts = int(state["article"].get("deploy_attempts") or 0) + 1
-            self.github.dispatch(DEPLOY_WORKFLOW)
-            delay_index = max(1, attempts - MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF + 1)
-            delay = 5 if attempts <= MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF else article_retry_backoff_minutes(delay_index)
-            state["article"].update({
-                "deploy_attempts": attempts,
-                "last_deploy_dispatch_at": utc_now(),
-                "next_deploy_retry_at": (
-                    datetime.now(timezone.utc) + timedelta(minutes=delay)
-                ).isoformat(),
-            })
-            transition(state, "article_deploying", "public article check failed; recovery deploy dispatched",
-                       http_status=status, attempt=attempts)
-            return Action("dispatch_deploy", "article not public yet")
+        content_sha = str(state["article"].get("quality_content_sha256") or "").strip()
+        already_verified = bool(state["article"].pop("_tick_live_verified", None))
+        if not already_verified:
+            status, page = self.site.get(url)
+            if status != 200 or not article_is_public(page, title, expected_slug=slug, expected_content_sha256=content_sha):
+                state["article"]["live"] = False
+                if self.github.active_workflow_run(DEPLOY_WORKFLOW):
+                    transition(state, "article_deploying", "deployment already active")
+                    return Action("wait", "deployment active")
+                pending_deploy = (state.get("pending_dispatches") or {}).get(DEPLOY_WORKFLOW)
+                if isinstance(pending_deploy, dict) and pending_deploy.get("cycle") == state.get("cycle"):
+                    if pending_deploy.get("status") in {"intent", "uncertain"}:
+                        transition(state, "article_deploying", "deployment dispatch intent pending")
+                        return Action("wait", "deployment dispatch pending reconciliation")
+                    if pending_deploy.get("status") == "dispatched":
+                        intent_dt = parse_timestamp(pending_deploy.get("dispatched_at") or pending_deploy.get("intent_at"))
+                        if intent_dt is not None:
+                            elapsed = (self.now.astimezone(timezone.utc) - intent_dt).total_seconds()
+                            if 0 <= elapsed < 180:
+                                transition(state, "article_deploying", "deployment dispatched; waiting for run visibility")
+                                return Action("wait", f"deployment dispatched {int(elapsed)}s ago; waiting for run visibility")
+                next_deploy = parse_timestamp(state["article"].get("next_deploy_retry_at"))
+                if next_deploy and self.now.astimezone(timezone.utc) < next_deploy:
+                    transition(state, "article_deploy_wait", "deploy retry backoff is active",
+                               retry_at=next_deploy.isoformat())
+                    return Action("wait", f"deploy retry scheduled for {next_deploy.isoformat()}")
+
+                current_attempts = int(state["article"].get("deploy_attempts") or 0)
+                if current_attempts >= MAX_DEPLOY_ATTEMPTS or state["article"].get("deploy_status") == "exhausted":
+                    state["article"]["deploy_status"] = "exhausted"
+                    if state.get("status") != "blocked":
+                        block(state, "article", "DEPLOY_ATTEMPTS_EXHAUSTED",
+                              f"Article deployment exhausted maximum allowed attempts ({MAX_DEPLOY_ATTEMPTS})")
+                    return Action("block", f"deploy attempts exhausted ({MAX_DEPLOY_ATTEMPTS})")
+
+                attempts = current_attempts + 1
+                self.github.dispatch(DEPLOY_WORKFLOW)
+                delay_index = max(1, attempts - MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF + 1)
+                delay = 5 if attempts <= MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF else article_retry_backoff_minutes(delay_index)
+                state["article"].update({
+                    "deploy_attempts": attempts,
+                    "last_deploy_dispatch_at": utc_now(),
+                    "next_deploy_retry_at": (
+                        datetime.now(timezone.utc) + timedelta(minutes=delay)
+                    ).isoformat(),
+                })
+                transition(state, "article_deploying", "public article check failed; recovery deploy dispatched",
+                           http_status=status, attempt=attempts)
+                return Action("dispatch_deploy", "article not public yet")
 
         state["article"].update({
             "live": True,
@@ -957,6 +1550,8 @@ class Controller:
         video_state = self.github.newest_video_state()
         matches = matching_video_items(video_state, slug)
         verified = [item for item in matches if verified_youtube_item(item, slug)]
+        if has_unresolved_media_blocker(state) and not verified:
+            return Action("blocked", (state.get("last_error") or {}).get("message") or "media stage blocked")
         if verified:
             item = sorted(
                 verified,
@@ -998,14 +1593,21 @@ class Controller:
 
         if item:
             state["video"].update({"item_id": item.get("id"), "status": item.get("status")})
-            if item.get("status") == "uploaded":
+            has_youtube_id = bool(str(item.get("youtube_id") or "").strip())
+            if item.get("status") == "uploaded" and not has_youtube_id:
                 block(state, "video", "UPLOADED_VIDEO_NOT_VERIFIED",
                       "video has upload identity but lacks authoritative public verification")
                 return Action("blocked", "uploaded video requires reconciliation")
 
-            if mandatory_video_review_approved(item):
+            if has_youtube_id or mandatory_video_review_approved(item):
                 operation = "upload"
                 inputs = {"operation": operation}
+                if has_youtube_id:
+                    state["video"].update({
+                        "youtube_id": item.get("youtube_id"),
+                        "youtube_url": item.get("youtube_url"),
+                        "verified": False,
+                    })
             elif item.get("status") == "rejected" and item.get("technical_verified") is not True:
                 operation = "full"
                 inputs = {"operation": operation}
@@ -1053,6 +1655,8 @@ class Controller:
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", "yanivsa/kesher-website"))
     parser.add_argument("--report-json", action="store_true")

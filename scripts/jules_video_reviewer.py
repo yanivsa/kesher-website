@@ -17,9 +17,9 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from kesher_daily_pipeline import REVIEW_FRAME_COUNT
+    from kesher_daily_pipeline import REVIEW_FRAME_COUNT, PipelineError, existing_item
 except ImportError:
-    from scripts.kesher_daily_pipeline import REVIEW_FRAME_COUNT
+    from scripts.kesher_daily_pipeline import REVIEW_FRAME_COUNT, PipelineError, existing_item
 
 
 API_BASE = "https://jules.googleapis.com/v1alpha"
@@ -59,15 +59,21 @@ def request_json(method: str, path: str, api_key: str, body: dict[str, Any] | No
         raise ReviewError(f"Jules API network error: {exc.reason}") from exc
 
 
-def load_pending(state_dir: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+def load_pending(state_dir: Path, item_id: str | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
     state_path = state_dir / "state.json"
     if not state_path.exists():
         raise ReviewError("state.json does not exist")
     state = json.loads(state_path.read_text(encoding="utf-8"))
-    pending = [item for item in state.get("items", []) if item.get("status") == "pending_review"]
-    if len(pending) != 1:
-        raise ReviewError(f"Expected exactly one pending review item, found {len(pending)}")
-    return state, pending[0]
+    try:
+        item = existing_item(state, item_id, kind='overview')
+    except PipelineError as exc:
+        raise ReviewError(str(exc)) from exc
+    source = item.get('source') or {}
+    if not source.get('slug') or not source.get('content_sha256'):
+        raise ReviewError('JULES_TARGET_CONTENT_IDENTITY_REQUIRED')
+    if item.get('status') != 'pending_review':
+        raise ReviewError('Exact requested item is not pending review')
+    return state, item
 
 
 def load_remotion_policy() -> str:
@@ -164,7 +170,7 @@ Open `{evidence_root}/state.json` and locate the exact item. Open and visually i
 
 IMPORTANT: Jules is the MANDATORY publication reviewer for this exact MP4. Upload is allowed only when visual, semantic and metadata statuses are all `approved` and every supplied evidence hash matches. If any material defect exists, return `rejected` with concrete blocking issues. Do not soften a finding to keep the daily schedule moving.
 
-Machine contract: return `schema_version={REVIEW_SCHEMA_VERSION}` and `policy_version={REMOTION_POLICY_VERSION}` exactly. `decision` MUST be `approved` only when visual, semantic and metadata statuses are all approved; otherwise it MUST be `rejected`. A rejected decision MUST contain at least one concrete `blocking_issues` object with `gate`, stable uppercase `code`, and factual Hebrew `message`. An approved decision MUST have an empty `blocking_issues` list. `recommendations` are optional non-blocking Hebrew improvements.
+Machine contract: return `schema_version={REVIEW_SCHEMA_VERSION}` and `policy_version={REMOTION_POLICY_VERSION}` exactly. `decision` MUST be `approved` only when visual, semantic and metadata statuses are all approved; otherwise it MUST be `rejected`. A rejected decision MUST contain at least one concrete `blocking_issues` object with `gate` exactly one of `visual`, `semantic`, or `metadata` (no other gate values), stable uppercase `code`, and factual Hebrew `message`. An approved decision MUST have an empty `blocking_issues` list. `recommendations` are optional non-blocking Hebrew improvements.
 
 Apply these mandatory review dimensions:
 1. Technical is already machine-verified. Independently confirm the manifest identifies a 16:9 H.264 video lasting 90-180 seconds. Recompute every checked-out file hash. The MP4 is deliberately excluded; confirm its expected final SHA-256 is identical in state.json, the manifest and the expected hashes above.
@@ -209,11 +215,12 @@ def list_activities(api_key: str, session: str) -> list[dict[str, Any]]:
             return activities
 
 
-def wait_for_message(api_key: str, session: str, timeout_seconds: int) -> str:
+def wait_for_message(api_key: str, session: str, timeout_seconds: int, *, decision_validator=None) -> str:
     deadline = time.monotonic() + timeout_seconds
     continued = False
     structured_output_repairs = 0
     next_structured_output_repair_at = 0.0
+    locked_statuses = None
     while time.monotonic() < deadline:
         current = request_json("GET", f"/{session}", api_key)
         state = str(current.get("state", "UNKNOWN")).upper()
@@ -224,17 +231,34 @@ def wait_for_message(api_key: str, session: str, timeout_seconds: int) -> str:
                 if isinstance(message, str):
                     messages.append(message)
             marked = [message for message in messages if FINAL_MARKER in message]
+            validation_error = ""
             for message in reversed(marked):
                 try:
-                    parse_decision(message)
+                    decision = parse_decision(message)
                 except ReviewError:
                     continue
+                if decision_validator is not None:
+                    statuses = tuple(decision.get(f"{gate}_status") for gate in ("visual", "semantic", "metadata"))
+                    if locked_statuses is not None and any(statuses[index] != value for index, value in locked_statuses.items()):
+                        raise ReviewError("Jules schema repair changed quality decision")
+                    try:
+                        decision_validator(decision)
+                    except ReviewError as exc:
+                        if "wrong item" in str(exc) or "evidence mismatch" in str(exc):
+                            raise
+                        validation_error = str(exc)
+                        locked_statuses = {index: value for index, value in enumerate(statuses) if value in {"approved", "rejected"}}
+                        # A newer schema-invalid decision must not fall back to
+                        # an older approval in the same activity history.
+                        break
                 return message
             error = (
                 "Jules completed without structured review JSON"
                 if not marked
                 else "Jules completed without parseable structured review JSON"
             )
+            if validation_error:
+                error = validation_error
             now = time.monotonic()
             if structured_output_repairs < MAX_STRUCTURED_OUTPUT_REPAIRS:
                 if now < next_structured_output_repair_at:
@@ -249,6 +273,9 @@ def wait_for_message(api_key: str, session: str, timeout_seconds: int) -> str:
                         f"Reuse only the evidence you already inspected. Reply with {FINAL_MARKER} "
                         "on its own line followed by exactly one valid JSON object matching the requested schema, "
                         "with no Markdown fence or trailing prose. Do not edit files or invent evidence."
+                        " Each blocking_issues gate must be exactly visual, semantic or metadata."
+                        " Correct only schema/format; preserve all quality gate statuses and factual findings."
+                        f" Validation failure: {error}"
                     )},
                 )
                 structured_output_repairs += 1
@@ -379,17 +406,24 @@ def obtain_validated_decision(
     hashes: dict[str, Any],
     review_branch: str,
     timeout_seconds: int,
+    review_session: str | None = None,
 ) -> tuple[dict[str, Any], str]:
+    if review_session and not re.fullmatch(r"sessions/[0-9]+", review_session):
+        raise ReviewError("Invalid existing Jules review session")
     for attempt in range(MAX_REVIEW_SESSION_ATTEMPTS):
-        session = create_session(api_key, prompt, item["id"], review_branch)
+        session = review_session or create_session(api_key, prompt, item["id"], review_branch)
         try:
-            message = wait_for_message(api_key, session, timeout_seconds)
+            message = wait_for_message(
+                api_key, session, timeout_seconds,
+                decision_validator=lambda decision: validate_decision(decision, item, hashes, strict_schema=True),
+            )
             decision = parse_decision(message)
             validate_decision(decision, item, hashes, strict_schema=True)
             return decision, session
         except ReviewError as exc:
             if (
                 "timed out" in str(exc).lower()
+                and not review_session
                 and attempt + 1 < MAX_REVIEW_SESSION_ATTEMPTS
             ):
                 print(
@@ -401,7 +435,13 @@ def obtain_validated_decision(
     raise ReviewError("Exhausted Jules review attempts")
 
 
-def record_decision(state_dir: Path, decision: dict[str, Any], session: str) -> None:
+def record_decision(state_dir: Path, decision: dict[str, Any], session: str,
+                    reviewed_item: dict[str, Any] | None = None) -> None:
+    _, current = load_pending(state_dir, decision['item_id'])
+    if reviewed_item is not None and any(current.get(key) != reviewed_item.get(key)
+                                        for key in ('id', 'source', 'type', 'fresh_generation_attempt')):
+        raise ReviewError('Exact reviewed identity changed before recording')
+    validate_decision(decision, current, expected_hashes(state_dir, current))
     command = [
         sys.executable,
         "-u",
@@ -417,22 +457,34 @@ def record_decision(state_dir: Path, decision: dict[str, Any], session: str) -> 
     ]
     env = os.environ.copy()
     env["KESHER_STATE_DIR"] = str(state_dir)
+    env["TARGET_ITEM_ID"] = current['id']
+    env["TARGET_SLUG"] = current['source']['slug']
+    env["TARGET_CONTENT_SHA256"] = current['source']['content_sha256']
+    env["TARGET_GENERATION_ATTEMPT"] = str(current.get('fresh_generation_attempt', 1))
     result = subprocess.run(command, env=env, text=True, check=False)
     if result.returncode != 0:
         raise ReviewError("Official pipeline rejected the Jules review decision")
 
 
-def main() -> int:
+def main(*, record_decision_fn=None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--state-dir", type=Path, required=True)
+    parser.add_argument("--item-id", required=True)
+    parser.add_argument("--target-slug", required=True)
+    parser.add_argument("--target-content-sha256", required=True)
     parser.add_argument("--review-branch", required=True)
     parser.add_argument("--evidence-root", required=True)
     parser.add_argument("--timeout-seconds", type=int, default=3600)
+    parser.add_argument("--review-session", default="")
     args = parser.parse_args()
+    if not args.target_slug.strip() or not args.target_content_sha256.strip():
+        parser.error("Exact nonempty target slug and content SHA-256 required")
     api_key = os.environ.get("JULES_API_KEY", "").strip()
     if not api_key:
         raise ReviewError("JULES_API_KEY is missing")
-    _, item = load_pending(args.state_dir)
+    os.environ['TARGET_SLUG'] = args.target_slug
+    os.environ['TARGET_CONTENT_SHA256'] = args.target_content_sha256
+    _, item = load_pending(args.state_dir, args.item_id)
     hashes = expected_hashes(args.state_dir, item)
     prompt = build_prompt(args.evidence_root, item, hashes)
     decision, session = obtain_validated_decision(
@@ -442,8 +494,9 @@ def main() -> int:
         hashes,
         args.review_branch,
         args.timeout_seconds,
+        args.review_session or None,
     )
-    record_decision(args.state_dir, decision, session)
+    (record_decision_fn or record_decision)(args.state_dir, decision, session, item)
     print(f"JULES_REVIEW_RECORDED session={session} item={item['id']} decision={decision['decision']}")
     return 0
 
@@ -456,7 +509,10 @@ def handle_non_fatal_review_error(state_dir: Path, error_msg: str) -> bool:
     items = state.get("items") or []
     if not items:
         return False
-    item = items[0]
+    try:
+        item = existing_item(state, kind='overview')
+    except PipelineError:
+        return False
     if item.get("technical_verified") is not True:
         return False
     item["visual_review_status"] = "unavailable"

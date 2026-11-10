@@ -7,8 +7,10 @@ export const shouldHydrateRoute = (
   currentPathname: string,
   canonicalHref: string | undefined,
   hasPrerenderedMarkup: boolean,
+  isClientSnapshot = false,
 ) => {
-  if (!hasPrerenderedMarkup || !canonicalHref) return false;
+  // Browser snapshots include settled effects, not React's server render state.
+  if (!hasPrerenderedMarkup || !canonicalHref || isClientSnapshot) return false;
   // The interaction-heavy homepage uses pointer and motion preferences at
   // mount time. Preserve its prerendered first paint, then mount a fresh tree
   // so those client-only enhancements cannot create hydration drift.

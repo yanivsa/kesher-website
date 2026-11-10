@@ -25,6 +25,12 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from scripts.kesher_article_contract import (
+    IMAGE_EVIDENCE_FIELDS, IMAGE_PROVIDER_RULES, article_sha256, exact_field,
+    image_proof_errors, image_visual_identity, replace_image_evidence,
+)
+
 CORE_PATH = Path(__file__).with_name("article-image-worker.py")
 spec = importlib.util.spec_from_file_location("kesher_article_image_worker_core", CORE_PATH)
 if spec is None or spec.loader is None:
@@ -37,7 +43,7 @@ GEMINI_MODEL = "gemini-3.1-flash-image"
 VERIFY_MODEL = "gemini-3.5-flash"
 IMAGE_PREFIX = core.IMAGE_PREFIX
 PUBLIC_PREFIX = core.PUBLIC_PREFIX
-TRUSTED_PROVIDERS = {"Gemini", "Pexels", "Pixabay", "Local"}
+TRUSTED_PROVIDERS = set(IMAGE_PROVIDER_RULES)
 TRUSTED_RESULTS = {"generated", "stock", "local_fallback"}
 
 
@@ -158,7 +164,7 @@ def try_gemini(post: dict[str, Any], attempts: list[str], existing_hashes: set[s
             raise RuntimeError("Gemini returned no inline image")
         _w, _h, ext = core.validate_candidate(data)
         digest = hashlib.sha256(data).hexdigest()
-        if existing_hashes and digest in existing_hashes:
+        if core.candidate_is_duplicate(data, existing_hashes):
             print("IMAGE_PROVIDER_REJECTED provider=gemini reason=sha256_collision", file=sys.stderr)
             return None
         matched, description = verify_pixels(post, data, ext)
@@ -217,7 +223,7 @@ def _stock_candidate(post: dict[str, Any], attempts: list[str], provider: str, e
                 data = core.download(str(url))
                 _w, _h, ext = core.validate_candidate(data)
                 digest = hashlib.sha256(data).hexdigest()
-                if existing_hashes and digest in existing_hashes:
+                if core.candidate_is_duplicate(data, existing_hashes):
                     print(f"IMAGE_STOCK_REJECTED provider={provider} reason=sha256_collision", file=sys.stderr)
                     continue
                 matched, description = verify_pixels(post, data, ext)
@@ -247,7 +253,7 @@ def local_fallback(repo: str, post: dict[str, Any], _head_ref: str, token: str, 
     data = core.decode_content(payload)
     _w, _h, ext = core.validate_candidate(data)
     digest = hashlib.sha256(data).hexdigest()
-    if existing_hashes and digest in existing_hashes:
+    if core.candidate_is_duplicate(data, existing_hashes):
         print("IMAGE_LOCAL_FALLBACK_REJECTED reason=sha256_collision", file=sys.stderr)
         return None
     return core.ImageCandidate("Local", data, ext, f"local://{source_path}", description, attempts.copy())
@@ -301,41 +307,18 @@ def summaries(posts: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return result
 
 
-def exact_field(body: str, label: str) -> str | None:
-    values: list[str] = []
-    pattern = re.compile(rf"^\s*(?:[-*]\s*)?{re.escape(label)}\s*:\s*(.*?)\s*$")
-    for line in (body or "").splitlines():
-        match = pattern.match(line)
-        if match:
-            values.append(match.group(1).strip())
-    return values[0] if len(values) == 1 else None
-
-
-def trusted_image_present(repo: str, pr: dict[str, Any], post: dict[str, Any], token: str) -> bool:
-    image = str(post.get("image") or "")
-    if not image.startswith(PUBLIC_PREFIX) or len(str(post.get("imageAlt") or "")) < 20:
-        return False
+def trusted_image_present(repo: str, pr: dict[str, Any], post: dict[str, Any], token: str,
+                          *, require_head: bool = True) -> bool:
     body = str(pr.get("body") or "")
-    provider = exact_field(body, "Image Provider")
-    result = exact_field(body, "Image Generation Result")
-    expected_sha = exact_field(body, "Image SHA-256")
-    dimensions = exact_field(body, "Image Dimensions")
-    visual = exact_field(body, "Image Visual Match")
-    if exact_field(body, "Image Pipeline Version") != "2":
-        return False
-    if provider not in TRUSTED_PROVIDERS or result not in TRUSTED_RESULTS:
-        return False
-    if not expected_sha or not re.fullmatch(r"[a-f0-9]{64}", expected_sha):
-        return False
-    if not dimensions or not visual or len(visual) < 24:
+    head_sha = str((pr.get("head") or {}).get("sha") or "")
+    if image_proof_errors(post, body, head_sha, require_head=require_head):
         return False
     try:
-        payload = core.github_content(repo, "public/" + image.lstrip("/"), pr["head"]["sha"], token)
+        payload = core.github_content(repo, "public" + post["image"], head_sha, token)
         data = core.decode_content(payload)
-        width, height, _ext = core.validate_candidate(data)
     except Exception:
         return False
-    return hashlib.sha256(data).hexdigest() == expected_sha and dimensions == f"{width}x{height}"
+    return not image_proof_errors(post, body, head_sha, data, require_head=require_head)
 
 
 def create_blob(repo: str, token: str, data: bytes, binary: bool) -> str:
@@ -374,6 +357,83 @@ def commit_files(
     return str(new_commit["sha"])
 
 
+def restore_prior_trusted_image(repo, pr, post, head_posts, base_posts, token) -> bool:
+    """Recover one exact proven artifact without authorizing replacement generation."""
+    body = str(pr.get("body") or "")
+    prior = str(exact_field(body, "Image Evidence Head") or "").strip()
+    current_head = str(pr["head"]["sha"])
+    if not re.fullmatch(r"[a-f0-9]{40}", prior) or prior == current_head:
+        return False
+    historical_posts = core.posts_at(repo, prior, token)
+    matches = [row for row in historical_posts if isinstance(row, dict) and row.get("id") == post.get("id")]
+    if len(matches) != 1:
+        return False
+    historical = matches[0]
+    if image_visual_identity(post) != image_visual_identity(historical):
+        return False
+    historical_pr = {**pr, "head": {**pr["head"], "sha": prior}}
+    if not trusted_image_present(repo, historical_pr, historical, token):
+        return False
+    image_path = "public" + historical["image"]
+    data = core.decode_content(core.github_content(repo, image_path, prior, token))
+    if image_proof_errors(historical, body, prior, data):
+        return False
+    # Preserve existing publication uniqueness barriers, including decoded pixels.
+    for published in base_posts:
+        image = str(published.get("image") or "")
+        if not image:
+            continue
+        if image == historical["image"]:
+            return False
+        published_data = core.decode_content(core.github_content(repo, "public" + image, pr["base"]["sha"], token))
+        from scripts.kesher_article_contract import image_pixel_sha256
+        if hashlib.sha256(published_data).digest() == hashlib.sha256(data).digest() or image_pixel_sha256(published_data) == image_pixel_sha256(data):
+            return False
+
+    image_fields = (
+        "image", "imageAlt", "imageProvider", "imageSourceUrl",
+        "imageIsFallback", "imageCredit", "imageCreditUrl",
+    )
+    current_has_image = bool(str(post.get("image") or "").strip() or str(post.get("imageAlt") or "").strip())
+    if current_has_image:
+        if not str(post.get("image") or "").strip() or not str(post.get("imageAlt") or "").strip():
+            return False
+        if any(post.get(field) != historical.get(field) for field in image_fields):
+            return False
+        evidence = {label: exact_field(body, label) or "" for label in IMAGE_EVIDENCE_FIELDS}
+        evidence["Image Article SHA-256"] = article_sha256(post)
+        evidence["Image Evidence Head"] = current_head
+        refreshed_body = replace_image_evidence(body, evidence)
+        refreshed_pr = {**pr, "body": refreshed_body}
+        if not trusted_image_present(repo, refreshed_pr, post, token):
+            return False
+        core.patch_pr_body(repo, int(pr["number"]), refreshed_body, token)
+        # The workflow treats this marker as a successful image-stage mutation and
+        # dispatches fresh CI. No branch/file commit or provider generation occurred.
+        print(f"ARTICLE_IMAGE_COMMITTED id={post['id']} provider={evidence['Image Provider']} sha={current_head} recovery=evidence-refresh")
+        return True
+
+    restored_post = dict(post)
+    for field in image_fields:
+        if field in historical:
+            restored_post[field] = historical[field]
+        else:
+            restored_post.pop(field, None)
+    restored = [restored_post if row is post else row for row in head_posts]
+    files = {
+        image_path: (data, True),
+        "src/data/posts.json": ((json.dumps(restored, ensure_ascii=False, indent=2) + "\n").encode(), False),
+        "src/data/postSummaries.json": ((json.dumps(summaries(restored), ensure_ascii=False, indent=2) + "\n").encode(), False),
+    }
+    new_sha = commit_files(repo, pr, token, files, [])
+    evidence = {label: exact_field(body, label) or "" for label in IMAGE_EVIDENCE_FIELDS}
+    evidence["Image Article SHA-256"] = article_sha256(restored_post)
+    evidence["Image Evidence Head"] = new_sha
+    core.patch_pr_body(repo, int(pr["number"]), replace_image_evidence(body, evidence), token)
+    print(f"ARTICLE_IMAGE_COMMITTED id={post['id']} provider={evidence['Image Provider']} sha={new_sha} recovery=same-artifact")
+    return True
+
+
 def ensure_image(repo: str, pr: dict[str, Any], token: str) -> bool:
     if pr.get("state") != "open" or pr.get("draft"):
         return False
@@ -392,6 +452,23 @@ def ensure_image(repo: str, pr: dict[str, Any], token: str) -> bool:
     if trusted_image_present(repo, pr, post, token):
         print(f"ARTICLE_IMAGE_PRESENT id={post.get('id')} trusted=yes")
         return False
+
+    # A derived-file commit or a lost final body PATCH can change only the head.
+    # Revalidate current article/image bytes before rebinding; never regenerate
+    # verified pixels merely to update the evidence commit identity.
+    if trusted_image_present(repo, pr, post, token, require_head=False):
+        evidence = {label: exact_field(str(pr.get("body") or ""), label) or ""
+                    for label in IMAGE_EVIDENCE_FIELDS}
+        evidence["Image Evidence Head"] = pr["head"]["sha"]
+        core.patch_pr_body(repo, int(pr["number"]), replace_image_evidence(pr.get("body") or "", evidence), token)
+        print(f"ARTICLE_IMAGE_PRESENT id={post.get('id')} trusted=yes evidence_refreshed=yes")
+        return False
+
+    if restore_prior_trusted_image(repo, pr, post, head_posts, base_posts, token):
+        return True
+
+    if os.environ.get("KESHER_IMAGE_RECOVERY_ONLY", "").lower() == "true":
+        raise RuntimeError("IMAGE_RECOVERY_PROOF_INVALID: replacement generation forbidden")
 
     candidate = choose_candidate(repo, post, pr["head"]["sha"], token)
     if candidate is None:
@@ -416,16 +493,19 @@ def ensure_image(repo: str, pr: dict[str, Any], token: str) -> bool:
         "Image Pipeline Version": "2",
         "Image Provider": candidate.provider,
         "Image Attempt Chain": "/".join(candidate.attempts),
-        "Image Generation Result": "local_fallback" if candidate.provider == "Local" else ("generated" if candidate.provider == "Gemini" else "stock"),
+        "Image Generation Result": IMAGE_PROVIDER_RULES[candidate.provider][0],
         "Image Source URL": candidate.source_url,
         "Image SHA-256": digest,
         "Image Dimensions": f"{width}x{height}",
         "Image Visual Match": candidate.visual_match,
+        "Image Article ID": str(post["id"]),
+        "Image Article SHA-256": article_sha256(post),
+        "Image Evidence Head": pr["head"]["sha"],
     }
 
     # Evidence first makes a commit/body split failure self-healing: a retry can
     # overwrite stale evidence and regenerate the exact trusted image.
-    new_body = core.replace_image_evidence(str(pr.get("body") or ""), evidence)
+    new_body = replace_image_evidence(str(pr.get("body") or ""), evidence)
     core.patch_pr_body(repo, int(pr["number"]), new_body, token)
 
     pr_files = core.request_json(
@@ -453,6 +533,8 @@ def ensure_image(repo: str, pr: dict[str, Any], token: str) -> bool:
         },
         delete_paths,
     )
+    evidence["Image Evidence Head"] = new_sha
+    core.patch_pr_body(repo, int(pr["number"]), replace_image_evidence(new_body, evidence), token)
     print(f"ARTICLE_IMAGE_COMMITTED id={post['id']} provider={candidate.provider} sha={new_sha}")
     return True
 
@@ -464,6 +546,10 @@ def main() -> int:
     repo, number = sys.argv[1], int(sys.argv[2])
     token = os.environ["GITHUB_TOKEN"]
     pr = core.request_json("GET", f"https://api.github.com/repos/{repo}/pulls/{number}", token)
+    if os.environ.get("KESHER_IMAGE_RECOVERY_ONLY", "").lower() == "true":
+        expected = os.environ.get("KESHER_IMAGE_EXPECTED_HEAD", "")
+        if not re.fullmatch(r"[a-f0-9]{40}", expected) or pr.get("head", {}).get("sha") != expected:
+            raise RuntimeError("IMAGE_RECOVERY_HEAD_CHANGED")
     ensure_image(repo, pr, token)
     return 0
 

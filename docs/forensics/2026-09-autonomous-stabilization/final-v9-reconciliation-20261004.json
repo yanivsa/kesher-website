@@ -1,0 +1,618 @@
+{
+  "main_sha": "e79cccab32c046cc80a560ca43d0185b3b124f0b",
+  "checkpoint_sha": "4078aec81cbb7979357e6ecc9a75c3669118c14a",
+  "late_main_paths": [
+    "chatgpt-plugin/assets/icon.svg",
+    "chatgpt-plugin/plugin.json",
+    "chatgpt-plugin/skills/calm-conversation-plan/SKILL.md",
+    "chatgpt-plugin/skills/calm-conversation-plan/agents/openai.yaml",
+    "chatgpt-plugin/skills/choose-support-path/SKILL.md",
+    "chatgpt-plugin/skills/choose-support-path/agents/openai.yaml",
+    "chatgpt-plugin/skills/mediation-prep/SKILL.md",
+    "chatgpt-plugin/skills/mediation-prep/agents/openai.yaml",
+    "chatgpt-plugin/skills/parenting-routine-builder/SKILL.md",
+    "chatgpt-plugin/skills/parenting-routine-builder/agents/openai.yaml",
+    "docs/audits/chatgpt-plugin-submission-2026-10-04.md",
+    "package.json",
+    "scripts/build_chatgpt_plugin_zip.py",
+    "scripts/jules_article_runner_v3.py",
+    "scripts/validate-chatgpt-plugin.cjs",
+    "src/pages/Legal/PrivacyPolicy.tsx",
+    "src/pages/Legal/TermsOfUse.tsx",
+    "tests/test_jules_article_runner.py"
+  ],
+  "byte_preserved_main_paths": [
+    "chatgpt-plugin/assets/icon.svg",
+    "chatgpt-plugin/plugin.json",
+    "chatgpt-plugin/skills/calm-conversation-plan/SKILL.md",
+    "chatgpt-plugin/skills/calm-conversation-plan/agents/openai.yaml",
+    "chatgpt-plugin/skills/choose-support-path/SKILL.md",
+    "chatgpt-plugin/skills/choose-support-path/agents/openai.yaml",
+    "chatgpt-plugin/skills/mediation-prep/SKILL.md",
+    "chatgpt-plugin/skills/mediation-prep/agents/openai.yaml",
+    "chatgpt-plugin/skills/parenting-routine-builder/SKILL.md",
+    "chatgpt-plugin/skills/parenting-routine-builder/agents/openai.yaml",
+    "docs/audits/chatgpt-plugin-submission-2026-10-04.md",
+    "scripts/build_chatgpt_plugin_zip.py",
+    "scripts/jules_article_runner_v3.py",
+    "scripts/validate-chatgpt-plugin.cjs",
+    "src/pages/Legal/PrivacyPolicy.tsx",
+    "src/pages/Legal/TermsOfUse.tsx",
+    "tests/test_jules_article_runner.py"
+  ],
+  "package_merge": {
+    "plugin_scripts_preserved": true,
+    "unshimmed_content": true,
+    "expanded_suites_preserved": true,
+    "new_stall_module": true
+  },
+  "capability_scope_unchanged": true,
+  "policy_before_sha256": "2d988d12ef16809e95788bfba2f414b1e96f48f8bfae50ad78bff00a41a97518",
+  "policy_after_sha256": "a37490d980c4c5bbf3e8449b8e75ca31f7d6aa3e19222dbd8ca907a56704170a",
+  "affected_pin_counts": {
+    "package.json": 23,
+    "scripts/jules_article_runner_v3.py": 4,
+    "tests/test_jules_article_runner.py": 1
+  },
+  "pins": [
+    {
+      "workflow": ".github/workflows/ci.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "separate_infrastructure",
+      "capabilities": [
+        "read",
+        "status_write"
+      ],
+      "resources": [
+        "github.statuses"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/ci.yml",
+      "path": "scripts/jules_article_runner_v3.py",
+      "before": "9a55c5343577e0e7e134c1a6f6a3b10eda09ba9b70bb7d2a44c1af7d497f1e53",
+      "after": "c425e3d2cb06913960169b6fe618e082bc975f0dbf0b63c5068e1b6dcff8b531",
+      "role": "separate_infrastructure",
+      "capabilities": [
+        "read",
+        "status_write"
+      ],
+      "resources": [
+        "github.statuses"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/deploy.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "cloudflare_write",
+        "read",
+        "status_write"
+      ],
+      "resources": [
+        "cloudflare.account",
+        "github.statuses"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/jules-daily-industry-benchmarking.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "branch_write",
+        "jules_continue",
+        "jules_create",
+        "pr_write",
+        "read"
+      ],
+      "resources": [
+        "github.pull_requests",
+        "github.refs",
+        "jules.sessions"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/jules-daily-mobile-review.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "branch_write",
+        "jules_continue",
+        "jules_create",
+        "pr_write",
+        "read"
+      ],
+      "resources": [
+        "github.pull_requests",
+        "github.refs",
+        "jules.sessions"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/jules-daily-seo-geo-review.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "branch_write",
+        "jules_continue",
+        "jules_create",
+        "pr_write",
+        "read"
+      ],
+      "resources": [
+        "github.pull_requests",
+        "github.refs",
+        "jules.sessions"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/jules-nightly-site-fixes.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "branch_write",
+        "jules_continue",
+        "jules_create",
+        "pr_write",
+        "read"
+      ],
+      "resources": [
+        "github.pull_requests",
+        "github.refs",
+        "jules.sessions"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/jules-weekly-content-review.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "branch_write",
+        "jules_continue",
+        "jules_create",
+        "pr_write",
+        "read"
+      ],
+      "resources": [
+        "github.pull_requests",
+        "github.refs",
+        "jules.sessions"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-article-deploy.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "worker",
+      "capabilities": [
+        "branch_write",
+        "cloudflare_write",
+        "read",
+        "state_write"
+      ],
+      "resources": [
+        "cloudflare.account",
+        "github.refs",
+        "github.state"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-article-generation.yml",
+      "path": "scripts/jules_article_runner_v3.py",
+      "before": "9a55c5343577e0e7e134c1a6f6a3b10eda09ba9b70bb7d2a44c1af7d497f1e53",
+      "after": "c425e3d2cb06913960169b6fe618e082bc975f0dbf0b63c5068e1b6dcff8b531",
+      "role": "retired",
+      "capabilities": [
+        "branch_write",
+        "jules_continue",
+        "jules_create",
+        "pr_write",
+        "read"
+      ],
+      "resources": [
+        "github.pull_requests",
+        "github.refs",
+        "jules.sessions"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-article-validation.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "worker",
+      "capabilities": [
+        "branch_write",
+        "read",
+        "state_write"
+      ],
+      "resources": [
+        "github.refs",
+        "github.state"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-article-worker.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "worker",
+      "capabilities": [
+        "branch_write",
+        "image_provider_create",
+        "image_write",
+        "jules_continue",
+        "jules_create",
+        "pr_write",
+        "read",
+        "state_write"
+      ],
+      "resources": [
+        "github.pull_requests",
+        "github.refs",
+        "github.state",
+        "image_provider.jobs",
+        "jules.sessions"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-article-worker.yml",
+      "path": "scripts/jules_article_runner_v3.py",
+      "before": "9a55c5343577e0e7e134c1a6f6a3b10eda09ba9b70bb7d2a44c1af7d497f1e53",
+      "after": "c425e3d2cb06913960169b6fe618e082bc975f0dbf0b63c5068e1b6dcff8b531",
+      "role": "worker",
+      "capabilities": [
+        "branch_write",
+        "image_provider_create",
+        "image_write",
+        "jules_continue",
+        "jules_create",
+        "pr_write",
+        "read",
+        "state_write"
+      ],
+      "resources": [
+        "github.pull_requests",
+        "github.refs",
+        "github.state",
+        "image_provider.jobs",
+        "jules.sessions"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-current-gifted-completion.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "capability_write",
+        "provider_continue",
+        "provider_create",
+        "read",
+        "workflow_dispatch",
+        "youtube_metadata",
+        "youtube_upload"
+      ],
+      "resources": [
+        "github.dispatch",
+        "github.state",
+        "notebooklm.jobs",
+        "youtube.metadata",
+        "youtube.objects"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-daily-video.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "branch_write",
+        "capability_write",
+        "jules_continue",
+        "jules_create",
+        "pr_write",
+        "provider_continue",
+        "provider_create",
+        "read",
+        "workflow_dispatch",
+        "youtube_metadata",
+        "youtube_upload"
+      ],
+      "resources": [
+        "github.dispatch",
+        "github.pull_requests",
+        "github.refs",
+        "github.state",
+        "jules.sessions",
+        "notebooklm.jobs",
+        "youtube.metadata",
+        "youtube.objects"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "branch_write",
+        "capability_write",
+        "jules_continue",
+        "jules_create",
+        "provider_continue",
+        "provider_create",
+        "read",
+        "workflow_dispatch"
+      ],
+      "resources": [
+        "github.dispatch",
+        "github.refs",
+        "github.state",
+        "jules.sessions",
+        "notebooklm.jobs"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "branch_write",
+        "capability_write",
+        "read",
+        "workflow_dispatch",
+        "youtube_metadata",
+        "youtube_upload"
+      ],
+      "resources": [
+        "github.dispatch",
+        "github.refs",
+        "github.state",
+        "youtube.metadata",
+        "youtube.objects"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "branch_write",
+        "capability_write",
+        "jules_continue",
+        "jules_create",
+        "provider_continue",
+        "provider_create",
+        "read",
+        "status_write",
+        "workflow_dispatch",
+        "youtube_metadata",
+        "youtube_upload"
+      ],
+      "resources": [
+        "github.dispatch",
+        "github.refs",
+        "github.state",
+        "github.statuses",
+        "jules.sessions",
+        "notebooklm.jobs",
+        "youtube.metadata",
+        "youtube.objects"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-live-e2e-test.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "capability_write",
+        "cloudflare_write",
+        "pr_write",
+        "provider_continue",
+        "provider_create",
+        "read",
+        "workflow_dispatch",
+        "youtube_metadata",
+        "youtube_upload"
+      ],
+      "resources": [
+        "cloudflare.account",
+        "github.dispatch",
+        "github.pull_requests",
+        "github.state",
+        "notebooklm.jobs",
+        "youtube.metadata",
+        "youtube.objects"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-media-worker.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "worker",
+      "capabilities": [
+        "branch_write",
+        "capability_write",
+        "provider_continue",
+        "provider_create",
+        "read",
+        "state_write",
+        "youtube_metadata",
+        "youtube_upload"
+      ],
+      "resources": [
+        "github.refs",
+        "github.state",
+        "notebooklm.jobs",
+        "youtube.metadata",
+        "youtube.objects"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "branch_write",
+        "capability_write",
+        "jules_continue",
+        "jules_create",
+        "pr_write",
+        "provider_continue",
+        "provider_create",
+        "read",
+        "workflow_dispatch",
+        "youtube_metadata",
+        "youtube_upload"
+      ],
+      "resources": [
+        "github.dispatch",
+        "github.pull_requests",
+        "github.refs",
+        "github.state",
+        "jules.sessions",
+        "notebooklm.jobs",
+        "youtube.metadata",
+        "youtube.objects"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-short-v4.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "branch_write",
+        "capability_write",
+        "provider_continue",
+        "provider_create",
+        "read",
+        "workflow_dispatch",
+        "youtube_metadata",
+        "youtube_upload"
+      ],
+      "resources": [
+        "github.dispatch",
+        "github.refs",
+        "github.state",
+        "notebooklm.jobs",
+        "youtube.metadata",
+        "youtube.objects"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "diagnostic",
+      "capabilities": [
+        "read"
+      ],
+      "resources": []
+    },
+    {
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "scripts/jules_article_runner_v3.py",
+      "before": "9a55c5343577e0e7e134c1a6f6a3b10eda09ba9b70bb7d2a44c1af7d497f1e53",
+      "after": "c425e3d2cb06913960169b6fe618e082bc975f0dbf0b63c5068e1b6dcff8b531",
+      "role": "diagnostic",
+      "capabilities": [
+        "read"
+      ],
+      "resources": []
+    },
+    {
+      "workflow": ".github/workflows/kesher-stability-pr.yml",
+      "path": "tests/test_jules_article_runner.py",
+      "before": "b48f706877dbcd58bec9b666410687e69faa16f0afc6ba03c2001d019827b23b",
+      "after": "d541c542fd04b4c3f92ce6788222d1d2c8e06062b637d8323b156e373b47bd7a",
+      "role": "diagnostic",
+      "capabilities": [
+        "read"
+      ],
+      "resources": []
+    },
+    {
+      "workflow": ".github/workflows/kesher-video-evidence-repair.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "read",
+        "workflow_dispatch"
+      ],
+      "resources": [
+        "github.dispatch"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/normalize-article-pr.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "branch_write",
+        "read",
+        "workflow_dispatch"
+      ],
+      "resources": [
+        "github.dispatch",
+        "github.refs"
+      ]
+    },
+    {
+      "workflow": ".github/workflows/repair-existing-article-heroes.yml",
+      "path": "package.json",
+      "before": "c76c5d141fc88ae09efbec7be267cf294e40e7b21cf0888b557990673ba4c2a9",
+      "after": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+      "role": "retired",
+      "capabilities": [
+        "branch_write",
+        "image_provider_create",
+        "image_write",
+        "pr_write",
+        "read"
+      ],
+      "resources": [
+        "github.pull_requests",
+        "github.refs",
+        "image_provider.jobs"
+      ]
+    }
+  ],
+  "production_state_written": false,
+  "public_completion_inferred": false
+}

@@ -10,6 +10,13 @@ import unittest
 from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
+from tests.test_media_provenance_contract import audio_fixture
+from scripts.kesher_runtime.github import GitHubStateStore
+from scripts.kesher_runtime.identity import MediaIdentity, SourceIdentity
+from scripts.kesher_runtime.media_state import CanonicalMediaState
+from scripts.kesher_runtime.state import bind_source, new_state, plan_command
+from scripts.kesher_runtime.worker import WorkerContext
+from tests.test_kesher_canonical_state import CODE, NOW, ContentsServer
 
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "scripts" / "kesher_daily_pipeline.py"
@@ -65,6 +72,19 @@ class PipelineTestCase(unittest.TestCase):
 
     def write_posts(self, posts: list[dict]) -> None:
         self.posts_file.write_text(json.dumps(posts, ensure_ascii=False), encoding="utf-8")
+
+    def claimed_media_state(self, item: dict) -> CanonicalMediaState:
+        """Media effects require a claimed command, not a legacy artifact dictionary."""
+        source = item["source"]
+        identity = SourceIdentity(source["date"], source["slug"], source["content_sha256"])
+        target = MediaIdentity(identity, "overview")
+        canonical = bind_source(new_state(), identity, now=NOW)
+        canonical, command_id = plan_command(canonical, target, "publish", 1, {}, code_sha=CODE, now=NOW)
+        store = GitHubStateStore(ContentsServer(canonical), "owner/repo")
+        context = WorkerContext(store, command_id, "123/1", target, code_sha=CODE, now=lambda: NOW)
+        context.claim()
+        self.state_dir.mkdir(parents=True, exist_ok=True)
+        return CanonicalMediaState(context, item, encryption_key="test-only-upload-capability-key")
 
     def test_selects_newest_unused_published_hebrew_article(self) -> None:
         older = hebrew_post("older", "2026-08-01")
@@ -224,8 +244,8 @@ class PipelineTestCase(unittest.TestCase):
     def test_generation_persists_exact_task_and_source_ids(self) -> None:
         source = pipeline.source_metadata(hebrew_post())
         self.write_posts([hebrew_post()])
-        item = pipeline.new_item(source)
-        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        state = self.claimed_media_state(pipeline.new_item(source))
+        item = state.item
         pipeline.save_state(state)
         with mock.patch.object(pipeline, "run_notebooklm", return_value={"source": {"id": "source-exact"}}):
             pipeline.add_source(state, item)
@@ -240,6 +260,14 @@ class PipelineTestCase(unittest.TestCase):
         arguments = run.call_args.args[0]
         self.assertEqual(arguments[arguments.index("--style") + 1], "auto")
         self.assertNotIn("--style-prompt", arguments)
+        restored = CanonicalMediaState(state.context, item)
+        self.assertEqual(restored.item["source_id"], "source-exact")
+        self.assertEqual(restored.item["task_id"], "task-exact")
+        self.assertEqual(restored.item["artifact_id"], "task-exact")
+        effects = state.context.store.load().state["commands"][state.context.command_id]["effects"]
+        self.assertEqual(effects["provider_source"]["receipt"], {"source_id": "source-exact"})
+        self.assertEqual(effects["provider_generation"]["receipt"], {"task_id": "task-exact", "artifact_id": "task-exact"})
+        self.assertFalse((self.state_dir / "state.json").exists())
 
     def test_rejected_same_day_item_allows_different_unused_source(self) -> None:
         prior_post = hebrew_post(slug="prior")
@@ -263,6 +291,83 @@ class PipelineTestCase(unittest.TestCase):
         saved = pipeline.load_state()["items"]
         self.assertEqual(len(saved), 2)
         self.assertNotEqual(saved[0]["source"]["content_sha256"], saved[1]["source"]["content_sha256"])
+
+    def test_exact_recovery_advances_source_selected_item_without_duplicate(self) -> None:
+        post = hebrew_post("shared-laughter-couples-intimacy", "2026-10-30")
+        self.write_posts([post])
+        source = pipeline.source_metadata(post)
+        item = pipeline.new_item(source)
+        item["status"] = "source_selected"
+        item["source_id"] = None
+        item["task_id"] = None
+        item["artifact_id"] = None
+        original_id = item["id"]
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+
+        def fake_add_source(state, current, *, allow_exact_recovery=False):
+            self.assertTrue(allow_exact_recovery)
+            self.assertEqual(current["id"], original_id)
+            current["source_id"] = "source-exact"
+            current["status"] = "source_added"
+
+        def fake_start_generation(state, current, *, allow_exact_recovery=False):
+            self.assertTrue(allow_exact_recovery)
+            self.assertEqual(current["id"], original_id)
+            current["task_id"] = "task-exact"
+            current["artifact_id"] = "task-exact"
+            current["status"] = "generating"
+
+        with mock.patch.dict(os.environ, {
+            "TARGET_ITEM_ID": original_id,
+            "TARGET_SLUG": source["slug"],
+            "TARGET_CONTENT_SHA256": source["content_sha256"],
+            "OPERATION": "recovery",
+            "KESHER_RECOVERY_MODE": "true",
+        }, clear=False), mock.patch.object(pipeline, "auth_preflight"), mock.patch.object(
+            pipeline, "add_source", side_effect=fake_add_source
+        ) as add_source, mock.patch.object(
+            pipeline, "start_generation", side_effect=fake_start_generation
+        ) as start_generation, mock.patch.object(
+            pipeline, "wait_for_generation", return_value=False
+        ):
+            self.assertEqual(pipeline.run_generation(0, None, slug=source["slug"], item_id=original_id), 0)
+
+        add_source.assert_called_once()
+        start_generation.assert_called_once()
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(len(saved), 1)
+        self.assertEqual(saved[0]["id"], original_id)
+        self.assertEqual(saved[0]["source"]["content_sha256"], source["content_sha256"])
+
+    def test_exact_recovery_refuses_source_selected_with_existing_provider_identifier(self) -> None:
+        row = hebrew_post("shared-laughter-couples-intimacy", "2026-10-30")
+        self.write_posts([row])
+        source = pipeline.source_metadata(row)
+        item = pipeline.new_item(source)
+        item.update({
+            "status": "source_selected",
+            "source_id": None,
+            "task_id": "already-started",
+            "artifact_id": "already-started",
+        })
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+
+        with mock.patch.dict(os.environ, {
+            "TARGET_ITEM_ID": item["id"],
+            "TARGET_SLUG": source["slug"],
+            "TARGET_CONTENT_SHA256": source["content_sha256"],
+            "OPERATION": "recovery",
+            "KESHER_RECOVERY_MODE": "true",
+        }, clear=False), mock.patch.object(pipeline, "auth_preflight"), mock.patch.object(
+            pipeline, "run_notebooklm"
+        ) as provider_call:
+            with self.assertRaisesRegex(pipeline.PipelineError, "provider identifiers already exist"):
+                pipeline.run_generation(0, None, slug=source["slug"], item_id=item["id"])
+
+        provider_call.assert_not_called()
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(len(saved), 1)
+        self.assertEqual(saved[0]["id"], item["id"])
 
     def test_active_item_concurrency_prevention(self) -> None:
         source = pipeline.source_metadata(hebrew_post())
@@ -479,7 +584,9 @@ class PipelineTestCase(unittest.TestCase):
             "remotion_props_path": props.name,
             "remotion_props_sha256": pipeline.sha256_file(props),
         })
-        self.assertTrue(pipeline.remotion_cache_is_reusable(item, output))
+        # #865 requires the exact source/final/signature/renderer provenance;
+        # matching plan and props alone cannot certify a cached MP4.
+        self.assertFalse(pipeline.remotion_cache_is_reusable(item, output))
 
     def test_remotion_rebuild_preserves_rejected_evidence_history(self) -> None:
         state, item = self.make_pending_item()
@@ -595,8 +702,16 @@ class PipelineTestCase(unittest.TestCase):
                 "effective_plan": {"render_mode": "full"},
             }
 
-        with mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda p: p in {remotion, sig_asset}), \
-             mock.patch.object(pipeline, "ffprobe", return_value={"duration": 100.0}), \
+        def signature_fixture(_core, _final, _item_id, **_kwargs):
+            segment = self.state_dir / "signature-segment.mp4"
+            segment.write_bytes(b"encoded-signature-fixture")
+            return segment, pipeline.sha256_file(segment)
+
+        def audio_copy_fixture(_core, raw_path, final_path):
+            return audio_fixture(pipeline.sha256_file(raw_path), pipeline.sha256_file(final_path), item["content_duration_seconds"])
+
+        with mock.patch("scripts.kesher_runtime.render_provenance.preserve_source_audio", side_effect=audio_copy_fixture), mock.patch("scripts.kesher_runtime.render_provenance.extract_signature_segment", side_effect=signature_fixture), mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda p: p in {remotion, sig_asset}), \
+             mock.patch.object(pipeline, "ffprobe", return_value={"duration": 100.0, "audio_codec": "aac"}), \
              mock.patch.object(pipeline, "generate_motion_plan", return_value={"render_mode": "full"}), \
              mock.patch.object(pipeline, "prepare_signature_asset", return_value="sig.png"), \
              mock.patch.object(pipeline, "execute_enhancement", side_effect=fake_enhancement):
@@ -695,7 +810,7 @@ class PipelineTestCase(unittest.TestCase):
         ), mock.patch.object(
             pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
         ):
-            self.assertEqual(pipeline.upload_only(), 0)
+            self.assertEqual(pipeline.upload_only(item_id=item["id"]), 0)
 
         saved = pipeline.load_state()["items"][0]
         self.assertFalse(saved.get("uploaded", False))
@@ -729,27 +844,35 @@ class PipelineTestCase(unittest.TestCase):
         video = self.state_dir / "final.mp4"
         video.parent.mkdir(parents=True, exist_ok=True)
         video.write_bytes(b"video")
-        item = {
-            "id": "item",
-            "status": "approved",
-            "youtube_metadata": {
+        item = pipeline.new_item(pipeline.source_metadata(hebrew_post()))
+        item.update(
+            id="item",
+            status="approved",
+            youtube_metadata={
                 "title": "כותרת בעברית",
                 "description": "תיאור בעברית",
                 "tags": ["זוגיות"],
             },
-        }
-        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        )
+        state = self.claimed_media_state(item)
+        item = state.item
         response = SimpleNamespace(status_code=200, headers={"Location": "https://upload.invalid/session"})
         with mock.patch.object(pipeline.requests, "post", return_value=response) as post:
             pipeline.start_resumable_upload(state, item, "token", video)
 
         self.assertIs(post.call_args.kwargs["json"]["status"]["containsSyntheticMedia"], True)
+        durable = state.context.store.load().state
+        effect = durable["commands"][state.context.command_id]["effects"]["youtube_session"]
+        self.assertIs(effect["request"]["metadata"]["status"]["containsSyntheticMedia"], True)
+        self.assertNotIn("https://upload.invalid/session", json.dumps(durable))
+        restored = CanonicalMediaState(state.context, item, encryption_key=state.encryption_key)
+        self.assertEqual(restored.item["upload_session_uri"], "https://upload.invalid/session")
 
     def test_expired_resumable_session_fails_closed(self) -> None:
         response = SimpleNamespace(status_code=410, headers={})
         with mock.patch.object(pipeline.requests, "put", return_value=response):
             with self.assertRaisesRegex(pipeline.PipelineError, "refusing a second insert"):
-                pipeline.resume_offset("https://upload.invalid/session", "token", 100)
+                pipeline.resume_upload_status("https://upload.invalid/session", "token", 100)
 
     @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg tools unavailable")
     def test_real_ffmpeg_probe_and_eight_frame_evidence(self) -> None:
@@ -785,8 +908,16 @@ class PipelineTestCase(unittest.TestCase):
         }
         remotion = pipeline.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
         signature_source = pipeline.PROJECT_DIR / pipeline.SIGNATURE_SOURCE
-        with mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda path: path in {remotion, signature_source}), mock.patch.object(
-            pipeline, "ffprobe", return_value={"duration": 104.0}
+        def signature_fixture(_core, _final, _item_id, **_kwargs):
+            segment = self.state_dir / "signature-segment.mp4"
+            segment.write_bytes(b"encoded-signature-fixture")
+            return segment, pipeline.sha256_file(segment)
+
+        def audio_copy_fixture(_core, raw_path, final_path):
+            return audio_fixture(pipeline.sha256_file(raw_path), pipeline.sha256_file(final_path), item["content_duration_seconds"])
+
+        with mock.patch("scripts.kesher_runtime.render_provenance.preserve_source_audio", side_effect=audio_copy_fixture), mock.patch("scripts.kesher_runtime.render_provenance.extract_signature_segment", side_effect=signature_fixture), mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda path: path in {remotion, signature_source}), mock.patch.object(
+            pipeline, "ffprobe", return_value={"duration": 104.0, "audio_codec": "aac"}
         ), mock.patch.object(pipeline.subprocess, "run") as run:
             def finish(*_args: object, **_kwargs: object) -> SimpleNamespace:
                 output.write_bytes(b"rendered-video" * 100)
@@ -865,8 +996,16 @@ class PipelineTestCase(unittest.TestCase):
 
         remotion = pipeline.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
         signature_source = pipeline.PROJECT_DIR / pipeline.SIGNATURE_SOURCE
-        with mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda p: p in {remotion, signature_source}), mock.patch.object(
-            pipeline, "ffprobe", return_value={"duration": 90.0}
+        def signature_fixture(_core, _final, _item_id, **_kwargs):
+            segment = self.state_dir / "signature-segment.mp4"
+            segment.write_bytes(b"encoded-signature-fixture")
+            return segment, pipeline.sha256_file(segment)
+
+        def audio_copy_fixture(_core, raw_path, final_path):
+            return audio_fixture(pipeline.sha256_file(raw_path), pipeline.sha256_file(final_path), item["content_duration_seconds"])
+
+        with mock.patch("scripts.kesher_runtime.render_provenance.preserve_source_audio", side_effect=audio_copy_fixture), mock.patch("scripts.kesher_runtime.render_provenance.extract_signature_segment", side_effect=signature_fixture), mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda p: p in {remotion, signature_source}), mock.patch.object(
+            pipeline, "ffprobe", return_value={"duration": 90.0, "audio_codec": "aac"}
         ), mock.patch.object(pipeline.subprocess, "run") as run:
             def finish(*_args: object, **_kwargs: object) -> SimpleNamespace:
                 output.write_bytes(b"rendered-mp4" * 100)
@@ -1048,7 +1187,7 @@ class PipelineTestCase(unittest.TestCase):
         item["raw_mp4"] = raw.name
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
         output = self.root / "evidence"
-        prepared = evidence.prepare(self.state_dir, output)
+        prepared = evidence.prepare(self.state_dir, output, item["id"])
         self.assertEqual(prepared["id"], item["id"])
         self.assertFalse((output / raw.name).exists())
         self.assertFalse((output / item["final_mp4"]).exists())
@@ -1061,7 +1200,8 @@ class PipelineTestCase(unittest.TestCase):
     def test_jules_review_parse_failure_remains_blocked_from_upload(self) -> None:
         _, item = self.make_pending_item()
         error_msg = "Jules completed without parseable structured review JSON"
-        handled = reviewer.handle_non_fatal_review_error(self.state_dir, error_msg)
+        with mock.patch.dict(os.environ, {"TARGET_ITEM_ID": item["id"]}, clear=False):
+            handled = reviewer.handle_non_fatal_review_error(self.state_dir, error_msg)
         self.assertTrue(handled)
 
         saved = pipeline.load_state()["items"][0]
@@ -1077,7 +1217,7 @@ class PipelineTestCase(unittest.TestCase):
         ), mock.patch.object(
             pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
         ):
-            self.assertEqual(pipeline.upload_only(), 0)
+            self.assertEqual(pipeline.upload_only(item_id=item["id"]), 0)
 
         blocked = pipeline.load_state()["items"][0]
         self.assertFalse(blocked.get("uploaded", False))
@@ -1086,7 +1226,8 @@ class PipelineTestCase(unittest.TestCase):
     def test_jules_review_api_timeout_remains_blocked_from_upload(self) -> None:
         _, item = self.make_pending_item()
         error_msg = "Jules review timed out"
-        handled = reviewer.handle_non_fatal_review_error(self.state_dir, error_msg)
+        with mock.patch.dict(os.environ, {"TARGET_ITEM_ID": item["id"]}, clear=False):
+            handled = reviewer.handle_non_fatal_review_error(self.state_dir, error_msg)
         self.assertTrue(handled)
 
         saved = pipeline.load_state()["items"][0]
@@ -1101,7 +1242,7 @@ class PipelineTestCase(unittest.TestCase):
         ), mock.patch.object(
             pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
         ):
-            self.assertEqual(pipeline.upload_only(), 0)
+            self.assertEqual(pipeline.upload_only(item_id=item["id"]), 0)
 
         blocked = pipeline.load_state()["items"][0]
         self.assertFalse(blocked.get("uploaded", False))
@@ -1132,7 +1273,7 @@ class PipelineTestCase(unittest.TestCase):
         ), mock.patch.object(
             pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
         ):
-            self.assertEqual(pipeline.upload_only(), 0)
+            self.assertEqual(pipeline.upload_only(item_id=item["id"]), 0)
 
         blocked = pipeline.load_state()["items"][0]
         self.assertFalse(blocked.get("uploaded", False))
@@ -1163,7 +1304,7 @@ class PipelineTestCase(unittest.TestCase):
         ), mock.patch.object(
             pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
         ):
-            self.assertEqual(pipeline.upload_only(), 0)
+            self.assertEqual(pipeline.upload_only(item_id=item["id"]), 0)
 
         uploaded = pipeline.load_state()["items"][0]
         self.assertTrue(uploaded["uploaded"])
@@ -1177,7 +1318,7 @@ class PipelineTestCase(unittest.TestCase):
         self.assertFalse(handled)
 
         with mock.patch.object(pipeline, "youtube_access_token", return_value="mock-token"):
-            self.assertEqual(pipeline.upload_only(), 0)
+            self.assertEqual(pipeline.upload_only(item_id=item["id"]), 0)
 
         saved = pipeline.load_state()["items"][0]
         self.assertFalse(saved.get("uploaded", False))
@@ -1421,5 +1562,247 @@ exec /usr/bin/python3 "$@"
             self.assertIn("Artifact 1 is missing or invalid; skipping", result.stdout)
             self.assertIn("Durable video-state artifacts exist but none is trustworthy", result.stderr)
 
+
+class YoutubeMetadataRecoveryTest(unittest.TestCase):
+    def _item(self) -> dict:
+        source = {
+            "date": "2026-10-15",
+            "slug": "returning-to-israel-relationship-struggles",
+            "content_sha256": "f" * 64,
+            "title": "חוזרים לארץ אחרי רילוקיישן?",
+            "excerpt": "חזרה לישראל יכולה לטלטל את הזוגיות.",
+            "canonical_url": "https://kesher.saharoni.com/blog/returning-to-israel-relationship-struggles",
+            "category": "זוגיות",
+            "subcategory": "זוגיות בעלייה ורילוקיישן",
+        }
+        expected = pipeline.publication_metadata(source, "short")
+        return {
+            "id": "video-20261015-short",
+            "type": "article_short",
+            "source": source,
+            "youtube_id": "OVWw2wu0LOo",
+            "youtube_metadata": expected,
+            "enhancement_assets_used": [],
+        }
+
+    def test_repairs_same_persisted_video_metadata_without_new_insert(self) -> None:
+        item = self._item()
+        expected = item["youtube_metadata"]
+        wrong = {
+            "id": item["youtube_id"],
+            "snippet": {
+                "channelId": pipeline.YOUTUBE_CHANNEL_ID,
+                "title": expected["title"],
+                "description": expected["description"],
+                "tags": ["שגוי"],
+                "categoryId": "22",
+                "defaultLanguage": "he",
+                "defaultAudioLanguage": "he",
+            },
+        }
+        corrected = {
+            "id": item["youtube_id"],
+            "snippet": {**wrong["snippet"], "tags": expected["tags"]},
+        }
+        response = mock.Mock(status_code=200)
+        with mock.patch.object(
+            pipeline, "youtube_get", side_effect=[{"items": [wrong]}, {"items": [corrected]}]
+        ), mock.patch.object(pipeline.requests, "put", return_value=response) as put:
+            row = pipeline.repair_persisted_youtube_metadata(item, "token")
+
+        self.assertEqual(row["id"], item["youtube_id"])
+        put.assert_called_once()
+        args, kwargs = put.call_args
+        self.assertEqual(args[0], "https://www.googleapis.com/youtube/v3/videos")
+        self.assertEqual(kwargs["params"], {"part": "snippet"})
+        self.assertEqual(kwargs["json"]["id"], item["youtube_id"])
+        self.assertEqual(kwargs["json"]["snippet"]["tags"], expected["tags"])
+        self.assertEqual(kwargs["json"]["snippet"]["title"], expected["title"])
+        self.assertEqual(kwargs["json"]["snippet"]["description"], expected["description"])
+
+    def test_refuses_metadata_repair_for_wrong_channel(self) -> None:
+        item = self._item()
+        wrong_channel = {
+            "id": item["youtube_id"],
+            "snippet": {
+                "channelId": "other-channel",
+                "title": item["youtube_metadata"]["title"],
+                "description": item["youtube_metadata"]["description"],
+                "tags": ["שגוי"],
+                "categoryId": "22",
+            },
+        }
+        with mock.patch.object(pipeline, "youtube_get", return_value={"items": [wrong_channel]}), mock.patch.object(
+            pipeline.requests, "put"
+        ) as put:
+            with self.assertRaisesRegex(pipeline.PipelineError, "wrong YouTube channel"):
+                pipeline.repair_persisted_youtube_metadata(item, "token")
+        put.assert_not_called()
+
+    def test_upload_only_repairs_metadata_drift_on_initial_upload(self) -> None:
+        item = self._item()
+        item["type"] = "video_overview"
+        item["youtube_metadata"] = pipeline.publication_metadata(item["source"], "overview")
+        item["youtube_id"] = None
+        item["status"] = "approved"
+        item["technical_verified"] = True
+        item["final_mp4"] = "video.mp4"
+        item["manifest_path"] = "manifest.json"
+        video_file = pipeline.STATE_DIR / "video.mp4"
+        manifest_file = pipeline.STATE_DIR / "manifest.json"
+        video_file.parent.mkdir(parents=True, exist_ok=True)
+        video_file.write_bytes(b"dummy mp4")
+        manifest_file.write_text("{}", encoding="utf-8")
+        state = {"version": 1, "items": [item]}
+
+        mock_repair = mock.Mock()
+        with mock.patch.object(pipeline, "load_state", return_value=state), \
+             mock.patch.object(pipeline, "save_state"), \
+             mock.patch.object(pipeline, "youtube_access_token", return_value="token"), \
+             mock.patch.object(pipeline, "verify_authenticated_channel"), \
+             mock.patch.object(pipeline, "start_resumable_upload", return_value="https://upload.session"), \
+             mock.patch.object(pipeline, "legacy_external_effect", return_value={"video_id": "new-yt-id"}), \
+             mock.patch.object(pipeline, "verify_public_upload", side_effect=[
+                 pipeline.PipelineError("PUBLIC_METADATA_INVALID: remote tags differ from source-derived tags"),
+                 {"channel_id": pipeline.YOUTUBE_CHANNEL_ID, "privacy_status": "public", "processing_status": "succeeded"},
+             ]), \
+             mock.patch.object(pipeline, "repair_persisted_youtube_metadata", mock_repair):
+            res = pipeline.upload_only(item_id=item["id"], state=state)
+
+        self.assertEqual(res, 0)
+        self.assertEqual(item["youtube_id"], "new-yt-id")
+        self.assertTrue(item["uploaded"])
+        self.assertEqual(item["status"], "uploaded")
+        mock_repair.assert_called_once_with(item, "token")
+
+    def test_verify_public_upload_retries_transient_remote_metadata_mismatch_until_match(self) -> None:
+        item = self._item()
+        expected = item["youtube_metadata"]
+        transient_row = {
+            "id": item["youtube_id"],
+            "snippet": {
+                "channelId": pipeline.YOUTUBE_CHANNEL_ID,
+                "title": expected["title"],
+                "description": expected["description"],
+                "tags": [],
+                "categoryId": "22",
+                "defaultLanguage": "he",
+                "defaultAudioLanguage": "he",
+            },
+            "status": {"privacyStatus": "public"},
+            "processingDetails": {"processingStatus": "processing"},
+        }
+        settled_row = {
+            "id": item["youtube_id"],
+            "snippet": {
+                **transient_row["snippet"],
+                "tags": expected["tags"],
+            },
+            "status": {"privacyStatus": "public"},
+            "processingDetails": {"processingStatus": "succeeded"},
+        }
+        with mock.patch.object(
+            pipeline, "youtube_get", side_effect=[{"items": [transient_row]}, {"items": [settled_row]}]
+        ), mock.patch.object(pipeline.time, "sleep"):
+            proof = pipeline.verify_public_upload(item, "token", timeout_seconds=60)
+        self.assertEqual(proof["video_id"], item["youtube_id"])
+        self.assertEqual(proof["processing_status"], "succeeded")
+
+    def test_verify_public_upload_raises_when_deadline_exceeded_with_metadata_mismatch(self) -> None:
+        item = self._item()
+        expected = item["youtube_metadata"]
+        wrong_row = {
+            "id": item["youtube_id"],
+            "snippet": {
+                "channelId": pipeline.YOUTUBE_CHANNEL_ID,
+                "title": expected["title"],
+                "description": expected["description"],
+                "tags": ["wrong"],
+                "categoryId": "22",
+                "defaultLanguage": "he",
+                "defaultAudioLanguage": "he",
+            },
+            "status": {"privacyStatus": "public"},
+            "processingDetails": {"processingStatus": "succeeded"},
+        }
+        with mock.patch.object(pipeline, "youtube_get", return_value={"items": [wrong_row]}):
+            with self.assertRaisesRegex(pipeline.PipelineError, "PUBLIC_METADATA_INVALID: remote tags differ"):
+                pipeline.verify_public_upload(item, "token", timeout_seconds=0)
+
+    def test_repair_persisted_youtube_metadata_handles_403_and_rechecks(self) -> None:
+        item = self._item()
+        expected = item["youtube_metadata"]
+        wrong = {
+            "id": item["youtube_id"],
+            "snippet": {
+                "channelId": pipeline.YOUTUBE_CHANNEL_ID,
+                "title": expected["title"],
+                "description": expected["description"],
+                "tags": ["שגוי"],
+                "categoryId": "22",
+                "defaultLanguage": "he",
+                "defaultAudioLanguage": "he",
+            },
+        }
+        settled = {
+            "id": item["youtube_id"],
+            "snippet": {**wrong["snippet"], "tags": expected["tags"]},
+        }
+        response_403 = mock.Mock(status_code=403)
+        with mock.patch.object(
+            pipeline, "youtube_get", side_effect=[{"items": [wrong]}, {"items": [settled]}]
+        ), mock.patch.object(pipeline.requests, "put", return_value=response_403):
+            row = pipeline.repair_persisted_youtube_metadata(item, "token")
+        self.assertEqual(row["id"], item["youtube_id"])
+
+    def test_upload_only_handles_403_repair_when_public_verification_succeeds(self) -> None:
+        item = self._item()
+        item["type"] = "video_overview"
+        item["youtube_metadata"] = pipeline.publication_metadata(item["source"], "overview")
+        item["youtube_id"] = "existing-id"
+        item["status"] = "uploading"
+        item["technical_verified"] = True
+        state = {"version": 1, "items": [item]}
+
+        with mock.patch.object(pipeline, "load_state", return_value=state), \
+             mock.patch.object(pipeline, "save_state"), \
+             mock.patch.object(pipeline, "youtube_access_token", return_value="token"), \
+             mock.patch.object(pipeline, "verify_authenticated_channel"), \
+             mock.patch.object(pipeline, "verify_public_upload", side_effect=[
+                 pipeline.PipelineError("PUBLIC_METADATA_INVALID: remote tags differ from source-derived tags"),
+                 {"channel_id": pipeline.YOUTUBE_CHANNEL_ID, "privacy_status": "public", "processing_status": "succeeded"},
+             ]), \
+             mock.patch.object(pipeline, "repair_persisted_youtube_metadata", side_effect=pipeline.PipelineError("YouTube metadata repair failed with HTTP 403")):
+            res = pipeline.upload_only(item_id=item["id"], state=state)
+
+        self.assertEqual(res, 0)
+        self.assertTrue(item["uploaded"])
+        self.assertEqual(item["status"], "uploaded")
+
+    def test_prune_notebooklm_sources_deletes_excess_sources(self) -> None:
+        sources = [{"id": f"src-{i}", "title": f"Title {i}"} for i in range(50)]
+        deleted = []
+        def fake_run(args, timeout=120):
+            if args[0] == "source" and args[1] == "list":
+                return {"sources": sources, "count": 50}
+            if args[0] == "source" and args[1] == "delete":
+                deleted.append(args[2])
+                return {"status": "ok"}
+            return {}
+
+        with mock.patch.object(pipeline, "run_notebooklm", side_effect=fake_run):
+            pipeline.prune_notebooklm_sources("test-nb", keep_count=35)
+
+        self.assertEqual(len(deleted), 15)
+        self.assertEqual(deleted, [f"src-{i}" for i in range(15)])
+
+    def test_prune_notebooklm_sources_no_action_when_within_limit(self) -> None:
+        sources = [{"id": f"src-{i}", "title": f"Title {i}"} for i in range(10)]
+        with mock.patch.object(pipeline, "run_notebooklm", return_value={"sources": sources, "count": 10}) as run_mock:
+            pipeline.prune_notebooklm_sources("test-nb", keep_count=35)
+        self.assertEqual(run_mock.call_count, 1)
+
+
 if __name__ == "__main__":
     unittest.main()
+

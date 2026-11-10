@@ -44,7 +44,6 @@ function testTrustedArticleImageV2() {
   const trigger = workflow.split('permissions:', 1)[0];
   const workerV3 = read('.github/scripts/article-image-worker-v3.py');
   const workerV4 = read('.github/scripts/article-image-worker-v4.py');
-  const gate = read('.github/scripts/validate-article-pr.py');
   const articleController = read('.github/scripts/article-pr-controller-v3.py');
   const generation = read('.github/workflows/kesher-article-generation.yml');
   const runnerV3 = read('scripts/jules_article_runner_v3.py');
@@ -67,8 +66,9 @@ function testTrustedArticleImageV2() {
   assert.strictEqual(contract.image.owned_generation_variants, 3);
   assert.strictEqual(contract.image.local_fallback_candidates_per_category, 40);
   assert.strictEqual(contract.image.managed_fallback_library_target_per_category, 40);
-  assert.strictEqual(contract.image.local_fallback_reuse_cooldown_days, 90);
-  assert.strictEqual(contract.image.local_fallback_max_lifetime_uses, 3);
+  assert.strictEqual(contract.image.local_fallback_reuse_cooldown_days, 0);
+  assert.strictEqual(contract.image.local_fallback_max_lifetime_uses, 1);
+  assert.strictEqual(contract.image.hero_unique_enforcement_start_date, '2026-10-14');
   assert.strictEqual(contract.image.gemini_model, 'gemini-3.1-flash-image');
   assert.strictEqual(contract.image.visual_verifier_model, 'gemini-3.5-flash');
   assert.strictEqual(contract.image.external_stock_requires_pixel_verification, true);
@@ -83,10 +83,10 @@ function testTrustedArticleImageV2() {
   assert(!workflow.includes('UNSPLASH_ACCESS_KEY'));
   assert(workflow.includes('PEXELS_API_KEY'));
   assert(workflow.includes('PIXABAY_API_KEY'));
-  assert(workflow.includes('article-image-worker-v4.py'));
+  assert(workflow.includes('article-image-worker-v5.py'));
   assert(workflow.includes('actions/workflows/ci.yml/dispatches'));
-  assert(controllerWorkflow.includes('Kesher Trusted Article Image'));
-  assert(controllerWorkflow.includes('kesher_content_controller_stabilized.py'));
+  assert(controllerWorkflow.includes('scripts.kesher_runtime.bridge_admission --controller'));
+  assert(controllerWorkflow.includes('scripts/kesher_content_controller_stabilized.py --report-json'));
   assert(stabilizedController.includes('kesher_content_controller_v5_runtime'));
   assert(stabilizedController.includes('runtime.install_runtime()'));
   assert(!controllerWorkflow.includes('kesher_content_controller_v3_best_effort.py --report-json'));
@@ -105,22 +105,12 @@ function testTrustedArticleImageV2() {
   assert(workerV4.includes('sha256_collision'));
   assert(workerV4.includes('load_seed_manifest'));
   assert(workerV4.includes('load_bank_manifest'));
-  assert(workerV4.includes('reuse_cooldown_days'));
-  assert(workerV4.includes('max_lifetime_uses'));
+  assert(workerV4.includes('published hero pixels are never reused'));
+  assert(!workerV4.includes('reuse-due-to-inventory-pressure'));
   assert(!workerV4.includes('LocalEditorial'));
   assert(!workerV4.includes('generate_editorial_fallback'));
   assert(workerV3.includes('stock_queries'));
   assert(!workerV4.includes('core.github_content(repo, source_path'));
-
-  // The raw gate remains strict for any image-bearing PR, while the production
-  // article controller removes only the exact missing-image publication error.
-  assert(gate.includes('New article requires a trusted local image; no-image publication is forbidden'));
-  assert(articleController.includes('load_validator_best_effort'));
-  assert(gate.includes('Image Pipeline Version: 2'));
-  assert(gate.includes('generated|stock|local_fallback'));
-  assert(gate.includes('Image SHA-256 mismatch'));
-  assert(gate.includes('Image dimensions mismatch'));
-  assert(!gate.includes('No-image fallback must record'));
 
   assert(generation.includes('scripts/jules_article_runner_v4.py'));
   assert(runnerV4.includes('jules_article_runner_v3'));
@@ -136,42 +126,71 @@ function testTrustedArticleImageV2() {
 
 function testIndependentArticlePrGateRuntime() {
   execFileSync('python3', ['-c', `
-import runpy, struct, hashlib
+import runpy, io, hashlib, json
+from PIL import Image
 controller = runpy.run_path('.github/scripts/article-pr-controller-v3.py')
 validator = controller['load_validator_best_effort']()
 evaluate = validator.evaluate
+head_sha = 'a' * 40
 base = [{'id':'older'}]
-content = '<p>' + ('מילה ' * 700) + '</p>' + ('<h3>שאלה</h3>' * 5)
+content = '<p>תקשורת זוגית היא הבסיס לכל מערכת יחסים בריאה ומאושרת. ' + ('מילה ' * 700) + '</p>' + ('<h3>שאלה</h3>' * 5)
 base_pr = {
-  'state':'open','draft':False,'title':'Publish Kesher article: valid-new-post',
-  'base':{'ref':'main','repo':{'full_name':'test/repo'}},
-  'head':{'repo':{'full_name':'test/repo'}},
+  'state':'open','draft':False,'title':'Publish Kesher article: couples-communication',
+  'base':{'sha':'c' * 40,'ref':'main','repo':{'full_name':'test/repo'}},
+  'head':{'sha':head_sha,'repo':{'full_name':'test/repo'}},
 }
-checks = [{'name':'verify','conclusion':'success'}]
+checks = [{'name':'verify','conclusion':'success','head_sha':head_sha}]
 
-no_image = {'id':'valid-new-post','content':content}
+no_image = {'id':'couples-communication','title':'תקשורת זוגית מעשית','primaryKeyword':'תקשורת זוגית','content':content}
 errors = evaluate(base_pr, [{'filename':'src/data/posts.json'}], checks, base, base+[no_image], lambda _: b'')
 assert any('no-image publication is forbidden' in e for e in errors), errors
 
-png = b'\\x89PNG\\r\\n\\x1a\\n' + b'\\x00'*8 + struct.pack('>II',1200,675) + b'fixture'
+output = io.BytesIO()
+Image.new('RGB', (1200,675), (96,127,150)).save(output, format='PNG')
+png = output.getvalue()
 sha = hashlib.sha256(png).hexdigest()
-body = f'''Image Pipeline Version: 2
+post = dict(no_image, image='/images/generated/blog/couples-communication.png', imageAlt='זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור')
+post_sha = hashlib.sha256(json.dumps(post, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
+body = f'''Primary Keyword: תקשורת זוגית
+Image Pipeline Version: 2
 Image Provider: Local
-Image Attempt Chain: gemini-1/pexels/pixabay/local-curated
+Image Attempt Chain: gemini-1/gemini-2/pexels/pixabay/local-curated
 Image Generation Result: local_fallback
 Image Source URL: local://public/images/generated/blog/listening-in-relationships.jpg
 Image SHA-256: {sha}
 Image Dimensions: 1200x675
-Image Visual Match: זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור'''
+Image Visual Match: זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור
+Image Article ID: couples-communication
+Image Article SHA-256: {post_sha}
+Image Evidence Head: {head_sha}'''
 pr = dict(base_pr, body=body)
-post = dict(no_image, image='/images/generated/blog/valid-new-post.png', imageAlt='זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור')
-files = [{'filename':'src/data/posts.json'}, {'filename':'public/images/generated/blog/valid-new-post.png'}]
+files = [{'filename':'src/data/posts.json'}, {'filename':'public/images/generated/blog/couples-communication.png'}]
 errors = evaluate(pr, files, checks, base, base+[post], lambda _: png)
 assert errors == [], errors
 
-bad_body = body.replace(sha, '0'*64)
-errors = evaluate(dict(pr, body=bad_body), files, checks, base, base+[post], lambda _: png)
-assert any('SHA-256 mismatch' in e for e in errors), errors
+for old, new, expected in [
+  ('Image SHA-256: ' + sha, 'Image SHA-256: ' + '0'*64, 'SHA-256 mismatch'),
+  ('Image Pipeline Version: 2', 'Image Pipeline Version: 1', 'Pipeline Version'),
+  ('Image Generation Result: local_fallback', 'Image Generation Result: stock', 'local_fallback'),
+  ('Image Provider: Local', 'Image Provider: Unknown', 'trusted Image Provider'),
+  ('Image Dimensions: 1200x675', 'Image Dimensions: 640x360', 'dimensions mismatch'),
+  ('Image Article SHA-256: ' + post_sha, 'Image Article SHA-256: ' + '0'*64, 'current article content'),
+  ('Image Evidence Head: ' + head_sha, 'Image Evidence Head: ' + 'b'*40, 'current PR head'),
+  ('local://public/images/generated/blog/listening-in-relationships.jpg', 'local://../untrusted.jpg', 'repository source'),
+]:
+  errors = evaluate(dict(pr, body=body.replace(old, new)), files, checks, base, base+[post], lambda _: png)
+  assert any(expected in e for e in errors), (expected, errors)
+
+for changed in [dict(post, title='תקשורת זוגית בישראל ואתגריה'), dict(post, imageAlt='תיאור חלופי שאינו תואם להוכחת המאמר')]:
+  errors = evaluate(pr, files, checks, base, base+[changed], lambda _: png)
+  assert any('current article content' in e for e in errors), errors
+errors = evaluate(pr, files, [dict(checks[0], head_sha='b'*40)], base, base+[post], lambda _: png)
+assert any('current head' in e for e in errors), errors
+
+corrupt = png[:24]
+corrupt_body = body.replace(sha, hashlib.sha256(corrupt).hexdigest())
+errors = evaluate(dict(pr, body=corrupt_body), files, checks, base, base+[post], lambda _: corrupt)
+assert any('Image validation failed' in e for e in errors), errors
 
 video = dict(post, video='/videos/generated/placeholder.mp4')
 errors = evaluate(pr, files+[{'filename':'public/videos/generated/placeholder.mp4'}], checks, base, base+[video], lambda _: png)
@@ -237,15 +256,28 @@ function testOtherAuditAutonomyContracts() {
 
 function testTechnicalVideoPublicationCannotBeRegressed() {
   const daily = read('.github/workflows/kesher-daily-video.yml');
+  const advisory = read('.github/workflows/kesher-video-advisory-review.yml');
   const contract = JSON.parse(read('config/kesher-production-contract.json'));
   assert.strictEqual(contract.video.publication_gate, 'technical');
   assert.strictEqual(contract.video.jules_review, 'advisory');
   assert.strictEqual(contract.video.durable_state_artifacts_to_keep, 3);
   assert.strictEqual(contract.video.max_attempts_per_stage, 3);
-  assert(daily.includes('Jules performs strict advisory review'));
+  assert(daily.includes('skip_jules_advisory:'));
+  assert(daily.includes('default: true'));
+  assert(daily.includes('inputs.skip_jules_advisory != true'));
+  assert(daily.includes('Dispatch strict advisory Jules review'));
+  assert(daily.includes('gh workflow run kesher-video-advisory-review.yml'));
+  assert(!daily.includes('Jules performs strict advisory review'));
+  assert(!daily.includes('scripts/jules_video_reviewer_v3.py'));
   assert(daily.includes('Prepare technically verified upload'));
   assert(daily.includes('Upload exact technically verified MP4'));
+  assert(daily.indexOf('Dispatch strict advisory Jules review') < daily.indexOf('Prepare technically verified upload'));
   assert(daily.includes('continue-on-error: true'));
+  assert(advisory.includes('Jules performs strict advisory review'));
+  assert(advisory.includes('scripts/jules_video_reviewer_v3.py'));
+  assert(advisory.includes('Validate exact advisory evidence identity'));
+  assert(advisory.includes('Persist advisory Jules review result'));
+  assert(advisory.includes('Delete temporary Jules evidence branch'));
   assert(!daily.includes('mandatory Jules'));
   assert(!daily.includes('Jules-approved MP4'));
   assert(!daily.includes('Upload only after all mandatory review gates approve'));

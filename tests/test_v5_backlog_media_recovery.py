@@ -102,13 +102,27 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
         post_b["controllerManaged"] = False
         post_b["title"] = "פוסט נוסף באותו תאריך"
 
+        source_a = v5.article_source_identity(post_a)
+        source_b = v5.article_source_identity(post_b)
         gh.posts = [post_a, post_b]
 
         class Site:
             def get(self, url):
                 if "post-b" in url:
-                    return 200, "<html><h1>פוסט נוסף באותו תאריך</h1></html>"
-                return 200, "<html><h1>התמודדות עם תחושת החמצה ברווקות מאוחרת</h1></html>"
+                    return 200, (
+                        "<html><head>"
+                        '<link rel="canonical" href="https://kesher.saharoni.com/blog/post-b">'
+                        '<meta property="og:url" content="https://kesher.saharoni.com/blog/post-b">'
+                        f'<meta name="kesher:content-sha256" content="{source_b["content_sha256"]}">'
+                        "</head><h1>פוסט נוסף באותו תאריך</h1></html>"
+                    )
+                return 200, (
+                    "<html><head>"
+                    '<link rel="canonical" href="https://kesher.saharoni.com/blog/post-a">'
+                    '<meta property="og:url" content="https://kesher.saharoni.com/blog/post-a">'
+                    f'<meta name="kesher:content-sha256" content="{source_a["content_sha256"]}">'
+                    "</head><h1>התמודדות עם תחושת החמצה ברווקות מאוחרת</h1></html>"
+                )
 
         controller = runtime.RuntimeV5Controller(
             gh,
@@ -116,18 +130,33 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
             now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
         )
 
-        # 1. Matches post-b by explicit row slug
-        state_b = {
+        # Manual/editorial backlog identity is not adoptable from slug alone.
+        weak_manual_state = {
             "backlog": [{
                 "cycle": "2026-08-19",
                 "article": {"slug": "post-b"},
             }]
         }
+        row, source = controller._published_backlog_source(weak_manual_state)
+        self.assertIsNone(row)
+        self.assertIsNone(source)
+
+        # Exact immutable slug + content SHA may adopt the explicit manual source.
+        state_b = {
+            "backlog": [{
+                "cycle": "2026-08-19",
+                "article": {
+                    "slug": "post-b",
+                    "quality_content_sha256": source_b["content_sha256"],
+                },
+            }]
+        }
         row, source = controller._published_backlog_source(state_b)
         self.assertIsNotNone(row)
         self.assertEqual(source["slug"], "post-b")
+        self.assertEqual(source["content_sha256"], source_b["content_sha256"])
 
-        # 2. Matches post-a by controllerManaged when no slug specified
+        # A single controller-managed source remains deterministic without a saved slug.
         state_no_slug = {
             "backlog": [{
                 "cycle": "2026-08-19",
@@ -137,6 +166,261 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
         row, source = controller._published_backlog_source(state_no_slug)
         self.assertIsNotNone(row)
         self.assertEqual(source["slug"], "post-a")
+        self.assertEqual(source["content_sha256"], source_a["content_sha256"])
+
+    def test_exact_backlog_source_404_dispatches_one_deploy_and_dedups_active_run(self):
+        gh = FakeGitHub()
+        post = prior_article()
+        post["controllerManaged"] = True
+        source = v5.article_source_identity(post)
+        gh.posts = [post]
+
+        class MissingSite:
+            def get(self, url):
+                return 404, "<html><h1>not found</h1></html>"
+
+        state = {
+            "status": "waiting_for_article_window",
+            "backlog": [{
+                "cycle": "2026-08-19",
+                "status": "blocked",
+                "article": {
+                    "slug": source["slug"],
+                    "quality_content_sha256": source["content_sha256"],
+                    "attempt_count": 3,
+                    "deploy_attempts": 0,
+                },
+            }],
+            "history": [],
+        }
+        controller = runtime.RuntimeV5Controller(
+            gh,
+            MissingSite(),
+            now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
+        )
+
+        action = controller._backlog_media_preflight(state)
+        self.assertEqual(action.kind, "dispatch_backlog_deploy")
+        self.assertEqual(gh.dispatches, [(core.DEPLOY_WORKFLOW, None)])
+        self.assertEqual(state["backlog"][0]["article"]["deploy_attempts"], 1)
+        self.assertFalse(state["backlog"][0]["media"]["article_live"])
+
+        second = controller._backlog_media_preflight(state)
+        self.assertEqual(second.kind, "wait")
+        self.assertEqual(gh.dispatches, [(core.DEPLOY_WORKFLOW, None)])
+
+    def test_deploy_exhausted_backlog_that_is_now_public_advances_to_long_video(self):
+        gh = FakeGitHub()
+        post = prior_article()
+        post["controllerManaged"] = True
+        source = v5.article_source_identity(post)
+        gh.posts = [post]
+
+        class LiveSite:
+            def get(self, _url):
+                return 200, (
+                    "<html><head>"
+                    f'<link rel="canonical" href="https://kesher.saharoni.com/blog/{source["slug"]}">'
+                    f'<meta property="og:url" content="https://kesher.saharoni.com/blog/{source["slug"]}">'
+                    f'<meta name="kesher:content-sha256" content="{source["content_sha256"]}">'
+                    "</head>"
+                    f"<body><h1>{post['title']}</h1></body></html>"
+                )
+
+        state = {
+            "status": "waiting_for_article_window",
+            "backlog": [{
+                "cycle": "2026-08-19",
+                "status": "article_deploying",
+                "article": {
+                    "slug": source["slug"],
+                    "quality_content_sha256": source["content_sha256"],
+                    "deploy_attempts": runtime.MAX_BACKLOG_DEPLOY_DISPATCHES,
+                },
+                "media": {
+                    "article_live": False,
+                    "article_deploy_status": "exhausted",
+                    "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED",
+                },
+            }],
+            "history": [],
+        }
+        controller = runtime.RuntimeV5Controller(
+            gh,
+            LiveSite(),
+            now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
+        )
+
+        action = controller._backlog_media_preflight(state)
+
+        self.assertEqual(action.kind, "dispatch_backlog_long_video")
+        self.assertTrue(state["backlog"][0]["media"]["article_live"])
+        self.assertEqual(state["backlog"][0]["media"]["article_deploy_status"], "complete")
+        self.assertIsNone(state["backlog"][0]["media"]["last_error"])
+        self.assertEqual(
+            gh.dispatches,
+            [(
+                v5.LONG_VIDEO_WORKFLOW,
+                {
+                    "operation": "full",
+                    "target_slug": source["slug"],
+                    "target_content_sha256": source["content_sha256"],
+                },
+            )],
+        )
+
+    def test_deploy_exhausted_backlog_still_404s_without_an_extra_deploy(self):
+        gh = FakeGitHub()
+        post = prior_article()
+        post["controllerManaged"] = True
+        source = v5.article_source_identity(post)
+        gh.posts = [post]
+
+        class MissingSite:
+            def get(self, _url):
+                return 404, "<html><h1>not found</h1></html>"
+
+        state = {
+            "status": "waiting_for_article_window",
+            "backlog": [{
+                "cycle": "2026-08-19",
+                "article": {
+                    "slug": source["slug"],
+                    "quality_content_sha256": source["content_sha256"],
+                    "deploy_attempts": runtime.MAX_BACKLOG_DEPLOY_DISPATCHES,
+                },
+                "media": {
+                    "article_live": False,
+                    "article_deploy_status": "exhausted",
+                    "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED",
+                },
+            }],
+            "history": [],
+        }
+        controller = runtime.RuntimeV5Controller(
+            gh,
+            MissingSite(),
+            now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
+        )
+
+        action = controller._backlog_media_preflight(state)
+
+        self.assertEqual(action.kind, "blocked")
+        self.assertEqual(action.reason, "prior-cycle article deployment attempts exhausted")
+        self.assertEqual(gh.dispatches, [])
+        self.assertFalse(state["backlog"][0]["media"]["article_live"])
+        self.assertEqual(state["backlog"][0]["media"]["article_deploy_status"], "exhausted")
+
+    def _starvation_fixture(self, *, older_public=False, all_exhausted=False):
+        gh = FakeGitHub()
+        posts, rows, probes = [], [], []
+        for date, slug, attempts in [("2026-08-19", "newest-exhausted", 3), ("2026-08-18", "older-eligible", 3 if all_exhausted else 0)]:
+            post = prior_article()
+            post.update(id=slug, slug=slug, date=date, controllerManaged=True)
+            source = v5.article_source_identity(post)
+            posts.append(post)
+            rows.append({"cycle": date, "article": {"slug": slug, "quality_content_sha256": source["content_sha256"], "deploy_attempts": attempts}})
+        gh.posts = posts
+        class Site:
+            def get(self, url):
+                probes.append(url)
+                if older_public and url.endswith("/older-eligible"):
+                    source = v5.article_source_identity(posts[1])
+                    return 200, (f'<link rel="canonical" href="{url}"><meta name="kesher:content-sha256" content="{source["content_sha256"]}"><h1>{posts[1]["title"]}</h1>')
+                return 404, "<h1>Not found</h1>"
+        state = {"status": "complete", "backlog": rows, "history": []}
+        controller = runtime.RuntimeV5Controller(gh, Site(), now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ))
+        return controller, state, gh, probes
+
+    def test_exhausted_deploy_does_not_starve_older_eligible_deploy(self):
+        controller, state, gh, probes = self._starvation_fixture()
+        action = controller._backlog_media_preflight(state)
+        self.assertEqual(action.kind, "dispatch_backlog_deploy")
+        self.assertEqual(action.inputs["target_slug"], "older-eligible")
+        self.assertEqual(gh.dispatches, [(core.DEPLOY_WORKFLOW, None)])
+        self.assertEqual([r["article"]["deploy_attempts"] for r in state["backlog"]], [3, 1])
+        self.assertEqual(state["backlog"][0]["media"]["last_error"], "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED")
+        self.assertEqual(len(probes), 2)
+
+    def test_all_exhausted_backlog_is_bounded_and_does_not_fail_completed_cycle(self):
+        controller, state, gh, probes = self._starvation_fixture(all_exhausted=True)
+        action = controller._backlog_media_preflight(state)
+        self.assertEqual(action.kind, "wait")
+        self.assertEqual(gh.dispatches, [])
+        self.assertEqual(len(probes), 2)
+        for row in state["backlog"]:
+            self.assertEqual(row["article"]["deploy_attempts"], 3)
+            self.assertEqual(row["media"]["last_error"], "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED")
+            self.assertIsNot(row["media"].get("complete"), True)
+
+    def test_exhausted_deploy_does_not_starve_older_public_media(self):
+        controller, state, gh, probes = self._starvation_fixture(older_public=True)
+        action = controller._backlog_media_preflight(state)
+        self.assertEqual(action.kind, "dispatch_backlog_long_video")
+        self.assertEqual(gh.dispatches[0][1]["target_slug"], "older-eligible")
+        self.assertEqual(len(gh.dispatches), 1)
+        self.assertEqual(len(probes), 2)
+
+    def test_exhausted_primary_cannot_fall_back_to_stale_lower_budget_copy(self):
+        controller, state, gh, probes = self._starvation_fixture(all_exhausted=True)
+        state["backlog"] = state["backlog"][:1]
+        stale = copy.deepcopy(state["backlog"][0])
+        stale["article"]["deploy_attempts"] = 0
+        state["media_recovery_backlog"] = [stale]
+        action = controller._backlog_media_preflight(state)
+        self.assertEqual(action.kind, "wait")
+        self.assertEqual(gh.dispatches, [])
+        self.assertEqual(stale["article"]["deploy_attempts"], 0)
+        self.assertEqual(len(probes), 1)
+
+    def test_fallback_collection_remains_usable_when_primary_initially_empty(self):
+        controller, state, gh, probes = self._starvation_fixture()
+        state["media_recovery_backlog"] = state.pop("backlog")
+        action = controller._backlog_media_preflight(state)
+        self.assertEqual(action.kind, "dispatch_backlog_deploy")
+        self.assertEqual(action.inputs["target_slug"], "older-eligible")
+        self.assertEqual(len(gh.dispatches), 1)
+
+    def test_candidate_quarantine_history_survives_missing_and_full_history(self):
+        for size in (None, 100):
+            with self.subTest(size=size):
+                controller, state, gh, probes = self._starvation_fixture()
+                state["backlog"][0]["article"]["slug"] = "missing-identity"
+                if size is None:
+                    state.pop("history")
+                else:
+                    state["history"] = [{"reason": f"old-{i}"} for i in range(size)]
+                action = controller._backlog_media_preflight(state)
+                self.assertEqual(action.kind, "dispatch_backlog_deploy")
+                self.assertTrue(any(x.get("reason") == "backlog_quarantined_ambiguous_identity" for x in state.get("history", [])))
+                self.assertLessEqual(len(state.get("history", [])), 100)
+
+    def test_published_backlog_source_rejects_title_only_public_page(self):
+        gh = FakeGitHub()
+        post = prior_article()
+        post["controllerManaged"] = True
+        gh.posts = [post]
+
+        class TitleOnlySite:
+            def get(self, url):
+                return 200, "<html><h1>התמודדות עם תחושת החמצה ברווקות מאוחרת</h1></html>"
+
+        controller = runtime.RuntimeV5Controller(
+            gh,
+            TitleOnlySite(),
+            now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
+        )
+        state = {
+            "backlog": [{
+                "cycle": "2026-08-19",
+                "article": {"slug": post["slug"]},
+            }]
+        }
+
+        row, source = controller._published_backlog_source(state)
+
+        self.assertIsNone(row)
+        self.assertIsNone(source)
 
     def test_exact_seed_selection_is_slug_and_hash_bound(self):
         old_post = prior_article()

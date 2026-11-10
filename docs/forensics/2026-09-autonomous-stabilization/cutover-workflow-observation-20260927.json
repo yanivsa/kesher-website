@@ -1,0 +1,592 @@
+{
+  "observed_at": "2026-09-27T20:36:04.458580+00:00",
+  "main_sha": "89b4c190626fd204ed7d61c4c5e0db8ed039ff04",
+  "workflow_count": 96,
+  "workflows": [
+    {
+      "id": 347298475,
+      "name": "AboutIdeasNow one-time submission",
+      "path": ".github/workflows/aboutideasnow-submit-once.yml",
+      "state": "active"
+    },
+    {
+      "id": 337968737,
+      "name": "Apply controller artifact redirect fix",
+      "path": ".github/workflows/apply-controller-artifact-redirect.yml",
+      "state": "active"
+    },
+    {
+      "id": 337962986,
+      "name": "Apply controller production-run filter",
+      "path": ".github/workflows/apply-controller-production-run-filter.yml",
+      "state": "active"
+    },
+    {
+      "id": 337995946,
+      "name": "Apply durable video state history patch",
+      "path": ".github/workflows/apply-keep-video-state-history.yml",
+      "state": "active"
+    },
+    {
+      "id": 337979596,
+      "name": "Apply single-scheduler video worker patch",
+      "path": ".github/workflows/apply-single-scheduler-video-patch.yml",
+      "state": "active"
+    },
+    {
+      "id": 337977787,
+      "name": "Apply strict review retry test update",
+      "path": ".github/workflows/apply-video-retry-test-patch.yml",
+      "state": "active"
+    },
+    {
+      "id": 337964365,
+      "name": ".github/workflows/apply-video-review-contract.yml",
+      "path": ".github/workflows/apply-video-review-contract.yml",
+      "state": "active"
+    },
+    {
+      "id": 337993366,
+      "name": "Apply durable video state fallback",
+      "path": ".github/workflows/apply-video-state-fallback-patch.yml",
+      "state": "active"
+    },
+    {
+      "id": 343136777,
+      "name": "Article Video Canary Preview",
+      "path": ".github/workflows/article-video-preview.yml",
+      "state": "active"
+    },
+    {
+      "id": 278381551,
+      "name": "Auto-close no-op PRs",
+      "path": ".github/workflows/auto-close-noop-prs.yml",
+      "state": "active"
+    },
+    {
+      "id": 285528275,
+      "name": "Auto-close stale Kesher article PRs",
+      "path": ".github/workflows/auto-close-stale-article-prs.yml",
+      "state": "active"
+    },
+    {
+      "id": 285527775,
+      "name": "Auto-merge Kesher article PRs",
+      "path": ".github/workflows/auto-merge-article-prs.yml",
+      "state": "active"
+    },
+    {
+      "id": 282663817,
+      "name": "Auto-merge Jules audit PRs",
+      "path": ".github/workflows/auto-merge-jules-audit-prs.yml",
+      "state": "active"
+    },
+    {
+      "id": 338335093,
+      "name": "Provision booking tracking infrastructure",
+      "path": ".github/workflows/booking-tracking-infrastructure.yml",
+      "state": "active"
+    },
+    {
+      "id": 362583521,
+      "name": "Build Article Fallback Library",
+      "path": ".github/workflows/build-article-fallback-library.yml",
+      "state": "active"
+    },
+    {
+      "id": 294200685,
+      "name": "CI",
+      "path": ".github/workflows/ci.yml",
+      "state": "active"
+    },
+    {
+      "id": 278383716,
+      "name": "Cleanup Jules branches",
+      "path": ".github/workflows/cleanup-jules-branches.yml",
+      "state": "active"
+    },
+    {
+      "id": 348622894,
+      "name": "Codex SEO Audit",
+      "path": ".github/workflows/codex-seo-audit.yml",
+      "state": "active"
+    },
+    {
+      "id": 343792124,
+      "name": "Deploy Preferred Sources Preview",
+      "path": ".github/workflows/deploy-preferred-sources-preview.yml",
+      "state": "active"
+    },
+    {
+      "id": 286470682,
+      "name": "Deploy to Cloudflare Pages",
+      "path": ".github/workflows/deploy.yml",
+      "state": "active"
+    },
+    {
+      "id": 354688713,
+      "name": "Goal E2E Isolation Patch",
+      "path": ".github/workflows/goal-e2e-isolation-patch.yml",
+      "state": "active"
+    },
+    {
+      "id": 347331297,
+      "name": "Google Ads API Audit",
+      "path": ".github/workflows/google-ads-api-audit.yml",
+      "state": "active"
+    },
+    {
+      "id": 290490772,
+      "name": "Jules Daily Kesher Industry Benchmarking",
+      "path": ".github/workflows/jules-daily-industry-benchmarking.yml",
+      "state": "active"
+    },
+    {
+      "id": 282663818,
+      "name": "Jules Daily Kesher Mobile Review",
+      "path": ".github/workflows/jules-daily-mobile-review.yml",
+      "state": "active"
+    },
+    {
+      "id": 282663819,
+      "name": "Jules Daily Kesher SEO GEO Review",
+      "path": ".github/workflows/jules-daily-seo-geo-review.yml",
+      "state": "active"
+    },
+    {
+      "id": 277986076,
+      "name": "Jules Nightly Kesher Site Fixes",
+      "path": ".github/workflows/jules-nightly-site-fixes.yml",
+      "state": "active"
+    },
+    {
+      "id": 343193640,
+      "name": "Jules Preferred Sources Canary",
+      "path": ".github/workflows/jules-preferred-sources-canary.yml",
+      "state": "active"
+    },
+    {
+      "id": 282663821,
+      "name": "Jules Weekly Kesher Content Review",
+      "path": ".github/workflows/jules-weekly-content-review.yml",
+      "state": "active"
+    },
+    {
+      "id": 354691923,
+      "name": "Kesher Activate Overview Media Mode Fix",
+      "path": ".github/workflows/kesher-activate-media-mode-fix.yml",
+      "state": "active"
+    },
+    {
+      "id": 337961220,
+      "name": "Kesher Article Generation",
+      "path": ".github/workflows/kesher-article-generation.yml",
+      "state": "active"
+    },
+    {
+      "id": 338738704,
+      "name": "Kesher Trusted Article Image",
+      "path": ".github/workflows/kesher-article-image.yml",
+      "state": "active"
+    },
+    {
+      "id": 358429827,
+      "name": "Kesher NotebookLM Auth Precedence Branch Patch",
+      "path": ".github/workflows/kesher-auth-precedence-branch-patch.yml",
+      "state": "active"
+    },
+    {
+      "id": 351196832,
+      "name": "Kesher Exact Backlog Media Recovery",
+      "path": ".github/workflows/kesher-backlog-media-recovery.yml",
+      "state": "active"
+    },
+    {
+      "id": 338927254,
+      "name": "Kesher Canary Force-Now Controller",
+      "path": ".github/workflows/kesher-canary-force-now.yml",
+      "state": "active"
+    },
+    {
+      "id": 351384285,
+      "name": "Kesher Content Controller V6 Shadow",
+      "path": ".github/workflows/kesher-content-controller-v6.yml",
+      "state": "active"
+    },
+    {
+      "id": 337960554,
+      "name": "Kesher Content Controller",
+      "path": ".github/workflows/kesher-content-controller.yml",
+      "state": "active"
+    },
+    {
+      "id": 354693375,
+      "name": "Kesher Current Article Public Check",
+      "path": ".github/workflows/kesher-current-article-public-check.yml",
+      "state": "active"
+    },
+    {
+      "id": 354684497,
+      "name": "Kesher Current Gifted Completion",
+      "path": ".github/workflows/kesher-current-gifted-completion.yml",
+      "state": "active"
+    },
+    {
+      "id": 331086666,
+      "name": "Kesher Daily NotebookLM Video Overview",
+      "path": ".github/workflows/kesher-daily-video.yml",
+      "state": "active"
+    },
+    {
+      "id": 351484777,
+      "name": "Kesher E2E Test Continuation",
+      "path": ".github/workflows/kesher-e2e-test-continuation.yml",
+      "state": "active"
+    },
+    {
+      "id": 354619058,
+      "name": "Kesher Final Attempt Video Fallback",
+      "path": ".github/workflows/kesher-final-attempt-fallback.yml",
+      "state": "active"
+    },
+    {
+      "id": 354657214,
+      "name": "Kesher Gifted Overview Direct Recovery",
+      "path": ".github/workflows/kesher-gifted-direct-recovery.yml",
+      "state": "active"
+    },
+    {
+      "id": 354680518,
+      "name": "Kesher Gifted Short Exact Dispatch",
+      "path": ".github/workflows/kesher-gifted-short-dispatch.yml",
+      "state": "active"
+    },
+    {
+      "id": 354750537,
+      "name": "Kesher Historical Canonical Media Scan",
+      "path": ".github/workflows/kesher-historical-media-scan.yml",
+      "state": "active"
+    },
+    {
+      "id": 353766724,
+      "name": "Kesher Historical Short Finalizer",
+      "path": ".github/workflows/kesher-historical-short-finalizer.yml",
+      "state": "active"
+    },
+    {
+      "id": 354753868,
+      "name": "Kesher Invidious Canonical Media Recovery",
+      "path": ".github/workflows/kesher-invidious-media-recovery.yml",
+      "state": "active"
+    },
+    {
+      "id": 354432081,
+      "name": "Kesher Live E2E Test",
+      "path": ".github/workflows/kesher-live-e2e-test.yml",
+      "state": "active"
+    },
+    {
+      "id": 359150275,
+      "name": "Kesher Master Supervisor",
+      "path": ".github/workflows/kesher-master-supervisor.yml",
+      "state": "active"
+    },
+    {
+      "id": 354707036,
+      "name": "Kesher NotebookLM Auth Recover Short",
+      "path": ".github/workflows/kesher-notebooklm-auth-recover-short.yml",
+      "state": "active"
+    },
+    {
+      "id": 354752850,
+      "name": "Kesher Piped Canonical Media Recovery",
+      "path": ".github/workflows/kesher-piped-media-recovery.yml",
+      "state": "active"
+    },
+    {
+      "id": 359341814,
+      "name": "Kesher Remotion Evidence Repair",
+      "path": ".github/workflows/kesher-remotion-evidence-repair.yml",
+      "state": "active"
+    },
+    {
+      "id": 360696002,
+      "name": "Kesher Repair Exact Video State",
+      "path": ".github/workflows/kesher-repair-exact-video-state.yml",
+      "state": "active"
+    },
+    {
+      "id": 354746618,
+      "name": "Kesher Short Recovery Embedded",
+      "path": ".github/workflows/kesher-short-recovery-embedded.yml",
+      "state": "active"
+    },
+    {
+      "id": 354718134,
+      "name": "Kesher Short Recovery Phase 2",
+      "path": ".github/workflows/kesher-short-recovery-phase2.yml",
+      "state": "active"
+    },
+    {
+      "id": 349292838,
+      "name": "Kesher Daily Article Short V4",
+      "path": ".github/workflows/kesher-short-v4.yml",
+      "state": "active"
+    },
+    {
+      "id": 354716406,
+      "name": "Kesher Short From Verified Overview Recovery",
+      "path": ".github/workflows/kesher-short-verified-overview-recovery.yml",
+      "state": "active"
+    },
+    {
+      "id": 338050996,
+      "name": "Kesher Stability PR Validation",
+      "path": ".github/workflows/kesher-stability-pr.yml",
+      "state": "active"
+    },
+    {
+      "id": 354686604,
+      "name": "Kesher Target Slug Regression Check",
+      "path": ".github/workflows/kesher-target-slug-regression-check.yml",
+      "state": "active"
+    },
+    {
+      "id": 345470959,
+      "name": "Kesher Task Supervisor Controller (Legacy Validation Only)",
+      "path": ".github/workflows/kesher-task-supervisor-controller.yml",
+      "state": "active"
+    },
+    {
+      "id": 333267598,
+      "name": "One-off Kesher Video Canary Dispatch",
+      "path": ".github/workflows/kesher-video-canary-dispatch.yml",
+      "state": "active"
+    },
+    {
+      "id": 360831498,
+      "name": "Kesher Video Evidence Repair",
+      "path": ".github/workflows/kesher-video-evidence-repair.yml",
+      "state": "active"
+    },
+    {
+      "id": 354749898,
+      "name": "Kesher YouTube Embed Media Probe",
+      "path": ".github/workflows/kesher-youtube-embed-media-probe.yml",
+      "state": "active"
+    },
+    {
+      "id": 349250484,
+      "name": "Kesher Normalize Article PR",
+      "path": ".github/workflows/normalize-article-pr.yml",
+      "state": "active"
+    },
+    {
+      "id": 333278814,
+      "name": "OCI A1 Capacity Watch",
+      "path": ".github/workflows/oci-a1-capacity-watch.yml",
+      "state": "active"
+    },
+    {
+      "id": 347487895,
+      "name": "Repair OCI Bridge via Workers Beta Version API",
+      "path": ".github/workflows/oci-bridge-repair-beta-20260901.yml",
+      "state": "active"
+    },
+    {
+      "id": 347483139,
+      "name": "Repair OCI Bridge by Inheriting Known-Good Key",
+      "path": ".github/workflows/oci-bridge-repair-inherit-20260901.yml",
+      "state": "active"
+    },
+    {
+      "id": 347443805,
+      "name": "Restore OCI Bridge Known-Good Version",
+      "path": ".github/workflows/oci-bridge-restore-20260901.yml",
+      "state": "active"
+    },
+    {
+      "id": 334165848,
+      "name": "OCI Always Free OpenClaw Plan B E2",
+      "path": ".github/workflows/oci-openclaw-plan-b-e2.yml",
+      "state": "active"
+    },
+    {
+      "id": 333275018,
+      "name": "OCI Always Free OpenClaw Provision V2",
+      "path": ".github/workflows/oci-openclaw-provision-v2.yml",
+      "state": "active"
+    },
+    {
+      "id": 333272481,
+      "name": "OCI Always Free OpenClaw Provision",
+      "path": ".github/workflows/oci-openclaw-provision.yml",
+      "state": "active"
+    },
+    {
+      "id": 333268727,
+      "name": "OCI Secure Bridge Bootstrap",
+      "path": ".github/workflows/oci-secure-bridge-bootstrap.yml",
+      "state": "active"
+    },
+    {
+      "id": 337067176,
+      "name": "One-time dispatch missing Kesher article",
+      "path": ".github/workflows/one-time-dispatch-missing-article.yml",
+      "state": "active"
+    },
+    {
+      "id": 353733583,
+      "name": "Kesher One-Time Hero Repair 20260909",
+      "path": ".github/workflows/one-time-repair-missing-hero-20260909.yml",
+      "state": "active"
+    },
+    {
+      "id": 354763985,
+      "name": "Diagnose OpenClaw Fresh VM Agent",
+      "path": ".github/workflows/openclaw-agent-diagnostic.yml",
+      "state": "active"
+    },
+    {
+      "id": 354683396,
+      "name": "OpenClaw Clean Rebuild",
+      "path": ".github/workflows/openclaw-clean-rebuild.yml",
+      "state": "active"
+    },
+    {
+      "id": 347517048,
+      "name": "Diagnose OpenClaw Cloudflare Preflight",
+      "path": ".github/workflows/openclaw-cloudflare-preflight-diagnostic.yml",
+      "state": "active"
+    },
+    {
+      "id": 334261375,
+      "name": "OpenClaw Cloudflare Setup",
+      "path": ".github/workflows/openclaw-cloudflare-setup.yml",
+      "state": "active"
+    },
+    {
+      "id": 340424915,
+      "name": "Deploy OpenClaw Cloudflare Tunnel",
+      "path": ".github/workflows/openclaw-cloudflare-tunnel.yml",
+      "state": "active"
+    },
+    {
+      "id": 334259959,
+      "name": "OpenClaw Dashboard Preflight",
+      "path": ".github/workflows/openclaw-dashboard-preflight.yml",
+      "state": "active"
+    },
+    {
+      "id": 335556453,
+      "name": "Finalize OpenClaw Tailscale Serve",
+      "path": ".github/workflows/openclaw-finalize-tailscale-serve.yml",
+      "state": "active"
+    },
+    {
+      "id": 335566780,
+      "name": "Inspect OpenClaw Tailnet Console",
+      "path": ".github/workflows/openclaw-inspect-tailnet-console.yml",
+      "state": "active"
+    },
+    {
+      "id": 335576768,
+      "name": "Repair OpenClaw Offline and Verify Cloudflare Access",
+      "path": ".github/workflows/openclaw-offline-boot-repair.yml",
+      "state": "active"
+    },
+    {
+      "id": 335562900,
+      "name": "Recover OpenClaw Preserving Tailnet",
+      "path": ".github/workflows/openclaw-preserve-tailnet-recovery.yml",
+      "state": "active"
+    },
+    {
+      "id": 338370770,
+      "name": "OpenClaw Recovery Controller",
+      "path": ".github/workflows/openclaw-recovery-controller.yml",
+      "state": "active"
+    },
+    {
+      "id": 350236025,
+      "name": "OpenClaw recovery lint",
+      "path": ".github/workflows/openclaw-recovery-lint.yml",
+      "state": "active"
+    },
+    {
+      "id": 344478161,
+      "name": "Repair Article Hero Images",
+      "path": ".github/workflows/repair-article-images.yml",
+      "state": "active"
+    },
+    {
+      "id": 362583522,
+      "name": "Repair Legacy Article Heroes",
+      "path": ".github/workflows/repair-existing-article-heroes.yml",
+      "state": "active"
+    },
+    {
+      "id": 358851595,
+      "name": ".github/workflows/s3-pr802-hero-repair.yml",
+      "path": ".github/workflows/s3-pr802-hero-repair.yml",
+      "state": "active"
+    },
+    {
+      "id": 358739183,
+      "name": ".github/workflows/s3-v5-provider-resume-repair.yml",
+      "path": ".github/workflows/s3-v5-provider-resume-repair.yml",
+      "state": "active"
+    },
+    {
+      "id": 358727842,
+      "name": "S3 V5 Upload Target Repair",
+      "path": ".github/workflows/s3-v5-upload-target-repair.yml",
+      "state": "active"
+    },
+    {
+      "id": 354647414,
+      "name": "Temporary PR 763 patch",
+      "path": ".github/workflows/tmp-fix-pr763.yml",
+      "state": "active"
+    },
+    {
+      "id": 349169036,
+      "name": "Temporary Repair PR 582",
+      "path": ".github/workflows/tmp-repair-pr-582.yml",
+      "state": "active"
+    },
+    {
+      "id": 349148607,
+      "name": "Temporary Repair PR 616",
+      "path": ".github/workflows/tmp-repair-pr-616.yml",
+      "state": "active"
+    },
+    {
+      "id": 337057199,
+      "name": "YouTube OAuth diagnostic",
+      "path": ".github/workflows/youtube-oauth-diagnostic.yml",
+      "state": "active"
+    },
+    {
+      "id": 294204178,
+      "name": "Dependabot Updates",
+      "path": "dynamic/dependabot/dependabot-updates",
+      "state": "active"
+    },
+    {
+      "id": 320961763,
+      "name": "Dependency Graph",
+      "path": "dynamic/dependabot/update-graph",
+      "state": "active"
+    }
+  ],
+  "nonterminal_runs": {
+    "in_progress": [],
+    "queued": [],
+    "waiting": [],
+    "pending": [],
+    "requested": []
+  },
+  "mutations_performed": false,
+  "note": "Observation only. Zero runs at a sample does not retire future triggers or external Jules writers."
+}

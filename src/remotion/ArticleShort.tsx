@@ -23,6 +23,7 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
   url,
   signatureImageSrc = "signature-mask.svg",
   motionPlan = [],
+  preserveSourceSharpness = false,
 }) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -36,12 +37,17 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
   const targetSpan = target ? Math.max(1, target.endFrame - target.startFrame) : 1;
   const targetProgress = target ? clamp01((frame - target.startFrame) / targetSpan) : 0;
   const pulse = Math.sin(targetProgress * Math.PI);
-  const zoom = target ? SHORT_GEOMETRY.baseScale + (Math.max(1.08, target.zoom) - 1) * pulse : SHORT_GEOMETRY.baseScale;
+  const motionZoom = target ? Math.max(1.0, target.zoom) : 1.0;
+  const zoom = preserveSourceSharpness
+    ? 1.0
+    : (target ? SHORT_GEOMETRY.baseScale + (motionZoom - 1) * pulse : SHORT_GEOMETRY.baseScale);
   const focusX = target ? clamp01(target.focusX) : 0.5;
   const focusY = target ? clamp01(target.focusY) : 0.5;
-  const translateX = target ? (0.5 - focusX) * 110 * pulse : 0;
-  const translateY = target ? (0.5 - focusY) * 170 * pulse : 0;
-  const rotation = target ? target.rotation * pulse : 0;
+  const rawTranslateX = target ? (0.5 - focusX) * 110 * pulse : 0;
+  const rawTranslateY = target ? (0.5 - focusY) * 170 * pulse : 0;
+  const translateX = preserveSourceSharpness ? Math.round(rawTranslateX) : rawTranslateX;
+  const translateY = preserveSourceSharpness ? Math.round(rawTranslateY) : rawTranslateY;
+  const rotation = preserveSourceSharpness ? 0 : (target ? target.rotation * pulse : 0);
 
   const plannedAssets = motionPlan.filter(
     (entry) => entry.assetRef && entry.assetType && entry.assetStartFrame !== undefined && entry.assetEndFrame !== undefined,

@@ -4,7 +4,7 @@ import hashlib
 import importlib.util
 import inspect
 import json
-import struct
+import io
 import sys
 import tempfile
 import unittest
@@ -32,7 +32,11 @@ def load(path: Path, name: str):
 
 
 def fake_png(width: int = 1200, height: int = 675, marker: bytes = b"fixture") -> bytes:
-    return b"\x89PNG\r\n\x1a\n" + b"\x00" * 8 + struct.pack(">II", width, height) + marker
+    from PIL import Image
+    output = io.BytesIO()
+    color = tuple(hashlib.sha256(marker).digest()[:3])
+    Image.new("RGB", (width, height), color).save(output, format="PNG")
+    return output.getvalue()
 
 
 def fake_manifest(paths: list[str]) -> dict:
@@ -61,9 +65,10 @@ class ArticleImageWorkerTests(unittest.TestCase):
         )
         self.assertEqual(image["owned_generation_variants"], 3)
         self.assertEqual(image["local_fallback_candidates_per_category"], 40)
-        self.assertEqual(image["local_fallback_reuse_cooldown_days"], 90)
-        self.assertEqual(image["local_fallback_max_lifetime_uses"], 3)
-        self.assertEqual(image["local_fallback_policy"], "prefer-unused-then-90-day-cooldown-max-3-uses")
+        self.assertEqual(image["local_fallback_reuse_cooldown_days"], 0)
+        self.assertEqual(image["local_fallback_max_lifetime_uses"], 1)
+        self.assertEqual(image["hero_unique_enforcement_start_date"], "2026-10-14")
+        self.assertEqual(image["local_fallback_policy"], "unique-only-never-reuse-published-hero")
         self.assertFalse(image["abstract_placeholder_allowed"])
         self.assertTrue(image["fallback_must_be_local"])
         self.assertFalse(image["no_image_publication_allowed"])
@@ -199,6 +204,33 @@ class ArticleImageWorkerTests(unittest.TestCase):
         }
         self.assertEqual([row["id"] for row in worker.summaries([thick, thin])], ["thick"])
 
+    def test_large_contents_response_falls_back_to_git_blob(self):
+        worker = load(WORKER_PATH, "article_image_worker_v3_large_contents_test")
+        expected = b'[{"id":"large"}]'
+        contents_response = {
+            "encoding": "none",
+            "content": "",
+            "git_url": "https://api.github.test/repos/o/r/git/blobs/abc",
+        }
+        blob_response = {
+            "encoding": "base64",
+            "content": __import__("base64").b64encode(expected).decode("ascii"),
+        }
+
+        with mock.patch.object(
+            worker.core,
+            "request_json",
+            side_effect=[contents_response, blob_response],
+        ) as request_json:
+            payload = worker.core.github_content("o/r", "src/data/posts.json", "sha", "token")
+
+        self.assertEqual(worker.core.decode_content(payload), expected)
+        self.assertEqual(request_json.call_count, 2)
+        self.assertEqual(
+            request_json.call_args_list[1].args[1],
+            contents_response["git_url"],
+        )
+
     def test_worker_accepts_only_article_sized_png_or_jpeg(self):
         worker = load(WORKER_PATH, "article_image_worker_v3_dimensions_test")
         self.assertEqual(worker.core.validate_candidate(fake_png())[:2], (1200, 675))
@@ -243,7 +275,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertIn("run-name: Kesher Image PR", workflow)
         self.assertIn("ref: main", workflow)
         self.assertIn("persist-credentials: false", workflow)
-        self.assertIn("article-image-worker-v4.py", workflow)
+        self.assertIn("article-image-worker-v5.py", workflow)
         self.assertIn("GOOGLE_API_KEY", workflow)
         self.assertNotIn("UNSPLASH_ACCESS_KEY", workflow)
         self.assertIn("PEXELS_API_KEY", workflow)
@@ -276,7 +308,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
             )
         self.assertIsNone(candidate)
 
-    def test_local_image_can_be_reused_after_cooldown_below_use_cap(self):
+    def test_local_image_cannot_be_reused_after_cooldown_under_unique_only_policy(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_cooled_reuse_test")
         fake_data = fake_png()
         fake_sha = hashlib.sha256(fake_data).hexdigest()
@@ -299,9 +331,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
                 last_used={fake_sha: date.today() - timedelta(days=91)},
                 banned_paths=set(),
             )
-        self.assertIsNotNone(candidate)
-        assert candidate is not None
-        self.assertEqual(candidate.provider, "Local")
+        self.assertIsNone(candidate)
 
     def test_local_image_reuse_is_blocked_at_three_lifetime_uses(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_use_cap_test")
@@ -364,8 +394,8 @@ class ArticleImageWorkerTests(unittest.TestCase):
             worker.load_seed_manifest = lambda: {
                 "target_per_category": 40,
                 "policy": {
-                    "reuse_cooldown_days": 90,
-                    "max_lifetime_uses": 3,
+                    "reuse_cooldown_days": 0,
+                    "max_lifetime_uses": 1,
                     "reserve_min_topic_score": 1,
                 },
                 "categories": {

@@ -20,6 +20,7 @@ concurrency:
 
 jobs:
   repair:
+    if: ${{ github.repository == '__KESHER_RETIRED__' }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:

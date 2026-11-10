@@ -1,0 +1,45 @@
+{
+  "observed_at": "2026-09-27T20:34:33.607193+00:00",
+  "main_sha": "89b4c190626fd204ed7d61c4c5e0db8ed039ff04",
+  "controller_blob_sha": "b41bb425fc54f4f8893d161b62898560c454bbf3",
+  "input_schema": 5,
+  "output_schema": 6,
+  "migration_status": "prepared",
+  "production_activated": false,
+  "freshness_note": "Read-only preparation; refresh all live inputs after quiescence immediately before actual cutover.",
+  "capability_sealing": "Not performed; existing runtime key required before activation or use.",
+  "source_count": 89,
+  "unsupported_source_count": 10,
+  "historical_source_count": 18,
+  "slots": 12,
+  "archive_ids": [
+    10704214914,
+    10696625942
+  ],
+  "archive_note": "Previously verified local archives reused; newer controller claims without matching archive remain quarantined.",
+  "media_baselines": 32,
+  "quarantine_counts": {
+    "LEGACY_UPLOAD_CAPABILITY_REQUIRES_SEALING": 1,
+    "DUPLICATE_UPLOAD": 14,
+    "LEGACY_MEDIA_AMBIGUOUS": 1,
+    "LEGACY_STAGE_EVIDENCE_UNRESOLVED": 2
+  },
+  "observed_youtube_ids": 64,
+  "targeted_source_claim": {
+    "slug": "siblings-fairness-vs-equality",
+    "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef"
+  },
+  "unresolved_article_prs": [
+    616,
+    631,
+    694,
+    730,
+    797,
+    804
+  ],
+  "public_completion_inferred": false,
+  "implementation_sha256": {
+    "scripts/kesher_runtime/migration.py": "30d395ef95df5679f3d0b63b355cee34fe1f5fddefb60a5681c519e9678786c0",
+    "scripts/kesher_runtime/media_observer.py": "f225a50b4a495120b1b159e6005dd7ae0c7ec4ea0a7f6f4bdc217ea950ac9168"
+  }
+}

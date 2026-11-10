@@ -12,6 +12,11 @@ on:
         description: Authoritative Israel publication slot (YYYY-MM-DD)
         required: true
         type: string
+      source_slot:
+        description: Optional exact prior owner slot to rehome (YYYY-MM-DD)
+        required: false
+        default: ''
+        type: string
 
 permissions:
   contents: write
@@ -24,6 +29,8 @@ concurrency:
 
 jobs:
   normalize:
+    # Bounded manual emergency bridge; explicitly retired by coordinated cutover.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -33,6 +40,12 @@ jobs:
           ref: main
           fetch-depth: 0
           persist-credentials: true
+
+      - name: Refuse normalizer bridge after cutover exclusion begins
+        id: bridge_admission
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -m scripts.kesher_runtime.bridge_admission
 
       - name: Set up Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
@@ -49,14 +62,21 @@ jobs:
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ inputs.pr_number }}
           SLOT: ${{ inputs.slot }}
+          SOURCE_SLOT: ${{ inputs.source_slot || '' }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from datetime import date
           import os
           slot = os.environ['SLOT']
-          if date.fromisoformat(slot).isoformat() != slot:
+          source_slot = os.environ.get('SOURCE_SLOT', '').strip()
+          target = date.fromisoformat(slot)
+          if target.isoformat() != slot:
               raise SystemExit(f'invalid slot: {slot}')
+          if source_slot:
+              source = date.fromisoformat(source_slot)
+              if source.isoformat() != source_slot or source >= target:
+                  raise SystemExit(f'invalid source slot rehome: {source_slot} -> {slot}')
           PY
 
           gh api "repos/${REPO}/pulls/${PR_NUMBER}" > /tmp/pr.json
@@ -94,6 +114,7 @@ jobs:
           git fetch --no-tags origin "refs/heads/${head_ref}:refs/remotes/origin/${head_ref}"
           git show "refs/remotes/origin/${head_ref}:src/data/posts.json" > /tmp/head-posts.json
           cp src/data/posts.json /tmp/main-posts.json
+          cp src/data/postsRecent.json /tmp/main-posts-recent.json
 
           python3 - <<'PY'
           import json
@@ -102,15 +123,21 @@ jobs:
           from scripts.kesher_article_normalizer import extract_target_article, normalized_posts
 
           base = json.loads(Path('/tmp/main-posts.json').read_text(encoding='utf-8'))
+          recent = json.loads(Path('/tmp/main-posts-recent.json').read_text(encoding='utf-8'))
           head = json.loads(Path('/tmp/head-posts.json').read_text(encoding='utf-8'))
-          article = extract_target_article(base, head, os.environ['SLOT'])
+          source_slot = os.environ.get('SOURCE_SLOT', '').strip() or None
+          article = extract_target_article(
+              base, head, os.environ['SLOT'], recent_posts=recent, source_slot=source_slot
+          )
 
           # Pipeline V4 ownership: the trusted image worker is the only image
           # mutator. Discard any legacy/untrusted article-image attachment here.
           article.pop('image', None)
           article.pop('imageAlt', None)
+          if article.get('controllerManaged') is False:
+              article['controllerManaged'] = True
 
-          normalized = normalized_posts(base, article)
+          normalized = normalized_posts(base, article, recent_posts=recent)
           Path('src/data/posts.json').write_text(
               json.dumps(normalized, ensure_ascii=False, indent=2) + '\n',
               encoding='utf-8',
@@ -156,3 +183,21 @@ jobs:
             --force-with-lease="refs/heads/${head_ref}:${old_head_sha}" \
             origin "HEAD:refs/heads/${head_ref}"
           echo "ARTICLE_NORMALIZER_PUSHED old=${old_head_sha} new=${new_sha} branch=${head_ref}"
+
+      - name: Notify canonical Kesher Content Controller on completion
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' }}
+        continue-on-error: true
+        timeout-minutes: 2
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHILD_WORKFLOW: ${{ github.workflow }}
+          CHILD_RUN_ID: ${{ github.run_id }}
+          CHILD_CONCLUSION: ${{ job.status }}
+          SLOT: ${{ inputs.slot || '' }}
+        run: |
+          gh workflow run kesher-content-controller.yml \
+            --ref main \
+            -f child_workflow="$CHILD_WORKFLOW" \
+            -f child_run_id="$CHILD_RUN_ID" \
+            -f child_conclusion="$CHILD_CONCLUSION" \
+            -f slot="$SLOT" || echo "::warning::Controller wake-up notification failed; fallback schedule/workflow_run will reconcile."

@@ -16,6 +16,9 @@ concurrency:
 
 jobs:
   start-jules:
+    # Retired by the coordinated schema-6 authority handover.
+    # A repository is always owner/name; this sentinel can never match.
+    if: ${{ github.repository == '__KESHER_RETIRED__' }}
     runs-on: ubuntu-latest
     steps:
       - name: Stop if content review PR is already open

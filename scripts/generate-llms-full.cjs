@@ -3,9 +3,9 @@ const path = require('path');
 
 const llmsPath = path.join(__dirname, '../public/llms.txt');
 const faqPath = path.join(__dirname, '../src/data/faqs.ts');
-const postsPath = path.join(__dirname, '../src/data/posts.json');
 const outputPath = path.join(__dirname, '../public/llms-full.txt');
 const { isPublishable } = require('./content-policy.cjs');
+const { loadPosts } = require('./load-posts.cjs');
 
 // 1. Read llms.txt
 let fullContent = fs.readFileSync(llmsPath, 'utf8');
@@ -36,6 +36,7 @@ const services = [
   { name: 'ליווי למציאת זוגיות', url: '/services/finding-relationship', path: path.join(__dirname, '../src/pages/Services/Singles/FindingRelationshipPage.tsx') },
   { name: 'ייעוץ זוגי באשדוד', url: '/couples-counseling-ashdod', path: path.join(__dirname, '../src/pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage.tsx') },
   { name: 'הדרכת הורים באשדוד', url: '/parenting-guidance-ashdod', path: path.join(__dirname, '../src/pages/Landing/ParentingGuidanceAshdod/ParentingGuidanceAshdodPage.tsx') },
+  { name: 'הדרכת הורים ל-ADHD באשדוד', url: '/parenting-adhd-ashdod', path: path.join(__dirname, '../src/pages/Landing/ParentingAdhdAshdod/ParentingAdhdAshdodPage.tsx') },
   { name: 'ייעוץ זוגי במשבר', url: '/services/couples/crisis', path: path.join(__dirname, '../src/pages/Landing/CouplesCrisis/CouplesCrisisPage.tsx') },
   { name: 'ייעוץ זוגי רגע לפני פרידה', url: '/services/couples/before-separation', path: path.join(__dirname, '../src/pages/Landing/CouplesBeforeSeparation/CouplesBeforeSeparationPage.tsx') }
 ];
@@ -70,7 +71,7 @@ services.forEach(service => {
 
 // 3. Add Blog Posts
 fullContent += '## מאמרים מלאים (Blog Posts)\n\n';
-const posts = JSON.parse(fs.readFileSync(postsPath, 'utf8'));
+const posts = loadPosts();
 
 posts.filter(isPublishable).sort((a, b) => (b.date > a.date ? 1 : b.date < a.date ? -1 : 0)).forEach(post => {
   fullContent += `### [${post.title}](https://kesher.saharoni.com/blog/${post.id})\n`;

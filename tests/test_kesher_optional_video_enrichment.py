@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 from scripts import kesher_e2e_delivery_guard as guard
+from tests.test_media_provenance_contract import bound_short
 
 
 class OptionalVideoEnrichmentContractTests(unittest.TestCase):
@@ -22,6 +24,7 @@ class OptionalVideoEnrichmentContractTests(unittest.TestCase):
                 },
             },
             "short": {
+                **bound_short(120.0),
                 "verified": True,
                 "youtube_url": "https://youtu.be/short123",
                 "portrait_verified": True,
@@ -32,7 +35,6 @@ class OptionalVideoEnrichmentContractTests(unittest.TestCase):
                 "signature_fullscreen": False,
                 "signature_overlay": True,
                 "signature_duration_seconds": guard.SIGNATURE_DURATION_SECONDS,
-                "signature_video_sha256": "signature-video-sha256",
                 "enhancement": {
                     "broll_available": False,
                     "assets_available": False,
@@ -54,6 +56,15 @@ class OptionalVideoEnrichmentContractTests(unittest.TestCase):
             deliverables["short_youtube_url"],
             "https://youtu.be/short123",
         )
+
+    def test_production_workflows_keep_automatic_broll_disabled(self) -> None:
+        for path in (
+            ".github/workflows/kesher-daily-video.yml",
+            ".github/workflows/kesher-short-v4.yml",
+        ):
+            workflow = Path(path).read_text(encoding="utf-8")
+            self.assertIn('KESHER_BROLL_ENABLED: "false"', workflow)
+            self.assertNotIn('KESHER_BROLL_ENABLED: "true"', workflow)
 
     def test_signature_overlay_is_inside_source_timeline_not_appended(self) -> None:
         stage = {

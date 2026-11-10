@@ -1,0 +1,119 @@
+name: Kesher Targeted Media Recovery Dispatcher
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/kesher-media-recovery-request.json'
+      - '.github/workflows/kesher-targeted-media-recovery-dispatch.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: kesher-targeted-media-recovery-dispatch
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Refuse dispatcher after cutover exclusion begins
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -m scripts.kesher_runtime.bridge_admission --dispatcher
+
+      - name: Resolve exact enabled recovery target
+        id: target
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          request = json.loads(Path('.github/kesher-media-recovery-request.json').read_text(encoding='utf-8'))
+          if request.get('enabled') is not True or request.get('completed') is True:
+              print('Targeted media recovery is disabled or completed; nothing to dispatch.')
+              with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
+                  out.write('enabled=false\n')
+              raise SystemExit(0)
+
+          slug = str(request.get('target_slug') or '').strip()
+          target_date = str(request.get('target_date') or '').strip()
+          target_sha = str(request.get('target_content_sha256') or '').strip()
+          target_item_id = str(request.get('target_item_id') or '').strip()
+          if not slug or not target_date or len(target_sha) != 64:
+              raise SystemExit('Enabled targeted media recovery requires target_slug, target_date, and target_content_sha256')
+
+          catalogs = []
+          for path in (Path('src/data/postsRecent.json'), Path('src/data/posts.json')):
+              if not path.exists():
+                  continue
+              data = json.loads(path.read_text(encoding='utf-8'))
+              if not isinstance(data, list):
+                  raise SystemExit(f'Article catalog {path} must contain a list')
+              catalogs.extend(data)
+
+          matches = [p for p in catalogs if isinstance(p, dict) and str(p.get('slug') or p.get('id') or '').strip() == slug]
+          if len(matches) != 1:
+              raise SystemExit(f'Target slug {slug!r} matched {len(matches)} articles across recent and historical catalogs')
+          article = matches[0]
+          if str(article.get('date') or '') != target_date:
+              raise SystemExit(f'Recovery target {slug!r} article date does not match authoritative target_date {target_date}')
+
+          deliverables = request.get('deliverables') or {}
+          need_video = not bool(str(deliverables.get('overview_youtube_url') or '').strip())
+          need_short = not bool(str(deliverables.get('short_youtube_url') or '').strip())
+          if need_video and not target_item_id:
+              raise SystemExit('EXACT_MEDIA_ITEM_ID_REQUIRED: existing Overview recovery requires target_item_id')
+          from scripts.kesher_daily_pipeline import source_metadata
+          if source_metadata(article)['content_sha256'] != target_sha:
+              raise SystemExit('EXACT_MEDIA_IDENTITY_MISMATCH: recovery source content changed')
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
+              out.write('enabled=true\n')
+              out.write(f'slug={slug}\n')
+              out.write(f'content_sha256={target_sha}\n')
+              out.write(f'target_item_id={target_item_id}\n')
+              out.write(f'need_video={str(need_video).lower()}\n')
+              out.write(f'need_short={str(need_short).lower()}\n')
+          print(f'RECOVERY_TARGET_VERIFIED slug={slug} date={target_date} need_video={need_video} need_short={need_short}')
+          PY
+
+      - name: Dispatch exact Video Overview worker
+        if: ${{ steps.target.outputs.enabled == 'true' && steps.target.outputs.need_video == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_SLUG: ${{ steps.target.outputs.slug }}
+          TARGET_CONTENT_SHA256: ${{ steps.target.outputs.content_sha256 }}
+          TARGET_ITEM_ID: ${{ steps.target.outputs.target_item_id }}
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-daily-video.yml \
+            --ref main \
+            -f operation=upload \
+            -f target_slug="$TARGET_SLUG" \
+            -f target_content_sha256="$TARGET_CONTENT_SHA256" \
+            -f target_item_id="$TARGET_ITEM_ID"
+          echo "VIDEO_OVERVIEW_DISPATCHED slug=$TARGET_SLUG"
+
+      - name: Dispatch exact Short worker
+        if: ${{ steps.target.outputs.enabled == 'true' && steps.target.outputs.need_short == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_SLUG: ${{ steps.target.outputs.slug }}
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-short-v4.yml \
+            --ref main \
+            -f operation=full \
+            -f derive_slug="$TARGET_SLUG"
+          echo "SHORT_DISPATCHED slug=$TARGET_SLUG"

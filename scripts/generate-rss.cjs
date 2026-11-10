@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const { ROOT, isPublishable } = require('./content-policy.cjs');
+const { loadPosts } = require('./load-posts.cjs');
 
-const sourcePath = path.join(ROOT, 'src', 'data', 'posts.json');
 const outputPath = path.join(ROOT, 'public', 'rss.xml');
 
 const escapeXml = (unsafe) => {
@@ -19,7 +19,7 @@ const escapeXml = (unsafe) => {
   });
 };
 
-const posts = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
+const posts = loadPosts();
 const published = posts.filter(isPublishable);
 
 // Sort by date descending

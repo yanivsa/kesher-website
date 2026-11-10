@@ -144,6 +144,8 @@ def observe_incident(
     if str(current.get("last_check_token") or "") == str(check_token):
         strike = int(current.get("strike_count") or 0)
         action = str(current.get("last_action") or OBSERVE_CONTROLLER)
+        if action == PROGRESS_RESET:
+            action = OBSERVE_CONTROLLER
         controller_acted = bool(current.get("controller_action_observed"))
         return InterventionDecision(
             key,

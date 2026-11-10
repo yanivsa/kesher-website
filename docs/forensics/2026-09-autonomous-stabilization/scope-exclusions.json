@@ -1,0 +1,1799 @@
+{
+  "schema_version": 1,
+  "records": [
+    {
+      "kind": "pull_request",
+      "number": 1,
+      "title": "fix: correct spelling of name in llms.txt",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 2,
+      "title": "no-op: blocking branch found",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 5,
+      "title": "chore(seo): add missing /about and /contact routes to sitemap.xml",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 6,
+      "title": "Extract static data arrays outside React components to prevent reallocation on re-render",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 10,
+      "title": "[jules-automerge] Kesher SEO GEO review: Fix wrong canonical URLs preventing independent page indexing",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 12,
+      "title": "[jules-automerge] Kesher SEO GEO review: Fix stale sitemap.xml entries",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 18,
+      "title": "[jules-automerge] Kesher content review: Add missing aria-labels to form inputs",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 19,
+      "title": "[jules-automerge] Kesher mobile review: layout overlap and overflow fixes",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 20,
+      "title": "[jules-automerge] Kesher mobile review: fix horizontal overflow and sticky bar",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 23,
+      "title": "[jules-automerge] Kesher content review: Remove stale 'קשר' brand prefix",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 25,
+      "title": "[jules-automerge] Kesher SEO GEO review: Add dynamic llms-full.txt generation",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 35,
+      "title": "[jules-automerge] Kesher content review: Extract static data arrays from React components",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 38,
+      "title": "[jules-automerge] Kesher accessibility review: add type=\"button\" to non-submit buttons",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 43,
+      "title": "[jules-automerge] Kesher mobile review: fix experience badge layout in About section",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 45,
+      "title": "[jules-automerge] Kesher site fixes: add aria attributes to MobileStickyBar",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 47,
+      "title": "[jules-automerge] Kesher SEO GEO review: Fix root canonical URL consistency",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 48,
+      "title": "[jules-automerge] Kesher site fixes: Centralize Formspree URL",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 66,
+      "title": "[jules-automerge] Kesher SEO GEO review: Fix invalid Schema.org type in edge worker",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 74,
+      "title": "[jules-automerge] Kesher SEO GEO review: Unify LocalBusiness schema IDs",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 75,
+      "title": "[jules-automerge] Kesher SEO GEO review: Fix dynamic dateModified in AboutPage schema",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 76,
+      "title": "[jules-automerge] Kesher mobile review: Resolve overlapping chatbot and mobile sticky bar",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 79,
+      "title": "chore(deps): bump cloudflare/wrangler-action from 3.15.0 to 4.0.0",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 80,
+      "title": "chore(deps): bump actions/setup-node from 4.4.0 to 6.4.0",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 81,
+      "title": "chore(deps): bump actions/checkout from 4.3.1 to 6.0.3",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 82,
+      "title": "chore(deps): bump the npm-minor-patch group with 6 updates",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 84,
+      "title": "fix: preserve canonical clean URLs",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 88,
+      "title": "[jules-automerge] Kesher industry review: Add boundary-setting trust section to couples counseling",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 89,
+      "title": "[jules-automerge] Kesher mobile review: fix sticky bottom element safe-area collision",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 91,
+      "title": "[jules-review] Kesher site fixes: Prevent unnecessary schemaData re-allocation and resolve hook ordering in BlogPost",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 93,
+      "title": "[jules-automerge] Kesher content review: Added TODO placeholders for missing professional credentials",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 95,
+      "title": "[jules-automerge] Kesher mobile review: fix sticky CTA overlap on footer",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 96,
+      "title": "Harden Kesher credential automation guardrails",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 98,
+      "title": "[jules-review] Kesher site fixes: remove visible credential TODOs",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 100,
+      "title": "[jules-review] Kesher industry review: Add service-specific FAQs to landing pages",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 101,
+      "title": "🧪 Add tests for submitContact API wrapper",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 103,
+      "title": "🧪 Add tests for getImageDimensions pure function",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 105,
+      "title": "⚡ Optimize BlogList rendering by memoizing Fuse instance",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 106,
+      "title": "🧹 Extract contact form logic to custom hook",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 107,
+      "title": "🧪 Add tests for isPublishablePost pure function",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 108,
+      "title": "⚡ Performance improvement: Batch DOM queries for SEO MetaTags",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 109,
+      "title": "🧪 Add tests for useScrollReveal hook",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 110,
+      "title": "🧹 [code health] Extract search and filter logic from BlogList component",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 111,
+      "title": "🔒 Security fix: Add SRI and stricter CSP for AI Chatbot script",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 116,
+      "title": "chore(deps): bump dompurify from 3.4.9 to 3.4.11",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 117,
+      "title": "[jules-automerge] Kesher content review: remove visible TODOs from About copy",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 120,
+      "title": "[jules-automerge] Kesher accessibility review: Translate FloatingWhatsApp aria-label",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 124,
+      "title": "chore(deps): bump actions/checkout from 6.0.3 to 7.0.1",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 126,
+      "title": "[jules-automerge] Kesher content review: Emphasize online meeting options in process",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 130,
+      "title": "[jules-automerge] Kesher SEO fix: Use dangerouslySetInnerHTML for SchemaOrg JSON-LD",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 134,
+      "title": "[jules-review] Kesher industry review: Empathic contact section copywriting",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 135,
+      "title": "[jules-automerge] Kesher content review: Update parenting guidance copy for realistic expectations",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 144,
+      "title": "[jules-automerge] Kesher content review: Refine absolute promises in ProcessSection",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 146,
+      "title": "[jules-review] Kesher site fixes: Use Link component for internal routing on service pages",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 149,
+      "title": "[jules-review] Kesher routing review: Fix broken CTA anchor on About page",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 150,
+      "title": "[jules-automerge] Kesher SEO GEO review: Update About page schema",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 152,
+      "title": "[jules-review] Kesher maintainability review: Remove unused ServicePageTemplate component",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 157,
+      "title": "[jules-automerge] Kesher SEO GEO review: Fix Home schema links for independent service pages",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 158,
+      "title": "[jules-automerge] Kesher SEO GEO review: Extract h1 tags in llms-full.txt",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 160,
+      "title": "[jules-review] Kesher performance review: Optimize LCP image on About page",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 162,
+      "title": "[jules-review] Kesher maintainability review: Centralize WhatsApp links",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 165,
+      "title": "[jules-automerge] Kesher SEO GEO review: enhance LLM attribution and metadata branding",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 166,
+      "title": "chore(deps-dev): bump brace-expansion from 5.0.6 to 5.0.8",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 168,
+      "title": "[jules-automerge] Kesher mobile review: convert AI chat consent to FAB",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 169,
+      "title": "[jules-automerge] Kesher mobile review: fix AI Chatbot CTA collision",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 173,
+      "title": "[jules-review] Kesher accessibility review: Improve 'Read more' links aria-label",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 177,
+      "title": "chore(deps): bump dompurify from 3.4.11 to 3.4.12",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 178,
+      "title": "[jules-automerge] Kesher mobile review: Replace 100vh with 100dvh for better mobile viewport sizing",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 190,
+      "title": "[jules-automerge] Kesher mobile review: Fixed AI Chatbot sticky collision on mobile",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 194,
+      "title": "Migrate legacy Blogger domain with permanent redirects",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 196,
+      "title": "Redirect trailing-slash legacy singles URL",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 202,
+      "title": "[jules-automerge] Kesher SEO GEO review: add WebSite schema to homepage",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 208,
+      "title": "[jules-automerge] Kesher SEO GEO review: Fix MetaTags SERP branding title",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 219,
+      "title": "[jules-automerge] Kesher SEO GEO review: fix redundant brand append in BlogPost MetaTags",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 220,
+      "title": "[jules-automerge] Kesher content review: Improve copy in process section",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 222,
+      "title": "[jules-automerge] Kesher mobile review: fix experienceBadge clipping",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 223,
+      "title": "Add professional Kesher beta homepage at /b",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 224,
+      "title": "Serve Kesher beta at /b/",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 228,
+      "title": "[jules-automerge] Kesher SEO GEO review: Fix regex for LLMs text generation",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 232,
+      "title": "Clarify Kesher professional credentials",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 234,
+      "title": "שיפור נגישות והתאמת אזורי בטיחות ב־Beta 2",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 237,
+      "title": "[jules-automerge] Kesher SEO GEO review: fix duplicate relocation page",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 238,
+      "title": "קידום Beta 2 לעמוד הבית הראשי",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 245,
+      "title": "[jules-automerge] Kesher SEO GEO review: fix premarital route source",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 250,
+      "title": "[jules-review] Kesher industry review: Refine Process Section Copy",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 253,
+      "title": "[jules-automerge] Kesher mobile review: Fix AI chatbot safe area inset",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 254,
+      "title": "[jules-automerge] Kesher content review: Remove forbidden phrase from BetaPage",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 262,
+      "title": "[jules-automerge] Kesher SEO GEO review: Remove unpublishable legacy duplicate post",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 266,
+      "title": "[jules-review] Kesher industry review: Add homepage FAQ to address hesitations",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 267,
+      "title": "[jules-automerge] Kesher SEO GEO review: Fix blog slug mismatches",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 272,
+      "title": "[jules-automerge] Kesher SEO GEO review: Add Ashdod couples counseling service to LLMs context files",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 277,
+      "title": "[jules-automerge] Kesher SEO GEO review: Remove beta3 from sitemap and index",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 279,
+      "title": "[jules-review] Kesher industry review: Therapist Bio CTA Optimization",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 281,
+      "title": "[jules-automerge] Kesher SEO GEO review: add schema org to blog list",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 282,
+      "title": "🧹 [Remove unused useEffect import in BetaPage]",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 284,
+      "title": "🧹 [code health improvement] Remove unused useEffect import in App.tsx",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 285,
+      "title": "⚡ [Performance] Wrap FAQ filtering in useMemo",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 286,
+      "title": "⚡ Optimize SEO meta tag reconciliation to reduce DOM querying",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 287,
+      "title": "[jules-automerge] Kesher SEO GEO review: explicit canonical url for couples service page",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 291,
+      "title": "[jules-automerge] Kesher mobile review: fix blog list grid",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 297,
+      "title": "fix: remove invalid image from dating-exclusivity-conversation post",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 299,
+      "title": "Fix vulnerable nanoid lock resolution",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 302,
+      "title": "[jules-automerge] Kesher SEO GEO review: correct landing provider schema",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 309,
+      "title": "[jules-automerge] Kesher SEO GEO review: add url and description to FAQPage schema",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 328,
+      "title": "[jules-automerge] Kesher mobile review: Increase category button touch targets to 44px",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 329,
+      "title": "[jules-automerge] Kesher SEO GEO review: Add BreadcrumbList schema to couples counseling ashdod page",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 332,
+      "title": "[jules-review] Add test-only quality improvements",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 334,
+      "title": "[jules-review] Kesher general review: add ashdod service page to search index",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 335,
+      "title": "[jules-automerge] Kesher SEO GEO review: Add BreadcrumbList schema to Homepage",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 340,
+      "title": "[jules-review] Remove deprecated beta routes and pages",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 341,
+      "title": "[jules-automerge] Kesher SEO GEO review: remove trailing slash from homepage canonical url",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 348,
+      "title": "Add zero-cost OCI E2 fallback for OpenClaw",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 349,
+      "title": "Fix OpenClaw Plan B to try all OCI ADs",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 350,
+      "title": "Stop A1 retries after verified OpenClaw Plan B",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 351,
+      "title": "Add OpenClaw OCI maintenance probe",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 352,
+      "title": "Enable OCI Run Command for OpenClaw maintenance",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 353,
+      "title": "Provision secure Tailscale OpenClaw replacement",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 354,
+      "title": "Use RSA for OCI OpenClaw console capture",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 355,
+      "title": "Fix OCI console history state field",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 356,
+      "title": "Add redacted OpenClaw console diagnostics",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 357,
+      "title": "Probe Tailscale replacement with OCI Run Command",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 358,
+      "title": "Rebuild OpenClaw Tailscale VM with safe temporary SSH",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 359,
+      "title": "Fix non-blocking Tailscale bootstrap",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 360,
+      "title": "Capture Tailscale login in single SSH session",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 361,
+      "title": "Keep OpenClaw bootstrap SSH alive",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 366,
+      "title": "Fix OpenClaw login link encryption import",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 367,
+      "title": "Rotate OpenClaw one-time link encryption key",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 371,
+      "title": "Finalize OpenClaw with Tailscale Serve",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 372,
+      "title": "Recover OpenClaw without losing Tailscale login",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 373,
+      "title": "Add read-only OpenClaw recovery console check",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 374,
+      "title": "Repair OpenClaw authenticated boot disk offline",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 375,
+      "title": "Fix OpenClaw boot-volume recovery marker",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 376,
+      "title": "Make OpenClaw offline disk detection robust",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 377,
+      "title": "Expose safe OpenClaw offline-repair diagnostics",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 380,
+      "title": "Finish OpenClaw through OCI console verification",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 383,
+      "title": "Fix OpenClaw helper recovery without SSH",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 384,
+      "title": "Fix OCI console history recycling in OpenClaw recovery",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 385,
+      "title": "Use helper poweroff as OCI-native OpenClaw repair proof",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 386,
+      "title": "Repair OpenClaw helper through OCI Run Command",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 387,
+      "title": "Use Oracle Linux helper for OCI Run Command",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 388,
+      "title": "Provision OCI Run Command IAM before OpenClaw helper",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 389,
+      "title": "Finalize OpenClaw through OCI Run Command",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 391,
+      "title": "Fix OpenClaw recovery root detection",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 392,
+      "title": "Fix OpenClaw offline repair for LVM boot volumes",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 393,
+      "title": "Fallback to OCI console for OpenClaw final verification",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 394,
+      "title": "Reject helper root when locating OpenClaw boot volume",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 397,
+      "title": "Fix OpenClaw target root identity selection",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 398,
+      "title": "Require authenticated Tailscale state when selecting OpenClaw root",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 399,
+      "title": "Restrict OpenClaw repair to target-backed LVM devices",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 400,
+      "title": "Ensure OpenClaw finalizer always starts and reports Tailscale failures",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 401,
+      "title": "Resolve OpenClaw helper root to physical disk",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 402,
+      "title": "Start OpenClaw finalizer before network-online",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 403,
+      "title": "Start OpenClaw finalizer at basic.target",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 406,
+      "title": "Verify OpenClaw readiness from preserved boot volume",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 407,
+      "title": "Avoid early-boot console tee in OpenClaw finalizer",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 409,
+      "title": "Run OpenClaw finalizer via target cloud-init",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 410,
+      "title": "Fix Calendly nested scrolling with auto-resize",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 411,
+      "title": "Run OpenClaw finalizer from relaunch cloud-init",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 412,
+      "title": "[jules-review] chore: remove unused beta routes and components",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 424,
+      "title": "[jules-review] Remove obsolete beta routes and experimental components",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 434,
+      "title": "fix: make OpenClaw recovery boot tagging idempotent",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 449,
+      "title": "[jules-review] chore: remove deprecated beta routes and components",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 450,
+      "title": "chore: trigger OpenClaw recovery workflow",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 452,
+      "title": "Close the PPC-to-Calendly booking attribution loop",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 454,
+      "title": "Provision durable booking reconciliation infrastructure",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 455,
+      "title": "Expose booking tracking deployment health as commit statuses",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 456,
+      "title": "Link booking tracking health statuses to exact workflow runs",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 457,
+      "title": "Diagnose safe D1 reuse when account database limit is reached",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 458,
+      "title": "List full D1 inventory after Cloudflare account-limit failure",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 459,
+      "title": "Deploy Calendly booking fixes even when GTM is not configured",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 460,
+      "title": "Fall back to Workers KV for durable booking reconciliation",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 467,
+      "title": "feat: make OpenClaw recovery autonomously discoverable",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 471,
+      "title": "fix: prove OpenClaw readiness from preserved boot disk",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 473,
+      "title": "Harden booking attribution and thank-you context",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 475,
+      "title": "fix: harden OpenClaw cold-boot finalizer",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 478,
+      "title": "fix: stage pinned repair dependency on OpenClaw helper",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 479,
+      "title": "fix: make OpenClaw helper fetch pinned repair baseline",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 480,
+      "title": "fix: bundle OpenClaw helper dependencies and safe cleanup",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 482,
+      "title": "fix: retry transient OCI helper update conflict",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 483,
+      "title": "fix: retry transient OCI helper update conflicts",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 484,
+      "title": "fix: retry transient OCI helper update conflicts",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 486,
+      "title": "fix: keep OpenClaw finalizer inside proof window",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 487,
+      "title": "fix: verify OpenClaw RPC with direct gateway health fallback",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 488,
+      "title": "fix: bound direct OpenClaw RPC health fallback",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 490,
+      "title": "fix: bound OpenClaw finalizer binary discovery",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 492,
+      "title": "fix: identify bounded OpenClaw config failures",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 493,
+      "title": "fix: verify OpenClaw config after CLI timeout",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 494,
+      "title": "fix: make OpenClaw systemd transition nonblocking",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 495,
+      "title": "fix: wait for OpenClaw finalizer before preserved-disk proof",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 496,
+      "title": "fix: externally bound OpenClaw RPC probes",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 497,
+      "title": "fix: make OpenClaw proof network reuse idempotent",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 498,
+      "title": "fix: restamp OpenClaw gateway system unit",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 499,
+      "title": "fix: refresh canonical OpenClaw gateway system unit",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 500,
+      "title": "fix: avoid OpenClaw gateway enable hang during finalization",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 501,
+      "title": "fix: prevent OpenClaw finalizer from hanging on gateway restart",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 502,
+      "title": "fix: make offline repair wrapper observable",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 503,
+      "title": "fix: bypass hanging runtime OpenClaw gateway activation",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 507,
+      "title": "fix: remove blocking console writes from OpenClaw finalizer",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 508,
+      "title": "fix: persist swap for OpenClaw on E2",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 509,
+      "title": "fix: remove gateway activation from repair baseline",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 511,
+      "title": "fix: persist gateway unit before target boot",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 513,
+      "title": "fix: protect OpenClaw finalizer from E2 memory pressure",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 515,
+      "title": "fix: avoid OpenClaw config CLI pressure during finalization",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 516,
+      "title": "fix: preseed OpenClaw gateway config before boot",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 517,
+      "title": "fix: use millisecond OpenClaw RPC probe timeout",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 518,
+      "title": "fix: bound Tailscale Serve finalizer commands",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 523,
+      "title": "fix: accept verified OpenClaw disk proof for cleanup",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 526,
+      "title": "Superseded: region-aware consent banner",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 530,
+      "title": "fix: normalize duplicated OpenClaw ready URL",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 533,
+      "title": "fix: keep one verified OpenClaw ready URL",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 550,
+      "title": "[jules-review] Compact Kesher blog header",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 558,
+      "title": "Update site favicon to Shira Saharoni mark",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 568,
+      "title": "[PPC/CRO] Add intent-focused couples counseling landing pages",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 576,
+      "title": "Add Ashdod landing page to local search index",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 585,
+      "title": "[jules-automerge] Kesher SEO GEO review: add areaServed to Couples and Parenting service schemas",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 586,
+      "title": "Fix flaky booking attribution deploy gate",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 592,
+      "title": "Prepare Google Ads search campaigns and conversion-tracking import config",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 593,
+      "title": "[jules-automerge] Kesher SEO GEO review: Add missing BreadcrumbList Schema to Couples Crisis & Before Separation pages",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 605,
+      "title": "Fix PPC conversion tracking and attribution",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 608,
+      "title": "[jules-automerge] Kesher SEO GEO review: add CollectionPage schema to blog index",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 609,
+      "title": "SEO: add Now and professional links entity foundation",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 611,
+      "title": "SEO: add Now and professional links entity foundation",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 612,
+      "title": "fix(ppc): align canonical landing URLs and keyword attribution",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 613,
+      "title": "SEO: surface Now and resource pages in site navigation",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 617,
+      "title": "fix(openclaw): stop dependency updates from running recovery",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 618,
+      "title": "fix(openclaw): retry transient Cloudflare bridge errors",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 619,
+      "title": "fix(oci): restore bridge after accidental key rotation",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 620,
+      "title": "fix(oci): parse Cloudflare versions result.items",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 621,
+      "title": "fix(oci): select only deployable bridge versions",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 622,
+      "title": "fix(oci): remove unsupported Worker deployment annotation",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 623,
+      "title": "fix(oci): refresh bridge token through Worker versions",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 624,
+      "title": "fix(oci): inherit proven-good bridge key into fresh token version",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 625,
+      "title": "fix(oci): repair bridge verification shell block",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 626,
+      "title": "fix(oci): inherit bridge key from proven-good version",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 627,
+      "title": "fix(oci): use Workers beta API for explicit key inheritance",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 628,
+      "title": "fix(openclaw): add loopback guard before tunnel deploy",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 629,
+      "title": "chore(openclaw): isolate Cloudflare preflight permissions",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 635,
+      "title": "[jules-automerge] Kesher mobile review: fix ConsentBanner overlapping MobileStickyBar on mobile screens",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 640,
+      "title": "Add Codex SEO audit workflow",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 641,
+      "title": "Add Codex SEO audit workflow with visual checks",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 642,
+      "title": "chore(deps-dev): bump fast-uri from 3.1.5 to 3.1.7",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 645,
+      "title": "fix: wire Kesher conversions to Google Ads",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 648,
+      "title": "[jules-review] Kesher industry review: Add couples counseling effectiveness FAQ",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 651,
+      "title": "chore(deps): bump actions/setup-node from 4 to 7",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 652,
+      "title": "chore(deps): bump actions/checkout from 6.0.3 to 7.0.1",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 657,
+      "title": "feat: add lecture booking flow",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 669,
+      "title": "feat(analytics): add deterministic content performance ledger",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 679,
+      "title": "fix: stop false failures in OCI capacity watcher",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 683,
+      "title": "fix(openclaw): make Cloudflare the primary recovery path",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 684,
+      "title": "fix(openclaw): recover known fallback OCI target",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 685,
+      "title": "fix(openclaw): fetch transitive repair scripts in OCI helper",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 686,
+      "title": "Fix OpenClaw finalizer gateway startup ordering",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 687,
+      "title": "Diagnose OpenClaw missing readiness proof",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 691,
+      "title": "[jules-automerge] Kesher SEO GEO review: Add BreadcrumbList schema to Lectures page",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 692,
+      "title": "[jules-automerge] Kesher mobile review: fix consent banner overlap with quickDock",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 695,
+      "title": "Fix OpenClaw finalizer self-restart loop",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 697,
+      "title": "OpenClaw: fail fast and persist gateway crash journal",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 702,
+      "title": "OpenClaw: repair live gateway before Cloudflare tunnel",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 704,
+      "title": "OpenClaw: reuse existing Cloudflare tunnel service",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 705,
+      "title": "OpenClaw: keep OCI Run Command bootstrap under 4096 bytes",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 706,
+      "title": "OpenClaw: self-heal stalled OCI Run Command agent",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 720,
+      "title": "[jules-review] chore: migrate eslint ignores to flat config",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 721,
+      "title": "[jules-review] Kesher industry review: Add FAQ about partner refusing counseling",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 733,
+      "title": "[jules-review] Kesher industry review: Enhanced unified philosophy in About page",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 734,
+      "title": "[jules-automerge] Kesher SEO GEO review: Fix missing Service schema URLs in landing pages",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 742,
+      "title": "[jules-review] Kesher SEO review: improve ProfilePage schema and BreadcrumbList",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 746,
+      "title": "chore(deps-dev): bump vitest from 4.1.9 to 4.1.11",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 747,
+      "title": "chore(deps): bump @vitest/mocker and vitest",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 748,
+      "title": "chore(deps-dev): bump js-yaml from 4.3.1 to 4.3.2",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 752,
+      "title": "chore: capture OpenClaw finalizer boot evidence",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 753,
+      "title": "fix: make OpenClaw reruns use checked-out recovery code",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 754,
+      "title": "fix: make OpenClaw repair reruns use checked-out code",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 756,
+      "title": "fix: recover OpenClaw proof helper when OCI agent stalls",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 757,
+      "title": "fix: wait for OpenClaw boot detach before helper attach",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 758,
+      "title": "fix: serialize OpenClaw recovery runs",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 759,
+      "title": "fix(openclaw): drain stale data-volume attachments before helper attach",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 770,
+      "title": "chore(deps): bump actions/checkout from 4 to 7",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 771,
+      "title": "chore(deps): bump actions/setup-python from 5.6.0 to 7.0.0",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 773,
+      "title": "chore(deps-dev): bump vitest from 4.1.9 to 5.0.0",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 774,
+      "title": "chore(deps): bump framer-motion from 12.40.0 to 13.2.0",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 780,
+      "title": "feat(openclaw): clean rebuild from fresh OCI image",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 781,
+      "title": "fix(openclaw): install pytest before clean rebuild contracts",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 782,
+      "title": "test(openclaw): expose safe clean-boot console diagnostics",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 783,
+      "title": "test(openclaw): add read-only OCI agent diagnostic",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 784,
+      "title": "fix(openclaw): pin clean rebuild to standard Ubuntu 24.04 LTS",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 793,
+      "title": "[jules-automerge] Kesher SEO GEO review: Add BreadcrumbList schema to accessibility page",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 800,
+      "title": "[jules-automerge] Kesher SEO GEO review: Fix hardcoded canonical tags and constraint",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 821,
+      "title": "[jules-automerge] Kesher SEO GEO review: Fix FAQ canonical URL and schema ID bindings",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 838,
+      "title": "[jules-automerge] Kesher SEO GEO review: Fix blog post canonical URL",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 840,
+      "title": "AEO docs: align automation guidance with verified professional scope",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 846,
+      "title": "AEO: align measurement framework with deployed pilot",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "pull_request",
+      "number": 847,
+      "title": "AEO: align monitoring criteria with verified professional scope",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "issue",
+      "number": 57,
+      "title": "[SEO] הוספת robots.txt עם הבחנה בין AI Search ל-AI Training",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "issue",
+      "number": 64,
+      "title": "[GEO] שכתוב פסקאות פתיחה בדפי שירות ומאמרים בסגנון BLUF (Bottom Line Up Front)",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "issue",
+      "number": 465,
+      "title": "OpenClaw Recovery Status",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "issue",
+      "number": 466,
+      "title": "OpenClaw Recovery Status",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "issue",
+      "number": 552,
+      "title": "Google Ads Campaign Launch & Conversion Tracking",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "issue",
+      "number": 553,
+      "title": "Competitor Ads Research (Ads Transparency Center)",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "issue",
+      "number": 572,
+      "title": "[P1] Add Ashdod landing page to local search index from fresh main",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    },
+    {
+      "kind": "issue",
+      "number": 573,
+      "title": "[P1] Normalize homepage canonical URL from fresh main",
+      "reason": "No primary pipeline signal, or unrelated infrastructure title without pipeline files"
+    }
+  ]
+}

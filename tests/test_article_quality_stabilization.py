@@ -10,7 +10,9 @@ from pathlib import Path
 from unittest import mock
 from zoneinfo import ZoneInfo
 
+from scripts import article_claim_quality
 from scripts import kesher_content_controller_stabilized as stabilized
+from scripts.kesher_runtime.state import StateInvalid
 
 ROOT = Path(__file__).resolve().parents[1]
 TZ = ZoneInfo("Asia/Jerusalem")
@@ -125,6 +127,8 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
 
             def contents_json(self, path, ref="main"):
                 self.assertion = (path, ref)
+                if path == "src/data/postsRecent.json":
+                    return []
                 return [risky_article()]
 
             def save_controller_state(self, state):
@@ -143,7 +147,7 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         self.assertEqual(action.kind, "blocked")
         self.assertEqual(state["article"]["quality_status"], "failed")
         self.assertTrue(state["article"]["quality_content_sha256"])
-        self.assertEqual(gh.assertion, ("src/data/posts.json", "main"))
+        self.assertIn(gh.assertion, {("src/data/posts.json", "main"), ("src/data/postsRecent.json", "main")})
         self.assertIsNotNone(gh.saved)
 
     def test_multiple_same_day_articles_preserve_durable_controller_identity(self):
@@ -235,6 +239,8 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
             def contents_json(self, path, ref="main"):
                 if path == "src/data/posts.json":
                     return [today_article, old_article]
+                if path == "src/data/postsRecent.json":
+                    return []
                 raise AssertionError(path)
 
         controller = object.__new__(stabilized.StabilizedRuntimeV5Controller)
@@ -277,6 +283,8 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
 
             def contents_json(self, path, ref="main"):
                 self.assertion = (path, ref)
+                if path == "src/data/postsRecent.json":
+                    return []
                 return [today_article, old_article]
 
             def newest_video_state(self):
@@ -478,12 +486,17 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         controller._overview_evidence_preflight.assert_not_called()
         controller._tick_targeted_media_recovery.assert_called_once_with(state)
 
-    def test_production_controller_workflow_uses_stabilized_runtime(self):
+    def test_production_controller_uses_canonical_runtime_and_retires_stabilized_entry(self):
         workflow = (ROOT / ".github/workflows/kesher-content-controller.yml").read_text(encoding="utf-8")
         self.assertIn(
-            "python3 -u scripts/kesher_content_controller_stabilized.py --report-json",
+            "python3 -m scripts.kesher_runtime.bridge_admission --controller",
             workflow,
         )
+        self.assertIn("scripts/kesher_content_controller_stabilized.py --report-json", workflow)
+        with mock.patch.object(stabilized, "install_runtime") as install:
+            with self.assertRaisesRegex(StateInvalid, "LEGACY_ENTRYPOINT_RETIRED"):
+                stabilized.main()
+        install.assert_not_called()
 
     def test_article_generation_uses_pre_pr_evidence_contract_runner(self):
         workflow = (ROOT / ".github/workflows/kesher-article-generation.yml").read_text(encoding="utf-8")
@@ -505,6 +518,109 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         self.assertIn("OBSERVED QUERY SIGNAL", text)
         self.assertIn("are NOT sufficient by themselves to prove a query people", text)
         self.assertIn("Do not\n   submit the article PR until at least one current observed query signal", text)
+
+
+    def test_pr_content_preflight_enforces_full_canary_quality_contract_before_image_ci(self):
+        base_article = {
+            "id": "existing-article",
+            "slug": "existing-article",
+            "title": "מאמר קיים",
+            "date": "2026-10-24",
+            "content": "<p>תוכן קיים.</p>",
+        }
+        candidate = {
+            "id": "transition-to-municipal-kindergarten",
+            "slug": "transition-to-municipal-kindergarten",
+            "title": "מעבר לגן עירייה",
+            "date": "2026-10-25",
+            "category": "הדרכת הורים",
+            "excerpt": "הכנה מעשית למעבר לגן עירייה.",
+            "content": (
+                "<h3>הכנה</h3><p>" + ("מילה " * 145) + "</p>"
+                "<h3>שגרה</h3><p>" + ("מילה " * 145) + "</p>"
+                "<h3>פרידה</h3><p>" + ("מילה " * 145) + "</p>"
+                "<h3>צוות</h3><p>" + ("מילה " * 145) + "</p>"
+                "<h3>התחלה</h3><p>" + ("מילה " * 145) + "</p>"
+                '<p><a href="/services/parenting">הדרכת הורים</a></p>'
+            ),
+            "serviceUrl": "/services/parenting",
+            "controllerManaged": True,
+            "evidence": [],
+        }
+
+        class FakeGitHub:
+            def contents_json(self, path, ref="main"):
+                self.assertEqual(path, "src/data/posts.json")
+                return [base_article, candidate] if ref == "head-sha" else [base_article]
+
+            def assertEqual(self, left, right):
+                if left != right:
+                    raise AssertionError(f"{left!r} != {right!r}")
+
+        controller = object.__new__(stabilized.StabilizedRuntimeV5Controller)
+        controller.github = FakeGitHub()
+        pr = {"head": {"sha": "head-sha"}, "base": {"sha": "base-sha"}}
+
+        errors = controller._pr_content_structure_errors(pr)
+
+        self.assertTrue(any("evidence_missing" in error for error in errors), errors)
+        self.assertTrue(any("internal_blog_links" in error for error in errors), errors)
+
+
+class ParentingCanaryQualityContractTests(unittest.TestCase):
+    def _managed_article(self, **overrides):
+        article = {
+            "id": "potty-training-age-4",
+            "slug": "potty-training-age-4",
+            "title": "גמילה מחיתולים בגיל 4",
+            "date": "2026-10-20",
+            "category": "הדרכת הורים",
+            "excerpt": "תקציר שימושי להורים.",
+            "content": (
+                '<p>תוכן זהיר ושימושי.</p>'
+                '<p><a href="/blog/potty-training-age-3-problems">גמילה בגיל 3</a></p>'
+                '<p><a href="/blog/nighttime-potty-training">גמילת לילה</a></p>'
+                '<p><a href="/blog/potty-training-regression">רגרסיה בגמילה</a></p>'
+                '<p><a href="/services/parenting">הדרכת הורים</a></p>'
+            ),
+            "serviceUrl": "/services/parenting",
+            "controllerManaged": True,
+            "evidence": [{"title": "Guidance", "source": "Authority", "url": "https://example.org/guidance", "note": "Source note"}],
+        }
+        article.update(overrides)
+        return article
+
+    def test_canary_requires_evidence(self):
+        errors = article_claim_quality.validate_posts([self._managed_article(evidence=[])])
+        self.assertTrue(any("evidence_missing" in error for error in errors), errors)
+
+    def test_canary_rejects_unverifiable_evidence_reference(self):
+        for url in (None, "", "APA review", "/guidance", "javascript:alert(1)", "https://"):
+            with self.subTest(url=url):
+                article = self._managed_article(evidence=[{"title": "Guidance", "source": "APA", "url": url}])
+                errors = article_claim_quality.validate_posts([article])
+                self.assertTrue(any("evidence_url_invalid" in error for error in errors), errors)
+
+    def test_canary_accepts_linked_evidence(self):
+        self.assertEqual(article_claim_quality.validate_posts([self._managed_article()]), [])
+
+    def test_canary_requires_three_internal_blog_links(self):
+        article = self._managed_article(content='<p><a href="/blog/potty-training-regression">רגרסיה</a></p><p><a href="/services/parenting">הדרכת הורים</a></p>')
+        errors = article_claim_quality.validate_posts([article])
+        self.assertTrue(any("internal_blog_links" in error for error in errors), errors)
+
+    def test_canary_requires_declared_service_cta_link(self):
+        article = self._managed_article(content=(
+            '<p><a href="/blog/potty-training-age-3-problems">א</a></p>'
+            '<p><a href="/blog/nighttime-potty-training">ב</a></p>'
+            '<p><a href="/blog/potty-training-regression">ג</a></p>'
+        ))
+        errors = article_claim_quality.validate_posts([article])
+        self.assertTrue(any("service_cta_link" in error for error in errors), errors)
+
+    def test_pre_canary_content_is_not_retroactively_blocked(self):
+        article = self._managed_article(date="2026-10-19", evidence=[], content="<p>תוכן ישן.</p>")
+        self.assertEqual(article_claim_quality.validate_posts([article]), [])
 
 
 if __name__ == "__main__":

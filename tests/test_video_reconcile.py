@@ -47,6 +47,96 @@ def technically_verified(item: dict, status: str = "approved") -> None:
 
 
 class VideoReconcileTests(unittest.TestCase):
+    def test_public_overview_adoption_binds_existing_id_without_upload(self) -> None:
+        source = {
+            "slug": "today", "content_sha256": "a" * 64,
+            "canonical_url": "https://kesher.saharoni.com/blog/today",
+        }
+        item = {
+            "id": "long-1", "type": "video_overview", "source": source,
+            "status": "uploading", "technical_verified": True, "uploaded": False,
+            "youtube_metadata": {"title": "הסרטון שלנו", "description": "תיאור בעברית"},
+        }
+        pipeline.save_state({"version": 1, "items": [item]})
+        video_id = "VPUSEiBk2es"
+        remote = {"items": [{
+            "id": video_id, "snippet": {
+                "channelId": pipeline.YOUTUBE_CHANNEL_ID,
+                "title": item["youtube_metadata"]["title"],
+                "description": item["youtube_metadata"]["description"],
+            },
+            "status": {"privacyStatus": "public"},
+            "processingDetails": {"processingStatus": "succeeded"},
+        }]}
+        proof = {"channel_id": pipeline.YOUTUBE_CHANNEL_ID, "privacy_status": "public",
+                 "processing_status": "succeeded"}
+        with (
+            mock.patch.object(reconcile, "current_source_snapshot", return_value=source),
+            mock.patch.object(pipeline, "youtube_access_token", return_value="test-token"),
+            mock.patch.object(pipeline, "verify_authenticated_channel"),
+            mock.patch.object(pipeline, "youtube_get", return_value=remote),
+            mock.patch.object(pipeline, "verify_public_upload", return_value=proof) as verify,
+        ):
+            self.assertEqual(
+                reconcile.adopt_verified_public_overview_id("today", "a" * 64, "long-1", video_id), 0
+            )
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["youtube_id"], video_id)
+        self.assertTrue(saved["uploaded"])
+        self.assertEqual(saved["status"], "uploaded")
+        verify.assert_called_once()
+        self.assertIn("adopt-public", (Path(__file__).resolve().parents[1] / ".github/workflows/kesher-daily-video.yml").read_text())
+
+    def test_public_overview_adoption_preserves_id_but_not_public_status_on_tag_drift(self) -> None:
+        source = {"slug": "today", "content_sha256": "b" * 64}
+        item = {
+            "id": "long-2", "type": "video_overview", "source": source,
+            "status": "uploading", "technical_verified": True, "uploaded": False,
+            "youtube_metadata": {"title": "כותרת", "description": "תיאור"},
+        }
+        pipeline.save_state({"version": 1, "items": [item]})
+        video_id = "VPUSEiBk2es"
+        remote = {"items": [{"id": video_id, "snippet": {
+            "channelId": pipeline.YOUTUBE_CHANNEL_ID, "title": "כותרת", "description": "תיאור",
+        }, "status": {"privacyStatus": "public"},
+            "processingDetails": {"processingStatus": "succeeded"}}]}
+        with (
+            mock.patch.object(reconcile, "current_source_snapshot", return_value=source),
+            mock.patch.object(pipeline, "youtube_access_token", return_value="test-token"),
+            mock.patch.object(pipeline, "verify_authenticated_channel"),
+            mock.patch.object(pipeline, "youtube_get", return_value=remote),
+            mock.patch.object(pipeline, "verify_public_upload",
+                              side_effect=pipeline.PipelineError("PUBLIC_METADATA_INVALID: remote tags differ")),
+        ):
+            with self.assertRaisesRegex(pipeline.PipelineError, "remote tags differ"):
+                reconcile.adopt_verified_public_overview_id("today", "b" * 64, "long-2", video_id)
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["youtube_id"], video_id)
+        self.assertFalse(saved["uploaded"])
+        self.assertEqual(saved["status"], "uploading")
+
+    def test_public_overview_adoption_rejects_wrong_source_before_remote_lookup(self) -> None:
+        with (
+            mock.patch.object(reconcile, "current_source_snapshot",
+                              return_value={"content_sha256": "a" * 64}),
+            mock.patch.object(pipeline, "youtube_access_token") as token,
+        ):
+            with self.assertRaisesRegex(pipeline.PipelineError, "SOURCE_CHANGED"):
+                reconcile.adopt_verified_public_overview_id(
+                    "today", "b" * 64, "long-1", "VPUSEiBk2es"
+                )
+            token.assert_not_called()
+
+    def test_public_adoption_restores_lightweight_state_without_heavy_media(self) -> None:
+        workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/kesher-daily-video.yml").read_text(encoding="utf-8")
+        self.assertIn('if [ "${RESTORE_OPERATION:-}" = "adopt-public" ]; then', workflow)
+        self.assertIn('Adopt-public: authoritative lightweight state restored; no media hydration needed.', workflow)
+        self.assertLess(workflow.index('if [ "${RESTORE_OPERATION:-}" = "adopt-public" ]; then'), workflow.index("restore_args=(--requires-durable-media-restore)"))
+
+    def test_video_workflow_declares_video_overview_media_mode(self) -> None:
+        workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/kesher-daily-video.yml").read_text(encoding="utf-8")
+        self.assertIn("KESHER_MEDIA_MODE: video_overview", workflow)
+
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
@@ -188,7 +278,7 @@ class VideoReconcileTests(unittest.TestCase):
         })
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
 
-        self.assertEqual(reconcile.prepare_upload(), 0)
+        self.assertEqual(reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"]), 0)
         saved = pipeline.load_state()["items"][0]
         self.assertEqual(saved["status"], "generating")
         self.assertEqual(saved["source_id"], "source-1")
@@ -207,7 +297,7 @@ class VideoReconcileTests(unittest.TestCase):
         })
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
         with self.assertRaisesRegex(pipeline.PipelineError, "not technically verified"):
-            reconcile.prepare_upload()
+            reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"])
 
     def test_multiple_backlog_items_are_processed_oldest_first(self) -> None:
         today = post("today")
@@ -324,7 +414,7 @@ class VideoReconcileTests(unittest.TestCase):
         technically_verified(item)
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
 
-        self.assertEqual(reconcile.prepare_upload(), 0)
+        self.assertEqual(reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"]), 0)
         saved = pipeline.load_state()["items"][0]
         self.assertEqual(saved["source"]["slug"], "yesterday")
         self.assertEqual(saved["status"], "approved")
@@ -338,7 +428,7 @@ class VideoReconcileTests(unittest.TestCase):
         technically_verified(item)
         item["final_sha256"] = "x" * 64
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
-        self.assertEqual(reconcile.prepare_upload(), 0)
+        self.assertEqual(reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"]), 0)
         saved = pipeline.load_state()["items"][0]
         self.assertEqual(saved["final_sha256"], "x" * 64)
         self.assertEqual(saved["review_gate"], "advisory-jules")
@@ -351,7 +441,7 @@ class VideoReconcileTests(unittest.TestCase):
         item["visual_review_status"] = "rejected"
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
 
-        self.assertEqual(reconcile.prepare_upload(), 0)
+        self.assertEqual(reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"]), 0)
         saved = pipeline.load_state()["items"][0]
         self.assertEqual(saved["review_gate"], "advisory-jules")
         self.assertEqual(saved["advisory_review_status_before_upload"], "rejected")
@@ -369,7 +459,7 @@ class VideoReconcileTests(unittest.TestCase):
         item["metadata_review_status"] = "pending"
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
 
-        self.assertEqual(reconcile.prepare_upload(), 0)
+        self.assertEqual(reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"]), 0)
         saved = pipeline.load_state()["items"][0]
         self.assertEqual(saved["review_gate"], "advisory-jules")
         self.assertEqual(saved["advisory_review_status_before_upload"], "pending_review")
@@ -382,7 +472,7 @@ class VideoReconcileTests(unittest.TestCase):
         technically_verified(item)
         item["reviewer"] = {"type": "manual", "session": "manual"}
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
-        self.assertEqual(reconcile.prepare_upload(), 0)
+        self.assertEqual(reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"]), 0)
         self.assertEqual(pipeline.load_state()["items"][0]["review_gate"], "advisory-jules")
 
     def test_persisted_youtube_id_is_verified_without_second_insert(self) -> None:
@@ -410,7 +500,7 @@ class VideoReconcileTests(unittest.TestCase):
         ) as verify, mock.patch.object(
             pipeline, "start_resumable_upload"
         ) as insert:
-            self.assertEqual(reconcile.prepare_upload(), 0)
+            self.assertEqual(reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"]), 0)
 
         saved = pipeline.load_state()["items"][0]
         self.assertTrue(saved["uploaded"])
@@ -484,7 +574,7 @@ class VideoReconcileTests(unittest.TestCase):
         with self.assertRaisesRegex(pipeline.PipelineError, "hash changed"):
             reconcile.adopt_long_form_provider(str(long_path), "today", "0" * 64, "long-1")
 
-    def test_prepare_upload_targets_slug_when_specified(self) -> None:
+    def test_prepare_upload_targets_exact_item_when_specified(self) -> None:
         today = post("today")
         yesterday = post("yesterday", "2026-08-18")
         self.write_posts([today, yesterday])
@@ -494,7 +584,7 @@ class VideoReconcileTests(unittest.TestCase):
         yesterday_item["status"] = "generating"
         pipeline.save_state({"version": 1, "items": [yesterday_item, today_item], "updated_at": pipeline.utc_now()})
 
-        self.assertEqual(reconcile.prepare_upload("today"), 0)
+        self.assertEqual(reconcile.prepare_upload("today", today_item["source"]["content_sha256"], today_item["id"]), 0)
         saved = pipeline.load_state()["items"]
         self.assertEqual(saved[1]["status"], "approved")
 
@@ -718,6 +808,51 @@ class VideoReconcileTests(unittest.TestCase):
         saved = pipeline.load_state()["items"]
         self.assertTrue(all("advisory_review_status_before_upload" not in item for item in saved))
 
+    def test_bind_short_overview_identity_from_exact_public_long_state(self) -> None:
+        from tests.test_media_provenance_contract import bound_short
+
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        short = {**bound_short(45.0), "id": "short-1", "source": {"slug": source["slug"], "content_sha256": source["content_sha256"]}}
+        short.pop("overview_provider_identity", None)
+        short["status"] = "pending_review"
+        short["technical_verified"] = True
+        pipeline.save_state({"version": 1, "items": [short], "updated_at": pipeline.utc_now()})
+
+        long = {
+            "id": "long-1", "type": "video_overview", "source": {"slug": source["slug"], "content_sha256": source["content_sha256"]},
+            "notebook_id": "overview-notebook", "source_id": "overview-source", "task_id": "overview-task",
+            "artifact_id": "overview-artifact", "raw_sha256": "9" * 64, "technical_verified": True,
+            "uploaded": True, "status": "uploaded", "youtube_id": "lCGmwwMGJt8",
+            "youtube_verification": {"channel_id": pipeline.YOUTUBE_CHANNEL_ID, "privacy_status": "public", "processing_status": "succeeded"},
+        }
+        long_path = self.root / "long-state.json"
+        long_path.write_text(json.dumps({"version": 1, "items": [long]}), encoding="utf-8")
+
+        self.assertEqual(reconcile.bind_short_overview_identity(str(long_path), "today", source["content_sha256"], "long-1", "short-1"), 0)
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["overview_provider_identity"]["task_id"], "overview-task")
+        self.assertTrue(reconcile.delivery_guard._short_origin_verified(saved))
+
+    def test_bind_short_overview_identity_fails_closed_on_nonexact_long(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        short = pipeline.new_item(source)
+        short.update({"id": "short-1", "type": "article_short", "status": "pending_review"})
+        pipeline.save_state({"version": 1, "items": [short], "updated_at": pipeline.utc_now()})
+        long_path = self.root / "long-state.json"
+        long_path.write_text(json.dumps({"version": 1, "items": []}), encoding="utf-8")
+        with self.assertRaisesRegex(pipeline.PipelineError, "Exact authoritative Overview item"):
+            reconcile.bind_short_overview_identity(str(long_path), "today", source["content_sha256"], "long-missing", "short-1")
+
+    def test_short_workflow_binds_overview_identity_before_prepare_upload(self) -> None:
+        workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/kesher-short-v4.yml").read_text(encoding="utf-8")
+        self.assertIn("Bind exact Short to authoritative Overview identity", workflow)
+        self.assertIn("--bind-short-overview-identity", workflow)
+        self.assertIn("DERIVE_LONG_ITEM_ID", workflow)
+
     def test_prepare_upload_exact_identity_lock_rejects_partial_identity(self) -> None:
         current = post("current", "2026-08-19")
         self.write_posts([current])
@@ -735,8 +870,161 @@ class VideoReconcileTests(unittest.TestCase):
             with self.assertRaisesRegex(pipeline.PipelineError, "requires target_slug, content_sha256, and target_item_id"):
                 reconcile.prepare_upload()
 
+    def test_prepare_generation_skips_and_supersedes_stray_duplicates_when_already_public(self) -> None:
+        from tests.test_media_provenance_contract import bound_short
+
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        uploaded_short = {
+            **bound_short(45.0),
+            "id": "short-uploaded-1",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "qlVlUZMDKNo",
+            "youtube_url": "https://youtu.be/qlVlUZMDKNo",
+            "source": {"slug": source["slug"], "content_sha256": source["content_sha256"]},
+        }
+        uploaded_short.pop("overview_provider_identity", None)
+        stray_dup = pipeline.new_item(source)
+        stray_dup.update({
+            "id": "short-stray-2",
+            "type": "article_short",
+            "source_mode": "direct-short",
+            "status": "generating",
+            "uploaded": False,
+        })
+        pipeline.save_state({"version": 1, "items": [uploaded_short, stray_dup], "updated_at": pipeline.utc_now()})
+
+        output_file = self.root / "github_output"
+        env_file = self.root / "github_env"
+        with mock.patch.dict(
+            os.environ,
+            {"GITHUB_OUTPUT": str(output_file), "GITHUB_ENV": str(env_file), "KESHER_MEDIA_MODE": "article_short"},
+            clear=False,
+        ):
+            self.assertEqual(reconcile.prepare_generation("today"), 0)
+
+        self.assertIn("skip_generation=true", output_file.read_text(encoding="utf-8"))
+        self.assertIn("TARGET_ITEM_ID=short-uploaded-1", env_file.read_text(encoding="utf-8"))
+        saved = {row["id"]: row for row in pipeline.load_state()["items"]}
+        self.assertEqual(saved["short-uploaded-1"]["status"], "uploaded")
+        self.assertEqual(saved["short-stray-2"]["status"], "superseded")
+        self.assertEqual(saved["short-stray-2"]["superseded_reason"], "already_public_same_source")
+
+    def test_run_generation_refuses_duplicate_item_when_uploaded_item_exists(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        uploaded_item = pipeline.new_item(source)
+        uploaded_item.update({
+            "id": "uploaded-1",
+            "type": "article_short",
+            "source_mode": "direct-short",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "qlVlUZMDKNo",
+            "youtube_url": "https://youtu.be/qlVlUZMDKNo",
+        })
+        pipeline.save_state({"version": 1, "items": [uploaded_item], "updated_at": pipeline.utc_now()})
+
+        with mock.patch.object(pipeline, "auth_preflight"), mock.patch.object(
+            pipeline, "add_source"
+        ) as add_source, mock.patch.object(
+            pipeline, "start_generation"
+        ) as start_gen:
+            self.assertEqual(pipeline.run_generation(10, None, slug="today"), 0)
+
+        add_source.assert_not_called()
+        start_gen.assert_not_called()
+        items = pipeline.load_state()["items"]
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["id"], "uploaded-1")
+
+    def test_recover_persisted_youtube_id_repairs_metadata_drift(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        item = pipeline.new_item(source)
+        item.update({
+            "id": "recover-1",
+            "type": "video_overview",
+            "status": "uploading",
+            "uploaded": False,
+            "youtube_id": "persisted-yt-id",
+        })
+        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        pipeline.save_state(state)
+
+        mock_repair = mock.Mock()
+        mock_verification = {
+            "channel_id": pipeline.YOUTUBE_CHANNEL_ID,
+            "privacy_status": "public",
+            "processing_status": "succeeded",
+        }
+        with mock.patch.object(pipeline, "youtube_access_token", return_value="token"), \
+             mock.patch.object(pipeline, "verify_authenticated_channel"), \
+             mock.patch.object(pipeline, "verify_public_upload", side_effect=[
+                 pipeline.PipelineError("PUBLIC_METADATA_INVALID: remote tags differ from source-derived tags"),
+                 mock_verification,
+             ]), \
+             mock.patch.object(pipeline, "repair_persisted_youtube_metadata", mock_repair):
+            recovered = reconcile.recover_persisted_youtube_id(state, item)
+
+        self.assertTrue(recovered)
+        self.assertTrue(item["uploaded"])
+        self.assertEqual(item["status"], "uploaded")
+        self.assertEqual(item["youtube_verification"], mock_verification)
+        mock_repair.assert_called_once_with(item, "token")
+
+    def test_export_target_propagates_target_slug_to_github_env_even_when_step_env_set(self) -> None:
+        import tempfile
+        item = {
+            "id": "target-item-42",
+            "source": {
+                "slug": "relationship-quiescence-test",
+                "content_sha256": "a" * 64,
+            },
+            "fresh_generation_attempt": 2,
+        }
+        with tempfile.NamedTemporaryFile("w+", encoding="utf-8") as env_file:
+            with mock.patch.dict(os.environ, {"GITHUB_ENV": env_file.name, "TARGET_SLUG": "relationship-quiescence-test"}):
+                reconcile.export_target(item)
+            env_file.seek(0)
+            content = env_file.read()
+
+        self.assertIn("TARGET_ITEM_ID=target-item-42\n", content)
+        self.assertIn(f"TARGET_CONTENT_SHA256={'a' * 64}\n", content)
+        self.assertIn("TARGET_GENERATION_ATTEMPT=2\n", content)
+        self.assertIn("TARGET_SLUG=relationship-quiescence-test\n", content)
+
+
+    def test_recovery_from_source_selected_continues_exact_item_generation(self) -> None:
+        row = post("shared-laughter-couples-intimacy", day="2026-08-19")
+        self.posts_file.write_text(json.dumps([row], ensure_ascii=False), encoding="utf-8")
+        source = pipeline.source_metadata(row)
+        item = pipeline.new_item(source)
+        item.update({"type": "video_overview", "status": "source_selected"})
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+        output = self.root / "github-output.txt"
+
+        with mock.patch.dict(os.environ, {
+            "KESHER_MEDIA_MODE": "video_overview",
+            "TARGET_ITEM_ID": item["id"],
+            "TARGET_CONTENT_SHA256": source["content_sha256"],
+            "GITHUB_OUTPUT": str(output),
+            "OPERATION": "recovery",
+            "KESHER_RECOVERY_MODE": "true",
+        }, clear=False):
+            self.assertEqual(reconcile.prepare_generation(source["slug"]), 0)
+
+        self.assertIn("skip_generation=false", output.read_text(encoding="utf-8"))
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(len(saved), 1)
+        self.assertEqual(saved[0]["id"], item["id"])
+        self.assertEqual(saved[0]["status"], "source_selected")
+
 
 if __name__ == "__main__":
     unittest.main()
-
 

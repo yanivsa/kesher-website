@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "source_slug": "gifted-asynchronous-development-inner-loneliness",
+  "content_sha256": "c4bc90e101bd495f5f91d17793f59e216eb544ee828f4632b8fe5d7fedb259f3",
+  "media_kind": "short",
+  "media_item_id": "owner-short-20261109-7b6ae2e8dc31",
+  "final_sha256": "2b15cfc4a853844844092de193e8b1d71a477f35ef593e0395974a475781b0b9",
+  "manifest_sha256": "a35d123fde3fbd012a80cd98e2a2e7b251c879ac426b0657bdc20329c1254c1a",
+  "transcript_sha256": "dd8740c49c2c2f470456dc6f95e9f14b4030b75f3385f2aa8a7cf25959809e5b",
+  "visual_review_sha256": "6cb5f4cada83dff9290cb2a487c3f6d2dc72b56904fe450589c8b75654801d50",
+  "source_file_sha256": "3e8d6d2a4e5326852feaf225459a9c95b8ed8f8d1d70333918b2b5d652d08de1",
+  "frame_sha256": {
+    "short-frame-01.jpg": "c92fc31c8ff35f5cba47378e99e5ab462b4822c47e188f8e9fd6e3cef5c916fc",
+    "short-frame-02.jpg": "e9fe1348d2cd23bfb7b6f58bcd0075f92a0e0f9f7e5ca00808c815e17b5245c4",
+    "short-frame-03.jpg": "af9efba6dd44c3e234e8579837519ca08f03f0c7b5554c4d8679864ea391acca",
+    "short-frame-04.jpg": "145fafeff8506fc776159c1a6f0e7b9b328aad374b73f7805e84729b797d831e",
+    "short-frame-05.jpg": "4fbf40187f58a2441363773f525f4e5bba335143d5dedbdc9f5d7f3e9011235a",
+    "short-frame-06.jpg": "d2917e36e1aec4b801aabf92dcfb882bbe7f48ee49b00db53a90a61d268123bc",
+    "short-frame-07.jpg": "078f42cacce9deea27680d7fcffc10259512314180ae478cdd635a6db46507b6",
+    "short-frame-08.jpg": "a34da8338d3b5e27452f5a59bd65d35e382dc3ed161d0c27ed50563f7f46ab02"
+  },
+  "reviewed_by": "OWNER",
+  "reviewed_at": "2026-11-09T21:24:17+00:00",
+  "checks": {
+    "visual": "approved",
+    "semantic": "approved",
+    "audio": "approved",
+    "metadata": "approved",
+    "licensing": "approved"
+  },
+  "methods": {
+    "visual": "full_motion_and_frames",
+    "semantic": "research_vs_exact_transcript",
+    "audio": "authorized_audio_tool_with_script_comparison"
+  },
+  "review_notes": {
+    "visual": "נבדקו כל הפריימים למדידת תנועה, תצוגת דגימות לאורך כל הסרטון ותמונות המקור. נבדקה תנועה אמיתית, אין פריימים שחורים, הכותרות אינן חופפות, הילדים וההורים נראים באופן ברור.",
+    "semantic": "נבדקו במדויק חמש סצנות עבריות מול תמלול הקול העצמאי והמאמר המחקרי. המחוננות אינה מוצגת כגורם הכרחי לקושי, וההסתייגויות לגבי ילדים שונים נשמרות.",
+    "audio": "נבדק WAV מקורי מתוקן באמצעות תמלול עצמאי של Descript מול כל משפטי התסריט; בוצעו בדיקות דגימה, RMS, שיאי עוצמה, שתיקות ופענוח מלא. לא נטענת האזנה אנושית סובייקטיבית.",
+    "licensing": "רישיון מקור הדוברת LibriTTS-R מספר 6147 הוא CC BY 4.0 ומחייב קרדיט; מודל BlueTTS ברישיון MIT, מנוע RenikudPlus ברישיון Apache 2.0. התמונות נוצרו לפרויקט והמקור מוגדר ברישיון השימוש של OpenAI."
+  },
+  "rights": {
+    "commercial_use_permitted": true,
+    "voice_license_url": "https://www.openslr.org/141/",
+    "visual_license_url": "https://openai.com/en-GB/policies/row-terms-of-use/"
+  },
+  "evidence": {
+    "github_run": 42699460010,
+    "github_artifact_id": 13710593150,
+    "descript_url": "https://web.descript.com/7d86fef3-b8b6-435e-bb52-9269a2cc66f8/63b5f",
+    "voice_model_license_url": "https://huggingface.co/notmax123/BlueTTS2.5-onnx",
+    "g2p_license_url": "https://huggingface.co/notmax123/RenikudPlus",
+    "cc_by_license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "audio_sha256": "4042c4c38edb3001785c2a9a8c151e2586583c3f21d3a0df91ce603c4519e6ae",
+    "motion_review": "visual checked all frames plus 20 representative time slices; source still photos with gentle 10 percent pan and zoom",
+    "source_binding": {
+      "artifact_body_sha256": "7b6ae2e8dc3182d798edbf19c2d95e576b02ab093c5e2bf04bad91113a716a00",
+      "canonical_content_sha256": "c4bc90e101bd495f5f91d17793f59e216eb544ee828f4632b8fe5d7fedb259f3",
+      "method": "recomputed_same_committed_post_body_and_canonical_source",
+      "verified_at": "2026-11-10T09:29:00Z",
+      "source_deploy_sha": "58489fefdd7a936011d06c9695888a506da26311"
+    }
+  }
+}

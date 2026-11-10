@@ -1,0 +1,46 @@
+name: Kesher Owner Exact Recovery #975
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/kesher-owner-exact-975.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: kesher-owner-exact-975
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TARGET_SLUG: breaking-the-yelling-cycle
+      TARGET_SHA256: fb0c4c9c030c6cd6a3a9b831ec1003588103a4a37d9ba4d36991e259eab2cf8c
+    steps:
+      - name: Dispatch exact long Video Overview if none active
+        run: |
+          set -euo pipefail
+          active="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/kesher-daily-video.yml/runs?per_page=100" --jq '[.workflow_runs[] | select(.event == "workflow_dispatch" and (.status == "queued" or .status == "in_progress" or .status == "pending"))] | length')"
+          if [ "$active" -eq 0 ]; then
+            gh workflow run kesher-daily-video.yml               --repo "$GITHUB_REPOSITORY"               --ref main               -f operation=full               -f target_slug="$TARGET_SLUG"               -f target_content_sha256="$TARGET_SHA256"
+            echo "EXACT_LONG_DISPATCHED"
+          else
+            echo "EXACT_LONG_ALREADY_ACTIVE count=$active"
+          fi
+
+      - name: Dispatch exact Short if none active
+        run: |
+          set -euo pipefail
+          active="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/kesher-short-v4.yml/runs?per_page=100" --jq '[.workflow_runs[] | select(.event == "workflow_dispatch" and (.status == "queued" or .status == "in_progress" or .status == "pending"))] | length')"
+          if [ "$active" -eq 0 ]; then
+            gh workflow run kesher-short-v4.yml               --repo "$GITHUB_REPOSITORY"               --ref main               -f operation=derive               -f derive_slug="$TARGET_SLUG"               -f derive_content_sha256="$TARGET_SHA256"
+            echo "EXACT_SHORT_DISPATCHED"
+          else
+            echo "EXACT_SHORT_ALREADY_ACTIVE count=$active"
+          fi

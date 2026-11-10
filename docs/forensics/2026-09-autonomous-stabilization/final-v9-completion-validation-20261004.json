@@ -1,0 +1,181 @@
+{
+  "all_required_gates_passed": true,
+  "validated_implementation_sha": "204456cd27d3adb16ebe76fe7335d8b065547634",
+  "main_sha": "e79cccab32c046cc80a560ca43d0185b3b124f0b",
+  "gates": [
+    {
+      "phase": "safety",
+      "implementation_sha": "204456cd27d3adb16ebe76fe7335d8b065547634",
+      "started_at": "2026-10-04T06:20:58.487738+00:00",
+      "gates": [
+        {
+          "name": "diff-check",
+          "command": "git diff --check && git diff --cached --check && git diff --check origin/main...HEAD",
+          "exit_code": 0,
+          "seconds": 0.468,
+          "log": "safety-diff-check.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "compile",
+          "command": "python3 -m py_compile scripts/kesher_runtime/*.py scripts/*.py tests/*.py .github/scripts/article-image-worker.py .github/scripts/article-image-worker-v3.py .github/scripts/article-image-worker-v4.py",
+          "exit_code": 0,
+          "seconds": 1.445,
+          "log": "safety-compile.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "actionlint",
+          "command": "actionlint -shellcheck= -pyflakes=",
+          "exit_code": 0,
+          "seconds": 0.087,
+          "log": "safety-actionlint.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "affected-pytest",
+          "command": "pytest --junitxml=/Users/ninja/.codex/tmp/kesher-final-v9-stall-20261004/affected-pytest.xml tests/test_article_image_worker.py tests/test_article_image_contract.py tests/test_article_image_fallback_exhaustion.py tests/test_article_image_validator_policy.py tests/test_kesher_article_image_worker.py tests/test_kesher_article_contract.py tests/test_kesher_article_public.py tests/test_kesher_provider_recovery.py tests/test_kesher_authority_digest.py tests/test_kesher_authority_topology.py tests/test_kesher_historical_evidence.py tests/test_kesher_worker_entry.py tests/test_kesher_worker_commands.py tests/test_kesher_state_write_safety.py tests/test_v5_backlog_media_recovery.py tests/test_v5_shared_video_controller.py tests/test_kesher_article_stall.py tests/test_jules_article_runner.py tests/test_kesher_jules_sessions.py tests/test_kesher_command_dispatch.py tests/test_kesher_observe.py tests/test_kesher_article_worker.py",
+          "exit_code": 0,
+          "seconds": 55.33,
+          "log": "safety-affected-pytest.log",
+          "log_sha256": "900b961ffe6b0014f16c1126424edc56e5d8f5b16c4081bbaa18a452f98d51db"
+        },
+        {
+          "name": "controller",
+          "command": "npm run test:controller",
+          "exit_code": 0,
+          "seconds": 118.642,
+          "log": "safety-controller.log",
+          "log_sha256": "d8437641f4b803622558fa99ddebddf47d4b3d7e947c03111e117ffb75cfb4fa"
+        }
+      ],
+      "finished_at": "2026-10-04T06:23:54.474566+00:00",
+      "all_passed": true
+    },
+    {
+      "phase": "website",
+      "implementation_sha": "204456cd27d3adb16ebe76fe7335d8b065547634",
+      "started_at": "2026-10-04T06:20:58.487722+00:00",
+      "gates": [
+        {
+          "name": "plugin-validate",
+          "command": "npm run plugin:validate",
+          "exit_code": 0,
+          "seconds": 1.206,
+          "log": "website-plugin-validate.log",
+          "log_sha256": "c7234605400c68c62c3ed5d8303655997eb97e8a523ee893541edbb06d2c95bf"
+        },
+        {
+          "name": "plugin-package",
+          "command": "npm run plugin:package",
+          "exit_code": 0,
+          "seconds": 0.408,
+          "log": "website-plugin-package.log",
+          "log_sha256": "d96ca3f6384d4834fb3f4f183d84408cfcc6a7082e2a363e520e9c3a8000a456"
+        },
+        {
+          "name": "content",
+          "command": "npm run test:content",
+          "exit_code": 0,
+          "seconds": 1.493,
+          "log": "website-content.log",
+          "log_sha256": "49d806417c71e101a660dd2271ad021067f789da0ebe1ec9feef4e2452dd6f2c"
+        },
+        {
+          "name": "website",
+          "command": "npm test",
+          "exit_code": 0,
+          "seconds": 14.532,
+          "log": "website-website.log",
+          "log_sha256": "e8f3abd01e314ca1daf45fa8c05cac9e95da72f26ced506e97ac05734bb0a11b"
+        },
+        {
+          "name": "build",
+          "command": "npm run build",
+          "exit_code": 0,
+          "seconds": 54.219,
+          "log": "website-build.log",
+          "log_sha256": "ff7cf4100cc50aab94efe43daf56a840462e58a89a34e5d4f0d61aeb4c40aa5f"
+        },
+        {
+          "name": "dist",
+          "command": "npm run verify:dist",
+          "exit_code": 0,
+          "seconds": 0.89,
+          "log": "website-dist.log",
+          "log_sha256": "89518df664474177939369fdfee98be7f428533ea44d820a6ceea4e0f8fb289f"
+        },
+        {
+          "name": "lint",
+          "command": "npm run lint",
+          "exit_code": 0,
+          "seconds": 14.18,
+          "log": "website-lint.log",
+          "log_sha256": "22d44faea169bc1d4dfacec4b7afc4ef81678307a303b9aaa36ffeee07923b65"
+        },
+        {
+          "name": "browser",
+          "command": "npm run test:e2e",
+          "exit_code": 0,
+          "seconds": 209.646,
+          "log": "website-browser.log",
+          "log_sha256": "988f85741dfe415f781e8954ab70a5e4d85cd739a91e4c7a3a430327d887fddb"
+        }
+      ],
+      "finished_at": "2026-10-04T06:25:55.069980+00:00",
+      "all_passed": true
+    }
+  ],
+  "counts": {
+    "affected_pytest_top_level": 263,
+    "controller": 499,
+    "website": 151,
+    "owned_browser": 140,
+    "build_routes": 129,
+    "published_posts": 97,
+    "thin_legacy_unindexed": 9,
+    "lint_errors": 0,
+    "lint_configured_ignore_warnings": 17,
+    "pytest_xml_cases_including_subtests": 387
+  },
+  "scope": "Full affected controller suite rerun because package command adds incident module and runner test input changed. Canonical runtime/workflows/media/render bytes unchanged except reviewed authority data pins. Full media suite/synthetic renders retain prior proof; not rerun.",
+  "retained_prior_full_evidence": "final-v8-validation-20261004.json",
+  "retained_prior_full_counts": {
+    "python": 1158,
+    "video_policy": 214,
+    "controller": 492,
+    "synthetic_overview_and_short_renders": 2
+  },
+  "retained_media_render_inputs_proof": "final-v9-preservation-20261004.json",
+  "no_current_failures_waived": true,
+  "logs_archive": {
+    "path": "final-v9-completion-validation-logs-20261004.tar.gz",
+    "sha256": "998ca7145f81dd6c77683639a0117a4044e5eab640b22d1d693a33ed7d5a2711",
+    "members": 16
+  },
+  "browser_server": {
+    "url": "http://127.0.0.1:4173",
+    "reuse_existing_server": false,
+    "owned_by_candidate": true
+  },
+  "plugin_package": {
+    "sha256": "055434aff5da530b570129d3cc3bc6069f429026c35787625c48680f1d9da091",
+    "members": [
+      "assets/icon.svg",
+      "plugin.json",
+      "skills/calm-conversation-plan/SKILL.md",
+      "skills/calm-conversation-plan/agents/openai.yaml",
+      "skills/choose-support-path/SKILL.md",
+      "skills/choose-support-path/agents/openai.yaml",
+      "skills/mediation-prep/SKILL.md",
+      "skills/mediation-prep/agents/openai.yaml",
+      "skills/parenting-routine-builder/SKILL.md",
+      "skills/parenting-routine-builder/agents/openai.yaml"
+    ],
+    "content_matches_main": true,
+    "external_submission": false
+  },
+  "production_state_written": false,
+  "production_activated": false,
+  "public_completion_inferred": false
+}

@@ -42,6 +42,22 @@ class KesherV5BacklogPriorityTests(unittest.TestCase):
 
         self.assertEqual([row["cycle"] for row in ordered], ["2026-09-03"])
 
+    def test_deploy_exhaustion_is_rechecked_because_public_reality_can_change(self):
+        rows = [
+            {
+                "cycle": "2026-09-06",
+                "media": {
+                    "article_live": False,
+                    "article_deploy_status": "exhausted",
+                    "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED",
+                },
+            }
+        ]
+
+        ordered = runtime.ordered_recoverable_backlog(rows)
+
+        self.assertEqual([row["cycle"] for row in ordered], ["2026-09-06"])
+
     def test_incomplete_actionable_current_cycle_blocks_backlog(self):
         self.assertFalse(
             runtime.backlog_may_run(
@@ -93,7 +109,16 @@ class KesherV5BacklogPriorityTests(unittest.TestCase):
             "final_sha256": "f" * 64,
             # Deliberately missing immutable evidence hashes.
         }
-        row = {"cycle": "2026-10-01", "media": {}}
+        row = {
+            "cycle": "2026-10-01",
+            "media": {
+                "source_slug": source["slug"],
+                "source_content_sha256": source["content_sha256"],
+                "article_title": post["title"],
+                "article_url": f"https://kesher.saharoni.com/blog/{source['slug']}",
+                "article_live": True,
+            },
+        }
         state = {"status": "complete", "backlog": [row], "history": []}
 
         class FakeGitHub:
@@ -114,9 +139,19 @@ class KesherV5BacklogPriorityTests(unittest.TestCase):
                     return {}
                 raise AssertionError((method, path))
 
+        class PublicSite:
+            def get(self, _url):
+                return 200, (
+                    f"<html><head>"
+                    f"<link rel='canonical' href='https://kesher.saharoni.com/blog/{source['slug']}'>"
+                    f"<meta name='kesher:content-sha256' content='{source['content_sha256']}'>"
+                    f"</head><body><h1>{post['title']}</h1></body></html>"
+                )
+
         controller = object.__new__(runtime.RuntimeV5Controller)
         controller.github = FakeGitHub()
-        controller._published_backlog_source = lambda _state: (row, source)
+        controller.site = PublicSite()
+        controller._published_backlog_source = lambda _state, **_kwargs: (row, source)
 
         action = controller._backlog_media_preflight(state)
 

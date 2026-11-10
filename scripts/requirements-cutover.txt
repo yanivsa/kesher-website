@@ -1,0 +1,5 @@
+# Trusted persistent host only; no provider generation dependencies.
+requests==2.33.0
+cryptography==50.0.1
+PyYAML==6.0.2
+-r requirements-article.txt

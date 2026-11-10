@@ -17,6 +17,7 @@ PIPELINE_PATH = ROOT / "scripts" / "kesher_daily_pipeline.py"
 EVIDENCE_PATH = ROOT / "scripts" / "prepare_jules_video_evidence.py"
 POLICY_PATH = ROOT / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
 WORKFLOW_PATH = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
+ADVISORY_WORKFLOW_PATH = ROOT / ".github" / "workflows" / "kesher-video-advisory-review.yml"
 AUTOMATION_POLICY_PATH = ROOT / "config" / "kesher-production-contract.json"
 UPLOAD_GUARD_PATH = ROOT / "scripts" / "kesher_video_upload_guard.py"
 
@@ -137,10 +138,25 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
         self.assertNotIn("  schedule:", trigger_block)
         self.assertIn("scripts/kesher_video_reconcile.py --prepare-generation", workflow)
         self.assertIn("scripts/kesher_video_reconcile.py --prepare-upload", workflow)
-        self.assertIn("scripts/jules_video_reviewer_v3.py", workflow)
-        self.assertIn("Jules performs strict advisory review", workflow)
+        self.assertIn("Dispatch strict advisory Jules review", workflow)
+        self.assertIn("gh workflow run kesher-video-advisory-review.yml", workflow)
+        self.assertNotIn("scripts/jules_video_reviewer_v3.py", workflow)
+        self.assertNotIn("Jules performs strict advisory review", workflow)
         self.assertIn("Prepare technically verified upload", workflow)
         self.assertIn("Upload exact technically verified MP4", workflow)
+        self.assertLess(workflow.index("Dispatch strict advisory Jules review"), workflow.index("Prepare technically verified upload"))
+        self.assertNotIn("kesher-video-review-${{ github.run_id }}", workflow)
+        advisory = ADVISORY_WORKFLOW_PATH.read_text(encoding="utf-8")
+        self.assertIn("Jules performs strict advisory review", advisory)
+        self.assertIn("scripts/jules_video_reviewer_v3.py", advisory)
+        self.assertIn("--timeout-seconds 900", advisory)
+        self.assertIn("Persist advisory Jules review result", advisory)
+        self.assertIn("Delete temporary Jules evidence branch", advisory)
+        self.assertIn("Validate exact advisory evidence identity", advisory)
+        self.assertIn("^kesher-video-review-([0-9]+)$", advisory)
+        self.assertIn(".jules-video-review/${review_run_id}", advisory)
+        self.assertLess(advisory.index("Validate exact advisory evidence identity"), advisory.index("Checkout immutable Jules evidence branch"))
+        self.assertLess(advisory.index("Validate exact advisory evidence identity"), advisory.index("JULES_API_KEY"))
         self.assertNotIn("mandatory Jules", workflow)
         self.assertNotIn("Jules-approved MP4", workflow)
         self.assertNotIn("daily_video_guard.py", workflow)

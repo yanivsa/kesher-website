@@ -19,7 +19,7 @@ export interface PostLike {
   id: string;
   title?: string;
   category?: string;
-  subcategory?: string;
+  subcategory?: string | null;
   tags?: string[];
   excerpt?: string;
 }

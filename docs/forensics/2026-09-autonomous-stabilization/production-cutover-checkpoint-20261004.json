@@ -1,0 +1,434 @@
+{
+  "verdict": "BLOCKED",
+  "initial_main_sha": "5fc62bce0df27a3ff02ab81d8ce156a23da355ab",
+  "final_reconciled_main_sha": "9947d0c67a86caa047d3c91d6bf33d9b1b68f0f2",
+  "validated_implementation_sha": "1bd4c260e1fac3d9f1eb6541a0d92798d54304c3",
+  "branch": "codex/schema6-production-cutover",
+  "production_state_written": false,
+  "production_activated": false,
+  "public_completion_inferred": false,
+  "live_readonly": {
+    "captured_at": "2026-10-04T18:08:08.739328+00:00",
+    "state_blob_sha": "93b5004d7ca0505d0072cde33413d932b53a1f88",
+    "schema_version": 5,
+    "handover_present": false,
+    "github_exclusion_present": false,
+    "automation_state_ref": "cb2b97ad3039d4423467c232ee01f0c56b217f8d",
+    "main_sha": "9947d0c67a86caa047d3c91d6bf33d9b1b68f0f2",
+    "request_methods": [
+      "GET"
+    ],
+    "production_state_written_by_this_task": false,
+    "production_activated_by_this_task": false,
+    "public_completion_inferred": false
+  },
+  "authority": {
+    "definitions": 74,
+    "roles": {
+      "retired": 36,
+      "separate_infrastructure": 19,
+      "diagnostic": 8,
+      "emergency_bridge": 3,
+      "worker": 5,
+      "controller": 1,
+      "handover": 1,
+      "retiring_dispatcher": 1
+    },
+    "retained_registrations": 39,
+    "existing_pinned_registration_ids": 73,
+    "stale_definitions": 0,
+    "stale_callchains": 0,
+    "unknown_definitions": 0,
+    "dispatch_bindings": "PASS",
+    "policy_sha256": "ca0aafefd1d786f8cb05190d8937020dccd06c71bcc33a1740024a02ff7a2f3a",
+    "policy_and_definitions_sha256": "47f99a003bb6cdf5b086bcadfd2c9a87fff2250af8110b9a9a966da861c3a60b",
+    "callchain_pin_count": 1481
+  },
+  "resource_ports": {
+    "github": {
+      "status": "HUMAN_PREREQUISITE",
+      "requirement": "Owner-admin retirement of personal PAT/OAuth/App/SSH/deploy-key grants; isolated gateway App credentials; service-enforced direct-write denial and complete grant/run readback, including old workflow tokens."
+    },
+    "jules": {
+      "status": "HUMAN_PREREQUISITE",
+      "requirement": "Account-admin key/repository-access retirement plus independent settling of every existing session; session deletion alone is not cancellation proof."
+    },
+    "notebooklm": {
+      "status": "HUMAN_PREREQUISITE",
+      "requirement": "Account-admin invalidation of all predecessor cookies, master tokens and sessions on the exact notebook; an enforceable canonical gateway and service readback. Enterprise IAM is not proof for a consumer notebook."
+    },
+    "youtube": {
+      "status": "HUMAN_PREREQUISITE",
+      "requirement": "Retire every predecessor OAuth grant and outstanding resumable capability on the exact channel; independently settle uploads; use a distinct canonical OAuth project behind a command gate. OAuth revocation alone is insufficient."
+    },
+    "cloudflare": {
+      "status": "HUMAN_PREREQUISITE",
+      "requirement": "Account-admin inventory of every member, global key, user/account token and Pages integration; revoke predecessor authority and settle deployments; isolate canonical credentials behind a command gate on exact account/project."
+    },
+    "image_provider": {
+      "status": "HUMAN_PREREQUISITE",
+      "requirement": "Identify the actual provider/project; invalidate every predecessor key, session and issued bearer token; settle in-flight generations; isolate canonical credentials behind a command gate with native readback."
+    }
+  },
+  "registration_counts": {
+    "original": 111,
+    "latest": 112,
+    "expected_after_merge": 113,
+    "retained_missing_yaml": 39,
+    "retirement_targets": 79
+  },
+  "new_known_registration": {
+    "id": 374765037,
+    "path": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml"
+  },
+  "new_cutover_registration": "Must be independently observed/reviewed after merge; not guessed.",
+  "closed_5_2": "CLOSED unchanged",
+  "closed_5_2_file_sha256": {
+    "docs/forensics/2026-09-autonomous-stabilization/closed-media-evidence-floor-20260930.json": "99ee2e33c76e24fb9d5d2a8e27cae80ab8566b557585eb8f060ab32b6a3c55d9",
+    "docs/forensics/2026-09-autonomous-stabilization/legacy-media-adjudication-20260928.json": "a16c3801e845ee09bc61803a79301b445dfd3e40d28bf05caad1952a4aa96c33",
+    "docs/forensics/2026-09-autonomous-stabilization/legacy-media-evidence-report-20260928.md": "e58f2d24765f67792c41dbe157a2c51a4dc663faade9dc098e7a135926f637a2",
+    "docs/forensics/2026-09-autonomous-stabilization/migration-legacy-evidence-replay-20260928.json": "634cbe24513e5b0ac32b0df270a5dce188fb7dd5bd8a317112be823e176b4afd",
+    "docs/forensics/2026-09-autonomous-stabilization/handover-hardening-replay-20260930.json": "9292a5473d48fe0f79e54f83c47e92173a0266347423f22469f9f292fd667175"
+  },
+  "quarantines": {
+    "OPwpR3ReV0k": "Exact archive contradicts claimed source/kind identity; quarantined.",
+    "TKAwQMzvP6U": "No exact producer lineage; quarantined.",
+    "5QW2YCqMG6Q": "Historical upload capability quarantined until trusted coordinated5.1 sealing."
+  },
+  "current_main_content_plugin_legal_media_verification_preserved": true,
+  "infrastructure": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "registration_id": 294200685,
+      "resources": [
+        "github.statuses"
+      ],
+      "credentials": [
+        "GITHUB_TOKEN"
+      ],
+      "credential_services": {
+        "GITHUB_TOKEN": "github"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/oci-a1-capacity-watch.yml",
+      "registration_id": 333278814,
+      "resources": [
+        "cloudflare.account",
+        "github.dispatch",
+        "oci.resources"
+      ],
+      "credentials": [
+        "GITHUB_TOKEN"
+      ],
+      "credential_services": {
+        "GITHUB_TOKEN": "github"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/oci-bridge-repair-beta-20260901.yml",
+      "registration_id": 347487895,
+      "resources": [
+        "cloudflare.account",
+        "oci.resources"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/oci-bridge-repair-inherit-20260901.yml",
+      "registration_id": 347483139,
+      "resources": [
+        "cloudflare.account",
+        "oci.resources"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/oci-bridge-restore-20260901.yml",
+      "registration_id": 347443805,
+      "resources": [
+        "cloudflare.account",
+        "oci.resources"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/oci-openclaw-plan-b-e2.yml",
+      "registration_id": 334165848,
+      "resources": [
+        "cloudflare.account",
+        "oci.resources"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/oci-openclaw-provision-v2.yml",
+      "registration_id": 333275018,
+      "resources": [
+        "cloudflare.account",
+        "oci.resources"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/oci-openclaw-provision.yml",
+      "registration_id": 333272481,
+      "resources": [
+        "cloudflare.account",
+        "oci.resources"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/oci-secure-bridge-bootstrap.yml",
+      "registration_id": 333268727,
+      "resources": [
+        "cloudflare.account",
+        "oci.resources"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/openclaw-agent-diagnostic.yml",
+      "registration_id": 354763985,
+      "resources": [
+        "cloudflare.account",
+        "oci.resources"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/openclaw-clean-rebuild.yml",
+      "registration_id": 354683396,
+      "resources": [
+        "cloudflare.account",
+        "oci.resources"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/openclaw-cloudflare-preflight-diagnostic.yml",
+      "registration_id": 347517048,
+      "resources": [
+        "cloudflare.account"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/openclaw-cloudflare-tunnel.yml",
+      "registration_id": 340424915,
+      "resources": [
+        "cloudflare.account",
+        "oci.resources"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/openclaw-finalize-tailscale-serve.yml",
+      "registration_id": 335556453,
+      "resources": [
+        "cloudflare.account",
+        "oci.resources"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/openclaw-inspect-tailnet-console.yml",
+      "registration_id": 335566780,
+      "resources": [
+        "cloudflare.account",
+        "oci.resources"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/openclaw-offline-boot-repair.yml",
+      "registration_id": 335576768,
+      "resources": [
+        "cloudflare.account",
+        "github.dispatch",
+        "github.issues",
+        "github.refs",
+        "github.statuses",
+        "oci.resources"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN",
+        "GITHUB_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare",
+        "GITHUB_TOKEN": "github"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/openclaw-preserve-tailnet-recovery.yml",
+      "registration_id": 335562900,
+      "resources": [
+        "cloudflare.account",
+        "oci.resources"
+      ],
+      "credentials": [
+        "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "credential_services": {
+        "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+        "CLOUDFLARE_API_TOKEN": "cloudflare"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/openclaw-recovery-controller.yml",
+      "registration_id": 338370770,
+      "resources": [
+        "cloudflare.account",
+        "github.dispatch",
+        "github.issues",
+        "github.refs",
+        "github.statuses",
+        "oci.resources"
+      ],
+      "credentials": [
+        "GITHUB_TOKEN"
+      ],
+      "credential_services": {
+        "GITHUB_TOKEN": "github"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    },
+    {
+      "path": ".github/workflows/youtube-oauth-diagnostic.yml",
+      "registration_id": 337057199,
+      "resources": [
+        "youtube.metadata",
+        "youtube.objects"
+      ],
+      "credentials": [
+        "YOUTUBE_CLIENT_ID",
+        "YOUTUBE_CLIENT_SECRET",
+        "YOUTUBE_REFRESH_TOKEN"
+      ],
+      "credential_services": {
+        "YOUTUBE_CLIENT_ID": "youtube",
+        "YOUTUBE_CLIENT_SECRET": "youtube",
+        "YOUTUBE_REFRESH_TOKEN": "youtube"
+      },
+      "status": "NATIVE_SEPARATION_PROOF_REQUIRED"
+    }
+  ],
+  "validation_report": "production-cutover-validation-20261004.json",
+  "independent_review": "production-cutover-independent-review-20261004.json",
+  "runbook": "production-cutover-runbook-20261004.md",
+  "remaining_delta": "Deploy/review genuine native resource observers, predecessor grant/session/capability retirement, persistent default-deny boundaries, all19 infrastructure scopes, independent service factory/TLS/persistent replay ledger/protected environment, exact post-merge cutover ID and merged revision/evidence/key custody. None is substituted by a local manifest.",
+  "publication_scope": "Draft review only; no merge or activation."
+}

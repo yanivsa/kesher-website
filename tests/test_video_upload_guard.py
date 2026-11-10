@@ -3,6 +3,7 @@ from __future__ import annotations
 import unittest
 
 from scripts import kesher_video_upload_guard as guard
+from tests.test_media_provenance_contract import bound_short
 
 
 def technical_item(slug: str = "today", day: str = "2026-08-20", status: str = "approved") -> dict:
@@ -110,15 +111,9 @@ class VideoUploadGuardTests(unittest.TestCase):
         guard.validate_candidate(item)
 
     def test_short_candidate_passes_with_verified_signature_video(self) -> None:
-        item = technical_item()
-        item.update({
-            "type": "article_short",
-            "source_mode": "direct-short",
-            "signature_verified": True,
-            "signature_fullscreen": True,
-            "signature_duration_seconds": 3.0,
-            "signature_video_sha256": "v" * 64,
-        })
+        item = technical_item(slug="article")
+        item.update(bound_short(120.0))
+        item["source"]["canonical_url"] = "https://kesher.saharoni.com/blog/article"
         guard.validate_candidate(item)
 
     def test_short_candidate_fails_closed_when_derived_from_overview_segment(self) -> None:

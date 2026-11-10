@@ -24,6 +24,7 @@ BACKLOG_MEDIA_RECOVERY_WORKFLOW = "kesher-backlog-media-recovery.yml"
 MAX_BACKLOG_SEED_DISPATCHES = 3
 MAX_BACKLOG_SHORT_DISPATCHES = 4
 MAX_BACKLOG_EVIDENCE_REBUILDS = 2
+MAX_BACKLOG_DEPLOY_DISPATCHES = 3
 IMMUTABLE_EVIDENCE_HASHES = (
     "manifest_sha256",
     "transcript_sha256",
@@ -54,8 +55,9 @@ def legacy_immutable_evidence_gap(item):
 def ordered_recoverable_backlog(rows):
     """Return newest-first backlog rows that may still make autonomous progress.
 
-    A terminally exhausted historical row remains in state for supervisor/direct
-    takeover, but it must never starve a fresher recoverable delivery.
+    A terminally exhausted or quarantined historical row remains in state for
+    supervisor/direct takeover, but it must never starve a fresher recoverable
+    delivery or crash the current controller tick.
     """
     recoverable = []
     for row in rows or []:
@@ -64,7 +66,15 @@ def ordered_recoverable_backlog(rows):
         media = row.get("media") or {}
         if media.get("complete") is True:
             continue
-        if str(media.get("last_error") or "") in TERMINAL_BACKLOG_MEDIA_ERRORS:
+        if (
+            media.get("quarantined") is True
+            or str(row.get("status") or "") == "quarantined_ambiguous_identity"
+            or str(media.get("status") or "") == "quarantined_ambiguous_identity"
+            or str(media.get("long_status") or "") == "quarantined_ambiguous_identity"
+        ):
+            continue
+        last_error = str(media.get("last_error") or "")
+        if last_error in TERMINAL_BACKLOG_MEDIA_ERRORS or last_error.startswith("BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS"):
             continue
         recoverable.append(row)
     return sorted(recoverable, key=lambda row: str(row.get("cycle") or ""), reverse=True)
@@ -88,72 +98,227 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
 
     PIPELINE_ID = "v5"
 
-    def _published_backlog_source(self, state):
-        posts = self.github.contents_json("src/data/posts.json", "main")
-        if not isinstance(posts, list):
-            raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
+    def _dispatch_worker(self, workflow, inputs):
+        if hasattr(self.github, "request"):
+            v5.core.GitHubClient.dispatch(self.github, workflow, inputs)
+            return
+        self.github.dispatch(workflow, inputs)
 
-        backlog = ordered_recoverable_backlog(state.get("backlog") or [])
+    def _published_backlog_source(self, state, *, require_public=True):
+        posts = self.posts_on_main("main")
+
+        backlog_rows = state.get("backlog")
+        if not backlog_rows:
+            backlog_rows = state.get("media_recovery_backlog") or []
+        backlog = ordered_recoverable_backlog(backlog_rows)
         for row in backlog:
             media = row.setdefault("media", {})
             cycle = str(row.get("cycle") or "").strip()
             if not cycle:
                 continue
-            matches = [post for post in posts if isinstance(post, dict) and str(post.get("date") or "") == cycle]
+            matches = self._posts_for_date(cycle, posts)
             if not matches:
                 continue
-            if len(matches) != 1:
-                row_slug = str((row.get("article") or {}).get("slug") or media.get("source_slug") or "").strip()
-                if row_slug:
-                    slug_matches = [
-                        p for p in matches
-                        if str(p.get("slug") or p.get("id") or "").strip() == row_slug
-                    ]
-                    if len(slug_matches) == 1:
-                        matches = slug_matches
-                if len(matches) != 1:
-                    cm_matches = [p for p in matches if p.get("controllerManaged") is not False]
-                    if len(cm_matches) == 1:
-                        matches = cm_matches
-            if len(matches) != 1:
-                raise v5.core.ControllerError(f"BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: {cycle}")
-            post = matches[0]
+            row_slug = str((row.get("article") or {}).get("slug") or media.get("source_slug") or "").strip()
+            expected_sha = str((row.get("article") or {}).get("quality_content_sha256") or "").strip()
+            if row_slug:
+                slug_matches = [
+                    p for p in matches
+                    if str(p.get("slug") or p.get("id") or "").strip() == row_slug
+                    and v5.core.is_controller_adoptable_post(
+                        p,
+                        state_slug=row_slug,
+                        state_content_sha256=expected_sha,
+                    )
+                ]
+                resolved_matches = slug_matches if len(slug_matches) == 1 else []
+            elif cycle in v5.core.REVIEWED_AMBIGUOUS_POST_FREEZE_DATES:
+                resolved_matches = []
+            else:
+                cm_matches = [
+                    p for p in matches
+                    if v5.core.is_controller_adoptable_post(p)
+                ]
+                resolved_matches = cm_matches if len(cm_matches) == 1 else []
+
+            if len(resolved_matches) == 1 and expected_sha:
+                candidate_source = v5.article_source_identity(resolved_matches[0])
+                if candidate_source["content_sha256"] != expected_sha:
+                    resolved_matches = []
+
+            if len(resolved_matches) != 1:
+                candidate_slugs = [
+                    str(p.get("slug") or p.get("id") or "").strip()
+                    for p in matches
+                    if isinstance(p, dict)
+                ]
+                media.update({
+                    "status": "quarantined_ambiguous_identity",
+                    "long_status": "quarantined_ambiguous_identity",
+                    "quarantined": True,
+                    "quarantined_at": v5.core.utc_now(),
+                    "quarantine_reason": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS",
+                    "last_error": f"BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: {cycle}",
+                    "ambiguous_candidate_slugs": candidate_slugs,
+                    "ambiguous_candidate_count": len(matches),
+                })
+                row["status"] = "quarantined_ambiguous_identity"
+                row["quarantined"] = True
+                row["last_error"] = f"BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: {cycle}"
+                state.setdefault("history", []).append({
+                    "at": v5.core.utc_now(),
+                    "from": state.get("status"),
+                    "to": state.get("status"),
+                    "reason": "backlog_quarantined_ambiguous_identity",
+                    "details": {
+                        "cycle": cycle,
+                        "candidate_slugs": candidate_slugs,
+                    },
+                })
+                state["history"] = state["history"][-100:]
+                continue
+            post = resolved_matches[0]
             source = v5.article_source_identity(post)
             url = f"{v5.core.SITE_URL}/blog/{source['slug']}"
-            status, body = self.site.get(url)
-            if status != 200 or not v5.core.article_is_public(body, str(post.get("title") or "")):
-                continue
             media.update({
                 "source_slug": source["slug"],
                 "source_content_sha256": source["content_sha256"],
+                "article_title": str(post.get("title") or ""),
                 "article_url": url,
-                "article_live": True,
+                "article_live": False,
             })
+            if require_public:
+                status, body = self.site.get(url)
+                if status != 200 or not v5.core.article_is_public(
+                    body,
+                    media["article_title"],
+                    source["slug"],
+                    source["content_sha256"],
+                ):
+                    continue
+                media["article_live"] = True
             return row, source
         return None, None
 
-    def _verified_backlog_short(self, source):
+    @staticmethod
+    def _historical_backlog_short_verified(item, source) -> bool:
+        if str(source.get("date") or "") >= "2026-10-04":
+            return False
+        if v5._source_identity(item) != (source["slug"], source["content_sha256"]):
+            return False
+        if item.get("source_mode") == "overview-segment":
+            return False
+        if not v5.core.verified_youtube_item(item, source["slug"]):
+            return False
+        media = item.get("media") or {}
+        try:
+            width = int(media.get("width") or 0)
+            height = int(media.get("height") or 0)
+        except (TypeError, ValueError):
+            return False
+        if width != 1080 or height != 1920 or height <= width:
+            return False
+        if item.get("signature_verified") is not True or item.get("signature_fullscreen") is not True:
+            return False
+        try:
+            sig_duration = float(item.get("signature_duration_seconds") or 0)
+        except (TypeError, ValueError):
+            return False
+        if abs(sig_duration - 3.0) >= 0.001:
+            return False
+        return bool(str(item.get("signature_video_sha256") or "").strip())
+
+    def _verified_backlog_short(self, source, long_item=None):
         snapshot = self.github.newest_short_state()
+        short_rows = (
+            self._exact_short_items(snapshot, source, long_item=long_item)
+            if hasattr(self, "_exact_short_items")
+            else v5._exact_items(snapshot, source)
+        )
         rows = [
             row
-            for row in v5._exact_items(snapshot, source)
+            for row in short_rows
             if delivery_guard.short_public_portrait_verified(
                 row,
                 source,
                 youtube_verified=v5.core.verified_youtube_item,
             )
+            or self._historical_backlog_short_verified(row, source)
         ]
         return v5._newest(rows)
 
     def _backlog_media_preflight(self, state):
-        row, source = self._published_backlog_source(state)
-        if row is None or source is None:
-            return None
-        media = row["media"]
+        rows = state.get("backlog") or state.get("media_recovery_backlog") or []
+        visited = set()
+        deferred = False
+        while True:
+            # Shallow views retain durable row mutations but never remove history.
+            candidates = dict(state)
+            candidates["backlog"] = [row for row in rows if id(row) not in visited]
+            candidates["media_recovery_backlog"] = []
+            row, source = self._published_backlog_source(candidates, require_public=False)
+            if "history" in candidates:
+                state["history"] = candidates["history"]
+            if row is None or source is None or id(row) in visited:
+                if deferred:
+                    kind = "wait" if state.get("status") == "complete" else "blocked"
+                    return v5.core.Action(kind, "prior-cycle article deployment attempts exhausted")
+                return None
+            visited.add(id(row))
+            media = row["media"]
+
+            article_url = str(media.get("article_url") or f"{v5.core.SITE_URL}/blog/{source['slug']}")
+            status, body = self.site.get(article_url)
+            article_live = status == 200 and v5.core.article_is_public(
+                body,
+                str(media.get("article_title") or ""),
+                source["slug"],
+                source["content_sha256"],
+            )
+            media["article_live"] = bool(article_live)
+            if not article_live:
+                article_state = row.setdefault("article", {})
+                deploy_count = int(article_state.get("deploy_attempts") or 0)
+                if deploy_count >= MAX_BACKLOG_DEPLOY_DISPATCHES:
+                    media["article_deploy_status"] = "exhausted"
+                    media["last_error"] = "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED"
+                    deferred = True
+                    continue
+                if self.github.active_workflow_run(v5.core.DEPLOY_WORKFLOW, production_only=True):
+                    media["article_deploy_status"] = "running"
+                    return v5.core.Action("wait", "prior-cycle article deployment is already active")
+
+                self.github.dispatch(v5.core.DEPLOY_WORKFLOW)
+                article_state.update({
+                    "deploy_attempts": deploy_count + 1,
+                    "last_deploy_dispatch_at": v5.core.utc_now(),
+                })
+                media.update({
+                    "article_deploy_status": "running",
+                    "article_last_deploy_dispatch_at": v5.core.utc_now(),
+                    "last_error": None,
+                })
+                return v5.core.Action(
+                    "dispatch_backlog_deploy",
+                    "dispatched deployment for exact prior-cycle article already present on main",
+                    {
+                        "target_slug": source["slug"],
+                        "target_content_sha256": source["content_sha256"],
+                    },
+                )
+            break
+
+        media["article_deploy_status"] = "complete"
+        if media.get("last_error") == "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED":
+            media["last_error"] = None
 
         long_state = self.github.newest_video_state()
         long_verified = v5._newest(v5._verified_exact(long_state, source))
-        short_verified = self._verified_backlog_short(source) if long_verified is not None else None
+        short_verified = (
+            self._verified_backlog_short(source, long_item=long_verified)
+            if long_verified is not None
+            else None
+        )
 
         if long_verified is not None:
             media.update({
@@ -194,6 +359,13 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
                 media["last_error"] = "SHORT_SIGNATURE_ASSET_MISSING"
                 return v5.core.Action("blocked", "prior-cycle Short signature asset is missing")
 
+            gate_error = self._short_dispatch_gate_error(source, long_verified)
+            if gate_error is not None:
+                code, message = gate_error
+                media["short_status"] = "blocked"
+                media["last_error"] = code
+                return v5.core.Action("blocked", message)
+
             count = int(media.get("short_dispatch_count") or 0)
             if count >= MAX_BACKLOG_SHORT_DISPATCHES:
                 media["short_status"] = "exhausted"
@@ -201,11 +373,12 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
                 return v5.core.Action("blocked", "prior-cycle Short recovery attempts exhausted")
 
             inputs = {
-                "operation": "generate",
+                "operation": "derive",
                 "derive_slug": source["slug"],
                 "derive_content_sha256": source["content_sha256"],
+                "derive_long_item_id": str(long_verified.get("id") or ""),
             }
-            v5.core.GitHubClient.dispatch(self.github, v5.SHORT_WORKFLOW, inputs)
+            self._dispatch_worker(v5.SHORT_WORKFLOW, inputs)
             media.update({
                 "short_status": "running",
                 "short_dispatch_count": count + 1,
@@ -254,7 +427,7 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
                     "target_content_sha256": source["content_sha256"],
                     "target_item_id": str(exact_item.get("id") or ""),
                 }
-                v5.core.GitHubClient.dispatch(self.github, v5.LONG_VIDEO_WORKFLOW, inputs)
+                self._dispatch_worker(v5.LONG_VIDEO_WORKFLOW, inputs)
                 media.update({
                     "long_status": "running",
                     "long_evidence_rebuild_count": rebuild_count + 1,
@@ -267,8 +440,12 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
                     inputs,
                 )
 
-            inputs = {"operation": "full"}
-            v5.core.GitHubClient.dispatch(self.github, v5.LONG_VIDEO_WORKFLOW, inputs)
+            inputs = {"operation": "full", "target_slug": source["slug"],
+                      "target_content_sha256": source["content_sha256"],
+                      "target_item_id": str(exact_item.get("id") or "")}
+            if not inputs['target_item_id']:
+                raise v5.core.ControllerError('LONG_VIDEO_ITEM_ID_MISSING')
+            self._dispatch_worker(v5.LONG_VIDEO_WORKFLOW, inputs)
             media.update({
                 "long_status": "running",
                 "long_resume_count": int(media.get("long_resume_count") or 0) + 1,
@@ -283,10 +460,11 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
             return v5.core.Action("blocked", "prior-cycle exact long-video seed attempts exhausted")
 
         inputs = {
+            "operation": "full",
             "target_slug": source["slug"],
             "target_content_sha256": source["content_sha256"],
         }
-        v5.core.GitHubClient.dispatch(self.github, BACKLOG_MEDIA_RECOVERY_WORKFLOW, inputs)
+        self._dispatch_worker(v5.LONG_VIDEO_WORKFLOW, inputs)
         media.update({
             "long_status": "running",
             "seed_dispatch_count": count + 1,
@@ -329,6 +507,8 @@ def install_runtime() -> None:
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     install_runtime()
     return v5.main()
 

@@ -1,10 +1,9 @@
 {
-  "enabled": false,
-  "target_slug": "sleep-needs-10-year-old",
-  "issue": 1021,
+  "enabled": true,
+  "target_slug": "child-meltdown-after-school",
   "goal": "article_http_200_plus_public_youtube_video_plus_public_verified_9_16_short",
-  "completed": true,
-  "content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
-  "completed_at": "2026-10-03T19:43:18.741945+00:00",
-  "completion_reason": "Article verified public; Video Overview public/verified; Short public/verified at 1080x1920."
+  "completed": false,
+  "requested_at": "2026-10-06T17:32:00Z",
+  "requested_by": "master-active-supervisor",
+  "note": "Complete today's authoritative KESHER chain. Reuse existing article/video/short artifacts and source identity; do not duplicate generation or upload. Recover/rerun only missing stages and verify public article HTTP 200, public YouTube Video Overview processing succeeded, and public 9:16 YouTube Short processing succeeded."
 }

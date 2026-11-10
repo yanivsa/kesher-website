@@ -85,8 +85,11 @@ class FakeGitHub:
         self.saved_state = copy.deepcopy(state)
 
     def contents_json(self, path, ref="main"):
-        assert path == "src/data/posts.json"
-        return copy.deepcopy(self.posts)
+        if path == "src/data/posts.json":
+            return copy.deepcopy(self.posts)
+        if path == "src/data/postsRecent.json":
+            return copy.deepcopy(getattr(self, "recent_posts", []))
+        raise AssertionError(path)
 
     def open_article_prs(self, target_slot=None):
         return copy.deepcopy(self.prs)
@@ -142,7 +145,19 @@ class FakeGitHub:
 
 class FakeSite:
     def get(self, url):
-        return 200, "<h1>כותרת מאמר</h1>"
+        post = article()
+        source = v5.article_source_identity(post)
+        slug = source["slug"]
+        canonical_url = f"{core.SITE_URL}/blog/{slug}"
+        image = post.get("image") or f"/images/generated/blog/{slug}.jpg"
+        return (
+            200,
+            f'<html><head><meta name="kesher:content-sha256" content="{source["content_sha256"]}">'
+            f'<link rel="canonical" href="{canonical_url}">'
+            f'<meta property="og:url" content="{canonical_url}">'
+            f'<meta property="og:image" content="https://kesher.saharoni.com{image}">'
+            f'</head><body><h1>{post["title"]}</h1>{post["content"]}</body></html>',
+        )
 
 
 class V5SharedVideoControllerTests(unittest.TestCase):
@@ -459,6 +474,9 @@ class V5SharedVideoControllerTests(unittest.TestCase):
         self.assertEqual(gh.cancelled_runs, [])
         self.assertEqual(gh.dispatches, [])
 
+
+# Run the new fail-closed owner handoff suite in the existing mandatory CI cohort.
+from tests.test_owner_terminal_short_handoff_20261108 import OwnerTerminalShortHandoffTests
 
 if __name__ == "__main__":
     unittest.main()

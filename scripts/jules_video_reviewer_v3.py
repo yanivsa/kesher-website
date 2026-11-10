@@ -10,6 +10,9 @@ from __future__ import annotations
 
 import json
 import re
+import os
+import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -117,7 +120,7 @@ Open `{evidence_root}/state.json` and locate the exact item. Open and visually i
 
 IMPORTANT: Jules is the STRICT ADVISORY reviewer for this exact MP4. Return an honest `approved` or `rejected` quality decision and concrete findings. Your result MUST NOT block upload: publication permission belongs exclusively to the independent technical gate. Do not soften a finding to keep the schedule moving, and do not describe your decision as upload authorization.
 
-Machine contract: return `schema_version={REVIEW_SCHEMA_VERSION}` and `policy_version={REMOTION_POLICY_VERSION}` exactly. `decision` MUST be `approved` only when visual, semantic and metadata statuses are all approved; otherwise it MUST be `rejected`. A rejected decision MUST contain at least one concrete `blocking_issues` object with `gate`, stable uppercase `code`, and factual Hebrew `message`; here `blocking_issues` means quality defects for later repair, not publication blockers. An approved decision MUST have an empty `blocking_issues` list. `recommendations` are optional non-blocking Hebrew improvements.
+Machine contract: return `schema_version={REVIEW_SCHEMA_VERSION}` and `policy_version={REMOTION_POLICY_VERSION}` exactly. `decision` MUST be `approved` only when visual, semantic and metadata statuses are all approved; otherwise it MUST be `rejected`. A rejected decision MUST contain at least one concrete `blocking_issues` object with `gate` exactly one of `visual`, `semantic`, or `metadata` (no other gate values), stable uppercase `code`, and factual Hebrew `message`; here `blocking_issues` means quality defects for later repair, not publication blockers. An approved decision MUST have an empty `blocking_issues` list. `recommendations` are optional non-blocking Hebrew improvements.
 
 Apply these strict review dimensions:
 1. Technical is already machine-verified. Independently confirm the manifest identifies a 16:9 H.264 video lasting 90-180 seconds. Recompute every checked-out file hash. The MP4 is deliberately excluded; confirm its expected final SHA-256 is identical in state.json, the manifest and the expected hashes above.
@@ -130,11 +133,48 @@ You may complete the review only after doing the actual file reads and image ins
 """
 
 
+def record_advisory_decision(state_dir: Path, decision: dict[str, Any], session: str,
+                             reviewed_item: dict[str, Any] | None = None) -> None:
+    """Persist quality findings in the evidence artifact, without publication effects."""
+    if not re.fullmatch(r"sessions/[0-9]+", session):
+        raise ReviewError("Invalid Jules advisory session")
+    path = state_dir / "state.json"
+    original = path.read_bytes()
+    state, current = legacy.load_pending(state_dir, decision["item_id"])
+    if reviewed_item is not None and any(current.get(key) != reviewed_item.get(key)
+                                        for key in ("id", "source", "type", "fresh_generation_attempt")):
+        raise ReviewError("Exact reviewed identity changed before recording")
+    validate_decision(decision, current, legacy.expected_hashes(state_dir, current), strict_schema=True)
+    previous = current.get("jules_advisory_review") or {}
+    if previous.get("session") == session and previous.get("decision") == decision:
+        return
+    current["jules_advisory_review"] = {
+        "session": session,
+        "recorded_at": datetime.now(timezone.utc).isoformat(),
+        "publication_authority": False,
+        "decision": decision,
+    }
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=state_dir, delete=False) as handle:
+            temporary = Path(handle.name)
+            json.dump(state, handle, ensure_ascii=False, indent=2)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        if path.read_bytes() != original:
+            raise ReviewError("Advisory evidence changed during recording")
+        os.replace(temporary, path)
+    finally:
+        if temporary is not None and temporary.exists():
+            temporary.unlink()
+
+
 def main() -> int:
     legacy.REMOTION_POLICY_PATH = REMOTION_POLICY_PATH
     legacy.load_remotion_policy = load_remotion_policy
     legacy.build_prompt = build_prompt
-    return legacy.main()
+    return legacy.main(record_decision_fn=record_advisory_decision)
 
 
 if __name__ == "__main__":

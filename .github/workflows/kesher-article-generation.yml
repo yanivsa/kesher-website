@@ -18,25 +18,37 @@ on:
         required: false
         default: false
         type: boolean
-  push:
-    branches: [main]
-    paths:
-      - ".github/kesher-e2e-test-trigger.json"
-      - ".github/kesher-topic-request.json"
+
+      existing_session_mode:
+        description: Exact existing sessions only; off keeps article worker untouched
+        required: false
+        default: 'off'
+        type: choice
+        options:
+          - 'off'
+          - check
+          - nudge
+          - stress-check
+          - stress-nudge
 
 permissions:
   contents: read
   pull-requests: write
-  actions: read
+  actions: write
 
 concurrency:
-  group: kesher-article-generation-${{ github.event_name }}-${{ inputs.slot || github.sha }}
+  # A read-only GET of the SAME pinned existing stress session need not wait for
+  # an unrelated long-running article poll. Mutation/nudge and all actual
+  # generation retain the original per-slot concurrency group unchanged.
+  group: kesher-article-generation-${{ github.event_name }}-${{ (inputs.existing_session_mode == 'stress-check' && 'readonly-stress-20261108') || (inputs.slot || github.sha) }}
   cancel-in-progress: false
 
 jobs:
   generate:
+    # Bounded manual emergency bridge; explicitly retired by coordinated cutover.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    timeout-minutes: 75
     env:
       KESHER_ARTICLE_RESULT_PATH: ${{ github.workspace }}/.kesher-article-result/result.json
     steps:
@@ -45,6 +57,20 @@ jobs:
         with:
           ref: main
           persist-credentials: false
+
+      - name: Refuse manual article bridge after cutover exclusion begins
+        id: bridge_admission
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -m scripts.kesher_runtime.bridge_admission
+
+      - name: Set up Python for the reviewed article runner
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+
+      - name: Install publication catalog reader dependency
+        run: python -m pip install requests==2.33.0
 
       - name: Resolve publication slot and explicit test mode
         shell: bash
@@ -56,44 +82,10 @@ jobs:
           set -euo pipefail
           brief_file="$GITHUB_WORKSPACE/.kesher-topic-brief.txt"
           : > "$brief_file"
-          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
-            git show --pretty="" --name-only HEAD > /tmp/kesher-changed-files.txt
-            python3 - <<'PY' > /tmp/kesher-trigger.env
-          import json
-          from pathlib import Path
-
-          changed = set(Path("/tmp/kesher-changed-files.txt").read_text(encoding="utf-8").splitlines())
-          topic_path = Path(".github/kesher-topic-request.json")
-          test_path = Path(".github/kesher-e2e-test-trigger.json")
-
-          if str(topic_path) in changed:
-              payload = json.loads(topic_path.read_text(encoding="utf-8"))
-              slot = str(payload.get("slot") or "").strip()
-              topic = str(payload.get("topic_brief") or "").strip()
-              if not topic:
-                  raise SystemExit("kesher-topic-request.json requires non-empty topic_brief")
-              Path(".kesher-topic-brief.txt").write_text(topic + "\n", encoding="utf-8")
-              print(f"slot={slot}")
-              print("test_mode=false")
-              print("trigger=custom-topic")
-          elif str(test_path) in changed:
-              payload = json.loads(test_path.read_text(encoding="utf-8"))
-              slot = str(payload.get("slot") or "").strip()
-              print(f"slot={slot}")
-              print("test_mode=true")
-              print("trigger=e2e-test")
-          else:
-              raise SystemExit(f"push did not modify a recognized Kesher article trigger: {sorted(changed)}")
-          PY
-            slot="$(sed -n 's/^slot=//p' /tmp/kesher-trigger.env)"
-            test_mode="$(sed -n 's/^test_mode=//p' /tmp/kesher-trigger.env)"
-            trigger="$(sed -n 's/^trigger=//p' /tmp/kesher-trigger.env)"
-          else
-            slot="$DISPATCH_SLOT"
-            test_mode="${DISPATCH_TEST_MODE:-false}"
-            trigger="workflow-dispatch"
-            printf '%s' "${DISPATCH_TOPIC_BRIEF:-}" > "$brief_file"
-          fi
+          slot="$DISPATCH_SLOT"
+          test_mode="${DISPATCH_TEST_MODE:-false}"
+          trigger="workflow-dispatch"
+          printf '%s' "${DISPATCH_TOPIC_BRIEF:-}" > "$brief_file"
           if ! [[ "$slot" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
             echo "Invalid Kesher article slot: $slot" >&2
             exit 1
@@ -104,6 +96,7 @@ jobs:
           echo "Resolved slot=$slot test_mode=$test_mode trigger=$trigger topic_brief_bytes=$(wc -c < "$brief_file")"
 
       - name: Run exactly one autonomous Jules article text attempt with evidence contract
+        if: ${{ inputs.existing_session_mode == 'off' }}
         id: article_worker
         continue-on-error: true
         env:
@@ -114,8 +107,34 @@ jobs:
           mkdir -p "$(dirname "$KESHER_ARTICLE_RESULT_PATH")"
           python3 -u scripts/jules_article_runner_v4.py --slot "$KESHER_ARTICLE_SLOT"
 
+      - name: Fail-closed recovery unit tests (existing Jules sessions only)
+        if: ${{ inputs.existing_session_mode != 'off' }}
+        run: python -m unittest discover -s tests -p 'test_kesher_jules_exact_session_recovery.py' -v
+
+      - name: Read or nudge same existing Jules session WITHOUT creating an article
+        if: ${{ inputs.existing_session_mode != 'off' && inputs.test_mode != true }}
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+          KESHER_SLOT: ${{ inputs.slot }}
+          KESHER_MODE: ${{ inputs.existing_session_mode }}
+        run: |
+          set -euo pipefail
+          # The two Nov 8 owner requests have DIFFERENT immutable Jules session IDs.
+          # Only these exact choices can read/nudge a prior session; never create.
+          case "$KESHER_MODE" in
+            check|nudge)
+              python -m scripts.kesher_jules_exact_session_recovery --slot "$KESHER_SLOT" --mode "$KESHER_MODE"
+              ;;
+            stress-check|stress-nudge)
+              test "$KESHER_SLOT" = "2026-11-08" || { echo "Wrong slot for exact stress session"; exit 1; }
+              mode="${KESHER_MODE#stress-}"
+              python -m scripts.kesher_jules_exact_session_recovery --slot "2026-11-08-stress" --mode "$mode"
+              ;;
+            *) echo "Invalid exact session recovery mode"; exit 1 ;;
+          esac
+
       - name: Persist structured article attempt result
-        if: ${{ always() && hashFiles('.kesher-article-result/result.json') != '' }}
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' && hashFiles('.kesher-article-result/result.json') != '' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: kesher-article-result-${{ github.run_id }}
@@ -125,7 +144,7 @@ jobs:
           compression-level: 0
 
       - name: Close explicit-test article PR to prevent same-date collision
-        if: ${{ always() && env.KESHER_TEST_MODE == 'true' && hashFiles('.kesher-article-result/result.json') != '' }}
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' && env.KESHER_TEST_MODE == 'true' && hashFiles('.kesher-article-result/result.json') != '' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -155,3 +174,21 @@ jobs:
         run: |
           echo "The single article text worker attempt failed; the controller owns retry/backoff." >&2
           exit 1
+
+      - name: Notify canonical Kesher Content Controller on completion
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' && inputs.test_mode != true && inputs.existing_session_mode == 'off' }}
+        continue-on-error: true
+        timeout-minutes: 2
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHILD_WORKFLOW: ${{ github.workflow }}
+          CHILD_RUN_ID: ${{ github.run_id }}
+          CHILD_CONCLUSION: ${{ job.status }}
+          SLOT: ${{ inputs.slot || '' }}
+        run: |
+          gh workflow run kesher-content-controller.yml \
+            --ref main \
+            -f child_workflow="$CHILD_WORKFLOW" \
+            -f child_run_id="$CHILD_RUN_ID" \
+            -f child_conclusion="$CHILD_CONCLUSION" \
+            -f slot="$SLOT" || echo "::warning::Controller wake-up notification failed; fallback schedule/workflow_run will reconcile."

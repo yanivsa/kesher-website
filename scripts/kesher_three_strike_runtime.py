@@ -7,11 +7,13 @@ if __package__:
     from . import kesher_content_controller_v5 as v5
     from . import kesher_content_watchdog as watchdog
     from . import kesher_e2e_delivery_guard as delivery_guard
+    from . import kesher_final_attempt_fallback as fallback
     from . import kesher_intervention_policy as intervention
 else:
     import kesher_content_controller_v5 as v5
     import kesher_content_watchdog as watchdog
     import kesher_e2e_delivery_guard as delivery_guard
+    import kesher_final_attempt_fallback as fallback
     import kesher_intervention_policy as intervention
 
 
@@ -134,8 +136,17 @@ class ThreeStrikeMediaInterventionMixin:
 
     def _article_watchdog(self, state: dict[str, Any]):
         """Keep V5's fast article recovery, with hourly direct-takeover ownership."""
-        posts = self.github.contents_json("src/data/posts.json", "main")
-        if not isinstance(posts, list) or v5.core.today_articles(posts, self.now.date()):
+        getter = getattr(self, "posts_on_main", None)
+        posts = getter("main") if callable(getter) else v5.core.posts_on_main(self.github, "main")
+        if not isinstance(posts, list):
+            return None
+        reconcile_article = getattr(self, "_reconcile_existing_current_day_article", None)
+        todays = (
+            reconcile_article(state, posts)
+            if callable(reconcile_article)
+            else v5.core.today_articles(posts, self.now.date())
+        )
+        if todays:
             return None
         slot = self.now.date().isoformat()
         if self.github.open_article_prs(slot):
@@ -279,19 +290,48 @@ class ThreeStrikeMediaInterventionMixin:
         )
         return v5.core.Action("wait", "article workflow active")
 
+    def _find_final_attempt_fallback_candidate(self, source: dict[str, str]) -> dict[str, Any] | None:
+        long_state = self.github.newest_video_state() if hasattr(self.github, "newest_video_state") else {"version": 1, "items": []}
+        return fallback.find_usable_candidate(
+            long_state,
+            source["slug"],
+            source["content_sha256"],
+            require_file=False,
+        )
+
     def _media_watchdog_preflight(self, state, source):
-        long_state = self.github.newest_video_state()
+        long_state = self.github.newest_video_state() if hasattr(self.github, "newest_video_state") else {"version": 1, "items": []}
         long_verified = v5._newest(v5._verified_exact(long_state, source))
-        long_candidate = None if long_verified else self._watchdog_candidate(long_state, source)
+        auth_id = (state.get("long_video") or {}).get("authoritative_item_id")
+        long_candidate = None
+        if not long_verified:
+            if auth_id:
+                auth_matches = [
+                    row for row in v5._exact_items(long_state, source)
+                    if str(row.get("id") or "") == str(auth_id)
+                    and row.get("uploaded") is not True
+                ]
+                if auth_matches:
+                    long_candidate = auth_matches[0]
+            if long_candidate is None:
+                try:
+                    long_candidate = self._watchdog_candidate(long_state, source, authoritative_item_id=auth_id)
+                except TypeError:
+                    long_candidate = self._watchdog_candidate(long_state, source)
 
         stages = []
         if long_candidate is not None:
             stages.append(("long_video", v5.LONG_VIDEO_WORKFLOW, long_candidate, None))
         elif long_verified is not None:
-            short_state = self.github.newest_short_state()
+            short_state = self.github.newest_short_state() if hasattr(self.github, "newest_short_state") else {"version": 1, "items": []}
+            short_rows = (
+                self._exact_short_items(short_state, source, long_item=long_verified)
+                if hasattr(self, "_exact_short_items")
+                else v5._exact_items(short_state, source)
+            )
             valid_short = [
                 row
-                for row in v5._exact_items(short_state, source)
+                for row in short_rows
                 if delivery_guard.short_public_portrait_verified(
                     row,
                     source,
@@ -305,6 +345,27 @@ class ThreeStrikeMediaInterventionMixin:
 
         for stage_name, workflow, item, long_item in stages:
             stage = state[stage_name]
+            if stage_name == "long_video":
+                run_id = stage.get("run_id")
+                if run_id and stage.get("processed_run_id") != run_id and hasattr(self, "_workflow_run"):
+                    completed_run = self._workflow_run(run_id)
+                    if isinstance(completed_run, dict) and str(completed_run.get("status") or "") == "completed":
+                        stage["processed_run_id"] = run_id
+                        stage["last_run_conclusion"] = completed_run.get("conclusion")
+                stage.update({
+                    "item_id": item.get("id"),
+                    "source_slug": source["slug"],
+                    "source_content_sha256": source["content_sha256"],
+                    "content_sha256": source["content_sha256"],
+                    "source_id": item.get("source_id"),
+                    "task_id": item.get("task_id"),
+                    "provider_id": item.get("task_id"),
+                    "artifact_id": item.get("artifact_id"),
+                    "provider_status": item.get("last_provider_status") or item.get("status"),
+                    "verified": False,
+                })
+                if stage.get("status") in {"complete", "uploaded"}:
+                    stage["status"] = "generating"
             identity = f"{stage_name}:{source['slug']}:{source['content_sha256']}:{item.get('id') or item.get('task_id') or 'unknown'}"
             watchdog.observe_media(
                 stage,
@@ -353,15 +414,17 @@ class ThreeStrikeMediaInterventionMixin:
                     f"{stage_name} provider exceeded {minutes} minute hard timeout from launch/recovery",
                 )
                 stage["status"] = "blocked"
-                stage["controller_recovery_required"] = {
-                    "incident_key": incident_key,
-                    "reason": "media provider hard timeout",
-                    "requested_at": v5.core.utc_now(),
-                }
-                self.github.save_controller_state(state)
-                return v5.core.Action("blocked", f"{stage_name} provider hard timeout")
 
-            if watchdog_decision == "wait":
+            elif watchdog_decision == "wait":
+                if stage_name == "long_video":
+                    stage["status"] = "generating"
+                    v5.core.transition(
+                        state,
+                        "long_video_watchdog_wait",
+                        "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+                        item_id=item.get("id"),
+                        task_id=item.get("task_id"),
+                    )
                 self.github.save_controller_state(state)
                 return v5.core.Action("wait", f"{stage_name} provider pending under watchdog")
 
@@ -394,7 +457,55 @@ class ThreeStrikeMediaInterventionMixin:
                 self.github.save_controller_state(state)
                 return v5.core.Action("wait", f"{stage_name} strike {decision.strike}; targeted Controller action already observed")
 
-            if decision.action in {intervention.OBSERVE_CONTROLLER, intervention.FORCE_CONTROLLER_RECOVERY}:
+            if decision.action in {
+                intervention.OBSERVE_CONTROLLER,
+                intervention.FORCE_CONTROLLER_RECOVERY,
+                intervention.PROGRESS_RESET,
+            }:
+                action_item = item
+                if stage_name == "long_video":
+                    # If Attempt 3 is completed, prefer Attempt 3
+                    if (
+                        item.get("status") in {"completed", "downloaded", "approved", "uploaded"}
+                        or item.get("technical_verified") is True
+                        or bool(str(item.get("youtube_id") or "").strip())
+                    ):
+                        action_item = item
+                    elif decision.action == intervention.FORCE_CONTROLLER_RECOVERY and int(item.get("fresh_generation_attempt") or 0) >= 3:
+                        # Fallback is strictly a FINAL condition: attempt budget exhausted + supervisor force recovery
+                        if not fallback.is_fallback_promotion_enabled():
+                            state["long_video"]["status"] = "blocked"
+                            v5.core.block(
+                                state,
+                                "long_video",
+                                "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE",
+                                "Fallback promotion is disabled until shared authoritative winner store is available",
+                            )
+                            self.github.save_controller_state(state)
+                            return v5.core.Action("blocked", "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE")
+                        promoted = fallback.promote_last_usable_after_third_attempt(
+                            long_state,
+                            require_file=False,
+                            allow_pending_abandonment=(watchdog_decision == "hard_timeout"),
+                        )
+                        if promoted is not None:
+                            action_item = promoted
+                            stage["item_id"] = promoted.get("id")
+                            stage["authoritative_item_id"] = promoted.get("id")
+                            stage["final_attempt_fallback"] = True
+                            if hasattr(self.github, "save_video_state"):
+                                self.github.save_video_state(long_state)
+
+                if watchdog_decision == "hard_timeout" and action_item is item:
+                    stage["controller_recovery_required"] = {
+                        "incident_key": decision.incident_key,
+                        "strike": decision.strike,
+                        "reason": "media provider hard timeout",
+                        "requested_at": v5.core.utc_now(),
+                    }
+                    self.github.save_controller_state(state)
+                    return v5.core.Action("blocked", f"{stage_name} provider hard timeout")
+
                 active = self.github.active_workflow_run(workflow, production_only=True)
                 if active:
                     if decision.action == intervention.FORCE_CONTROLLER_RECOVERY:
@@ -408,9 +519,9 @@ class ThreeStrikeMediaInterventionMixin:
                     return v5.core.Action("wait", f"{stage_name} same-identity child is already active; no duplicate dispatch")
 
                 action = (
-                    self._recover_long_video(state, source, item)
+                    self._recover_long_video(state, source, action_item)
                     if stage_name == "long_video"
-                    else self._recover_short(state, source, item, long_item)
+                    else self._recover_short(state, source, action_item, long_item)
                 )
                 action_token = self._controller_action_token(stage) or f"dispatch:{hourly_token}"
                 intervention.mark_controller_action(

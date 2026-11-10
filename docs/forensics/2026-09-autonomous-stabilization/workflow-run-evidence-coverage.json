@@ -1,0 +1,25 @@
+{
+  "pipeline_runs": 10915,
+  "inspected_runs": 3501,
+  "selected_runs": 3501,
+  "pending_run_ids": [],
+  "selection": [
+    "Every failed/timed-out/startup-failed/cancelled/skipped pipeline run",
+    "Every retried pipeline run",
+    "Every referenced run present in the captured run index",
+    "First/last of each workflow/event/conclusion combination"
+  ],
+  "pipeline_scope": "Pipeline definitions including historical one-off mutators; shared CI/deploy runs only when bound by SHA or branch to an indexed scope-candidate PR",
+  "referenced_runs_not_retained_in_index": [],
+  "logs_available": 3317,
+  "availability_errors": {
+    "logs_unavailable": 184,
+    "artifact_listing_unavailable": 45,
+    "jobs_attempt_1_unavailable": 44
+  },
+  "limitations": [
+    "Expired/deleted logs and artifacts cannot be reconstructed.",
+    "Step summaries are not exposed by the REST jobs API; logs and retained artifacts are recorded separately.",
+    "Machine code matches are candidates until executed lines are reviewed."
+  ]
+}

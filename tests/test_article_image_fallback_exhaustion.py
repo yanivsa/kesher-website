@@ -9,11 +9,21 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKER_PATH = ROOT / ".github" / "scripts" / "article-image-worker-v4.py"
+VALIDATOR_PATH = ROOT / ".github" / "scripts" / "validate-article-pr.py"
 WORKFLOW_PATH = ROOT / ".github" / "workflows" / "kesher-article-image.yml"
 
 
 def load_worker():
     spec = importlib.util.spec_from_file_location("article_image_worker_v4_exhaustion_test", WORKER_PATH)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_validator():
+    spec = importlib.util.spec_from_file_location("article_pr_validator_unicode_test", VALIDATOR_PATH)
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
@@ -54,6 +64,41 @@ class ArticleImageFallbackExhaustionTests(unittest.TestCase):
         )
 
         self.assertIsNone(candidate)
+
+    def test_old_enough_published_pixels_are_not_reused(self):
+        worker = load_worker()
+        post = {
+            "id": "dating-apps-burnout-finding-a-partner",
+            "title": "קשה למצוא זוגיות? שחיקה מדייטים ואפליקציות",
+        }
+        existing_hashes: set[str] = set()
+        usage: dict[str, int] = {}
+        last_used: dict[str, date] = {}
+        for _tier, source_path in worker._candidate_pool(post, set()):
+            path = ROOT / source_path
+            if not path.is_file():
+                continue
+            data = path.read_bytes()
+            digest = hashlib.sha256(data).hexdigest()
+            pixels = "pixels:" + worker.core.image_pixel_sha256(data)
+            existing_hashes.update((digest, pixels))
+            usage[digest] = usage[pixels] = 1
+            last_used[digest] = last_used[pixels] = date(2025, 1, 1)
+        candidate = worker.local_fallback(
+            "yanivsa/kesher-website", post, "sha", "token", [],
+            existing_hashes=existing_hashes, existing_usage=usage,
+            last_used=last_used, banned_paths=set(),
+        )
+        self.assertIsNone(candidate)
+
+    def test_raw_github_image_url_percent_encodes_hebrew_path(self):
+        validator = load_validator()
+        url = validator.raw_github_content_url(
+            "owner/repo", "a" * 40, "public/images/generated/blog/קשר-זוגי.jpg"
+        )
+        self.assertNotIn("קשר", url)
+        self.assertIn("%D7%A7%D7%A9%D7%A8-%D7%96%D7%95%D7%92%D7%99.jpg", url)
+        self.assertIn("/public/images/generated/blog/", url)
 
     def test_production_worker_never_generates_abstract_terminal_placeholder(self):
         source = WORKER_PATH.read_text(encoding="utf-8")

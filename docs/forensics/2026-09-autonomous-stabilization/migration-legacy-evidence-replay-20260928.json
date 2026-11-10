@@ -1,0 +1,472 @@
+{
+  "observed_at": "2026-09-28T07:50:19.722056+00:00",
+  "replay_input_observed_at": "2026-09-27T20:34:33.607193+00:00",
+  "main_sha": "89b4c190626fd204ed7d61c4c5e0db8ed039ff04",
+  "controller_blob_sha": "b41bb425fc54f4f8893d161b62898560c454bbf3",
+  "input_schema": 5,
+  "migration_status": "prepared",
+  "media_baselines": 32,
+  "preserved_youtube_ids": 64,
+  "youtube_ids": [
+    "0_D5XJBjong",
+    "2W-Y0hSWJbE",
+    "2rTz93IDODg",
+    "5QW2YCqMG6Q",
+    "6A1xxpYxxHI",
+    "6NXdPWlBtW0",
+    "6PgUZePAA4g",
+    "7PSQihadrKo",
+    "7o8L18pMGUs",
+    "9XijSbUs4cI",
+    "9fM_SKMpVsY",
+    "BlRx0ICD6hE",
+    "CtTJl4u8ZNM",
+    "GH5NXngXOfs",
+    "I8jHoGUHcfk",
+    "IU213USwun8",
+    "K-pN9kq0_co",
+    "KBOGqsiJ1KY",
+    "L3a1e3giH6g",
+    "LPSAKVEMtSE",
+    "MBUF_Iey2m0",
+    "N06HFnBZvX8",
+    "NwhSRQLzErc",
+    "OPwpR3ReV0k",
+    "OixQqjXZedM",
+    "PNUqREu1Vj4",
+    "PQVjwkZEzro",
+    "QTfV67bERBg",
+    "RFUJ3a076sM",
+    "S2u_Pm65Uco",
+    "T6HRcvZ_39g",
+    "TKAwQMzvP6U",
+    "Uq9VhO9xKGA",
+    "ZKptf7GYrzs",
+    "Zrjta99vVhw",
+    "_7nkqLUyARQ",
+    "_py6RIm6T3A",
+    "aBqNZqcP3mM",
+    "aJZ0U7n0AVU",
+    "b-maTwXHbnI",
+    "cK5JxdtgGQY",
+    "cjmOVgeAT7E",
+    "dlA58ZK7Uoc",
+    "e4eyQ46X5Ak",
+    "hsc40vF65ts",
+    "iKDfQey_RzU",
+    "jmGhGj6EynU",
+    "k27Msx4drEQ",
+    "mT7DuI3XJWc",
+    "mbbjxPO6XVw",
+    "n08DtcfHC3o",
+    "nbINO-NJNz8",
+    "nx1jPP_YWn4",
+    "oLFMY9V41Ik",
+    "rGvpGXci6hc",
+    "sZv8Su53lVI",
+    "snMn5rJrxWU",
+    "tVOtgN-5WnM",
+    "tldtwSNnWLE",
+    "vIXCpdShJ5c",
+    "vZjVKXtqI-c",
+    "wuOFFSaZzUc",
+    "xO4p3R1zqsQ",
+    "zecFDhri5Lc"
+  ],
+  "quarantine_counts": {
+    "LEGACY_UPLOAD_CAPABILITY_REQUIRES_SEALING": 1,
+    "DUPLICATE_UPLOAD": 14,
+    "LEGACY_MEDIA_AMBIGUOUS": 1,
+    "LEGACY_STAGE_EVIDENCE_UNRESOLVED": 2
+  },
+  "quarantine": [
+    {
+      "failure_class": "LEGACY_UPLOAD_CAPABILITY_REQUIRES_SEALING",
+      "origin": {
+        "artifact_id": 10704214914,
+        "archive_sha256": "44d2a3d3d05eb9b6210256ad48b8dc7adec32afa98dbc6affdd1e55ea58f5ee1",
+        "run_id": "35749006786"
+      },
+      "item_id": "video-20260918-145430-46c8d80a4f",
+      "legacy_item_sha256": "f66dff2d2a0c9f20b3ede2fc0c89c1f889a5f6b7e3897c759e0b13498ba97db2",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-18",
+        "slug": "dating-apps-exhaustion",
+        "content_sha256": "46c8d80a4f18f7ff52a1cc0c9739a8c9fddb19a57600272e845c8ee003bf5a03",
+        "kind": "short"
+      }
+    },
+    {
+      "failure_class": "DUPLICATE_UPLOAD",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-03",
+        "slug": "smart-youth-focus-tasks-organization",
+        "content_sha256": "065fc982d04000cf570128933fd7a23623d50a58e61370f2bd9e6e98cc8d3a0c",
+        "kind": "short"
+      },
+      "youtube_ids": [
+        "L3a1e3giH6g",
+        "S2u_Pm65Uco"
+      ]
+    },
+    {
+      "failure_class": "DUPLICATE_UPLOAD",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-02",
+        "slug": "singlehood-holiday-meals-inquiries",
+        "content_sha256": "65b5bb9c6903cfad5b38914bc46f2793e34226dbfc7d9634c05833ef9ccc1e1f",
+        "kind": "short"
+      },
+      "youtube_ids": [
+        "ZKptf7GYrzs",
+        "k27Msx4drEQ",
+        "oLFMY9V41Ik"
+      ]
+    },
+    {
+      "failure_class": "DUPLICATE_UPLOAD",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-07",
+        "slug": "first-year-boundaries-origin-families",
+        "content_sha256": "6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3",
+        "kind": "short"
+      },
+      "youtube_ids": [
+        "6A1xxpYxxHI",
+        "rGvpGXci6hc"
+      ]
+    },
+    {
+      "failure_class": "DUPLICATE_UPLOAD",
+      "target": {
+        "type": "media",
+        "slot": "2026-08-27",
+        "slug": "parenting-back-to-school-screen-limits",
+        "content_sha256": "4885dc1abdcfa4d78ec93fa17d22b6a8b30a421493b8a63495832f1665507464",
+        "kind": "overview"
+      },
+      "youtube_ids": [
+        "I8jHoGUHcfk",
+        "tldtwSNnWLE"
+      ]
+    },
+    {
+      "failure_class": "LEGACY_MEDIA_AMBIGUOUS",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-15",
+        "slug": "returning-to-israel-after-relocation-relationship",
+        "content_sha256": "b9e6baa40222a67ad9b00fdff32d2c79c167d004bf4f7bdaeb2dfc064a144fcd",
+        "kind": "short"
+      },
+      "item_sha256": [
+        "0f7fc5bcb7e6b655f5d78dfec073ac702affd46f3faeae75d5a1cfc2d3da4c44",
+        "c8705a273653002271c7c842ebb8fc9f6ef5866b17a528941622084197dcbd19"
+      ]
+    },
+    {
+      "failure_class": "DUPLICATE_UPLOAD",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-14",
+        "slug": "מוכנות-לכיתה-א-עצמאות-ושגרה",
+        "content_sha256": "74040d54b52a8c0567f3ba329e23c872f082ec56bcae60d29330a0b58d0f5434",
+        "kind": "short"
+      },
+      "youtube_ids": [
+        "0_D5XJBjong",
+        "zecFDhri5Lc"
+      ]
+    },
+    {
+      "failure_class": "DUPLICATE_UPLOAD",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-15",
+        "slug": "returning-to-israel-after-relocation-relationship",
+        "content_sha256": "3ca2ce643ca610e89465259704eeb106919bfa0f7b4eec3416d011ef9cb58758",
+        "kind": "short"
+      },
+      "youtube_ids": [
+        "2rTz93IDODg",
+        "9XijSbUs4cI",
+        "9fM_SKMpVsY",
+        "CtTJl4u8ZNM",
+        "xO4p3R1zqsQ"
+      ]
+    },
+    {
+      "failure_class": "DUPLICATE_UPLOAD",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-17",
+        "slug": "early-habits-building-calm-mornings-children",
+        "content_sha256": "4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94",
+        "kind": "short"
+      },
+      "youtube_ids": [
+        "2W-Y0hSWJbE",
+        "6NXdPWlBtW0",
+        "b-maTwXHbnI"
+      ]
+    },
+    {
+      "failure_class": "DUPLICATE_UPLOAD",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-16",
+        "slug": "fights-before-wedding",
+        "content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
+        "kind": "short"
+      },
+      "youtube_ids": [
+        "6PgUZePAA4g",
+        "PNUqREu1Vj4"
+      ]
+    },
+    {
+      "failure_class": "DUPLICATE_UPLOAD",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-20",
+        "slug": "why-is-it-so-hard-to-find-love",
+        "content_sha256": "5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec",
+        "kind": "short"
+      },
+      "youtube_ids": [
+        "RFUJ3a076sM",
+        "Zrjta99vVhw"
+      ]
+    },
+    {
+      "failure_class": "DUPLICATE_UPLOAD",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-21",
+        "slug": "how-to-identify-a-gifted-child-parents-guide",
+        "content_sha256": "f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40",
+        "kind": "short"
+      },
+      "youtube_ids": [
+        "IU213USwun8",
+        "aBqNZqcP3mM"
+      ]
+    },
+    {
+      "failure_class": "DUPLICATE_UPLOAD",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-22",
+        "slug": "how-to-find-good-relationship",
+        "content_sha256": "100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5",
+        "kind": "short"
+      },
+      "youtube_ids": [
+        "GH5NXngXOfs",
+        "KBOGqsiJ1KY"
+      ]
+    },
+    {
+      "failure_class": "DUPLICATE_UPLOAD",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-19",
+        "slug": "gottman-perpetual-problems-69-percent",
+        "content_sha256": "7490391bf6162c36263ff66703694129b2623a92e6790e899ef5e4848389ee85",
+        "kind": "short"
+      },
+      "youtube_ids": [
+        "7PSQihadrKo",
+        "tVOtgN-5WnM"
+      ]
+    },
+    {
+      "failure_class": "DUPLICATE_UPLOAD",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-02",
+        "slug": "singlehood-holiday-meals-inquiries",
+        "content_sha256": "65b5bb9c6903cfad5b38914bc46f2793e34226dbfc7d9634c05833ef9ccc1e1f",
+        "kind": "overview"
+      },
+      "youtube_ids": [
+        "LPSAKVEMtSE",
+        "nx1jPP_YWn4"
+      ]
+    },
+    {
+      "failure_class": "DUPLICATE_UPLOAD",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-07",
+        "slug": "first-year-boundaries-origin-families",
+        "content_sha256": "6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3",
+        "kind": "overview"
+      },
+      "youtube_ids": [
+        "_7nkqLUyARQ",
+        "sZv8Su53lVI"
+      ]
+    },
+    {
+      "failure_class": "LEGACY_STAGE_EVIDENCE_UNRESOLVED",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-27",
+        "slug": "siblings-fairness-vs-equality",
+        "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+        "kind": "overview"
+      },
+      "claim_sha256": "52361df0d725800a7b48a17b89dc6adc8ef7bd39b7ced14e6878cdcb137a7157"
+    },
+    {
+      "failure_class": "LEGACY_STAGE_EVIDENCE_UNRESOLVED",
+      "target": {
+        "type": "media",
+        "slot": "2026-09-27",
+        "slug": "siblings-fairness-vs-equality",
+        "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+        "kind": "short"
+      },
+      "claim_sha256": "9c458610bacb1f29f03388f280c9d8319a6cac6365c6ce1e5bc8171c6032edd9"
+    }
+  ],
+  "legacy_stage_claims": {
+    "source:5c07950411f632c002a1966439e438c18078cfb777cee6b12f61abc7406418ee:overview": [
+      {
+        "target": {
+          "type": "media",
+          "slot": "2026-09-27",
+          "slug": "siblings-fairness-vs-equality",
+          "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+          "kind": "overview"
+        },
+        "item_id": "video-20260927-201145-1db6d9749e",
+        "source_id": "12a22ab7-ee7a-40d8-b298-90ba85a70577",
+        "artifact_id": "e04b50da-8a66-4565-b0db-6aaf7dc3c537",
+        "youtube_id": "OPwpR3ReV0k",
+        "provider_id": "e04b50da-8a66-4565-b0db-6aaf7dc3c537",
+        "run_id": 36332344258,
+        "processed_run_id": 36332344258,
+        "attempt_count": 3,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 1,
+        "resume_dispatches": 3,
+        "status": "exhausted"
+      }
+    ],
+    "source:5c07950411f632c002a1966439e438c18078cfb777cee6b12f61abc7406418ee:short": [
+      {
+        "target": {
+          "type": "media",
+          "slot": "2026-09-27",
+          "slug": "siblings-fairness-vs-equality",
+          "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+          "kind": "short"
+        },
+        "item_id": "video-20260927-060128-27fc420058",
+        "source_id": "dba8e151-2167-4741-82a2-78be482e0933",
+        "artifact_id": "70c3c424-4671-424a-b200-efa7631507ff",
+        "youtube_id": "TKAwQMzvP6U",
+        "provider_id": "70c3c424-4671-424a-b200-efa7631507ff",
+        "run_id": null,
+        "processed_run_id": null,
+        "adopted_from_long_item_id": "video-20260927-020414-27fc420058",
+        "attempt_count": 2,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "status": "complete"
+      }
+    ]
+  },
+  "historical_dates_and_baseline_receipts_unchanged": true,
+  "observed_youtube_claims_unchanged": true,
+  "stage_budgets_and_claims_unchanged": true,
+  "historical_source_git_origins_unchanged": true,
+  "observer_quarantine_probes": [
+    {
+      "target": {
+        "type": "media",
+        "slot": "2026-09-18",
+        "slug": "dating-apps-exhaustion",
+        "content_sha256": "46c8d80a4f18f7ff52a1cc0c9739a8c9fddb19a57600272e845c8ee003bf5a03",
+        "kind": "short"
+      },
+      "result": {
+        "status": "failed",
+        "failure_class": "LEGACY_EVIDENCE_UNRESOLVED"
+      }
+    },
+    {
+      "target": {
+        "type": "media",
+        "slot": "2026-09-27",
+        "slug": "siblings-fairness-vs-equality",
+        "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+        "kind": "overview"
+      },
+      "result": {
+        "status": "failed",
+        "failure_class": "LEGACY_EVIDENCE_UNRESOLVED"
+      }
+    },
+    {
+      "target": {
+        "type": "media",
+        "slot": "2026-09-27",
+        "slug": "siblings-fairness-vs-equality",
+        "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+        "kind": "short"
+      },
+      "result": {
+        "status": "failed",
+        "failure_class": "LEGACY_EVIDENCE_UNRESOLVED"
+      }
+    }
+  ],
+  "synthetic_sealing": {
+    "roundtrip_passed": true,
+    "negative_cases_rejected": [
+      "wrong_repo",
+      "wrong_purpose",
+      "wrong_key",
+      "wrong_kind",
+      "wrong_hash",
+      "wrong_date"
+    ],
+    "actual_capability_used": false,
+    "actual_runtime_key_accessed": false
+  },
+  "archive_origins": [
+    {
+      "artifact_id": 10704214914,
+      "archive_sha256": "44d2a3d3d05eb9b6210256ad48b8dc7adec32afa98dbc6affdd1e55ea58f5ee1",
+      "run_id": "35749006786"
+    },
+    {
+      "artifact_id": 10696625942,
+      "archive_sha256": "46b452b12ec6ec133dec184e6f157fe638377195f924c9953324570085ca23d6",
+      "run_id": "35730904907"
+    }
+  ],
+  "new_proven_import_bindings": 0,
+  "production_state_written": false,
+  "public_completion_inferred": false,
+  "production_activated": false,
+  "implementation_and_replay_logic_changed": false,
+  "source_fingerprints": {
+    "migration.py": "30d395ef95df5679f3d0b63b355cee34fe1f5fddefb60a5681c519e9678786c0",
+    "media_observer.py": "f225a50b4a495120b1b159e6005dd7ae0c7ec4ea0a7f6f4bdc217ea950ac9168",
+    "media_state.py": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3",
+    "sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
+    "output_artifacts.py": "5bd90501e017d00d78f25195800542e7c9f9acf49b2a06b8751ff2f67c7ac5e0"
+  },
+  "adjudication_report": "legacy-media-adjudication-20260928.json",
+  "new_evidence_disposition": "No candidate establishes a full matching import binding. Exact conflicting/missing evidence is recorded in the adjudication report; no new archive rows are eligible for import.",
+  "capability_status": "RETAINED_QUARANTINE; synthetic sealing verified; actual trusted-runtime sealing is prerequisite 5.1"
+}

@@ -1,0 +1,55 @@
+{
+  "scope": "Offline captured-shape replay; NOT live activation-ready inputs",
+  "captured_main_sha": "89b4c190626fd204ed7d61c4c5e0db8ed039ff04",
+  "captured_controller_blob_sha": "b41bb425fc54f4f8893d161b62898560c454bbf3",
+  "original_private_input_sha256": "9a9772e295ff3f91d75e206d2c1f9f2e254dabfea61f9fd9b426bad86c827c54",
+  "synthetic_input_sha256": "bcb6a2d7ce489a8ecc70a0584a46de66a528cafad988ea78ae6dd2561acd9e15",
+  "synthetic_capability_substitutions": 1,
+  "actual_capability_used": false,
+  "actual_runtime_key_accessed": false,
+  "closure_file_sha256": {
+    "legacy-media-adjudication-20260928.json": "a16c3801e845ee09bc61803a79301b445dfd3e40d28bf05caad1952a4aa96c33",
+    "migration-legacy-evidence-replay-20260928.json": "634cbe24513e5b0ac32b0df270a5dce188fb7dd5bd8a317112be823e176b4afd"
+  },
+  "phases": [
+    "PREPARED",
+    "LEGACY_QUIESCING",
+    "LEGACY_QUIESCED",
+    "IMPORT_READY",
+    "CAPABILITY_SEALED",
+    "STATE_IMPORTED",
+    "CANONICAL_AUTHORITY_ESTABLISHED",
+    "LEGACY_RETIRED",
+    "VERIFIED"
+  ],
+  "schema_5_to_6_import_count": 1,
+  "durable_writes": 108,
+  "ticks": 108,
+  "retired_workflow_count": 33,
+  "workflow_role_counts": {
+    "retired": 33,
+    "diagnostic": 11,
+    "worker": 5,
+    "controller": 1,
+    "separate_infrastructure": 16
+  },
+  "media_baselines": 32,
+  "preserved_youtube_ids": 64,
+  "quarantine_counts": {
+    "LEGACY_UPLOAD_CAPABILITY_REQUIRES_SEALING": 1,
+    "DUPLICATE_UPLOAD": 14,
+    "LEGACY_MEDIA_AMBIGUOUS": 1,
+    "LEGACY_STAGE_EVIDENCE_UNRESOLVED": 2
+  },
+  "sealed_capability_count": 1,
+  "baseline_receipts_sources_slots_exactly_preserved": true,
+  "quarantine_exactly_preserved": true,
+  "migration_history_and_claims_exactly_preserved": true,
+  "new_provider_commands": 0,
+  "restart_after_every_tick": true,
+  "repeat_after_verified_no_write": true,
+  "production_state_written": false,
+  "public_completion_inferred": false,
+  "production_activated": false,
+  "live_fence_adapter": "NOT IMPLEMENTED/ACCEPTED; default live admission fails closed"
+}

@@ -8,7 +8,7 @@
   },
   "supervisor": {
     "owner": "kesher-master-supervisor",
-    "mode": "live_s1_s2_s3",
+    "mode": "bounded_rescue_then_durable_correction",
     "production_state_writer": "kesher-content-controller-v5",
     "escalation_owner": "kesher-master-supervisor",
     "state_ref": "automation-supervisor-state",
@@ -17,9 +17,8 @@
     "single_action_per_audit": true,
     "escalation": {
       "S1": "controller",
-      "S2": "jules",
-      "S3": "direct",
-      "after_S3_same_incident": "human_blocker"
+      "S2": "jules_durable_correction",
+      "after_S2_same_incident": "human_blocker"
     },
     "external_running_heartbeat_exception_minutes": 90,
     "recovery_commands": {
@@ -56,9 +55,27 @@
       "payment",
       "irreversible_external_action",
       "production_identity_ambiguity",
-      "same_incident_after_s3",
+      "durable_correction_after_s2",
       "no_safe_direct_adapter"
-    ]
+    ],
+    "learning": {
+      "window_days": 7,
+      "first_occurrence_rescue_attempts": 1,
+      "fingerprint_fields": [
+        "component",
+        "failure_class",
+        "state_stage"
+      ],
+      "oneoff_recovery_workflows_allowed": false,
+      "recurrence_requires": [
+        "root_cause_classification",
+        "component_owner",
+        "generic_correction",
+        "deterministic_regression"
+      ],
+      "resolution_requires_merged_correction_and_regression": true,
+      "v6_shadow_comparison": true
+    }
   },
   "retry": {
     "max_attempts_per_stage": 3,
@@ -101,13 +118,14 @@
     "attached_handoff_marker": "Hero Image Status: ATTACHED_TRUSTED_IMAGE_STAGE",
     "controller_action_on_pending_handoff": "dispatch_trusted_image_same_pr",
     "controller_action_on_image_guard_failure": "recover_trusted_image_same_pr",
-    "local_fallback_policy": "prefer-unused-then-90-day-cooldown-max-3-uses",
+    "local_fallback_policy": "unique-only-never-reuse-published-hero",
     "abstract_placeholder_allowed": false,
     "owned_generation_variants": 3,
     "local_fallback_candidates_per_category": 40,
     "managed_fallback_library_target_per_category": 40,
-    "local_fallback_reuse_cooldown_days": 90,
-    "local_fallback_max_lifetime_uses": 3
+    "local_fallback_reuse_cooldown_days": 0,
+    "local_fallback_max_lifetime_uses": 1,
+    "hero_unique_enforcement_start_date": "2026-10-14"
   },
   "video": {
     "publication_gate": "technical",

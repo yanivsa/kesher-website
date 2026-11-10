@@ -15,19 +15,19 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
 
-ALLOWED_FILES = {
-    "src/data/posts.json",
-    "src/data/postSummaries.json",
-    "public/sitemap.xml",
-    "public/llms.txt",
-    "public/llms-full.txt",
-}
-IMAGE_PREFIX = "public/images/generated/blog/"
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from scripts.kesher_article_contract import (
+    ARTICLE_PUBLICATION_PATHS, ARTICLE_IMAGE_PREFIX, forbidden_article_paths,
+)
+
+ALLOWED_FILES = ARTICLE_PUBLICATION_PATHS
+IMAGE_PREFIX = ARTICLE_IMAGE_PREFIX
 IMAGE_FIELDS = (
     "Image Generation Attempt",
     "Image Generation Result",
@@ -147,14 +147,7 @@ def normalize_pr_body(repo: str, pr: dict, token: str) -> bool:
 
 
 def forbidden_paths(files: list[dict]) -> list[str]:
-    return [
-        item.get("filename") or ""
-        for item in files
-        if not (
-            (item.get("filename") or "") in ALLOWED_FILES
-            or (item.get("filename") or "").startswith(IMAGE_PREFIX)
-        )
-    ]
+    return forbidden_article_paths(item.get("filename") or "" for item in files)
 
 
 def clean_forbidden_files(repo: str, pr: dict, paths: list[str], token: str) -> bool:
@@ -237,28 +230,49 @@ def verify_check(checks: dict) -> dict | None:
     return sorted(candidates, key=lambda item: item.get("completed_at") or item.get("started_at") or "")[-1]
 
 
+TRANSIENT_IMAGE_HTTP_CODES = frozenset({429, 500, 502, 503, 504})
+IMAGE_FETCH_MAX_ATTEMPTS = 3
+
+
 def image_loader(entry: dict, token: str) -> bytes:
     request = urllib.request.Request(
         entry["raw_url"],
         headers={"Authorization": f"Bearer {token}", "User-Agent": "kesher-article-controller"},
     )
-    with urllib.request.urlopen(request, timeout=30) as response:
-        return response.read()
+    for attempt in range(1, IMAGE_FETCH_MAX_ATTEMPTS + 1):
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                return response.read()
+        except urllib.error.HTTPError as exc:
+            if exc.code not in TRANSIENT_IMAGE_HTTP_CODES or attempt >= IMAGE_FETCH_MAX_ATTEMPTS:
+                raise
+        except (urllib.error.URLError, TimeoutError):
+            if attempt >= IMAGE_FETCH_MAX_ATTEMPTS:
+                raise
+        time.sleep(attempt)
+    raise RuntimeError("unreachable image fetch retry state")
 
 
 def existing_repair_attempts(repo: str, number: int, token: str) -> tuple[int, set[str]]:
-    comments = request_json(
-        "GET",
-        f"https://api.github.com/repos/{repo}/issues/{number}/comments?per_page=100",
-        token,
-    )
     total = 0
     heads: set[str] = set()
-    if isinstance(comments, list):
+    page = 1
+    while True:
+        suffix = "" if page == 1 else f"&page={page}"
+        comments = request_json(
+            "GET",
+            f"https://api.github.com/repos/{repo}/issues/{number}/comments?per_page=100{suffix}",
+            token,
+        )
+        if not isinstance(comments, list):
+            raise RuntimeError("PR_REPAIR_HISTORY_UNREADABLE")
         for comment in comments:
             for match in REPAIR_MARKER.finditer(comment.get("body") or ""):
                 total = max(total, int(match.group(1)))
                 heads.add(match.group(2).lower())
+        if len(comments) < 100:
+            break
+        page += 1
     return total, heads
 
 
@@ -303,7 +317,7 @@ Gate errors:
 
 If CI verify failed, inspect the current PR checks/logs and fix the actual content/test failure. If the article is too short, structurally invalid, repetitive, too similar to recent posts, or otherwise fails content policy, rewrite only the new article as needed and rerun all required generation/check commands. If the topic itself is too similar, replace the new article within this same PR with one fresh topic while still publishing exactly one new article.
 
-Final diff must contain only the allowed article publication files: src/data/posts.json, src/data/postSummaries.json, public/sitemap.xml, public/llms.txt, public/llms-full.txt, and at most one independently verified image under public/images/generated/blog/. Do not modify tests, workflows, prompts, scripts, packages, or public/videos/.
+Final diff must contain only the allowed article publication files: src/data/posts.json, src/data/postSummaries.json, public/sitemap.xml, public/rss.xml, public/llms.txt, public/llms-full.txt, and at most one independently verified image under public/images/generated/blog/. Do not modify tests, workflows, prompts, scripts, packages, or public/videos/.
 
 Update the existing PR body with exact plain structured image evidence lines (no bullets/backticks around the field names), run npm run generate after the final article edit, run npm run check, push the repaired commits to the existing branch, and leave PR #{number} open for the independent gate to re-check automatically."""
 
@@ -386,6 +400,9 @@ def process(repo: str, number: int, github_token: str, jules_key: str) -> int:
     validator = load_validator()
     base_posts = validator.fetch_posts(repo, (pr.get("base") or {}).get("sha") or "", github_token)
     head_posts = validator.fetch_posts(repo, sha, github_token)
+    published_catalog = validator.fetch_repo_json(
+        repo, pr["base"]["sha"], github_token, "src/data/postSummaries.json",
+    )
     errors = validator.evaluate(
         pr,
         files,
@@ -393,6 +410,7 @@ def process(repo: str, number: int, github_token: str, jules_key: str) -> int:
         base_posts,
         head_posts,
         lambda entry: image_loader(entry, github_token),
+        published_catalog=published_catalog,
     )
     if not errors:
         merge_and_deploy(repo, pr, github_token)
@@ -401,10 +419,29 @@ def process(repo: str, number: int, github_token: str, jules_key: str) -> int:
     print(f"PR #{number} failed article gate: " + " | ".join(errors))
     verify = verify_check(checks)
     if not verify or verify.get("status") != "completed":
+        # A deterministic publication error (for example an invented internal link)
+        # is independent of the pending verify result. Ask the bounded same-PR
+        # repair owner to fix it now instead of repeatedly deferring auto-merge.
+        # A verify-only failure still waits, and image-only errors remain owned by
+        # the trusted image worker because the V3 adapter declines those repairs.
+        verify_only_marker = "Fresh successful verify check is required on the current head"
+        deterministic_errors = [error for error in errors if error != verify_only_marker]
+        if deterministic_errors:
+            repaired = send_jules_repair(
+                repo, pr, deterministic_errors, verify, github_token, jules_key
+            )
+            if repaired:
+                return 0
         print("Fresh verify is not terminal yet; waiting for CI instead of spending a repair attempt.")
         return 0
 
-    send_jules_repair(repo, pr, errors, verify, github_token, jules_key)
+    repaired = send_jules_repair(repo, pr, errors, verify, github_token, jules_key)
+    if not repaired:
+        print(
+            f"PR #{number} failed article gate and autonomous repair is not in flight; failing auto-merge.",
+            file=sys.stderr,
+        )
+        return 1
     return 0
 
 
@@ -412,6 +449,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", required=True)
     parser.add_argument("--pr", required=True, type=int)
+    parser.add_argument("--slot", default="")
     args = parser.parse_args()
     github_token = os.environ.get("GITHUB_TOKEN", "")
     jules_key = os.environ.get("JULES_API_KEY", "")

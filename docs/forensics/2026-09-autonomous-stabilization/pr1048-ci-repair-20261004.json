@@ -1,0 +1,418 @@
+{
+  "scope": "Only two CI failures on existing Draft PR1048; no new PR or architecture work.",
+  "base_head": "a4a7d32e6bded89ff4b885789c8adf8f6480502c",
+  "main_sha": "e79cccab32c046cc80a560ca43d0185b3b124f0b",
+  "final_head": "Resolve the containing commit with git log -1 --format=%H -- docs/forensics/2026-09-autonomous-stabilization/pr1048-ci-repair-20261004.json; exact SHA returned after push.",
+  "fix1": {
+    "source_path": "public/images/generated/services/premarital-first-year.webp",
+    "source_sha256": "201a86491a4a5a660b53badfaf8eed278f329deff02d74516ffe1bdd9a98c97b",
+    "source_main_bytes_unchanged": true,
+    "source_introduced_by": "eff5cb8f57fd433162ae1efd823e56153acb11fe / merged PR216",
+    "target_path": "public/images/generated/blog/fights-before-wedding-local.png",
+    "target_sha256": "0590e5dbc66697d926cec5881766805f32cd333b5debc907ca1e7436aec2992d",
+    "pixel_sha256": "dc70bd0d28fc245032bf30ee0ab56c7f67c07c35208fbb5cd7034903bf7f97f6",
+    "pixels_preserved_exactly": true,
+    "dimensions": [
+      1600,
+      900
+    ],
+    "old_metadata": {
+      "id": "fights-before-wedding",
+      "title": "ריבים לפני החתונה: איך שומרים על הזוגיות בדרך לחופה?",
+      "date": "2026-09-16",
+      "category": "זוגיות",
+      "subcategory": "הכנה לנישואים והשנה הראשונה",
+      "tags": [
+        "לחץ",
+        "חתונה",
+        "מריבות",
+        "תקשורת",
+        "הכנה לנישואים"
+      ],
+      "author": "שירה סהרוני",
+      "image": "/images/generated/blog/fights-before-wedding.png",
+      "imageAlt": "תמונה זמנית המשמשת כממלאת מקום עבור מאמר בנושא ריבים לפני חתונה"
+    },
+    "new_image_metadata": {
+      "image": "/images/generated/blog/fights-before-wedding-local.png",
+      "imageAlt": "בני זוג יושבים ליד שולחן עם מחברת ולוח תכנון ומשוחחים על תוכניות משותפות",
+      "imageProvider": "Local",
+      "imageSourceUrl": "local://public/images/generated/services/premarital-first-year.webp",
+      "imageIsFallback": true
+    },
+    "other_posts_unchanged": true,
+    "no_provider_call": true,
+    "production_state_written": false
+  },
+  "fix2": {
+    "cause": "Command-wiring test relied on preinstalled repository Remotion; Python-only CI job correctly lacked npm dependencies.",
+    "change": "Temporary project with exact node_modules/.bin/remotion executable fixture; scoped PROJECT_DIR; original composition/cwd/frames/start/signature assertions retained; executable argument asserted.",
+    "production_renderer_unchanged": true,
+    "heavy_npm_added_to_validate_job": false
+  },
+  "validation": {
+    "safety": {
+      "phase": "safety",
+      "implementation_sha": "a4a7d32e6bded89ff4b885789c8adf8f6480502c",
+      "started_at": "2026-10-04T10:22:55.785961+00:00",
+      "gates": [
+        {
+          "name": "hero",
+          "command": "python3 .github/scripts/validate-article-images.py",
+          "exit_code": 0,
+          "seconds": 12.34,
+          "log": "safety-hero.log",
+          "log_sha256": "6f70ceb5b428012e5cf41ee668566cbae64c34412a59dc1406135c92358d67ca"
+        },
+        {
+          "name": "exact-remotion",
+          "command": "python -m unittest tests.test_media_provenance_contract.ShortRenderCacheTests.test_short_invokes_the_existing_full_timeline_signature_composition -v",
+          "exit_code": 0,
+          "seconds": 0.701,
+          "log": "safety-exact-remotion.log",
+          "log_sha256": "e8b3aa60183097512ac0ebcb8f3209be0d853e25aa3f43c1488c559183083c3b"
+        },
+        {
+          "name": "targeted",
+          "command": "python -m unittest tests.test_media_provenance_contract tests.test_article_image_contract tests.test_kesher_article_public tests.test_kesher_article_image_worker -v",
+          "exit_code": 0,
+          "seconds": 6.599,
+          "log": "safety-targeted.log",
+          "log_sha256": "448b00626bed6fa9f9443883b16af10ddf5aebeee880dacbca39811fe97838be"
+        },
+        {
+          "name": "image-content-tests",
+          "command": "python -m unittest tests.test_article_image_worker tests.test_article_image_validator_policy tests.test_kesher_article_contract -v",
+          "exit_code": 0,
+          "seconds": 18.191,
+          "log": "safety-image-content-tests.log",
+          "log_sha256": "0c936200162367e507239d660f65d9bced5b321bc8813da89378350a3c924472"
+        },
+        {
+          "name": "stability-validate",
+          "command": "python - <<'PY'\nfrom pathlib import Path\nimport subprocess,yaml\nworkflow=yaml.safe_load(Path('.github/workflows/kesher-stability-pr.yml').read_text())\nstep=next(s for s in workflow['jobs']['validate']['steps'] if s.get('name')=='Run controller and video stability regression suite')\nprint(step['run'],flush=True)\nsubprocess.run(['/bin/bash','-c',step['run']],check=True)\nPY",
+          "exit_code": 0,
+          "seconds": 62.974,
+          "log": "safety-stability-validate.log",
+          "log_sha256": "6c7d018206e215d84ca4cc090798bc52416232cb2254d3896b3920a3716a9f16"
+        },
+        {
+          "name": "authority",
+          "command": "python -m unittest tests.test_kesher_authority_digest tests.test_kesher_authority_topology -v",
+          "exit_code": 0,
+          "seconds": 22.119,
+          "log": "safety-authority.log",
+          "log_sha256": "ae7aa743e41dc4c1e75d190883b129d760e4b3e0af7a181a6e54ed614e1ac226"
+        },
+        {
+          "name": "diff",
+          "command": "git diff --check",
+          "exit_code": 0,
+          "seconds": 0.291,
+          "log": "safety-diff.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "finished_at": "2026-10-04T10:24:59.019752+00:00",
+      "all_passed": true
+    },
+    "website": {
+      "phase": "website-final",
+      "implementation_sha": "a4a7d32e6bded89ff4b885789c8adf8f6480502c",
+      "started_at": "2026-10-04T10:23:56.219600+00:00",
+      "gates": [
+        {
+          "name": "build",
+          "command": "npm run build",
+          "exit_code": 0,
+          "seconds": 99.345,
+          "log": "website-final-build.log",
+          "log_sha256": "dfb7b8f397ea06adb60cf9d9277ca11acdca72ee1310d01e422900729514b68d"
+        },
+        {
+          "name": "content",
+          "command": "npm run test:content",
+          "exit_code": 0,
+          "seconds": 2.587,
+          "log": "website-final-content.log",
+          "log_sha256": "49d806417c71e101a660dd2271ad021067f789da0ebe1ec9feef4e2452dd6f2c"
+        },
+        {
+          "name": "dist",
+          "command": "npm run verify:dist",
+          "exit_code": 0,
+          "seconds": 0.975,
+          "log": "website-final-dist.log",
+          "log_sha256": "89518df664474177939369fdfee98be7f428533ea44d820a6ceea4e0f8fb289f"
+        }
+      ],
+      "finished_at": "2026-10-04T10:25:39.163193+00:00",
+      "all_passed": true
+    },
+    "counts": {
+      "exact_remotion": 1,
+      "requested_targeted": 56,
+      "additional_image_content": 32,
+      "exact_full_stability_validate": 561,
+      "authority_digest_topology": 61
+    },
+    "hero_guard": "ARTICLE_IMAGE_GUARD_OK posts=106 unique_sha=96",
+    "build_routes": 129,
+    "content": "97published;9thinlegacyunindexed; real evaluator/plugin checks pass",
+    "red_proofs_retained": [
+      "verify-failed.log",
+      "stability-failed.log",
+      "hero-red.log",
+      "remotion-red.log"
+    ],
+    "initial_content_failure": "Derived summary image path stale after authorized source edit; normal prebuild generation updated exactly one summary path; finalcontentpassed."
+  },
+  "authority": {
+    "affected_execution_input": "tests/test_media_provenance_contract.py",
+    "pin_bindings_refreshed": 10,
+    "capability_scope_changed": false,
+    "policy_digest": "9b85ba1c79355fe9a3c7a937f8e5a1d70c460884f2cec3fd22bd84ff88f65c8a",
+    "definitions": 72,
+    "stale_definitions": 0,
+    "stale_callchains": 0,
+    "unknown_definitions": 0,
+    "dispatch_bindings_valid": true,
+    "pin_ledger": {
+      "capability_review": "Only test fixture creates a temporary Remotion executable and patches project path; all production render checks unchanged. Local image repair changes content/pixels only; no provider or authority effect.",
+      "changes": [
+        {
+          "workflow": ".github/workflows/ci.yml",
+          "path": "tests/test_media_provenance_contract.py",
+          "before": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177",
+          "after": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
+          "role": "separate_infrastructure",
+          "capabilities": [
+            "read",
+            "status_write"
+          ],
+          "resources": [
+            "github.statuses"
+          ]
+        },
+        {
+          "workflow": ".github/workflows/kesher-article-validation.yml",
+          "path": "tests/test_media_provenance_contract.py",
+          "before": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177",
+          "after": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
+          "role": "worker",
+          "capabilities": [
+            "branch_write",
+            "read",
+            "state_write"
+          ],
+          "resources": [
+            "github.refs",
+            "github.state"
+          ]
+        },
+        {
+          "workflow": ".github/workflows/kesher-content-controller-v6.yml",
+          "path": "tests/test_media_provenance_contract.py",
+          "before": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177",
+          "after": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
+          "role": "diagnostic",
+          "capabilities": [
+            "read"
+          ],
+          "resources": []
+        },
+        {
+          "workflow": ".github/workflows/kesher-daily-video.yml",
+          "path": "tests/test_media_provenance_contract.py",
+          "before": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177",
+          "after": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
+          "role": "retired",
+          "capabilities": [
+            "branch_write",
+            "capability_write",
+            "jules_continue",
+            "jules_create",
+            "pr_write",
+            "provider_continue",
+            "provider_create",
+            "read",
+            "workflow_dispatch",
+            "youtube_metadata",
+            "youtube_upload"
+          ],
+          "resources": [
+            "github.dispatch",
+            "github.pull_requests",
+            "github.refs",
+            "github.state",
+            "jules.sessions",
+            "notebooklm.jobs",
+            "youtube.metadata",
+            "youtube.objects"
+          ]
+        },
+        {
+          "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+          "path": "tests/test_media_provenance_contract.py",
+          "before": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177",
+          "after": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
+          "role": "retired",
+          "capabilities": [
+            "branch_write",
+            "capability_write",
+            "jules_continue",
+            "jules_create",
+            "provider_continue",
+            "provider_create",
+            "read",
+            "workflow_dispatch"
+          ],
+          "resources": [
+            "github.dispatch",
+            "github.refs",
+            "github.state",
+            "jules.sessions",
+            "notebooklm.jobs"
+          ]
+        },
+        {
+          "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+          "path": "tests/test_media_provenance_contract.py",
+          "before": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177",
+          "after": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
+          "role": "retired",
+          "capabilities": [
+            "branch_write",
+            "capability_write",
+            "read",
+            "workflow_dispatch",
+            "youtube_metadata",
+            "youtube_upload"
+          ],
+          "resources": [
+            "github.dispatch",
+            "github.refs",
+            "github.state",
+            "youtube.metadata",
+            "youtube.objects"
+          ]
+        },
+        {
+          "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+          "path": "tests/test_media_provenance_contract.py",
+          "before": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177",
+          "after": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
+          "role": "retired",
+          "capabilities": [
+            "branch_write",
+            "capability_write",
+            "jules_continue",
+            "jules_create",
+            "provider_continue",
+            "provider_create",
+            "read",
+            "status_write",
+            "workflow_dispatch",
+            "youtube_metadata",
+            "youtube_upload"
+          ],
+          "resources": [
+            "github.dispatch",
+            "github.refs",
+            "github.state",
+            "github.statuses",
+            "jules.sessions",
+            "notebooklm.jobs",
+            "youtube.metadata",
+            "youtube.objects"
+          ]
+        },
+        {
+          "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+          "path": "tests/test_media_provenance_contract.py",
+          "before": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177",
+          "after": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
+          "role": "retired",
+          "capabilities": [
+            "branch_write",
+            "capability_write",
+            "jules_continue",
+            "jules_create",
+            "pr_write",
+            "provider_continue",
+            "provider_create",
+            "read",
+            "workflow_dispatch",
+            "youtube_metadata",
+            "youtube_upload"
+          ],
+          "resources": [
+            "github.dispatch",
+            "github.pull_requests",
+            "github.refs",
+            "github.state",
+            "jules.sessions",
+            "notebooklm.jobs",
+            "youtube.metadata",
+            "youtube.objects"
+          ]
+        },
+        {
+          "workflow": ".github/workflows/kesher-short-v4.yml",
+          "path": "tests/test_media_provenance_contract.py",
+          "before": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177",
+          "after": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
+          "role": "retired",
+          "capabilities": [
+            "branch_write",
+            "capability_write",
+            "provider_continue",
+            "provider_create",
+            "read",
+            "workflow_dispatch",
+            "youtube_metadata",
+            "youtube_upload"
+          ],
+          "resources": [
+            "github.dispatch",
+            "github.refs",
+            "github.state",
+            "notebooklm.jobs",
+            "youtube.metadata",
+            "youtube.objects"
+          ]
+        },
+        {
+          "workflow": ".github/workflows/kesher-stability-pr.yml",
+          "path": "tests/test_media_provenance_contract.py",
+          "before": "c8230ce7deacac8f01b6c7169b28fd5f6fb7cb95fccdd16cee3a12257b88d177",
+          "after": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
+          "role": "diagnostic",
+          "capabilities": [
+            "read"
+          ],
+          "resources": []
+        }
+      ],
+      "capability_scope_changed": false
+    }
+  },
+  "source_inputs_validated_sha256": {
+    "src/data/posts.json": "a058971303d654b36ec0371e88d56a5934340b09c055e840ef241c1f4423b18b",
+    "src/data/postSummaries.json": "1d65d6157965ccc8317892dee6f465690157526108807b69c6c2b53df6b9261b",
+    "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
+    "scripts/kesher_runtime/authority_policy.json": "bf0ccf0102c0ce92f070da526cbe9905b22bb0af9babe1fab801d6faaf076b1e",
+    "public/images/generated/blog/fights-before-wedding-local.png": "0590e5dbc66697d926cec5881766805f32cd333b5debc907ca1e7436aec2992d"
+  },
+  "review": "Only targeted post metadata/newlosslessPNG/generatedsummary/testfixture and10testhashes; validators/renderers/otherpostcontent/capabilityscope/closed5.2unchanged.",
+  "logs_archive": {
+    "path": "pr1048-ci-repair-logs-20261004.tar.gz",
+    "sha256": "d46a40063569d683c422da5c9335bbb68a040fbb687924ed49d87848108361f8",
+    "members": 17
+  },
+  "pr_url": "https://github.com/yanivsa/kesher-website/pull/1048",
+  "ci_after_push": "Read in final delivery; existingPRupdated only by branchpush.",
+  "production_state_written": false,
+  "production_activated": false,
+  "public_completion_inferred": false
+}

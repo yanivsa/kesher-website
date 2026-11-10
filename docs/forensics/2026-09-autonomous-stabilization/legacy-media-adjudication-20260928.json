@@ -1,0 +1,646 @@
+{
+  "schema_version": 1,
+  "scope": "Blocker 5.2 exact known claims only; adjudication and sealing preparation",
+  "observed_at": "2026-09-28T07:55:56.496182+00:00",
+  "input_snapshot": {
+    "main_sha": "89b4c190626fd204ed7d61c4c5e0db8ed039ff04",
+    "controller_blob_sha": "b41bb425fc54f4f8893d161b62898560c454bbf3",
+    "observed_at": "2026-09-27T20:34:33.607193+00:00"
+  },
+  "claims": [
+    {
+      "identity": {
+        "type": "media",
+        "slot": "2026-09-18",
+        "slug": "dating-apps-exhaustion",
+        "content_sha256": "46c8d80a4f18f7ff52a1cc0c9739a8c9fddb19a57600272e845c8ee003bf5a03",
+        "kind": "short"
+      },
+      "generation_attempt": 1,
+      "item_id": "video-20260918-145430-46c8d80a4f",
+      "source_id": "209f95d0-e9dd-4999-986d-7ed891b00e42",
+      "task_id": "5920bf7c-4961-431e-adf0-857e0ee42aff",
+      "provider_artifact_id": "5920bf7c-4961-431e-adf0-857e0ee42aff",
+      "provider_id": "UNKNOWN",
+      "youtube_id": "5QW2YCqMG6Q",
+      "claimed_run_id": "UNKNOWN",
+      "claimed_processed_run_id": "UNKNOWN",
+      "original_generation_workflow": "UNKNOWN",
+      "original_generation_run_id": "UNKNOWN",
+      "original_generation_run_attempt": "UNKNOWN",
+      "original_generation_code_sha": "UNKNOWN",
+      "canonical_command_id": "UNKNOWN",
+      "quarantine_reason": "LEGACY_UPLOAD_CAPABILITY_REQUIRES_SEALING",
+      "adjudication": "RETAINED_QUARANTINE",
+      "referenced_archive_id": 10704214914,
+      "referenced_workflow": ".github/workflows/kesher-short-v4.yml",
+      "referenced_run_attempt": 1,
+      "referenced_run_code_sha": "638eb9e02c91b42b4e9c9965d6e1907857ae02fd",
+      "retaining_run_id": 35749006786,
+      "reason": "The retained exact source/kind/item/provider/YouTube record still contains an unsealed upload capability. No actual capability or runtime key was used. Trusted sealing with the existing runtime key belongs to coordinated handover 5.1. Retained archive bytes are verified; current service retrieval returns 404. Raw/final/render input files and modern audio/signature/render provenance are absent, so this record also does not certify public delivery or authorize upload."
+    },
+    {
+      "identity": {
+        "type": "media",
+        "slot": "2026-09-27",
+        "slug": "siblings-fairness-vs-equality",
+        "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+        "kind": "overview"
+      },
+      "generation_attempt": "UNKNOWN",
+      "item_id": "video-20260927-201145-1db6d9749e",
+      "source_id": "12a22ab7-ee7a-40d8-b298-90ba85a70577",
+      "task_id": "UNKNOWN",
+      "provider_artifact_id": "e04b50da-8a66-4565-b0db-6aaf7dc3c537",
+      "provider_id": "e04b50da-8a66-4565-b0db-6aaf7dc3c537",
+      "youtube_id": "OPwpR3ReV0k",
+      "claimed_run_id": 36332344258,
+      "claimed_processed_run_id": 36332344258,
+      "original_generation_workflow": "UNKNOWN",
+      "original_generation_run_id": "UNKNOWN",
+      "original_generation_run_attempt": "UNKNOWN",
+      "original_generation_code_sha": "UNKNOWN",
+      "canonical_command_id": "UNKNOWN",
+      "quarantine_reason": "LEGACY_STAGE_EVIDENCE_UNRESOLVED",
+      "adjudication": "RETAINED_QUARANTINE",
+      "claim_sha256": "52361df0d725800a7b48a17b89dc6adc8ef7bd39b7ced14e6878cdcb137a7157",
+      "controller_counters_not_generation_attempt": {
+        "attempt_count": 3,
+        "attempts": 1,
+        "resume_dispatches": 3
+      },
+      "referenced_archive_id": 10936680658,
+      "referenced_workflow": ".github/workflows/kesher-daily-video.yml",
+      "referenced_run_attempt": 1,
+      "referenced_run_code_sha": "b8b7441c306b8ee49db323a168c1c271e6d7f21e",
+      "reason": "Exact referenced run archive contains no claimed item or claimed provider artifact. The same source is present only as a different rejected article_short with different item/source/task/artifact IDs. Claimed YouTube ID OPwpR3ReV0k belongs in that exact archive to an article_short for gifted-children-perfectionism-tears, full hash 27fc420058c548aa10a586479e7c79d7d646e4a4b057b10d438ad8cc33175d70, date 2026-08-18. No full Overview lineage can bind this claim."
+    },
+    {
+      "identity": {
+        "type": "media",
+        "slot": "2026-09-27",
+        "slug": "siblings-fairness-vs-equality",
+        "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+        "kind": "short"
+      },
+      "generation_attempt": "UNKNOWN",
+      "item_id": "video-20260927-060128-27fc420058",
+      "source_id": "dba8e151-2167-4741-82a2-78be482e0933",
+      "task_id": "UNKNOWN",
+      "provider_artifact_id": "70c3c424-4671-424a-b200-efa7631507ff",
+      "provider_id": "70c3c424-4671-424a-b200-efa7631507ff",
+      "youtube_id": "TKAwQMzvP6U",
+      "claimed_run_id": "UNKNOWN",
+      "claimed_processed_run_id": "UNKNOWN",
+      "original_generation_workflow": "UNKNOWN",
+      "original_generation_run_id": "UNKNOWN",
+      "original_generation_run_attempt": "UNKNOWN",
+      "original_generation_code_sha": "UNKNOWN",
+      "canonical_command_id": "UNKNOWN",
+      "quarantine_reason": "LEGACY_STAGE_EVIDENCE_UNRESOLVED",
+      "adjudication": "RETAINED_QUARANTINE",
+      "claim_sha256": "9c458610bacb1f29f03388f280c9d8319a6cac6365c6ce1e5bc8171c6032edd9",
+      "controller_counters_not_generation_attempt": {
+        "attempt_count": 2
+      },
+      "referenced_archive_id": "UNKNOWN",
+      "referenced_workflow": "UNKNOWN",
+      "referenced_run_attempt": "UNKNOWN",
+      "referenced_run_code_sha": "UNKNOWN",
+      "adopted_from_long_item_id": "video-20260927-020414-27fc420058",
+      "reason": "Both run_id and processed_run_id are null in the durable stage claim. No exact producer workflow/run/attempt/code/archive is retained for this Short item/source/artifact/video combination. The adoption pointer references the gifted article item in the exact Overview-run archive; its full source hash/date differ from the claimed siblings identity. The Short item itself is absent there. No archive or generation attempt is inferred from its timestamp/hash prefix or from the different sibling Short."
+    }
+  ],
+  "archives": [
+    {
+      "artifact_id": 10936680658,
+      "name": "kesher-video-state",
+      "size_in_bytes": 1265804546,
+      "archive_sha256": "36bb760544d1b8297b4ee857510732414687b288b5c2d6b7cd2649e8ad2f088a",
+      "whole_archive_digest_verified": true,
+      "zip_crc_verified": true,
+      "retained_snapshot_run_id": 36332344258,
+      "run_attempt": 1,
+      "workflow_path": ".github/workflows/kesher-daily-video.yml",
+      "event": "workflow_dispatch",
+      "head_sha": "b8b7441c306b8ee49db323a168c1c271e6d7f21e",
+      "checkout_sha_verified_from_exact_job_log": "b8b7441c306b8ee49db323a168c1c271e6d7f21e",
+      "job_id": 108656575514,
+      "workflow_file_sha256": "afb887dafb213c249a31c6c08bb62b6207f37f8585cae3a9a7cd5c7a691c01e4",
+      "retrieval_status": 200,
+      "original_generation_producer": "UNKNOWN",
+      "canonical_command_id": "UNKNOWN",
+      "note": "A state archive publisher is not automatically the original provider-generation producer."
+    },
+    {
+      "artifact_id": 10704214914,
+      "name": "kesher-short-v4-state",
+      "size_in_bytes": 808140637,
+      "archive_sha256": "44d2a3d3d05eb9b6210256ad48b8dc7adec32afa98dbc6affdd1e55ea58f5ee1",
+      "whole_archive_digest_verified": true,
+      "zip_crc_verified": true,
+      "retained_snapshot_run_id": 35749006786,
+      "run_attempt": 1,
+      "workflow_path": ".github/workflows/kesher-short-v4.yml",
+      "event": "workflow_dispatch",
+      "head_sha": "638eb9e02c91b42b4e9c9965d6e1907857ae02fd",
+      "checkout_sha_verified_from_exact_job_log": "638eb9e02c91b42b4e9c9965d6e1907857ae02fd",
+      "job_id": 106817906311,
+      "workflow_file_sha256": "c053d6d24928457877208d169b960c04d2db4c8a8d1e16a3054632e3ca8c3fd0",
+      "retrieval_status": 404,
+      "original_generation_producer": "UNKNOWN",
+      "canonical_command_id": "UNKNOWN",
+      "note": "A state archive publisher is not automatically the original provider-generation producer."
+    }
+  ],
+  "witness_items": [
+    {
+      "id": "video-20260927-020414-27fc420058",
+      "type": "article_short",
+      "source_id": "d8348e9d-d874-4789-a03d-ee72e6222da5",
+      "task_id": "e324d7a8-3fba-4324-b378-db3e054bca52",
+      "artifact_id": "e324d7a8-3fba-4324-b378-db3e054bca52",
+      "youtube_id": "OPwpR3ReV0k",
+      "fresh_generation_attempt": 1,
+      "raw_sha256": "d02c330a560905efaf440ff17c740257f22459b7c67d955fc0ee385f055290f4",
+      "final_sha256": "f7b4c1662089c04d468237c92b4caeca6f2c911ee033c0a63a5f7997b8ad1f3c",
+      "render_input_sha256": "UNKNOWN",
+      "signature_sha256": "UNKNOWN",
+      "source": {
+        "date": "2026-08-18",
+        "slug": "gifted-children-perfectionism-tears",
+        "content_sha256": "27fc420058c548aa10a586479e7c79d7d646e4a4b057b10d438ad8cc33175d70"
+      },
+      "archive_id": 10936680658,
+      "exact_git_source_matches": 1,
+      "source_metadata_matches_exact_git": true,
+      "applicable_claim_identity_checks": [
+        {
+          "identity": {
+            "type": "media",
+            "slot": "2026-09-18",
+            "slug": "dating-apps-exhaustion",
+            "content_sha256": "46c8d80a4f18f7ff52a1cc0c9739a8c9fddb19a57600272e845c8ee003bf5a03",
+            "kind": "short"
+          },
+          "existing_item_identity_validator_passed": false,
+          "claimed_provider_item_and_video_ids_match": false
+        },
+        {
+          "identity": {
+            "type": "media",
+            "slot": "2026-09-27",
+            "slug": "siblings-fairness-vs-equality",
+            "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+            "kind": "overview"
+          },
+          "existing_item_identity_validator_passed": false,
+          "claimed_provider_item_and_video_ids_match": false
+        },
+        {
+          "identity": {
+            "type": "media",
+            "slot": "2026-09-27",
+            "slug": "siblings-fairness-vs-equality",
+            "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+            "kind": "short"
+          },
+          "existing_item_identity_validator_passed": false,
+          "claimed_provider_item_and_video_ids_match": false
+        }
+      ],
+      "missing_provenance": [
+        "audio_provenance",
+        "signature_provenance",
+        "render_input_sha256"
+      ],
+      "declared_files": [
+        {
+          "field": "raw_mp4",
+          "path_declared": true,
+          "declared_sha256": "d02c330a560905efaf440ff17c740257f22459b7c67d955fc0ee385f055290f4",
+          "exact_suffix_member_matches": [],
+          "status": "MISSING"
+        },
+        {
+          "field": "final_mp4",
+          "path_declared": true,
+          "declared_sha256": "f7b4c1662089c04d468237c92b4caeca6f2c911ee033c0a63a5f7997b8ad1f3c",
+          "exact_suffix_member_matches": [],
+          "status": "MISSING"
+        },
+        {
+          "field": "manifest_path",
+          "path_declared": true,
+          "declared_sha256": "bd4e385934eb1e83eefa6ec01fa2c42b5ea7958b7378abc9c7eca13164c1ff00",
+          "exact_suffix_member_matches": [
+            "video-20260927-020414-27fc420058-remotion-manifest.json"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "bd4e385934eb1e83eefa6ec01fa2c42b5ea7958b7378abc9c7eca13164c1ff00"
+        },
+        {
+          "field": "motion_plan_path",
+          "path_declared": true,
+          "declared_sha256": "38f138d15f4c1abbb58e1c7807a2f82d4a011aef8a899819759196a6090093dc",
+          "exact_suffix_member_matches": [],
+          "status": "MISSING"
+        },
+        {
+          "field": "remotion_props_path",
+          "path_declared": true,
+          "declared_sha256": "3dc0c7842779f1cafd911309eaf7e0b8d2c727ac8658126afdc293e920b6effd",
+          "exact_suffix_member_matches": [],
+          "status": "MISSING"
+        },
+        {
+          "field": "signature_asset",
+          "path_declared": false,
+          "declared_sha256": "UNKNOWN",
+          "exact_suffix_member_matches": [],
+          "status": "MISSING"
+        },
+        {
+          "field": "signature_video_path",
+          "path_declared": false,
+          "declared_sha256": "UNKNOWN",
+          "exact_suffix_member_matches": [],
+          "status": "MISSING"
+        },
+        {
+          "field": "visual_review_path",
+          "path_declared": true,
+          "declared_sha256": "78c45b198212f56dbc5b040ae6fae046a8414756a3955d0c456b770285301366",
+          "exact_suffix_member_matches": [
+            "video-20260927-020414-27fc420058-remotion-visual-review.png"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "78c45b198212f56dbc5b040ae6fae046a8414756a3955d0c456b770285301366"
+        },
+        {
+          "field": "transcript_path",
+          "path_declared": true,
+          "declared_sha256": "a4129df47871f9736910ae286f5de90aab61eddc0252f27ed9d2347a19a1f001",
+          "exact_suffix_member_matches": [
+            "video-20260927-020414-27fc420058-transcript-he.txt"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "a4129df47871f9736910ae286f5de90aab61eddc0252f27ed9d2347a19a1f001"
+        },
+        {
+          "field": "source_path",
+          "path_declared": true,
+          "declared_sha256": "dea4cac388ad5ab8afd566f4fa76032a4de2dbc2cc552056932ca5400a936344",
+          "exact_suffix_member_matches": [
+            "video-20260927-020414-27fc420058-source-he.txt"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "dea4cac388ad5ab8afd566f4fa76032a4de2dbc2cc552056932ca5400a936344"
+        }
+      ]
+    },
+    {
+      "id": "video-20260927-182326-1db6d9749e",
+      "type": "article_short",
+      "source_id": "d4e921e9-5508-4134-bcdf-8aaae6c7a786",
+      "task_id": "263e4194-c1f0-4a3f-9f65-cc6c8c735eec",
+      "artifact_id": "263e4194-c1f0-4a3f-9f65-cc6c8c735eec",
+      "youtube_id": "UNKNOWN",
+      "fresh_generation_attempt": 1,
+      "raw_sha256": "af56cb37e02cdf81cec270f7c02e06e4c03dff1438fb63a6aa19f256378a2fc3",
+      "final_sha256": "786e93d695743cb6a7d7f5e1a25a1d590adc66e20e3b5068438f7d1950040abd",
+      "render_input_sha256": "UNKNOWN",
+      "signature_sha256": "UNKNOWN",
+      "source": {
+        "date": "2026-09-27",
+        "slug": "siblings-fairness-vs-equality",
+        "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef"
+      },
+      "archive_id": 10936680658,
+      "exact_git_source_matches": 1,
+      "source_metadata_matches_exact_git": true,
+      "applicable_claim_identity_checks": [
+        {
+          "identity": {
+            "type": "media",
+            "slot": "2026-09-18",
+            "slug": "dating-apps-exhaustion",
+            "content_sha256": "46c8d80a4f18f7ff52a1cc0c9739a8c9fddb19a57600272e845c8ee003bf5a03",
+            "kind": "short"
+          },
+          "existing_item_identity_validator_passed": false,
+          "claimed_provider_item_and_video_ids_match": false
+        },
+        {
+          "identity": {
+            "type": "media",
+            "slot": "2026-09-27",
+            "slug": "siblings-fairness-vs-equality",
+            "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+            "kind": "overview"
+          },
+          "existing_item_identity_validator_passed": false,
+          "claimed_provider_item_and_video_ids_match": false
+        },
+        {
+          "identity": {
+            "type": "media",
+            "slot": "2026-09-27",
+            "slug": "siblings-fairness-vs-equality",
+            "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+            "kind": "short"
+          },
+          "existing_item_identity_validator_passed": true,
+          "claimed_provider_item_and_video_ids_match": false
+        }
+      ],
+      "missing_provenance": [
+        "audio_provenance",
+        "signature_provenance",
+        "render_input_sha256"
+      ],
+      "declared_files": [
+        {
+          "field": "raw_mp4",
+          "path_declared": true,
+          "declared_sha256": "af56cb37e02cdf81cec270f7c02e06e4c03dff1438fb63a6aa19f256378a2fc3",
+          "exact_suffix_member_matches": [
+            "video-20260927-182326-1db6d9749e-notebooklm.mp4"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "af56cb37e02cdf81cec270f7c02e06e4c03dff1438fb63a6aa19f256378a2fc3"
+        },
+        {
+          "field": "final_mp4",
+          "path_declared": true,
+          "declared_sha256": "786e93d695743cb6a7d7f5e1a25a1d590adc66e20e3b5068438f7d1950040abd",
+          "exact_suffix_member_matches": [
+            "video-20260927-182326-1db6d9749e-remotion-final.mp4"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "786e93d695743cb6a7d7f5e1a25a1d590adc66e20e3b5068438f7d1950040abd"
+        },
+        {
+          "field": "manifest_path",
+          "path_declared": true,
+          "declared_sha256": "486b74f43100ca13f25fb3084422ae59138667468179a967b77cfae1cbd14a7b",
+          "exact_suffix_member_matches": [
+            "video-20260927-182326-1db6d9749e-remotion-manifest.json"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "486b74f43100ca13f25fb3084422ae59138667468179a967b77cfae1cbd14a7b"
+        },
+        {
+          "field": "motion_plan_path",
+          "path_declared": true,
+          "declared_sha256": "35d579291f71be204bbd008306940c3f96d28f63cc94c8738b4892f69440cf40",
+          "exact_suffix_member_matches": [
+            "video-20260927-182326-1db6d9749e-motion-plan.json"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "35d579291f71be204bbd008306940c3f96d28f63cc94c8738b4892f69440cf40"
+        },
+        {
+          "field": "remotion_props_path",
+          "path_declared": true,
+          "declared_sha256": "97c542f5159dea35159e6dd84711c135b3ac2d0f51ee40b9fd04e5835ce7fcaf",
+          "exact_suffix_member_matches": [
+            "video-20260927-182326-1db6d9749e-remotion-props.json"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "97c542f5159dea35159e6dd84711c135b3ac2d0f51ee40b9fd04e5835ce7fcaf"
+        },
+        {
+          "field": "signature_asset",
+          "path_declared": false,
+          "declared_sha256": "UNKNOWN",
+          "exact_suffix_member_matches": [],
+          "status": "MISSING"
+        },
+        {
+          "field": "signature_video_path",
+          "path_declared": false,
+          "declared_sha256": "UNKNOWN",
+          "exact_suffix_member_matches": [],
+          "status": "MISSING"
+        },
+        {
+          "field": "visual_review_path",
+          "path_declared": true,
+          "declared_sha256": "d2928b80ab7e0f98463d2798450bbb8308a22e6097684353eabc621345259914",
+          "exact_suffix_member_matches": [
+            "video-20260927-182326-1db6d9749e-remotion-visual-review.png"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "d2928b80ab7e0f98463d2798450bbb8308a22e6097684353eabc621345259914"
+        },
+        {
+          "field": "transcript_path",
+          "path_declared": false,
+          "declared_sha256": "UNKNOWN",
+          "exact_suffix_member_matches": [],
+          "status": "MISSING"
+        },
+        {
+          "field": "source_path",
+          "path_declared": false,
+          "declared_sha256": "UNKNOWN",
+          "exact_suffix_member_matches": [],
+          "status": "MISSING"
+        }
+      ]
+    },
+    {
+      "id": "video-20260918-145430-46c8d80a4f",
+      "type": "article_short",
+      "source_id": "209f95d0-e9dd-4999-986d-7ed891b00e42",
+      "task_id": "5920bf7c-4961-431e-adf0-857e0ee42aff",
+      "artifact_id": "5920bf7c-4961-431e-adf0-857e0ee42aff",
+      "youtube_id": "5QW2YCqMG6Q",
+      "fresh_generation_attempt": 1,
+      "raw_sha256": "8e9981c46c62c13d1aac3bbfadabe4f1f96713ed2c5d816cb50e410b919ad652",
+      "final_sha256": "fa354a74bf2f86c44a7dcd97e99be493ea3a76f7b5920b3c8ec49051dbbfddea",
+      "render_input_sha256": "UNKNOWN",
+      "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+      "source": {
+        "date": "2026-09-18",
+        "slug": "dating-apps-exhaustion",
+        "content_sha256": "46c8d80a4f18f7ff52a1cc0c9739a8c9fddb19a57600272e845c8ee003bf5a03"
+      },
+      "archive_id": 10704214914,
+      "exact_git_source_matches": 1,
+      "source_metadata_matches_exact_git": true,
+      "applicable_claim_identity_checks": [
+        {
+          "identity": {
+            "type": "media",
+            "slot": "2026-09-18",
+            "slug": "dating-apps-exhaustion",
+            "content_sha256": "46c8d80a4f18f7ff52a1cc0c9739a8c9fddb19a57600272e845c8ee003bf5a03",
+            "kind": "short"
+          },
+          "existing_item_identity_validator_passed": true,
+          "claimed_provider_item_and_video_ids_match": true
+        },
+        {
+          "identity": {
+            "type": "media",
+            "slot": "2026-09-27",
+            "slug": "siblings-fairness-vs-equality",
+            "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+            "kind": "overview"
+          },
+          "existing_item_identity_validator_passed": false,
+          "claimed_provider_item_and_video_ids_match": false
+        },
+        {
+          "identity": {
+            "type": "media",
+            "slot": "2026-09-27",
+            "slug": "siblings-fairness-vs-equality",
+            "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+            "kind": "short"
+          },
+          "existing_item_identity_validator_passed": false,
+          "claimed_provider_item_and_video_ids_match": false
+        }
+      ],
+      "missing_provenance": [
+        "audio_provenance",
+        "signature_provenance",
+        "render_input_sha256"
+      ],
+      "declared_files": [
+        {
+          "field": "raw_mp4",
+          "path_declared": true,
+          "declared_sha256": "8e9981c46c62c13d1aac3bbfadabe4f1f96713ed2c5d816cb50e410b919ad652",
+          "exact_suffix_member_matches": [],
+          "status": "MISSING"
+        },
+        {
+          "field": "final_mp4",
+          "path_declared": true,
+          "declared_sha256": "fa354a74bf2f86c44a7dcd97e99be493ea3a76f7b5920b3c8ec49051dbbfddea",
+          "exact_suffix_member_matches": [],
+          "status": "MISSING"
+        },
+        {
+          "field": "manifest_path",
+          "path_declared": true,
+          "declared_sha256": "a28b891aa0c28ef3661869ad29f0187ba1ed6f385ea0ffe54eeff4d51b5febca",
+          "exact_suffix_member_matches": [
+            "video-20260918-145430-46c8d80a4f-short-manifest.json"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "a28b891aa0c28ef3661869ad29f0187ba1ed6f385ea0ffe54eeff4d51b5febca"
+        },
+        {
+          "field": "motion_plan_path",
+          "path_declared": true,
+          "declared_sha256": "e4cd53156b9681258c615135e1d3edd0d4d6f6bc4e909b0bc8f5f2b798ea25f2",
+          "exact_suffix_member_matches": [],
+          "status": "MISSING"
+        },
+        {
+          "field": "remotion_props_path",
+          "path_declared": true,
+          "declared_sha256": "13a264a9e7b856df4c628ae195ed34fb303aeae707d896c1d3dc711bc5e7c4c8",
+          "exact_suffix_member_matches": [],
+          "status": "MISSING"
+        },
+        {
+          "field": "signature_asset",
+          "path_declared": true,
+          "declared_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+          "exact_suffix_member_matches": [
+            "signature-mask.svg"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
+        },
+        {
+          "field": "signature_video_path",
+          "path_declared": true,
+          "declared_sha256": "669b3e7dc75fd6e76f018e389b438660a746397197648a4c3ee3b31260b34801",
+          "exact_suffix_member_matches": [
+            "video-20260918-145430-46c8d80a4f-signature-segment.mp4"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "669b3e7dc75fd6e76f018e389b438660a746397197648a4c3ee3b31260b34801"
+        },
+        {
+          "field": "visual_review_path",
+          "path_declared": true,
+          "declared_sha256": "fbfbe75e3d022e8477db35453142b4f49f7670cb64c3d8daca93e91a4dc97e35",
+          "exact_suffix_member_matches": [
+            "video-20260918-145430-46c8d80a4f-visual-review.png"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "fbfbe75e3d022e8477db35453142b4f49f7670cb64c3d8daca93e91a4dc97e35"
+        },
+        {
+          "field": "transcript_path",
+          "path_declared": true,
+          "declared_sha256": "e0347634d8c3740f9db083dbbbcd58abed5882ff56203fffb9fad957cf14bcfc",
+          "exact_suffix_member_matches": [
+            "video-20260918-145430-46c8d80a4f-transcript-he.txt"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "e0347634d8c3740f9db083dbbbcd58abed5882ff56203fffb9fad957cf14bcfc"
+        },
+        {
+          "field": "source_path",
+          "path_declared": true,
+          "declared_sha256": "f75607fcefd62addc91fd622da45f4b4a363e35b38fab1884f18ad9beda6fe1d",
+          "exact_suffix_member_matches": [
+            "video-20260918-145430-46c8d80a4f-source-he.txt"
+          ],
+          "status": "MATCH",
+          "actual_sha256": "f75607fcefd62addc91fd622da45f4b4a363e35b38fab1884f18ad9beda6fe1d"
+        }
+      ]
+    }
+  ],
+  "production_state_written": false,
+  "public_completion_inferred": false,
+  "remote_mutations": false,
+  "new_provider_jobs": false,
+  "new_uploads": false,
+  "new_deployments": false,
+  "sealing_preparation": {
+    "secret_name": "NOTEBOOKLM_STATE_KEY",
+    "metadata_exists": true,
+    "secret_updated_at": "2026-08-10T13:35:14Z",
+    "secret_value_accessed": false,
+    "actual_capability_sealed": false,
+    "actual_capability_used": false,
+    "binding": {
+      "algorithm": "AES-GCM with scrypt domain separation",
+      "authenticated_fields": [
+        "domain",
+        "repo",
+        "target.slot",
+        "target.slug",
+        "target.content_sha256",
+        "target.kind",
+        "purpose"
+      ],
+      "purpose": "youtube_upload"
+    },
+    "workflow_path": ".github/workflows/kesher-media-worker.yml",
+    "worker_path": "scripts/kesher_runtime/media_worker.py",
+    "remaining_prerequisite": "5.1: seal the preserved exact capability in trusted runtime during coordinated quiesced handover; fresh exact state/CAS/topology input required. Metadata existence does not prove runtime key validity."
+  },
+  "validation": {
+    "focused_command": "/usr/local/bin/python3 -m unittest tests.test_kesher_runtime_migration tests.test_kesher_output_artifacts tests.test_kesher_media_audit tests.test_kesher_media_observer tests.test_kesher_media_state tests.test_kesher_provider_recovery tests.test_kesher_canonical_state tests.test_kesher_autonomous_controller -v",
+    "focused_tests": 118,
+    "focused_result": "PASS",
+    "seconds": 4.928,
+    "logic_changed": false,
+    "full_python_rerun": false,
+    "frontend_browser_rerun": false
+  },
+  "blocker_5_2": "CLOSED: bounded evidence adjudication and sealing preparation; quarantines retained, no activation permission",
+  "next_slice": "5.1 offline coordinated handover/topology boundary, including exact sealed-capability import and interrupted/competing-writer refusal; Extra High; no live activation implied."
+}

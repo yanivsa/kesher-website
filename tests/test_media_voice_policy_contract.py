@@ -7,6 +7,8 @@ from pathlib import Path
 from unittest import mock
 
 from scripts import kesher_short_pipeline_v4 as short_pipeline
+from tests.test_media_provenance_contract import bound_short
+from tests.test_kesher_owner_vantage_voice_license import VoiceLicenseGateTests  # Run with existing CI voice-policy suite.
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,20 +43,9 @@ class MediaVoicePolicyContractTests(unittest.TestCase):
             self.assertIn(phrase, text)
 
     def test_short_runtime_passes_generation_attempt_to_voice_validator(self) -> None:
-        media = {
-            "codec": "h264",
-            "audio_codec": "aac",
-            "width": 1080,
-            "height": 1920,
-        }
-        item = {
-            "fresh_generation_attempt": 3,
-            "source_mode": "direct-short",
-            "signature_fullscreen": True,
-            "signature_duration_seconds": 3.0,
-            "signature_video_sha256": "s" * 64,
-            "signature_verified": True,
-        }
+        item = bound_short(120.0)
+        item['fresh_generation_attempt'] = 3
+        media = item['media']
         with tempfile.NamedTemporaryFile(suffix=".mp4") as handle:
             video_path = Path(handle.name)
             with mock.patch.object(

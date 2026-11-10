@@ -75,6 +75,8 @@ def install_runtime() -> None:
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     install_runtime()
     return v4.main()
 

@@ -2,8 +2,9 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const { ROOT, STATIC_ROUTES, isPublishable, blogRoute, wordCount, headingCount, stripHtml } = require('./content-policy.cjs');
+const { loadPosts } = require('./load-posts.cjs');
 
-const posts = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
+const posts = loadPosts();
 const published = posts.filter(isPublishable);
 const postSummaries = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/postSummaries.json'), 'utf8'));
 const errors = [];

@@ -1,0 +1,457 @@
+{
+  "scope": "exact local candidate through reconciled base1651; excludes later013494 content",
+  "all_required_gates_passed": true,
+  "waived_failures": 0,
+  "full_matrix_runs": 1,
+  "affected_reruns_reason": [
+    "workflow runner context correction",
+    "bare pytest import-root environment correction",
+    "stale test fixture reference correction",
+    "real Short composition routing defect",
+    "one permitted bounded main reconciliation"
+  ],
+  "runs": [
+    {
+      "worktree": "/Users/ninja/.codex/worktrees/stabilization-transplant-v6/Kesher",
+      "started_at": "2026-10-03T20:53:15.633500+00:00",
+      "gates": [
+        {
+          "name": "compile",
+          "command": "python3 -m py_compile scripts/kesher_runtime/*.py scripts/*.py tests/*.py",
+          "exit_code": 0,
+          "seconds": 2.233,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-compile.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "actionlint",
+          "command": "actionlint -shellcheck= -pyflakes=",
+          "exit_code": 1,
+          "seconds": 0.266,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-actionlint.log",
+          "log_sha256": "f82697bb42a0c164642feb60f51e63e0b4ec2ce2e58296d032d127274b57897b"
+        },
+        {
+          "name": "diff-check",
+          "command": "git diff --check",
+          "exit_code": 0,
+          "seconds": 0.127,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-diff-check.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "pytest",
+          "command": "pytest tests/",
+          "exit_code": 2,
+          "seconds": 3.862,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-pytest.log",
+          "log_sha256": "858dbc235eae95e1f388d289fcea1ca1b1ace075b34aa4baeceacf093f9d4275"
+        },
+        {
+          "name": "content",
+          "command": "npm run test:content",
+          "exit_code": 0,
+          "seconds": 2.535,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-content.log",
+          "log_sha256": "c70eddb436c2f4433b01587d824e50c03af901a5c212e1a7bb9945f9233b8420"
+        },
+        {
+          "name": "video-policy",
+          "command": "npm run test:video-policy",
+          "exit_code": 1,
+          "seconds": 12.634,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-video-policy.log",
+          "log_sha256": "6dd000d46824b5e76f24eaabeb37dc9741596f1d64e901b9e8e6cca8dd76b108"
+        },
+        {
+          "name": "controller",
+          "command": "npm run test:controller",
+          "exit_code": 1,
+          "seconds": 67.122,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-controller.log",
+          "log_sha256": "d79560f938f1ec3461010af0488b6573a90bdea43d9ff1967db6ef1e676957ab"
+        },
+        {
+          "name": "vitest",
+          "command": "npm test",
+          "exit_code": 0,
+          "seconds": 41.204,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-vitest.log",
+          "log_sha256": "f513013f3a48110629b993dd8275c323249b85931232b6e5e3432c284f86ad05"
+        },
+        {
+          "name": "build-dist",
+          "command": "npm run build && npm run verify:dist",
+          "exit_code": 0,
+          "seconds": 67.177,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-build-dist.log",
+          "log_sha256": "0074d431ba6cc20d9465d57f370581fa37cd36c7d5d78c97bdf6d9f94c758f63"
+        },
+        {
+          "name": "lint",
+          "command": "npm run lint",
+          "exit_code": 0,
+          "seconds": 15.841,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-lint.log",
+          "log_sha256": "9e78baf2f13eff558321b2d475cfb8af88729dc2f6789f8ea28873a4ca0099fb"
+        },
+        {
+          "name": "e2e",
+          "command": "npm run test:e2e",
+          "exit_code": 0,
+          "seconds": 212.988,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-e2e.log",
+          "log_sha256": "6d0f2b659228e11b69fb15c0694da30b0a7b752b39fe1361618f0c5482aa477d"
+        },
+        {
+          "name": "synthetic-render",
+          "command": "python3 tests/real_media_render.py --output /Users/ninja/.codex/tmp/kesher-final-v8-20261003/synthetic-render-final",
+          "exit_code": 1,
+          "seconds": 335.221,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-synthetic-render.log",
+          "log_sha256": "60324c8e64d40ae12e266e3aa62598e3a43509be2232d6e9476838acd72e4aed"
+        }
+      ],
+      "finished_at": "2026-10-03T21:05:56.854794+00:00",
+      "all_passed": false
+    },
+    {
+      "worktree": "/Users/ninja/.codex/worktrees/stabilization-transplant-v6/Kesher",
+      "started_at": "2026-10-03T21:12:33.987198+00:00",
+      "gates": [
+        {
+          "name": "compile",
+          "command": "python3 -m py_compile scripts/kesher_runtime/*.py scripts/*.py tests/*.py",
+          "exit_code": 0,
+          "seconds": 1.383,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/affected-compile.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "actionlint",
+          "command": "actionlint -shellcheck= -pyflakes=",
+          "exit_code": 0,
+          "seconds": 0.093,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/affected-actionlint.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "diff-check",
+          "command": "git diff --check",
+          "exit_code": 0,
+          "seconds": 0.061,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/affected-diff-check.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "pytest",
+          "command": "pytest tests/",
+          "exit_code": 0,
+          "seconds": 88.803,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/affected-pytest.log",
+          "log_sha256": "9b408e27d570e5d2c30864679ce57fdf1bcee6b6888358457cb80a25619268ca"
+        },
+        {
+          "name": "content",
+          "command": "npm run test:content",
+          "exit_code": 0,
+          "seconds": 2.696,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/affected-content.log",
+          "log_sha256": "c70eddb436c2f4433b01587d824e50c03af901a5c212e1a7bb9945f9233b8420"
+        },
+        {
+          "name": "video-policy",
+          "command": "npm run test:video-policy",
+          "exit_code": 0,
+          "seconds": 6.812,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/affected-video-policy.log",
+          "log_sha256": "b4658e0a70b468190a943dc06cb4a03f16e4a93d5ef197ecdfd0b88f9669e0a6"
+        },
+        {
+          "name": "controller",
+          "command": "npm run test:controller",
+          "exit_code": 0,
+          "seconds": 51.102,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/affected-controller.log",
+          "log_sha256": "6d9d724ca46b131e6284a11e64e40d27af212d041f6517dcbd4c71ad60d4013a"
+        },
+        {
+          "name": "synthetic-render",
+          "command": "python3 tests/real_media_render.py --output /Users/ninja/.codex/tmp/kesher-final-v8-20261003/synthetic-render-corrected",
+          "exit_code": 0,
+          "seconds": 101.464,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/affected-synthetic-render.log",
+          "log_sha256": "8d3ac607cbebfaca23bdd2bec7d326894e7ec5299f79ec34ef18a4db20d85d69"
+        }
+      ],
+      "finished_at": "2026-10-03T21:16:46.413103+00:00",
+      "all_passed": true
+    },
+    {
+      "worktree": "/Users/ninja/.codex/worktrees/stabilization-transplant-v6/Kesher",
+      "started_at": "2026-10-03T21:23:16.022073+00:00",
+      "gates": [
+        {
+          "name": "compile",
+          "command": "python3 -m py_compile scripts/kesher_runtime/*.py scripts/*.py tests/*.py",
+          "exit_code": 0,
+          "seconds": 0.967,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/main-reconciliation-compile.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "actionlint",
+          "command": "actionlint -shellcheck= -pyflakes=",
+          "exit_code": 0,
+          "seconds": 0.092,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/main-reconciliation-actionlint.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "diff-check",
+          "command": "git diff --check",
+          "exit_code": 0,
+          "seconds": 0.051,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/main-reconciliation-diff-check.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "pytest",
+          "command": "pytest tests/",
+          "exit_code": 0,
+          "seconds": 69.823,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/main-reconciliation-pytest.log",
+          "log_sha256": "dd14ab511c3da65a71ee87f305c08e2def66c5f79347a17ee49fae2d5d0a6fd4"
+        },
+        {
+          "name": "content",
+          "command": "npm run test:content",
+          "exit_code": 0,
+          "seconds": 2.069,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/main-reconciliation-content.log",
+          "log_sha256": "c70eddb436c2f4433b01587d824e50c03af901a5c212e1a7bb9945f9233b8420"
+        },
+        {
+          "name": "controller",
+          "command": "npm run test:controller",
+          "exit_code": 0,
+          "seconds": 36.815,
+          "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/main-reconciliation-controller.log",
+          "log_sha256": "4d776bb6a0525c6b4a1c5710dda2ed8c20f05f49d4dcc1e05cc41e85cd1eea36"
+        }
+      ],
+      "finished_at": "2026-10-03T21:25:05.844365+00:00",
+      "all_passed": true
+    }
+  ],
+  "final_gates": [
+    {
+      "name": "compile",
+      "command": "python3 -m py_compile scripts/kesher_runtime/*.py scripts/*.py tests/*.py",
+      "exit_code": 0,
+      "seconds": 0.967,
+      "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/main-reconciliation-compile.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "actionlint",
+      "command": "actionlint -shellcheck= -pyflakes=",
+      "exit_code": 0,
+      "seconds": 0.092,
+      "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/main-reconciliation-actionlint.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "diff-check",
+      "command": "git diff --check",
+      "exit_code": 0,
+      "seconds": 0.051,
+      "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/main-reconciliation-diff-check.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "pytest",
+      "command": "pytest tests/",
+      "exit_code": 0,
+      "seconds": 69.823,
+      "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/main-reconciliation-pytest.log",
+      "log_sha256": "dd14ab511c3da65a71ee87f305c08e2def66c5f79347a17ee49fae2d5d0a6fd4"
+    },
+    {
+      "name": "content",
+      "command": "npm run test:content",
+      "exit_code": 0,
+      "seconds": 2.069,
+      "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/main-reconciliation-content.log",
+      "log_sha256": "c70eddb436c2f4433b01587d824e50c03af901a5c212e1a7bb9945f9233b8420"
+    },
+    {
+      "name": "video-policy",
+      "command": "npm run test:video-policy",
+      "exit_code": 0,
+      "seconds": 6.812,
+      "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/affected-video-policy.log",
+      "log_sha256": "b4658e0a70b468190a943dc06cb4a03f16e4a93d5ef197ecdfd0b88f9669e0a6"
+    },
+    {
+      "name": "controller",
+      "command": "npm run test:controller",
+      "exit_code": 0,
+      "seconds": 36.815,
+      "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/main-reconciliation-controller.log",
+      "log_sha256": "4d776bb6a0525c6b4a1c5710dda2ed8c20f05f49d4dcc1e05cc41e85cd1eea36"
+    },
+    {
+      "name": "vitest",
+      "command": "npm test",
+      "exit_code": 0,
+      "seconds": 41.204,
+      "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-vitest.log",
+      "log_sha256": "f513013f3a48110629b993dd8275c323249b85931232b6e5e3432c284f86ad05"
+    },
+    {
+      "name": "build-dist",
+      "command": "npm run build && npm run verify:dist",
+      "exit_code": 0,
+      "seconds": 67.177,
+      "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-build-dist.log",
+      "log_sha256": "0074d431ba6cc20d9465d57f370581fa37cd36c7d5d78c97bdf6d9f94c758f63"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "exit_code": 0,
+      "seconds": 15.841,
+      "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-lint.log",
+      "log_sha256": "9e78baf2f13eff558321b2d475cfb8af88729dc2f6789f8ea28873a4ca0099fb"
+    },
+    {
+      "name": "e2e",
+      "command": "npm run test:e2e",
+      "exit_code": 0,
+      "seconds": 212.988,
+      "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/final-e2e.log",
+      "log_sha256": "6d0f2b659228e11b69fb15c0694da30b0a7b752b39fe1361618f0c5482aa477d"
+    },
+    {
+      "name": "synthetic-render",
+      "command": "python3 tests/real_media_render.py --output /Users/ninja/.codex/tmp/kesher-final-v8-20261003/synthetic-render-corrected",
+      "exit_code": 0,
+      "seconds": 101.464,
+      "log": "/Users/ninja/.codex/tmp/kesher-final-v8-20261003/affected-synthetic-render.log",
+      "log_sha256": "8d3ac607cbebfaca23bdd2bec7d326894e7ec5299f79ec34ef18a4db20d85d69"
+    }
+  ],
+  "counts": {
+    "pytest": {
+      "passed": 1158,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "warnings": 2
+    },
+    "video_policy": {
+      "passed": 214,
+      "failed": 0
+    },
+    "controller": {
+      "passed": 492,
+      "failed": 0
+    },
+    "vitest": {
+      "files": 21,
+      "passed": 150,
+      "failed": 0
+    },
+    "e2e": {
+      "passed": 138,
+      "failed": 0,
+      "candidate_owned_server": true,
+      "reuse_existing_server": false
+    },
+    "build_dist": {
+      "verified_prerendered_routes": 129
+    },
+    "content": {
+      "published_posts": 97,
+      "thin_legacy_unindexed": 9,
+      "automation_evaluator": "real unshimmed runner; exit0, no individual assertion count emitted"
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 16,
+      "warning_class": "configured ignore-pattern warnings"
+    },
+    "synthetic_renders": {
+      "passed": 2,
+      "failed": 0,
+      "provider_or_public_proof": false
+    }
+  },
+  "focused_counts": {
+    "test_kesher_authority_digest": 17,
+    "test_kesher_authority_topology": 44,
+    "test_kesher_handover": 24,
+    "test_kesher_handover_github": 7,
+    "test_kesher_git_exclusion": 13,
+    "test_kesher_github_faults": 8,
+    "test_kesher_external_exclusion": 11,
+    "test_kesher_worker_commands": 13,
+    "test_kesher_worker_entry": 6,
+    "test_kesher_state_write_safety": 6,
+    "test_kesher_legacy_schema_fence": 19,
+    "test_kesher_historical_evidence": 7,
+    "test_short_pipeline_v4": 22,
+    "test_v5_backlog_media_recovery": 9,
+    "test_v5_shared_video_controller": 17,
+    "test_kesher_generation_attempts": 13
+  },
+  "focused_total": 236,
+  "website_input_manifest": {
+    "compared_regular_files": 367,
+    "changed_after_full_matrix": [],
+    "full_manifest_sha256": "4048e0569ad3296adf4ac6fc33e78968d20bec070acf8d09da7c7aae0813c08c"
+  },
+  "environment": {
+    "python": "3.12.8",
+    "node": "24.21.0",
+    "actionlint": "1.7.12",
+    "pytest": "9.1.1",
+    "PyYAML": "6.0.2",
+    "Pillow": "12.3.0",
+    "playwright": "1.61.0",
+    "PYTHONPATH": "/Users/ninja/.codex/worktrees/stabilization-transplant-v6/Kesher",
+    "credentials": "no live provider credentials used"
+  },
+  "logs_archive": {
+    "path": "final-v8-validation-logs-20261004.tar.gz",
+    "sha256": "1c4a5d03fa9323a1fc92005fccde84ec0fa09cc79ba837795d044e87a8ecf256",
+    "member_count": 54
+  },
+  "synthetic_render_results": {
+    "environment": "synthetic",
+    "scope": "render contract only; no provider or public delivery proof",
+    "renders": [
+      {
+        "kind": "overview",
+        "duration": 4.0,
+        "signature_duration": 3.0,
+        "final_sha256": "f1070cfef8c08e7f02df90b1a8149fc5bd85017902f7810ee082b26f4a214619",
+        "signature_verified": true,
+        "cache_verified": true,
+        "decoded_audio_identical": true,
+        "audio_packet_sha256": "e31c3afb9716179fc026ec3f3295fa2785866017e5a8da693248b1fc27662746"
+      },
+      {
+        "kind": "short",
+        "duration": 2.0,
+        "signature_duration": 2.0,
+        "final_sha256": "74aa6dae480459486eb4dddcdc56faee89b4463c37a9c910e87d299dc466af32",
+        "signature_verified": true,
+        "cache_verified": true,
+        "decoded_audio_identical": true,
+        "audio_packet_sha256": "b74cbb2ae502fe316a11c6a4ef2155e8af050d02e4f95a215109afa9d9159140"
+      }
+    ]
+  }
+}

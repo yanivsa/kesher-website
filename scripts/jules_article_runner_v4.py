@@ -3,22 +3,31 @@
 
 from __future__ import annotations
 
+import base64
+import hashlib
 import json
 import os
+import re
+import urllib.parse
 import sys
+import time
 from pathlib import Path
 
 if __package__:
+    from . import article_claim_quality as article_quality
     from . import jules_article_runner_v3 as v3
+    from .kesher_primary_keyword_contract import parse_owner_required_keyword
 else:
+    import article_claim_quality as article_quality
     import jules_article_runner_v3 as v3
+    from kesher_primary_keyword_contract import parse_owner_required_keyword
 
 _v3_build_prompt = v3.build_prompt
 
 SEARCH_FIRST_CONTRACT = r"""
 
 --- CLICKABLE SEARCH-INTENT TITLE CONTRACT ---
-This contract is mandatory and must be completed BEFORE choosing the final topic,
+This contract is mandatory (SEARCH-INTENT-FIRST) and must be completed BEFORE choosing the final topic,
 title, slug, excerpt or article angle. It supersedes dry editorial naming and
 keyword-first title preferences elsewhere in the article policy.
 
@@ -177,6 +186,8 @@ subject constraint, not merely a suggestion.
 5. Write original Kesher copy. Do not reproduce substantial source wording.
 6. In the PR body include: Owner topic brief: applied.
 
+7. When the owner topic brief specifies `Required Primary Keyword: <keyword>`, you MUST adopt that exact Primary Keyword in the title, opening paragraph, slug, and PR body audit block.
+
 Owner topic brief:
 {topic_brief}
 --- END OWNER-SUPPLIED TOPIC BRIEF CONTRACT ---
@@ -201,6 +212,29 @@ def load_owner_topic_brief() -> str:
             "owner topic brief exceeds 16000 characters",
         )
     return brief
+
+
+PRIMARY_KEYWORD_CONTRACT = r"""
+
+--- PRIMARY KEYWORD CONTRACT ---
+Every Kesher article must enforce an explicit Primary Keyword across title, URL slug, opening paragraph, and PR audit metadata.
+
+1. Definition:
+   - The Primary Keyword must be an explicit, targeted search term (1-4 words).
+   - In Hebrew, the canonical form or a natural prefix variant (using Hebrew prefixes: ב, כ, ל, מ, ש, ה, ו...) is required.
+   - If an owner topic brief specifies `Required Primary Keyword: <keyword>`, you MUST use that exact keyword.
+2. Title / H1:
+   - The final article title (H1) MUST contain the Primary Keyword (or close Hebrew prefix variant).
+3. First Paragraph:
+   - The Primary Keyword MUST appear in the opening of the article body — within the first sentence or the first 20-25 words of the first paragraph.
+4. Slug / URL:
+   - The article `slug`/`id` MUST semantically represent the Primary Keyword in clean, lowercase kebab-case English (e.g. 'גמילה מטיטול' -> 'potty-training-toddlers').
+   - The resulting article URL must be `/blog/<slug>`.
+5. PR Body Audit Block:
+   - In the PR body, include the audit line:
+     `- Primary Keyword: <exact keyword>`
+--- END PRIMARY KEYWORD CONTRACT ---
+"""
 
 EVIDENCE_CONTRACT = r"""
 
@@ -233,23 +267,286 @@ This requirement is mandatory even when every other content/style check passes.
 """
 
 
+def preflight(slot: str, token: str) -> str:
+    posts = v3._load_local_posts()
+    if v3.test_mode_enabled():
+        print(f"KESHER_TEST_MODE_BYPASS slot={slot} duplicate_guard=bypassed", flush=True)
+        return "READY"
+
+    brief = load_owner_topic_brief()
+    required = parse_owner_required_keyword(brief) if brief else None
+
+    if required:
+        if any(
+            isinstance(post, dict) and str(post.get("primaryKeyword") or "").strip() == required
+            for post in posts
+        ):
+            return "ARTICLE_ALREADY_PUBLISHED"
+    else:
+        if v3.core.article_exists_for_slot(posts, slot):
+            return "ARTICLE_ALREADY_PUBLISHED"
+
+    prs = v3.open_article_prs_for_slot(token, slot)
+    if required:
+        prs = [
+            pr for pr in prs
+            if required in str(pr.get("title") or "")
+            or required in str(pr.get("body") or "")
+        ]
+
+    if len(prs) > 1:
+        raise v3.core.ArticleRunnerError(
+            "DUPLICATE_ARTICLE_PRS",
+            f"duplicate open article PRs detected for slot {slot}: {len(prs)}",
+        )
+    if len(prs) == 1:
+        return f"ARTICLE_ALREADY_IN_PROGRESS pr={prs[0].get('number')}"
+    return "READY"
+
+
+def configure_session_identity(slot: str) -> None:
+    if v3.test_mode_enabled():
+        v3.configure_test_session_identity(slot)
+        return
+    brief = load_owner_topic_brief()
+    required = parse_owner_required_keyword(brief) if brief else None
+    if required:
+        kw_hash = hashlib.sha256(required.encode("utf-8")).hexdigest()[:10]
+
+        def _owner_title(candidate_slot: str) -> str:
+            return f"Kesher article {candidate_slot} kw-{kw_hash}"
+
+        v3.core.slot_session_title = _owner_title
+    else:
+        v3.core.slot_session_title = v3._legacy_slot_session_title
+
+
 def build_prompt(slot: str, policy: str) -> str:
     topic_brief = load_owner_topic_brief()
     prompt = _v3_build_prompt(slot, policy)
+    required = parse_owner_required_keyword(topic_brief) if topic_brief else None
+    if required:
+        prompt = prompt.replace(
+            f"If current `main` already contains an article with `date == {slot}`",
+            f"If current `main` already contains an article with Primary Keyword == '{required}'",
+        )
+        prompt = prompt.replace(
+            f"or a currently open `Publish Kesher article:` PR already contains an article with `date == {slot}`",
+            f"or a currently open `Publish Kesher article:` PR already targets the Primary Keyword '{required}'",
+        )
     if not topic_brief:
         prompt += VIRAL_TOPIC_DISCOVERY_CONTRACT
-    prompt += SEARCH_FIRST_CONTRACT + EVIDENCE_CONTRACT
+    prompt += SEARCH_FIRST_CONTRACT + PRIMARY_KEYWORD_CONTRACT + EVIDENCE_CONTRACT
     if topic_brief:
         prompt += CUSTOM_TOPIC_CONTRACT.format(topic_brief=topic_brief)
     return prompt
 
 
+def _github_posts_at_ref(token: str, ref: str) -> list[dict]:
+    encoded_ref = urllib.parse.quote(ref, safe="")
+    payload = v3.core.request_json(
+        "GET",
+        f"https://api.github.com/repos/{v3.core.REPO}/contents/src/data/posts.json?ref={encoded_ref}",
+        v3.core.github_headers(token),
+    )
+    if not isinstance(payload, dict) or str(payload.get("encoding") or "") != "base64":
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_QUALITY_SOURCE_INVALID", "posts.json content payload is not base64")
+    try:
+        rows = json.loads(base64.b64decode(str(payload.get("content") or "")).decode("utf-8"))
+    except (ValueError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_QUALITY_SOURCE_INVALID", "cannot decode posts.json for PR quality validation") from exc
+    if not isinstance(rows, list):
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_QUALITY_SOURCE_INVALID", "posts.json is not an array")
+    return [row for row in rows if isinstance(row, dict)]
+
+
+def _exact_pr_candidate(token: str, pr_url: str) -> tuple[dict, dict]:
+    match = re.fullmatch(rf"https://github\.com/{re.escape(v3.core.REPO)}/pull/(\d+)", pr_url.strip())
+    if not match:
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_IDENTITY_INVALID", f"unexpected PR URL: {pr_url}")
+    number = int(match.group(1))
+    pr = v3.core.request_json(
+        "GET",
+        f"https://api.github.com/repos/{v3.core.REPO}/pulls/{number}",
+        v3.core.github_headers(token),
+    )
+    if not isinstance(pr, dict) or int(pr.get("number") or 0) != number or str(pr.get("state") or "") != "open":
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_IDENTITY_INVALID", f"PR #{number} is not the expected open PR")
+    base_sha = str((pr.get("base") or {}).get("sha") or "").strip()
+    head_sha = str((pr.get("head") or {}).get("sha") or "").strip()
+    if not base_sha or not head_sha:
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_IDENTITY_INVALID", f"PR #{number} is missing base/head identity")
+    base_posts = _github_posts_at_ref(token, base_sha)
+    head_posts = _github_posts_at_ref(token, head_sha)
+    base_ids = {str(row.get("id") or row.get("slug") or "").strip() for row in base_posts}
+    new_posts = [
+        row for row in head_posts
+        if str(row.get("id") or row.get("slug") or "").strip()
+        and str(row.get("id") or row.get("slug") or "").strip() not in base_ids
+    ]
+    if len(new_posts) != 1:
+        raise v3.core.ArticleRunnerError(
+            "ARTICLE_PRE_PR_IDENTITY_INVALID",
+            f"expected exactly one new PR article, found {len(new_posts)}",
+        )
+    article = dict(new_posts[0])
+    article["controllerManaged"] = True
+    return pr, article
+
+
+def _wait_for_same_pr_repair(
+    token: str,
+    api_key: str,
+    session: str,
+    pr_url: str,
+    prior_head_sha: str,
+    timeout_seconds: int = 15 * 60,
+) -> bool:
+    match = re.fullmatch(rf"https://github\.com/{re.escape(v3.core.REPO)}/pull/(\d+)", pr_url.strip())
+    if not match:
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_IDENTITY_INVALID", f"unexpected PR URL: {pr_url}")
+    number = int(match.group(1))
+    sid = session.removeprefix("sessions/")
+    deadline = time.monotonic() + timeout_seconds
+    continued = False
+    approved = False
+    resumed = False
+    while time.monotonic() < deadline:
+        current = v3.core.request_json(
+            "GET", f"{v3.core.API_BASE}/sessions/{sid}", v3.core.jules_headers(api_key)
+        )
+        state = str((current or {}).get("state") or "UNKNOWN").upper()
+        pr = v3.core.request_json(
+            "GET", f"https://api.github.com/repos/{v3.core.REPO}/pulls/{number}", v3.core.github_headers(token)
+        )
+        head_sha = str(((pr or {}).get("head") or {}).get("sha") or "").strip().lower()
+        changed = bool(head_sha and head_sha != prior_head_sha.strip().lower())
+        if changed and state == "COMPLETED":
+            print(f"ARTICLE_PRE_PR_REPAIR_TERMINAL pr={number} head={head_sha}", flush=True)
+            return True
+        if state in v3.core.TERMINAL_FAILURES:
+            return False
+        if state in {"AWAITING_USER_FEEDBACK", "WAITING_FOR_USER"} and not continued:
+            v3.core.send_message(api_key, sid, "Continue autonomously. Finish the exact same PR repair and do not ask a question.")
+            continued = True
+        elif state == "AWAITING_PLAN_APPROVAL" and not approved:
+            v3.core.request_json(
+                "POST", f"{v3.core.API_BASE}/sessions/{sid}:approvePlan", v3.core.jules_headers(api_key), {}, max_attempts=1
+            )
+            approved = True
+        elif state == "PAUSED" and not resumed:
+            v3.core.send_message(api_key, sid, "Resume autonomously and finish the exact same PR repair.")
+            resumed = True
+        time.sleep(15)
+    return False
+
+
+def _record_pre_pr_quality(*, status: str, violations: list[str], repaired: bool) -> None:
+    path = v3.core.result_path()
+    if not path.is_file():
+        return
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["pre_pr_quality_status"] = status
+    payload["pre_pr_quality_violations"] = list(violations)
+    payload["pre_pr_quality_repaired"] = bool(repaired)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    tmp.replace(path)
+
+
+def enforce_post_pr_quality() -> bool:
+    path = v3.core.result_path()
+    if not path.is_file():
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_QUALITY_RESULT_MISSING", "article result is missing")
+    result = json.loads(path.read_text(encoding="utf-8"))
+    if str(result.get("outcome") or "") != "PR_CREATED":
+        return True
+    token = os.environ.get("GITHUB_TOKEN", "").strip()
+    api_key = os.environ.get("JULES_API_KEY", "").strip()
+    session = str(result.get("session_id") or "").strip()
+    pr_url = str(result.get("pr_url") or "").strip()
+    if not token or not api_key or not session or not pr_url:
+        raise v3.core.ArticleRunnerError("ARTICLE_PRE_PR_QUALITY_IDENTITY_MISSING", "quality validation is missing token/session/PR identity")
+
+    pr, article = _exact_pr_candidate(token, pr_url)
+    prior_head_sha = str((pr.get("head") or {}).get("sha") or "").strip()
+    violations = article_quality.full_article_violations(article)
+    if not violations:
+        _record_pre_pr_quality(status="passed", violations=[], repaired=False)
+        print("ARTICLE_PRE_PR_QUALITY_PASSED repaired=no", flush=True)
+        return True
+
+    sid = session.removeprefix("sessions/")
+    number = int(pr.get("number") or 0)
+    error_text = "\n".join(f"- {item}" for item in violations)
+    prompt = f"""Your existing Kesher article PR #{number} failed the deterministic pre-publication quality contract.
+
+Repair THE SAME PR and THE SAME BRANCH only. Do not create a new branch or PR. Do not modify images, workflows, tests, scripts or packages.
+
+Exact violations:
+{error_text}
+
+Fix the new article so it satisfies every listed violation. For evidence, use only genuine authoritative/reputable sources and never invent a study, statistic or URL. Ensure at least three distinct relevant internal /blog/ links and keep the declared service CTA linked. Re-check unsupported absolute/causal claims. Push the corrected text/index changes to the existing PR branch and finish this same Jules session autonomously."""
+    v3.core.send_message(api_key, sid, prompt)
+    if not _wait_for_same_pr_repair(token, api_key, session, pr_url, prior_head_sha):
+        v3.core.emit_result(
+            str(result.get("slot") or ""),
+            "ARTICLE_PRE_PR_QUALITY_REPAIR_FAILED",
+            retryable=True,
+            message="same-session quality repair did not reach a new terminal PR head within the bounded repair window",
+            session_id=session,
+            pr_url=pr_url,
+        )
+        return False
+
+    _, repaired_article = _exact_pr_candidate(token, pr_url)
+    remaining = article_quality.full_article_violations(repaired_article)
+    if remaining:
+        _record_pre_pr_quality(status="failed", violations=remaining, repaired=True)
+        v3.core.emit_result(
+            str(result.get("slot") or ""),
+            "ARTICLE_PRE_PR_QUALITY_FAILED",
+            retryable=True,
+            message=" | ".join(remaining[:5]),
+            session_id=session,
+            pr_url=pr_url,
+        )
+        return False
+    _record_pre_pr_quality(status="passed", violations=[], repaired=True)
+    print("ARTICLE_PRE_PR_QUALITY_PASSED repaired=yes", flush=True)
+    return True
+
+
+def persist_owner_keyword_result_metadata() -> None:
+    """Bind owner keyword requirements to the trusted workflow result artifact.
+
+    The article PR can edit its own body/content, so those are never authoritative
+    for owner intent. This metadata is written by the trusted main-branch runner and
+    later consumed by the GitHub merge gate through the exact controller run artifact.
+    """
+    result = v3.core.result_path()
+    if not result.is_file():
+        return
+    brief = load_owner_topic_brief()
+    required = parse_owner_required_keyword(brief) or ""
+    payload = json.loads(result.read_text(encoding="utf-8"))
+    payload["owner_required_primary_keyword"] = required
+    payload["owner_topic_brief_sha256"] = hashlib.sha256(brief.encode("utf-8")).hexdigest() if brief else ""
+    tmp = result.with_suffix(result.suffix + ".tmp")
+    tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    tmp.replace(result)
+
+
 def main() -> int:
-    # V3 remains the implementation owner for slot-scoped identity, test mode,
-    # safe Jules session reuse and terminal PR settling. Only the prompt contract
-    # changes here.
+    v3.configure_test_session_identity = configure_session_identity
+    v3.preflight = preflight
     v3.build_prompt = build_prompt
-    return v3.main()
+    code = v3.main()
+    if code == 0:
+        if not enforce_post_pr_quality():
+            return 1
+        persist_owner_keyword_result_metadata()
+    return code
 
 
 def attach_failure_diagnostic() -> None:

@@ -1,11 +1,17 @@
 from __future__ import annotations
 
 import copy
+import base64
+import json
+import importlib.util
+from pathlib import Path
 import unittest
+from unittest import mock
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from scripts import kesher_content_controller as controller
+from scripts import kesher_content_controller_stabilized as stabilized
 
 TZ = ZoneInfo("Asia/Jerusalem")
 
@@ -19,6 +25,18 @@ def article(slug: str = "today-article", title: str = "כותרת מאמר") -> 
         "excerpt": "תקציר",
         "content": "<p>תוכן</p>",
     }
+
+
+def public_html(post: dict) -> str:
+    sha = controller._post_source_sha256(post)
+    slug = post.get("slug") or post.get("id") or "post"
+    return (
+        f'<html><head><meta name="kesher:content-sha256" content="{sha}">'
+        f'<link rel="canonical" href="https://kesher.saharoni.com/blog/{slug}">'
+        f'<meta property="og:url" content="https://kesher.saharoni.com/blog/{slug}">'
+        f'<meta property="og:image" content="https://kesher.saharoni.com/images/generated/blog/{slug}.jpg">'
+        f'</head><body><h1>{post["title"]}</h1>{post.get("content") or ""}</body></html>'
+    )
 
 
 def jules_approved_video() -> dict:
@@ -39,6 +57,7 @@ class FakeGitHub:
     def __init__(self) -> None:
         self.saved_state = None
         self.posts = []
+        self.recent_posts = []
         self.prs = []
         self.active = {}
         self.runs = {}
@@ -53,9 +72,12 @@ class FakeGitHub:
         self.saved_state = copy.deepcopy(state)
 
     def contents_json(self, path, ref="main"):
-        assert path == "src/data/posts.json"
         assert ref == "main"
-        return copy.deepcopy(self.posts)
+        if path == "src/data/posts.json":
+            return copy.deepcopy(self.posts)
+        if path == "src/data/postsRecent.json":
+            return copy.deepcopy(self.recent_posts)
+        raise AssertionError(path)
 
     def open_article_prs(self, target_slot: str | None = None):
         return copy.deepcopy(self.prs)
@@ -173,6 +195,39 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(state["status"], "article_retry_wait")
         self.assertEqual(state["article"]["failure_fingerprint"], "JULES_TIMEOUT")
         self.assertEqual(state["article"]["last_jules_session_id"], "sessions/41")
+        self.assertEqual(gh.dispatches, [])
+
+    def test_terminal_merge_budget_tombstone_blocks_stale_jules_recovery(self):
+        gh = FakeGitHub()
+        gh.saved_state = controller.new_cycle_state(self.now().date())
+        # Reproduce production after a terminal cycle was accidentally revived:
+        # mutable status says running, while merge_dispatch_count is the durable
+        # proof that this article cycle already exhausted its terminal budget.
+        gh.saved_state["status"] = "article_generating"
+        gh.saved_state["article"].update({
+            "status": "running",
+            "attempts": 1,
+            "attempt_count": 2,
+            "run_id": 43,
+            "processed_run_id": 41,
+            "merge_dispatch_count": 6,
+        })
+        gh.runs[43] = {"id": 43, "status": "completed", "conclusion": "failure"}
+        gh.article_results[43] = {
+            "schema_version": 1,
+            "slot": "2026-08-19",
+            "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+            "retryable": True,
+            "message": "session preserved",
+            "session_id": "sessions/43",
+        }
+
+        state, action = self.make(gh).tick()
+
+        self.assertEqual(action.kind, "blocked")
+        self.assertEqual(state["status"], "blocked")
+        self.assertEqual(state["article"]["status"], "exhausted")
+        self.assertEqual(state["last_error"]["code"], "ARTICLE_ATTEMPTS_EXHAUSTED")
         self.assertEqual(gh.dispatches, [])
 
     def test_preserved_jules_timeout_immediately_redispatches_same_slot_recovery(self):
@@ -305,7 +360,7 @@ class ControllerTests(unittest.TestCase):
         manual_b = article("manual-b")
         manual_b["controllerManaged"] = False
         gh.posts = [manual_a, managed, manual_b]
-        site = FakeSite(status=200, body="<h1>כותרת מאמר</h1>")
+        site = FakeSite(status=200, body=public_html(managed))
 
         state, action = self.make(gh, site).tick()
 
@@ -340,7 +395,7 @@ class ControllerTests(unittest.TestCase):
     def test_live_article_dispatches_video_only_after_http_and_title(self):
         gh = FakeGitHub()
         gh.posts = [article()]
-        site = FakeSite(status=200, body="<html><h1>כותרת מאמר</h1></html>")
+        site = FakeSite(status=200, body=public_html(gh.posts[0]))
         state, action = self.make(gh, site).tick()
         self.assertEqual(action.kind, "dispatch_video")
         self.assertEqual(gh.dispatches, [
@@ -356,7 +411,7 @@ class ControllerTests(unittest.TestCase):
         gh.active[controller.VIDEO_WORKFLOW] = {
             "id": 66, "status": "in_progress", "event": "pull_request"
         }
-        site = FakeSite(status=200, body="כותרת מאמר")
+        site = FakeSite(status=200, body=public_html(gh.posts[0]))
         state, action = self.make(gh, site).tick()
         self.assertEqual(action.kind, "dispatch_video")
         self.assertEqual(state["status"], "video_running")
@@ -368,7 +423,7 @@ class ControllerTests(unittest.TestCase):
         gh = FakeGitHub()
         gh.posts = [article()]
         gh.active[controller.VIDEO_WORKFLOW] = {"id": 77, "status": "in_progress"}
-        site = FakeSite(status=200, body="כותרת מאמר")
+        site = FakeSite(status=200, body=public_html(gh.posts[0]))
         state, action = self.make(gh, site).tick()
         self.assertEqual(action.kind, "wait")
         self.assertEqual(state["video"]["run_id"], 77)
@@ -383,7 +438,7 @@ class ControllerTests(unittest.TestCase):
             "technical_verified": False,
             "source": {"slug": "today-article"},
         }]}
-        site = FakeSite(status=200, body="כותרת מאמר")
+        site = FakeSite(status=200, body=public_html(gh.posts[0]))
 
         state, action = self.make(gh, site).tick()
         self.assertEqual(action.kind, "dispatch_video")
@@ -411,7 +466,7 @@ class ControllerTests(unittest.TestCase):
             "metadata_review_status": "approved",
             "source": {"slug": "today-article"},
         }]}
-        site = FakeSite(status=200, body="כותרת מאמר")
+        site = FakeSite(status=200, body=public_html(gh.posts[0]))
         state, action = self.make(gh, site).tick()
         self.assertEqual(action.kind, "dispatch_video")
         self.assertEqual(gh.dispatches[-1], (
@@ -432,7 +487,7 @@ class ControllerTests(unittest.TestCase):
             "metadata_review_status": "pending",
             "source": {"slug": "today-article"},
         }]}
-        site = FakeSite(status=200, body="כותרת מאמר")
+        site = FakeSite(status=200, body=public_html(gh.posts[0]))
         _, action = self.make(gh, site).tick()
         self.assertEqual(action.kind, "dispatch_video")
         self.assertEqual(gh.dispatches[-1], (
@@ -451,7 +506,7 @@ class ControllerTests(unittest.TestCase):
             "metadata_review_status": "approved",
             "source": {"slug": "today-article"},
         }]}
-        site = FakeSite(status=200, body="כותרת מאמר")
+        site = FakeSite(status=200, body=public_html(gh.posts[0]))
         state, action = self.make(gh, site).tick()
         self.assertEqual(action.kind, "blocked")
         self.assertEqual(state["last_error"]["code"], "VIDEO_REVIEW_REJECTED")
@@ -461,7 +516,7 @@ class ControllerTests(unittest.TestCase):
         gh = FakeGitHub()
         gh.posts = [article()]
         gh.video_state = {"items": [jules_approved_video()]}
-        site = FakeSite(status=200, body="כותרת מאמר")
+        site = FakeSite(status=200, body=public_html(gh.posts[0]))
         _, action = self.make(gh, site).tick()
         self.assertEqual(action.kind, "dispatch_video")
         self.assertEqual(gh.dispatches[-1], (
@@ -477,7 +532,7 @@ class ControllerTests(unittest.TestCase):
             "technical_verified": False,
             "source": {"slug": "today-article"},
         }]}
-        site = FakeSite(status=200, body="כותרת מאמר")
+        site = FakeSite(status=200, body=public_html(gh.posts[0]))
         state, action = self.make(gh, site).tick()
         self.assertEqual(action.kind, "dispatch_video")
         self.assertEqual(gh.dispatches[-1], (
@@ -502,15 +557,199 @@ class ControllerTests(unittest.TestCase):
                 "processing_status": "succeeded",
             },
         }]}
-        site = FakeSite(status=200, body="כותרת מאמר")
+        site = FakeSite(status=200, body=public_html(gh.posts[0]))
         state, action = self.make(gh, site).tick()
         self.assertEqual(action.kind, "complete")
         self.assertEqual(state["status"], "complete")
         self.assertEqual(state["video"]["youtube_url"], "https://youtu.be/abc123")
         self.assertEqual(gh.dispatches, [])
 
-    def test_github_client_save_controller_state_retries_on_409(self):
-        client = controller.GitHubClient("token", "owner/repo")
+    def test_strict_public_gate_rejects_title_only_without_expected_sha_marker(self):
+        title = "Expected article title"
+        html = f"<html><head><title>{title}</title></head><body><h1>{title}</h1></body></html>"
+        self.assertFalse(
+            controller.article_is_public(
+                html,
+                title,
+                expected_slug="expected-article",
+                expected_content_sha256="a" * 64,
+            )
+        )
+
+    def test_deploy_dispatched_intent_never_blind_reposts_after_visibility_lag(self):
+        gh = FakeGitHub()
+        now = self.now(10, 6)
+        ctrl = stabilized.StabilizedRuntimeV5Controller(gh, FakeSite(), now=now)
+        state = {
+            "schema_version": 5,
+            "cycle": "2026-08-19",
+            "article": {},
+            "pending_dispatches": {
+                controller.DEPLOY_WORKFLOW: {
+                    "workflow": controller.DEPLOY_WORKFLOW,
+                    "cycle": "2026-08-19",
+                    "inputs": {},
+                    "intent_at": "2026-08-19T07:00:00+00:00",
+                    "dispatched_at": "2026-08-19T07:00:00+00:00",
+                    "status": "dispatched",
+                    "previous_run_id": None,
+                    "observed_active_run_id": None,
+                }
+            },
+        }
+        raw_dispatches = []
+        with self.assertRaises(stabilized._DuplicateDispatchSuppressed):
+            ctrl._guarded_dispatch(
+                state,
+                controller.DEPLOY_WORKFLOW,
+                {},
+                lambda workflow, inputs: raw_dispatches.append((workflow, copy.deepcopy(inputs or {}))),
+            )
+        self.assertEqual(raw_dispatches, [])
+
+    def test_failed_exact_deploy_run_with_lost_callback_allows_one_retry(self):
+        class DeployGitHub(FakeGitHub):
+            def workflow_runs(self, workflow, limit=20):
+                return [{
+                    "id": 501,
+                    "event": "workflow_dispatch",
+                    "head_sha": "c" * 40,
+                    "head_branch": "main",
+                    "created_at": "2026-08-19T07:00:05+00:00",
+                    "status": "completed",
+                    "conclusion": "failure",
+                }]
+
+            def main_sha(self):
+                return "c" * 40
+
+        gh = DeployGitHub()
+        ctrl = stabilized.StabilizedRuntimeV5Controller(gh, FakeSite(), now=self.now(10, 6))
+        state = {
+            "schema_version": 5,
+            "cycle": "2026-08-19",
+            "article": {},
+            "pending_dispatches": {
+                controller.DEPLOY_WORKFLOW: {
+                    "workflow": controller.DEPLOY_WORKFLOW,
+                    "cycle": "2026-08-19",
+                    "inputs": {},
+                    "intent_at": "2026-08-19T07:00:00+00:00",
+                    "dispatched_at": "2026-08-19T07:00:00+00:00",
+                    "dispatch_head_sha": "c" * 40,
+                    "status": "dispatched",
+                    "previous_run_id": None,
+                    "observed_active_run_id": None,
+                }
+            },
+        }
+        raw_dispatches = []
+        ctrl._guarded_dispatch(
+            state,
+            controller.DEPLOY_WORKFLOW,
+            {},
+            lambda workflow, inputs: raw_dispatches.append((workflow, copy.deepcopy(inputs or {}))),
+        )
+        self.assertEqual(raw_dispatches, [(controller.DEPLOY_WORKFLOW, {})])
+        self.assertEqual(state["pending_dispatches"][controller.DEPLOY_WORKFLOW]["status"], "dispatched")
+        self.assertEqual(state["pending_dispatches"][controller.DEPLOY_WORKFLOW]["dispatch_head_sha"], "c" * 40)
+
+    def test_wrong_head_deploy_run_cannot_resolve_pending_intent(self):
+        class DeployGitHub(FakeGitHub):
+            def workflow_runs(self, workflow, limit=20):
+                return [{
+                    "id": 777,
+                    "event": "workflow_dispatch",
+                    "head_sha": "d" * 40,
+                    "head_branch": "main",
+                    "created_at": "2026-08-19T07:00:05+00:00",
+                    "status": "completed",
+                    "conclusion": "failure",
+                }]
+
+        gh = DeployGitHub()
+        ctrl = stabilized.StabilizedRuntimeV5Controller(gh, FakeSite(), now=self.now(10, 6))
+        state = {
+            "schema_version": 5,
+            "cycle": "2026-08-19",
+            "article": {},
+            "pending_dispatches": {
+                controller.DEPLOY_WORKFLOW: {
+                    "workflow": controller.DEPLOY_WORKFLOW,
+                    "cycle": "2026-08-19",
+                    "inputs": {},
+                    "intent_at": "2026-08-19T07:00:00+00:00",
+                    "dispatched_at": "2026-08-19T07:00:00+00:00",
+                    "dispatch_head_sha": "c" * 40,
+                    "status": "dispatched",
+                    "previous_run_id": None,
+                    "observed_active_run_id": None,
+                }
+            },
+        }
+        raw_dispatches = []
+        with self.assertRaises(stabilized._DuplicateDispatchSuppressed):
+            ctrl._guarded_dispatch(
+                state,
+                controller.DEPLOY_WORKFLOW,
+                {},
+                lambda workflow, inputs: raw_dispatches.append((workflow, copy.deepcopy(inputs or {}))),
+            )
+        self.assertEqual(raw_dispatches, [])
+        self.assertIn(controller.DEPLOY_WORKFLOW, state["pending_dispatches"])
+
+    def test_auto_merge_bridge_is_merge_only_and_never_dispatches_deploy(self):
+        path = Path(__file__).resolve().parents[1] / ".github" / "scripts" / "article-pr-controller-v3.py"
+        spec = importlib.util.spec_from_file_location("article_controller_v3_merge_only_test", path)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        calls = []
+
+        def fake_request(method, url, token, body=None):
+            calls.append((method, url, copy.deepcopy(body)))
+            if method == "PUT" and url.endswith("/merge"):
+                return {"merged": True, "sha": "b" * 40}
+            return {}
+
+        pr = {"number": 1111, "head": {"sha": "a" * 40}}
+        with mock.patch.object(module, "controller_image_stage_terminal", return_value=True), \
+             mock.patch.object(module.core, "request_json", side_effect=fake_request):
+            module.merge_and_deploy_after_image_stage("yanivsa/kesher-website", pr, "token")
+
+        self.assertEqual([method for method, _, _ in calls], ["PUT"])
+        self.assertTrue(calls[0][1].endswith("/pulls/1111/merge"))
+        self.assertFalse(any("/actions/workflows/deploy.yml/dispatches" in url for _, url, _ in calls))
+
+    def test_unrelated_same_day_editorial_article_is_not_adopted_from_weak_signals(self):
+        editorial = article("manual-editorial-article", "Manual editorial article")
+        editorial["controllerManaged"] = False
+        state = {
+            "schema_version": 5,
+            "cycle": "2026-08-19",
+            "status": "blocked",
+            "article": {
+                "pr_number": 9999,
+                "attempts": 3,
+                "attempt_count": 3,
+                "last_error": "ARTICLE_ATTEMPTS_EXHAUSTED",
+            },
+            "last_error": {
+                "stage": "article",
+                "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+            },
+        }
+        ctrl = stabilized.StabilizedRuntimeV5Controller(FakeGitHub(), FakeSite(), now=self.now(12, 0))
+        adopted = ctrl._reconcile_existing_current_day_article(state, [editorial])
+        self.assertEqual(adopted, [])
+        self.assertNotIn("slug", state["article"])
+
+    def test_github_client_conflict_requires_fresh_reconciliation(self):
+        # 58130048 added retries against a newly read SHA. The stale-state
+        # regression proves that expectation permitted lost updates. A new
+        # tick may retry only after observing and reconciling the new state.
+        client = controller.GitHubClient("owner/repo", "test-only-token")
         calls = []
 
         def fake_request(method, url, body=None, allow_404=False, raw=False):
@@ -519,7 +758,8 @@ class ControllerTests(unittest.TestCase):
                 return {"object": {"sha": "sha-ref"}}
             if method == "GET" and "/contents/" in url:
                 count = sum(1 for m, u, _ in calls if m == "GET" and "/contents/" in u)
-                return {"sha": f"sha-{count}"}
+                return {"sha": f"sha-{count}", "encoding": "base64",
+                        "content": base64.b64encode(json.dumps({"cycle": "2026-09-07", "status": "testing"}).encode()).decode()}
             if method == "PUT" and "/contents/" in url:
                 put_count = sum(1 for m, u, _ in calls if m == "PUT")
                 if put_count == 1:
@@ -528,11 +768,13 @@ class ControllerTests(unittest.TestCase):
             return {}
 
         client.request = fake_request
-        client.save_controller_state({"cycle": "2026-09-07", "status": "testing"})
+        state = client.load_controller_state()
+        with self.assertRaisesRegex(controller.ControllerError, "409"):
+            client.save_controller_state(state)
         put_calls = [c for c in calls if c[0] == "PUT"]
-        self.assertEqual(len(put_calls), 2)
+        self.assertEqual(len(put_calls), 1)
         self.assertEqual(put_calls[0][2]["sha"], "sha-1")
-        self.assertEqual(put_calls[1][2]["sha"], "sha-2")
+        self.assertEqual(sum(m == "GET" and "/contents/" in u for m, u, _ in calls), 1)
 
     def test_image_providers_includes_local_editorial(self):
         import scripts.kesher_content_controller_v3_entry as v3

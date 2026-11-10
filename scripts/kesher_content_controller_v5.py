@@ -147,7 +147,17 @@ class V5GitHubClient(v4.V4GitHubClient):
                 pass
         return self.newest_state_for_artifact(durable_artifact)
 
+    def save_video_state(self, state: dict[str, Any]) -> None:
+        self._video_state = copy.deepcopy(state)
+        try:
+            from scripts import kesher_daily_pipeline as pipeline
+            pipeline.save_state(state)
+        except Exception:
+            pass
+
     def newest_video_state(self) -> dict[str, Any]:
+        if getattr(self, "_video_state", None) is not None:
+            return copy.deepcopy(self._video_state)
         # The full durable artifact may contain large MP4/evidence files needed
         # by the video worker for resume. Controller V5 only needs state.json.
         return self._preferred_controller_state(
@@ -210,6 +220,8 @@ class V5GitHubClient(v4.V4GitHubClient):
 class V5Controller(v4.V4Controller):
     def state(self) -> dict[str, Any]:
         existing = self.github.load_controller_state()
+        from scripts.kesher_runtime.legacy_retirement import validate_legacy_read
+        validate_legacy_read(existing)
         today = self.now.date()
         if (
             isinstance(existing, dict)
@@ -250,8 +262,8 @@ class V5Controller(v4.V4Controller):
         # The publication window gates starting new article work, not recovery.
         # Once a worker is already active it must remain supervised across
         # window boundaries (for example a Friday pre-08:00 recovery run).
-        posts = self.github.contents_json("src/data/posts.json", "main")
-        if not isinstance(posts, list) or core.today_articles(posts, self.now.date()):
+        posts = self.posts_on_main("main")
+        if not isinstance(posts, list) or self._reconcile_existing_current_day_article(state, posts):
             return None
         slot = self.now.date().isoformat()
         open_prs = self.github.open_article_prs(slot)
@@ -306,16 +318,50 @@ class V5Controller(v4.V4Controller):
             return v4.legacy.BestEffortController._dispatch_budgeted(self, state, stage, workflow, inputs)
         return super()._dispatch_budgeted(state, stage, workflow, inputs)
 
-    def _article_source(self) -> dict[str, str] | None:
-        posts = self.github.contents_json("src/data/posts.json", "main")
-        if not isinstance(posts, list):
-            raise core.ControllerError("ARTICLE_SOURCE_INVALID")
-        todays = core.today_articles(posts, self.now.date())
+    def _article_source(self, state: dict[str, Any] | None = None) -> dict[str, str] | None:
+        if state is not None:
+            todays = self._reconcile_existing_current_day_article(state)
+        else:
+            todays = self.posts_for_cycle(self.now.date())
         if len(todays) != 1:
             return None
         return article_source_identity(todays[0])
 
-    def _adopt_existing_short(self, state: dict[str, Any], source: dict[str, str]) -> dict[str, Any] | None:
+    @staticmethod
+    def _short_dispatch_gate_error(
+        source: Any,
+        long_item: Any,
+    ) -> tuple[str, str] | None:
+        if not isinstance(source, dict):
+            return (
+                "SHORT_SOURCE_IDENTITY_MISSING",
+                "Short dispatch requires non-empty canonical slug and 64-hex content_sha256",
+            )
+        slug = str(source.get("slug") or "").strip()
+        sha = str(source.get("content_sha256") or "").strip()
+        if not slug or len(sha) != 64 or not all(ch in "0123456789abcdefABCDEF" for ch in sha):
+            return (
+                "SHORT_SOURCE_IDENTITY_MISSING",
+                "Short dispatch requires non-empty canonical slug and 64-hex content_sha256",
+            )
+        if not isinstance(long_item, dict) or not str(long_item.get("id") or "").strip():
+            return (
+                "SHORT_REQUIRES_VERIFIED_LONG_VIDEO",
+                "Short cannot be dispatched before exact-identity Long Video is public and verified",
+            )
+        if _source_identity(long_item) != (slug, sha):
+            return (
+                "SHORT_REQUIRES_VERIFIED_LONG_VIDEO",
+                "Short cannot be dispatched when Long Video source identity does not match exact slug and content_sha256",
+            )
+        if not core.verified_youtube_item(long_item, slug):
+            return (
+                "SHORT_REQUIRES_VERIFIED_LONG_VIDEO",
+                "Short cannot be dispatched before exact-identity Long Video is public and verified on YouTube",
+            )
+        return None
+
+    def _adopt_existing_short(self, state: dict[str, Any], source: dict[str, str], long_item: dict[str, Any] | None = None) -> dict[str, Any] | None:
         current_short = state.get("short") or {}
         if (
             current_short.get("status") == "complete"
@@ -377,20 +423,28 @@ class V5Controller(v4.V4Controller):
         )
 
     def _tick_short(self, state: dict[str, Any], source: dict[str, str], long_item: dict[str, Any]) -> core.Action:
-        existing = self._adopt_existing_short(state, source)
-        if existing:
-            core.transition(state, "complete", "article, long-form video and derivative Short verified public")
-            state["article"]["status"] = "complete"
-            state["image"]["status"] = "complete"
-            state["long_video"]["status"] = "complete"
-            state["short"]["status"] = "complete"
-            return core.Action("complete", "article + long-form + Short verified public")
+        if isinstance(source, dict) and source.get("slug") and source.get("content_sha256"):
+            existing = self._adopt_existing_short(state, source, long_item=long_item)
+            if existing:
+                core.transition(state, "complete", "article, long-form video and derivative Short verified public")
+                state["article"]["status"] = "complete"
+                state["image"]["status"] = "complete"
+                state["long_video"]["status"] = "complete"
+                state["short"]["status"] = "complete"
+                return core.Action("complete", "article + long-form + Short verified public")
+
+        gate_error = self._short_dispatch_gate_error(source, long_item)
+        if gate_error is not None:
+            code, message = gate_error
+            core.block(state, "short", code, message)
+            return core.Action("blocked", message)
 
         short_state = self.github.newest_short_state()
         exact = _exact_items(short_state, source)
         unresolved = [
             item for item in exact
             if item.get("uploaded") is not True
+            and not bool(str(item.get("youtube_id") or "").strip())
             and str(item.get("status") or "") in (core.ACTIVE_VIDEO_STATUSES | {"rejected"})
         ]
         if len(unresolved) > 1:
@@ -408,6 +462,69 @@ class V5Controller(v4.V4Controller):
             retry_at = state["short"].get("next_retry_at")
             core.transition(state, "short_retry_wait", "Short retry backoff is active", retry_at=retry_at)
             return core.Action("wait", f"Short retry scheduled for {retry_at}")
+
+        uploaded_unverified = [
+            item for item in exact
+            if (
+                item.get("uploaded") is True
+                or str(item.get("status") or "") == "uploaded"
+                or bool(str(item.get("youtube_id") or "").strip())
+            )
+            and not core.verified_youtube_item(item, source["slug"])
+        ]
+        if uploaded_unverified:
+            candidate = _newest(uploaded_unverified) or uploaded_unverified[-1]
+            if not bool(str(candidate.get("youtube_id") or "").strip()):
+                core.block(
+                    state,
+                    "short",
+                    "UPLOADED_SHORT_NOT_VERIFIED",
+                    "Short has uploaded status without youtube_id",
+                )
+                return core.Action("blocked", "uploaded Short requires reconciliation")
+            count = int(state["short"].get("attempt_count") or 0)
+            if count >= MAX_SHORT_DISPATCH_ATTEMPTS:
+                core.block(
+                    state,
+                    "short",
+                    "SHORT_ATTEMPTS_EXHAUSTED",
+                    f"Short exhausted {MAX_SHORT_DISPATCH_ATTEMPTS} derive/recovery dispatch attempts",
+                )
+                state["short"]["status"] = "exhausted"
+                return core.Action("blocked", "Short attempts exhausted")
+            inputs = {
+                "operation": "upload",
+                "derive_slug": source["slug"],
+                "derive_content_sha256": source["content_sha256"],
+                "derive_long_item_id": str(long_item.get("id") or ""),
+            }
+            core.GitHubClient.dispatch(self.github, SHORT_WORKFLOW, inputs)
+            state["short"].update({
+                "item_id": candidate.get("id"),
+                "attempt_count": count + 1,
+                "last_dispatch_at": core.utc_now(),
+                "next_retry_at": None,
+                "status": "running",
+                "youtube_id": candidate.get("youtube_id"),
+                "youtube_url": candidate.get("youtube_url"),
+                "verified": False,
+                "provider_id": candidate.get("task_id") or long_item.get("task_id"),
+                "artifact_id": candidate.get("artifact_id") or long_item.get("artifact_id"),
+                "source_id": candidate.get("source_id") or long_item.get("source_id"),
+                "adopted_from_long_item_id": candidate.get("adopted_from_long_item_id") or long_item.get("id"),
+            })
+            core.transition(
+                state,
+                "short_running",
+                "uploaded Short has youtube_id but lacks complete verification; re-verifying without regeneration",
+                item_id=candidate.get("id"),
+                youtube_id=candidate.get("youtube_id"),
+            )
+            return core.Action(
+                "dispatch_short_reverify",
+                "uploaded Short requires public verification without regeneration",
+                inputs,
+            )
 
         if unresolved:
             current_item = unresolved[0]
@@ -483,15 +600,22 @@ class V5Controller(v4.V4Controller):
 
     def tick(self) -> tuple[dict[str, Any], core.Action]:
         state = self.state()
-        article_watchdog_action = self._article_watchdog(state)
-        if article_watchdog_action is not None:
+        try:
+            article_watchdog_action = self._article_watchdog(state)
+            if article_watchdog_action is not None:
+                self.github.save_controller_state(state)
+                return state, article_watchdog_action
+            source = self._article_source(state)
+            if source is not None:
+                # Evidence-only migration: a matching V4 public Short is durable
+                # success even while the long-form stage is still missing.
+                self._adopt_existing_short(state, source)
+        except core.ControllerError as exc:
+            code = str(exc).split(":", 1)[0]
+            core.block(state, "controller", code, str(exc))
+            action = core.Action("blocked", str(exc))
             self.github.save_controller_state(state)
-            return state, article_watchdog_action
-        source = self._article_source()
-        if source is not None:
-            # Evidence-only migration: a matching V4 public Short is durable
-            # success even while the long-form stage is still missing.
-            self._adopt_existing_short(state, source)
+            return state, action
 
         state["video"] = state["long_video"]
         try:
@@ -522,6 +646,8 @@ class V5Controller(v4.V4Controller):
             self.github.save_controller_state(state)
             return state, action
 
+        if source is None:
+            source = self._article_source(state)
         if source is None:
             core.block(state, "controller", "ARTICLE_IDENTITY_UNAVAILABLE", "long-form completed but authoritative article identity is unavailable")
             action = core.Action("blocked", "article identity unavailable")
@@ -561,12 +687,206 @@ class V5Controller(v4.V4Controller):
         return state, action
 
 
+def v5_trigger_stage(workflow_name: str):
+    if workflow_name in {LONG_VIDEO_WORKFLOW_NAME, "Kesher Daily Video Overview"}:
+        return "long_video", LONG_VIDEO_WORKFLOW
+    if workflow_name in {SHORT_WORKFLOW_NAME, "Kesher Article Short V4"}:
+        return "short", SHORT_WORKFLOW
+    return v3.v3_trigger_stage(workflow_name)
+
+
+def v5_adopt_latest(github: Any, state: dict[str, Any] | None, cycle: str) -> bool:
+    changed = v3.v3_adopt_latest(github, state, cycle)
+    if not isinstance(state, dict) or state.get("cycle") != cycle:
+        return changed
+    for stage, workflow in (
+        ("long_video", LONG_VIDEO_WORKFLOW),
+        ("short", SHORT_WORKFLOW),
+    ):
+        stage_state = state.get(stage) if isinstance(state.get(stage), dict) else None
+        if not stage_state or not stage_state.get("last_dispatch_at"):
+            continue
+        try:
+            runs = github.workflow_runs(workflow)
+        except core.ControllerError:
+            continue
+        production = [
+            run for run in runs
+            if isinstance(run, dict) and str(run.get("event") or "") == "workflow_dispatch"
+        ]
+        candidate = v3.entry._nearest_dispatched_run(production, stage_state)
+        if candidate is None or v3.entry._same_id(stage_state.get("run_id"), candidate.get("id")):
+            continue
+        stage_state["run_id"] = candidate.get("id")
+        changed = True
+        print(
+            f"KESHER_DISPATCH_CORRELATED stage={stage} run_id={candidate.get('id')} cycle={cycle}",
+            flush=True,
+        )
+    if changed:
+        github.save_controller_state(state)
+    return changed
+
+
+
+def owner_pr_rehome_controller(base_controller):
+    """Wrap the stabilized run-now phase with exact prior-slot owner-PR adoption."""
+    if not hasattr(base_controller, "_run_now_article_phase"):
+        return base_controller
+
+    class OwnerPrRehomeController(base_controller):
+        @staticmethod
+        def _owner_canonical_id(state: dict[str, Any] | None) -> str:
+            active = (state or {}).get("active_idea") if isinstance(state, dict) else None
+            if not isinstance(active, dict):
+                return ""
+            brief = str(active.get("topic_brief") or "")
+            match = re.search(r"Canonical ID\s+נדרש\s*:\s*([A-Za-z0-9][A-Za-z0-9_-]*)", brief)
+            return match.group(1) if match else ""
+
+        def _exact_owner_open_article_prs(self, state: dict[str, Any]) -> list[tuple[dict[str, Any], str]]:
+            from scripts import kesher_article_contract as article_contract
+
+            active = state.get("active_idea") if isinstance(state, dict) else None
+            if not isinstance(active, dict):
+                return []
+            keyword = str(active.get("required_primary_keyword") or "").strip()
+            canonical_id = self._owner_canonical_id(state)
+            if not keyword or not canonical_id:
+                return []
+
+            api = str(getattr(self.github, "api", "") or "").strip()
+            if not api:
+                api = "https://api.github.com/repos/yanivsa/kesher-website"
+            try:
+                rows = self.github.request("GET", f"{api}/pulls?state=open&per_page=100")
+            except Exception as exc:
+                raise core.ControllerError("OWNER_ARTICLE_PR_INVENTORY_UNAVAILABLE") from exc
+            if not isinstance(rows, list):
+                raise core.ControllerError("OWNER_ARTICLE_PR_INVENTORY_INVALID")
+
+            expected_title = f"Publish Kesher article: {canonical_id}"
+            matches: list[tuple[dict[str, Any], str]] = []
+            for pr in rows:
+                if not isinstance(pr, dict) or str(pr.get("title") or "").strip() != expected_title:
+                    continue
+                if str((pr.get("base") or {}).get("ref") or "") != "main":
+                    raise core.ControllerError("OWNER_ARTICLE_PR_BASE_INVALID")
+                head = pr.get("head") or {}
+                if str((head.get("repo") or {}).get("full_name") or "") != "yanivsa/kesher-website":
+                    raise core.ControllerError("OWNER_ARTICLE_PR_REPOSITORY_INVALID")
+                head_sha = str(head.get("sha") or "").strip().lower()
+                if not re.fullmatch(r"[a-f0-9]{40}", head_sha):
+                    raise core.ControllerError("OWNER_ARTICLE_PR_HEAD_INVALID")
+                body_keyword = str(
+                    article_contract.exact_field(str(pr.get("body") or ""), "Primary Keyword") or ""
+                ).strip()
+                if body_keyword != keyword:
+                    raise core.ControllerError("OWNER_ARTICLE_PR_KEYWORD_MISMATCH")
+                try:
+                    head_posts = self.github.contents_json("src/data/posts.json", head_sha)
+                except Exception as exc:
+                    raise core.ControllerError("OWNER_ARTICLE_PR_IDENTITY_UNVERIFIED") from exc
+                if not isinstance(head_posts, list):
+                    raise core.ControllerError("OWNER_ARTICLE_PR_IDENTITY_UNVERIFIED")
+                candidates = [
+                    post for post in head_posts
+                    if isinstance(post, dict)
+                    and core.canonical_slug(post) == canonical_id
+                    and core.is_controller_adoptable_post(post)
+                ]
+                if len(candidates) != 1:
+                    raise core.ControllerError("OWNER_ARTICLE_PR_IDENTITY_MISMATCH")
+                source_slot = str(candidates[0].get("date") or "").strip()
+                try:
+                    from datetime import date
+                    date.fromisoformat(source_slot)
+                except ValueError as exc:
+                    raise core.ControllerError("OWNER_ARTICLE_PR_SOURCE_SLOT_INVALID") from exc
+                matches.append((pr, source_slot))
+            return matches
+
+        def _run_now_article_phase(self, state: dict[str, Any]):
+            if not self._run_now_active(state):
+                return super()._run_now_article_phase(state)
+            slot = self._run_now_slot(state)
+            if not slot:
+                raise core.ControllerError("IDEA_RUN_NOW_SLOT_INVALID")
+            try:
+                owner_prs = self._exact_owner_open_article_prs(state)
+            except core.ControllerError as exc:
+                code = str(exc).split(":", 1)[0]
+                core.block(state, "article", code, str(exc))
+                return core.Action("blocked", str(exc))
+            if len(owner_prs) > 1:
+                core.block(
+                    state, "article", "DUPLICATE_OWNER_ARTICLE_PRS",
+                    f"{len(owner_prs)} open article PRs match the exact run-now owner identity",
+                )
+                return core.Action("blocked", "duplicate exact owner article PRs")
+            if not owner_prs:
+                return super()._run_now_article_phase(state)
+
+            owner_pr, source_slot = owner_prs[0]
+            if source_slot == slot:
+                return self._handle_open_article_pr(state, owner_pr)
+            from datetime import date
+            if date.fromisoformat(source_slot) > date.fromisoformat(slot):
+                core.block(
+                    state, "article", "OWNER_ARTICLE_PR_SOURCE_SLOT_INVALID",
+                    f"owner article PR source slot {source_slot} is after target slot {slot}",
+                )
+                return core.Action("blocked", "owner article PR source slot is after target slot")
+
+            number = int(owner_pr.get("number") or 0)
+            head_sha = str((owner_pr.get("head") or {}).get("sha") or "").strip().lower()
+            article = state.setdefault("article", {})
+            article.update({
+                "pr_number": number,
+                "pr_url": owner_pr.get("html_url"),
+                "current_pr_head_sha": head_sha,
+                "normalization_slot": slot,
+                "owner_rehome_source_slot": source_slot,
+                "next_retry_at": None,
+                "status": "running",
+            })
+            active_normalizer = self.github.active_normalizer_run(number)
+            if active_normalizer:
+                article["normalization_status"] = "running"
+                article["normalization_run_id"] = active_normalizer.get("id")
+                core.transition(
+                    state, "article_normalizing", "exact owner PR rehome normalization already active",
+                    pr_number=number, source_slot=source_slot, publication_slot=slot,
+                )
+                return core.Action("wait", "exact owner PR rehome normalization active")
+
+            payload = {"pr_number": str(number), "slot": slot, "source_slot": source_slot}
+            self.github.dispatch("normalize-article-pr.yml", payload)
+            article.update({
+                "normalization_status": "running",
+                "normalization_dispatched_at": core.utc_now(),
+            })
+            core.transition(
+                state, "article_normalizing", "exact prior-slot owner PR dispatched for trusted rehome",
+                pr_number=number, source_slot=source_slot, publication_slot=slot,
+            )
+            return core.Action(
+                "dispatch_normalize", "exact owner PR rehomed instead of starting another Jules article", payload
+            )
+
+    OwnerPrRehomeController.__name__ = base_controller.__name__
+    OwnerPrRehomeController.__qualname__ = base_controller.__qualname__
+    return OwnerPrRehomeController
+
+
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     core.STATE_SCHEMA_VERSION = STATE_SCHEMA_VERSION
     core.GitHubClient = V5GitHubClient
-    core.Controller = V5Controller
-    v3.entry._trigger_stage = v3.v3_trigger_stage
-    v3.entry.adopt_latest_dispatched_children = v3.v3_adopt_latest
+    core.Controller = owner_pr_rehome_controller(V5Controller)
+    v3.entry._trigger_stage = v5_trigger_stage
+    v3.entry.adopt_latest_dispatched_children = v5_adopt_latest
     return v3.entry.main()
 
 

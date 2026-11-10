@@ -1,0 +1,106 @@
+{
+  "validated_implementation_sha": "1bd4c260e1fac3d9f1eb6541a0d92798d54304c3",
+  "base_main_sha": "9947d0c67a86caa047d3c91d6bf33d9b1b68f0f2",
+  "completed_at": "2026-10-04T18:16:24.416541+00:00",
+  "all_required_code_gates_passed": true,
+  "no_current_failures_waived": true,
+  "counts": {
+    "full_python": 1198,
+    "new_cutover_tests": 28,
+    "independent_affected": 139,
+    "video_policy": 217,
+    "controller": 499,
+    "vitest": 152,
+    "browser": 140,
+    "build_routes": 130,
+    "content_posts": 98,
+    "synthetic_renders": 2,
+    "lint_errors": 0,
+    "configured_ignore_lint_warnings": 17,
+    "expected_duplicate_zip_warnings": 2,
+    "full_python_xml_cases_including_subtests": 1737
+  },
+  "gates": [
+    {
+      "name": "actionlint",
+      "exit_code": 0,
+      "seconds": 0.118,
+      "log": "reconciled-actionlint.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "compile",
+      "exit_code": 0,
+      "seconds": 2.458,
+      "log": "reconciled-compile.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "diff-check",
+      "exit_code": 0,
+      "seconds": 0.159,
+      "log": "reconciled-diff-check.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "full-python",
+      "command": "python -m pytest tests --junitxml=reconciled-full-python.xml",
+      "exit_code": 0,
+      "log": "reconciled-full-python.log",
+      "log_sha256": "82b59f23ec88e1496c9f8bed3f6008eaee9d4d812abea9bd01759d80fd1e8c82"
+    },
+    {
+      "name": "full-quality",
+      "command": "npm run check",
+      "exit_code": 0,
+      "log": "reconciled-npm-check.log",
+      "log_sha256": "cc98ffabf5c4d6ff1938b87d692a4aa39b87d492b38ce1842945f68e1238430e"
+    },
+    {
+      "name": "synthetic-renders",
+      "command": "python tests/real_media_render.py --output PRIVATE_SYNTHETIC_DIRECTORY",
+      "exit_code": 0,
+      "log": "real-render.log",
+      "log_sha256": "e170845c8ac3f14ec152999e9f6ea1797631bfb2fd324639c5504f9665dffd6a"
+    }
+  ],
+  "execution_manifest": "production-cutover-validation-inputs-20261004.json",
+  "execution_manifest_sha256": "83059bc13a206e76fa63245e0b91aee6e745a2b1838d2c2b222ed96631bd057d",
+  "synthetic_media_evidence": {
+    "environment": "synthetic",
+    "scope": "render contract only; no provider or public delivery proof",
+    "renders": [
+      {
+        "kind": "overview",
+        "duration": 4.0,
+        "signature_duration": 3.0,
+        "final_sha256": "7d41214fc8b6ceba9b5ed8d6c7bb8b4786c290d301733d2c1d2e6298bd7ac73d",
+        "signature_verified": true,
+        "cache_verified": true,
+        "decoded_audio_identical": true,
+        "audio_packet_sha256": "e31c3afb9716179fc026ec3f3295fa2785866017e5a8da693248b1fc27662746"
+      },
+      {
+        "kind": "short",
+        "duration": 2.0,
+        "signature_duration": 2.0,
+        "final_sha256": "05b1ce9c0de19231548b4c21a0001df00b2189d1b1913199f65fde8952d713cd",
+        "signature_verified": true,
+        "cache_verified": true,
+        "decoded_audio_identical": true,
+        "audio_packet_sha256": "b74cbb2ae502fe316a11c6a4ef2155e8af050d02e4f95a215109afa9d9159140"
+      }
+    ]
+  },
+  "render_scope": "Actual root production compositions with synthetic media, exact audio/signature/cache verification; no provider/public-delivery proof. Renderer, source media pipeline and native sharpness bytes unchanged by late-main reconciliation.",
+  "failure_history": "Red missing adapters, endpoint trust-root/retirement-allowlist regressions, exact dynamic system run identity and callable supplier tests retained. Preexisting stale-main native/bridge policy hashes and retained-count expectations were independently reviewed and repaired. Intermediate full-matrix failures were not waived; fixture expectations and post-reconciliation pins were corrected, then the complete final matrix reran.",
+  "logs_archive": {
+    "path": "production-cutover-validation-logs-20261004.tar.gz",
+    "sha256": "198630c5f08559c34f16377f8a49f1af6e8a20ea0e8a139326238baa2afc84d0",
+    "members": 39
+  },
+  "production_state_written": false,
+  "production_activated": false,
+  "public_completion_inferred": false,
+  "production_cutover_ready": false
+}

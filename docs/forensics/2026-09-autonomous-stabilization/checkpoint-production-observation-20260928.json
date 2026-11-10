@@ -1,0 +1,62 @@
+{
+  "observed_at": "2026-09-28T05:32:35.361061+00:00",
+  "main_sha": "d3c2304a50b4ede77c9a101fa260ed18e7b32f6b",
+  "controller_blob_sha": "25663278a78b0a217d1f629e575e00f35917ed7b",
+  "schema_version": 5,
+  "cycle": "2026-09-28",
+  "status": "article_pr_open",
+  "workflow_count": 96,
+  "active_workflow_count": 96,
+  "relevant_workflows": [
+    {
+      "id": 351384285,
+      "name": "Kesher Content Controller V6 Shadow",
+      "path": ".github/workflows/kesher-content-controller-v6.yml",
+      "state": "active"
+    },
+    {
+      "id": 337960554,
+      "name": "Kesher Content Controller",
+      "path": ".github/workflows/kesher-content-controller.yml",
+      "state": "active"
+    },
+    {
+      "id": 331086666,
+      "name": "Kesher Daily NotebookLM Video Overview",
+      "path": ".github/workflows/kesher-daily-video.yml",
+      "state": "active"
+    },
+    {
+      "id": 359150275,
+      "name": "Kesher Master Supervisor",
+      "path": ".github/workflows/kesher-master-supervisor.yml",
+      "state": "active"
+    },
+    {
+      "id": 349292838,
+      "name": "Kesher Daily Article Short V4",
+      "path": ".github/workflows/kesher-short-v4.yml",
+      "state": "active"
+    }
+  ],
+  "entrypoints": [
+    {
+      "path": ".github/workflows/kesher-content-controller.yml",
+      "blob_sha": "961d7ef4ca40ca66c3509158b4480a008be6fa64",
+      "script_paths": [
+        "scripts/kesher_content_controller_stabilized.py"
+      ],
+      "canonical_runtime_referenced": false
+    },
+    {
+      "path": ".github/workflows/kesher-master-supervisor.yml",
+      "blob_sha": "a12d7a5c69d3bc8eb014ac0a8e85885ffd07d755",
+      "script_paths": [
+        "scripts/kesher_master_supervisor_live.py"
+      ],
+      "canonical_runtime_referenced": false
+    }
+  ],
+  "mutations_performed": false,
+  "scope": "Read-only authority observation. No migration replay, live mutation, or public product completion inferred."
+}

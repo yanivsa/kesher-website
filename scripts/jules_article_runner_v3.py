@@ -60,19 +60,21 @@ def configure_test_session_identity(slot: str) -> None:
 
 
 def _load_local_posts() -> list[dict[str, Any]]:
-    posts_path = Path("src/data/posts.json")
-    if not posts_path.is_file():
-        raise core.ArticleRunnerError("ARTICLE_SOURCE_ERROR", "src/data/posts.json is missing")
+    from scripts.kesher_daily_pipeline import combine_post_catalogs, PipelineError
     try:
-        posts = json.loads(posts_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise core.ArticleRunnerError("ARTICLE_SOURCE_ERROR", "src/data/posts.json is invalid JSON") from exc
-    if not isinstance(posts, list):
-        raise core.ArticleRunnerError("ARTICLE_SOURCE_ERROR", "src/data/posts.json is not a list")
-    return posts
+        historical = json.loads(Path("src/data/posts.json").read_text(encoding="utf-8"))
+        recent = json.loads(Path("src/data/postsRecent.json").read_text(encoding="utf-8"))
+        return combine_post_catalogs(historical, recent)
+    except (OSError, ValueError, PipelineError) as exc:
+        raise core.ArticleRunnerError("ARTICLE_SOURCE_ERROR", "publication catalogs are unavailable or invalid") from exc
 
 
-def _posts_for_pr_head(token: str, pr: dict[str, Any]) -> list[dict[str, Any]]:
+def _posts_for_pr_head(
+    token: str,
+    pr: dict[str, Any],
+    *,
+    posts_blob_sha: str | None = None,
+) -> list[dict[str, Any]]:
     head = pr.get("head") if isinstance(pr.get("head"), dict) else {}
     head_sha = str(head.get("sha") or "").strip()
     number = pr.get("number")
@@ -89,6 +91,18 @@ def _posts_for_pr_head(token: str, pr: dict[str, Any]) -> list[dict[str, Any]]:
         f"https://api.github.com/repos/{core.REPO}/contents/src/data/posts.json?ref={encoded_ref}",
         headers,
     )
+    if not (
+        isinstance(payload, dict)
+        and payload.get("encoding") == "base64"
+        and payload.get("content")
+    ):
+        blob_sha = str(posts_blob_sha or (payload.get("sha") if isinstance(payload, dict) else "") or "").strip()
+        if blob_sha:
+            payload = core.request_json(
+                "GET",
+                f"https://api.github.com/repos/{core.REPO}/git/blobs/{urllib.parse.quote(blob_sha, safe='')}",
+                headers,
+            )
     if not isinstance(payload, dict) or payload.get("encoding") != "base64" or not payload.get("content"):
         raise core.ArticleRunnerError(
             "ARTICLE_PR_INSPECTION_ERROR",
@@ -135,15 +149,21 @@ def open_article_prs_for_slot(token: str, slot: str) -> list[dict[str, Any]]:
             f"https://api.github.com/repos/{core.REPO}/pulls/{number}/files?per_page=100",
             headers,
         )
-        if not (
-            isinstance(files, list)
-            and any(
-                isinstance(row, dict) and row.get("filename") == "src/data/posts.json"
+        posts_file = next(
+            (
+                row
                 for row in files
-            )
-        ):
+                if isinstance(row, dict) and row.get("filename") == "src/data/posts.json"
+            ),
+            None,
+        ) if isinstance(files, list) else None
+        if posts_file is None:
             continue
-        head_posts = _posts_for_pr_head(token, pr)
+        head_posts = _posts_for_pr_head(
+            token,
+            pr,
+            posts_blob_sha=str(posts_file.get("sha") or "").strip() or None,
+        )
         if core.article_exists_for_slot(head_posts, slot):
             matches.append(pr)
     return matches

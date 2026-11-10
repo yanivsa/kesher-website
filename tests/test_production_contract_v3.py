@@ -10,6 +10,7 @@ from scripts.kesher_automation_policy import POLICY_PATH, load_policy
 ROOT = Path(__file__).resolve().parents[1]
 LEGACY_POLICY = ROOT / "config" / "kesher-automation-policy.json"
 VIDEO_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
+VIDEO_ADVISORY_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-video-advisory-review.yml"
 VIDEO_REVIEW_POLICY = ROOT / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
 ARTICLE_POLICY = ROOT / ".github" / "prompts" / "jules-weekday-article-update.md"
 ARTICLE_PR_CONTROLLER_V3 = ROOT / ".github" / "scripts" / "article-pr-controller-v3.py"
@@ -74,7 +75,7 @@ class ProductionContractV3Tests(unittest.TestCase):
             self.assertNotIn("PIXABAY_API_KEY:", job_header)
             self.assertIn("PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}", workflow)
             self.assertIn("PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}", workflow)
-            self.assertIn('KESHER_BROLL_ENABLED: "true"', workflow)
+            self.assertIn('KESHER_BROLL_ENABLED: "false"', workflow)
             self.assertIn('KESHER_BROLL_BUDGET_SECONDS: "12"', workflow)
 
     def test_image_stage_is_publication_blocking_with_guaranteed_local_fallback(self) -> None:
@@ -125,7 +126,7 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertIn('IMAGE_TERMINAL_STATES = {"complete", "deferred"}', controller)
         self.assertIn("image_was_terminal", controller)
         self.assertIn("merge_dispatch_at", controller)
-        self.assertIn("self.github.dispatch(AUTO_MERGE_WORKFLOW)", controller)
+        self.assertIn("self.github.dispatch(AUTO_MERGE_WORKFLOW, inputs)", controller)
 
     def test_legacy_policy_is_not_the_runtime_policy(self) -> None:
         self.assertNotEqual(POLICY_PATH, LEGACY_POLICY)
@@ -143,9 +144,15 @@ class ProductionContractV3Tests(unittest.TestCase):
         for text in forbidden:
             self.assertNotIn(text.lower(), workflow.lower())
             self.assertNotIn(text.lower(), review_policy.lower())
+        advisory = VIDEO_ADVISORY_WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("Prepare technically verified upload", workflow)
         self.assertIn("Upload exact technically verified MP4", workflow)
-        self.assertIn("Jules performs strict advisory review", workflow)
+        self.assertIn("Dispatch strict advisory Jules review", workflow)
+        self.assertNotIn("Jules performs strict advisory review", workflow)
+        self.assertNotIn("scripts/jules_video_reviewer_v3.py", workflow)
+        self.assertIn("Jules performs strict advisory review", advisory)
+        self.assertIn("scripts/jules_video_reviewer_v3.py", advisory)
+        self.assertIn("Validate exact advisory evidence identity", advisory)
 
 
     def test_video_upload_workflow_enforces_exact_identity_lock(self) -> None:
@@ -155,7 +162,7 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertIn("id: prepare_upload", workflow)
         self.assertIn("KESHER_REQUESTED_TARGET_SLUG: ${{ inputs.target_slug }}", workflow)
         self.assertIn("KESHER_REQUESTED_TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}", workflow)
-        self.assertIn("KESHER_REQUESTED_TARGET_ITEM_ID: ${{ inputs.target_item_id }}", workflow)
+        self.assertIn("KESHER_REQUESTED_TARGET_ITEM_ID: ${{ inputs.target_item_id || env.TARGET_ITEM_ID }}", workflow)
         self.assertIn("KESHER_EXACT_UPLOAD_REQUIRED: ${{ inputs.operation == 'upload' }}", workflow)
         self.assertIn("steps.prepare_upload.outputs.ready == 'true'", workflow)
         self.assertIn("EXACT_UPLOAD_IDENTITY_OK", workflow)
@@ -172,7 +179,10 @@ class ProductionContractV3Tests(unittest.TestCase):
         workflow = SHORT_WORKFLOW_V4.read_text(encoding="utf-8")
         self.assertIn("npm ci --prefix remotion-kesher --no-audit --no-fund", workflow)
         self.assertIn("test -x remotion-kesher/node_modules/.bin/remotion", workflow)
-        self.assertIn("- remotion-kesher/**", workflow)
+        import yaml
+        triggers=yaml.safe_load(workflow)['on'] if 'on' in yaml.safe_load(workflow) else yaml.safe_load(workflow)[True]
+        self.assertEqual(set(triggers),{'workflow_dispatch'})
+        self.assertIn('scripts.kesher_runtime.bridge_admission',workflow)
 
     def test_short_remotion_composition_is_full_hd_portrait(self) -> None:
         root = (ROOT / "remotion-kesher" / "src" / "Root.tsx").read_text(encoding="utf-8")

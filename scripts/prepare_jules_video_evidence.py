@@ -12,9 +12,9 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from kesher_daily_pipeline import REVIEW_FRAME_COUNT
+    from kesher_daily_pipeline import REVIEW_FRAME_COUNT, PipelineError, existing_item
 except ImportError:
-    from scripts.kesher_daily_pipeline import REVIEW_FRAME_COUNT
+    from scripts.kesher_daily_pipeline import REVIEW_FRAME_COUNT, PipelineError, existing_item
 
 
 class EvidenceError(RuntimeError):
@@ -54,15 +54,17 @@ def copy_verified(
     shutil.copy2(source, destination)
 
 
-def prepare(state_dir: Path, output_dir: Path) -> dict[str, Any]:
+def prepare(state_dir: Path, output_dir: Path, item_id: str | None = None) -> dict[str, Any]:
     state_path = state_dir / "state.json"
     if not state_path.is_file():
         raise EvidenceError("state.json is missing")
     state = json.loads(state_path.read_text(encoding="utf-8"))
-    pending = [item for item in state.get("items", []) if item.get("status") == "pending_review"]
-    if len(pending) != 1:
-        raise EvidenceError(f"Expected one pending item, found {len(pending)}")
-    item = pending[0]
+    try:
+        item = existing_item(state, item_id, kind='overview')
+    except PipelineError as exc:
+        raise EvidenceError(str(exc)) from exc
+    if item.get('status') != 'pending_review':
+        raise EvidenceError('Exact requested item is not pending review')
     if item.get("technical_verified") is not True:
         raise EvidenceError("Pending item is not technically verified")
 
@@ -108,9 +110,10 @@ def prepare(state_dir: Path, output_dir: Path) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--state-dir", required=True, type=Path)
+    parser.add_argument("--item-id", required=True)
     parser.add_argument("--output-dir", required=True, type=Path)
     args = parser.parse_args()
-    item = prepare(args.state_dir, args.output_dir)
+    item = prepare(args.state_dir, args.output_dir, args.item_id)
     print(f"JULES_EVIDENCE_PREPARED item={item['id']} output={args.output_dir}")
     return 0
 

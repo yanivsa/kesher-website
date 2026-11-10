@@ -24,6 +24,7 @@ class DummyGithub:
         self.normalize_active = None
         self.image_ready = False
         self.image_evidence = {}
+        self.image_rebindable = False
 
     def load_controller_state(self):
         return copy.deepcopy(self.saved)
@@ -39,6 +40,9 @@ class DummyGithub:
 
     def article_pr_image_ready(self, pr):
         return self.image_ready, copy.deepcopy(self.image_evidence)
+
+    def article_pr_image_rebindable(self, pr):
+        return self.image_rebindable, copy.deepcopy(self.image_evidence)
 
     def active_image_run(self, pr_number):
         return None
@@ -75,6 +79,27 @@ class PipelineV4Tests(unittest.TestCase):
         self.assertEqual(args[1], v4.NORMALIZE_WORKFLOW)
         self.assertEqual(args[2], {"pr_number": "77", "slot": "2026-09-03"})
         self.assertEqual(state["image"]["attempt_count"], 0)
+
+    def test_image_evidence_rebind_does_not_consume_fourth_generation_attempt(self):
+        github = DummyGithub()
+        github.image_rebindable = True
+        controller = self.make(github)
+        state = self.state()
+        state["image"]["attempt_count"] = 3
+        pr = {
+            "number": 88,
+            "html_url": "https://example.test/pr/88",
+            "head": {"sha": "b" * 40},
+        }
+        with mock.patch.object(core.GitHubClient, "dispatch", autospec=True) as dispatch:
+            action = controller._handle_open_article_pr(state, pr)
+        self.assertEqual(action.kind, "dispatch_image_rebind")
+        self.assertEqual(state["image"]["attempt_count"], 3)
+        self.assertEqual(state["image"]["evidence_rebind_head_sha"], "b" * 40)
+        dispatch.assert_called_once()
+
+        with self.assertRaises(v3.StageAttemptsExhausted):
+            controller._handle_open_article_pr(state, pr)
 
     def test_image_exhaustion_is_not_deferred_in_v4(self):
         github = DummyGithub()

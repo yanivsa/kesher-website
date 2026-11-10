@@ -10,6 +10,9 @@ part of this pipeline.
 from __future__ import annotations
 
 import argparse
+import base64
+import copy
+import fcntl
 import hashlib
 import html
 import importlib.metadata
@@ -21,10 +24,13 @@ import struct
 import subprocess
 import sys
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from datetime import date, datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 from zoneinfo import ZoneInfo
 
 import requests
@@ -40,14 +46,17 @@ try:
     from motion_plan_generator import generate_motion_plan
     from kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
     from kesher_free_stock_broll import provider_credit_lines
+    from kesher_runtime.verification import VerificationError, match_youtube_metadata, publication_metadata
 except ImportError:
     from scripts.motion_plan_generator import generate_motion_plan
     from scripts.kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
     from scripts.kesher_free_stock_broll import provider_credit_lines
+    from scripts.kesher_runtime.verification import VerificationError, match_youtube_metadata, publication_metadata
 
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
 STATE_DIR = Path(os.environ.get("KESHER_STATE_DIR", PROJECT_DIR / "notebooklm-output" / "cloud"))
 STATE_FILE = STATE_DIR / "state.json"
+STATE_LOCK_FILE = STATE_FILE.with_name(STATE_FILE.name + ".lock")
 NOTEBOOK_ID = os.environ.get("KESHER_NOTEBOOK_ID", "e101e7d7-5305-45b3-a611-21a5475ceb63")
 NOTEBOOKLM_BIN = os.environ.get("NOTEBOOKLM_BIN", "notebooklm")
 NOTEBOOKLM_REQUIRED_VERSION = "0.8.0"
@@ -105,8 +114,26 @@ def sha256_text(value: str) -> str:
 def atomic_json_write(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    with open(temporary, "w", encoding="utf-8") as handle:
+        handle.write(json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
     os.replace(temporary, path)
+
+
+def _read_state_payload(path: Path) -> dict[str, Any] | None:
+    if not path.is_file():
+        return None
+    try:
+        content = path.read_text(encoding="utf-8").strip()
+        if not content:
+            return None
+        payload = json.loads(content)
+        if isinstance(payload, dict):
+            return payload
+    except (OSError, json.JSONDecodeError):
+        pass
+    return None
 
 
 def load_state() -> dict[str, Any]:
@@ -122,8 +149,49 @@ def load_state() -> dict[str, Any]:
 
 
 def save_state(state: dict[str, Any]) -> None:
-    state["updated_at"] = utc_now()
-    atomic_json_write(STATE_FILE, state)
+    from scripts.kesher_runtime.media_state import CanonicalMediaState
+    if isinstance(state, CanonicalMediaState):
+        state.persist()
+        return
+
+    lock_path = STATE_FILE.with_name(STATE_FILE.name + ".lock")
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(lock_path, "a+", encoding="utf-8") as lock_file:
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+        try:
+            # 1. READ CURRENT STATE (inside lock)
+            # Legacy snapshots may be restored by a later controller cycle. A stale
+            # snapshot must never erase or decrement an already persisted attempt.
+            if STATE_FILE.exists():
+                previous = _read_state_payload(STATE_FILE)
+                if previous is not None:
+                    prev_rev = int(previous.get("state_revision", 1))
+                    curr_rev = int(state.get("state_revision", 1))
+                    if curr_rev < prev_rev:
+                        raise PipelineError(f"STALE_SNAPSHOT_REGRESSION: incoming state_revision {curr_rev} < persisted {prev_rev}")
+                    prev_fw = previous.get("fallback_winner")
+                    if prev_fw and prev_fw.get("fallback_committed") is True:
+                        curr_fw = state.get("fallback_winner")
+                        if not curr_fw or curr_fw.get("winner_item_id") != prev_fw.get("winner_item_id"):
+                            raise PipelineError(f"STALE_SNAPSHOT_REGRESSION: cannot overwrite committed fallback winner {prev_fw.get('winner_item_id')}")
+                    incoming = {row.get('id'): row for row in state.get('items', [])}
+                    for prior in previous.get('items', []):
+                        attempt = prior.get('fresh_generation_attempt', 1)
+                        if type(attempt) is not int or attempt < 1:
+                            continue  # release tombstones are not generation attempts
+                        current = incoming.get(prior.get('id'))
+                        if current is None and (attempt > 1 or prior.get('retry_of')):
+                            raise PipelineError('FRESH_GENERATION_ATTEMPT_REGRESSION: receipt missing')
+                        if current is not None and (type(current.get('fresh_generation_attempt',1)) is not int or current.get('fresh_generation_attempt',1) < attempt):
+                            raise PipelineError('FRESH_GENERATION_ATTEMPT_REGRESSION: stale item')
+            # 2. WRITE NEW STATE (inside lock)
+            state["updated_at"] = utc_now()
+            atomic_json_write(STATE_FILE, state)
+        finally:
+            try:
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+            except OSError:
+                pass
 
 
 def clean_article_html(value: str) -> str:
@@ -236,7 +304,7 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
     )
     require_hebrew(description, "description", allow_url=True)
     validate_youtube_description_links(description, canonical_url)
-    return {
+    source = {
         "id": str(post["id"]),
         "slug": slug,
         "title": title,
@@ -261,14 +329,45 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
             "tags": short_tags,
         },
     }
+    try:
+        source["youtube_metadata"] = publication_metadata(source, "overview")
+        source["short_youtube_metadata"] = publication_metadata(source, "short")
+    except VerificationError as exc:
+        raise PipelineError(str(exc)) from exc
+    require_hebrew(source["youtube_metadata"]["description"], "description", allow_url=True)
+    return source
+
+
+def load_posts() -> list[dict[str, Any]]:
+    if not POSTS_FILE.exists():
+        raise PipelineError(f"Article source does not exist: {POSTS_FILE}")
+    try:
+        historical = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
+        recent_file = POSTS_FILE.with_name("postsRecent.json")
+        recent = json.loads(recent_file.read_text(encoding="utf-8")) if recent_file.exists() else []
+    except (OSError, json.JSONDecodeError) as exc:
+        raise PipelineError(f"Article source is unreadable: {type(exc).__name__}") from exc
+    return combine_post_catalogs(historical, recent)
+
+
+def combine_post_catalogs(historical: Any, recent: Any) -> list[dict[str, Any]]:
+    """The shared publication catalog contract for local and exact Git readers."""
+    if not isinstance(historical, list) or not isinstance(recent, list):
+        raise PipelineError("Article catalogs must contain lists")
+    combined = [*recent, *historical]
+    seen: set[str] = set()
+    for post in combined:
+        key = str(post.get("slug") or post.get("id") or "").strip() if isinstance(post, dict) else ""
+        if not key:
+            raise PipelineError("Article catalog contains an item without identity")
+        if key in seen:
+            raise PipelineError(f"Duplicate article identity across catalogs: {key}")
+        seen.add(key)
+    return combined
 
 
 def select_newest_unused_article(state: dict[str, Any]) -> dict[str, Any]:
-    if not POSTS_FILE.exists():
-        raise PipelineError(f"Article source does not exist: {POSTS_FILE}")
-    posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
-    if not isinstance(posts, list):
-        raise PipelineError("posts.json must contain a list")
+    posts = load_posts()
     used_hashes = {item.get("source", {}).get("content_sha256") for item in state["items"]}
     used_slugs = {item.get("source", {}).get("slug") for item in state["items"]}
     today = israel_now().date()
@@ -288,11 +387,7 @@ def select_newest_unused_article(state: dict[str, Any]) -> dict[str, Any]:
 
 
 def article_by_slug(slug: str) -> dict[str, Any]:
-    if not POSTS_FILE.exists():
-        raise PipelineError(f"Article source does not exist: {POSTS_FILE}")
-    posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
-    if not isinstance(posts, list):
-        raise PipelineError("posts.json must contain a list")
+    posts = load_posts()
     for post in posts:
         target = str(post.get("slug") or post.get("id") or "").strip()
         if target == slug:
@@ -373,6 +468,28 @@ def nested_identifier(payload: Any, keys: tuple[str, ...]) -> str | None:
     return None
 
 
+def prune_notebooklm_sources(notebook_id: str, keep_count: int = 35) -> None:
+    """Ensure NotebookLM notebook does not exceed Google's hard 50-source quota."""
+    try:
+        payload = run_notebooklm(["source", "list", "--notebook", notebook_id], timeout=120)
+        sources = payload.get("sources") if isinstance(payload, dict) else None
+        if not isinstance(sources, list) or len(sources) <= keep_count:
+            return
+        excess = len(sources) - keep_count
+        print(f"NOTEBOOKLM_CAPACITY_MANAGEMENT: total_sources={len(sources)} pruning_excess={excess}")
+        for src in sources[:excess]:
+            sid = src.get("id") or src.get("source_id")
+            if not sid:
+                continue
+            try:
+                run_notebooklm(["source", "delete", sid, "-y", "--notebook", notebook_id], timeout=60)
+                print(f"NOTEBOOKLM_PRUNED_SOURCE: source_id={sid}")
+            except Exception as err:
+                print(f"WARN: failed to delete source {sid}: {err}")
+    except Exception as exc:
+        print(f"WARN: prune_notebooklm_sources failed: {exc}")
+
+
 def auth_preflight() -> dict[str, Any]:
     try:
         version = importlib.metadata.version("notebooklm-py")
@@ -410,15 +527,26 @@ def generation_prompt(source: dict[str, Any]) -> str:
     return prompt
 
 
+def is_recovery_mode() -> bool:
+    if (os.environ.get("KESHER_RECOVERY_MODE") or "").lower().strip() in {"true", "1", "yes"}:
+        return True
+    if (os.environ.get("OPERATION") or "").lower().strip() in {"recovery", "reconcile"}:
+        return True
+    return False
+
+
 def new_item(source: dict[str, Any]) -> dict[str, Any]:
+    if is_recovery_mode():
+        raise PipelineError("RECOVERY_MODE_VIOLATION: new_item forbidden in same-identity recovery mode")
     stamp = israel_now().strftime("%Y%m%d-%H%M%S")
     return {
         "id": f"video-{stamp}-{source['content_sha256'][:10]}",
         "type": "video_overview",
         "voice_constraint_version": VOICE_CONSTRAINT_VERSION,
+        "fresh_generation_attempt": 1,
         "israel_date": israel_now().date().isoformat(),
         "status": "source_selected",
-        "source": {key: value for key, value in source.items() if key not in {"body", "youtube_metadata"}},
+        "source": {key: value for key, value in source.items() if key != "body"},
         "youtube_metadata": source["youtube_metadata"],
         "notebook_id": NOTEBOOK_ID,
         "source_id": None,
@@ -444,6 +572,39 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def existing_item(state: dict[str, Any], item_id: str | None = None,
+                  slug: str | None = None, content_sha256: str | None = None,
+                  *, kind: str | None = None, generation_attempt: int | None = None) -> dict[str, Any]:
+    from scripts.kesher_runtime.media_state import CanonicalMediaState, exact_item
+    from scripts.kesher_runtime.state import StateInvalid
+    target_id = (item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
+    target_slug = (slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
+    target_sha = (content_sha256 or os.environ.get("TARGET_CONTENT_SHA256") or "").strip()
+    requested_attempt = os.environ.get("TARGET_GENERATION_ATTEMPT", "").strip()
+    if generation_attempt is None and requested_attempt:
+        if not requested_attempt.isdecimal() or int(requested_attempt) < 1:
+            raise PipelineError('EXACT_MEDIA_IDENTITY_MISMATCH: invalid generation attempt')
+        generation_attempt = int(requested_attempt)
+    if isinstance(state, CanonicalMediaState):
+        kind = kind or state.context.target.kind
+        target_slug = target_slug or state.context.target.source.slug
+        target_sha = target_sha or state.context.target.source.content_sha256
+    else:
+        env_mode = os.environ.get("KESHER_MEDIA_MODE")
+        if kind is None and env_mode:
+            kind = {"article_short": "short", "video_overview": "overview"}.get(env_mode)
+        if kind is None and target_id and isinstance(state.get("items"), list):
+            matches = [i for i in state["items"] if isinstance(i, dict) and str(i.get("id") or "").strip() == target_id]
+            if len(matches) == 1:
+                kind = {"article_short": "short", "video_overview": "overview"}.get(matches[0].get("type"))
+        kind = kind or "overview"
+    try:
+        return exact_item(state, target_id, slug=target_slug, content_sha256=target_sha,
+                          kind=kind, generation_attempt=generation_attempt)
+    except StateInvalid as exc:
+        raise PipelineError(str(exc)) from exc
+
+
 def active_item(
     state: dict[str, Any],
     slug: str | None = None,
@@ -451,30 +612,39 @@ def active_item(
 ) -> dict[str, Any] | None:
     target_slug = (slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
     target_item_id = (item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
+    if target_item_id:
+        # Missing/terminal exact items may never fall through to new generation.
+        return existing_item(state, target_item_id, target_slug)
     active_statuses = {"source_selected", "source_added", "generating", "downloaded", "pending_review", "approved", "uploading"}
+    media_type = os.environ.get("KESHER_MEDIA_MODE") or "video_overview"
+    if media_type not in {'video_overview', 'article_short'}:
+        raise PipelineError('EXACT_MEDIA_IDENTITY_MISMATCH: unknown media kind')
+    if any(not item.get('uploaded') and item.get('status') in active_statuses
+           and item.get('type') not in {'video_overview', 'article_short'}
+           and (not target_slug or (item.get('source') or {}).get('slug') == target_slug)
+           for item in state['items']):
+        raise PipelineError('EXACT_MEDIA_IDENTITY_MISMATCH: unclassified active artifact; refusing duplicate generation')
     matches = [
         item for item in state["items"]
-        if not item.get("uploaded") and (
+        if item.get("type") == media_type and not item.get("uploaded") and (
             item.get("status") in active_statuses
             or (item.get("status") == "rejected" and item.get("technical_verified") is True)
         )
+        and (not target_slug or (item.get("source") or {}).get("slug") == target_slug)
     ]
-    if target_item_id:
-        scoped = [item for item in matches if item.get("id") == target_item_id]
-        return scoped[0] if scoped else None
-    if target_slug:
-        scoped = [
-            item for item in matches
-            if str((item.get("source") or {}).get("slug") or (item.get("source") or {}).get("id") or "").strip() == target_slug
-        ]
-        return scoped[0] if scoped else None
     if len(matches) > 1:
-        raise PipelineError("More than one active video exists; refusing duplicate work")
-    return matches[0] if matches else None
+        raise PipelineError("More than one active video exists; EXACT_MEDIA_ITEM_ID_REQUIRED: supply the initiating item ID")
+    return existing_item(state, matches[0]['id'], target_slug) if matches else None
+
+
+def export_item_target(item: dict[str, Any]) -> None:
+    # Export the creation/resume result for later workflow steps, not a list query.
+    from scripts.kesher_video_reconcile import export_target
+    export_target(item)
 
 
 def article_body_for_item(item: dict[str, Any]) -> str:
-    posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
+    posts = load_posts()
     target_slug = str(item.get("source", {}).get("slug") or item.get("source", {}).get("id") or "").strip()
     for post in posts:
         slug = str(post.get("slug") or post.get("id") or "").strip()
@@ -487,15 +657,281 @@ def article_body_for_item(item: dict[str, Any]) -> str:
     raise PipelineError("Selected article no longer exists")
 
 
-def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
-    body = article_body_for_item(item)
-    payload = run_notebooklm(
-        ["source", "add", body, "--type", "text", "--title", item["source"]["title"], "--notebook", NOTEBOOK_ID],
-        timeout=180,
+def reconcile_legacy_effect(
+    state: dict[str, Any],
+    item: dict[str, Any],
+    name: str,
+    entry: dict[str, Any],
+    request: dict[str, Any],
+) -> dict[str, Any] | None:
+    """Reconcile an uncertain external effect without creating duplicate external mutations."""
+    if name == "provider_source":
+        source_id = item.get("source_id")
+        if source_id:
+            return {"source_id": source_id}
+        return None
+    if name == "provider_generation":
+        task_id = item.get("task_id") or item.get("artifact_id")
+        if task_id:
+            return {"task_id": task_id, "artifact_id": task_id}
+        return None
+    if name == "youtube_session":
+        session_uri = item.get("upload_session_uri") or (entry.get("receipt") or {}).get("location")
+        if session_uri:
+            return {"location": session_uri}
+        return None
+    if name == "youtube_upload_bytes":
+        video_id = item.get("youtube_id")
+        if video_id:
+            return {"video_id": video_id}
+        session_uri = item.get("upload_session_uri") or (entry.get("request") or {}).get("session_uri")
+        total = (entry.get("request") or {}).get("size")
+        token = (entry.get("request") or {}).get("token")
+        if not token:
+            try:
+                token = youtube_access_token()
+            except Exception:
+                token = None
+        if session_uri and total and token:
+            try:
+                resumed = resume_upload_status(session_uri, token, total)
+                if resumed.get("video_id"):
+                    return {"video_id": resumed["video_id"]}
+            except Exception:
+                pass
+        return None
+    return None
+
+
+MEDIA_INTENT_REF = os.environ.get("KESHER_MEDIA_INTENT_REF", "automation-state")
+_REMOTE_MEDIA_INTENT_STORE: dict[str, dict[str, Any]] = {}
+
+
+def _load_remote_media_intent(item_id: str, name: str) -> dict[str, Any] | None:
+    if not item_id or not name:
+        return None
+    key = f"{item_id}:{name}"
+    if key in _REMOTE_MEDIA_INTENT_STORE:
+        return copy.deepcopy(_REMOTE_MEDIA_INTENT_STORE[key])
+
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    repo = os.environ.get("GITHUB_REPOSITORY", "yanivsa/kesher-website")
+    if not token:
+        return None
+
+    path = f".kesher-media-intents/{item_id}/{name}.json"
+    quoted = urllib.parse.quote(path, safe="/")
+    url = f"https://api.github.com/repos/{repo}/contents/{quoted}?ref={MEDIA_INTENT_REF}"
+    req = urllib.request.Request(
+        url,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "Kesher-Media-Intent",
+        },
     )
-    source_id = nested_identifier(payload, ("source_id", "sourceId", "id"))
-    if not source_id:
-        raise PipelineError("NotebookLM source add returned no source ID")
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            content = base64.b64decode(data.get("content", "")).decode("utf-8")
+            return json.loads(content)
+    except Exception:
+        return None
+
+
+def _persist_remote_media_intent(item_id: str, name: str, entry: dict[str, Any]) -> None:
+    if not item_id or not name or not entry:
+        return
+    key = f"{item_id}:{name}"
+    _REMOTE_MEDIA_INTENT_STORE[key] = copy.deepcopy(entry)
+
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    repo = os.environ.get("GITHUB_REPOSITORY", "yanivsa/kesher-website")
+    if not token:
+        return
+
+    path = f".kesher-media-intents/{item_id}/{name}.json"
+    quoted = urllib.parse.quote(path, safe="/")
+    url = f"https://api.github.com/repos/{repo}/contents/{quoted}?ref={MEDIA_INTENT_REF}"
+    req_get = urllib.request.Request(
+        url,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "Kesher-Media-Intent",
+        },
+    )
+    existing_sha = None
+    try:
+        with urllib.request.urlopen(req_get, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            existing_sha = data.get("sha")
+    except Exception:
+        existing_sha = None
+
+    body = {
+        "message": f"state: media write-ahead intent {item_id} {name} {entry.get('status')} [skip ci]",
+        "content": base64.b64encode(
+            (json.dumps(entry, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+        ).decode("ascii"),
+        "branch": MEDIA_INTENT_REF,
+    }
+    if existing_sha:
+        body["sha"] = existing_sha
+
+    put_url = f"https://api.github.com/repos/{repo}/contents/{quoted}"
+    req_put = urllib.request.Request(
+        put_url,
+        data=json.dumps(body).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github.v3+json",
+            "Content-Type": "application/json",
+            "User-Agent": "Kesher-Media-Intent",
+        },
+        method="PUT",
+    )
+    try:
+        with urllib.request.urlopen(req_put, timeout=15) as resp:
+            pass
+    except Exception:
+        pass
+
+
+def legacy_external_effect(
+    state: dict[str, Any],
+    item: dict[str, Any],
+    name: str,
+    request: dict[str, Any],
+    create_func: Callable[[], dict[str, Any]],
+) -> dict[str, Any]:
+    """Persist intent, execute once, persist receipt before item mutation for Schema-5 legacy path.
+
+    Prevents duplicate generation/upload and budget divergence if the process crashes
+    after external acceptance but before state save.
+    """
+    item_id = str(item.get("id") or "")
+    effects = item.setdefault("external_effects", {})
+    entry = effects.get(name)
+    if not entry and item_id:
+        remote_entry = _load_remote_media_intent(item_id, name)
+        if isinstance(remote_entry, dict) and remote_entry.get("status"):
+            effects[name] = remote_entry
+            entry = remote_entry
+
+    if entry:
+        if entry.get("status") == "completed" and entry.get("receipt"):
+            if entry.get("request") != request:
+                raise PipelineError(f"EXTERNAL_EFFECT_REQUEST_MISMATCH: {name}")
+            return copy.deepcopy(entry["receipt"])
+        if entry.get("status") == "intent":
+            if entry.get("request") != request:
+                raise PipelineError(f"EXTERNAL_EFFECT_REQUEST_MISMATCH: {name}")
+            reconciled = reconcile_legacy_effect(state, item, name, entry, request)
+            if reconciled is not None:
+                entry["status"] = "completed"
+                entry["receipt"] = copy.deepcopy(reconciled)
+                entry["reconciled_at"] = utc_now()
+                save_state(state)
+                _persist_remote_media_intent(item_id, name, entry)
+                return copy.deepcopy(reconciled)
+            raise PipelineError(
+                f"EXTERNAL_RESULT_UNCERTAIN: cannot prove whether {name} completed externally; refusing second mutation"
+            )
+
+    # Persist intent before calling external provider (write-ahead)
+    effects[name] = {
+        "status": "intent",
+        "request": copy.deepcopy(request),
+        "started_at": utc_now(),
+    }
+    save_state(state)
+    _persist_remote_media_intent(item_id, name, effects[name])
+
+    try:
+        receipt = create_func()
+    except Exception as exc:
+        effects[name]["status"] = "failed"
+        effects[name]["error"] = str(exc)
+        save_state(state)
+        _persist_remote_media_intent(item_id, name, effects[name])
+        raise
+
+    effects[name]["status"] = "completed"
+    effects[name]["receipt"] = copy.deepcopy(receipt)
+    effects[name]["completed_at"] = utc_now()
+    save_state(state)
+    _persist_remote_media_intent(item_id, name, effects[name])
+    return receipt
+
+
+def _authorize_exact_recovery_provider_advance(item: dict[str, Any], stage: str) -> None:
+    if not is_recovery_mode():
+        return
+    target_item_id = (os.environ.get("TARGET_ITEM_ID") or "").strip()
+    target_slug = (os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
+    target_sha = (os.environ.get("TARGET_CONTENT_SHA256") or "").strip()
+    source = item.get("source") or {}
+    if not target_item_id or not target_slug or not target_sha:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: exact recovery identity is incomplete")
+    if str(item.get("id") or "").strip() != target_item_id:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: recovery item mismatch")
+    if str(source.get("slug") or "").strip() != target_slug:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: recovery slug mismatch")
+    if str(source.get("content_sha256") or "").strip() != target_sha:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: recovery content hash mismatch")
+    if stage == "source":
+        if item.get("status") != "source_selected":
+            raise PipelineError("RECOVERY_MODE_VIOLATION: source creation requires source_selected")
+        if item.get("source_id") or item.get("task_id") or item.get("artifact_id"):
+            raise PipelineError("RECOVERY_MODE_VIOLATION: provider identifiers already exist before source recovery")
+    elif stage == "generation":
+        if item.get("status") != "source_added" or not item.get("source_id"):
+            raise PipelineError("RECOVERY_MODE_VIOLATION: generation recovery requires one bound source")
+        if item.get("task_id") or item.get("artifact_id"):
+            raise PipelineError("RECOVERY_MODE_VIOLATION: provider generation identifier already exists")
+    else:
+        raise PipelineError("RECOVERY_MODE_VIOLATION: unknown recovery provider stage")
+
+
+def add_source(state: dict[str, Any], item: dict[str, Any], *, allow_exact_recovery: bool = False) -> None:
+    if is_recovery_mode():
+        if not allow_exact_recovery:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: add_source forbidden without exact recovery authorization")
+        _authorize_exact_recovery_provider_advance(item, "source")
+    from scripts.kesher_runtime.media_state import CanonicalMediaState
+    from scripts.kesher_runtime.legacy_retirement import media_mutation
+    media_mutation(state)
+    body = article_body_for_item(item)
+    title = item["source"]["title"]
+    if isinstance(state, CanonicalMediaState):
+        title = f"kesher:{state.context.target.key}:{item.get('fresh_generation_attempt', 1)}"
+
+    def create_source():
+        try:
+            payload = run_notebooklm(
+                ["source", "add", body, "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
+                timeout=180,
+            )
+        except PipelineError as exc:
+            print(f"WARN: source add failed ({exc}), pruning older notebook sources and retrying...")
+            prune_notebooklm_sources(NOTEBOOK_ID, keep_count=25)
+            payload = run_notebooklm(
+                ["source", "add", body, "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
+                timeout=180,
+            )
+        source_id = nested_identifier(payload, ("source_id", "sourceId", "id"))
+        if not source_id:
+            raise PipelineError("NotebookLM source add returned no source ID")
+        return {"source_id": source_id}
+
+    request = {"notebook_id": NOTEBOOK_ID, "title": title, "body_sha256": sha256_text(body),
+               "body_normalized_sha256": sha256_text(' '.join(body.split()))}
+    if isinstance(state, CanonicalMediaState):
+        receipt = state.external('provider_source', request, create_source)
+    else:
+        receipt = legacy_external_effect(state, item, 'provider_source', request, create_source)
+    source_id = receipt["source_id"]
     item["source_id"] = source_id
     item["status"] = "source_added"
     item["updated_at"] = utc_now()
@@ -503,21 +939,39 @@ def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
     print(f"SOURCE_ADDED item={item['id']} source_id={source_id}")
 
 
-def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
+def start_generation(state: dict[str, Any], item: dict[str, Any], *, allow_exact_recovery: bool = False) -> None:
+    if is_recovery_mode():
+        if not allow_exact_recovery:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: start_generation forbidden without exact recovery authorization")
+        _authorize_exact_recovery_provider_advance(item, "generation")
+    from scripts.kesher_runtime.media_state import CanonicalMediaState
+    from scripts.kesher_runtime.legacy_retirement import media_mutation
+    media_mutation(state)
+    from scripts.kesher_runtime.provider import bind_generation_prompt
     prompt_path = STATE_DIR / f"{item['id']}-prompt-he.txt"
-    prompt = generation_prompt(item["source"])
+    prompt = bind_generation_prompt(state, item, generation_prompt(item["source"]), 'explainer')
     prompt_path.write_text(prompt, encoding="utf-8")
-    payload = run_notebooklm(
-        [
-            "generate", "video", "--prompt-file", str(prompt_path), "--notebook", NOTEBOOK_ID,
-            "--source", item["source_id"], "--format", "explainer", "--style", "auto",
-            "--language", "he", "--no-wait",
-        ],
-        timeout=180,
-    )
-    task_id = nested_identifier(payload, ("task_id", "taskId", "artifact_id", "id"))
-    if not task_id:
-        raise PipelineError("NotebookLM generation returned no task ID")
+    def create_generation():
+        payload = run_notebooklm(
+            [
+                "generate", "video", "--prompt-file", str(prompt_path), "--notebook", NOTEBOOK_ID,
+                "--source", item["source_id"], "--format", "explainer", "--style", "auto",
+                "--language", "he", "--no-wait",
+            ],
+            timeout=180,
+        )
+        task_id = nested_identifier(payload, ("task_id", "taskId", "artifact_id", "id"))
+        if not task_id:
+            raise PipelineError("NotebookLM generation returned no task ID")
+        return {"task_id": task_id, "artifact_id": task_id}
+
+    request = {"notebook_id": NOTEBOOK_ID, "source_id": item["source_id"], "format": "explainer",
+               "style": "auto", "language": "he", "prompt_sha256": sha256_text(prompt), "prompt": prompt}
+    if isinstance(state, CanonicalMediaState):
+        receipt = state.external('provider_generation', request, create_generation)
+    else:
+        receipt = legacy_external_effect(state, item, 'provider_generation', request, create_generation)
+    task_id = receipt["task_id"]
     item["task_id"] = task_id
     item["artifact_id"] = task_id
     item["generation_prompt"] = prompt
@@ -746,22 +1200,51 @@ def validate_female_voice(
     return True, pitch, f"Female voice pitch verified ({pitch:.1f} Hz)"
 
 
+def _render_context():
+    from types import SimpleNamespace
+    return SimpleNamespace(PROJECT_DIR=PROJECT_DIR, STATE_DIR=STATE_DIR,
+        sha256_file=sha256_file, atomic_json_write=atomic_json_write, PipelineError=PipelineError)
+
+
 def remotion_cache_is_reusable(item: dict[str, Any], output_path: Path) -> bool:
-    if not output_path.is_file() or output_path.stat().st_size <= 0 or not item.get("enhancement_status"):
+    from scripts.kesher_runtime.render_provenance import render_input_digest
+    from scripts.kesher_runtime.output_artifacts import local_file
+    from scripts.kesher_e2e_delivery_guard import _signature_verified
+    try:
+        if item.get("enhancement_status") not in {"enhancement_complete", "enhancement_partial", "enhancement_skipped"}:
+            return False
+        files = [(output_path, item.get("final_sha256"))]
+        for path_key, hash_key in (("raw_mp4", "raw_sha256"), ("motion_plan_path", "motion_plan_sha256"),
+                                  ("remotion_props_path", "remotion_props_sha256"),
+                                  ("signature_asset", "signature_sha256"),
+                                  ("signature_video_path", "signature_video_sha256")):
+            files.append((local_file(STATE_DIR, item.get(path_key)), item.get(hash_key)))
+        if any(not path.is_file() or path.stat().st_size <= 0 or sha256_file(path) != expected
+               for path, expected in files):
+            return False
+        raw = local_file(STATE_DIR, item["raw_mp4"])
+        asset_sha = sha256_file(PROJECT_DIR / SIGNATURE_SOURCE)
+        if asset_sha != item.get("signature_sha256") or item.get("render_input_sha256") != render_input_digest(
+                _render_context(), raw, item, asset_sha, 'overview'):
+            return False
+        media = ffprobe(output_path)
+        if not _signature_verified(dict(item, media=media)):
+            return False
+        props = json.loads((STATE_DIR / item["remotion_props_path"]).read_text(encoding="utf-8"))
+        plan = json.loads((STATE_DIR / item["motion_plan_path"]).read_text(encoding="utf-8"))
+        return bool(props.get("videoSrc") == raw.name and props.get("audioSrc") == raw.name
+                    and props.get("durationInFrames") == round(float(item["content_duration_seconds"]) * 30)
+                    and props.get("signatureImageSrc") == item["signature_asset"] and props.get("motionPlan") == plan)
+    except (OSError, ValueError, TypeError, KeyError, PipelineError):
         return False
-    for path_key, hash_key in (("motion_plan_path", "motion_plan_sha256"), ("remotion_props_path", "remotion_props_sha256")):
-        name = str(item.get(path_key) or "").strip()
-        expected = str(item.get(hash_key) or "").strip()
-        if not name or not expected:
-            return False
-        evidence = STATE_DIR / name
-        if not evidence.is_file() or sha256_file(evidence) != expected:
-            return False
-    return True
 
 
 def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
+    from scripts.kesher_runtime.render_provenance import record_signature, render_input_digest
     output_path = STATE_DIR / f"{item['id']}-remotion-final.mp4"
+    signature_image_src = prepare_signature_asset()
+    signature_path = STATE_DIR / signature_image_src
+    render_input_sha256 = render_input_digest(_render_context(), raw_path, item, sha256_file(signature_path), 'overview')
     if remotion_cache_is_reusable(item, output_path):
         return output_path
     remotion = PROJECT_DIR / "node_modules" / ".bin" / "remotion"
@@ -774,7 +1257,6 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
         raise PipelineError("NotebookLM audio duration is invalid for Remotion")
     motion_plan_path = STATE_DIR / f"{item['id']}-motion-plan.json"
     motion_plan = generate_motion_plan(raw_path, motion_plan_path, duration=content_duration_seconds)
-    signature_image_src = prepare_signature_asset()
     props_path = STATE_DIR / f"{item['id']}-remotion-props.json"
 
     def renderer(candidate_plan: dict[str, Any], candidate_output: Path) -> None:
@@ -820,9 +1302,11 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
 
     item["visual_pipeline"] = "remotion-v1-notebooklm-audio"
     item["content_duration_seconds"] = round(content_duration_seconds, 3)
-    item["signature_duration_seconds"] = SIGNATURE_DURATION_SECONDS
-    item["signature_fullscreen"] = True
-    item["signature_asset_sha256"] = sha256_file(STATE_DIR / signature_image_src)
+    final_media = ffprobe(output_path)
+    record_signature(_render_context(), raw_path, output_path, item, signature_path, raw_media, final_media)
+    if render_input_sha256 != render_input_digest(_render_context(), raw_path, item, sha256_file(signature_path), 'overview'):
+        raise PipelineError("Overview render inputs changed during rendering")
+    item["render_input_sha256"] = render_input_sha256
     item["enhancement_status"] = enhancement["enhancement_status"]
     item["enhancement_render_mode"] = enhancement["render_mode"]
     item["enhancement_assets_used"] = enhancement["assets_used"]
@@ -871,6 +1355,35 @@ def create_contact_sheet(video_path: Path, item: dict[str, Any], duration: float
 
 
 def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path: Path) -> None:
+    slug = str((item.get("source") or {}).get("slug") or "")
+    source_hash = str((item.get("source") or {}).get("content_sha256") or "")
+    if slug and source_hash:
+        authoritative = load_state() if STATE_FILE.is_file() else state
+        auth_fw = authoritative.get("fallback_winner")
+        if auth_fw and auth_fw.get("slug") == slug and auth_fw.get("content_sha256") == source_hash:
+            if auth_fw.get("fallback_committed") is True and auth_fw.get("winner_item_id") != item.get("id"):
+                item["status"] = "superseded"
+                item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
+                item["upload_eligible"] = False
+                item["updated_at"] = utc_now()
+                # DO NOT SAVE STALE SNAPSHOT! Raise immediately to protect authoritative disk state!
+                raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner {auth_fw.get('winner_item_id')}")
+
+        has_promoted_winner = any(
+            row is not item
+            and str((row.get("source") or {}).get("slug") or "") == slug
+            and str((row.get("source") or {}).get("content_sha256") or "") == source_hash
+            and row.get("final_attempt_fallback") is True
+            for row in (authoritative.get("items") or [])
+            if isinstance(row, dict)
+        )
+        if item.get("status") == "superseded" or has_promoted_winner:
+            item["status"] = "superseded"
+            item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
+            item["upload_eligible"] = False
+            item["updated_at"] = utc_now()
+            # DO NOT SAVE STALE SNAPSHOT! Raise immediately to protect authoritative disk state!
+            raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner")
     final_path = render_remotion_video(raw_path, item)
     media = ffprobe(final_path)
     sheet = create_contact_sheet(final_path, item, media["duration"])
@@ -962,6 +1475,16 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         "signature_duration_seconds": item.get("signature_duration_seconds"),
         "signature_fullscreen": item.get("signature_fullscreen"),
         "signature_asset_sha256": item.get("signature_asset_sha256"),
+        "signature_asset": item.get("signature_asset"),
+        "signature_sha256": item.get("signature_sha256"),
+        "signature_video_path": item.get("signature_video_path"),
+        "signature_video_sha256": item.get("signature_video_sha256"),
+        "signature_overlay": item.get("signature_overlay"),
+        "signature_verified": item.get("signature_verified"),
+        "signature_provenance": item.get("signature_provenance"),
+        "audio_provenance": item.get("audio_provenance"),
+        "provider_raw_media": item.get("provider_raw_media"),
+        "render_input_sha256": item.get("render_input_sha256"),
         "remotion_props_path": item.get("remotion_props_path"),
         "remotion_props_sha256": item.get("remotion_props_sha256"),
         "motion_plan_path": item.get("motion_plan_path"),
@@ -1006,7 +1529,28 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         print(f"TECHNICAL_REJECTED item={item['id']} reasons={len(technical_failures)}")
         return
 
+    if slug and source_hash and STATE_FILE.is_file():
+        authoritative = load_state()
+        auth_fw = authoritative.get("fallback_winner")
+        if auth_fw and auth_fw.get("slug") == slug and auth_fw.get("content_sha256") == source_hash:
+            if auth_fw.get("fallback_committed") is True and auth_fw.get("winner_item_id") != item.get("id"):
+                item["status"] = "superseded"
+                item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
+                item["upload_eligible"] = False
+                item["updated_at"] = utc_now()
+                save_state(state)
+                raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner {auth_fw.get('winner_item_id')}")
+        auth_item = next((r for r in authoritative.get("items", []) if r.get("id") == item.get("id")), None)
+        if auth_item and (auth_item.get("status") == "superseded" or auth_item.get("upload_eligible") is False):
+            item["status"] = "superseded"
+            item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
+            item["upload_eligible"] = False
+            item["updated_at"] = utc_now()
+            save_state(state)
+            raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner")
+
     item["technical_verified"] = True
+    item["upload_eligible"] = True
     item["review_notes"]["technical"] = (
         f"אומת קובץ MP4 תקין, H.264, יחס {media['width']}x{media['height']}, "
         f"משך {media['duration']} שניות וחותמת SHA-256"
@@ -1047,8 +1591,45 @@ def run_generation(
         return 0
     auth_preflight()
     state = load_state()
+    target_item_id = (item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
+    is_recovery = is_recovery_mode() or bool(item_id)
+    if is_recovery:
+        item = active_item(state, slug=slug, item_id=target_item_id)
+        if not item:
+            raise PipelineError(f"RECOVERY_MODE_VIOLATION: target item {target_item_id} does not exist in state")
+        if str(item.get("id") or "").strip() != target_item_id:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: active item mismatch")
+        target_slug = (slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
+        if target_slug and str((item.get("source") or {}).get("slug") or "") != target_slug:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: slug mismatch in recovery mode")
+        requested_sha = os.environ.get("TARGET_CONTENT_SHA256", "").strip()
+        if requested_sha and str((item.get("source") or {}).get("content_sha256") or "") != requested_sha:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: source content hash mismatch in recovery mode")
+        export_item_target(item)
+        if item.get("uploaded") is True or item["status"] in {"pending_review", "approved", "rejected", "uploading", "uploaded", "superseded"}:
+            print(f"NO_GENERATION recovery mode active_item={item['id']} status={item['status']}")
+            return 0
+        if item["status"] == "source_selected":
+            add_source(state, item, allow_exact_recovery=True)
+        if item["status"] == "source_added":
+            start_generation(state, item, allow_exact_recovery=True)
+        if item["status"] == "generating":
+            if not item.get("task_id") or not item.get("source_id"):
+                raise PipelineError("RECOVERY_MODE_VIOLATION: generating item missing required task_id or source_id")
+            if not wait_for_generation(state, item, max_wait_seconds):
+                return 0
+            raw_path = download_artifact(state, item)
+        elif item["status"] == "downloaded":
+            raw_path = STATE_DIR / item["raw_mp4"]
+        else:
+            return 0
+        validate_and_manifest(state, item, raw_path)
+        return 0
+
     item = active_item(state, slug=slug, item_id=item_id)
-    if item and item["status"] in {"pending_review", "approved", "rejected", "uploading"}:
+    if item:
+        export_item_target(item)
+    if item and (item.get("uploaded") is True or item["status"] in {"pending_review", "approved", "rejected", "uploading", "uploaded", "superseded"}):
         print(f"NO_GENERATION active_item={item['id']} status={item['status']}")
         return 0
     if not item:
@@ -1057,9 +1638,34 @@ def run_generation(
             source = article_by_slug(target_slug)
         else:
             source = select_newest_unused_article(state)
+        requested_sha = os.environ.get('TARGET_CONTENT_SHA256', '').strip()
+        if requested_sha and source['content_sha256'] != requested_sha:
+            raise PipelineError('EXACT_MEDIA_IDENTITY_MISMATCH: requested source content changed')
+        already_completed = [
+            existing
+            for existing in (state.get("items") or [])
+            if isinstance(existing, dict)
+            and str((existing.get("source") or {}).get("slug") or "") == source["slug"]
+            and str((existing.get("source") or {}).get("content_sha256") or "") == source["content_sha256"]
+            and (
+                (
+                    existing.get("uploaded") is True
+                    and existing.get("status") == "uploaded"
+                    and bool(str(existing.get("youtube_id") or "").strip())
+                    and existing.get("source_mode") != "overview-segment"
+                )
+                or existing.get("status") == "released_without_short"
+            )
+        ]
+        if already_completed:
+            existing = already_completed[-1]
+            export_item_target(existing)
+            print(f"NO_GENERATION active_item={existing['id']} status={existing['status']}")
+            return 0
         item = new_item(source)
         state["items"].append(item)
         save_state(state)
+        export_item_target(item)
         print(f"SOURCE_SELECTED item={item['id']} slug={source['slug']}")
     if item["status"] == "source_selected":
         add_source(state, item)
@@ -1082,7 +1688,11 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
     matches = [item for item in state["items"] if item.get("id") == item_id]
     if len(matches) != 1:
         raise PipelineError("Remotion rebuild item was not found uniquely")
-    item = matches[0]
+    kind = None
+    if not os.environ.get('KESHER_MEDIA_MODE') and matches[0].get('type') == 'article_short':
+        kind = 'short'  # The explicit rebuild ID also supports native Short recovery.
+    item = existing_item(state, item_id, kind=kind)
+    export_item_target(item)
     rejected = item.get("status") == "rejected" and item.get("visual_review_status") == "rejected"
     technical_note = str((item.get("review_notes") or {}).get("technical") or "")
     legacy_signature_recovery = (
@@ -1206,6 +1816,89 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
     return 0
 
 
+def durable_media_restore_required(
+    state: dict[str, Any],
+    *,
+    operation: str = "",
+    target_item_id: str = "",
+    target_slug: str = "",
+) -> bool:
+    """Return whether exact local media bytes must be hydrated for this invocation.
+
+    The lightweight state is sufficient for provider polling and fresh technical
+    retries. Local MP4/evidence bytes are required only when the next legal step
+    consumes those bytes directly (render/review/upload), plus the explicit final
+    wrong-voice fallback which revalidates the third provider artifact in place.
+    """
+    op = (operation or os.environ.get("OPERATION") or "").strip().lower()
+    if op in {"upload", "rebuild"}:
+        return True
+
+    items = [row for row in (state.get("items") or []) if isinstance(row, dict)]
+    requested_id = (target_item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
+    requested_slug = (
+        target_slug
+        or os.environ.get("TARGET_SLUG")
+        or os.environ.get("DERIVE_SLUG")
+        or ""
+    ).strip()
+
+    if requested_id:
+        candidates = [row for row in items if str(row.get("id") or "").strip() == requested_id]
+    elif requested_slug:
+        candidates = [
+            row
+            for row in items
+            if str((row.get("source") or {}).get("slug") or "").strip() == requested_slug
+            and row.get("uploaded") is not True
+            and row.get("status") != "superseded"
+        ]
+    else:
+        candidates = [
+            row
+            for row in items
+            if row.get("uploaded") is not True and row.get("status") != "superseded"
+        ]
+
+    if any(str(row.get("status") or "") in {"downloaded", "pending_review", "approved", "uploading"}
+           for row in candidates):
+        return True
+
+    try:
+        contract = json.loads(PRODUCTION_CONTRACT_FILE.read_text(encoding="utf-8"))
+        voice_policy = contract["video"]["voice_policy"]
+        female_attempts = int(voice_policy["female_attempts_before_fallback"])
+        final_male_fallback = (
+            voice_policy["fallback_voice_after_failed_female_attempts"] == "male"
+            and voice_policy["accept_male_on_final_female_attempt"] is True
+        )
+    except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
+        raise PipelineError(f"Voice fallback policy is unreadable: {type(exc).__name__}") from exc
+
+    if final_male_fallback:
+        for row in candidates:
+            technical_note = str((row.get("review_notes") or {}).get("technical") or "")
+            wrong_voice = (
+                row.get("failure_signature") == "wrong_narrator_gender"
+                or "Detected male voice" in technical_note
+            )
+            try:
+                attempt = int(row.get("fresh_generation_attempt") or 1)
+            except (TypeError, ValueError):
+                attempt = 1
+            if (
+                row.get("status") == "rejected"
+                and row.get("technical_verified") is not True
+                and wrong_voice
+                and attempt >= female_attempts
+                and bool(str(row.get("raw_mp4") or "").strip())
+                and bool(str(row.get("task_id") or "").strip())
+            ):
+                return True
+
+    return False
+
+
 def prune_uploaded_media() -> int:
     state = load_state()
     removed = 0
@@ -1229,10 +1922,7 @@ def prune_uploaded_media() -> int:
 
 def update_review(args: argparse.Namespace) -> int:
     state = load_state()
-    matches = [item for item in state["items"] if item.get("id") == args.review_item]
-    if len(matches) != 1:
-        raise PipelineError("Review item was not found uniquely")
-    item = matches[0]
+    item = existing_item(state, args.review_item, getattr(args, 'slug', None))
     if item.get("status") != "pending_review" or item.get("technical_verified") is not True:
         raise PipelineError("Only technically verified pending items may be reviewed")
     for field in ("visual", "semantic", "metadata"):
@@ -1316,6 +2006,9 @@ def verify_authenticated_channel(token: str) -> None:
 
 
 def start_resumable_upload(state: dict[str, Any], item: dict[str, Any], token: str, video_path: Path) -> str:
+    from scripts.kesher_runtime.media_state import CanonicalMediaState
+    from scripts.kesher_runtime.legacy_retirement import media_mutation
+    media_mutation(state)
     metadata = item["youtube_metadata"]
     body = {
         "snippet": {
@@ -1332,21 +2025,30 @@ def start_resumable_upload(state: dict[str, Any], item: dict[str, Any], token: s
             "containsSyntheticMedia": True,
         },
     }
-    response = requests.post(
-        "https://www.googleapis.com/upload/youtube/v3/videos",
-        params={"uploadType": "resumable", "part": "snippet,status"},
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json; charset=UTF-8",
-            "X-Upload-Content-Length": str(video_path.stat().st_size),
-            "X-Upload-Content-Type": "video/mp4",
-        },
-        json=body,
-        timeout=60,
-    )
-    location = response.headers.get("Location")
-    if response.status_code not in {200, 201} or not location:
-        raise PipelineError(f"YouTube resumable session creation failed with HTTP {response.status_code}")
+    def create_session():
+        response = requests.post(
+            "https://www.googleapis.com/upload/youtube/v3/videos",
+            params={"uploadType": "resumable", "part": "snippet,status"},
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json; charset=UTF-8",
+                "X-Upload-Content-Length": str(video_path.stat().st_size),
+                "X-Upload-Content-Type": "video/mp4",
+            },
+            json=body,
+            timeout=60,
+        )
+        location = response.headers.get("Location")
+        if response.status_code not in {200, 201} or not location:
+            raise PipelineError(f"YouTube resumable session creation failed with HTTP {response.status_code}")
+        return location
+
+    request = {"metadata": body, "final_sha256": sha256_file(video_path), "size_bytes": video_path.stat().st_size}
+    if isinstance(state, CanonicalMediaState):
+        location = state.external_capability('youtube_session', request, create_session)
+    else:
+        receipt = legacy_external_effect(state, item, 'youtube_session', request, lambda: {"location": create_session()})
+        location = receipt["location"]
     item["upload_session_uri"] = location
     item["upload_session_created_at"] = utc_now()
     item["status"] = "uploading"
@@ -1354,7 +2056,13 @@ def start_resumable_upload(state: dict[str, Any], item: dict[str, Any], token: s
     return location
 
 
-def resume_offset(session_uri: str, token: str, total: int) -> int:
+def resume_upload_status(session_uri: str, token: str, total: int) -> dict[str, Any]:
+    """A completed resumable session returns the original upload receipt/ID.
+
+    https://developers.google.com/youtube/v3/guides/using_resumable_upload_protocol
+    Ignoring that receipt loses the recovery path after an accepted byte upload
+    whose response or subsequent local state write was interrupted.
+    """
     response = requests.put(
         session_uri,
         headers={
@@ -1365,16 +2073,27 @@ def resume_offset(session_uri: str, token: str, total: int) -> int:
         timeout=60,
     )
     if response.status_code in {200, 201}:
-        return total
+        video_id = response.json().get("id")
+        if not isinstance(video_id, str) or not video_id:
+            raise PipelineError("Completed YouTube session has no video ID; reconcile before further upload")
+        return {"offset": total, "video_id": video_id}
     if response.status_code == 308:
-        match = re.search(r"bytes=0-(\d+)", response.headers.get("Range", ""))
-        return int(match.group(1)) + 1 if match else 0
+        value = response.headers.get("Range", "")
+        match = re.fullmatch(r"bytes=0-(\d+)", value)
+        if value and not match:
+            raise PipelineError("YouTube session returned an invalid byte range")
+        offset = int(match.group(1)) + 1 if match else 0
+        if offset >= total:
+            raise PipelineError("YouTube session byte range is complete without its final receipt")
+        return {"offset": offset, "video_id": None}
     if response.status_code in {404, 410}:
         raise PipelineError("Saved YouTube upload session expired; refusing a second insert automatically")
     raise PipelineError(f"YouTube upload status query failed with HTTP {response.status_code}")
 
 
-def upload_bytes(session_uri: str, token: str, video_path: Path, offset: int) -> str:
+def upload_bytes(session_uri: str, token: str, video_path: Path, offset: int, *, state=None) -> str:
+    from scripts.kesher_runtime.legacy_retirement import media_mutation
+    media_mutation(state)
     total = video_path.stat().st_size
     if offset >= total:
         raise PipelineError("Upload session reports complete but no video ID is persisted")
@@ -1400,8 +2119,96 @@ def upload_bytes(session_uri: str, token: str, video_path: Path, offset: int) ->
     return str(video_id)
 
 
+def repair_persisted_youtube_metadata(item: dict[str, Any], token: str) -> dict[str, Any]:
+    """Repair authoritative metadata on an already-inserted Kesher video.
+
+    This recovery path is intentionally limited to a persisted YouTube ID that
+    resolves to the canonical Kesher channel. It never inserts or uploads media;
+    it only updates the snippet in place and then re-verifies the exact resource.
+    """
+    video_id = str(item.get("youtube_id") or "").strip()
+    if not video_id:
+        raise PipelineError("Persisted YouTube metadata repair requires an exact video ID")
+    payload = youtube_get(
+        "videos", token,
+        {"part": "snippet,status", "id": video_id},
+    )
+    rows = payload.get("items") or []
+    if len(rows) != 1 or rows[0].get("id") != video_id:
+        raise PipelineError("Persisted YouTube video is not uniquely visible")
+    row = rows[0]
+    snippet = row.get("snippet") or {}
+    if snippet.get("channelId") != YOUTUBE_CHANNEL_ID:
+        raise PipelineError("PUBLIC_METADATA_INVALID: wrong YouTube channel")
+
+    metadata = item.get("youtube_metadata") or {}
+    canonical_local = {
+        "id": video_id,
+        "snippet": {
+            "channelId": YOUTUBE_CHANNEL_ID,
+            "title": metadata.get("title"),
+            "description": metadata.get("description"),
+            "tags": metadata.get("tags") or [],
+            "defaultLanguage": "he",
+            "defaultAudioLanguage": "he",
+        },
+    }
+    try:
+        match_youtube_metadata(item, canonical_local)
+    except VerificationError as exc:
+        raise PipelineError(str(exc)) from exc
+
+    try:
+        match_youtube_metadata(item, row)
+        return row
+    except VerificationError as exc:
+        if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote " ):
+            raise PipelineError(str(exc)) from exc
+
+    body = {
+        "id": video_id,
+        "snippet": {
+            "title": metadata["title"],
+            "description": metadata["description"],
+            "tags": metadata.get("tags") or [],
+            "categoryId": str(snippet.get("categoryId") or "22"),
+            "defaultLanguage": "he",
+            "defaultAudioLanguage": "he",
+        },
+    }
+    response = requests.put(
+        "https://www.googleapis.com/youtube/v3/videos",
+        params={"part": "snippet"},
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json; charset=UTF-8",
+        },
+        json=body,
+        timeout=60,
+    )
+    if response.status_code == 403:
+        print(f"WARNING: YouTube metadata repair PUT returned HTTP 403 (upload-only scope)")
+    elif response.status_code != 200:
+        raise PipelineError(f"YouTube metadata repair failed with HTTP {response.status_code}")
+
+    refreshed = youtube_get(
+        "videos", token,
+        {"part": "snippet,status", "id": video_id},
+    )
+    refreshed_rows = refreshed.get("items") or []
+    if len(refreshed_rows) != 1 or refreshed_rows[0].get("id") != video_id:
+        raise PipelineError("Repaired YouTube video is not uniquely visible")
+    try:
+        match_youtube_metadata(item, refreshed_rows[0])
+    except VerificationError as exc:
+        raise PipelineError(str(exc)) from exc
+    print(f"YOUTUBE_METADATA_REPAIRED item={item['id']} video_id={video_id}")
+    return refreshed_rows[0]
+
+
 def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int = 900) -> dict[str, Any]:
     deadline = time.monotonic() + timeout_seconds
+    last_metadata_error = None
     while True:
         payload = youtube_get(
             "videos", token,
@@ -1414,63 +2221,357 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
         snippet = row.get("snippet") or {}
         status = row.get("status") or {}
         processing = row.get("processingDetails") or {}
-        if snippet.get("channelId") != YOUTUBE_CHANNEL_ID:
-            raise PipelineError("Uploaded video belongs to the wrong YouTube channel")
-        if snippet.get("title") != item["youtube_metadata"]["title"]:
-            raise PipelineError("Uploaded title differs from the approved metadata")
-        uploaded_description = str(snippet.get("description", ""))
-        validate_youtube_description_links(
-            uploaded_description,
-            str((item.get("source") or {}).get("canonical_url") or ""),
-        )
-        require_hebrew(str(snippet.get("title", "")), "uploaded title")
-        require_hebrew(uploaded_description, "uploaded description", allow_url=True)
+        try:
+            metadata_evidence = match_youtube_metadata(item, row)
+            last_metadata_error = None
+        except VerificationError as exc:
+            if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote "):
+                raise PipelineError(str(exc)) from exc
+            last_metadata_error = exc
+            metadata_evidence = None
+
         process_status = processing.get("processingStatus")
-        if status.get("privacyStatus") == "public" and process_status == "succeeded":
+        if status.get("privacyStatus") == "public" and process_status == "succeeded" and metadata_evidence is not None:
+            uploaded_description = str(snippet.get("description", ""))
+            validate_youtube_description_links(uploaded_description, str((item.get("source") or {}).get("canonical_url") or ""))
+            require_hebrew(str(snippet.get("title", "")), "uploaded title")
+            require_hebrew(uploaded_description, "uploaded description", allow_url=True)
             return {
+                **metadata_evidence,
                 "video_id": item["youtube_id"],
                 "channel_id": snippet.get("channelId"),
                 "privacy_status": status.get("privacyStatus"),
                 "processing_status": process_status,
                 "default_language": snippet.get("defaultLanguage"),
                 "default_audio_language": snippet.get("defaultAudioLanguage"),
+                "verified_at": utc_now(),
             }
         if process_status in {"failed", "terminated"}:
             raise PipelineError(f"YouTube processing ended with {process_status}")
         if time.monotonic() >= deadline:
+            if last_metadata_error is not None:
+                raise PipelineError(str(last_metadata_error)) from last_metadata_error
             raise PipelineError("YouTube processing did not become public and complete in time")
-        time.sleep(20)
+        time.sleep(min(20, max(1, int(deadline - time.monotonic()))))
 
 
-def upload_only(slug: str | None = None, item_id: str | None = None) -> int:
-    state = load_state()
-    target_slug = (slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
-    target_item_id = (item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
-    candidates = [
-        item for item in state["items"]
-        if item.get("technical_verified") is True
-        and item.get("status") in {"approved", "uploading"}
-        and not item.get("uploaded")
-        and not item.get("youtube_verification")
+def can_long_item_proceed_toward_publication(item: dict[str, Any] | None) -> bool:
+    """Canonical predicate: can this Long item proceed toward publication or upload?
+
+    Used identically by:
+    - verify_single_upload_authority()
+    - prepare_upload()
+    - upload_only()
+    - technical_publication_ready()
+
+    Includes legacy compatibility where upload_eligible is omitted on older attempts:
+    if technical_verified is True and status is in {pending_review, approved, rejected, uploading},
+    the item can proceed toward publication unless explicitly superseded or ineligible.
+    """
+    if not isinstance(item, dict):
+        return False
+    if item.get("type") not in {"video_overview", None}:
+        return False
+    if item.get("status") == "superseded":
+        return False
+    if item.get("upload_eligible") is False:
+        return False
+    if item.get("final_attempt_fallback") is True:
+        from scripts import kesher_final_attempt_fallback as fallback
+        if not fallback.is_fallback_promotion_enabled():
+            return False
+    if item.get("uploaded") is True and bool(str(item.get("youtube_id") or "").strip()):
+        return True
+    if item.get("technical_verified") is True:
+        return item.get("status") in {"pending_review", "approved", "rejected", "uploading"}
+    return False
+
+
+def can_short_item_proceed_toward_publication(item: dict[str, Any] | None) -> bool:
+    """Canonical predicate: can this Short item proceed toward publication or upload?
+
+    Used identically by:
+    - prepare_upload()
+    - upload_only()
+    - technical_publication_ready()
+    """
+    if not isinstance(item, dict):
+        return False
+    if item.get("type") != "article_short":
+        return False
+    if item.get("status") == "superseded":
+        return False
+    if item.get("upload_eligible") is False:
+        return False
+    if item.get("uploaded") is True and bool(str(item.get("youtube_id") or "").strip()):
+        return True
+    if item.get("technical_verified") is not True:
+        return False
+    if item.get("status") not in {"pending_review", "approved", "rejected", "uploading"}:
+        return False
+
+    # 1. Expected vertical dimensions / portrait contract (1080x1920, height > width)
+    media = item.get("media") or {}
+    try:
+        width = int(media.get("width") or 0)
+        height = int(media.get("height") or 0)
+    except (TypeError, ValueError):
+        return False
+    if width != 1080 or height != 1920 or height <= width:
+        return False
+
+    raw = item.get("provider_raw_media") or {}
+    try:
+        raw_w = int(raw.get("width") or 0)
+        raw_h = int(raw.get("height") or 0)
+    except (TypeError, ValueError):
+        return False
+    if raw_w <= 0 or raw_h <= 0 or raw_h <= raw_w:
+        return False
+
+    # 2. Canonical Short origin and overview binding
+    from scripts import kesher_e2e_delivery_guard as delivery_guard
+    if not delivery_guard._short_origin_verified(item):
+        return False
+
+    # 3. Audio provenance and signature proof
+    if not delivery_guard._signature_verified(item):
+        return False
+
+    # 4. Final SHA and immutable evidence hashes
+    if not str(item.get("final_sha256") or "").strip():
+        return False
+    required_hashes = (
+        "manifest_sha256",
+        "transcript_sha256",
+        "source_file_sha256",
+        "visual_review_sha256",
+    )
+    if any(not str(item.get(field) or "").strip() for field in required_hashes):
+        return False
+    frame_hashes = item.get("frame_sha256")
+    if not isinstance(frame_hashes, dict) or not frame_hashes:
+        return False
+
+    # 5. Source identity binding
+    source = item.get("source") or {}
+    if not (source.get("slug") or source.get("id")) or not str(source.get("content_sha256") or "").strip():
+        return False
+
+    return True
+
+
+def can_item_proceed_toward_publication(item: dict[str, Any] | None) -> bool:
+    """Explicit media-type routing predicate for publication eligibility.
+
+    - video_overview (or None for legacy Long): routes to Long publication logic
+    - article_short: routes to Short publication logic
+    - unknown type: fails closed (returns False)
+    """
+    if not isinstance(item, dict):
+        return False
+    item_type = item.get("type")
+    if item_type in {"video_overview", None}:
+        return can_long_item_proceed_toward_publication(item)
+    elif item_type == "article_short":
+        return can_short_item_proceed_toward_publication(item)
+    return False
+
+
+def verify_single_upload_authority(
+    state: dict[str, Any],
+    slug: str,
+    content_sha256: str,
+    target_item_id: str | None = None,
+    candidate_items: list[dict[str, Any]] | None = None,
+    reconciled_predecessor_item_id: str | None = None,
+) -> dict[str, Any]:
+    """Verify that exactly one authoritative Long item exists for the exact slug + content_sha256.
+
+    Re-reads authoritative media state from disk.
+    The target item must be the ONLY authorized publication candidate.
+    If more than one candidate can proceed toward publication:
+    FAILS CLOSED with PipelineError('AMBIGUOUS_LONG_UPLOAD_AUTHORITY: ...').
+
+    Returns the authoritative item loaded from authoritative state.
+    """
+    has_disk_state = STATE_FILE.is_file()
+    auth_state = load_state() if has_disk_state else (state or {"items": []})
+
+    if has_disk_state and target_item_id:
+        auth_items_by_id = {
+            str(r.get("id")): r
+            for r in auth_state.get("items", [])
+            if isinstance(r, dict)
+        }
+        if str(target_item_id).strip() not in auth_items_by_id:
+            raise PipelineError(
+                f"AUTHORITATIVE_ITEM_MISSING: item {target_item_id} absent from authoritative state on disk"
+            )
+
+    # Authoritative disk state defines ALL competing candidates for exact media kind, slug, content_sha256.
+    # Stale candidate list supplied by caller must NEVER be able to hide a competitor on disk.
+    state_to_use = auth_state if has_disk_state else (state or {"items": []})
+    items = [
+        row for row in state_to_use.get("items", [])
+        if isinstance(row, dict)
+        and str((row.get("source") or {}).get("slug") or "").strip() == slug
+        and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
+        and (row.get("type") == "video_overview" or row.get("type") is None)
     ]
-    if target_item_id:
-        candidates = [item for item in candidates if item.get("id") == target_item_id]
-    elif target_slug:
-        candidates = [
-            item for item in candidates
-            if str((item.get("source") or {}).get("slug") or (item.get("source") or {}).get("id") or "").strip() == target_slug
-        ]
-    if not candidates:
-        print("NO_TECHNICALLY_VERIFIED_UPLOAD")
+
+    # 1. Check already public / uploaded deliverables
+    uploaded = [
+        row for row in items
+        if row.get("uploaded") is True and bool(str(row.get("youtube_id") or "").strip())
+    ]
+    if len(uploaded) > 1:
+        raise PipelineError(
+            f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: multiple ({len(uploaded)}) public YouTube deliverables exist for {slug}"
+        )
+    if len(uploaded) == 1:
+        pub = uploaded[0]
+        if target_item_id and str(pub.get("id") or "").strip() != str(target_item_id).strip():
+            raise PipelineError(
+                f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: item {target_item_id} attempted upload but {pub.get('id')} is already uploaded"
+            )
+        auth_match = next((r for r in state_to_use.get("items", []) if str(r.get("id")) == str(pub.get("id"))), pub)
+        return auth_match
+
+    # 2. Check candidates that can proceed toward publication. A trusted reconciliation
+    # may replace the exact originally requested predecessor with a newer exact target.
+    # Only that one explicit predecessor may be excluded; every other authoritative
+    # competitor on disk remains visible and still makes the guard fail closed.
+    candidates = [row for row in items if can_long_item_proceed_toward_publication(row)]
+    predecessor_id = str(reconciled_predecessor_item_id or "").strip()
+    requested_target_id = str(target_item_id or "").strip()
+    if predecessor_id and requested_target_id and predecessor_id != requested_target_id:
+        target_matches = [row for row in candidates if str(row.get("id") or "").strip() == requested_target_id]
+        predecessor_matches = [row for row in candidates if str(row.get("id") or "").strip() == predecessor_id]
+        if len(target_matches) == 1 and len(predecessor_matches) == 1:
+            candidates = [row for row in candidates if str(row.get("id") or "").strip() != predecessor_id]
+
+    if len(candidates) > 1:
+        fw = auth_state.get("fallback_winner") or state.get("fallback_winner")
+        has_winner = bool(
+            fw
+            and fw.get("slug") == slug
+            and fw.get("content_sha256") == content_sha256
+            and fw.get("fallback_committed") is True
+            and any(str(row.get("id")) == str(fw.get("winner_item_id")) for row in candidates)
+        )
+        if not has_winner:
+            raise PipelineError(
+                f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: more than one ({len(candidates)}) candidate can proceed toward publication for {slug}"
+            )
+        winner_id = str(fw.get("winner_item_id"))
+        if target_item_id and str(target_item_id).strip() != winner_id:
+            raise PipelineError(
+                f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: target item {target_item_id} is not the authoritative winner {winner_id}"
+            )
+        target_id = winner_id
+    elif len(candidates) == 1:
+        cand = candidates[0]
+        cand_id = str(cand.get("id") or "").strip()
+        if target_item_id and str(target_item_id).strip() != cand_id:
+            raise PipelineError(
+                f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: target item {target_item_id} is not the authorized publication candidate {cand_id}"
+            )
+        target_id = cand_id
+    else:
+        target_id = target_item_id
+
+    if target_id:
+        auth_matched = [row for row in state_to_use.get("items", []) if str(row.get("id") or "").strip() == str(target_id).strip()]
+        if auth_matched:
+            return auth_matched[0]
+        if has_disk_state:
+            raise PipelineError(
+                f"AUTHORITATIVE_ITEM_MISSING: item {target_id} absent from authoritative state on disk"
+            )
+        state_matched = [row for row in state.get("items", []) if str(row.get("id") or "").strip() == str(target_id).strip()]
+        if state_matched:
+            return state_matched[0]
+    return candidates[0] if candidates else (items[0] if items else {})
+
+
+def upload_only(slug: str | None = None, item_id: str | None = None, *, state: dict | None = None) -> int:
+    state = load_state() if state is None else state
+    item = existing_item(state, item_id, slug)
+    target_slug = slug or str((item.get("source") or {}).get("slug") or "")
+    target_hash = str((item.get("source") or {}).get("content_sha256") or "")
+
+    item_type = item.get("type")
+    if item_type not in {"video_overview", "article_short", None}:
+        raise PipelineError(f"UNKNOWN_MEDIA_TYPE: unsupported media item type '{item_type}'")
+
+    is_short = item_type == "article_short"
+    is_long = item_type in {"video_overview", None}
+
+    if is_long:
+        if STATE_FILE.is_file() and item.get("id"):
+            auth_state = load_state()
+            state = auth_state
+            auth_items_by_id = {str(r.get("id")): r for r in auth_state.get("items", []) if isinstance(r, dict)}
+            if str(item.get("id")).strip() not in auth_items_by_id:
+                raise PipelineError(f"AUTHORITATIVE_ITEM_MISSING: item {item.get('id')} absent from authoritative state on disk")
+            item = auth_items_by_id[str(item.get("id")).strip()]
+            if auth_state.get("fallback_winner"):
+                fw = auth_state["fallback_winner"]
+                if fw.get("slug") == target_slug and fw.get("fallback_committed") is True:
+                    if fw.get("winner_item_id") != item.get("id"):
+                        raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item.get('id')} superseded by fallback winner {fw.get('winner_item_id')}")
+            if item.get("status") == "superseded" or item.get("upload_eligible") is False:
+                raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item.get('id')} is superseded")
+
+        from scripts import kesher_final_attempt_fallback as fallback
+        if item.get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
+            raise PipelineError("FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled")
+
+        if item.get('uploaded') is True and bool(str(item.get('youtube_id') or "").strip()):
+            print(f"NO_DUPLICATE_UPLOAD item={item['id']}")
+            return 0
+
+        # Global authority guard runs immediately before upload progression
+        if target_slug and target_hash and not item.get("youtube_id"):
+            item = verify_single_upload_authority(state, target_slug, target_hash, item.get("id"))
+            if isinstance(state.get("items"), list):
+                for idx, existing in enumerate(state["items"]):
+                    if isinstance(existing, dict) and str(existing.get("id") or "").strip() == str(item.get("id") or "").strip():
+                        state["items"][idx] = item
+                        break
+
+        if not can_long_item_proceed_toward_publication(item) or item.get('status') not in {'approved', 'uploading'}:
+            print(f"NO_TECHNICALLY_VERIFIED_UPLOAD item={item['id']}")
+            return 0
+
+    elif is_short:
+        if STATE_FILE.is_file() and item.get("id"):
+            auth_state = load_state()
+            state = auth_state
+            auth_items_by_id = {str(r.get("id")): r for r in auth_state.get("items", []) if isinstance(r, dict)}
+            if str(item.get("id")).strip() not in auth_items_by_id:
+                raise PipelineError(f"AUTHORITATIVE_ITEM_MISSING: item {item.get('id')} absent from authoritative state on disk")
+            item = auth_items_by_id[str(item.get("id")).strip()]
+            if item.get("status") == "superseded" or item.get("upload_eligible") is False:
+                raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item.get('id')} is superseded")
+
+        if item.get('uploaded') is True and bool(str(item.get('youtube_id') or "").strip()):
+            print(f"NO_DUPLICATE_UPLOAD item={item['id']}")
+            return 0
+
+        if not can_short_item_proceed_toward_publication(item) or item.get('status') not in {'approved', 'uploading'}:
+            print(f"NO_TECHNICALLY_VERIFIED_UPLOAD item={item['id']}")
+            return 0
+    if item.get("youtube_id"):
+        # The external insertion already happened. First use the normal exact
+        # public verifier. Only a proven remote metadata drift may mutate the
+        # same persisted YouTube resource; every other failure stays fail-closed.
+        token = youtube_access_token()
+        verify_authenticated_channel(token)
+        _verify_and_record_upload(state, item, token)
         return 0
-    if len(candidates) != 1:
-        dated = [item for item in candidates if str(item.get("israel_date") or "").strip()]
-        if dated:
-            newest_date = max(str(item["israel_date"]) for item in dated)
-            candidates = [item for item in dated if str(item["israel_date"]) == newest_date]
-        if len(candidates) != 1:
-            raise PipelineError(f"More than one technically verified candidate exists: {len(candidates)}")
-    item = candidates[0]
+
     if not item.get("final_mp4"):
         raise PipelineError("Upload candidate is missing final MP4 path")
     video_path = STATE_DIR / item["final_mp4"]
@@ -1502,22 +2603,51 @@ def upload_only(slug: str | None = None, item_id: str | None = None) -> int:
     if not session_uri:
         session_uri = start_resumable_upload(state, item, token, video_path)
         offset = 0
+        video_id = None
     else:
-        offset = resume_offset(session_uri, token, video_path.stat().st_size)
-    video_id = upload_bytes(session_uri, token, video_path, offset)
+        resumed = resume_upload_status(session_uri, token, video_path.stat().st_size)
+        offset = resumed["offset"]
+        video_id = resumed["video_id"]
+    if video_id is None:
+        from scripts.kesher_runtime.media_state import CanonicalMediaState
+
+        def do_upload():
+            vid = upload_bytes(session_uri, token, video_path, offset, state=state)
+            return {"video_id": vid}
+        if isinstance(state, CanonicalMediaState):
+            video_id = upload_bytes(session_uri, token, video_path, offset, state=state)
+        else:
+            upload_req = {"session_uri": session_uri, "offset": offset, "size": video_path.stat().st_size}
+            upload_receipt = legacy_external_effect(state, item, 'youtube_upload_bytes', upload_req, do_upload)
+            video_id = upload_receipt["video_id"]
     item["youtube_id"] = video_id
     item["youtube_url"] = f"https://youtu.be/{video_id}"
     item["upload_response_at"] = utc_now()
-    save_state(state)
-    verification = verify_public_upload(item, token)
+    _verify_and_record_upload(state, item, token)
+    return 0
+
+
+def _verify_and_record_upload(state: dict[str, Any], item: dict[str, Any], token: str) -> None:
+    try:
+        verification = verify_public_upload(item, token)
+    except PipelineError as exc:
+        if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote "):
+            raise
+        try:
+            repair_persisted_youtube_metadata(item, token)
+        except PipelineError as repair_exc:
+            if "HTTP 403" not in str(repair_exc):
+                raise
+            print("WARNING: YouTube metadata repair returned HTTP 403 (upload token scope insufficient for video.update); continuing to verification...")
+        verification = verify_public_upload(item, token)
     item["youtube_verification"] = verification
     item["uploaded"] = True
     item["status"] = "uploaded"
     item["uploaded_at"] = utc_now()
+    item["youtube_url"] = f"https://youtu.be/{item['youtube_id']}"
     item.pop("upload_session_uri", None)
     save_state(state)
     print(f"UPLOADED item={item['id']} url={item['youtube_url']}")
-    return 0
 
 
 def report() -> int:
@@ -1537,9 +2667,12 @@ def build_parser() -> argparse.ArgumentParser:
     mode.add_argument("--review-item")
     mode.add_argument("--remotion-rebuild-item")
     mode.add_argument("--prune-uploaded-media", action="store_true")
+    mode.add_argument("--prune-sources", action="store_true")
+    mode.add_argument("--requires-durable-media-restore", action="store_true")
     mode.add_argument("--report-json", action="store_true")
     parser.add_argument("--slug")
     parser.add_argument("--item-id")
+    parser.add_argument("--operation", choices=("full", "generate", "recovery", "upload", "rebuild", "preflight"))
     parser.add_argument("--max-wait-seconds", type=int, default=3600)
     parser.add_argument("--require-israel-hour", type=int, choices=range(24))
     parser.add_argument("--visual-status", choices=sorted(ALLOWED_REVIEW))
@@ -1553,6 +2686,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     args = build_parser().parse_args()
     if args.preflight:
         print(json.dumps({"preflight": "passed", **auth_preflight()}, ensure_ascii=False))
@@ -1571,6 +2706,19 @@ def main() -> int:
         return rebuild_rejected_with_remotion(args.remotion_rebuild_item)
     if args.prune_uploaded_media:
         return prune_uploaded_media()
+    if args.prune_sources:
+        prune_notebooklm_sources(NOTEBOOK_ID)
+        return 0
+    if args.requires_durable_media_restore:
+        state = load_state()
+        required = durable_media_restore_required(
+            state,
+            operation=args.operation or "",
+            target_item_id=args.item_id or "",
+            target_slug=args.slug or "",
+        )
+        print("true" if required else "false")
+        return 0
     if args.report_json:
         return report()
     return run_generation(

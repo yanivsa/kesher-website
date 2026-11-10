@@ -3,15 +3,17 @@ const path = require('path');
 const { spawn } = require('child_process');
 const { chromium } = require('playwright');
 const { ROOT, STATIC_ROUTES, isPublishable, blogRoute } = require('./content-policy.cjs');
+const { loadPosts } = require('./load-posts.cjs');
 
 const dist = path.join(ROOT, 'dist');
-const posts = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
+const posts = loadPosts();
 const routes = [
   ...STATIC_ROUTES.filter(r => r !== '/'),
-  ...posts.filter(isPublishable).map(blogRoute),
+  ...new Set(posts.filter(isPublishable).flatMap(post => [blogRoute(post), `/blog/${post.slug || post.id}`])),
   '/'
 ];
 const port = 4179;
+const previewOrigins = [`http://127.0.0.1:${port}`, `http://localhost:${port}`];
 let viteExitCode = null;
 const vite = spawn(process.execPath, [
   path.join(ROOT, 'node_modules/vite/bin/vite.js'),
@@ -45,6 +47,22 @@ const stopVite = () => {
 };
 
 const hasNonAscii = (value) => /[^\x00-\x7F]/.test(value);
+
+const normalizePreviewOrigins = (html) => previewOrigins.reduce(
+  (normalized, origin) => normalized.split(origin).join(''),
+  html,
+);
+
+const clientSnapshot = async (page) => {
+  await page.evaluate(() => {
+    document.getElementById('root')?.setAttribute('data-kesher-render', 'client-snapshot');
+  });
+  // Newer Vite builds may materialize runtime preload URLs against the preview
+  // origin. That origin dies when prerender completes, so persisting it makes
+  // the later preview/public HTML request dead localhost resources. Persist
+  // root-relative asset URLs instead; public canonical URLs are unaffected.
+  return normalizePreviewOrigins(await page.content());
+};
 
 const writeRoute = (route, html) => {
   if (route === '/') {
@@ -82,13 +100,13 @@ const writeRoute = (route, html) => {
       await page.goto(`http://127.0.0.1:${port}${route}`, { waitUntil: 'domcontentloaded' });
       await page.waitForSelector('#main-content h1');
       await page.waitForSelector('link[rel="canonical"]', { state: 'attached' });
-      writeRoute(route, await page.content());
+      writeRoute(route, await clientSnapshot(page));
     }
 
     await page.goto(`http://127.0.0.1:${port}/__not-found__`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('#main-content h1');
     await page.waitForSelector('meta[name="robots"][content*="noindex"]', { state: 'attached' });
-    fs.writeFileSync(path.join(dist, '404.html'), await page.content());
+    fs.writeFileSync(path.join(dist, '404.html'), await clientSnapshot(page));
   } finally {
     if (browser) await browser.close();
     stopVite();

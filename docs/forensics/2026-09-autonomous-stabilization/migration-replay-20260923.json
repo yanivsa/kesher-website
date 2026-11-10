@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "mode": "read_only_preparation",
+  "observed_at": "2026-09-23T06:10:30.756240+00:00",
+  "controller_blob_sha": "d85cbede553ceca81b4b3ab993ddc74e308036cb",
+  "main_sha": "33d1ceb8c6f706df293efdec4f1bf96e6974411e",
+  "artifacts": [
+    {
+      "artifact_id": 10704214914,
+      "archive_sha256": "44d2a3d3d05eb9b6210256ad48b8dc7adec32afa98dbc6affdd1e55ea58f5ee1",
+      "run_id": "35749006786"
+    },
+    {
+      "artifact_id": 10696625942,
+      "archive_sha256": "46b452b12ec6ec133dec184e6f157fe638377195f924c9953324570085ca23d6",
+      "run_id": "35730904907"
+    }
+  ],
+  "source_count": 83,
+  "legacy_item_count": 94,
+  "adopted_slots": 10,
+  "media_baselines": 13,
+  "preserved_youtube_ids": 62,
+  "quarantine_counts": {
+    "LEGACY_IDENTITY_UNRESOLVED": 43,
+    "LEGACY_UPLOAD_CAPABILITY_REQUIRES_SEALING": 1,
+    "DUPLICATE_UPLOAD": 9
+  },
+  "identity_unresolved_reasons": {
+    "exact_git_source_missing": 43
+  },
+  "production_state_written": false,
+  "public_completion_inferred": false,
+  "limitations": [
+    "All 17 missing historical source versions were resolved from exact Git blobs reachable from main. Initial current-only replay counts are preserved above; historical replay counts are separate.",
+    "One live upload capability remains in the private source archive; production migration must seal it using the existing runtime key.",
+    "Duplicate public uploads require explicit adjudication; no timestamp winner, deletion, or reupload is authorized by this replay.",
+    "Imported media still requires independent legacy artifact and public verification; baseline import does not certify delivery."
+  ],
+  "historical_replay": {
+    "main_ref": "33d1ceb8c6f706df293efdec4f1bf96e6974411e",
+    "commits_available": 148,
+    "unique_blobs_read": 36,
+    "missing_source_versions": 17,
+    "source_versions_resolved": 17,
+    "media_baselines": 32,
+    "quarantine_counts": {
+      "LEGACY_UPLOAD_CAPABILITY_REQUIRES_SEALING": 1,
+      "DUPLICATE_UPLOAD": 14,
+      "LEGACY_MEDIA_AMBIGUOUS": 1
+    },
+    "unresolved_reasons": {}
+  }
+}

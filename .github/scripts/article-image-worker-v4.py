@@ -2,15 +2,15 @@
 """Trusted article image worker for Kesher Pipeline V4.
 
 Production strategy:
-1. Try three materially different Gemini hero generations.
+1. Try two materially different Gemini hero generations; reserve the third for catalog exhaustion.
 2. Try verified Pexels and Pixabay photography.
 3. Try unused owned assets from the managed fallback bank.
 4. Try an unused repository-curated seed reservoir with 40 real JPG candidates
    per article category.
-5. Prefer unused assets; bounded local reuse is allowed only after a 90-day cooldown and below three lifetime uses.
+5. Never reuse pixels already published as an article hero; catalog exhaustion proceeds to the reserved third owned generation.
 6. Never fabricate an abstract placeholder.
 
-If every concrete option is exhausted under those limits, the worker fails closed so publication waits for a retry or a newly generated/curated asset.
+Catalog exhaustion automatically requests the reserved fresh owned hero through the existing pixel-verified provider. Total generation budget remains three. The worker fails closed for missing/unhealthy providers or rejected pixels; no abstract placeholder or reuse bypass is allowed.
 """
 
 from __future__ import annotations
@@ -58,6 +58,12 @@ CATEGORY_DESCRIPTIONS = {
 }
 
 TOPIC_FILENAME_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
+    # Preschool separation is not interchangeable with a generic parenting
+    # or couples photograph. Require recognisable preschool/daycare context.
+    (r"גן ילדים|גננת|מעון|הסתגלות לגן|פרידה בגן|kindergarten|daycare|preschool|morning.dropoff|child.does.not.want.kindergarten",
+     ("daycare", "kindergarten", "preschool", "separation", "dropoff", "nursery")),
+    (r"גמילה|חיתול|עצירות|potty|toilet|constipation",
+     ("potty", "toilet", "bathroom", "constipation", "training")),
     (r"כיתה|בית ספר|ילקוט|בוקר|התארגנות", ("first-grade", "school", "morning", "adhd")),
     (r"מחונ|פרפקציונ", ("gifted", "perfectionism")),
     (r"קשב|adhd", ("adhd", "executive", "attention")),
@@ -69,6 +75,17 @@ TOPIC_FILENAME_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
 )
 
 REQUIRED_CATEGORIES = {"dating", "singles", "relocation", "premarital", "parenting", "gifted", "adhd", "couples"}
+
+CATEGORY_FALLBACK_ORDER: dict[str, tuple[str, ...]] = {
+    "dating": ("dating", "singles", "couples", "premarital"),
+    "singles": ("singles", "dating", "couples", "premarital"),
+    "couples": ("couples", "premarital", "dating", "singles", "relocation"),
+    "premarital": ("premarital", "couples", "dating", "singles"),
+    "relocation": ("relocation", "couples", "parenting"),
+    "parenting": ("parenting", "adhd", "gifted", "couples"),
+    "gifted": ("gifted", "parenting", "adhd"),
+    "adhd": ("adhd", "parenting", "gifted"),
+}
 
 
 def provider_preflight() -> dict[str, bool]:
@@ -134,18 +151,22 @@ def collect_existing_image_usage(repo_root: Path) -> tuple[set[str], dict[str, i
         if not path.is_file():
             continue
         try:
-            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            data = path.read_bytes()
+            digest = hashlib.sha256(data).hexdigest()
+            pixels = "pixels:" + core.image_pixel_sha256(data)
         except Exception:
             continue
-        hashes.add(digest)
+        hashes.update((digest, pixels))
         usage[digest] = usage.get(digest, 0) + 1
+        usage[pixels] = usage.get(pixels, 0) + 1
         try:
             used_on = date.fromisoformat(str(post.get("date") or "")[:10])
         except Exception:
             continue
-        previous = last_used.get(digest)
-        if previous is None or used_on > previous:
-            last_used[digest] = used_on
+        for key in (digest, pixels):
+            previous = last_used.get(key)
+            if previous is None or used_on > previous:
+                last_used[key] = used_on
     return hashes, usage, last_used
 
 
@@ -187,6 +208,16 @@ def _topic_score(post: dict[str, Any], source_path: str) -> int:
     return score
 
 
+def _requires_specific_visual_scene(post: dict[str, Any]) -> bool:
+    """Sensitive, concrete article subjects must not receive generic stock."""
+    text = " ".join(str(post.get(k) or "") for k in
+                    ("id", "title", "subcategory", "excerpt")).lower()
+    return bool(re.search(
+        r"גן ילדים|גננת|מעון|הסתגלות לגן|פרידה בגן|kindergarten|daycare|preschool|"
+        r"morning.dropoff|child.does.not.want.kindergarten|"
+        r"גמילה|חיתול|עצירות|potty|toilet|constipation", text, re.I))
+
+
 def _stable_tiebreak(post: dict[str, Any], source_path: str) -> str:
     identity = str(post.get("slug") or post.get("id") or post.get("title") or "article")
     return hashlib.sha256(f"{identity}|{source_path}".encode("utf-8")).hexdigest()
@@ -207,10 +238,10 @@ def _bank_candidates(category: str, banned_paths: set[str]) -> list[tuple[int, s
     return rows
 
 
-def _seed_candidates(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[int, str]]:
+def _seed_candidates_for_category(category: str, banned_paths: set[str]) -> list[tuple[int, str]]:
     manifest = load_seed_manifest()
-    category = core.article_key(post)
-    block = manifest["categories"][category]
+    categories = manifest.get("categories") or {}
+    block = categories.get(category) or {}
     rows: list[tuple[int, str]] = []
     seen: set[str] = set()
     for tier, field in ((1, "primary"), (2, "reserve")):
@@ -223,9 +254,20 @@ def _seed_candidates(post: dict[str, Any], banned_paths: set[str]) -> list[tuple
     return rows
 
 
+def _seed_candidates(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[int, str]]:
+    return _seed_candidates_for_category(core.article_key(post), banned_paths)
+
+
 def _candidate_pool(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[int, str]]:
-    category = core.article_key(post)
-    rows = _bank_candidates(category, banned_paths) + _seed_candidates(post, banned_paths)
+    primary_category = core.article_key(post)
+    cascade = CATEGORY_FALLBACK_ORDER.get(primary_category, (primary_category,))
+    rows: list[tuple[int, str]] = []
+    for step_index, cat in enumerate(cascade):
+        tier_offset = step_index * 10
+        bank = [(tier + tier_offset, path) for tier, path in _bank_candidates(cat, banned_paths)]
+        seed = [(tier + tier_offset, path) for tier, path in _seed_candidates_for_category(cat, banned_paths)]
+        rows.extend(bank)
+        rows.extend(seed)
     seen: set[str] = set()
     result: list[tuple[int, str]] = []
     for tier, source_path in rows:
@@ -233,13 +275,52 @@ def _candidate_pool(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[
             continue
         seen.add(source_path)
         result.append((tier, source_path))
+
     return result
+
+
+def audit_image_pool_capacity(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
+    existing_hashes, _, _ = collect_existing_image_usage(repo_root)
+    bank_payload = load_bank_manifest()
+    categories: dict[str, dict[str, int]] = {}
+    total_assets = 0
+    total_available = 0
+
+    for entry in bank_payload.get("assets") or []:
+        if not isinstance(entry, dict):
+            continue
+        cat = str(entry.get("category") or "generic")
+        p = str(entry.get("path") or "").strip()
+        cat_stats = categories.setdefault(cat, {"total": 0, "used": 0, "available": 0})
+        cat_stats["total"] += 1
+        total_assets += 1
+        try:
+            full_path = (repo_root / p).resolve()
+            if full_path.is_file():
+                data = full_path.read_bytes()
+                if core.candidate_is_duplicate(data, existing_hashes):
+                    cat_stats["used"] += 1
+                else:
+                    cat_stats["available"] += 1
+                    total_available += 1
+            else:
+                cat_stats["used"] += 1
+        except Exception:
+            cat_stats["used"] += 1
+
+    return {
+        "categories": categories,
+        "total_assets": total_assets,
+        "total_available": total_available,
+        "capacity_alert": total_available <= 2,
+    }
 
 
 def try_gemini_variants(
     post: dict[str, Any],
     attempts: list[str],
     existing_hashes: set[str] | None = None,
+    *, generation_limit: int = 3,
 ) -> core.ImageCandidate | None:
     """Use distinct compositions instead of repeating the same image request."""
     variants = (
@@ -247,7 +328,7 @@ def try_gemini_variants(
         "Visual direction: wider environmental documentary frame with relevant home, school, street or cafe context.",
         "Visual direction: intimate but natural emotional moment, restrained expressions, realistic editorial composition.",
     )
-    for index, direction in enumerate(variants, start=1):
+    for index, direction in enumerate(variants[:generation_limit], start=1):
         variant_post = dict(post)
         excerpt = str(post.get("excerpt") or "")
         variant_post["excerpt"] = f"{direction} {excerpt}"
@@ -292,7 +373,7 @@ def try_pixabay(
                 data = core.download(str(url))
                 _w, _h, ext = core.validate_candidate(data)
                 digest = hashlib.sha256(data).hexdigest()
-                if existing_hashes and digest in existing_hashes:
+                if core.candidate_is_duplicate(data, existing_hashes):
                     print("IMAGE_STOCK_REJECTED provider=pixabay reason=sha256_collision", file=sys.stderr)
                     continue
                 matched, description = verify_pixels(post, data, ext)
@@ -323,7 +404,7 @@ def local_fallback(
     banned_paths: set[str] | None = None,
     **kwargs: Any,
 ) -> core.ImageCandidate | None:
-    """Choose the best concrete local asset with bounded, auditable reuse."""
+    """Choose the best concrete local asset; published hero pixels are never reused."""
     attempts.append("local-curated")
     if existing_hashes is None or existing_usage is None or last_used is None:
         discovered_hashes, discovered_usage, discovered_last_used = collect_existing_image_usage(REPO_ROOT)
@@ -339,7 +420,6 @@ def local_fallback(
     reserve_min_topic_score = int(policy.get("reserve_min_topic_score") or 1)
     today = date.today()
     unused: list[tuple[int, int, str, str, bytes, str]] = []
-    reusable: list[tuple[int, int, int, str, str, bytes, str]] = []
 
     for tier, source_path in _candidate_pool(post, banned_paths):
         try:
@@ -351,21 +431,31 @@ def local_fallback(
             digest = hashlib.sha256(data).hexdigest()
             score = _topic_score(post, source_path)
 
+            # Image format, dimensions, and category membership are NOT
+            # evidence that the depicted scene fits a specific article.
+            # Block generic parent/child photos for daycare, potty-training,
+            # and similarly concrete editorial subjects. On exhaustion the
+            # upstream provider can generate a new photo; otherwise fail closed.
+            if _requires_specific_visual_scene(post) and score < 20:
+                print(
+                    f"IMAGE_LOCAL_FALLBACK_REJECTED category={category} path={source_path} reason=topic_mismatch",
+                    file=sys.stderr, flush=True,
+                )
+                continue
+
             # Seed reserves are inventory-only unless the article itself gives a
             # concrete semantic reason to use them. This prevents a technically
             # valid but off-topic couples image from becoming a parenting hero.
             if tier == 2 and score < reserve_min_topic_score:
                 continue
 
-            if digest not in existing_hashes:
+            pixels = "pixels:" + core.image_pixel_sha256(data)
+            if not core.candidate_is_duplicate(data, existing_hashes):
                 unused.append((tier, -score, _stable_tiebreak(post, source_path), source_path, data, ext))
                 continue
 
-            prior_uses = existing_usage.get(digest, 0)
-            last = last_used.get(digest)
-            days_since = (today - last).days if last else cooldown_days
-            if prior_uses < max_lifetime_uses and days_since >= cooldown_days:
-                reusable.append((tier, prior_uses, -score, _stable_tiebreak(post, source_path), source_path, data, ext))
+            # Any byte- or pixel-level match is already a published hero and is not reusable.
+            continue
         except Exception as exc:
             print(
                 f"IMAGE_LOCAL_FALLBACK_REJECTED category={category} path={source_path} error={type(exc).__name__}",
@@ -381,36 +471,23 @@ def local_fallback(
             file=sys.stderr,
             flush=True,
         )
+        visual_match = CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"])
+        bank_payload = load_bank_manifest()
+        for entry in bank_payload.get("assets") or []:
+            if isinstance(entry, dict) and entry.get("path") == source_path and entry.get("description"):
+                visual_match = str(entry["description"]).strip()
+                break
         return core.ImageCandidate(
             "Local",
             data,
             ext,
             f"local://{source_path}",
-            CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"]),
-            attempts.copy(),
-        )
-
-    if reusable:
-        reusable.sort()
-        tier, prior_uses, _neg_score, _stable, source_path, data, ext = reusable[0]
-        print(
-            f"IMAGE_LOCAL_FALLBACK_READY category={category} tier={tier} path={source_path} "
-            f"reuse={prior_uses + 1} cooldown_days={cooldown_days}",
-            file=sys.stderr,
-            flush=True,
-        )
-        return core.ImageCandidate(
-            "Local",
-            data,
-            ext,
-            f"local://{source_path}",
-            CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"]),
+            visual_match,
             attempts.copy(),
         )
 
     print(
-        f"IMAGE_LOCAL_FALLBACK_EXHAUSTED category={category} "
-        f"cooldown_days={cooldown_days} max_lifetime_uses={max_lifetime_uses}",
+        f"IMAGE_LOCAL_FALLBACK_EXHAUSTED category={category} reason=no_unused_unique_asset",
         file=sys.stderr,
         flush=True,
     )
@@ -431,24 +508,34 @@ def choose_candidate(
     attempts: list[str] = []
 
     for provider in (try_gemini_variants, try_pexels, try_pixabay):
-        try:
-            candidate = provider(post, attempts, existing_hashes=existing_hashes)
-        except TypeError:
-            candidate = provider(post, attempts)
+        options = {'generation_limit': 2} if provider is try_gemini_variants else {}
+        candidate = provider(post, attempts, existing_hashes=existing_hashes, **options)
         if candidate:
             return candidate
 
-    return local_fallback(
-        repo,
-        post,
-        head_ref,
-        token,
-        attempts,
-        existing_hashes=existing_hashes,
-        existing_usage=existing_usage,
-        last_used=last_used,
-        banned_paths=collect_banned_paths(REPO_ROOT),
+    candidate = local_fallback(
+        repo, post, head_ref, token, attempts,
+        existing_hashes=existing_hashes, existing_usage=existing_usage,
+        last_used=last_used, banned_paths=collect_banned_paths(REPO_ROOT),
     )
+    if candidate:
+        return candidate
+    # Spend the final existing owned-generation slot on a genuinely new scene,
+    # rather than redispatching a workflow or relaxing the catalog reuse gate.
+    fresh_post = dict(post)
+    fresh_post['excerpt'] = (
+        'IMAGE_CATALOG_EXHAUSTED: Generate a fresh owned replacement photograph. '
+        'Use a distinct concrete scene relevant to this article, real people and '
+        'natural interaction. No text, logos, symbolic placeholders or recycled '
+        'composition. ' + str(post.get('excerpt') or '')
+    )
+    candidate = try_gemini(fresh_post, attempts, existing_hashes=existing_hashes)
+    if attempts and attempts[-1] == 'gemini':
+        attempts[-1] = 'gemini-3-catalog-replenishment'
+    if candidate:
+        candidate.attempts = attempts.copy()
+    return candidate
+
 
 
 v3.local_fallback = local_fallback

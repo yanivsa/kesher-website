@@ -14,7 +14,12 @@ const root = document.getElementById('root')!
 
 preloadRoute(window.location.pathname).then(() => {
   const canonicalHref = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href;
-  if (shouldHydrateRoute(window.location.pathname, canonicalHref, root.hasChildNodes())) {
+  if (shouldHydrateRoute(
+    window.location.pathname,
+    canonicalHref,
+    root.hasChildNodes(),
+    root.dataset.kesherRender === 'client-snapshot',
+  )) {
     hydrateRoot(root, app)
   } else {
     root.replaceChildren()

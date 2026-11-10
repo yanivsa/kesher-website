@@ -1,0 +1,34 @@
+{
+  "scope": "synthetic future article, real local Git and npm generators, remote provider keys removed; no production/public effects",
+  "trusted_code_sha": "7b641300e669b4b6ae4c62878fd7897d20d11cd9",
+  "old_head_sha": "2cee43e96d397c444e50ab419ea007b4ebaaf425",
+  "new_head_sha": "77e07e617b961f3aefa9f9a4562b20ba292c12b5",
+  "tree_sha": "4ebb8970cfec12839498c3948c35a0855123792c",
+  "provider": "LocalEditorial",
+  "image_sha256": "7a1de96ae68d855990169a22969a7d1c35e16822d703ad1df16c7d6cce7acb10",
+  "image_dimensions": "1200x675",
+  "provider_chain": [
+    "gemini",
+    "unsplash",
+    "pexels",
+    "local-curated",
+    "local-editorial"
+  ],
+  "existing_posts_preserved": 87,
+  "final_post_count": 88,
+  "body_failure_recovered_without_new_commit_or_generation": true,
+  "shared_image_contract_passed": true,
+  "independent_state_receipt_passed": true,
+  "changed_paths": [
+    "public/images/generated/blog/canonical-image-test-2099.png",
+    "public/llms-full.txt",
+    "public/rss.xml",
+    "public/sitemap.xml",
+    "src/data/postSummaries.json",
+    "src/data/posts.json"
+  ],
+  "module_sha256": {
+    "scripts/kesher_runtime/article_image_worker.py": "b0c8c626b85bff966755c016738f529cf7eb40b81f3b3958b4a10801f44dcd60",
+    "scripts/kesher_runtime/article_images.py": "d825a8294ed7f79f472ef110c2396cf42185504ea3f4867c91d6423d252bc29f"
+  }
+}

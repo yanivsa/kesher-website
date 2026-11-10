@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+from pathlib import Path
 from datetime import datetime, timezone
 from typing import Any, MutableMapping
 
@@ -189,6 +191,10 @@ def _self_check() -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--production-shadow", action="store_true")
+    parser.add_argument("--pr-number", type=int)
+    parser.add_argument("--github-summary", action="store_true")
+    parser.add_argument("--repo",default="yanivsa/kesher-website")
     parser.add_argument("--self-check", action="store_true")
     parser.add_argument("--report-json", action="store_true")
     parser.add_argument("--canary-shadow", action="store_true")
@@ -196,6 +202,20 @@ def main() -> int:
     parser.add_argument("--content-sha256")
     parser.add_argument("--stage")
     args = parser.parse_args()
+
+    if args.production_shadow:
+        from scripts.kesher_v6_production_shadow import ReadOnlyClient, observe, summary
+        try:
+            client=ReadOnlyClient(args.repo,os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN") or "",
+                                  youtube_token=os.environ.get("YOUTUBE_ACCESS_TOKEN", ""),
+                                  youtube_key=os.environ.get("YOUTUBE_DATA_API_KEY", ""))
+            payload=observe(client,slug=args.slug or "",content_sha256=args.content_sha256 or "",pr_number=args.pr_number)
+        except (ValueError,KeyError,TypeError) as exc:
+            parser.error(str(exc))
+        print(json.dumps(payload,ensure_ascii=False,indent=2,sort_keys=True))
+        if args.github_summary and os.environ.get("GITHUB_STEP_SUMMARY"):
+            with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf-8") as handle:handle.write(summary(payload))
+        return 0
 
     if args.canary_shadow:
         try:

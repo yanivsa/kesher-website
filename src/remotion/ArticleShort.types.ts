@@ -34,4 +34,5 @@ export interface ArticleShortProps {
   url: string;
   signatureImageSrc?: string;
   motionPlan?: MotionTarget[];
+  preserveSourceSharpness?: boolean;
 }

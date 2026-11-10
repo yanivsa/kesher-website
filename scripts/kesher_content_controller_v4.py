@@ -224,16 +224,75 @@ class V4Controller(legacy.BestEffortController):
         return state
 
     def _dispatch_auto_merge_v4(self, state: dict[str, Any]) -> None:
-        active = self.github.active_workflow_run(AUTO_MERGE_WORKFLOW, production_only=True)
+        article = state.get("article") if isinstance(state.get("article"), dict) else {}
+        norm_status = str(article.get("normalization_status") or "").lower()
+        norm_head = str(article.get("normalized_head_sha") or "").strip().lower()
+        curr_head = str(article.get("current_pr_head_sha") or "").strip().lower()
+        image_head = str(article.get("image_head_sha") or "").strip().lower()
+        merge_cand = str(article.get("merge_candidate_sha") or "").strip().lower()
+
+        if norm_status == "pending":
+            return
+        if norm_head and curr_head and norm_head != curr_head:
+            return
+        if image_head and curr_head and image_head != curr_head:
+            return
+        if merge_cand and curr_head and merge_cand != curr_head:
+            return
+        dispatch_count = int(article.get("merge_dispatch_count") or 0)
+        if dispatch_count >= 3:
+            core.block(
+                state,
+                "article",
+                "ARTICLE_ATTEMPTS_EXHAUSTED",
+                f"Auto-merge dispatch limit reached ({dispatch_count} dispatches)",
+            )
+            state["article"]["status"] = "exhausted"
+            return
+        workflow = getattr(self, "AUTO_MERGE_WORKFLOW", AUTO_MERGE_WORKFLOW)
+        active = self.github.active_workflow_run(workflow, production_only=True)
         if active:
             return
-        core.GitHubClient.dispatch(self.github, AUTO_MERGE_WORKFLOW, None)
+        pr_number = int(article.get("pr_number") or 0)
+        if pr_number <= 0:
+            raise core.ControllerError("ARTICLE_PR_IDENTITY_MISSING")
+        slot = str(article.get("normalization_slot") or state.get("cycle") or "").strip()
+        inputs: dict[str, str] = {"pr_number": str(pr_number)}
+        if slot:
+            inputs["slot"] = slot
+        core.GitHubClient.dispatch(self.github, workflow, inputs)
         state["article"]["merge_dispatch_at"] = core.utc_now()
-        state["article"]["merge_dispatch_count"] = int(state["article"].get("merge_dispatch_count") or 0) + 1
+        state["article"]["merge_dispatch_count"] = dispatch_count + 1
 
     def _handle_open_article_pr(self, state: dict[str, Any], pr: dict[str, Any]) -> core.Action:
         number = int(pr.get("number") or 0)
+        head_sha = str((pr.get("head") or {}).get("sha") or "").strip().lower()
         state["article"].update({"pr_number": number, "pr_url": pr.get("html_url")})
+        state["article"]["current_pr_head_sha"] = head_sha
+        if not state["article"].get("jules_head_sha"):
+            state["article"]["jules_head_sha"] = head_sha
+
+        normalized_head_sha = str(state["article"].get("normalized_head_sha") or "").strip().lower()
+        if normalized_head_sha and normalized_head_sha != head_sha:
+            drift_count = int(state["article"].get("normalization_drift_count") or 0) + 1
+            state["article"]["normalization_drift_count"] = drift_count
+            if drift_count > 3:
+                core.block(
+                    state,
+                    "article",
+                    "ARTICLE_JULES_UNSTABLE_MUTATION",
+                    f"Article PR head mutated repeatedly ({drift_count} times) after trusted stages; branch quiescence failed",
+                )
+                state["article"]["status"] = "blocked"
+                return core.Action("blocked", "Article PR head mutated repeatedly; branch quiescence failed")
+
+            state["article"]["normalization_status"] = "pending"
+            state["article"].pop("normalized_head_sha", None)
+            state["article"].pop("image_head_sha", None)
+            state["article"].pop("merge_candidate_sha", None)
+            if str((state.get("image") or {}).get("status") or "") in {"running", "complete"}:
+                state["image"]["status"] = "pending"
+                state["image"].pop("run_id", None)
 
         needs_normalization, slot = self.github.article_pr_normalization_required(pr)
         if needs_normalization:
@@ -270,6 +329,7 @@ class V4Controller(legacy.BestEffortController):
             )
 
         state["article"]["normalization_status"] = "complete"
+        state["article"]["normalized_head_sha"] = head_sha
         image_was_complete = str((state.get("image") or {}).get("status") or "") == "complete"
         ready, evidence = self.github.article_pr_image_ready(pr)
         if ready:
@@ -280,6 +340,8 @@ class V4Controller(legacy.BestEffortController):
                 "artifact_sha256": evidence.get("sha256"),
                 "source_id": evidence.get("source"),
             })
+            state["article"]["image_head_sha"] = head_sha
+            state["article"]["merge_candidate_sha"] = head_sha
             core.transition(
                 state,
                 "article_pr_open",
@@ -290,6 +352,108 @@ class V4Controller(legacy.BestEffortController):
             if image_was_complete or evidence:
                 self._dispatch_auto_merge_v4(state)
             return core.Action("wait", "article PR normalized and image ready; merge gate dispatched")
+
+        # A merge/rebase can move the PR head after trusted pixels and article
+        # identity were already proven. The image worker can safely refresh only
+        # Image Evidence Head when every other proof (article SHA, bytes, pixels,
+        # provider/source metadata) still matches. This is recovery of the same
+        # trusted artifact, not a fourth image-generation attempt.
+        rebind_check = getattr(self.github, "article_pr_image_rebindable", None)
+        rebindable, _rebind_evidence = rebind_check(pr) if callable(rebind_check) else (False, {})
+        image = state["image"]
+        head_sha = str((pr.get("head") or {}).get("sha") or "").strip()
+        if (
+            rebindable
+            and re.fullmatch(r"[a-f0-9]{40}", head_sha)
+            and str(image.get("evidence_rebind_head_sha") or "") != head_sha
+        ):
+            active = self.github.active_image_run(number)
+            if active:
+                image["run_id"] = active.get("id")
+                image["status"] = "running"
+                core.transition(
+                    state,
+                    "article_image_rebinding",
+                    "trusted image evidence rebind already active",
+                    pr_number=number,
+                    head_sha=head_sha,
+                )
+                return core.Action("wait", "trusted image evidence rebind workflow active")
+
+            core.GitHubClient.dispatch(
+                self.github,
+                v3.IMAGE_WORKFLOW,
+                {"pr_number": str(number), "recovery_only": "true", "expected_head_sha": head_sha},
+            )
+            image.update({
+                "evidence_rebind_head_sha": head_sha,
+                "evidence_rebind_dispatched_at": core.utc_now(),
+                "status": "running",
+                "next_retry_at": None,
+            })
+            core.transition(
+                state,
+                "article_image_rebinding",
+                "exact trusted image evidence is valid except for PR head binding",
+                pr_number=number,
+                head_sha=head_sha,
+            )
+            return core.Action(
+                "dispatch_image_rebind",
+                "rebind trusted image evidence to the current PR head",
+                {"pr_number": str(number)},
+            )
+
+        # Trusted normalization can intentionally remove the image asset because
+        # it only preserves the reviewed publication paths. If the prior immutable
+        # image head still passes the full bytes/pixels proof and the current
+        # editorial article differs only by image/imageAlt, dispatch the image
+        # worker as a same-artifact reattach. This does not consume generation
+        # budget and cannot authorize a changed article or unproven historical blob.
+        prior_check = getattr(self.github, "article_pr_prior_image_recoverable", None)
+        prior_recoverable, _prior_evidence = prior_check(pr) if callable(prior_check) else (False, {})
+        if (
+            prior_recoverable
+            and re.fullmatch(r"[a-f0-9]{40}", head_sha)
+            and str(image.get("evidence_rebind_head_sha") or "") != head_sha
+        ):
+            active = self.github.active_image_run(number)
+            if active:
+                image["run_id"] = active.get("id")
+                image["status"] = "running"
+                core.transition(
+                    state,
+                    "article_image_rebinding",
+                    "prior trusted image artifact reattach already active",
+                    pr_number=number,
+                    head_sha=head_sha,
+                )
+                return core.Action("wait", "prior trusted image artifact reattach workflow active")
+
+            core.GitHubClient.dispatch(
+                self.github,
+                v3.IMAGE_WORKFLOW,
+                {"pr_number": str(number), "recovery_only": "true", "expected_head_sha": head_sha},
+            )
+            image.update({
+                "evidence_rebind_head_sha": head_sha,
+                "evidence_rebind_dispatched_at": core.utc_now(),
+                "evidence_rebind_mode": "reattach_prior_trusted_artifact",
+                "status": "running",
+                "next_retry_at": None,
+            })
+            core.transition(
+                state,
+                "article_image_rebinding",
+                "prior trusted image artifact proved against current normalized article and must be reattached",
+                pr_number=number,
+                head_sha=head_sha,
+            )
+            return core.Action(
+                "dispatch_image_rebind",
+                "reattach prior trusted image artifact to current normalized PR head",
+                {"pr_number": str(number)},
+            )
 
         # Bypass the historical BestEffortController image-deferred behavior.
         # V3 strict handling blocks after the image retry budget; it never
@@ -416,6 +580,8 @@ class V4Controller(legacy.BestEffortController):
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     core.STATE_SCHEMA_VERSION = STATE_SCHEMA_VERSION
     core.GitHubClient = V4GitHubClient
     core.Controller = V4Controller

@@ -1,26 +1,6 @@
 name: Kesher Daily Article Short V4
 
 on:
-  pull_request:
-    paths:
-      - .github/workflows/kesher-short-v4.yml
-      - scripts/kesher_short_pipeline_v4.py
-      - scripts/kesher_short_policy.py
-      - scripts/kesher_daily_pipeline.py
-      - scripts/kesher_video_reconcile.py
-      - scripts/kesher_content_controller_v4_runtime.py
-      - scripts/requirements-video-cloud.txt
-      - scripts/kesher_video_asset_resolver.py
-      - scripts/kesher_free_stock_broll.py
-      - tests/test_kesher_free_stock_broll.py
-      - src/remotion/**
-      - remotion-kesher/**
-      - package.json
-      - package-lock.json
-      - tests/test_short_pipeline_v4.py
-      - tests/test_short_retry_policy_v4.py
-      - tests/test_video_reconcile.py
-      - tests/test_v4_runtime_activation.py
   workflow_dispatch:
     inputs:
       operation:
@@ -37,6 +17,10 @@ on:
           - release
           - derive
           - historical
+          - owner_preview
+          - owner_publish
+          - owner_source_probe
+          - owner_reviewed_publish
       rebuild_item_id:
         description: Exact technically rejected item to rebuild with Remotion
         required: false
@@ -54,7 +38,7 @@ on:
         required: false
         type: string
       derive_long_item_id:
-        description: Deprecated compatibility input; long-form provider identity is never reused for a Short
+        description: Exact authoritative Overview item used only to bind independent Short provenance
         required: false
         type: string
       historical_commit:
@@ -80,9 +64,12 @@ concurrency:
 
 jobs:
   pipeline:
+    # Bounded manual emergency bridge; explicitly retired by coordinated cutover.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
+      KESHER_MANUAL_EMERGENCY_BRIDGE: "true"
       KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-short-v4-state
       KESHER_STATE_ARTIFACT: kesher-short-v4-state
       NOTEBOOKLM_BIN: notebooklm
@@ -90,8 +77,9 @@ jobs:
       KESHER_WHISPER_MODEL: small
       HF_HOME: ${{ github.workspace }}/.cache/huggingface
       NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
-      KESHER_BROLL_ENABLED: "true"
+      KESHER_BROLL_ENABLED: "false"
       KESHER_BROLL_BUDGET_SECONDS: "12"
+      KESHER_MEDIA_MODE: "article_short"
 
     steps:
       - name: Checkout workflow revision for validation
@@ -106,6 +94,12 @@ jobs:
         with:
           ref: main
           persist-credentials: false
+
+      - name: Refuse emergency bridge after cutover exclusion begins
+        id: bridge_admission
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -m scripts.kesher_runtime.bridge_admission
 
       - name: Set up Python 3.12
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
@@ -161,8 +155,103 @@ jobs:
             tests.test_kesher_free_stock_broll \
             -v
 
+      - name: OWNER render locally with MIT BlueTTS Hebrew model and CC BY licensed reference voice
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_preview' }}
+        env:
+          OWNER_SLUG: ${{ inputs.derive_slug }}
+          OWNER_SHA: ${{ inputs.derive_content_sha256 }}
+        run: |
+          set -euo pipefail
+          test "$OWNER_SLUG" = "vantage-sensitivity-sensitive-gifted-children"
+          test "$OWNER_SHA" = "e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea"
+          python -m pip install 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' \
+            Pillow==11.3.0 requests==2.32.5 google-auth==2.40.3 \
+            google-api-python-client==2.181.0
+          python scripts/kesher_owner_vantage_short.py preview --source-sha "$OWNER_SHA"
+
+      - name: Preserve independently reviewable OWNER source-locked preview
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_preview' && success() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-owner-vantage-short-preview-bluetts-e264d2962b
+          path: |
+            owner-vantage-short-output/short.mp4
+            owner-vantage-short-output/review-voice.wav
+            owner-vantage-short-output/visual-contact-sheet.jpg
+            owner-vantage-short-output/manifest.json
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+          overwrite: false
+
+      - name: Restore previously reviewed exact owner preview
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_publish' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OWNER_SLUG: ${{ inputs.derive_slug }}
+          OWNER_SHA: ${{ inputs.derive_content_sha256 }}
+        run: |
+          set -euo pipefail
+          test "$OWNER_SLUG" = "vantage-sensitivity-sensitive-gifted-children"
+          test "$OWNER_SHA" = "e264d2962b9028afc73463edcd2718b37539212762b0a72e35507d33dcb270ea"
+          mkdir -p owner-vantage-short-output
+          artifact_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-owner-vantage-short-preview-bluetts-e264d2962b&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[0].id')"
+          test -n "$artifact_id" && test "$artifact_id" != "null"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$RUNNER_TEMP/owner-review.zip"
+          unzip -oq "$RUNNER_TEMP/owner-review.zip" -d owner-vantage-short-output
+          test -s owner-vantage-short-output/short.mp4
+          test -s owner-vantage-short-output/review-voice.wav
+          test -s owner-vantage-short-output/visual-contact-sheet.jpg
+          test -s owner-vantage-short-output/manifest.json
+
+      - name: Enforce exact independently approved QA then GitHub-native YouTube OAuth publication
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_publish' }}
+        env:
+          OWNER_SHA: ${{ inputs.derive_content_sha256 }}
+          GITHUB_TOKEN: ${{ github.token }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          set -euo pipefail
+          python -m pip install requests==2.32.5 google-auth==2.40.3 google-api-python-client==2.181.0 Pillow==11.3.0
+          python scripts/kesher_owner_vantage_short.py publish --source-sha "$OWNER_SHA"
+
+      - name: OWNER read-only authenticated YouTube source/dedup probe — no upload
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_source_probe' }}
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          OWNER_SLUG: ${{ inputs.derive_slug }}
+          OWNER_SHA: ${{ inputs.derive_content_sha256 }}
+        run: |
+          set -euo pipefail
+          test "$OWNER_SLUG" = "positivity-resonance-marriage-micro-moments"
+          test "$OWNER_SHA" = "6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f"
+          python -m pip install requests==2.32.5 google-auth==2.40.3 google-api-python-client==2.181.0
+          python -m unittest tests.test_kesher_owner_positivity_youtube_probe -v
+          python -m scripts.kesher_owner_positivity_youtube_probe \
+            --slug "$OWNER_SLUG" --source-sha "$OWNER_SHA"
+
+      - name: OWNER publish exact independently reviewed artifact, no generation
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_reviewed_publish' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          OWNER_SLUG: ${{ inputs.derive_slug }}
+          OWNER_SHA: ${{ inputs.derive_content_sha256 }}
+        run: |
+          set -euo pipefail
+          python -m pip install requests==2.32.5 google-auth==2.40.3 google-api-python-client==2.181.0
+          python -m unittest tests.test_kesher_owner_media_quality -v
+          python -m scripts.kesher_owner_reviewed_publish --slug "$OWNER_SLUG" --source-sha "$OWNER_SHA"
+
       - name: Restore newest valid Short V4 durable state
-        if: ${{ github.event_name != 'pull_request' && inputs.operation != 'preflight' }}
+        if: ${{ github.event_name != 'pull_request' && inputs.operation != 'preflight' && inputs.operation != 'owner_preview' && inputs.operation != 'owner_publish' && inputs.operation != 'owner_source_probe' && inputs.operation != 'owner_reviewed_publish' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -294,18 +383,35 @@ jobs:
           exit 1
 
       - name: Reconcile exact article or existing provider identity before generation
+        id: prepare_generation
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
         run: python -u scripts/kesher_video_reconcile.py --prepare-generation ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
 
       - name: Generate or resume exact NotebookLM-derived Short
-        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') }}
+        id: generate_exact
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') && steps.prepare_generation.outputs.skip_generation != 'true' }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
-        run: python -u scripts/kesher_short_pipeline_v4.py --max-wait-seconds 150 ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
+        run: |
+          python -u scripts/kesher_short_pipeline_v4.py --max-wait-seconds 360 ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          state_path = Path(os.environ["KESHER_STATE_DIR"]) / "state.json"
+          ready = False
+          if state_path.is_file():
+              state = json.loads(state_path.read_text(encoding="utf-8"))
+              items = [i for i in state.get("items", []) if isinstance(i, dict) and i.get("type") == "article_short"]
+              item = items[-1] if items else {}
+              ready = item.get("status") in {"pending_review", "approved", "uploaded"} and bool(item.get("raw_sha256"))
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"ready_for_binding={str(ready).lower()}\n")
+          PY
 
       - name: Rebuild exact rejected Short with Remotion
         if: ${{ github.event_name != 'pull_request' && inputs.operation == 'rebuild' }}
@@ -337,8 +443,62 @@ jobs:
               out.write(f"content_sha256={sha}\n")
           PY
 
+      - name: Bind exact Short to authoritative Overview identity
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'derive') && inputs.derive_long_item_id != '' && (steps.prepare_generation.outputs.skip_generation == 'true' || steps.generate_exact.outputs.ready_for_binding == 'true' || inputs.operation == 'upload') }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DERIVE_SLUG: ${{ inputs.derive_slug }}
+          DERIVE_CONTENT_SHA256: ${{ inputs.derive_content_sha256 }}
+          DERIVE_LONG_ITEM_ID: ${{ inputs.derive_long_item_id }}
+        run: |
+          set -euo pipefail
+          test -n "$DERIVE_SLUG"
+          test -n "$DERIVE_CONTENT_SHA256"
+          test -n "$DERIVE_LONG_ITEM_ID"
+          found="false"
+          while read -r artifact_id; do
+            [ -n "$artifact_id" ] || continue
+            archive="$(mktemp /tmp/kesher-video-controller.XXXXXX.zip)"
+            extract="$(mktemp -d)"
+            if ! gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive" 2>/dev/null; then
+              rm -f "$archive"; rm -rf "$extract"; continue
+            fi
+            if ! unzip -oq "$archive" -d "$extract" 2>/dev/null || [ ! -s "$extract/state.json" ]; then
+              rm -f "$archive"; rm -rf "$extract"; continue
+            fi
+            if python - "$extract/state.json" "$DERIVE_LONG_ITEM_ID" "$DERIVE_SLUG" "$DERIVE_CONTENT_SHA256" <<'PY'
+          import json, sys
+          state = json.load(open(sys.argv[1], encoding='utf-8'))
+          item_id, slug, sha = sys.argv[2:5]
+          matches = [row for row in state.get('items', []) if isinstance(row, dict)
+                     and str(row.get('id') or '') == item_id
+                     and row.get('type') == 'video_overview'
+                     and str((row.get('source') or {}).get('slug') or (row.get('source') or {}).get('id') or '') == slug
+                     and str((row.get('source') or {}).get('content_sha256') or '') == sha]
+          raise SystemExit(0 if len(matches) == 1 else 1)
+          PY
+            then
+              python -u scripts/kesher_video_reconcile.py \
+                --bind-short-overview-identity "$extract/state.json" \
+                --slug "$DERIVE_SLUG" \
+                --content-sha256 "$DERIVE_CONTENT_SHA256" \
+                --long-item-id "$DERIVE_LONG_ITEM_ID" \
+                ${TARGET_ITEM_ID:+--item-id "$TARGET_ITEM_ID"}
+              found="true"
+              rm -f "$archive"; rm -rf "$extract"
+              break
+            fi
+            rm -f "$archive"; rm -rf "$extract"
+          done < <(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-controller-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[].id')
+          if [ "$found" != "true" ]; then
+            echo "Exact authoritative Overview artifact was not found for $DERIVE_LONG_ITEM_ID" >&2
+            exit 1
+          fi
+
       - name: Prepare exact technically verified Short upload
-        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
+        id: prepare_upload
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') && (steps.prepare_generation.outputs.skip_generation == 'true' || steps.generate_exact.outputs.ready_for_binding == 'true' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
           REBUILD_ITEM_ID: ${{ inputs.rebuild_item_id }}
@@ -358,7 +518,7 @@ jobs:
           fi
 
       - name: Upload exact Short once and verify it public
-        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') && steps.prepare_upload.outputs.ready == 'true' }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
           REBUILD_ITEM_ID: ${{ inputs.rebuild_item_id }}
@@ -396,6 +556,83 @@ jobs:
             -pass env:NOTEBOOKLM_STATE_KEY
           chmod 600 "$sealed_tmp"
           mv "$sealed_tmp" "$sealed_path"
+
+      # Owner-only review bundle: immutable source, no credentials, no upload.
+      - name: Prepare exact-source Short audio and visual review bundle
+        id: prepare_owner_review
+        if: ${{ always() && github.event_name != 'pull_request' && inputs.derive_slug != '' && inputs.derive_content_sha256 != '' && hashFiles('.kesher-short-v4-state/state.json') != '' }}
+        env:
+          REVIEW_SLUG: ${{ inputs.derive_slug }}
+          REVIEW_SHA: ${{ inputs.derive_content_sha256 }}
+          REVIEW_DIR: ${{ runner.temp }}/kesher-owner-short-review
+        run: |
+          python - <<'PY'
+          import json, os, shutil, subprocess
+          from pathlib import Path
+
+          root = Path(os.environ["KESHER_STATE_DIR"])
+          state = json.loads((root / "state.json").read_text(encoding="utf-8"))
+          slug, sha = os.environ["REVIEW_SLUG"], os.environ["REVIEW_SHA"]
+          matches = [item for item in state.get("items", []) if
+                     item.get("type") == "article_short"
+                     and (item.get("source") or {}).get("slug") == slug
+                     and (item.get("source") or {}).get("content_sha256") == sha]
+          if len(matches) != 1:
+              print("OWNER_REVIEW_UNAVAILABLE: no unique exact source item")
+              raise SystemExit(0)
+          item = matches[0]
+          if item.get("technical_verified") is not True or item.get("status") not in {"pending_review", "approved"}:
+              print("OWNER_REVIEW_UNAVAILABLE: exact source has no technically verified, unuploaded media")
+              raise SystemExit(0)
+          names = ("final_mp4", "visual_review_path", "transcript_path", "source_path")
+          paths = {}
+          for name in names:
+              value = item.get(name)
+              if not isinstance(value, str) or not value or Path(value).name != value:
+                  print(f"OWNER_REVIEW_UNAVAILABLE: invalid {name}")
+                  raise SystemExit(0)
+              candidate = root / value
+              if not candidate.is_file():
+                  print(f"OWNER_REVIEW_UNAVAILABLE: missing {name}")
+                  raise SystemExit(0)
+              paths[name] = candidate
+          output = Path(os.environ["REVIEW_DIR"])
+          output.mkdir(parents=True, exist_ok=True)
+          for name in ("visual_review_path", "transcript_path", "source_path"):
+              shutil.copy2(paths[name], output / paths[name].name)
+          subprocess.run([
+              "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+              "-i", str(paths["final_mp4"]), "-map", "0:a:0", "-vn",
+              "-c:a", "aac", "-b:a", "96k", str(output / "original-voice-review.m4a")
+          ], check=True, timeout=120)
+          evidence = {
+              "source_slug": slug,
+              "content_sha256": sha,
+              "short_item_id": item["id"],
+              "short_item_status_at_export": item["status"],
+              "technical_verified": item["technical_verified"],
+              "media": item.get("media"),
+              "original_voice_review": "original-voice-review.m4a",
+              "subjective_voice_qa": "pending",
+              "visual_semantic_qa": "pending",
+              "not_a_publication_record": True,
+          }
+          (output / "review-evidence.json").write_text(
+              json.dumps(evidence, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write("ready=true\n")
+          print(f"OWNER_REVIEW_READY item={item['id']} source_sha={sha[:12]}")
+          PY
+
+      - name: Persist exact-source Short review evidence privately
+        if: ${{ always() && steps.prepare_owner_review.outputs.ready == 'true' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-short-v4-owner-review
+          path: ${{ runner.temp }}/kesher-owner-short-review
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 6
 
       - name: Persist lightweight Short controller state
         if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-short-v4-state/state.json') != '' }}
@@ -463,3 +700,23 @@ jobs:
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as out:
               out.write("### Kesher Short V4\n\n" + text + "\n")
           PY
+
+      - name: Notify canonical Kesher Content Controller on completion
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' && inputs.operation != 'owner_source_probe' && inputs.operation != 'owner_reviewed_publish' }}
+        continue-on-error: true
+        timeout-minutes: 2
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHILD_WORKFLOW: ${{ github.workflow }}
+          CHILD_RUN_ID: ${{ github.run_id }}
+          CHILD_CONCLUSION: ${{ job.status }}
+          SOURCE_SLUG: ${{ inputs.derive_slug || inputs.release_slug || '' }}
+          SOURCE_SHA: ${{ inputs.derive_content_sha256 || '' }}
+        run: |
+          gh workflow run kesher-content-controller.yml \
+            --ref main \
+            -f child_workflow="$CHILD_WORKFLOW" \
+            -f child_run_id="$CHILD_RUN_ID" \
+            -f child_conclusion="$CHILD_CONCLUSION" \
+            -f source_slug="$SOURCE_SLUG" \
+            -f source_sha="$SOURCE_SHA" || echo "::warning::Controller wake-up notification failed; fallback schedule/workflow_run will reconcile."

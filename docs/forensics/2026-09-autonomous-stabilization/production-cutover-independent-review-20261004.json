@@ -1,0 +1,36 @@
+{
+  "critical": 0,
+  "important": 0,
+  "independent_reviewer": "cutover_independent_review",
+  "base_main_sha": "9947d0c67a86caa047d3c91d6bf33d9b1b68f0f2",
+  "reviewed_implementation_sha": "1bd4c260e1fac3d9f1eb6541a0d92798d54304c3",
+  "policy_and_definitions_sha256": "47f99a003bb6cdf5b086bcadfd2c9a87fff2250af8110b9a9a966da861c3a60b",
+  "reviewed_source_snapshot_executable_sha256": "6dcd3d4ebbd021ae6d2e3086bad5febc93356fca0d7612001b0a66c4662d4d9c",
+  "binding_scope": "Independent frozen source/policy review before final forensic reports. This dated digest is not final merged production admission. Final evidence receives separate documentary review; deployment requires fresh whole-tree authority approval.",
+  "affected_tests_passed": 139,
+  "actionlint": "PASS",
+  "diff_check": "PASS",
+  "closed_findings": [
+    "Infrastructure callback-selected trust root rejected against independently installed repo/policy/code/all-six resource identities.",
+    "Gateway now checks reviewed retirement ID/path targets in journal and native Actions effects.",
+    "Two exact registered Dependabot paths supported through active/cancel/exact terminal readback; arbitrary dynamic identities refused.",
+    "Callable original-input suppliers preserve native transport identity instead of deepcopy.",
+    "Batch recertification keeps two fresh complete inventories and all exact terminal receipts without per-target global inventory multiplication."
+  ],
+  "late_main_review": "All six paths through9947d0c6 preserved. New exact push dispatcher is state-guarded, independently ID-pinned and required to retire before VERIFIED; manual bridge admission remains manual-only.",
+  "limitations": "No native six-resource exclusion or service factory has been installed/proven. Final verdict remains BLOCKED.",
+  "final_documentary_review": {
+    "critical": 0,
+    "important": 0,
+    "result": "PASSED",
+    "verified_execution_inputs": 672,
+    "verified_archive_members": 39,
+    "full_python_top_level": 1198,
+    "full_python_xml_cases_including_subtests": 1737,
+    "xml_errors": 0,
+    "xml_failures": 0,
+    "xml_skips": 0,
+    "closed_5_2_files_verified": 5,
+    "no_evidence_fix_required": true
+  }
+}

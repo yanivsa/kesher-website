@@ -16,8 +16,46 @@ import sys
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 ERROR_CODE = "ARTICLE_CONTENT_QUALITY_FAILED"
+
+CANARY_POLICY_ENFORCEMENT_DATE = "2026-10-20"
+INTERNAL_BLOG_LINK_RE = re.compile(r'href=["\'](/blog/[^"\']+)["\']')
+
+
+def managed_article_policy_violations(article: dict[str, Any]) -> list[str]:
+    if article.get("controllerManaged") is not True:
+        return []
+    article_date = str(article.get("date") or "").strip()
+    if not article_date or article_date < CANARY_POLICY_ENFORCEMENT_DATE:
+        return []
+
+    violations: list[str] = []
+    evidence = article.get("evidence")
+    if not isinstance(evidence, list) or not evidence:
+        violations.append("evidence_missing: controller-managed canary article requires at least one evidence source")
+
+    if isinstance(evidence, list):
+        for index, reference in enumerate(evidence):
+            url = str(reference.get("url") or "").strip() if isinstance(reference, dict) else ""
+            try:
+                parsed = urlsplit(url)
+                valid = parsed.scheme in {"https", "http"} and bool(parsed.hostname) and not any(c.isspace() for c in url)
+            except ValueError:
+                valid = False
+            if not valid:
+                violations.append(f"evidence_url_invalid: evidence[{index}] requires an absolute HTTP(S) source URL; verify relevance before publication")
+
+    content = str(article.get("content") or "")
+    blog_links = {match for match in INTERNAL_BLOG_LINK_RE.findall(content)}
+    if len(blog_links) < 3:
+        violations.append(f"internal_blog_links: expected at least 3 distinct /blog/ links, found {len(blog_links)}")
+
+    service_url = str(article.get("serviceUrl") or "").strip()
+    if not service_url or not re.search(rf'href=["\']{re.escape(service_url)}["\']', content):
+        violations.append("service_cta_link: declared serviceUrl must be linked from article content")
+    return violations
 
 QUALIFIERS = (
     "לפעמים",
@@ -164,6 +202,15 @@ def article_violations(article: dict[str, Any]) -> list[str]:
     return violations
 
 
+def full_article_violations(article: dict[str, Any]) -> list[str]:
+    """Return the complete publication-quality contract for one article.
+
+    All pre-publication callers must use this helper rather than selecting only
+    the claim or managed-canary half of the contract.
+    """
+    return article_violations(article) + managed_article_policy_violations(article)
+
+
 def newest_articles(posts: list[dict[str, Any]]) -> list[dict[str, Any]]:
     rows = [row for row in posts if isinstance(row, dict) and str(row.get("date") or "").strip()]
     if not rows:
@@ -176,7 +223,7 @@ def validate_posts(posts: list[dict[str, Any]]) -> list[str]:
     errors: list[str] = []
     for article in newest_articles(posts):
         slug = str(article.get("slug") or article.get("id") or "unknown")
-        for violation in article_violations(article):
+        for violation in full_article_violations(article):
             errors.append(f"{slug}: {violation}")
     return errors
 
