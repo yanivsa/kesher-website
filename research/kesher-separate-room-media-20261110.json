@@ -1,0 +1,63 @@
+{
+  "source_slug": "transition-to-separate-room",
+  "content_sha256": "4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0",
+  "canonical_content_sha256": "4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0",
+  "article_body_sha256": "9df3fef6d555e3d5efa8de74cc865dedbe9fdceade297611054623dbd18d0a52",
+  "article_url": "https://kesher.saharoni.com/blog/transition-to-separate-room",
+  "status": "SCRIPT_ONLY_PRIVATE_RENDER_NOT_STARTED",
+  "dedup_status": "AUTHENTICATED_PROBE_REQUIRED_BEFORE_RENDER",
+  "publication_status": "CHANNEL_UPLOAD_LIMIT_HOLD_NO_UPLOAD",
+  "source_evidence": [
+    "https://me.health.gov.il/parenting/raising-children/safe-environment/home-safety/sudden-infant-death-syndrome-prevention/",
+    "https://doi.org/10.1542/peds.2022-057990",
+    "https://www.nhs.uk/baby/health/sleep-and-young-children/"
+  ],
+  "scripts": {
+    "overview": [
+      "הילד קורא לכם שוב ושוב בלילה, ואתם מתלבטים אם הגיע הזמן שיעבור לחדר משלו? לפני שבוחרים שיטת הרדמה, חשוב להבדיל בין תינוק לבין פעוט או ילד גדול יותר.",
+      "לתינוקות משרד הבריאות ממליץ על מיטה נפרדת בחדר ההורים לפחות עד גיל חצי שנה, ועדיף עד גיל שנה. אין גיל מדויק שבו מעבר לפני גיל שנה נעשה בטוח. משכיבים על הגב, על משטח קשיח ושטוח, בלי כריות או חפצים רכים. בשאלת מעבר מוקדם התייעצו עם רופא הילדים או טיפת חלב.",
+      "אצל פעוט שכבר מתאים למעבר, הכירו את החדר ביום. קראו בו ספר, שחקו יחד והראו לילד איפה תשבו בערב. כך החדר הופך למקום מוכר, ולא למבחן של אומץ.",
+      "בערב שמרו על טקס קבוע: פיג׳מה, סיפור, חיבוק ולילה טוב. אם הילד רגיל שאתם לידו, שבו בכיסא סמוך למיטה. כשהוא נרגע, אפשר בהדרגה להזיז את הכיסא לכיוון הדלת.",
+      "אם הילד מתעורר, בדקו אם כואב לו, אם הוא מפחד או צריך משהו. אצל ילד גדול ובריא אפשר ללוות אותו בשקט בחזרה לחדר. עקביות לא אומרת להתעלם ממצוקה.",
+      "אין מספר לילות שחייבים לעמוד בו. אם קשה מאוד, האטו; אם יש נחירות חזקות או קשיי נשימה, פנו לרופא. למדריך המלא על מעבר לחדר נפרד, לחצו על הקישור בתיאור."
+    ],
+    "short": [
+      "רוצים להעביר את הילד לחדר משלו? קודם כול, הגיל משנה.",
+      "לתינוקות: מיטה נפרדת בחדר ההורים לפחות עד גיל חצי שנה, ועדיף עד גיל שנה. על הגב, במיטה בטוחה, בלי חפצים רכים.",
+      "אצל פעוט: הכירו את החדר ביום, שמרו על טקס ערב, ושבו לידו בהתחלה. התרחקו בהדרגה רק כשהוא מסתגל.",
+      "אין צורך לנצח במאבק. התאימו את הקצב לילד. למדריך המלא, הקישור בתיאור."
+    ]
+  },
+  "visual_plan": {
+    "overview": [
+      "16:9 daytime child and parent talking in toddler room",
+      "16:9 empty safe infant crib next to parents' bed, firm flat mattress fitted sheet only, no infant or soft objects",
+      "16:9 awake preschool child and parent reading in child's room",
+      "16:9 same family evening reading, parent seated beside toddler bed, child awake",
+      "16:9 parent gently walking with awake preschool child back to room at night",
+      "16:9 calm parent in doorway, awake child settling"
+    ],
+    "short": [
+      "9:16 awake preschool child and parent in child's room",
+      "9:16 empty safe infant crib in parents' room, firm flat mattress fitted sheet only, no infant or soft objects",
+      "9:16 awake toddler and parent reading bedtime story",
+      "9:16 parent seated near toddler bed, child awake and calm"
+    ],
+    "constraints": [
+      "No infant sleep depiction unless separately verified; empty crib preferred.",
+      "No unsafe bedding, bumpers, toys, pillows or adult sleep surface for infant. Toddler scenes age-distinct.",
+      "Original or commercially licensed photographic assets, actual crop review, no text/logos.",
+      "No render until complete authenticated source dedup; no upload during channel hold."
+    ]
+  },
+  "youtube_metadata": {
+    "overview": {
+      "title": "מעבר לחדר נפרד: כך עוזרים לילד להסתגל לשינה בחדר שלו",
+      "description": "ההבדל בין שינה בטוחה לתינוקות לבין הסתגלות הדרגתית של פעוטות, עם צעדים מעשיים לערב רגוע יותר.\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/transition-to-separate-room\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment"
+    },
+    "short": {
+      "title": "מעבר לחדר נפרד: קודם בטיחות, אחר כך הרגלים",
+      "description": "לפני שמעבירים ילד לחדר משלו, חשוב להבחין בין תינוק לפעוט. למדריך המלא:\nhttps://kesher.saharoni.com/blog/transition-to-separate-room\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment"
+    }
+  }
+}
