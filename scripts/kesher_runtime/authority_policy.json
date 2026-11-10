@@ -2612,7 +2612,7 @@
               "youtube_metadata",
               "youtube_upload"
             ],
-            "definition_sha256": "4a56372afaa50cd8b54b40fa0462a921b735d574d0968a65253b2e317d074cb2",
+            "definition_sha256": "9483c08d28bbbee1261b7fbe4c0f59d01e3dab4ed61b28cb533ab0de5fa527a3",
             "inputs": {
               "derive_slug": "$.github/kesher-goal-request.json.target_slug",
               "operation": "full"
@@ -3996,7 +3996,7 @@
               "youtube_metadata",
               "youtube_upload"
             ],
-            "definition_sha256": "4a56372afaa50cd8b54b40fa0462a921b735d574d0968a65253b2e317d074cb2",
+            "definition_sha256": "9483c08d28bbbee1261b7fbe4c0f59d01e3dab4ed61b28cb533ab0de5fa527a3",
             "inputs": {
               "derive_slug": "$.github/kesher-media-recovery-request.json.target_slug",
               "operation": "full"
