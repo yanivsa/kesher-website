@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "source_slug": "positivity-resonance-marriage-micro-moments",
+  "content_sha256": "6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f",
+  "media_kind": "overview",
+  "media_item_id": "owner-overview-20261110-6bb5723bbadc",
+  "final_sha256": "efd9cfa7a61608df7cdd3b425e942770298bb256b9e8c25c892607b1136cb13d",
+  "manifest_sha256": "9870533f4c58fabfee3c96852a2c87863d98fe4d61e77a0673bd8936971a3ee6",
+  "transcript_sha256": "bdc68bb694f9b50d48f311e20e1efea495971b61eb00bd3235bac72b0bb5f8f6",
+  "visual_review_sha256": "c52d40831f42739b0e72dfead86337129457a68d5070071b71a65bd10421998f",
+  "source_file_sha256": "f1daf1c69034393236be83be929c9bb2eb71dbdfa54b41c5f30beeadecd7b787",
+  "frame_sha256": {
+    "overview-frame-01.jpg": "d957465bd818a4f62634d6033c658b47893c222ef9904686514e7de8404612dd",
+    "overview-frame-02.jpg": "4b3c04c360fe1c747cb97abb4b555362f7d93122067b9c50cdf718a6675f3a2d",
+    "overview-frame-03.jpg": "7363d854572d5aedae4ccf4f00839e7b8ee33b08736cd8e6fe2b4fbfae613572",
+    "overview-frame-04.jpg": "c1548742306d3539feae0f85ebd66ed9115f04f9959cc08ffe3bc6ab1f0e0db8",
+    "overview-frame-05.jpg": "1b1121d60aa99e38eef861c4045a9e089512ba9e01a80d3203cf14cdd7ba251c",
+    "overview-frame-06.jpg": "6994e960abd5e77be8070a925c196398518fd8f8654f3d04e7d3cfac3fc5a83f",
+    "overview-frame-07.jpg": "7c0d529533a9b080294416856a321112544a38b6ed69acd679d5a562ee4f762b",
+    "overview-frame-08.jpg": "2b41500b21229db1eff5842420a89dc2e4d94dc59a41e9997241f901792c3f98"
+  },
+  "reviewed_by": "OWNER",
+  "reviewed_at": "2026-11-10T08:07:00+00:00",
+  "checks": {
+    "visual": "approved",
+    "semantic": "approved",
+    "audio": "approved",
+    "metadata": "approved",
+    "licensing": "approved"
+  },
+  "methods": {
+    "visual": "full_motion_and_frames",
+    "semantic": "research_vs_exact_transcript",
+    "audio": "authorized_audio_tool_with_script_comparison"
+  },
+  "review_notes": {
+    "visual": "נבדקו כל שמונת פריימי הייצוג וגליון התמונות מהקובץ המקורי, וכן פענוח מלא ומדידת תנועה בכל הווידאו: סרטון מקצועי עם שלוש תמונות מקוריות ורלוונטיות של זוגות בוגרים. התמונה דינמית בזום ותנועה מתונה, ללא השחרה או חפיפת כתוביות.",
+    "semantic": "הושוו המשפטים שנקלטו בקריינות עם חמש הסצנות המקוריות ומחקר התצפית של וולס ועמיתיה על מאה חמישים וארבעה זוגות. נשמר ההבדל בין מתאם סטטיסטי לסיבתיות, ותרגיל החיבור מוצג כהצעה מעשית ולא כטיפול מוכח.",
+    "audio": "נבדק קובץ WAV המקורי באופן בלתי תלוי באמצעות faster-whisper לעברית מול התסריט המלא, לצד דגימה, עוצמות, שיאי אות, רצף וקידוד H264/AAC. התמלול שגה לעיתים במונח תהודה לעומת תעודה; אין להסיק מכך תקלה שמיעתית. לא בוצעה האזנה סובייקטיבית אנושית ואין לטעון שבוצעה.",
+    "licensing": "תמונות הזוגות נוצרו במיוחד לנושא דרך Adobe Firefly עם רישיון שימוש מסחרי לפי תנאי Adobe; קריינות BlueTTS במשקולות MIT עם RenikudPlus ברישיון Apache 2.0 ודוגמת דוברת LibriTTS-R ברישיון CC BY 4.0, עם חובת ייחוס Google LLC ודוברת 6147."
+  },
+  "rights": {
+    "commercial_use_permitted": true,
+    "voice_license_url": "https://www.openslr.org/141/",
+    "visual_license_url": "https://helpx.adobe.com/ee/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html"
+  },
+  "evidence": {
+    "github_run": 42778087294,
+    "github_artifact_id": 13745350527,
+    "video_sha256": "efd9cfa7a61608df7cdd3b425e942770298bb256b9e8c25c892607b1136cb13d",
+    "audio_sha256": "82a226871508d8e91afdae934f5bc5b130f92835a1fce083f9f560ed06ff892d",
+    "independent_asr_engine": "faster-whisper==1.2.1 / small / Hebrew",
+    "independent_asr_similarity": 0.9579,
+    "human_listening": false,
+    "speech_duration_s": 82.423,
+    "voice_model_license_url": "https://huggingface.co/notmax123/BlueTTS2.5-onnx",
+    "g2p_license_url": "https://huggingface.co/notmax123/RenikudPlus",
+    "photo_provenance_path": "research/kesher-positivity-photo-provenance.json",
+    "channel": "UCx5fEFvdVf28HLAR2dFW64Q",
+    "publish_action": "NOT_AUTHORIZED_BY_CERTIFICATE_ALONE"
+  }
+}
