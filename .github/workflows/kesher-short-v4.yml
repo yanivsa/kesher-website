@@ -20,6 +20,7 @@ on:
           - owner_preview
           - owner_publish
           - owner_source_probe
+          - owner_reviewed_publish
       rebuild_item_id:
         description: Exact technically rejected item to rebuild with Remotion
         required: false
@@ -234,8 +235,23 @@ jobs:
           python -m scripts.kesher_owner_positivity_youtube_probe \
             --slug "$OWNER_SLUG" --source-sha "$OWNER_SHA"
 
+      - name: OWNER publish exact independently reviewed artifact, no generation
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'owner_reviewed_publish' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          OWNER_SLUG: ${{ inputs.derive_slug }}
+          OWNER_SHA: ${{ inputs.derive_content_sha256 }}
+        run: |
+          set -euo pipefail
+          python -m pip install requests==2.32.5 google-auth==2.40.3 google-api-python-client==2.181.0
+          python -m unittest tests.test_kesher_owner_media_quality -v
+          python -m scripts.kesher_owner_reviewed_publish --slug "$OWNER_SLUG" --source-sha "$OWNER_SHA"
+
       - name: Restore newest valid Short V4 durable state
-        if: ${{ github.event_name != 'pull_request' && inputs.operation != 'preflight' && inputs.operation != 'owner_preview' && inputs.operation != 'owner_publish' && inputs.operation != 'owner_source_probe' }}
+        if: ${{ github.event_name != 'pull_request' && inputs.operation != 'preflight' && inputs.operation != 'owner_preview' && inputs.operation != 'owner_publish' && inputs.operation != 'owner_source_probe' && inputs.operation != 'owner_reviewed_publish' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -686,7 +702,7 @@ jobs:
           PY
 
       - name: Notify canonical Kesher Content Controller on completion
-        if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' && inputs.operation != 'owner_source_probe' }}
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' && inputs.operation != 'owner_source_probe' && inputs.operation != 'owner_reviewed_publish' }}
         continue-on-error: true
         timeout-minutes: 2
         env:
