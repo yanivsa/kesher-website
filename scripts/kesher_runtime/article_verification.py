@@ -147,8 +147,10 @@ def validate_rendered_html(content: bytes, post: dict, *, deploy_sha: str | None
                      'twitter:title': full_title, 'twitter:description': post['excerpt'], 'twitter:image': SITE_URL + post['image']}
     if deploy_sha:
         expected_meta.update({'kesher:deploy-sha': deploy_sha, 'kesher:content-sha256': source['content_sha256']})
-    if any(parser.meta.get(key) != [value] for key, value in expected_meta.items()):
-        reject('ARTICLE_CONTENT_MISMATCH', 'Public metadata differs from the deployed source')
+    mismatched_meta = sorted(key for key, value in expected_meta.items() if parser.meta.get(key) != [value])
+    if mismatched_meta:
+        reject('ARTICLE_CONTENT_MISMATCH',
+               f"Public metadata differs from the deployed source: slug={source['slug']}; keys={','.join(mismatched_meta)}")
     if parser.canonical != [expected_url] or parser.one('title') != full_title or parser.one('h1') != post['title']:
         reject('ARTICLE_CONTENT_MISMATCH', 'Canonical URL or visible title differs from source')
     if any('noindex' in str(value).lower() for value in parser.meta.get('robots', [])):
