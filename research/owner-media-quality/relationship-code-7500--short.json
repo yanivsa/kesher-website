@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "source_slug": "relationship-code-7500",
+  "content_sha256": "a8a7c93632f826aa04c382bf3b3944ebb3da1ac386ef5e7970c6e91da5046d19",
+  "media_kind": "short",
+  "media_item_id": "owner-short-20261110-797750526c53",
+  "final_sha256": "83df806140023ca39f515dc83a1a9efc52b0c9caf0056ab437251795e2240066",
+  "manifest_sha256": "a240dc748b6b9e52ff4af205f97c36fcfb5c482c963bc4926074c07c5a9783df",
+  "transcript_sha256": "d6ada0c3926fd9ac1e71f8e990e071017594a98f5328412c3139cbdcdb7ebdb2",
+  "visual_review_sha256": "4d7a0096a077734ef97795e4c967b318170e4fdd71d7f3cb2d6c1d3c4f4f29bf",
+  "source_file_sha256": "a777ac07c1133284457b586b44b9e9f3feb262cb20e1b03953acfc3dcce58085",
+  "frame_sha256": {
+    "short-frame-01.jpg": "93f1447563bf5800173dcfe83e2220540d27e517f1001cbd5cd1992fcfee5ca6",
+    "short-frame-02.jpg": "2244f362df4fc3f9682c9d2324479e74ed8226ce6c4ff7985c07d081ec242f77",
+    "short-frame-03.jpg": "f06418319d880a467e4a64d4fad1452d8414259c498a501dc3b2f4bafd709352",
+    "short-frame-04.jpg": "a24c725925e7a3ae6063e2342a5fb567cfeae120214e973a18b0eb12e692a436",
+    "short-frame-05.jpg": "c6b7bdf34080f4788621c32c41018b72f32b9e11b7d20ce6200a8216ca07add3",
+    "short-frame-06.jpg": "3120a42bd8ed643283c1cfd9d9a2f00ca78381fefddf5721ee401e088e83aaa6",
+    "short-frame-07.jpg": "30aeef3226ef0c99390428f2bb44de24b9212c6dcd2c9092ea1e526e22463618",
+    "short-frame-08.jpg": "ae690d7c6737459be2d5d5fa2b2db498164fd69388082ef98bd0d935a21ebdc7"
+  },
+  "reviewed_by": "OWNER",
+  "reviewed_at": "2026-11-10T13:02:00Z",
+  "checks": {
+    "visual": "approved",
+    "semantic": "approved",
+    "audio": "approved",
+    "metadata": "approved",
+    "licensing": "approved"
+  },
+  "methods": {
+    "visual": "full_motion_and_frames",
+    "semantic": "research_vs_exact_transcript",
+    "audio": "authorized_audio_tool_with_script_comparison"
+  },
+  "review_notes": {
+    "visual": "נבדקו בפועל גליון התמונות המתוקן, שמונה פריימים ופענוח כל 983 הפריימים. שתי תמונות מקוריות ביחס 9:16 ממלאות את המסך, ללא רצועות טשטוש, טקסט חופף או פריימים שחורים. 742 הפריימים הראשונים זהים לגרסה הקודמת.",
+    "semantic": "הדוגמה לתלונה ממוקדת במקום התקפה, התרגיל לשיחה רגועה וההסתייגות שזלזול אינו אבחנה נשמרו. התיקון הממוקד מבהיר שבפחד או אלימות פונים לעזרה מקצועית לפני שיחה על הריב, ובסכנה מיידית למשטרה. תמלול Descript של ה-MP4 המתוקן מאשר במפורש את כל משפט הבטיחות.",
+    "audio": "ה-MP4 המתוקן הועבר בפועל ל-Descript לאחר אימות SHA256 ובדיקת גודל, תומלל בעברית והושווה לתסריט ול-faster-whisper. Descript זיהה במפורש פחד או אלימות, עזרה מקצועית, סכנה מיידית והתקשרות למשטרה. 512016 הבייטים הראשונים של AAC ו-742 פריימים מפוענחים זהים לקודם; אין טענה להאזנה אנושית.",
+    "metadata": "כותרת ותיאור בעברית לפי הנושא המאושר, תגיות נפרדות, קישור ישיר למאמר החי ומזהה מקור קנוני; Short מפנה לסרטון המלא בערוץ. אין הבטחה מטעה.",
+    "licensing": "תמונות מקוריות Adobe Firefly עם מקור ורישוי מסחרי מתועד; משקולות BlueTTS2.5-onnx MIT, RenikudPlus Apache-2.0, דוגמת LibriTTS-R דוברת 6147 CC BY 4.0 עם ייחוס Google LLC. גרסאות וקישורי רישוי מדויקים נבדקו."
+  },
+  "rights": {
+    "commercial_use_permitted": true,
+    "voice_license_url": "https://www.openslr.org/141/",
+    "visual_license_url": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html"
+  },
+  "evidence": {
+    "github_run": 42819300794,
+    "github_artifact_id": 13764754562,
+    "video_sha256": "83df806140023ca39f515dc83a1a9efc52b0c9caf0056ab437251795e2240066",
+    "audio_sha256": "84bf40ef5f39235a3afd84851c6ad142d70fb629a75555b00c3aea39ba4f4edd",
+    "independent_asr_engine": "faster-whisper==1.2.1 / small / Hebrew + independent Descript final MP4 audio",
+    "independent_asr_similarity": 0.9693,
+    "human_listening": false,
+    "final_video_duration_s": 39.32,
+    "actual_final_audio_aac_sha256": "828e644899d41aab1049d9be071efd094f4179c0c0c95c9d85ad416ebaca552a",
+    "descript_final_audio_review_url": "https://web.descript.com/c04b5797-bb40-45cd-9ded-7fe188f3c28f/07360",
+    "decoded_frames": 983,
+    "black_frames": 0,
+    "moving_frame_ratio": 0.99796,
+    "voice_model_license_url": "https://huggingface.co/notmax123/BlueTTS2.5-onnx",
+    "g2p_license_url": "https://huggingface.co/notmax123/RenikudPlus",
+    "photo_provenance_path": "research/kesher-relationship-code-7500-photo-provenance.json",
+    "channel": "UCx5fEFvdVf28HLAR2dFW64Q",
+    "publish_action": "NOT_AUTHORIZED_BY_CERTIFICATE_ALONE",
+    "source_binding": {
+      "artifact_body_sha256": "797750526c533f41e661123dc86339da3f0a5721d5eff820d70937ee7f6d5bdd",
+      "canonical_content_sha256": "a8a7c93632f826aa04c382bf3b3944ebb3da1ac386ef5e7970c6e91da5046d19",
+      "method": "recomputed_same_committed_post_body_and_canonical_source",
+      "verified_at": "2026-11-10T13:02:00Z",
+      "source_deploy_sha": "2e022a8fef93df8c3ccfb27ccde86aa415608b13"
+    }
+  }
+}

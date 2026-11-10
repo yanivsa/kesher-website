@@ -14,6 +14,7 @@ from pathlib import Path
 from scripts import kesher_owner_asynchrony_preview as gifted
 from scripts import kesher_owner_positivity_preview as positivity
 from scripts import kesher_owner_productive_failure_preview as productive
+from scripts import kesher_owner_7500_preview as code7500
 from scripts.kesher_owner_vantage_short import youtube_client
 from scripts.kesher_daily_pipeline import clean_article_html, source_metadata
 from scripts.kesher_runtime.bridge_admission import main as bridge_admission
@@ -58,6 +59,19 @@ CONFIG = {
         },
         "intro": "מהו כישלון פורה, מתי כדאי לתת לילד לנסות לפני שמסבירים, ומתי דווקא לעזור מיד? דוגמה מעשית וממצאים ממחקרי למידה, בלי להבטיח פתרון שמתאים לכל ילד.",
         "tags": ["כישלון פורה", "שיעורי בית", "למידה", "הדרכת הורים", "שירה סהרוני"],
+    },
+    code7500.SLUG: {
+        "module": code7500, "date": "20261110", "artifact": 13764754562,
+        "canonical_sha": code7500.CANONICAL_SHA, "run": 42819300794,
+        "zip_sha": "9b5e785d8da39501501a809f68c20634441fe0163d795d773f62e2bb3739ebd4",
+        "titles": {
+            "overview": "איך יודעים שהזוגיות במשבר? 5 סימנים שלא כדאי להתעלם מהם",
+            "short": "זלזול בזוגיות: הסימן שהריב כבר לא רק על הנושא",
+        },
+        "intro": "חמישה סימנים למשבר בזוגיות, מה אפשר לשנות ומתי חשוב לפנות לעזרה. קוד 7500 הוא מטאפורה בלבד; אין כאן אבחנה או תחזית לגירושין.",
+        "intro_by_kind": {"short": "כשוויכוח עובר מהבעיה אל האישיות, הקשר משלם את המחיר. דוגמה לתלונה ממוקדת במקום זלזול, וחשיבות הבטיחות כשיש פחד או אלימות."},
+        "tags": ["איך יודעים שהזוגיות במשבר", "סימנים למשבר בזוגיות", "תקשורת זוגית", "ריבים בזוגיות"],
+        "tags_by_kind": {"short": ["זלזול בזוגיות", "בוז בזוגיות", "ריבים בזוגיות", "תקשורת בזמן ריב"]},
     },
 }
 
@@ -114,9 +128,9 @@ def archive_files(archive, dest, cfg):
         expected.update((f"{kind}.mp4", f"{kind}-manifest.json",
                          f"{kind}-review-voice.wav", f"{kind}-visual-contact-sheet.jpg"))
         expected.update(f"{kind}-frame-{i:02d}.jpg" for i in range(1, 9))
-        if cfg["module"] in (positivity, productive):
+        if cfg["module"] in (positivity, productive, code7500):
             expected.add(f"{kind}-asr.txt")
-    if cfg["module"] in (positivity, productive):
+    if cfg["module"] in (positivity, productive, code7500):
         expected.add("asr-review.json")
     with zipfile.ZipFile(archive) as z:
         names = z.namelist()
@@ -149,6 +163,35 @@ def validate_productive_repair(manifest, video, kind):
                 "PRODUCTIVE_OVERVIEW_REUSE_MISMATCH")
 
 
+def validate_7500_repair(manifest, video, kind):
+    require(manifest.get("canonical_content_sha256") == code7500.CANONICAL_SHA,
+            "7500_CANONICAL_MANIFEST_MISMATCH")
+    repair = manifest.get("targeted_repair") or {}
+    expected = {
+        "input_artifact_id": code7500.REPAIR_ARTIFACT,
+        "input_archive_sha256": code7500.REPAIR_ARCHIVE_SHA,
+        "original_short_sha256": code7500.REPAIR_SHORT_SHA,
+        "overview_video_sha256": code7500.REPAIR_OVERVIEW_SHA,
+        "changed_scene_index": 3, "prefix_frames": code7500.PREFIX_FRAMES,
+        "prefix_frame_hashes_sha256": "ff197c2b69ba719ff0ea31df1d475ff8c9bacf054045156711cc703a7bf6b7a8",
+        "prefix_aac_sha256": "1bc4f2e0ffb0499587ec017d47236d0185c3c1180d0c4b07a6fdff2a11846a9c",
+        "prefix_aac_bytes": 512016, "prefix_pixels_and_aac_preserved": True,
+    }
+    require(repair == expected, "7500_TARGETED_REPAIR_EVIDENCE_MISMATCH")
+    if kind == "overview":
+        require(sha(video) == code7500.REPAIR_OVERVIEW_SHA, "7500_OVERVIEW_REUSE_MISMATCH")
+    else:
+        require(sha(video) == "83df806140023ca39f515dc83a1a9efc52b0c9caf0056ab437251795e2240066"
+                and manifest.get("composition") == "native_full_frame_9_16_no_padding",
+                "7500_SHORT_EXACT_NATIVE_MEDIA_MISMATCH")
+        frames = code7500._frame_hashes(video)
+        packets = code7500._aac_packets(video)
+        require(len(frames) == 983
+                and hashlib.sha256("\n".join(frames[:code7500.PREFIX_FRAMES]).encode()).hexdigest() == repair["prefix_frame_hashes_sha256"]
+                and hashlib.sha256(packets[:repair["prefix_aac_bytes"]]).hexdigest() == repair["prefix_aac_sha256"],
+                "7500_SHORT_REVIEWED_PREFIX_MISMATCH")
+
+
 def validate_bundle(cfg, directory, kind):
     module = cfg["module"]
     slug, artifact_body_sha = module.SLUG, module.SOURCE_SHA
@@ -179,7 +222,7 @@ def validate_bundle(cfg, directory, kind):
     contact = directory / f"{kind}-visual-contact-sheet.jpg"
     frames = {f"{kind}-frame-{i:02d}.jpg": sha(directory / f"{kind}-frame-{i:02d}.jpg")
               for i in range(1, 9)}
-    transcript = (directory / f"{kind}-asr.txt" if module in (positivity, productive) else
+    transcript = (directory / f"{kind}-asr.txt" if module in (positivity, productive, code7500) else
                   root / "evidence" / f"{slug}--{kind}-descript-transcript.txt")
     require(sha(video) == manifest["video_sha256"]
             and sha(wav) == manifest["audio_sha256"] == evidence["audio_sha256"]
@@ -204,6 +247,8 @@ def validate_bundle(cfg, directory, kind):
     module.verify_video(video, kind)
     if module is productive:
         validate_productive_repair(manifest, video, kind)
+    if module is code7500:
+        validate_7500_repair(manifest, video, kind)
     item = {
         "technical_verified": True, "source": {"slug": slug, "content_sha256": source_sha},
         "type": "video_overview" if kind == "overview" else "article_short",
@@ -219,7 +264,7 @@ def validate_bundle(cfg, directory, kind):
 def metadata(cfg, kind, overview_id=None):
     module = cfg["module"]
     description = (
-        cfg["intro"] + "\n\nלמאמר המלא והמקורות: " + module.ARTICLE
+        cfg.get("intro_by_kind", {}).get(kind, cfg["intro"]) + "\n\nלמאמר המלא והמקורות: " + module.ARTICLE
         + "\n\nקראו עוד באתר KESHER — שירה סהרוני."
         + "\nKESHER_OWNER_MEDIA_ITEM=" + item_id(cfg, kind)
         + "\nsource_slug=" + module.SLUG + "\ncontent_sha256=" + cfg["canonical_sha"]
@@ -230,7 +275,7 @@ def metadata(cfg, kind, overview_id=None):
         + "\nhttps://www.openslr.org/141/"
         + "\nhttps://creativecommons.org/licenses/by/4.0/"
         + ("\nתמונות מקוריות שנוצרו עבור KESHER באמצעות Adobe Firefly."
-           if module in (positivity, productive) else "\nתמונות מקוריות שנוצרו עבור KESHER באמצעות OpenAI.")
+           if module in (positivity, productive, code7500) else "\nתמונות מקוריות שנוצרו עבור KESHER באמצעות OpenAI.")
     )
     if kind == "short":
         require(isinstance(overview_id, str) and re.fullmatch(r"[A-Za-z0-9_-]{11}", overview_id),
@@ -238,7 +283,7 @@ def metadata(cfg, kind, overview_id=None):
         description += ("\nלסרטון המלא בערוץ: https://www.youtube.com/watch?v=" + overview_id
                         + "\nאפשר לפתוח את הסרטון המלא בעמוד הערוץ אם הקישור אינו לחיץ ב-Shorts.")
     return {"title": cfg["titles"][kind], "description": description,
-            "categoryId": "22", "tags": cfg["tags"],
+            "categoryId": "22", "tags": cfg.get("tags_by_kind", {}).get(kind, cfg["tags"]),
             "defaultLanguage": "he", "defaultAudioLanguage": "he"}
 
 

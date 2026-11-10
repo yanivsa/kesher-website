@@ -346,6 +346,73 @@ class OwnerReviewedPublishTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "ARTIFACT_FILE_SET_MISMATCH"):
                 p.archive_files(archive, out, cfg)
 
+    def test_7500_exact_repair_metadata_and_prefix_guard(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        cfg = p.CONFIG[p.code7500.SLUG]
+        self.assertEqual(cfg["artifact"], 13764754562)
+        self.assertEqual(cfg["canonical_sha"], p.code7500.CANONICAL_SHA)
+        self.assertEqual(p.metadata(cfg, "overview")["title"], "איך יודעים שהזוגיות במשבר? 5 סימנים שלא כדאי להתעלם מהם")
+        short = p.metadata(cfg, "short", "abcdefghijk")
+        self.assertEqual(short["title"], "זלזול בזוגיות: הסימן שהריב כבר לא רק על הנושא")
+        self.assertIn("זלזול בזוגיות", short["tags"])
+        self.assertIn("Adobe Firefly", short["description"])
+        self.assertNotIn("OpenAI", short["description"])
+        manifest = {"canonical_content_sha256": p.code7500.CANONICAL_SHA,
+                    "composition": "native_full_frame_9_16_no_padding",
+                    "targeted_repair": {
+                        "input_artifact_id": p.code7500.REPAIR_ARTIFACT,
+                        "input_archive_sha256": p.code7500.REPAIR_ARCHIVE_SHA,
+                        "original_short_sha256": p.code7500.REPAIR_SHORT_SHA,
+                        "overview_video_sha256": p.code7500.REPAIR_OVERVIEW_SHA,
+                        "changed_scene_index": 3, "prefix_frames": 742,
+                        "prefix_frame_hashes_sha256": "ff197c2b69ba719ff0ea31df1d475ff8c9bacf054045156711cc703a7bf6b7a8",
+                        "prefix_aac_sha256": "1bc4f2e0ffb0499587ec017d47236d0185c3c1180d0c4b07a6fdff2a11846a9c",
+                        "prefix_aac_bytes": 512016, "prefix_pixels_and_aac_preserved": True}}
+        with patch.object(p, "sha", return_value=p.code7500.REPAIR_OVERVIEW_SHA):
+            p.validate_7500_repair(manifest, Path("overview.mp4"), "overview")
+        changed = copy.deepcopy(manifest)
+        changed["targeted_repair"]["prefix_pixels_and_aac_preserved"] = False
+        with self.assertRaisesRegex(RuntimeError, "7500_TARGETED_REPAIR_EVIDENCE_MISMATCH"):
+            p.validate_7500_repair(changed, Path("short.mp4"), "short")
+        changed = copy.deepcopy(manifest)
+        changed["canonical_content_sha256"] = "0"*64
+        with self.assertRaisesRegex(RuntimeError, "7500_CANONICAL_MANIFEST_MISMATCH"):
+            p.validate_7500_repair(changed, Path("short.mp4"), "short")
+        with patch.object(p, "sha", return_value="83df806140023ca39f515dc83a1a9efc52b0c9caf0056ab437251795e2240066"), \
+             patch.object(p.code7500, "_frame_hashes", return_value=["changed"]*983), \
+             patch.object(p.code7500, "_aac_packets", return_value=b"changed"):
+            with self.assertRaisesRegex(RuntimeError, "7500_SHORT_REVIEWED_PREFIX_MISMATCH"):
+                p.validate_7500_repair(manifest, Path("short.mp4"), "short")
+
+    def test_7500_archive_requires_exact_asr_evidence(self):
+        import hashlib
+        import zipfile
+        from scripts import kesher_owner_reviewed_publish as p
+        cfg = dict(p.CONFIG[p.code7500.SLUG])
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            archive = root / "candidate.zip"
+            names = {"asr-review.json"}
+            for kind in p.KINDS:
+                names.update((f"{kind}.mp4", f"{kind}-manifest.json",
+                              f"{kind}-review-voice.wav", f"{kind}-visual-contact-sheet.jpg",
+                              f"{kind}-asr.txt"))
+                names.update(f"{kind}-frame-{i:02d}.jpg" for i in range(1,9))
+            with zipfile.ZipFile(archive, "w") as z:
+                for name in names:
+                    z.writestr(name, b"test")
+            cfg["zip_sha"] = hashlib.sha256(archive.read_bytes()).hexdigest()
+            out = root / "out"
+            out.mkdir()
+            p.archive_files(archive, out, cfg)
+            self.assertEqual({x.name for x in out.iterdir()}, names)
+            with zipfile.ZipFile(archive, "w") as z:
+                for name in names - {"short-asr.txt"}:
+                    z.writestr(name, b"test")
+            cfg["zip_sha"] = hashlib.sha256(archive.read_bytes()).hexdigest()
+            with self.assertRaisesRegex(RuntimeError, "ARTIFACT_FILE_SET_MISMATCH"):
+                p.archive_files(archive, out, cfg)
+
     def test_wrong_archive_digest_fails_before_extraction(self):
         from scripts import kesher_owner_reviewed_publish as p
         with tempfile.TemporaryDirectory() as tmp:
