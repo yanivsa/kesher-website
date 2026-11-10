@@ -10,8 +10,9 @@ from scripts.kesher_owner_positivity_preview import (
 )
 ROOT = Path(__file__).resolve().parents[1]
 SLUG = "child-not-playing-kindergarten"
-SOURCE_SHA = "11d0e48e8b5becbfd150e6fd125325fd2f18a4f1fb9b6a925e331c7c2f0e42bf"
-CANONICAL_SHA = "60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa"
+SOURCE_SHA = "60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa"
+CANONICAL_SHA = SOURCE_SHA
+BODY_SHA = "11d0e48e8b5becbfd150e6fd125325fd2f18a4f1fb9b6a925e331c7c2f0e42bf"
 ARTICLE = "https://kesher.saharoni.com/blog/" + SLUG
 RESEARCH = ROOT / "research/kesher-kindergarten-play-media-20261110.json"
 PHOTOS = ROOT / "research/kesher-kindergarten-play-photo-provenance.json"
@@ -21,7 +22,7 @@ SHORT_PHOTOS = (3, 3, 4, 4)
 
 def source_scripts():
     plan = json.loads(RESEARCH.read_text(encoding="utf-8"))
-    if (plan["source_slug"], plan["content_sha256"], plan["canonical_content_sha256"]) != (SLUG, SOURCE_SHA, CANONICAL_SHA):
+    if (plan["source_slug"], plan["content_sha256"], plan["canonical_content_sha256"], plan["article_body_sha256"]) != (SLUG, SOURCE_SHA, CANONICAL_SHA, BODY_SHA):
         raise ValueError("SCRIPT_SOURCE_IDENTITY_CHANGED")
     if tuple(plan["scene_indices"]["overview"]) != OVERVIEW_PHOTOS or tuple(plan["scene_indices"]["short"]) != SHORT_PHOTOS:
         raise ValueError("SCENE_PLAN_CHANGED")
@@ -43,11 +44,11 @@ def source_check(*, public=False):
         raise ValueError("ARTICLE_NOT_UNIQUE")
     post = selected[0]
     source = source_metadata(post)
-    if source["content_sha256"] != CANONICAL_SHA or sha_bytes(clean_article_html(post["content"]).encode()) != SOURCE_SHA:
+    if source["content_sha256"] != CANONICAL_SHA or sha_bytes(clean_article_html(post["content"]).encode()) != BODY_SHA:
         raise ValueError("SOURCE_IDENTITY_CHANGED")
     provenance = json.loads(PHOTOS.read_text(encoding="utf-8"))
     images = provenance["images"]
-    if (provenance["source_slug"], provenance["content_sha256"], provenance["canonical_content_sha256"]) != (SLUG, SOURCE_SHA, CANONICAL_SHA) or len(images) != 5 or len({x["path"] for x in images}) != 5:
+    if (provenance["source_slug"], provenance["content_sha256"], provenance["canonical_content_sha256"], provenance["article_body_sha256"]) != (SLUG, SOURCE_SHA, CANONICAL_SHA, BODY_SHA) or len(images) != 5 or len({x["path"] for x in images}) != 5:
         raise ValueError("PHOTO_PROVENANCE_MISMATCH")
     from PIL import Image
     for i, item in enumerate(images):
@@ -110,7 +111,7 @@ def preview(out):
         media = verify_video(video, kind)
         frames, contact = review_frames(video, out, kind)
         manifest = {
-            "source_slug": SLUG, "content_sha256": SOURCE_SHA, "canonical_content_sha256": CANONICAL_SHA,
+            "source_slug": SLUG, "content_sha256": SOURCE_SHA, "canonical_content_sha256": CANONICAL_SHA, "article_body_sha256": BODY_SHA,
             "kind": kind, "media_item_id": f"owner-{kind}-20261110-{SOURCE_SHA[:12]}",
             "source_file": str(RESEARCH.relative_to(ROOT)), "source_file_sha256": sha_file(RESEARCH),
             "script_segments": scripts[kind], "script_sha256": sha_bytes("\n".join(scripts[kind]).encode()),
@@ -128,13 +129,13 @@ def transcribe(out):
     from faster_whisper import WhisperModel
     from scripts.kesher_owner_positivity_asr import similarity
     model = WhisperModel("small", device="cpu", compute_type="int8", download_root=str(out / "asr-model-cache"))
-    report = {"source_slug": SLUG, "content_sha256": SOURCE_SHA, "canonical_content_sha256": CANONICAL_SHA,
+    report = {"source_slug": SLUG, "content_sha256": SOURCE_SHA, "canonical_content_sha256": CANONICAL_SHA, "article_body_sha256": BODY_SHA,
               "engine": "faster-whisper==1.2.1 / small Hebrew", "audio_source": "decoded_final_mp4_audio",
               "review": "PENDING_OWNER_EDITORIAL_CONFIRMATION", "media": {}}
     for kind in SOURCE_KINDS:
         m = json.loads((out / f"{kind}-manifest.json").read_text())
         wav = out / f"{kind}-review-voice.wav"
-        if m["source_slug"] != SLUG or m["content_sha256"] != SOURCE_SHA or m["canonical_content_sha256"] != CANONICAL_SHA or sha_file(wav) != m["audio_sha256"] or sha_file(out / f"{kind}.mp4") != m["video_sha256"] or m["public"] is not False:
+        if m["source_slug"] != SLUG or m["content_sha256"] != SOURCE_SHA or m["canonical_content_sha256"] != CANONICAL_SHA or m["article_body_sha256"] != BODY_SHA or sha_file(wav) != m["audio_sha256"] or sha_file(out / f"{kind}.mp4") != m["video_sha256"] or m["public"] is not False:
             raise ValueError("ASR_IDENTITY_MISMATCH")
         segments, details = model.transcribe(str(wav), language="he", beam_size=5, condition_on_previous_text=False, vad_filter=False)
         text = " ".join(x.text.strip() for x in segments).strip()

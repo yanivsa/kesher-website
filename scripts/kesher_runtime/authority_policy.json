@@ -3250,7 +3250,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "692624b65553093d759275d9200a32dae60afb28757919d6af913a41f793108c",
+      "definition_sha256": "e7ef2005f4d2fad32895cd75a48f5d1b52037cf1e87189f941cf912ed32b6118",
       "resources": [],
       "review": {
         "call_chain": {
@@ -3262,8 +3262,8 @@
           "remotion-kesher/src/Root.tsx": "79ca213b77e2a58d0ba72c61830215de2501bd80617d93e0ac3414a709bcb8ed",
           "research/kesher-asynchrony-photo-provenance.json": "5c0f25bbc8e5ff87d9f16fc6db2588f6bca50cafdbcc6fe35ea1ee0b6307a36d",
           "research/kesher-gifted-asynchrony-20261109.md": "3e8d6d2a4e5326852feaf225459a9c95b8ed8f8d1d70333918b2b5d652d08de1",
-          "research/kesher-kindergarten-play-media-20261110.json": "15165f80752bbf8640972cf7396514addda89bae784b43b6d32e0ebaf6c759c2",
-          "research/kesher-kindergarten-play-photo-provenance.json": "728348e6c317ed543887c8167d5a8d027fe980eabd4ee67b617ef5cb2df6de19",
+          "research/kesher-kindergarten-play-media-20261110.json": "111f202ae94d506d650634cc1db764ec413d84f4ef740558e62c06fc58db048",
+          "research/kesher-kindergarten-play-photo-provenance.json": "db86a5719c62ac5db40d939757030d8fbbbd7174d5d1ebd56639bf04c3e95e13",
           "research/kesher-productive-failure-20261110.md": "1d81bbab0f9afba03b85e29fcf999d9b5e7156e34d23394e1eb6a6c46e83c50e",
           "research/kesher-productive-failure-photo-provenance.json": "cb3a6897e0bc1c9575bca8eb97b02305378cb2986df173e4f76d04241f3da3d0",
           "research/kesher-relationship-code-7500-20261110.md": "a777ac07c1133284457b586b44b9e9f3feb262cb20e1b03953acfc3dcce58085",
@@ -3297,7 +3297,7 @@
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
           "scripts/kesher_owner_7500_preview.py": "542da818848234c3fcd3f90ea950e621bbd599ef432d02542fe38c5d0a8d0984",
           "scripts/kesher_owner_asynchrony_preview.py": "277b4f1e4f44e4cef421d59864e46cda1784dd20cabf815f6594d27fe3be61a2",
-          "scripts/kesher_owner_kindergarten_play_preview.py": "4ae3bd9bd5dcd7dc57ecc30a8ef601efd7d4343b4a4ece26cfbcb637c31e7f26",
+          "scripts/kesher_owner_kindergarten_play_preview.py": "4c9ca0a38bc0f0078ef2875f2ed2342b8e043cfd29e7819cbbbf5c8416e67ebf",
           "scripts/kesher_owner_positivity_asr.py": "743a4425f026c9c6ed153c7479c01ddd634a733a6434e62440d8a2ae520c0c1c",
           "scripts/kesher_owner_positivity_preview.py": "baf564c273d1b4408f39dce5241e415c40501ffcd61ab97d59c02a057366c8bc",
           "scripts/kesher_owner_productive_failure_preview.py": "33133377fe1259638109f51b4d017d56999a8b37f2b94691685f833370130207",
@@ -3408,7 +3408,7 @@
           "tests/test_kesher_observe.py": "972d9a5fd360fb32660cb57d527382145faa86b924b1c3bd693292a27b69c3c1",
           "tests/test_kesher_output_artifacts.py": "ab3bb2145d2201f0b6245ebb7454f38e55867ba4a880b96459a879e92d83d7dd",
           "tests/test_kesher_owner_asynchrony_preview.py": "a5642fb80f4608c2d9b47fc9087fe787f2ae9827e6c95485ad2892f84d7391ae",
-          "tests/test_kesher_owner_kindergarten_play_preview.py": "b1cbc72509fce5c96c3f6ba7ae0f6762e74ecc898f7f6630fd262b2b0170e133",
+          "tests/test_kesher_owner_kindergarten_play_preview.py": "53d41192533c211b4dd35e1b018f0242dd3e146b401a791eef8ad4b4672a2355",
           "tests/test_kesher_owner_positivity_asr.py": "37b54a8e39f3363c55f39783e54a71c9d77e3df87c1484325512f822dba27c68",
           "tests/test_kesher_owner_positivity_preview.py": "6da77982107c3a3b07c7724617c6e77790e005a3c71327a864b894ad5e833fa5",
           "tests/test_kesher_post_freeze_migration.py": "f3f97adec31e7bba754400144c10d495251e10e201ddff1b9c1e679138da9c7c",

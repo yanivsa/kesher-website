@@ -5,7 +5,10 @@ from scripts import kesher_owner_kindergarten_play_preview as preview
 class KindergartenPlayPrivatePreviewTests(unittest.TestCase):
     def test_exact_source_and_photo_bytes(self):
         scripts, provenance = preview.source_check(public=False)
-        self.assertEqual(provenance["canonical_content_sha256"], preview.CANONICAL_SHA)
+        self.assertEqual(provenance["content_sha256"], preview.SOURCE_SHA)
+        self.assertEqual(provenance["canonical_content_sha256"], preview.SOURCE_SHA)
+        self.assertEqual(provenance["article_body_sha256"], preview.BODY_SHA)
+        self.assertNotEqual(preview.SOURCE_SHA, preview.BODY_SHA)
         self.assertEqual(len(scripts["overview"]), 6)
         self.assertEqual(len(scripts["short"]), 4)
         self.assertEqual([x["dimensions"] for x in provenance["images"][3:]], [[1080, 1920], [1080, 1920]])

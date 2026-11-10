@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "source_slug": "child-not-playing-kindergarten",
-  "content_sha256": "11d0e48e8b5becbfd150e6fd125325fd2f18a4f1fb9b6a925e331c7c2f0e42bf",
+  "content_sha256": "60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa",
   "canonical_content_sha256": "60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa",
+  "article_body_sha256": "11d0e48e8b5becbfd150e6fd125325fd2f18a4f1fb9b6a925e331c7c2f0e42bf",
   "images": [
     {
       "path": "public/images/generated/blog/child-not-playing-kindergarten-photo.jpg",

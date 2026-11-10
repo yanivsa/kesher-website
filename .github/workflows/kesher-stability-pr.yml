@@ -489,19 +489,19 @@ jobs:
         run: |
           set -euo pipefail
           python -m unittest tests.test_kesher_owner_kindergarten_play_preview -v
-          python -m scripts.kesher_owner_kindergarten_play_preview preflight --source-sha 11d0e48e8b5becbfd150e6fd125325fd2f18a4f1fb9b6a925e331c7c2f0e42bf
+          python -m scripts.kesher_owner_kindergarten_play_preview preflight --source-sha 60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa
       - name: Render original private Hebrew Overview and native 9 by 16 Short
         env:
           HF_HOME: ${{ runner.temp }}/owner-kindergarten-play-hf
         run: |
           set -euo pipefail
-          python -m scripts.kesher_owner_kindergarten_play_preview preview --source-sha 11d0e48e8b5becbfd150e6fd125325fd2f18a4f1fb9b6a925e331c7c2f0e42bf
+          python -m scripts.kesher_owner_kindergarten_play_preview preview --source-sha 60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa
       - name: Independently transcribe exact final Hebrew MP4 audio
         env:
           HF_HOME: ${{ runner.temp }}/owner-kindergarten-play-asr-hf
         run: |
           set -euo pipefail
-          python -m scripts.kesher_owner_kindergarten_play_preview asr --source-sha 11d0e48e8b5becbfd150e6fd125325fd2f18a4f1fb9b6a925e331c7c2f0e42bf
+          python -m scripts.kesher_owner_kindergarten_play_preview asr --source-sha 60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa
       - name: Archive reviewable PRIVATE owner outputs only
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
