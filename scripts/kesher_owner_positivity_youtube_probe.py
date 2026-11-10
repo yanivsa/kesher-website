@@ -15,6 +15,9 @@ MIDYEAR_SLUG = "changing-kindergarten-midyear"
 MIDYEAR_SHA = "5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a"
 MIDYEAR_BODY_SHA = "3364783a30bba0069f18a000c03c07d74420e0bf39100bd25fcb4b9fcbefa5eb"
 MIDYEAR_TITLE = "מעבר גן באמצע שנה: איך לעזור לילד להיפרד ולהתחיל מחדש?"
+SEPARATE_ROOM_SLUG = "transition-to-separate-room"
+SEPARATE_ROOM_SHA = "4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0"
+SEPARATE_ROOM_BODY_SHA = "9df3fef6d555e3d5efa8de74cc865dedbe9fdceade297611054623dbd18d0a52"
 KIND_MARKERS = {"overview": "owner-overview-20261110-6bb5723bbadc",
                 "short": "owner-short-20261110-6bb5723bbadc"}
 
@@ -76,8 +79,35 @@ def midyear_candidates(records):
     return candidates
 
 
-def find_midyear_candidates(youtube, playlist):
+def separate_room_candidates(records):
+    """Flag exact and legacy matches, redacting nonpublic identifiers."""
+    candidates = []
+    for row in records:
+        snip = row.get("snippet") or {}
+        if snip.get("channelId") != CHANNEL:
+            raise RuntimeError("UNEXPECTED_CHANNEL")
+        desc = str(snip.get("description") or "")
+        title = str(snip.get("title") or "")
+        normalized = " ".join(re.sub(r"[^\w\s]", " ", title).split())
+        title_match = bool(re.search(r"חדר (?:נפרד|משלו|שלו|משלה|שלה)|מעבר לחדר (?:הילד|התינוק)|להעביר (?:את )?(?:הילד|התינוק|הפעוט) לחדר", normalized))
+        if not (SEPARATE_ROOM_SLUG in desc or SEPARATE_ROOM_SHA in desc
+                or SEPARATE_ROOM_BODY_SHA in desc or title_match):
+            continue
+        privacy = (row.get("status") or {}).get("privacyStatus")
+        vid = row["id"]
+        candidates.append({"privacy": privacy, "title": title if privacy == "public" else None,
+                           "public_id": vid if privacy == "public" else None,
+                           "id_fingerprint": hashlib.sha256(vid.encode()).hexdigest()[:12]})
+    return candidates
+
+
+def find_midyear_candidates(youtube, playlist, *, slug=MIDYEAR_SLUG, source_sha=MIDYEAR_SHA):
     """Use the reviewed publisher's fail-closed complete read-only scan."""
+    matchers = {(MIDYEAR_SLUG, MIDYEAR_SHA): midyear_candidates,
+                (SEPARATE_ROOM_SLUG, SEPARATE_ROOM_SHA): separate_room_candidates}
+    matcher = matchers.get((slug, source_sha))
+    if matcher is None:
+        raise RuntimeError("EXACT_USER_APPROVED_SOURCE_REQUIRED")
     from scripts.kesher_owner_reviewed_publish import deleted_upload_marker, scan_video_records
     token, seen_tokens, ids, deleted_candidates = None, set(), [], set()
     while True:
@@ -96,9 +126,9 @@ def find_midyear_candidates(youtube, playlist):
             raise RuntimeError("DUPLICATE_SCAN_INCOMPLETE")
         seen_tokens.add(token)
     records = scan_video_records(youtube, ids, deleted_candidates, playlist)
-    return {"source_slug": MIDYEAR_SLUG, "content_sha256": MIDYEAR_SHA,
+    return {"source_slug": slug, "content_sha256": source_sha,
             "uploaded_video_count": len(ids), "resolved_video_count": len(records),
-            "candidates": midyear_candidates(records)}
+            "candidates": matcher(records)}
 
 
 def main():
@@ -106,14 +136,14 @@ def main():
     ap.add_argument("--slug",required=True)
     ap.add_argument("--source-sha",required=True)
     args=ap.parse_args()
-    if (args.slug, args.source_sha) not in {(SLUG, SHA), (MIDYEAR_SLUG, MIDYEAR_SHA)}:
+    if (args.slug, args.source_sha) not in {(SLUG, SHA), (MIDYEAR_SLUG, MIDYEAR_SHA), (SEPARATE_ROOM_SLUG, SEPARATE_ROOM_SHA)}:
         raise SystemExit("EXACT_USER_APPROVED_SOURCE_REQUIRED")
     yt=youtube_client()
     rows=yt.channels().list(part="id,contentDetails",mine=True).execute().get("items",[])
     if len(rows)!=1 or rows[0].get("id")!=CHANNEL:
         raise RuntimeError("YOUTUBE_ACCOUNT_WRONG_CHANNEL")
     uploads=rows[0]["contentDetails"]["relatedPlaylists"]["uploads"]
-    result=(find_all_exact(yt,uploads) if args.slug == SLUG else find_midyear_candidates(yt,uploads))
+    result=(find_all_exact(yt,uploads) if args.slug == SLUG else find_midyear_candidates(yt,uploads,slug=args.slug,source_sha=args.source_sha))
     print("KESHER_SOURCE_YOUTUBE_READ_ONLY_PREFLIGHT "+json.dumps(result,ensure_ascii=False,sort_keys=True),flush=True)
     print("NO_YOUTUBE_MUTATION_PERFORMED",flush=True)
 
