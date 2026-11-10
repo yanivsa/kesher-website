@@ -871,7 +871,16 @@
           "tests/test_kesher_backlog_rotation.py": "5fe6309a0183cf2a951a66b38ee42cb426128ac99cd0f2a7cf0331efd8f42670",
           "tests/fixtures/kesher/schema5-freeze-20261004.json": "e678d1bc8be8aa4bdf1cf083cc6e044fd4d578f186cb7fdca1697ff4aecfcb00",
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
-          "tests/test_kesher_owner_media_quality.py": "abbb17fe7488617a822fb23982f361d34321f364b66b986692ba4e2642d27450"
+          "tests/test_kesher_owner_media_quality.py": "d15628fe16ea01a570be5701beb8d6a9d8ac3ce38beb0017b8c9589617404671",
+          "scripts/kesher_owner_reviewed_publish.py": "d98ce1302523d315cda0ed2984e4dc99e8b385e4b4b5560c5d390577ef22e57e",
+          "research/owner-media-quality/evidence/child-not-playing-kindergarten--overview-descript-transcript.txt": "057ca8f57280082dad05bc69577b480899923d7aada2f15f536e5be0cd23524d",
+          "research/owner-media-quality/child-not-playing-kindergarten--overview.json": "1fbbe7732201c7c7751e9fb2fe98a0f6943df032dd65ef473faeeb70dc7d549f",
+          "research/owner-media-quality/evidence/child-not-playing-kindergarten--short-descript-transcript.txt": "199d927ee76d981d7933bf6182ba85f3aa4f4a974820b6081a25635942163052",
+          "research/owner-media-quality/child-not-playing-kindergarten--short.json": "8283d13f3fd2afcb8462aaf82b7dc771dcc96cbabeaf6ba405fcf74805905faa",
+          "scripts/kesher_owner_kindergarten_play_preview.py": "4c9ca0a38bc0f0078ef2875f2ed2342b8e043cfd29e7819cbbbf5c8416e67ebf",
+          "scripts/kesher_owner_kindergarten_audio_repair.py": "aff21f591ea9db5dc4950147cab41154c52d59e6f110dfd7160cbef208c06215",
+          "research/kesher-kindergarten-play-media-20261110.json": "1111f202ae94d506d650634cc1db764ec413d84f4ef740558e62c06fc58db048",
+          "research/kesher-kindergarten-play-photo-provenance.json": "db86a5719c62ac5db40d939757030d8fbbbd7174d5d1ebd56639bf04c3e95e13"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -3162,7 +3171,7 @@
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
           "scripts/kesher_owner_positivity_youtube_probe.py": "b98834f9f71656535a14d100c9931c54610c263d5268a9330e233aae3b8b781c",
-          "scripts/kesher_owner_reviewed_publish.py": "5fbe0338e8bbbfff5352dea063990e4aa8a8201e6e3bced85a15ea059548cf5d",
+          "scripts/kesher_owner_reviewed_publish.py": "d98ce1302523d315cda0ed2984e4dc99e8b385e4b4b5560c5d390577ef22e57e",
           "scripts/kesher_owner_asynchrony_preview.py": "277b4f1e4f44e4cef421d59864e46cda1784dd20cabf815f6594d27fe3be61a2",
           "scripts/kesher_owner_positivity_preview.py": "baf564c273d1b4408f39dce5241e415c40501ffcd61ab97d59c02a057366c8bc",
           "scripts/kesher_owner_productive_failure_preview.py": "33133377fe1259638109f51b4d017d56999a8b37f2b94691685f833370130207",
@@ -3171,7 +3180,7 @@
           "research/owner-media-quality/productive-failure-parents-learning-resilience--overview.json": "83a6e761bdedbc01371565b7e1a3605195460cb8328f56d7468942f9f88c7f73",
           "research/owner-media-quality/productive-failure-parents-learning-resilience--short.json": "ea56fad666ecc0c051f4627bcc3df2b021fb3083bdb84da060d5533467338827",
           "scripts/kesher_runtime/media_worker.py": "4db95d3f8da41da3910501210136fd2641ec579e151a354779a155d01c5db7d6",
-          "tests/test_kesher_owner_media_quality.py": "abbb17fe7488617a822fb23982f361d34321f364b66b986692ba4e2642d27450",
+          "tests/test_kesher_owner_media_quality.py": "d15628fe16ea01a570be5701beb8d6a9d8ac3ce38beb0017b8c9589617404671",
           "scripts/kesher_owner_vantage_short.py": "016b0f73870d71be542c52f9e703b16e4d7331306c11cb085e66ed2d6267c252",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
           "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc",
@@ -3219,7 +3228,15 @@
           "research/kesher-relationship-code-7500-20261110.md": "a777ac07c1133284457b586b44b9e9f3feb262cb20e1b03953acfc3dcce58085",
           "research/kesher-relationship-code-7500-photo-provenance.json": "515d0365773398df5b680f95ddbe0bcad90182a4e6f4bb76dd581ebf41c0cfb3",
           "research/owner-media-quality/relationship-code-7500--overview.json": "e95a59486edb76c392c868e1e7a41ef44e19973b7bbc125cbde2a565e2623d98",
-          "research/owner-media-quality/relationship-code-7500--short.json": "19e5ace04bd3a7a31e8ad825131719684cddd00231060e2c70cfaaa78719887e"
+          "research/owner-media-quality/relationship-code-7500--short.json": "19e5ace04bd3a7a31e8ad825131719684cddd00231060e2c70cfaaa78719887e",
+          "research/owner-media-quality/evidence/child-not-playing-kindergarten--overview-descript-transcript.txt": "057ca8f57280082dad05bc69577b480899923d7aada2f15f536e5be0cd23524d",
+          "research/owner-media-quality/child-not-playing-kindergarten--overview.json": "1fbbe7732201c7c7751e9fb2fe98a0f6943df032dd65ef473faeeb70dc7d549f",
+          "research/owner-media-quality/evidence/child-not-playing-kindergarten--short-descript-transcript.txt": "199d927ee76d981d7933bf6182ba85f3aa4f4a974820b6081a25635942163052",
+          "research/owner-media-quality/child-not-playing-kindergarten--short.json": "8283d13f3fd2afcb8462aaf82b7dc771dcc96cbabeaf6ba405fcf74805905faa",
+          "scripts/kesher_owner_kindergarten_play_preview.py": "4c9ca0a38bc0f0078ef2875f2ed2342b8e043cfd29e7819cbbbf5c8416e67ebf",
+          "scripts/kesher_owner_kindergarten_audio_repair.py": "aff21f591ea9db5dc4950147cab41154c52d59e6f110dfd7160cbef208c06215",
+          "research/kesher-kindergarten-play-media-20261110.json": "1111f202ae94d506d650634cc1db764ec413d84f4ef740558e62c06fc58db048",
+          "research/kesher-kindergarten-play-photo-provenance.json": "db86a5719c62ac5db40d939757030d8fbbbd7174d5d1ebd56639bf04c3e95e13"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",

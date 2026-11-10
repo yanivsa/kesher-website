@@ -162,7 +162,7 @@ class OwnerReviewedPublishTests(unittest.TestCase):
         for slug, cfg in p.CONFIG.items():
             self.assertIs(p.source_config(slug, cfg["canonical_sha"]), cfg)
             with self.assertRaises(RuntimeError):
-                p.source_config(slug, cfg["module"].SOURCE_SHA)
+                p.source_config(slug, p.body_identity(cfg))
             self.assertIn("content_sha256=" + cfg["canonical_sha"], p.metadata(cfg, "overview")["description"])
             with self.assertRaises(RuntimeError):
                 p.source_config(slug, "0" * 64)
@@ -412,6 +412,35 @@ class OwnerReviewedPublishTests(unittest.TestCase):
             cfg["zip_sha"] = hashlib.sha256(archive.read_bytes()).hexdigest()
             with self.assertRaisesRegex(RuntimeError, "ARTIFACT_FILE_SET_MISMATCH"):
                 p.archive_files(archive, out, cfg)
+
+    def test_kindergarten_canonical_manifest_identity_and_exact_repair(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        cfg = p.CONFIG[p.kindergarten.SLUG]
+        self.assertEqual(p.artifact_identity(cfg), cfg["canonical_sha"])
+        self.assertEqual(p.body_identity(cfg), p.kindergarten.BODY_SHA)
+        self.assertNotEqual(p.body_identity(cfg), p.artifact_identity(cfg))
+        self.assertEqual(p.item_id(cfg, "overview"), "owner-overview-20261110-60374e686f78")
+        self.assertEqual(cfg["artifact"], 13788929727)
+        self.assertIn("Adobe Firefly", p.metadata(cfg, "overview")["description"])
+        manifest = {"canonical_content_sha256": cfg["canonical_sha"],
+                    "article_body_sha256": p.kindergarten.BODY_SHA,
+                    "targeted_audio_repair": copy.deepcopy(p.KINDERGARTEN_REPAIR_EVIDENCE)}
+        with patch.object(p, "sha", return_value="b4ab42789a64e302d8fc57759cc6a58efd9032b1626b9d8d017fa0b75ef23288"), \
+             patch.object(p.kindergarten_repair, "video_packets", return_value=b"packet"), \
+             patch.object(p.kindergarten_repair, "sha", return_value=p.KINDERGARTEN_REPAIR_EVIDENCE["video_packet_sha256"]):
+            p.validate_kindergarten_repair(manifest, Path("overview.mp4"), "overview")
+        changed = copy.deepcopy(manifest)
+        changed["targeted_audio_repair"]["original_short_preserved"] = False
+        with self.assertRaisesRegex(RuntimeError, "KINDERGARTEN_TARGETED_AUDIO_REPAIR_MISMATCH"):
+            p.validate_kindergarten_repair(changed, Path("overview.mp4"), "overview")
+        short = {"canonical_content_sha256": cfg["canonical_sha"],
+                 "article_body_sha256": p.kindergarten.BODY_SHA,
+                 "composition": "native_full_frame_9_16_no_padding"}
+        with patch.object(p, "sha", return_value=p.kindergarten_repair.SHORT_SHA):
+            p.validate_kindergarten_repair(short, Path("short.mp4"), "short")
+        short["article_body_sha256"] = "0" * 64
+        with self.assertRaisesRegex(RuntimeError, "KINDERGARTEN_CANONICAL_MANIFEST_MISMATCH"):
+            p.validate_kindergarten_repair(short, Path("short.mp4"), "short")
 
     def test_guarded_owner_publish_installs_photo_validation_dependency(self):
         from scripts import kesher_owner_reviewed_publish as p

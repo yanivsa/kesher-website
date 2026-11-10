@@ -15,6 +15,8 @@ from scripts import kesher_owner_asynchrony_preview as gifted
 from scripts import kesher_owner_positivity_preview as positivity
 from scripts import kesher_owner_productive_failure_preview as productive
 from scripts import kesher_owner_7500_preview as code7500
+from scripts import kesher_owner_kindergarten_play_preview as kindergarten
+from scripts import kesher_owner_kindergarten_audio_repair as kindergarten_repair
 from scripts.kesher_owner_vantage_short import youtube_client
 from scripts.kesher_daily_pipeline import clean_article_html, source_metadata
 from scripts.kesher_runtime.bridge_admission import main as bridge_admission
@@ -73,6 +75,18 @@ CONFIG = {
         "tags": ["איך יודעים שהזוגיות במשבר", "סימנים למשבר בזוגיות", "תקשורת זוגית", "ריבים בזוגיות"],
         "tags_by_kind": {"short": ["זלזול בזוגיות", "בוז בזוגיות", "ריבים בזוגיות", "תקשורת בזמן ריב"]},
     },
+    kindergarten.SLUG: {
+        "module": kindergarten, "date": "20261110", "artifact": 13788929727,
+        "canonical_sha": kindergarten.CANONICAL_SHA, "body_sha": kindergarten.BODY_SHA,
+        "artifact_identity_sha": kindergarten.SOURCE_SHA, "run": 42872924288,
+        "zip_sha": "f5aaec2aa660d75dfe8d89bd82c0c0b6e944269ca1f3617969384dae3e3cc5a5",
+        "titles": {
+            "overview": "ילד לא משחק בגן? מתי לתת לו זמן ומתי לעזור?",
+            "short": "הילד יושב בצד בגן? לא תמיד צריך להתערב #Shorts",
+        },
+        "intro": "ילד יושב בצד בגן: איך מבדילים בין משחק עצמאי רגוע לבין ילד שרוצה להצטרף אבל חושש? שאלות לגננת, צעד קטן בלי לחץ ומתי לפנות לרופא הילדים.",
+        "tags": ["ילד לא משחק בגן", "ילד יושב בצד בגן", "ביישנות ילדים", "הדרכת הורים", "שירה סהרוני"],
+    },
 }
 
 
@@ -91,6 +105,14 @@ def source_config(slug, source_sha):
     require(cfg is not None and cfg["canonical_sha"] == source_sha,
             "EXACT_APPROVED_SOURCE_REQUIRED")
     return cfg
+
+
+def body_identity(cfg):
+    return cfg.get("body_sha", cfg["module"].SOURCE_SHA)
+
+
+def artifact_identity(cfg):
+    return cfg.get("artifact_identity_sha", cfg["module"].SOURCE_SHA)
 
 
 def verify_source_binding(cfg, post=None):
@@ -112,12 +134,12 @@ def verify_source_binding(cfg, post=None):
     require(source["slug"] == module.SLUG
             and source["canonical_url"] == module.ARTICLE
             and source["content_sha256"] == cfg["canonical_sha"]
-            and body_sha == module.SOURCE_SHA, "CANONICAL_SOURCE_BINDING_MISMATCH")
+            and body_sha == body_identity(cfg), "CANONICAL_SOURCE_BINDING_MISMATCH")
     return post
 
 
 def item_id(cfg, kind):
-    return f"owner-{kind}-{cfg['date']}-{cfg['module'].SOURCE_SHA[:12]}"
+    return f"owner-{kind}-{cfg['date']}-{artifact_identity(cfg)[:12]}"
 
 
 def archive_files(archive, dest, cfg):
@@ -128,9 +150,9 @@ def archive_files(archive, dest, cfg):
         expected.update((f"{kind}.mp4", f"{kind}-manifest.json",
                          f"{kind}-review-voice.wav", f"{kind}-visual-contact-sheet.jpg"))
         expected.update(f"{kind}-frame-{i:02d}.jpg" for i in range(1, 9))
-        if cfg["module"] in (positivity, productive, code7500):
+        if cfg["module"] in (positivity, productive, code7500, kindergarten):
             expected.add(f"{kind}-asr.txt")
-    if cfg["module"] in (positivity, productive, code7500):
+    if cfg["module"] in (positivity, productive, code7500, kindergarten):
         expected.add("asr-review.json")
     with zipfile.ZipFile(archive) as z:
         names = z.namelist()
@@ -192,9 +214,51 @@ def validate_7500_repair(manifest, video, kind):
                 "7500_SHORT_REVIEWED_PREFIX_MISMATCH")
 
 
+KINDERGARTEN_REPAIR_EVIDENCE = {
+        "input_artifact_id": 13787755454,
+        "input_archive_sha256": "bfd6fca1b962555d34ae02e652ec02775ccfd9e3d21d43c2b4ade2557c5b6ccb",
+        "original_overview_sha256": "bfbd515e6d852935298b8cfdde5b037a5eb1abced9e21e36d9271937449c369e",
+        "unchanged_short_sha256": "9e798a40b8a11bf07314662ebe7dc789c9c3f9c3de41a010924616d78f172a09",
+        "overview_cut_samples": [
+            3235176,
+            3376958
+        ],
+        "short_cut_samples": [
+            1163799,
+            1290366
+        ],
+        "sample_rate": 44100,
+        "video_packet_sha256": "e08b3589e1ea6a28744328f5a6e8482633ec05b1ebe92f33b8dd41b4230d30e8",
+        "original_pcm_sha256": "296b5183350f75be78393c7da004fd4a8591a342b3396498a629fda68763a330",
+        "edited_pcm_sha256": "3f7eccd93849dcb8d82e8d777f645f31810eb5de8bc87135dd939a5f6fdb3124",
+        "outside_cut_pcm_sha256": "c9a1d2013a612856eca10777257e3a632fe125fa6cf5ad594b2bae0882d3a22d",
+        "outside_cut_pcm_preserved_before_aac_encode": True,
+        "video_packets_preserved": True,
+        "original_short_preserved": True,
+        "method": "reuse exact independently transcribed Short sentence at silent boundaries; no new TTS"
+    }
+
+
+def validate_kindergarten_repair(manifest, video, kind):
+    require(manifest.get("canonical_content_sha256") == kindergarten.CANONICAL_SHA
+            and manifest.get("article_body_sha256") == kindergarten.BODY_SHA,
+            "KINDERGARTEN_CANONICAL_MANIFEST_MISMATCH")
+    if kind == "overview":
+        require(manifest.get("targeted_audio_repair") == KINDERGARTEN_REPAIR_EVIDENCE
+                and sha(video) == "b4ab42789a64e302d8fc57759cc6a58efd9032b1626b9d8d017fa0b75ef23288",
+                "KINDERGARTEN_TARGETED_AUDIO_REPAIR_MISMATCH")
+        require(kindergarten_repair.sha(kindergarten_repair.video_packets(video))
+                == KINDERGARTEN_REPAIR_EVIDENCE["video_packet_sha256"],
+                "KINDERGARTEN_ORIGINAL_VIDEO_PACKETS_CHANGED")
+    else:
+        require(sha(video) == kindergarten_repair.SHORT_SHA
+                and manifest.get("composition") == "native_full_frame_9_16_no_padding",
+                "KINDERGARTEN_UNCHANGED_NATIVE_SHORT_MISMATCH")
+
+
 def validate_bundle(cfg, directory, kind):
     module = cfg["module"]
-    slug, artifact_body_sha = module.SLUG, module.SOURCE_SHA
+    slug, artifact_body_sha = module.SLUG, body_identity(cfg)
     source_sha = cfg["canonical_sha"]
     verify_source_binding(cfg)
     root = ROOT / "research/owner-media-quality"
@@ -210,7 +274,7 @@ def validate_bundle(cfg, directory, kind):
             and binding.get("method") == "recomputed_same_committed_post_body_and_canonical_source"
             and bool(binding.get("verified_at")), "CANONICAL_APPROVAL_BINDING_MISMATCH")
     require(manifest.get("source_slug") == slug
-            and manifest.get("content_sha256") == artifact_body_sha
+            and manifest.get("content_sha256") == artifact_identity(cfg)
             and manifest.get("kind") == kind
             and manifest.get("media_item_id") == item_id(cfg, kind)
             and manifest.get("uploaded") is False and manifest.get("public") is False,
@@ -222,7 +286,7 @@ def validate_bundle(cfg, directory, kind):
     contact = directory / f"{kind}-visual-contact-sheet.jpg"
     frames = {f"{kind}-frame-{i:02d}.jpg": sha(directory / f"{kind}-frame-{i:02d}.jpg")
               for i in range(1, 9)}
-    transcript = (directory / f"{kind}-asr.txt" if module in (positivity, productive, code7500) else
+    transcript = (directory / f"{kind}-asr.txt" if module in (positivity, productive, code7500, kindergarten) else
                   root / "evidence" / f"{slug}--{kind}-descript-transcript.txt")
     require(sha(video) == manifest["video_sha256"]
             and sha(wav) == manifest["audio_sha256"] == evidence["audio_sha256"]
@@ -241,6 +305,12 @@ def validate_bundle(cfg, directory, kind):
             and voice["reference_license_url"] == "https://www.openslr.org/141/",
             "VOICE_LICENSE_PROVENANCE_MISMATCH")
     scripts, provenance = module.source_check(public=False)
+    if module is kindergarten:
+        scripts = {k: list(v) for k, v in scripts.items()}
+        scripts['overview'][-1] = scripts['overview'][-1].replace(kindergarten_repair.OLD, kindergarten_repair.NEW)
+        independent = root / 'evidence' / f'{slug}--{kind}-descript-transcript.txt'
+        require(sha(independent) == evidence.get('descript_transcript_sha256'),
+                'KINDERGARTEN_INDEPENDENT_TRANSCRIPT_MISMATCH')
     require(manifest["script_segments"] == scripts[kind]
             and manifest["visual_sources"] == provenance["images"],
             "REVIEWED_SOURCE_OR_VISUALS_CHANGED")
@@ -249,6 +319,8 @@ def validate_bundle(cfg, directory, kind):
         validate_productive_repair(manifest, video, kind)
     if module is code7500:
         validate_7500_repair(manifest, video, kind)
+    if module is kindergarten:
+        validate_kindergarten_repair(manifest, video, kind)
     item = {
         "technical_verified": True, "source": {"slug": slug, "content_sha256": source_sha},
         "type": "video_overview" if kind == "overview" else "article_short",
@@ -275,7 +347,7 @@ def metadata(cfg, kind, overview_id=None):
         + "\nhttps://www.openslr.org/141/"
         + "\nhttps://creativecommons.org/licenses/by/4.0/"
         + ("\nתמונות מקוריות שנוצרו עבור KESHER באמצעות Adobe Firefly."
-           if module in (positivity, productive, code7500) else "\nתמונות מקוריות שנוצרו עבור KESHER באמצעות OpenAI.")
+           if module in (positivity, productive, code7500, kindergarten) else "\nתמונות מקוריות שנוצרו עבור KESHER באמצעות OpenAI.")
     )
     if kind == "short":
         require(isinstance(overview_id, str) and re.fullmatch(r"[A-Za-z0-9_-]{11}", overview_id),
@@ -296,7 +368,7 @@ def classify(cfg, records):
         require(snip.get("channelId") == CHANNEL, "UNEXPECTED_CHANNEL")
         desc = str(snip.get("description") or "")
         title = str(snip.get("title") or "")
-        relevant = (module.SLUG in desc or module.SOURCE_SHA in desc or cfg["canonical_sha"] in desc
+        relevant = (module.SLUG in desc or module.SOURCE_SHA in desc or cfg["canonical_sha"] in desc or body_identity(cfg) in desc
                     or title in cfg["titles"].values())
         if not relevant:
             continue
