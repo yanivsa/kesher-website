@@ -254,10 +254,45 @@ def verify_public(yt, cfg, kind, vid, expected):
     raise RuntimeError("PUBLIC_PROCESSING_OR_PLAYER_PENDING_DO_NOT_REUPLOAD")
 
 
+def verify_live_article(cfg):
+    """Require production manifest, exact source marker and actual live hero bytes."""
+    import requests
+    module = cfg["module"]
+    module.source_check(public=True)
+    site = "https://kesher.saharoni.com"
+    manifest_response = requests.get(site + "/.well-known/kesher-publication.json", timeout=30)
+    require(manifest_response.status_code == 200, "LIVE_PUBLICATION_MANIFEST_UNAVAILABLE")
+    manifest = manifest_response.json()
+    row = manifest.get("articles", {}).get(module.SLUG) or {}
+    identity = row.get("identity") or {}
+    require(identity.get("slug") == module.SLUG
+            and identity.get("content_sha256") == module.SOURCE_SHA
+            and row.get("canonical_url") == module.ARTICLE,
+            "LIVE_ARTICLE_SOURCE_IDENTITY_MISMATCH")
+    posts = json.loads((ROOT / "src/data/postsRecent.json").read_text(encoding="utf-8"))
+    selected = [x for x in posts if x.get("slug") == module.SLUG]
+    require(len(selected) == 1 and row.get("title") == selected[0]["title"],
+            "LIVE_ARTICLE_TITLE_MISMATCH")
+    hero = row.get("hero") or {}
+    require(hero.get("path") == selected[0]["image"]
+            and hero["path"].startswith("/images/generated/blog/"),
+            "LIVE_ARTICLE_HERO_IDENTITY_MISMATCH")
+    page = requests.get(module.ARTICLE, timeout=30)
+    require(page.status_code == 200
+            and f'<meta name="kesher:content-sha256" content="{module.SOURCE_SHA}">' in page.text
+            and f'rel="canonical" href="{module.ARTICLE}"' in page.text,
+            "LIVE_ARTICLE_CONTENT_MARKER_MISMATCH")
+    image = requests.get(site + hero["path"], timeout=30)
+    require(image.status_code == 200 and image.headers.get("Content-Type", "").startswith("image/")
+            and hashlib.sha256(image.content).hexdigest() == hero.get("sha256"),
+            "LIVE_ARTICLE_HERO_BYTES_MISMATCH")
+    print("OWNER_ARTICLE_LIVE_VERIFIED " + module.ARTICLE + " " + module.SOURCE_SHA, flush=True)
+
+
 def publish(cfg, directory):
     from googleapiclient.http import MediaFileUpload
     # All assets and article must pass before the first public mutation.
-    cfg["module"].source_check(public=True)
+    verify_live_article(cfg)
     paths = {kind: validate_bundle(cfg, directory, kind) for kind in KINDS}
     yt = youtube_client()
     overview_id = None

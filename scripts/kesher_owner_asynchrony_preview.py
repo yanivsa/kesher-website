@@ -53,7 +53,7 @@ def source_scripts():
 def source_check(*, public=False):
     entries = json.loads((ROOT / "src/data/postsRecent.json").read_text(encoding="utf-8"))
     selected = [x for x in entries if x.get("slug") == SLUG]
-    if len(selected) != 1 or selected[0].get("image") != "/images/blog/gifted-asynchrony-parent-child-hero.jpg":
+    if len(selected) != 1 or selected[0].get("image") != "/images/generated/blog/gifted-asynchrony-parent-child-hero.jpg":
         raise ValueError("ARTICLE_SOURCE_NOT_UNIQUE_OR_IMAGE_MISMATCH")
     parser = TextExtractor()
     parser.feed(selected[0]["content"])
