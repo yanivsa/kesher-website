@@ -23,6 +23,8 @@ def source_scripts():
     plan = json.loads(RESEARCH.read_text(encoding="utf-8"))
     if (plan["source_slug"], plan["content_sha256"], plan["canonical_content_sha256"]) != (SLUG, SOURCE_SHA, CANONICAL_SHA):
         raise ValueError("SCRIPT_SOURCE_IDENTITY_CHANGED")
+    if tuple(plan["scene_indices"]["overview"]) != OVERVIEW_PHOTOS or tuple(plan["scene_indices"]["short"]) != SHORT_PHOTOS:
+        raise ValueError("SCENE_PLAN_CHANGED")
     scripts = plan["scripts"]
     if set(scripts) != set(SOURCE_KINDS) or len(scripts["overview"]) != 6 or len(scripts["short"]) != 4:
         raise ValueError("SOURCE_SCRIPT_SHAPE")

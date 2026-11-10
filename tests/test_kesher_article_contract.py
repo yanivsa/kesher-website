@@ -37,7 +37,7 @@ class ArticleContractTests(unittest.TestCase):
         source = source_metadata(matches[0])
         self.assertEqual(source["slug"], "child-not-playing-kindergarten")
         self.assertEqual(source["canonical_url"], "https://kesher.saharoni.com/blog/child-not-playing-kindergarten")
-        self.assertRegex(source["content_sha256"], r"^[0-9a-f]{64}$")
+        self.assertEqual(source["content_sha256"], "60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa")
 
     def test_child_poops_in_pants_keyword_maps_to_canonical_slug(self):
         ok, message = slug_represents_keyword(
