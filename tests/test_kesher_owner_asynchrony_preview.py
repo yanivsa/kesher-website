@@ -26,6 +26,48 @@ class OwnerAsynchronyPreview(unittest.TestCase):
             bottom = reviewed.getpixel((640, 690))
             self.assertGreater(top[0], top[2] * 2)
             self.assertGreater(bottom[2], bottom[0] * 2)
+    def test_motion_filter_output_frame_driven(self):
+        """Prevent static-slide regression: zoom must advance with output frame 'on'."""
+        for kind in ("overview", "short"):
+            for reverse in (False, True):
+                expr = m.motion_filter(kind, 6.5, reverse)
+                self.assertIn("*on", expr)
+                self.assertIn("zoompan=", expr)
+                self.assertIn("d=1", expr)
+                self.assertIn("format=yuv420p[v]", expr)
+        self.assertNotEqual(m.motion_filter("short", 6.5, False),
+                            m.motion_filter("short", 6.5, True))
+    def test_animated_scene_changes_over_time(self):
+        """Decode two actual video frames, not just trust an FFmpeg success code."""
+        import subprocess
+        import numpy as np
+        import soundfile as sf
+        from tempfile import TemporaryDirectory
+        from PIL import Image, ImageDraw, ImageChops, ImageStat
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            src, wav, video = root/"source.png", root/"voice.wav", root/"moving.mp4"
+            picture = Image.new("RGB", (520, 520), "#113755")
+            draw = ImageDraw.Draw(picture)
+            draw.ellipse((30, 60, 260, 460), fill="#f2a12a")
+            draw.rectangle((300, 30, 510, 250), fill="#c6187a")
+            picture.save(src)
+            sr = 22050
+            wave = (0.06*np.sin(2*np.pi*330*np.arange(sr*4)/sr)).astype("float32")
+            sf.write(wav, wave, sr, subtype="PCM_16")
+            m.encode_scene(src, wav, video, "overview", 3.5, reverse=False)
+            images = []
+            for sec in (0.5, 3.0):
+                result = subprocess.run(
+                    ["ffmpeg","-v","error","-ss",str(sec),"-i",str(video),
+                     "-frames:v","1","-vf","scale=240:135","-f","image2pipe",
+                     "-vcodec","png","pipe:1"],
+                    capture_output=True, check=True, timeout=35)
+                from io import BytesIO
+                images.append(Image.open(BytesIO(result.stdout)).convert("RGB"))
+            difference = ImageChops.difference(*images)
+            self.assertGreater(sum(ImageStat.Stat(difference).mean)/3, 1.5)
+
     def test_preview_is_nonpublishing(self):
         src = Path(m.__file__).read_text(encoding="utf-8")
         for value in ("YOUTUBE_CLIENT_SECRET","youtube.upload","videos().insert(","owner_publish"):

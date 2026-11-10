@@ -3394,9 +3394,9 @@
           "scripts/kesher_owner_vantage_short.py": "016b0f73870d71be542c52f9e703b16e4d7331306c11cb085e66ed2d6267c252",
           "remotion-kesher/src/Root.tsx": "79ca213b77e2a58d0ba72c61830215de2501bd80617d93e0ac3414a709bcb8ed",
           "research/kesher-asynchrony-photo-provenance.json": "5c0f25bbc8e5ff87d9f16fc6db2588f6bca50cafdbcc6fe35ea1ee0b6307a36d",
-          "research/kesher-gifted-asynchrony-20261109.md": "edb5147b81fefa0703ea09aa4d7345b15976256c72fa76d81d2af7572af9a6e9",
-          "scripts/kesher_owner_asynchrony_preview.py": "5fb0efcb9735f606bf4bd4f3894879b5fe52116293354c62864bbedd3174e1a1",
-          "tests/test_kesher_owner_asynchrony_preview.py": "5224fa21c27a146743990e574100a0f554e9ac17d0400b4d25c62dc3581687f7"
+          "research/kesher-gifted-asynchrony-20261109.md": "3e8d6d2a4e5326852feaf225459a9c95b8ed8f8d1d70333918b2b5d652d08de1",
+          "scripts/kesher_owner_asynchrony_preview.py": "19c52db3cd36a3941907f01a4d7a1ad259458536afce9f170a8a481b622cbe4d",
+          "tests/test_kesher_owner_asynchrony_preview.py": "a5642fb80f4608c2d9b47fc9087fe787f2ae9827e6c95485ad2892f84d7391ae"
         },
         "credential_services": {},
         "credentials": [],
