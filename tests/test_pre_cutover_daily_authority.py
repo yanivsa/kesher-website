@@ -1927,7 +1927,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             self.assertEqual(dispatch_inputs[expected_input].get("default"), "")
         self.assertNotIn("gh workflow run kesher-content-controller.yml", controller_text)
 
-        # 2. Verify all 7 authorized child workflows issue explicit always() wake-up to kesher-content-controller.yml
+        # 2. Legacy workers retain explicit wake-up; OWNER manual deploy must not invoke the retired controller.
         for wf_name in self.WORKER_WORKFLOWS:
             with self.subTest(worker=wf_name):
                 wf_text = (WORKFLOWS_DIR / wf_name).read_text(encoding="utf-8")
@@ -1936,6 +1936,22 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 self.assertEqual(perms.get("actions"), "write")
                 job = next(iter(wf_data["jobs"].values()))
                 last_step = job["steps"][-1]
+                if wf_name == "deploy.yml":
+                    # OWNER manual deployment must never invoke the retired controller.
+                    step_names = [step.get("name") for step in job["steps"]]
+                    self.assertEqual(last_step.get("name"), "Publish production deployment statuses")
+                    self.assertNotIn("Notify canonical Kesher Content Controller on completion", step_names)
+                    self.assertNotIn("kesher-content-controller.yml", wf_text)
+                    self.assertNotIn("gh workflow run", wf_text)
+                    for required_step in (
+                        "Refuse manual deployment after cutover exclusion begins",
+                        "Run full quality gate",
+                        "Bind rendered articles to the exact deployed source",
+                        "Deploy to Cloudflare Pages",
+                        "Verify newest article is public in production",
+                    ):
+                        self.assertIn(required_step, step_names)
+                    continue
                 self.assertEqual(last_step.get("name"), "Notify canonical Kesher Content Controller on completion")
                 cond = str(last_step.get("if") or "")
                 self.assertIn("always()", cond)

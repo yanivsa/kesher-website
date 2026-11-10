@@ -955,7 +955,7 @@
         "status_write",
         "workflow_dispatch"
       ],
-      "definition_sha256": "538ab2a654f9700100efb9a0258421a70021805bf5677d58b8cbdb753fda1e69",
+      "definition_sha256": "be3ef174fbb1c6d34303402372fac945e41d6daac3f80fce83eb73d8985d3d83",
       "resources": [
         "cloudflare.account",
         "github.dispatch",
