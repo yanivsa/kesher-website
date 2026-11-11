@@ -1,0 +1,50 @@
+[
+  {
+    "source_slug": "family-chores-quality-time-with-kids",
+    "content_sha256": "3779ef93426ec2dc0bce552dfe4ab11f0bc7ba94e94bfbd46b0a47ba49e4c474",
+    "old_image": {
+      "path": "/images/generated/blog/family-chores-quality-time-with-kids.png",
+      "sha256": "a958d95bb3ed8f037b04cce9d0ef482bb11cc91dcb1b0af96a24229cec51eafc",
+      "visual": "confirmed nonphotographic illustration in live audit"
+    },
+    "new_image": {
+      "path": "/images/generated/blog/family-chores-quality-time-with-kids-photo.jpg",
+      "provider": "Adobe Firefly",
+      "request_id": "0c8cb875-b8b2-42b9-9b64-7bca3e92e614",
+      "original_sha256": "cb56c17c386ab0bd695d928b46c6ac1cfc50f3e887729d06bbc080a01195d05b",
+      "sha256": "128b5260358401422f80e2b61a1e8f6acb68f41a1b1818ea21f80d39566abdb0",
+      "dimensions": [
+        1200,
+        675
+      ],
+      "license": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "visual_review": "Actual original photo inspected: mother and two children cooperatively set a table with plates and a cloth napkin, warm daylight, natural expressions, no text/logos or unsafe tasks."
+    },
+    "review_date": "2026-11-11",
+    "scope": "image metadata only; canonical source unchanged"
+  },
+  {
+    "source_slug": "gifted-child-bored-at-school-parent-guide",
+    "content_sha256": "4b7a8be00d82c99bcfb418faf6e359cae93ab81d9950b030969c94327d707dd0",
+    "old_image": {
+      "path": "/images/generated/blog/gifted-child-bored-at-school-parent-guide.png",
+      "sha256": "d115c353a4ea6c7cc2654443d424c77c2a5dd25a322bf80b704e1a05bdb7ef30",
+      "visual": "confirmed nonphotographic illustration in live audit"
+    },
+    "new_image": {
+      "path": "/images/generated/blog/gifted-child-bored-at-school-parent-guide-photo.jpg",
+      "provider": "Adobe Firefly",
+      "request_id": "4984e6b7-e50f-4275-98b7-3d0d5b0af21e",
+      "original_sha256": "e8258d0d50be7d4fb038896d3bca797c718381999debc5872e7b489eadf17336",
+      "sha256": "e262a1cdea7cb547e949bf1c61c26402105155353c24016e31e3095a9b10ed74",
+      "dimensions": [
+        1200,
+        675
+      ],
+      "license": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+      "visual_review": "Actual original photo inspected: schoolchild with worksheet looks toward supportive teacher offering a book, realistic classroom and natural interaction, no readable text/logos."
+    },
+    "review_date": "2026-11-11",
+    "scope": "image metadata only; canonical source unchanged"
+  }
+]
