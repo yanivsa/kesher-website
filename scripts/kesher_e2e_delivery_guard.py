@@ -9,8 +9,10 @@ from typing import Any, Callable
 
 SIGNATURE_DURATION_SECONDS = 3.0
 CANONICAL_OVERVIEW_PIPELINE = "remotion-v1-notebooklm-audio"
+CANONICAL_NATIVE_OVERVIEW_PIPELINE = "notebooklm-native-signature-v1"
 CANONICAL_SHORT_TYPE = "article_short"
 CANONICAL_SHORT_PIPELINE = "remotion-v4-notebooklm-short-motion-plan-v1"
+CANONICAL_NATIVE_SHORT_PIPELINE = "notebooklm-native-short-signature-v1"
 CANONICAL_SHORT_SOURCE_MODE = "direct-short"
 ENHANCEMENT_REQUIRED_FOR_PUBLICATION = False
 
@@ -97,7 +99,7 @@ def _short_origin_verified(item: dict[str, Any]) -> bool:
         item
         and item.get("type") == CANONICAL_SHORT_TYPE
         and item.get("source_mode") == CANONICAL_SHORT_SOURCE_MODE
-        and item.get("visual_pipeline") == CANONICAL_SHORT_PIPELINE
+        and item.get("visual_pipeline") in {CANONICAL_SHORT_PIPELINE, CANONICAL_NATIVE_SHORT_PIPELINE}
         and not item.get("shared_provider_identity")
         and not item.get("adopted_from_long_item_id")
     ):
@@ -154,7 +156,7 @@ def overview_edit_verified(stage: dict[str, Any]) -> bool:
         )
     if stage.get("technical_verified") is not True:
         return False
-    if str(stage.get("visual_pipeline") or "").strip() != CANONICAL_OVERVIEW_PIPELINE:
+    if str(stage.get("visual_pipeline") or "").strip() not in {CANONICAL_OVERVIEW_PIPELINE, CANONICAL_NATIVE_OVERVIEW_PIPELINE}:
         return False
     if str(stage.get("codec") or "").strip().lower() != "h264":
         return False
