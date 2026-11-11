@@ -3532,8 +3532,12 @@
       }
     ],
     "controllerManaged": false,
-    "image": "/images/generated/blog/placeholder-no-image-yet.png",
-    "imageAlt": "ממתין להוספת תמונה על ידי המערכת האוטומטית לאחר שלב הביניים של בחירת התמונה המדויקת"
+    "image": "/images/generated/blog/relocation-loneliness-accompanying-partner-photo.jpg",
+    "imageAlt": "בני זוג יושבים ליד שולחן בדירה חדשה בחו״ל, משוחחים ברוגע כשארגזי מעבר ברקע",
+    "imageProvider": "Adobe Firefly",
+    "imageSourceUrl": "local://public/images/generated/blog/relocation-loneliness-accompanying-partner-photo.jpg",
+    "imageIsFallback": false,
+    "imageCredit": "תמונה מקורית שנוצרה באמצעות Adobe Firefly"
   },
   {
     "id": "when-everyone-around-you-gets-married",

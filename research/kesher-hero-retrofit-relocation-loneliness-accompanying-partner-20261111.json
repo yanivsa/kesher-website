@@ -1,0 +1,24 @@
+{
+  "source_slug": "relocation-loneliness-accompanying-partner",
+  "content_sha256": "93bd8eb7d057faf9ede979e86c891504604c80766287f170b011f05065bd326c",
+  "old_image": {
+    "path": "/images/generated/blog/placeholder-no-image-yet.png",
+    "sha256": "ff2f1305bcd434c74793c040797087f776995fee333ca72d828ef25d8eef8dda",
+    "visual": "actual live solid blue placeholder inspected"
+  },
+  "new_image": {
+    "path": "/images/generated/blog/relocation-loneliness-accompanying-partner-photo.jpg",
+    "provider": "Adobe Firefly",
+    "request_id": "17b6b30c-6431-4fc3-b601-5dd788e368d3",
+    "original_sha256": "7680ba7145a9b0292ffd003059d059d34d276f7b546c74274ff626e6578885b1",
+    "sha256": "770615e2c2f3d6da154938e1f0426da27536f09b5f60dc54e8bb13deef049e55",
+    "dimensions": [
+      1200,
+      675
+    ],
+    "license": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+    "visual_review": "Actual generated photograph: two adults seated at a table in a new apartment, attentive mutual eye contact, moving boxes and city window, natural anatomy and light, no text or logos."
+  },
+  "review_date": "2026-11-11",
+  "scope": "image metadata only; canonical source unchanged"
+}
