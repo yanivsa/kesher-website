@@ -3287,7 +3287,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "f5c8fd0b2bc9ff698d96501906a4b7ec9408260a5181979647d9cd2adb0badbb",
+      "definition_sha256": "a60a8e1fa7a5c8db68f08b633f22b405d373c7d144906f72f869aff03860b7ab",
       "resources": [],
       "review": {
         "call_chain": {
@@ -3304,8 +3304,8 @@
           "research/kesher-midyear-kindergarten-media-20261110.json": "67300d9d38420b81217e84df9a89a3a7d37bcc53a2bfbabc599edd87fc7c5cf2",
           "research/kesher-midyear-kindergarten-photo-provenance.json": "d2f03830cb629737336a3f08cd12ac32d100055dd53f8499ebb120621dc4f34f",
           "scripts/kesher_owner_separate_room_preview.py": "94d56e07cd415aa665c83191896fc24ce2063d488390dbbea4cb9490b0215e3f",
-          "scripts/kesher_owner_separate_room_pronunciation_repair.py": "1ee887129aa2388edf3caebf4cb253c3a2dda401365f0a242edc96cae9729d09",
-          "tests/test_kesher_owner_separate_room_preview.py": "ac25abacc9e6f371f0438326b9ebd23fdee357832293ec2f48f163629c15b2ab",
+          "scripts/kesher_owner_separate_room_pronunciation_repair.py": "41453f8d89bd256dd91356df4b7892c2487fe18367a954ba0fbc67506e72b38b",
+          "tests/test_kesher_owner_separate_room_preview.py": "32bbdc1964c95d721d41ac32d95800a40c5f615f536ba1bc21a981705e36dbcc",
           "scripts/kesher_owner_midyear_kindergarten_preview.py": "39d44cd9407c8183e405154393532703789c234b79a7339014364893bbe4928b",
           "tests/test_kesher_owner_midyear_kindergarten_preview.py": "2e9b0f7a771b903c998943b4e67db8b9942e1699b027be9f90f2da829a1ecd63",
           "scripts/kesher_owner_midyear_kindergarten_repair.py": "665955a7626b5eeb07458087f1d9414f323df0414599d4d132391e74a0153a86",

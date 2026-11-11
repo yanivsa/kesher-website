@@ -52,3 +52,11 @@ class SeparateRoomPrivatePreviewTests(unittest.TestCase):
         self.assertEqual(len(r.cut_samples("short",1278976)),4)
         with self.assertRaisesRegex(ValueError,"INVALID_REPAIR_CUTS"):
             r.cut_samples("short",100)
+
+    def test_final_clarity_is_one_source_bound_overview_phrase(self):
+        from scripts import kesher_owner_separate_room_pronunciation_repair as r
+        scripts,_=p.source_check()
+        self.assertEqual(scripts["overview"][-1].count(r.CLARITY_OLD),1)
+        self.assertIn("קשיי נשימה, פנו לרופא",r.CLARITY_NEW)
+        self.assertEqual(r.CLARITY_CUT,(62.95,67.1977))
+        self.assertEqual(r.CLARITY_INPUT_VIDEO["short"],"9310212663d4305cf8c69169ca22f195daa82524baf6b88caff89bdbe517d18a")

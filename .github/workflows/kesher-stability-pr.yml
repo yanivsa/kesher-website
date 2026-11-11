@@ -812,46 +812,33 @@ jobs:
           set -euo pipefail
           python -m unittest tests.test_kesher_owner_separate_room_preview -v
           python -m scripts.kesher_owner_separate_room_preview preflight --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0
-      - name: Fetch exact final private evidence without regenerating media
+      - name: Fetch exact repaired media and check final clarity dedup
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42924814047 --jq .conclusion)" = success
-          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42924814047 --jq .head_sha)" = a3dde7bded5e235b3a8656b9d59d6fc5a2b0d882
-          gh api repos/yanivsa/kesher-website/actions/artifacts/13813995846/zip > "$RUNNER_TEMP/separate-room-final.zip"
-          printf '%s  %s\n' a56dea3b812f87a5cde9b81771235866a2c57b4c7f6977077371259312679b27 "$RUNNER_TEMP/separate-room-final.zip" | sha256sum -c -
-          mkdir owner-separate-room-media-output
-          unzip -q "$RUNNER_TEMP/separate-room-final.zip" overview.mp4 short.mp4 overview-manifest.json short-manifest.json overview-review-voice.wav short-review-voice.wav -d owner-separate-room-media-output
-          cd owner-separate-room-media-output
-          printf '%s  %s\n' 4d53ae34495d49a7e91ef58148ff386437ff43b86e8a57f3e283c563bddc0e3a overview.mp4 1c5eb7a6c9b83a7e0647d85fe738759161924cada7b9826a0f3c63a3d8f1bb30 short.mp4 dc023e56c1cd81d3f98edc893640c8946cd11b4d5f7523f31e473b03f5548c80 overview-review-voice.wav 2e79c7316281fa1312f063e8501220133be122bce59aef9bf58cecad447c1065 short-review-voice.wav | sha256sum -c -
-      - name: Fetch exact completed targeted audio evidence and check repair dedup
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42930186333 --jq .conclusion)" = success
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42930186333 --jq .head_sha)" = f518bc20e3d9d5b8d570ef4451df7e64c4dc41e1
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13815668134/zip > "$RUNNER_TEMP/separate-room-repaired.zip"
+          printf '%s  %s\n' 985c0ef0fe87344c0492bd520d212972e97139c3d2d7740fda9d1950f74f98be "$RUNNER_TEMP/separate-room-repaired.zip" | sha256sum -c -
+          test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-separate-room-final-clarity-4751cfeae272 --jq .total_count)" = 0
+      - name: Clarify one Overview phrase and preserve exact reviewed Short
         env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42928866442 --jq .conclusion)" = success
-          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42928866442 --jq .head_sha)" = 7c417abdaf82bd02a9621802c68a12e6558dbb2e
-          gh api repos/yanivsa/kesher-website/actions/artifacts/13815352755/zip > "$RUNNER_TEMP/separate-room-targeted-qa.zip"
-          printf '%s  %s\n' d68e7c793bac219eb76ac0f2c0134b9d6cdafceafe4f2c4c97a08fa84f84f491 "$RUNNER_TEMP/separate-room-targeted-qa.zip" | sha256sum -c -
-          test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-separate-room-pronunciation-repair-4751cfeae272 --jq .total_count)" = 0
-      - name: Repair only confirmed pronunciation and safety-critical audio windows
-        env:
-          HF_HOME: ${{ runner.temp }}/owner-separate-room-repair-hf
+          HF_HOME: ${{ runner.temp }}/owner-separate-room-clarity-hf
           HF_HUB_DISABLE_XET: '1'
-        run: python -m scripts.kesher_owner_separate_room_pronunciation_repair --archive "$RUNNER_TEMP/separate-room-final.zip" --qa-archive "$RUNNER_TEMP/separate-room-targeted-qa.zip" --output owner-separate-room-repair-output
-      - name: Archive exact repaired private media and fresh actual-audio evidence
+        run: python -m scripts.kesher_owner_separate_room_pronunciation_repair --final-clarity --archive "$RUNNER_TEMP/separate-room-repaired.zip" --output owner-separate-room-clarity-output
+      - name: Archive exact final private media and fresh Overview audio evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: owner-separate-room-pronunciation-repair-4751cfeae272
+          name: owner-separate-room-final-clarity-4751cfeae272
           path: |
-            owner-separate-room-repair-output/*.mp4
-            owner-separate-room-repair-output/*-review-voice.wav
-            owner-separate-room-repair-output/*-manifest.json
-            owner-separate-room-repair-output/*-visual-contact-sheet.jpg
-            owner-separate-room-repair-output/*-frame-*.jpg
-            owner-separate-room-repair-output/*-asr.txt
-            owner-separate-room-repair-output/asr-review.json
+            owner-separate-room-clarity-output/*.mp4
+            owner-separate-room-clarity-output/*-review-voice.wav
+            owner-separate-room-clarity-output/*-manifest.json
+            owner-separate-room-clarity-output/*-visual-contact-sheet.jpg
+            owner-separate-room-clarity-output/*-frame-*.jpg
+            owner-separate-room-clarity-output/*-asr.txt
+            owner-separate-room-clarity-output/asr-review.json
           if-no-files-found: error
           compression-level: 0
           retention-days: 60
