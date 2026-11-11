@@ -29,3 +29,12 @@ class SeparateRoomPrivatePreviewTests(unittest.TestCase):
         self.assertEqual(p.RECOVERY_TEMPO, "0.86")
         self.assertEqual(p.RECOVERY_OVERVIEW_SHA, "4d53ae34495d49a7e91ef58148ff386437ff43b86e8a57f3e283c563bddc0e3a")
         self.assertGreater(25.262969 / float(p.RECOVERY_TEMPO), 28)
+
+    def test_exact_targeted_review_windows_and_identity(self):
+        self.assertEqual(len(p.scene_windows("overview", 71.5175)), 6)
+        self.assertEqual(len(p.scene_windows("short", 29.00175)), 4)
+        self.assertEqual(p.scene_windows("short", 29.00175)[1], (4.68, 13.84))
+        with self.assertRaisesRegex(ValueError, "INVALID_EXACT_SCENE_WINDOWS"):
+            p.scene_windows("short", 20)
+        self.assertEqual(p.FINAL_VIDEO_SHA["overview"], p.RECOVERY_OVERVIEW_SHA)
+        self.assertEqual(len(p.IVRIT_REV), 40)

@@ -216,9 +216,80 @@ def transcribe(out, model_name="small"):
     (out / "asr-review.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("ASR_EVIDENCE_READY_NO_PUBLICATION", flush=True)
 
+
+# Independent Hebrew-finetuned acoustic review plus original pinned G2P inspection.
+# Neither transcript similarity nor a phoneme plan is an automatic editorial PASS.
+IVRIT_REPO = "ivrit-ai/whisper-large-v3-turbo-ct2"
+IVRIT_REV = "bac8dbd28a3c2001b425663426fcd5d2a4c1d75d"
+FINAL_VIDEO_SHA = {"overview": "4d53ae34495d49a7e91ef58148ff386437ff43b86e8a57f3e283c563bddc0e3a",
+                   "short": "1c5eb7a6c9b83a7e0647d85fe738759161924cada7b9826a0f3c63a3d8f1bb30"}
+FINAL_AUDIO_SHA = {"overview": "dc023e56c1cd81d3f98edc893640c8946cd11b4d5f7523f31e473b03f5548c80",
+                   "short": "2e79c7316281fa1312f063e8501220133be122bce59aef9bf58cecad447c1065"}
+# Actual scene-change PTS measured from the exact final MP4s, not guessed from text.
+SCENE_CUTS = {"overview": (0.0, 10.542969, 29.302969, 39.942969, 50.942969, 61.222969),
+              "short": (0.0, 4.68, 13.84, 22.24)}
+
+def scene_windows(kind, seconds):
+    cuts = SCENE_CUTS[kind] + (seconds,)
+    if len(cuts) != COUNTS[kind] + 1 or any(b <= a for a, b in zip(cuts, cuts[1:])):
+        raise ValueError("INVALID_EXACT_SCENE_WINDOWS")
+    return list(zip(cuts, cuts[1:]))
+
+def targeted_review(out):
+    import soundfile as sf
+    from faster_whisper import WhisperModel
+    from huggingface_hub import snapshot_download, hf_hub_download
+    from blue_onnx import TextProcessor, prepare_text_for_synthesis
+    from scripts.kesher_owner_vantage_short import _speech_chunks
+    from scripts.kesher_owner_positivity_asr import similarity
+    scripts, _ = source_check(public=True)
+    # Validate the exact inputs before any model work.
+    for kind in KINDS:
+        m = json.loads((out / f"{kind}-manifest.json").read_text())
+        if (m["source_slug"], m["content_sha256"], m["article_body_sha256"], m["source_file_sha256"]) != (SLUG, SOURCE_SHA, BODY_SHA, PLAN_SHA) or m["script_segments"] != scripts[kind] or m["public"] is not False or m["uploaded"] is not False:
+            raise ValueError("TARGETED_SOURCE_IDENTITY_MISMATCH")
+        if sha_file(out / f"{kind}.mp4") != FINAL_VIDEO_SHA[kind] or sha_file(out / f"{kind}-review-voice.wav") != FINAL_AUDIO_SHA[kind] or m["video_sha256"] != FINAL_VIDEO_SHA[kind] or m["audio_sha256"] != FINAL_AUDIO_SHA[kind]:
+            raise ValueError("TARGETED_EXACT_MEDIA_MISMATCH")
+    model_path = snapshot_download(IVRIT_REPO, revision=IVRIT_REV, allow_patterns=["model.bin", "config.json", "tokenizer.json", "vocabulary.json", "preprocessor_config.json"])
+    model = WhisperModel(model_path, device="cpu", compute_type="int8", cpu_threads=4)
+    g2p_path = hf_hub_download("notmax123/RenikudPlus", filename="model_int8.onnx", revision=G2P_SHA)
+    g2p = TextProcessor(renikud_path=g2p_path)
+    def recognize(audio):
+        segments, _ = model.transcribe(audio, language="he", beam_size=5, condition_on_previous_text=False, vad_filter=False, word_timestamps=True)
+        rows = []
+        for s in segments:
+            rows.append({"start": round(s.start, 3), "end": round(s.end, 3), "text": s.text.strip(),
+                         "words": [{"word": w.word.strip(), "start": round(w.start, 3), "end": round(w.end, 3), "probability": round(w.probability, 4)} for w in (s.words or [])]})
+        return rows
+    report = {"source_slug": SLUG, "content_sha256": SOURCE_SHA, "article_body_sha256": BODY_SHA,
+              "asr_model": IVRIT_REPO, "asr_revision": IVRIT_REV, "asr_license": "Apache-2.0",
+              "g2p_revision": G2P_SHA, "g2p_note": "Recomputed original input phoneme plan; not a measurement of emitted speech.",
+              "review": "QA_PENDING_OWNER_INTERPRETATION", "human_listening": False, "media": {}}
+    for kind in KINDS:
+        wav = out / f"{kind}-review-voice.wav"
+        samples, rate = sf.read(wav, dtype="float32")
+        if rate != 16000 or samples.ndim != 1:
+            raise ValueError("TARGETED_AUDIO_FORMAT_MISMATCH")
+        full = recognize(samples)
+        transcript = " ".join(s["text"] for s in full)
+        scenes = []
+        for i, (start, end) in enumerate(scene_windows(kind, len(samples) / rate)):
+            actual = recognize(samples[round(start * rate):round(end * rate)])
+            scene_text = " ".join(s["text"] for s in actual)
+            expected = scripts[kind][i]
+            chunks = [{"text": phrase, "phonemes": g2p.phonemize(prepare_text_for_synthesis(phrase, lang="he"), lang="he")} for phrase in _speech_chunks(expected)]
+            scenes.append({"scene": i, "start": start, "end": end, "expected": expected, "actual_transcript": scene_text,
+                           "actual_segments": actual, "similarity": similarity(scene_text, expected), "original_g2p_chunks": chunks})
+        report["media"][kind] = {"video_sha256": FINAL_VIDEO_SHA[kind], "audio_sha256": FINAL_AUDIO_SHA[kind],
+                                 "full_transcript": transcript, "full_segments": full,
+                                 "similarity": similarity(transcript, " ".join(scripts[kind])), "scenes": scenes}
+        print("TARGETED_ACTUAL_AUDIO", kind, transcript, flush=True)
+    (out / "targeted-audio-review.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print("TARGETED_AUDIO_EVIDENCE_READY_NO_PUBLICATION", flush=True)
+
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("operation", choices=["preflight", "preview", "recover", "asr"])
+    p.add_argument("operation", choices=["preflight", "preview", "recover", "asr", "targeted-review"])
     p.add_argument("--source-sha", required=True)
     p.add_argument("--archive", type=Path)
     p.add_argument("--asr-model", choices=["small", "medium"], default="small")
@@ -235,5 +306,7 @@ if __name__ == "__main__":
         if a.archive is None:
             raise SystemExit("EXACT_RECOVERY_ARCHIVE_REQUIRED")
         recover(a.archive, a.output)
+    elif a.operation == "targeted-review":
+        targeted_review(a.output)
     else:
         transcribe(a.output, a.asr_model)

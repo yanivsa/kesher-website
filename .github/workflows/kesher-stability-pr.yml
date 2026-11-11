@@ -825,17 +825,24 @@ jobs:
           unzip -q "$RUNNER_TEMP/separate-room-final.zip" overview.mp4 short.mp4 overview-manifest.json short-manifest.json overview-review-voice.wav short-review-voice.wav -d owner-separate-room-media-output
           cd owner-separate-room-media-output
           printf '%s  %s\n' 4d53ae34495d49a7e91ef58148ff386437ff43b86e8a57f3e283c563bddc0e3a overview.mp4 1c5eb7a6c9b83a7e0647d85fe738759161924cada7b9826a0f3c63a3d8f1bb30 short.mp4 dc023e56c1cd81d3f98edc893640c8946cd11b4d5f7523f31e473b03f5548c80 overview-review-voice.wav 2e79c7316281fa1312f063e8501220133be122bce59aef9bf58cecad447c1065 short-review-voice.wav | sha256sum -c -
-      - name: Independent medium-model Hebrew review of exact final audio
+      - name: Check for existing exact targeted audio evidence
+        id: targeted-admission
         env:
-          HF_HOME: ${{ runner.temp }}/owner-separate-room-independent-asr
-        run: python -m scripts.kesher_owner_separate_room_preview asr --asr-model medium --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0
-      - name: Archive independent private audio QA only, no media duplication
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          count="$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-separate-room-targeted-audio-qa-4751cfeae272 --jq .total_count)"
+          test "$count" = 0
+      - name: Hebrew-finetuned acoustic and original G2P review of exact final audio
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-separate-room-targeted-asr
+          HF_HUB_DISABLE_XET: '1'
+        run: python -m scripts.kesher_owner_separate_room_preview targeted-review --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0
+      - name: Archive targeted private audio QA only, no media duplication
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: owner-separate-room-independent-audio-qa-4751cfeae272
-          path: |
-            owner-separate-room-media-output/*-asr.txt
-            owner-separate-room-media-output/asr-review.json
+          name: owner-separate-room-targeted-audio-qa-4751cfeae272
+          path: owner-separate-room-media-output/targeted-audio-review.json
           if-no-files-found: error
           compression-level: 0
           retention-days: 60
