@@ -23,6 +23,8 @@ IMAGES = (
     ("public/images/generated/blog/gratitude-relationship-genuine-thank-you-photo.png", "64580e5f0db8cf5a8924e32ee6b2672afeb8e5cfe36e15b4ca27f20a1d4cce7f"),
     ("public/images/blog/gratitude-relationship-genuine-thank-you-chores.png", "05ff114adda43c7253f374159379d5222f1e4d10d2c1e1f173d8a7caae41b5af"),
     ("public/images/blog/gratitude-relationship-genuine-thank-you-family.png", "647fa57bcf8bcb046e9da440b22baa3d243faa213331d6f8d9cbe5864c49212e"),
+    ("public/images/blog/gratitude-relationship-genuine-thank-you-dinnertime.png", "79a1f5859da6ef0e563a55cdda8fa2dad2201599f8d70f0ec17192ecf2135d6a"),
+    ("public/images/blog/gratitude-relationship-genuine-thank-you-laundry.png", "1575564cffcbb9e66ccb33e5afa991f79a7efde54e9949586dc6e5a6033e393c"),
 )
 VISUAL_LICENSE = "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html"
 KINDS = ("overview", "short")
@@ -90,7 +92,7 @@ def preview(output: Path):
         voicepaths = voices[index*5:(index+1)*5]
         seconds = durations[index*5:(index+1)*5]
         clips = []
-        for i, original_index in enumerate((0,1,2,0,1) if kind=="overview" else (2,0,1,2,0)):
+        for i, original_index in enumerate((0,3,4,2,1) if kind=="overview" else (4,0,3,1,2)):
             canvas=loc / ("frame-%02d.jpg"%(i+1))
             make_image(ROOT / IMAGES[original_index][0], canvas, kind)
             clip=loc / ("scene-%02d.mp4"%(i+1))
