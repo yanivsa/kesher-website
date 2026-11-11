@@ -1203,7 +1203,8 @@ def validate_female_voice(
 def _render_context():
     from types import SimpleNamespace
     return SimpleNamespace(PROJECT_DIR=PROJECT_DIR, STATE_DIR=STATE_DIR,
-        sha256_file=sha256_file, atomic_json_write=atomic_json_write, PipelineError=PipelineError)
+        sha256_file=sha256_file, atomic_json_write=atomic_json_write, PipelineError=PipelineError,
+        ffprobe=ffprobe)
 
 
 def remotion_cache_is_reusable(item: dict[str, Any], output_path: Path) -> bool:
@@ -1388,7 +1389,7 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
     if native_render_requested():
         signature_name = prepare_signature_asset()
         final_path = render_native_provider(
-            sys.modules[__name__], raw_path, item, kind="overview",
+            _render_context(), raw_path, item, kind="overview",
             signature_path=STATE_DIR / signature_name,
         )
     else:
