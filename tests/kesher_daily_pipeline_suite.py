@@ -16,6 +16,7 @@ from tests import test_video_pending_evidence_repair as pending_evidence
 from tests import test_video_exact_item_binding as exact_binding
 from tests import test_video_exact_item_callers as exact_callers
 from tests import test_video_state_first_restore as state_first
+from tests import test_notebooklm_native_media as notebooklm_native
 
 
 OBSOLETE_TESTS = {
@@ -32,7 +33,7 @@ OBSOLETE_TESTS = {
 
 def load_tests(loader: unittest.TestLoader, _standard_tests, _pattern):
     suite = unittest.TestSuite()
-    for module in (legacy, pending_evidence, exact_binding, exact_callers, state_first):
+    for module in (legacy, pending_evidence, exact_binding, exact_callers, state_first, notebooklm_native):
         for value in vars(module).values():
             if not isinstance(value, type) or not issubclass(value, unittest.TestCase):
                 continue
