@@ -102,7 +102,24 @@ class NativeProviderTests(unittest.TestCase):
         try:
             import cairosvg  # noqa: F401
         except ImportError:
-            self.skipTest("CairoSVG absent")
+            # The trusted CI suite intentionally does not install media extras.
+            # Exercise the actual FFmpeg/source-audio/signature-proof path with
+            # a minimal PNG rasterization stub; production uses pinned CairoSVG.
+            import base64
+            import sys
+            from types import ModuleType
+
+            fake = ModuleType("cairosvg")
+            black_pixel = (
+                "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJ"
+                "AAAADUlEQVR4nGNgYGD4DwABBAEAX+XDSwAAAABJRU5ErkJggg=="
+            )
+            fake.svg2png = lambda *, write_to, **kwargs: Path(write_to).write_bytes(
+                base64.b64decode(black_pixel)
+            )
+            rasterizer = patch.dict(sys.modules, {"cairosvg": fake})
+            rasterizer.start()
+            self.addCleanup(rasterizer.stop)
         source = self.root / "sample.mp4"
         source.unlink(missing_ok=True)
         command = [
