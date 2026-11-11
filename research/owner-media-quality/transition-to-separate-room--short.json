@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "source_slug": "transition-to-separate-room",
+  "content_sha256": "4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0",
+  "media_kind": "short",
+  "media_item_id": "owner-short-20261111-4751cfeae272",
+  "final_sha256": "9310212663d4305cf8c69169ca22f195daa82524baf6b88caff89bdbe517d18a",
+  "manifest_sha256": "88625fa2e0018e6e5dfa099d7e18b0b5cd83ce9dae33b430b4e20feddd541d68",
+  "transcript_sha256": "cd760ce47743d4f40b2aa2ceea325e8f431a868685bd81e5b3d0e200b52274ac",
+  "visual_review_sha256": "1b8b6eddf834f18575b63099abacb5d3acf66ec3a437cfe6f41c8c35210c46e5",
+  "source_file_sha256": "c02d9165667e9121cb8d49a1f18b5177c1dd7d46a2e4f397496b148b31707d81",
+  "frame_sha256": {
+    "short-frame-01.jpg": "a78d74ff11555ad2d10cf030c2e46b4bd0cd93a6f7af7b3fbb07f9e4bf3dad75",
+    "short-frame-02.jpg": "5106c981977d4c93866605e35249fad15eff0d5f0f3494d04ff2325f1a2e7eae",
+    "short-frame-03.jpg": "f4bfd517ad76895f8406864f13f961a20e47f5a0bdf434504a506fe502b7ac81",
+    "short-frame-04.jpg": "9767de77ee1850a2744289690977496d8a089736abe4de23063ff4c797983646",
+    "short-frame-05.jpg": "a094ac0e26a81c845c8954850e1b8505dfe023d19aa6781f76f6ab7f9d73d055",
+    "short-frame-06.jpg": "9884bb05c55561ca8bff8f2d587c07b44668ab1818bf3d6f8e552e2e722fd627",
+    "short-frame-07.jpg": "75196638b29287035d103c4d72ed59d0ff3083f9c963027dbc78ea83a9d15d08",
+    "short-frame-08.jpg": "571b4f77114e197c7bdefacd2c08e6b5bbe7d7ab099585edfc1da33c950b3194"
+  },
+  "reviewed_by": "OWNER",
+  "reviewed_at": "2026-11-11T00:40:00Z",
+  "checks": {
+    "visual": "approved",
+    "semantic": "approved",
+    "audio": "approved",
+    "metadata": "approved",
+    "licensing": "approved"
+  },
+  "methods": {
+    "visual": "full_motion_and_frames",
+    "semantic": "research_vs_exact_transcript",
+    "audio": "authorized_audio_tool_with_script_comparison"
+  },
+  "review_notes": {
+    "visual": "נבדקו שמונת הפריימים וגליון התמונות של הקובץ הסופי בפועל, פענוח מלא ומדידת תנועה לכל אורך הסרטון, ללא פריימים שחורים או טקסט חופף. עריסה ריקה ללא חפצים רכים, סצנות נפרדות של ילדים גדולים יותר. חבילות הווידאו נשמרו בתיקוני הקול.",
+    "semantic": "התמלול המלא של האודיו הסופי הושווה לתסריט ולמקורות משרד הבריאות בנושא שינה בטוחה, AAP 2022 e2022057990 והנחיות שגרת שינה. הפרדה בין תינוק לפעוט, מיטה נפרדת בחדר ההורים לפחות חצי שנה ועדיף שנה, גב ומשטח שטוח, ללא חפצים רכים. התאמת קצב, תגובה למצוקה והפניה לרופא בעת קשיי נשימה; ללא הבטחת גיל בטוח או מספר לילות.",
+    "audio": "תיקון ארבעה חלונות הגייה, תמלול עברי ivrit-ai של האודיו המפוענח הסופי כולל לתינוקות, חפצים רכים, פעוט ושבו; דמיון 0.9984, התאמה ידנית לתסריט. השורט נשמר בדיוק בתיקון האחרון של הווידאו. הפענוח המקומי תואם ל-WAV עד יחידת PCM אחת, ללא קליפינג. אין טענה להאזנה אנושית סובייקטיבית.",
+    "metadata": "כותרת ותיאור בעברית עם קישור למאמר, מקור קנוני, ייחוס קול ותמונות; השורט מפנה לסרטון המלא רק אחרי אימות מזהה ציבורי.",
+    "licensing": "תמונת מאמר מקורית Adobe Firefly ותמונות Pexels מורשות, מקור וקרדיט לכל סצנה. BlueTTS2.5-onnx MIT, RenikudPlus Apache-2.0, LibriTTS-R דוברת 6147 CC BY 4.0, ייחוס וקישורי רישוי בתיאור. אין Edge-TTS."
+  },
+  "rights": {
+    "commercial_use_permitted": true,
+    "voice_license_url": "https://www.openslr.org/141/",
+    "visual_license_url": "https://www.pexels.com/legal-pages/license"
+  },
+  "evidence": {
+    "github_run": 42931461922,
+    "github_artifact_id": 13817130469,
+    "video_sha256": "9310212663d4305cf8c69169ca22f195daa82524baf6b88caff89bdbe517d18a",
+    "audio_sha256": "b37073f279672d0c688864008d673f470e91bf37bbda99023bfdd56f5c0f79de",
+    "independent_asr_engine": "ivrit-ai/whisper-large-v3-turbo-ct2, actual decoded final audio and corrected phoneme review",
+    "independent_asr_similarity": 0.9984,
+    "human_listening": false,
+    "final_video_duration_s": 29.32,
+    "decoded_frames": 733,
+    "black_frames": 0,
+    "moving_frame_ratio": 1,
+    "decoded_audio_peak": 0.938873291015625,
+    "clipped_samples": 0,
+    "asr_report_sha256": "852b1fbd05416936c6190b6bf888b51083288ed2c9653c588bc9e04a93a56204",
+    "voice_model_license_url": "https://huggingface.co/notmax123/BlueTTS2.5-onnx",
+    "g2p_license_url": "https://huggingface.co/notmax123/RenikudPlus",
+    "photo_provenance_path": "research/kesher-separate-room-photo-provenance.json",
+    "channel": "UCx5fEFvdVf28HLAR2dFW64Q",
+    "publish_action": "NOT_AUTHORIZED_BY_CERTIFICATE_ALONE",
+    "source_binding": {
+      "artifact_body_sha256": "9df3fef6d555e3d5efa8de74cc865dedbe9fdceade297611054623dbd18d0a52",
+      "canonical_content_sha256": "4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0",
+      "method": "recomputed_same_committed_post_body_and_canonical_source",
+      "verified_at": "2026-11-11T00:40:00Z",
+      "source_deploy_sha": "531545cfbd494bdce559764930043958a7b52789"
+    }
+  }
+}

@@ -20,6 +20,8 @@ from scripts import kesher_owner_kindergarten_audio_repair as kindergarten_repai
 from scripts import kesher_owner_midyear_kindergarten_preview as midyear
 from scripts import kesher_owner_midyear_kindergarten_repair as midyear_repair
 from scripts import kesher_owner_midyear_kindergarten_cta_repair as midyear_cta
+from scripts import kesher_owner_separate_room_preview as separate_room
+from scripts import kesher_owner_separate_room_pronunciation_repair as separate_room_repair
 from scripts.kesher_owner_vantage_short import youtube_client
 from scripts.kesher_daily_pipeline import clean_article_html, source_metadata
 from scripts.kesher_runtime.bridge_admission import main as bridge_admission
@@ -103,6 +105,19 @@ CONFIG = {
         "intro": "מעבר גן באמצע שנה: איך להכין את הילד, להיפרד מהגן הישן, לתאם פרידה עם הגננת ולבדוק מה קורה אחרי שיוצאים. אין זמן הסתגלות אחד שמתאים לכולם.",
         "tags": ["מעבר גן באמצע שנה", "הסתגלות לגן חדש", "הדרכת הורים", "שירה סהרוני"],
     },
+    separate_room.SLUG: {
+        "module": separate_room, "date": "20261111", "artifact": 13817130469,
+        "canonical_sha": separate_room.SOURCE_SHA, "body_sha": separate_room.BODY_SHA,
+        "artifact_identity_sha": separate_room.SOURCE_SHA, "run": 42931461922,
+        "research_path": separate_room.PLAN,
+        "zip_sha": "7a1150726561503cb924dae8a96ed2c53c13dd293efbf3dbab95b52664c1d2b8",
+        "titles": {
+            "overview": "מעבר לחדר נפרד: איך לעזור לילד לישון בחדר שלו בלי מאבק?",
+            "short": "מעבר לחדר נפרד: קודם בודקים את גיל הילד #Shorts",
+        },
+        "intro": "מתי מתאים מעבר לחדר נפרד? ההבדל בין שינה בטוחה לתינוקות לבין הסתגלות הדרגתית של פעוטות, טקס ערב קבוע וליווי רגוע בלי להתעלם ממצוקה.",
+        "tags": ["מעבר לחדר נפרד", "שינה בטוחה לתינוקות", "שינת פעוטות", "הדרכת הורים", "שירה סהרוני"],
+    },
 }
 
 
@@ -168,9 +183,9 @@ def archive_files(archive, dest, cfg):
         expected.update((f"{kind}.mp4", f"{kind}-manifest.json",
                          f"{kind}-review-voice.wav", f"{kind}-visual-contact-sheet.jpg"))
         expected.update(f"{kind}-frame-{i:02d}.jpg" for i in range(1, 9))
-        if cfg["module"] in (positivity, productive, code7500, kindergarten, midyear):
+        if cfg["module"] in (positivity, productive, code7500, kindergarten, midyear, separate_room):
             expected.add(f"{kind}-asr.txt")
-    if cfg["module"] in (positivity, productive, code7500, kindergarten, midyear):
+    if cfg["module"] in (positivity, productive, code7500, kindergarten, midyear, separate_room):
         expected.add("asr-review.json")
     with zipfile.ZipFile(archive) as z:
         names = z.namelist()
@@ -317,9 +332,52 @@ def validate_midyear_repair(manifest, video, kind):
                 "MIDYEAR_SHORT_EXACT_NATIVE_MEDIA_MISMATCH")
 
 
+SEPARATE_ROOM_FINAL_SHA = {
+    "overview": "120e7bc1e022977835da0c26c330c7225953ed293705f2d114c40fadf18b8b67",
+    "short": "9310212663d4305cf8c69169ca22f195daa82524baf6b88caff89bdbe517d18a",
+}
+SEPARATE_ROOM_PACKET_SHA = {
+    "overview": "e9656cab127fe96cadd1fb98af4471193ee59a0918b11c116c8569df4b9f08f6",
+    "short": "b6fc9b0c4b76ab0ef8a38fe1c82bf1de10e0f54ae9be5d3385238a7810f782d8",
+}
+SEPARATE_ROOM_ASR_SHA = "852b1fbd05416936c6190b6bf888b51083288ed2c9653c588bc9e04a93a56204"
+
+
+def validate_separate_room_repair(manifest, video, kind):
+    require(manifest.get("canonical_content_sha256") == separate_room.SOURCE_SHA
+            and manifest.get("article_body_sha256") == separate_room.BODY_SHA,
+            "SEPARATE_ROOM_CANONICAL_MANIFEST_MISMATCH")
+    repair = manifest.get("targeted_audio_repair") or {}
+    require(sha(video) == SEPARATE_ROOM_FINAL_SHA[kind]
+            and repair.get("input_artifact_id") == 13813995846
+            and repair.get("input_archive_sha256") == separate_room_repair.ARCHIVE_SHA
+            and repair.get("input_qa_artifact_id") == 13815352755
+            and repair.get("input_qa_sha256") == separate_room_repair.QA_JSON_SHA
+            and repair.get("video_packets_preserved") is True
+            and repair.get("outside_cut_pcm_preserved_before_aac_encode") is True
+            and repair.get("video_packet_hashes_sha256") == SEPARATE_ROOM_PACKET_SHA[kind]
+            and separate_room_repair.sha("\n".join(separate_room_repair.packet_hashes(video)).encode()) == SEPARATE_ROOM_PACKET_SHA[kind],
+            "SEPARATE_ROOM_EXACT_AUDIO_REPAIR_MISMATCH")
+    if kind == "overview":
+        clarity = repair.get("final_clarity") or {}
+        require(clarity.get("input_artifact_id") == 13815668134
+                and clarity.get("input_archive_sha256") == separate_room_repair.CLARITY_ARCHIVE_SHA
+                and clarity.get("old_text") == separate_room_repair.CLARITY_OLD
+                and clarity.get("new_text") == separate_room_repair.CLARITY_NEW
+                and clarity.get("video_packets_preserved") is True
+                and clarity.get("outside_cut_pcm_preserved_before_aac_encode") is True
+                and clarity.get("short_preserved_sha256") == SEPARATE_ROOM_FINAL_SHA["short"],
+                "SEPARATE_ROOM_FINAL_CLARITY_MISMATCH")
+    else:
+        require(manifest.get("composition") == "native_full_frame_9_16_no_padding"
+                and "final_clarity" not in repair,
+                "SEPARATE_ROOM_UNCHANGED_NATIVE_SHORT_MISMATCH")
+
+
 def validate_bundle(cfg, directory, kind):
     module = cfg["module"]
     slug, artifact_body_sha = module.SLUG, body_identity(cfg)
+    research = cfg.get("research_path") or module.RESEARCH
     source_sha = cfg["canonical_sha"]
     verify_source_binding(cfg)
     root = ROOT / "research/owner-media-quality"
@@ -340,20 +398,20 @@ def validate_bundle(cfg, directory, kind):
             and manifest.get("media_item_id") == item_id(cfg, kind)
             and manifest.get("uploaded") is False and manifest.get("public") is False,
             "MANIFEST_IDENTITY_MISMATCH")
-    require(manifest.get("source_file") == str(module.RESEARCH.relative_to(ROOT)),
+    require(manifest.get("source_file") == str(research.relative_to(ROOT)),
             "SOURCE_FILE_MISMATCH")
     video = directory / f"{kind}.mp4"
     wav = directory / f"{kind}-review-voice.wav"
     contact = directory / f"{kind}-visual-contact-sheet.jpg"
     frames = {f"{kind}-frame-{i:02d}.jpg": sha(directory / f"{kind}-frame-{i:02d}.jpg")
               for i in range(1, 9)}
-    transcript = (directory / f"{kind}-asr.txt" if module in (positivity, productive, code7500, kindergarten, midyear) else
+    transcript = (directory / f"{kind}-asr.txt" if module in (positivity, productive, code7500, kindergarten, midyear, separate_room) else
                   root / "evidence" / f"{slug}--{kind}-descript-transcript.txt")
     require(sha(video) == manifest["video_sha256"]
             and sha(wav) == manifest["audio_sha256"] == evidence["audio_sha256"]
             and sha(contact) == manifest["contact_sha256"]
             and list(frames.values()) == manifest["frame_sha256"]
-            and sha(module.RESEARCH) == manifest["source_file_sha256"],
+            and sha(research) == manifest["source_file_sha256"],
             "IMMUTABLE_MEDIA_EVIDENCE_MISMATCH")
     voice = manifest["voice_provenance"]
     require(manifest["voice_model"] == "BlueTTS2.5-onnx:libri_female_6147"
@@ -376,8 +434,18 @@ def validate_bundle(cfg, directory, kind):
         scripts = {k: list(v) for k, v in scripts.items()}
         scripts["overview"][-1] = scripts["overview"][-1].replace(midyear_cta.OLD, midyear_cta.NEW)
         scripts["short"].append(midyear_repair.CLOSING)
+    expected_visuals = provenance["images"]
+    if module is separate_room:
+        scripts = {k: list(v) for k, v in scripts.items()}
+        require(scripts["overview"][-1].count(separate_room_repair.CLARITY_OLD) == 1,
+                "SEPARATE_ROOM_CLARITY_SOURCE_CHANGED")
+        scripts["overview"][-1] = scripts["overview"][-1].replace(
+            separate_room_repair.CLARITY_OLD, separate_room_repair.CLARITY_NEW)
+        expected_visuals = [x for x in expected_visuals if x["scene"].startswith(kind + "-")]
+        require(sha(directory / "asr-review.json") == SEPARATE_ROOM_ASR_SHA,
+                "SEPARATE_ROOM_FINAL_ASR_EVIDENCE_MISMATCH")
     require(manifest["script_segments"] == scripts[kind]
-            and manifest["visual_sources"] == provenance["images"],
+            and manifest["visual_sources"] == expected_visuals,
             "REVIEWED_SOURCE_OR_VISUALS_CHANGED")
     module.verify_video(video, kind)
     if module is productive:
@@ -388,12 +456,14 @@ def validate_bundle(cfg, directory, kind):
         validate_kindergarten_repair(manifest, video, kind)
     if module is midyear:
         validate_midyear_repair(manifest, video, kind)
+    if module is separate_room:
+        validate_separate_room_repair(manifest, video, kind)
     item = {
         "technical_verified": True, "source": {"slug": slug, "content_sha256": source_sha},
         "type": "video_overview" if kind == "overview" else "article_short",
         "id": item_id(cfg, kind), "final_sha256": sha(video),
         "manifest_sha256": sha(manifest_path), "transcript_sha256": sha(transcript),
-        "visual_review_sha256": sha(contact), "source_file_sha256": sha(module.RESEARCH),
+        "visual_review_sha256": sha(contact), "source_file_sha256": sha(research),
         "frame_sha256": frames,
     }
     require_owner_media_quality(item, kind, approval_root=root)
@@ -413,7 +483,11 @@ def metadata(cfg, kind, overview_id=None):
         + "\nhttps://huggingface.co/notmax123/RenikudPlus"
         + "\nhttps://www.openslr.org/141/"
         + "\nhttps://creativecommons.org/licenses/by/4.0/"
-        + ("\nתמונות מקוריות שנוצרו עבור KESHER באמצעות Adobe Firefly."
+        + (("\nתמונות: KESHER / Adobe Firefly; Pexels: MART PRODUCTION, Mizuno K, cottonbro studio."
+             if kind == "overview" else "\nתמונות: Pexels, MART PRODUCTION ו-Mizuno K.")
+           + "\nhttps://www.pexels.com/legal-pages/license"
+           if module is separate_room else
+           "\nתמונות מקוריות שנוצרו עבור KESHER באמצעות Adobe Firefly."
            if module in (positivity, productive, code7500, kindergarten, midyear) else "\nתמונות מקוריות שנוצרו עבור KESHER באמצעות OpenAI.")
     )
     if kind == "short":

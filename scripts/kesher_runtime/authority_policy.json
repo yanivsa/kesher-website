@@ -871,8 +871,8 @@
           "tests/test_kesher_backlog_rotation.py": "5fe6309a0183cf2a951a66b38ee42cb426128ac99cd0f2a7cf0331efd8f42670",
           "tests/fixtures/kesher/schema5-freeze-20261004.json": "e678d1bc8be8aa4bdf1cf083cc6e044fd4d578f186cb7fdca1697ff4aecfcb00",
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
-          "tests/test_kesher_owner_media_quality.py": "75ab41fd6cdcd064f46bcfb75ce51c196fb274cb60ee143c62a800213401f6eb",
-          "scripts/kesher_owner_reviewed_publish.py": "4b8d23249e15bc3b22bc68204f426fbf15ff2e0c6a977efc5f64d47318807933",
+          "tests/test_kesher_owner_media_quality.py": "4d7a8c284fbf8b93c482c425d2512b3ed82857dd7a6d53626298764820a24023",
+          "scripts/kesher_owner_reviewed_publish.py": "3f28dd83cdeee791c73324ddec28ba1287769c989b8b7efc44425270422ced61",
           "research/owner-media-quality/evidence/child-not-playing-kindergarten--overview-descript-transcript.txt": "057ca8f57280082dad05bc69577b480899923d7aada2f15f536e5be0cd23524d",
           "research/owner-media-quality/child-not-playing-kindergarten--overview.json": "1fbbe7732201c7c7751e9fb2fe98a0f6943df032dd65ef473faeeb70dc7d549f",
           "research/owner-media-quality/evidence/child-not-playing-kindergarten--short-descript-transcript.txt": "199d927ee76d981d7933bf6182ba85f3aa4f4a974820b6081a25635942163052",
@@ -890,7 +890,14 @@
           "scripts/kesher_owner_midyear_kindergarten_cta_repair.py": "482d4958e70de9598a0e09e4cb6eb26b9c88074ac07fc9096d36c11cf904544e",
           "tests/test_kesher_owner_midyear_kindergarten_cta_repair.py": "82cff096b6539ec8efc40c6d1c31b79b6f65f7789c1e055bcf75bf6660aca6be",
           "research/owner-media-quality/changing-kindergarten-midyear--overview.json": "c30f0fa6b3fe28bcbcdd975e7f6502341e77125c02688d2bf7d9f0379a92504d",
-          "research/owner-media-quality/changing-kindergarten-midyear--short.json": "b0941933a53b9c4d9bd370fae52eeffcdcf9ab08fbb150f140ca7bb4ff7a9331"
+          "research/owner-media-quality/changing-kindergarten-midyear--short.json": "b0941933a53b9c4d9bd370fae52eeffcdcf9ab08fbb150f140ca7bb4ff7a9331",
+          "research/owner-media-quality/transition-to-separate-room--overview.json": "5c29179b3a0cc739bc18f41acc20307b118b3ef633c69c577487b101ebf2e2c8",
+          "research/owner-media-quality/transition-to-separate-room--short.json": "44b9a0b00fd3f1fe4c84fda53d1d2e9d2f6e224d3f5fc822444fd40bd06170bd",
+          "research/kesher-separate-room-media-20261110.json": "c02d9165667e9121cb8d49a1f18b5177c1dd7d46a2e4f397496b148b31707d81",
+          "research/kesher-separate-room-photo-provenance.json": "891d83236666f93bdd90072595d63bf43427440bf794aaa114729184ab96809b",
+          "scripts/kesher_owner_separate_room_preview.py": "94d56e07cd415aa665c83191896fc24ce2063d488390dbbea4cb9490b0215e3f",
+          "scripts/kesher_owner_separate_room_pronunciation_repair.py": "41453f8d89bd256dd91356df4b7892c2487fe18367a954ba0fbc67506e72b38b",
+          "tests/test_kesher_owner_separate_room_preview.py": "32bbdc1964c95d721d41ac32d95800a40c5f615f536ba1bc21a981705e36dbcc"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -3181,7 +3188,7 @@
           "scripts/kesher_final_attempt_fallback.py": "e8c9e5bef08a139862625aefc253e5c7e3a08c0819d5106b3a18e568d1f07d93",
           "scripts/kesher_intervention_policy.py": "a791056ac95278239a58fc6a2070dc2091f580f13095e5bb14670ccef11fe4c1",
           "scripts/kesher_owner_positivity_youtube_probe.py": "285b549c64d2c4e5353850bfce8949dd10eae2172a826ea01ab0c34ada0e2beb",
-          "scripts/kesher_owner_reviewed_publish.py": "4b8d23249e15bc3b22bc68204f426fbf15ff2e0c6a977efc5f64d47318807933",
+          "scripts/kesher_owner_reviewed_publish.py": "3f28dd83cdeee791c73324ddec28ba1287769c989b8b7efc44425270422ced61",
           "scripts/kesher_owner_asynchrony_preview.py": "277b4f1e4f44e4cef421d59864e46cda1784dd20cabf815f6594d27fe3be61a2",
           "scripts/kesher_owner_positivity_preview.py": "baf564c273d1b4408f39dce5241e415c40501ffcd61ab97d59c02a057366c8bc",
           "scripts/kesher_owner_productive_failure_preview.py": "33133377fe1259638109f51b4d017d56999a8b37f2b94691685f833370130207",
@@ -3190,7 +3197,7 @@
           "research/owner-media-quality/productive-failure-parents-learning-resilience--overview.json": "83a6e761bdedbc01371565b7e1a3605195460cb8328f56d7468942f9f88c7f73",
           "research/owner-media-quality/productive-failure-parents-learning-resilience--short.json": "ea56fad666ecc0c051f4627bcc3df2b021fb3083bdb84da060d5533467338827",
           "scripts/kesher_runtime/media_worker.py": "4db95d3f8da41da3910501210136fd2641ec579e151a354779a155d01c5db7d6",
-          "tests/test_kesher_owner_media_quality.py": "75ab41fd6cdcd064f46bcfb75ce51c196fb274cb60ee143c62a800213401f6eb",
+          "tests/test_kesher_owner_media_quality.py": "4d7a8c284fbf8b93c482c425d2512b3ed82857dd7a6d53626298764820a24023",
           "scripts/kesher_owner_vantage_short.py": "016b0f73870d71be542c52f9e703b16e4d7331306c11cb085e66ed2d6267c252",
           "scripts/kesher_runtime/authority.py": "fdfb3b3f5c321012f49606a49a656d9e0bb009043248b5aadf22ab257e18ff8c",
           "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc",
@@ -3256,7 +3263,14 @@
           "scripts/kesher_owner_midyear_kindergarten_cta_repair.py": "482d4958e70de9598a0e09e4cb6eb26b9c88074ac07fc9096d36c11cf904544e",
           "tests/test_kesher_owner_midyear_kindergarten_cta_repair.py": "82cff096b6539ec8efc40c6d1c31b79b6f65f7789c1e055bcf75bf6660aca6be",
           "research/owner-media-quality/changing-kindergarten-midyear--overview.json": "c30f0fa6b3fe28bcbcdd975e7f6502341e77125c02688d2bf7d9f0379a92504d",
-          "research/owner-media-quality/changing-kindergarten-midyear--short.json": "b0941933a53b9c4d9bd370fae52eeffcdcf9ab08fbb150f140ca7bb4ff7a9331"
+          "research/owner-media-quality/changing-kindergarten-midyear--short.json": "b0941933a53b9c4d9bd370fae52eeffcdcf9ab08fbb150f140ca7bb4ff7a9331",
+          "research/owner-media-quality/transition-to-separate-room--overview.json": "5c29179b3a0cc739bc18f41acc20307b118b3ef633c69c577487b101ebf2e2c8",
+          "research/owner-media-quality/transition-to-separate-room--short.json": "44b9a0b00fd3f1fe4c84fda53d1d2e9d2f6e224d3f5fc822444fd40bd06170bd",
+          "research/kesher-separate-room-media-20261110.json": "c02d9165667e9121cb8d49a1f18b5177c1dd7d46a2e4f397496b148b31707d81",
+          "research/kesher-separate-room-photo-provenance.json": "891d83236666f93bdd90072595d63bf43427440bf794aaa114729184ab96809b",
+          "scripts/kesher_owner_separate_room_preview.py": "94d56e07cd415aa665c83191896fc24ce2063d488390dbbea4cb9490b0215e3f",
+          "scripts/kesher_owner_separate_room_pronunciation_repair.py": "41453f8d89bd256dd91356df4b7892c2487fe18367a954ba0fbc67506e72b38b",
+          "tests/test_kesher_owner_separate_room_preview.py": "32bbdc1964c95d721d41ac32d95800a40c5f615f536ba1bc21a981705e36dbcc"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
@@ -3287,7 +3301,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "af998dedcc208c99deec0e8116847a5b752a35e3e9ae033867cb625f28bed010",
+      "definition_sha256": "db8e214bf5d63d7613fd55d7af88ff1c08347f47090eb81a2260e51eaa1631eb",
       "resources": [],
       "review": {
         "call_chain": {
@@ -3303,6 +3317,9 @@
           "research/kesher-kindergarten-play-photo-provenance.json": "db86a5719c62ac5db40d939757030d8fbbbd7174d5d1ebd56639bf04c3e95e13",
           "research/kesher-midyear-kindergarten-media-20261110.json": "67300d9d38420b81217e84df9a89a3a7d37bcc53a2bfbabc599edd87fc7c5cf2",
           "research/kesher-midyear-kindergarten-photo-provenance.json": "d2f03830cb629737336a3f08cd12ac32d100055dd53f8499ebb120621dc4f34f",
+          "scripts/kesher_owner_separate_room_preview.py": "94d56e07cd415aa665c83191896fc24ce2063d488390dbbea4cb9490b0215e3f",
+          "scripts/kesher_owner_separate_room_pronunciation_repair.py": "41453f8d89bd256dd91356df4b7892c2487fe18367a954ba0fbc67506e72b38b",
+          "tests/test_kesher_owner_separate_room_preview.py": "32bbdc1964c95d721d41ac32d95800a40c5f615f536ba1bc21a981705e36dbcc",
           "scripts/kesher_owner_midyear_kindergarten_preview.py": "39d44cd9407c8183e405154393532703789c234b79a7339014364893bbe4928b",
           "tests/test_kesher_owner_midyear_kindergarten_preview.py": "2e9b0f7a771b903c998943b4e67db8b9942e1699b027be9f90f2da829a1ecd63",
           "scripts/kesher_owner_midyear_kindergarten_repair.py": "665955a7626b5eeb07458087f1d9414f323df0414599d4d132391e74a0153a86",
@@ -3475,14 +3492,18 @@
           "tests/test_video_reconcile.py": "bad021f97c8d1222616a8f984c1a01c750b3d35be29a4732423ed3b5ab3e2ffb",
           "tests/test_video_review_policy.py": "27092e8497c8b8d9bf327b8522d4112b43cc08d4686c1c17f281dff02723e2cd",
           "tests/test_video_review_schema.py": "5f31d330ffce90b2b243b48a2ea0b4982b1ab7f2a64acf70f1420fd664b6187f",
-          "scripts/kesher_owner_reviewed_publish.py": "4b8d23249e15bc3b22bc68204f426fbf15ff2e0c6a977efc5f64d47318807933",
-          "tests/test_kesher_owner_media_quality.py": "75ab41fd6cdcd064f46bcfb75ce51c196fb274cb60ee143c62a800213401f6eb",
+          "scripts/kesher_owner_reviewed_publish.py": "3f28dd83cdeee791c73324ddec28ba1287769c989b8b7efc44425270422ced61",
+          "tests/test_kesher_owner_media_quality.py": "4d7a8c284fbf8b93c482c425d2512b3ed82857dd7a6d53626298764820a24023",
           "research/owner-media-quality/evidence/child-not-playing-kindergarten--overview-descript-transcript.txt": "057ca8f57280082dad05bc69577b480899923d7aada2f15f536e5be0cd23524d",
           "research/owner-media-quality/child-not-playing-kindergarten--overview.json": "1fbbe7732201c7c7751e9fb2fe98a0f6943df032dd65ef473faeeb70dc7d549f",
           "research/owner-media-quality/evidence/child-not-playing-kindergarten--short-descript-transcript.txt": "199d927ee76d981d7933bf6182ba85f3aa4f4a974820b6081a25635942163052",
           "research/owner-media-quality/child-not-playing-kindergarten--short.json": "8283d13f3fd2afcb8462aaf82b7dc771dcc96cbabeaf6ba405fcf74805905faa",
           "research/owner-media-quality/changing-kindergarten-midyear--overview.json": "c30f0fa6b3fe28bcbcdd975e7f6502341e77125c02688d2bf7d9f0379a92504d",
-          "research/owner-media-quality/changing-kindergarten-midyear--short.json": "b0941933a53b9c4d9bd370fae52eeffcdcf9ab08fbb150f140ca7bb4ff7a9331"
+          "research/owner-media-quality/changing-kindergarten-midyear--short.json": "b0941933a53b9c4d9bd370fae52eeffcdcf9ab08fbb150f140ca7bb4ff7a9331",
+          "research/owner-media-quality/transition-to-separate-room--overview.json": "5c29179b3a0cc739bc18f41acc20307b118b3ef633c69c577487b101ebf2e2c8",
+          "research/owner-media-quality/transition-to-separate-room--short.json": "44b9a0b00fd3f1fe4c84fda53d1d2e9d2f6e224d3f5fc822444fd40bd06170bd",
+          "research/kesher-separate-room-media-20261110.json": "c02d9165667e9121cb8d49a1f18b5177c1dd7d46a2e4f397496b148b31707d81",
+          "research/kesher-separate-room-photo-provenance.json": "891d83236666f93bdd90072595d63bf43427440bf794aaa114729184ab96809b"
         },
         "credential_services": {},
         "credentials": [],
