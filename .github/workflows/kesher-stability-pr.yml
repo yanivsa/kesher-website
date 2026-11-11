@@ -825,24 +825,33 @@ jobs:
           unzip -q "$RUNNER_TEMP/separate-room-final.zip" overview.mp4 short.mp4 overview-manifest.json short-manifest.json overview-review-voice.wav short-review-voice.wav -d owner-separate-room-media-output
           cd owner-separate-room-media-output
           printf '%s  %s\n' 4d53ae34495d49a7e91ef58148ff386437ff43b86e8a57f3e283c563bddc0e3a overview.mp4 1c5eb7a6c9b83a7e0647d85fe738759161924cada7b9826a0f3c63a3d8f1bb30 short.mp4 dc023e56c1cd81d3f98edc893640c8946cd11b4d5f7523f31e473b03f5548c80 overview-review-voice.wav 2e79c7316281fa1312f063e8501220133be122bce59aef9bf58cecad447c1065 short-review-voice.wav | sha256sum -c -
-      - name: Check for existing exact targeted audio evidence
-        id: targeted-admission
+      - name: Fetch exact completed targeted audio evidence and check repair dedup
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          count="$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-separate-room-targeted-audio-qa-4751cfeae272 --jq .total_count)"
-          test "$count" = 0
-      - name: Hebrew-finetuned acoustic and original G2P review of exact final audio
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42928866442 --jq .conclusion)" = success
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42928866442 --jq .head_sha)" = 7c417abdaf82bd02a9621802c68a12e6558dbb2e
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13815352755/zip > "$RUNNER_TEMP/separate-room-targeted-qa.zip"
+          printf '%s  %s\n' d68e7c793bac219eb76ac0f2c0134b9d6cdafceafe4f2c4c97a08fa84f84f491 "$RUNNER_TEMP/separate-room-targeted-qa.zip" | sha256sum -c -
+          test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-separate-room-pronunciation-repair-4751cfeae272 --jq .total_count)" = 0
+      - name: Repair only confirmed pronunciation and safety-critical audio windows
         env:
-          HF_HOME: ${{ runner.temp }}/owner-separate-room-targeted-asr
+          HF_HOME: ${{ runner.temp }}/owner-separate-room-repair-hf
           HF_HUB_DISABLE_XET: '1'
-        run: python -m scripts.kesher_owner_separate_room_preview targeted-review --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0
-      - name: Archive targeted private audio QA only, no media duplication
+        run: python -m scripts.kesher_owner_separate_room_pronunciation_repair --archive "$RUNNER_TEMP/separate-room-final.zip" --qa-archive "$RUNNER_TEMP/separate-room-targeted-qa.zip" --output owner-separate-room-repair-output
+      - name: Archive exact repaired private media and fresh actual-audio evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: owner-separate-room-targeted-audio-qa-4751cfeae272
-          path: owner-separate-room-media-output/targeted-audio-review.json
+          name: owner-separate-room-pronunciation-repair-4751cfeae272
+          path: |
+            owner-separate-room-repair-output/*.mp4
+            owner-separate-room-repair-output/*-review-voice.wav
+            owner-separate-room-repair-output/*-manifest.json
+            owner-separate-room-repair-output/*-visual-contact-sheet.jpg
+            owner-separate-room-repair-output/*-frame-*.jpg
+            owner-separate-room-repair-output/*-asr.txt
+            owner-separate-room-repair-output/asr-review.json
           if-no-files-found: error
           compression-level: 0
           retention-days: 60

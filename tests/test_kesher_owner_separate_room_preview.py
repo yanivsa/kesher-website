@@ -38,3 +38,17 @@ class SeparateRoomPrivatePreviewTests(unittest.TestCase):
             p.scene_windows("short", 20)
         self.assertEqual(p.FINAL_VIDEO_SHA["overview"], p.RECOVERY_OVERVIEW_SHA)
         self.assertEqual(len(p.IVRIT_REV), 40)
+
+    def test_pronunciation_repair_preserves_unaffected_pcm(self):
+        import numpy as np
+        from scripts import kesher_owner_separate_room_pronunciation_repair as r
+        original=np.zeros(5000,dtype="<i2")
+        original[10:20]=123
+        replacement=np.full(1000,200,dtype="<i2")
+        edited=r.splice(original,[(2000,3000,replacement)])
+        self.assertTrue(np.array_equal(edited[:2000],original[:2000]))
+        self.assertTrue(np.array_equal(edited[3000:],original[3000:]))
+        self.assertEqual(len(r.cut_samples("overview",3153920)),8)
+        self.assertEqual(len(r.cut_samples("short",1278976)),4)
+        with self.assertRaisesRegex(ValueError,"INVALID_REPAIR_CUTS"):
+            r.cut_samples("short",100)
