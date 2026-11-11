@@ -1,0 +1,24 @@
+{
+  "source_slug": "shared-laughter-couples-intimacy",
+  "content_sha256": "860a1ecbaaed80bad2c8d72bff64affe8fddbb2380af045707505259b4f26947",
+  "old_image": {
+    "path": "/images/generated/blog/shared-laughter-couples-intimacy.png",
+    "sha256": "86ca34d77adf582cae413bdc6e82b78d900c473c7ae200ec8f80750679548721",
+    "visual": "actual live flat vector inspected"
+  },
+  "new_image": {
+    "path": "/images/generated/blog/shared-laughter-couples-intimacy-photo.jpg",
+    "provider": "Adobe Firefly",
+    "request_id": "87b848fd-04eb-4044-9468-69375af73da4",
+    "original_sha256": "78395704905afa4dcd476ce4b4e2d1a637878658d0502e1e7f7de0208f279650",
+    "sha256": "70201c12616410f13514851bd51f3946f75e1935aa17e5867e6ebd4dc1ce52c1",
+    "dimensions": [
+      1200,
+      675
+    ],
+    "license": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+    "visual_review": "Actual generated photo: couple seated close on sofa, both spontaneously laughing with mutual eye contact, natural anatomy and daylight, no text or logo."
+  },
+  "review_date": "2026-11-11",
+  "scope": "image metadata only; canonical source unchanged"
+}
