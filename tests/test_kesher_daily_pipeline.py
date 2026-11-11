@@ -426,6 +426,7 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(run.call_count, 2)
         self.assertEqual(item["last_provider_status"], "completed")
 
+    @mock.patch.dict(os.environ, {"KESHER_MEDIA_RENDERER": "remotion"})
     def test_technical_validation_rejects_wrong_duration_or_aspect(self) -> None:
         source = pipeline.source_metadata(hebrew_post())
         item = pipeline.new_item(source)
@@ -456,6 +457,7 @@ class PipelineTestCase(unittest.TestCase):
         self.assertIn("90–180", saved["review_notes"]["technical"])
         self.assertTrue((self.state_dir / saved["manifest_path"]).is_file())
 
+    @mock.patch.dict(os.environ, {"KESHER_MEDIA_RENDERER": "remotion"})
     def test_technical_validation_accepts_signature_overlay_inside_source_duration(self) -> None:
         source = pipeline.source_metadata(hebrew_post())
         item = pipeline.new_item(source)
