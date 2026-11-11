@@ -781,16 +781,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
-      - name: Verify exact authenticated source probe and existing private production
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42920640111 --jq .conclusion)" = success
-          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42920640111 --jq .head_sha)" = f0c31debb380540e16ddd6a87499793f67e241ac
-          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42920640111 --jq .workflow_id)" = 349292838
-          test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-separate-room-private-evidence-4751cfeae272 --jq .total_count)" = 1
-      - name: Set up Python for licensed local speech
+      - name: Set up Python for exact bundle review
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: '3.12'
@@ -799,46 +790,36 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: Install pinned owner-direct speech and media tools
+      - name: Install pinned media review tools
         run: |
           set -euo pipefail
           npm ci --no-audit --no-fund
           ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
           ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
           printf '%s\n' "$ffmpeg_dir" "$ffprobe_dir" >> "$GITHUB_PATH"
-          python -m pip install Pillow==11.3.0 requests==2.32.5 soundfile==0.13.1 'git+https://github.com/maxmelichov/BlueTTS.git@712f7c9491ad7875fc985e24e166afe43ae649b0' 'faster-whisper==1.2.1' 'av<19'
-      - name: Exact source, photo and private-only contract
-        run: |
-          set -euo pipefail
-          python -m unittest tests.test_kesher_owner_separate_room_preview -v
-          python -m scripts.kesher_owner_separate_room_preview preflight --source-sha 4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0
-      - name: Fetch exact repaired media and check final clarity dedup
+          python -m pip install Pillow==11.3.0 requests==2.32.5 numpy==2.2.6
+      - name: Verify exact final private archive and OWNER approvals without generation
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42930186333 --jq .conclusion)" = success
-          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42930186333 --jq .head_sha)" = f518bc20e3d9d5b8d570ef4451df7e64c4dc41e1
-          gh api repos/yanivsa/kesher-website/actions/artifacts/13815668134/zip > "$RUNNER_TEMP/separate-room-repaired.zip"
-          printf '%s  %s\n' 985c0ef0fe87344c0492bd520d212972e97139c3d2d7740fda9d1950f74f98be "$RUNNER_TEMP/separate-room-repaired.zip" | sha256sum -c -
-          test "$(gh api --method GET repos/yanivsa/kesher-website/actions/artifacts -f name=owner-separate-room-final-clarity-4751cfeae272 --jq .total_count)" = 0
-      - name: Clarify one Overview phrase and preserve exact reviewed Short
-        env:
-          HF_HOME: ${{ runner.temp }}/owner-separate-room-clarity-hf
-          HF_HUB_DISABLE_XET: '1'
-        run: python -m scripts.kesher_owner_separate_room_pronunciation_repair --final-clarity --archive "$RUNNER_TEMP/separate-room-repaired.zip" --output owner-separate-room-clarity-output
-      - name: Archive exact final private media and fresh Overview audio evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        with:
-          name: owner-separate-room-final-clarity-4751cfeae272
-          path: |
-            owner-separate-room-clarity-output/*.mp4
-            owner-separate-room-clarity-output/*-review-voice.wav
-            owner-separate-room-clarity-output/*-manifest.json
-            owner-separate-room-clarity-output/*-visual-contact-sheet.jpg
-            owner-separate-room-clarity-output/*-frame-*.jpg
-            owner-separate-room-clarity-output/*-asr.txt
-            owner-separate-room-clarity-output/asr-review.json
-          if-no-files-found: error
-          compression-level: 0
-          retention-days: 60
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42931461922 --jq .conclusion)" = success
+          test "$(gh api repos/yanivsa/kesher-website/actions/runs/42931461922 --jq .head_sha)" = 07d6cb6003d853949895ca35c7ff50c0d1de1b4f
+          test "$(gh api repos/yanivsa/kesher-website/actions/artifacts/13817130469 --jq .name)" = owner-separate-room-final-clarity-4751cfeae272
+          test "$(gh api repos/yanivsa/kesher-website/actions/artifacts/13817130469 --jq .expired)" = false
+          gh api repos/yanivsa/kesher-website/actions/artifacts/13817130469/zip > "$RUNNER_TEMP/separate-room-final.zip"
+          python -m unittest tests.test_kesher_owner_media_quality tests.test_kesher_owner_separate_room_preview -v
+          python - "$RUNNER_TEMP/separate-room-final.zip" <<'PY'
+          import sys, tempfile
+          from pathlib import Path
+          from scripts import kesher_owner_reviewed_publish as publisher
+          cfg = publisher.source_config("transition-to-separate-room", "4751cfeae272ce8d42e8311236d3bbacf44e94cd99b571db6b8544b103bfe8d0")
+          with tempfile.TemporaryDirectory() as tmp:
+              dest = Path(tmp)
+              publisher.archive_files(Path(sys.argv[1]), dest, cfg)
+              publisher.verify_live_article(cfg)
+              for kind in publisher.KINDS:
+                  publisher.validate_bundle(cfg, dest, kind)
+                  print("EXACT_BUNDLE_APPROVAL", kind, flush=True)
+          print("SEPARATE_ROOM_EXACT_REVIEWED_BUNDLE_ADMISSION_PASS_NO_UPLOAD")
+          PY

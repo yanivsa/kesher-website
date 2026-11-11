@@ -474,6 +474,38 @@ class OwnerReviewedPublishTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "MIDYEAR_SHORT_EXACT_NATIVE_MEDIA_MISMATCH"):
                 p.validate_midyear_repair(short, Path("short.mp4"), "short")
 
+    def test_separate_room_exact_final_media_and_rights(self):
+        from scripts import kesher_owner_reviewed_publish as p
+        cfg = p.source_config(p.separate_room.SLUG, p.separate_room.SOURCE_SHA)
+        self.assertEqual(cfg["artifact"], 13817130469)
+        self.assertEqual(p.verify_source_binding(cfg)["slug"], p.separate_room.SLUG)
+        self.assertEqual(p.item_id(cfg, "short"), "owner-short-20261111-4751cfeae272")
+        self.assertIn("Pexels", p.metadata(cfg, "overview")["description"])
+        self.assertIn(p.separate_room.ARTICLE, p.metadata(cfg, "short", "abcdefghijk")["description"])
+        manifest = {"canonical_content_sha256": p.separate_room.SOURCE_SHA,
+                    "article_body_sha256": p.separate_room.BODY_SHA,
+                    "composition": "native_full_frame_9_16_no_padding",
+                    "targeted_audio_repair": {
+                        "input_artifact_id": 13813995846,
+                        "input_archive_sha256": p.separate_room_repair.ARCHIVE_SHA,
+                        "input_qa_artifact_id": 13815352755,
+                        "input_qa_sha256": p.separate_room_repair.QA_JSON_SHA,
+                        "video_packets_preserved": True,
+                        "outside_cut_pcm_preserved_before_aac_encode": True,
+                        "video_packet_hashes_sha256": p.SEPARATE_ROOM_PACKET_SHA["short"]}}
+        with patch.object(p, "sha", return_value=p.SEPARATE_ROOM_FINAL_SHA["short"]), \
+             patch.object(p.separate_room_repair, "packet_hashes", return_value=["packet"]), \
+             patch.object(p.separate_room_repair, "sha", return_value=p.SEPARATE_ROOM_PACKET_SHA["short"]):
+            p.validate_separate_room_repair(manifest, Path("short.mp4"), "short")
+            changed = copy.deepcopy(manifest)
+            changed["targeted_audio_repair"]["video_packets_preserved"] = False
+            with self.assertRaisesRegex(RuntimeError, "SEPARATE_ROOM_EXACT_AUDIO_REPAIR_MISMATCH"):
+                p.validate_separate_room_repair(changed, Path("short.mp4"), "short")
+            changed = copy.deepcopy(manifest)
+            changed["composition"] = "blurred_padding"
+            with self.assertRaisesRegex(RuntimeError, "SEPARATE_ROOM_UNCHANGED_NATIVE_SHORT_MISMATCH"):
+                p.validate_separate_room_repair(changed, Path("short.mp4"), "short")
+
     def test_guarded_owner_publish_installs_photo_validation_dependency(self):
         from scripts import kesher_owner_reviewed_publish as p
         workflow = (p.ROOT / ".github/workflows/kesher-short-v4.yml").read_text(encoding="utf-8")
