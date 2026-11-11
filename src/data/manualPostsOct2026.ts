@@ -57,8 +57,12 @@ const manualPostsOct2026 = [
     tags: ['שיתוף ילדים במטלות הבית', 'זמן איכות עם הילדים', 'תחושת שייכות אצל ילדים', 'עומס אימהי', 'הדרכת הורים'],
     serviceUrl: '/services/parenting',
     serviceLabel: 'הדרכת הורים באשדוד',
-    image: '/images/generated/blog/family-chores-quality-time-with-kids.png',
-    imageAlt: 'אמא וילדים משתפים פעולה יחד במטלות הבית בזמן משפחתי משותף',
+    image: '/images/generated/blog/family-chores-quality-time-with-kids-photo.jpg',
+    imageAlt: 'אם ושני ילדיה עורכים יחד את שולחן האוכל במטבח מואר, עם צלחות ומפיות',
+    imageProvider: 'Adobe Firefly',
+    imageSourceUrl: 'local://public/images/generated/blog/family-chores-quality-time-with-kids-photo.jpg',
+    imageIsFallback: false,
+    imageCredit: 'תמונה מקורית שנוצרה באמצעות Adobe Firefly',
     relatedPostIds: ['child-argues-every-request-boundaries', 'child-meltdown-after-school'],
     evidence: [
       {
