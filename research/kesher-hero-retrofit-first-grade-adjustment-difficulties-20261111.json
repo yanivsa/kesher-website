@@ -1,0 +1,24 @@
+{
+  "source_slug": "first-grade-adjustment-difficulties",
+  "content_sha256": "9f216727f3edc6fe4e4644dfd0e9b986c85af20c348d58ec894ec882e9a69093",
+  "old_image": {
+    "path": "/images/generated/blog/first-grade-adjustment-difficulties.png",
+    "sha256": "84f528302c8cffdd73a3527475201470f6950090b218a307a72801bd8bbe2403",
+    "visual": "actual live flat vector inspected"
+  },
+  "new_image": {
+    "path": "/images/generated/blog/first-grade-adjustment-difficulties-photo.jpg",
+    "provider": "Adobe Firefly",
+    "request_id": "22722fef-4bf9-49ed-bdd7-e7f02457b04b",
+    "original_sha256": "5191c886ac724d493529708c641f04300b3ebd1b8c91bebd9e56b01650f30140",
+    "sha256": "6422797e159b854384ba89c07142856b7431f9c6056c581982d10085fb694a72",
+    "dimensions": [
+      1200,
+      675
+    ],
+    "license": "https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/adobe-firefly-faq.html",
+    "visual_review": "Actual final JPEG: school-age child with backpack pauses at classroom doorway, calm parent crouches at eye level, teacher in background, natural anatomy and light, no text/logo or distress."
+  },
+  "review_date": "2026-11-11",
+  "scope": "image metadata only; canonical source unchanged"
+}
