@@ -409,7 +409,15 @@ def validate_and_manifest(
     item: dict[str, Any],
     raw_path: Path,
 ) -> None:
-    final_path = render_remotion_video(raw_path, item)
+    from scripts.kesher_runtime.native_media import native_render_requested, render_native_provider
+    if native_render_requested():
+        signature_name = prepare_signature_asset()
+        final_path = render_native_provider(
+            core, raw_path, item, kind="short",
+            signature_path=core.STATE_DIR / signature_name,
+        )
+    else:
+        final_path = render_remotion_video(raw_path, item)
     media = core.ffprobe(final_path)
     sheet = core.create_contact_sheet(final_path, item, media["duration"])
     item["final_mp4"] = final_path.name
@@ -501,15 +509,24 @@ def validate_and_manifest(
         "visual_review_path": item["visual_review_path"],
         "visual_review_sha256": item["visual_review_sha256"],
     }
-    manifest["enhancement"] = build_enhancement_manifest(
-        source_path=raw_path,
-        final_path=final_path,
-        edit_plan_path=core.STATE_DIR / item["motion_plan_path"],
-        enhancement_status=item["enhancement_status"],
-        assets_used=item.get("enhancement_assets_used") or [],
-        assets_dropped=item.get("enhancement_assets_dropped") or [],
-        fallback_reason=item.get("enhancement_fallback_reason"),
-    )
+    if item.get("visual_pipeline") == VISUAL_PIPELINE:
+        manifest["enhancement"] = build_enhancement_manifest(
+            source_path=raw_path,
+            final_path=final_path,
+            edit_plan_path=core.STATE_DIR / item["motion_plan_path"],
+            enhancement_status=item["enhancement_status"],
+            assets_used=item.get("enhancement_assets_used") or [],
+            assets_dropped=item.get("enhancement_assets_dropped") or [],
+            fallback_reason=item.get("enhancement_fallback_reason"),
+        )
+    else:
+        manifest["enhancement"] = {
+            "mode": "native_source_signature_only",
+            "provider_raw_sha256": item["raw_sha256"],
+            "final_sha256": item["final_sha256"],
+            "assets_used": [],
+            "assets_dropped": [],
+        }
 
     if technical_failures:
         item["technical_verified"] = False

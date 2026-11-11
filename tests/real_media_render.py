@@ -68,3 +68,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
     run(parser.parse_args().output)
+    # Reuse the already trusted render-proof job to exercise the native source
+    # signature/audio path with real ffmpeg. No workflow definition change.
+    import unittest
+    test = unittest.defaultTestLoader.loadTestsFromName(
+        "tests.test_notebooklm_native_media.NativeProviderTests."
+        "test_native_overlay_preserves_audio_and_source_proof"
+    )
+    if not unittest.TextTestRunner(verbosity=2).run(test).wasSuccessful():
+        raise SystemExit(1)

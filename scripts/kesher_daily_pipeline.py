@@ -1203,7 +1203,8 @@ def validate_female_voice(
 def _render_context():
     from types import SimpleNamespace
     return SimpleNamespace(PROJECT_DIR=PROJECT_DIR, STATE_DIR=STATE_DIR,
-        sha256_file=sha256_file, atomic_json_write=atomic_json_write, PipelineError=PipelineError)
+        sha256_file=sha256_file, atomic_json_write=atomic_json_write, PipelineError=PipelineError,
+        ffprobe=ffprobe)
 
 
 def remotion_cache_is_reusable(item: dict[str, Any], output_path: Path) -> bool:
@@ -1384,7 +1385,15 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
             item["updated_at"] = utc_now()
             # DO NOT SAVE STALE SNAPSHOT! Raise immediately to protect authoritative disk state!
             raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner")
-    final_path = render_remotion_video(raw_path, item)
+    from scripts.kesher_runtime.native_media import native_render_requested, render_native_provider
+    if native_render_requested():
+        signature_name = prepare_signature_asset()
+        final_path = render_native_provider(
+            _render_context(), raw_path, item, kind="overview",
+            signature_path=STATE_DIR / signature_name,
+        )
+    else:
+        final_path = render_remotion_video(raw_path, item)
     media = ffprobe(final_path)
     sheet = create_contact_sheet(final_path, item, media["duration"])
     item["final_mp4"] = final_path.name
