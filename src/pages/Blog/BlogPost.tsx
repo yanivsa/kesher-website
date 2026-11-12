@@ -15,6 +15,7 @@ import SignatureMark from '../../components/Signature/SignatureMark';
 import LandingCalloutBanner from '../../components/LandingCalloutBanner/LandingCalloutBanner';
 import { getLandingTargetForPost } from '../../utils/landingCalloutHelper';
 import { SITE_CONFIG } from '../../constants/siteConfig';
+import { PARENTING_COORDINATION_CONTACT_URL, PARENTING_COORDINATION_WHATSAPP_MESSAGE } from '../../lib/parentingCoordination';
 import { getImageDimensions } from '../../data/imageDimensions';
 import NotFound from '../NotFound/NotFound';
 import styles from './BlogPost.module.css';
@@ -125,6 +126,7 @@ const BlogPost: React.FC = () => {
     ? { url: post.serviceUrl, label: post.serviceLabel }
     : null;
   const ctaCopy = articleCtaCopy(post);
+  const isCoordinationArticle = post.category === 'תיאום הורי';
   const landingTarget = getLandingTargetForPost(post);
   const displayCategory = post.category === 'הנחיית הורים' ? 'הדרכת הורים' : post.category;
   const postSubcategory = 'subcategory' in post && typeof post.subcategory === 'string' ? post.subcategory : '';
@@ -291,11 +293,11 @@ const BlogPost: React.FC = () => {
           )}
           <div className={styles.ctaCard}>
             <h3>צריכים עזרה עם הנושא הזה?</h3>
-            <p>אני כאן כדי ללוות אתכם בתהליך אישי ומותאם לכם.</p>
+            <p>{isCoordinationArticle ? 'לפני תחילת תיאום הורי נבדוק התאמה, בטיחות ומסגרת מתאימה.' : 'אני כאן כדי ללוות אתכם בתהליך אישי ומותאם לכם.'}</p>
             {relatedService && (
               <Link to={relatedService.url} className={styles.ctaButton}>{relatedService.label}</Link>
             )}
-            <Link to={SITE_CONFIG.links.appointment} className={styles.ctaButton}>קביעת פגישת ייעוץ</Link>
+            <Link to={isCoordinationArticle ? PARENTING_COORDINATION_CONTACT_URL : SITE_CONFIG.links.appointment} className={styles.ctaButton}>{isCoordinationArticle ? 'בירור התאמה לתיאום הורי' : 'קביעת פגישת ייעוץ'}</Link>
           </div>
         </aside>
       </div>
@@ -304,11 +306,11 @@ const BlogPost: React.FC = () => {
           <h3>זה פוגש משהו שקורה אצלכם?</h3>
           <p>{ctaCopy}</p>
           <div className={styles.contactActions}>
-            <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
+            <Link to={isCoordinationArticle ? PARENTING_COORDINATION_CONTACT_URL : SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
               <FiCalendar aria-hidden="true" />
-              לקביעת פגישה עם שירה
+              {isCoordinationArticle ? 'לבירור התאמה ראשוני עם שירה' : 'לקביעת פגישה עם שירה'}
             </Link>
-            <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
+            <a href={isCoordinationArticle ? `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent(PARENTING_COORDINATION_WHATSAPP_MESSAGE)}` : SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
               <FaWhatsapp aria-hidden="true" />
               לכתיבה לשירה בוואטסאפ
             </a>
