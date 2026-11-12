@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 const articleIds = [
   'what-is-parenting-coordination',
@@ -82,4 +83,20 @@ test('mobile sticky conversion sends specialty readers to safe intake', async ({
   await page.evaluate(() => window.scrollTo(0, 650));
   await expect(page.locator('div[class*="stickyBar"] a[href="/appointment"]')).toBeVisible();
   await expect(page.locator('footer a[href="/appointment"]')).toHaveCount(1);
+});
+
+test('new specialty pages have no serious accessibility violations', async ({ page }) => {
+  for (const route of [
+    '/services/parenting-coordination',
+    '/blog/category/parenting-coordination',
+    '/blog/what-is-parenting-coordination',
+  ]) {
+    await page.goto(route);
+    await expect(page.locator('h1')).toHaveCount(1);
+    const results = await new AxeBuilder({ page }).analyze();
+    expect(
+      results.violations.filter((issue) => issue.impact === 'serious' || issue.impact === 'critical'),
+      route,
+    ).toEqual([]);
+  }
 });
