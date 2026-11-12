@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { FiMenu, FiSearch, FiX } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../constants/siteConfig';
+import { isParentingCoordinationPath, PARENTING_COORDINATION_CONTACT_URL } from '../../lib/parentingCoordination';
 import GlobalSearch from '../GlobalSearch/GlobalSearch';
 import styles from './Header.module.css';
 
 const Header: React.FC = () => {
+  const { pathname } = useLocation();
+  const coordinationInquiry = isParentingCoordinationPath(pathname);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -166,7 +169,7 @@ const Header: React.FC = () => {
             <Link to="/lectures" onClick={closeMenu}>הרצאות וסדנאות</Link>
             <Link to="/blog" onClick={closeMenu}>בלוג</Link>
             <Link to="/faq" onClick={closeMenu}>שאלות נפוצות</Link>
-            <Link to={SITE_CONFIG.links.appointment} className={styles.cta} onClick={closeMenu}>לתיאום פגישה</Link>
+            <Link to={coordinationInquiry ? PARENTING_COORDINATION_CONTACT_URL : SITE_CONFIG.links.appointment} className={styles.cta} onClick={closeMenu}>{coordinationInquiry ? "לבירור התאמה" : "לתיאום פגישה"}</Link>
           </nav>
         </div>
       </header>
