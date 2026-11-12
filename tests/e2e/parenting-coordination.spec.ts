@@ -11,6 +11,17 @@ const articleIds = [
 const origin = 'https://kesher.saharoni.com';
 const inquiry = '/contact?service=parenting_coordination';
 
+const showStickyAfterScroll = async (page: import('@playwright/test').Page) => {
+  // The page is prerendered, so its H1 can be present before client-side effects attach.
+  await expect.poll(async () => {
+    await page.evaluate(() => {
+      window.scrollTo(0, 650);
+      window.dispatchEvent(new Event('scroll'));
+    });
+    return page.locator('div[class*="stickyBar"]').isVisible();
+  }, { timeout: 15_000 }).toBe(true);
+};
+
 test('service page and editorial hub are indexable, linked and responsive', async ({ page }) => {
   for (const route of ['/services/parenting-coordination', '/blog/category/parenting-coordination']) {
     const response = await page.goto(route);
@@ -76,16 +87,14 @@ test('mobile sticky conversion sends specialty readers to safe intake', async ({
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/blog/what-is-parenting-coordination');
   await expect(page.getByRole('heading', { level: 1, name: 'מה זה תיאום הורי ולמי הוא מתאים?' })).toBeVisible();
-  await page.evaluate(() => window.scrollTo(0, 650));
-  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300);
+  await showStickyAfterScroll(page);
   const sticky = page.locator('div[class*="stickyBar"]');
   await expect(sticky).toBeVisible();
   await expect(sticky.getByRole('link', { name: 'בירור התאמה לתיאום הורי' })).toHaveAttribute('href', inquiry);
 
   await page.goto('/services/parenting');
   await expect(page.locator('h1')).toHaveCount(1);
-  await page.evaluate(() => window.scrollTo(0, 650));
-  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300);
+  await showStickyAfterScroll(page);
   await expect(page.locator('div[class*="stickyBar"] a[href="/appointment"]')).toBeVisible();
   await expect(page.locator('footer a[href="/appointment"]')).toHaveCount(1);
 });
