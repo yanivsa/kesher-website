@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '..');
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const service = '/services/parenting-coordination';
 const category = '/blog/category/parenting-coordination';
-const postIds = ['what-is-parenting-coordination', 'parenting-coordination-vs-mediation', 'divorced-parents-communication'];
+const postIds = ['what-is-parenting-coordination', 'parenting-coordination-vs-mediation', 'divorced-parents-communication', 'parenting-time-holidays-after-divorce', 'can-one-parent-start-parenting-coordination'];
 
 assert(STATIC_ROUTES.includes(service), 'service must be registered for prerender and sitemap');
 assert(STATIC_ROUTES.includes(category), 'category must be registered for prerender and sitemap');
@@ -20,7 +20,7 @@ assert(app.includes('parentingCoordinationCategory.preload'), 'category must be 
 assert(app.includes('parentingCoordination.preload'), 'service must be preloaded');
 
 const posts = loadPosts().filter((p) => postIds.includes(p.id));
-assert.equal(posts.length, 3, 'initial editorial hub has three distinct articles');
+assert.equal(posts.length, 5, 'editorial hub must have five distinct published articles');
 for (const post of posts) {
   assert.equal(post.category, 'תיאום הורי', post.id + ' category mismatch');
   assert(isPublishable(post), post.id + ' must satisfy editorial length and sections');
@@ -29,6 +29,8 @@ for (const post of posts) {
   assert(fs.existsSync(path.join(root, 'public', post.image.slice(1))), post.id + ' image missing');
   assert(post.imageAlt && post.imageAlt.length >= 20, post.id + ' requires specific alt text');
   assert(Array.isArray(post.evidence) && post.evidence.length >= 1, post.id + ' needs professional source');
+  assert(!/[A-Za-z]/.test(post.content.replace(/<[^>]*>/g, ' ')), post.id + ' visible copy must remain in Hebrew');
+  assert(post.relatedPostIds?.length >= 2, post.id + ' needs interlinked cluster');
 }
 const serviceContent = read('src/pages/Services/ParentingCoordination/ParentingCoordinationPage.tsx');
 assert(serviceContent.includes('data-analytics-service-type="parenting_coordination"'));
