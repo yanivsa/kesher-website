@@ -414,8 +414,51 @@ jobs:
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') }}
         run: python -u scripts/kesher_daily_pipeline.py --preflight
 
+      - name: Inventory existing native NotebookLM source and video IDs without mutation
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'preflight' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, subprocess
+          notebook = os.environ['KESHER_NOTEBOOK_ID']
+          cases = (
+              ('source', ['source', 'list', '--notebook', notebook, '--json']),
+              ('video', ['artifact', 'list', '--type', 'video', '--notebook', notebook, '--json']),
+          )
+          for kind, args in cases:
+              result = subprocess.run(['notebooklm', *args], capture_output=True, text=True, timeout=150, check=False)
+              if result.returncode:
+                  # Never print raw stderr from an authenticated CLI.
+                  raise SystemExit(f'NOTEBOOKLM_INVENTORY_{kind.upper()}_FAILED exit={result.returncode}')
+              try:
+                  payload = json.loads(result.stdout)
+              except (TypeError, ValueError):
+                  raise SystemExit(f'NOTEBOOKLM_INVENTORY_{kind.upper()}_NON_JSON')
+              if isinstance(payload, list):
+                  rows = payload
+              elif isinstance(payload, dict):
+                  rows = payload.get('sources') if kind == 'source' else payload.get('artifacts')
+                  if rows is None:
+                      rows = payload.get('items')
+                  if not isinstance(rows, list):
+                      raise SystemExit(f'NOTEBOOKLM_INVENTORY_{kind.upper()}_UNKNOWN_SHAPE keys={sorted(payload.keys())}')
+              else:
+                  raise SystemExit(f'NOTEBOOKLM_INVENTORY_{kind.upper()}_INVALID_SHAPE')
+              print(f'NOTEBOOKLM_INVENTORY_{kind.upper()}_COUNT={len(rows)}')
+              for row in rows[-100:]:
+                  if not isinstance(row, dict):
+                      continue
+                  safe = {key: row[key] for key in (
+                      'id', 'source_id', 'artifact_id', 'task_id', 'title',
+                      'status', 'state', 'type', 'format', 'created_at',
+                      'source_ids', 'sourceIds', 'source_id',
+                  ) if key in row and isinstance(row[key], (str, int, float, list, type(None)))}
+                  print('NOTEBOOKLM_INVENTORY_' + kind.upper() + '_ITEM ' + json.dumps(safe, ensure_ascii=False, separators=(',', ':')))
+          PY
+
       - name: Prune historical NotebookLM sources
-        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') }}
+        if: ${{ github.event_name != 'pull_request' && inputs.target_slug == '' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') }}
         continue-on-error: true
         run: python -u scripts/kesher_daily_pipeline.py --prune-sources
 
