@@ -22,6 +22,8 @@ const dimensions: Record<string, { width: number; height: number }> = {
   '/images/parenting-coordination/what-is-parenting-coordination.svg': { width: 800, height: 500 },
   '/images/parenting-coordination/parenting-coordination-vs-mediation.svg': { width: 800, height: 500 },
   '/images/parenting-coordination/divorced-parents-communication.svg': { width: 800, height: 500 },
+  '/images/parenting-coordination/parenting-time-holidays-after-divorce.svg': { width: 800, height: 500 },
+  '/images/parenting-coordination/can-one-parent-start-parenting-coordination.svg': { width: 800, height: 500 },
   '/images/generated/blog/relationship-after-childbirth.jpg': { width: 1600, height: 2400 },
   '/images/generated/blog/roman-empire.jpg': { width: 1600, height: 900 },
 };
