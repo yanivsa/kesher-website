@@ -149,6 +149,7 @@ const BlogList: React.FC = () => {
         </div>
 
         {/* Filter Categories */}
+        <p><Link to="/blog/category/parenting-coordination">מדריכים בנושא תיאום הורי והורות לאחר פרידה</Link></p>
         <div className={styles.filterSection}>
           <div className={styles.categoriesContainer} role="tablist" aria-label="סינון לפי נושא">
             {CATEGORIES.map((category) => (
