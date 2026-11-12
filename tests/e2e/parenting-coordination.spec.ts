@@ -26,7 +26,8 @@ test('service page and editorial hub are indexable, linked and responsive', asyn
     expect(sizes.scroll).toBeLessThanOrEqual(sizes.available);
   }
   await expect(page.locator('section[aria-label="מאמרים בנושא תיאום הורי"] article')).toHaveCount(5);
-  await expect(page.locator('script[type="application/ld+json"]').first()).toContainText('CollectionPage');
+  const schemaText = (await page.locator('script[type="application/ld+json"]').allTextContents()).join('\n');
+  expect(schemaText).toContain('CollectionPage');
   for (const slug of articleIds) {
     await expect(page.locator('section[aria-label="מאמרים בנושא תיאום הורי"] a[href="/blog/' + slug + '"]').first()).toBeVisible();
   }
