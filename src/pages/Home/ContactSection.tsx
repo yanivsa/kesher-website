@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiCalendar, FiShield } from 'react-icons/fi';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -20,9 +20,6 @@ const ContactSection: React.FC = () => {
     service: initialService as string,
     message: ''
   });
-  useEffect(() => {
-    setFormData((current) => current.service === initialService ? current : { ...current, service: initialService });
-  }, [initialService]);
   const isLectureInquiry = formData.service === 'lectures';
   const isCoordinationInquiry = formData.service === 'parenting_coordination';
   const whatsappHref = isLectureInquiry
