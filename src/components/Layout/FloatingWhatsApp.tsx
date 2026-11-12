@@ -5,8 +5,8 @@ import { isParentingCoordinationPath, PARENTING_COORDINATION_WHATSAPP_MESSAGE } 
 import styles from './FloatingWhatsApp.module.css';
 
 const FloatingWhatsApp: React.FC = () => {
-  const { pathname } = useLocation();
-  const whatsappHref = isParentingCoordinationPath(pathname)
+  const { pathname, search } = useLocation();
+  const whatsappHref = isParentingCoordinationPath(pathname, search)
     ? `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent(PARENTING_COORDINATION_WHATSAPP_MESSAGE)}`
     : SITE_CONFIG.links.whatsapp;
   return (

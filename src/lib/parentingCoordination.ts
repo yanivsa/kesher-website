@@ -13,9 +13,12 @@ const articlePaths = new Set<string>(
   PARENTING_COORDINATION_ARTICLE_IDS.map(id => `/blog/${id}`),
 );
 
-export const isParentingCoordinationPath = (pathname: string): boolean => {
+export const isParentingCoordinationPath = (pathname: string, search = ''): boolean => {
   const normalized = pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname;
-  return normalized === '/services/parenting-coordination'
+  const isDedicatedIntake = normalized === '/contact'
+    && new URLSearchParams(search).get('service') === 'parenting_coordination';
+  return isDedicatedIntake
+    || normalized === '/services/parenting-coordination'
     || normalized === '/blog/category/parenting-coordination'
     || articlePaths.has(normalized);
 };

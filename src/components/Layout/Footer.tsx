@@ -6,8 +6,8 @@ import SignatureMark from '../Signature/SignatureMark';
 import styles from './Footer.module.css';
 
 const Footer: React.FC = () => {
-  const { pathname } = useLocation();
-  const coordinationInquiry = isParentingCoordinationPath(pathname);
+  const { pathname, search } = useLocation();
+  const coordinationInquiry = isParentingCoordinationPath(pathname, search);
   return (
     <footer className={styles.footer}>
       <div className={`container ${styles.signatureRow}`}>

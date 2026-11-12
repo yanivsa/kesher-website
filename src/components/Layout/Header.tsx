@@ -7,8 +7,8 @@ import GlobalSearch from '../GlobalSearch/GlobalSearch';
 import styles from './Header.module.css';
 
 const Header: React.FC = () => {
-  const { pathname } = useLocation();
-  const coordinationInquiry = isParentingCoordinationPath(pathname);
+  const { pathname, search } = useLocation();
+  const coordinationInquiry = isParentingCoordinationPath(pathname, search);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);

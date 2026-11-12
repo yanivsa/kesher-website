@@ -37,6 +37,9 @@ describe('Parenting coordination release regression checks', () => {
       expect(isParentingCoordinationPath(path)).toBe(true);
       expect(isParentingCoordinationPath(path + '/')).toBe(true);
     }
+    expect(isParentingCoordinationPath('/contact', '?service=parenting_coordination')).toBe(true);
+    expect(isParentingCoordinationPath('/contact/', '?service=parenting_coordination')).toBe(true);
+    expect(isParentingCoordinationPath('/contact', '?service=parenting')).toBe(false);
     for (const path of ['/blog', '/blog/sleep-needs-10-year-old', '/services/parenting', '/services/mediation', '/appointment']) {
       expect(isParentingCoordinationPath(path)).toBe(false);
     }

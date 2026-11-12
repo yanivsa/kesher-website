@@ -8,8 +8,8 @@ import styles from './MobileStickyBar.module.css';
 
 const MobileStickyBar: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const { pathname } = useLocation();
-  const coordinationInquiry = isParentingCoordinationPath(pathname);
+  const { pathname, search } = useLocation();
+  const coordinationInquiry = isParentingCoordinationPath(pathname, search);
   const contactUrl = coordinationInquiry ? PARENTING_COORDINATION_CONTACT_URL : SITE_CONFIG.links.appointment;
   const whatsappUrl = coordinationInquiry
     ? `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent(PARENTING_COORDINATION_WHATSAPP_MESSAGE)}`
