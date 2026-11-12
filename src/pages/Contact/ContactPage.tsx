@@ -1,8 +1,10 @@
 import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import ContactSection from '../Home/ContactSection';
 import { SITE_CONFIG } from '../../constants/siteConfig';
+import { resolveContactService } from '../../lib/contactServices';
 import styles from './ContactPage.module.css';
 
 const schemaData = {
@@ -48,6 +50,8 @@ const schemaData = {
 };
 
 const ContactPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const serviceKey = resolveContactService(searchParams.get('service'));
 
   return (
     <div className={styles.page}>
@@ -63,7 +67,7 @@ const ContactPage: React.FC = () => {
           <p>אפשר לקבוע מועד לפגישת ייעוץ או להשאיר פרטים לפנייה, כולל להזמנת הרצאה או סדנה.</p>
         </div>
       </header>
-      <ContactSection />
+      <ContactSection key={serviceKey} />
     </div>
   );
 };

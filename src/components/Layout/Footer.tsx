@@ -1,10 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { SITE_CONFIG } from '../../constants/siteConfig';
+import { isParentingCoordinationPath, PARENTING_COORDINATION_CONTACT_URL } from '../../lib/parentingCoordination';
 import SignatureMark from '../Signature/SignatureMark';
 import styles from './Footer.module.css';
 
 const Footer: React.FC = () => {
+  const { pathname } = useLocation();
+  const coordinationInquiry = isParentingCoordinationPath(pathname);
   return (
     <footer className={styles.footer}>
       <div className={`container ${styles.signatureRow}`}>
@@ -37,7 +40,7 @@ const Footer: React.FC = () => {
           <Link to="/services/gifted-parenting">הורים לילדים מחוננים</Link>
           <Link to="/services/aliyah-families">עולים ותושבים חוזרים</Link>
           <Link to="/faq">שאלות נפוצות</Link>
-          <Link to={SITE_CONFIG.links.appointment}>קביעת פגישה</Link>
+          <Link to={coordinationInquiry ? PARENTING_COORDINATION_CONTACT_URL : SITE_CONFIG.links.appointment}>{coordinationInquiry ? "בירור התאמה לתיאום הורי" : "קביעת פגישה"}</Link>
           <Link to="/contact">צור קשר</Link>
         </div>
         <div className={styles.contact}>

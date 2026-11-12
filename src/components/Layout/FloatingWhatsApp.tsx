@@ -1,11 +1,17 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { SITE_CONFIG } from '../../constants/siteConfig';
+import { isParentingCoordinationPath, PARENTING_COORDINATION_WHATSAPP_MESSAGE } from '../../lib/parentingCoordination';
 import styles from './FloatingWhatsApp.module.css';
 
 const FloatingWhatsApp: React.FC = () => {
+  const { pathname } = useLocation();
+  const whatsappHref = isParentingCoordinationPath(pathname)
+    ? `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent(PARENTING_COORDINATION_WHATSAPP_MESSAGE)}`
+    : SITE_CONFIG.links.whatsapp;
   return (
     <a 
-      href={SITE_CONFIG.links.whatsapp} 
+      href={whatsappHref} 
       className={styles.button} 
       target="_blank" 
       rel="noopener noreferrer"
