@@ -1,5 +1,68 @@
 [
   {
+    "id": "invisible-support-couples-responsive-help",
+    "title": "תמיכה בבן הזוג: למה דווקא עזרה טובה יכולה להרחיק — ואיך להציע אותה אחרת?",
+    "date": "2026-11-12",
+    "category": "ייעוץ זוגי",
+    "subcategory": "תקשורת וקרבה",
+    "excerpt": "למה בן הזוג לפעמים מתרחק כשאנחנו מנסים לעזור? מחקרים על תמיכה בלתי נראית ותגובתיות מלמדים איך להקשיב לצורך, לכבד גבולות ולתת עזרה מדויקת.",
+    "image": "/images/generated/blog/invisible-support-couples-responsive-help-photo.jpg"
+  },
+  {
+    "id": "gratitude-relationship-genuine-thank-you",
+    "title": "תודה בזוגיות: איך הכרת תודה אמיתית מחזקת קרבה בלי להישמע מזויפת?",
+    "date": "2026-11-11",
+    "category": "ייעוץ זוגי",
+    "subcategory": "תקשורת וקרבה",
+    "excerpt": "מתי תודה לבן הזוג מקרבת באמת, ומתי היא מרגישה כמו חובה? מה מחקרים על הכרת תודה בזוגיות מצאו, ואיך אומרים משפט קטן שנוגע בלי לזייף.",
+    "image": "/images/generated/blog/gratitude-relationship-genuine-thank-you-photo.png"
+  },
+  {
+    "id": "transition-to-separate-room",
+    "title": "מעבר לחדר נפרד: איך לעזור לילד לישון בחדר שלו בלי מאבק?",
+    "date": "2026-11-10",
+    "category": "הדרכת הורים",
+    "subcategory": "הגיל הרך",
+    "excerpt": "מתי אפשר להעביר תינוק לחדר משלו, ואיך עוזרים לפעוט להסתגל למיטה ולחדר חדשים? מדריך שמפריד בין כללי שינה בטוחה לתינוקות לבין צעדים הדרגתיים לילדים גדולים יותר.",
+    "image": "/images/generated/blog/transition-to-separate-room-photo.jpg"
+  },
+  {
+    "id": "child-not-playing-kindergarten",
+    "title": "ילד לא משחק בגן ויושב בצד: מתי לתת לו זמן ומתי לעזור?",
+    "date": "2026-11-10",
+    "category": "הדרכת הורים",
+    "subcategory": "הגיל הרך",
+    "excerpt": "הילד לא משחק בגן, עומד ליד החברים או מעדיף לשחק לבד? כך מבדילים בין התבוננות רגועה, ביישנות וקושי חברתי מתמשך, ומה אפשר לעשות יחד עם הצוות.",
+    "image": "/images/generated/blog/child-not-playing-kindergarten-photo.jpg"
+  },
+  {
+    "id": "relationship-code-7500",
+    "title": "קוד 7500 בזוגיות: 5 סימנים שהקשר שלכם נכנס למצב חירום",
+    "date": "2026-11-10",
+    "category": "ייעוץ זוגי",
+    "subcategory": "תקשורת זוגית ומשבר",
+    "excerpt": "איך יודעים שהזוגיות במשבר? חמישה סימנים למשבר בזוגיות: ביקורת אישית, זלזול, מגננה, הסתגרות וקושי בתיקון אחרי ריב. מדריך מעשי ומבוסס מחקר, בלי אבחון או הבטחות.",
+    "image": "/images/generated/blog/relationship-code-7500-photo.jpg"
+  },
+  {
+    "id": "productive-failure-parents-learning-resilience",
+    "title": "כישלון פורה: למה לא כדאי למהר לפתור לילד כל קושי בלמידה?",
+    "date": "2026-11-10",
+    "category": "הדרכת הורים",
+    "subcategory": "למידה, התמודדות ותחושת מסוגלות",
+    "excerpt": "הילד נתקע בשיעורי הבית? מחקרי מאנו קאפור מראים איך ניסיון לפני הסבר יכול לסייע ללמידה. מדריך מעשי להורים: מתי לחכות, מתי לעזור ואיך להימנע מתסכול מיותר.",
+    "image": "/images/generated/blog/productive-failure-learning-hero.jpg"
+  },
+  {
+    "id": "positivity-resonance-marriage-micro-moments",
+    "title": "תהודה חיובית בזוגיות: הרגעים הקטנים שמחזקים את הקשר",
+    "date": "2026-11-10",
+    "category": "ייעוץ זוגי",
+    "subcategory": "חיבור רגשי בזוגיות",
+    "excerpt": "לא תמיד צריך דייט גדול: מה מגלה מחקר על 154 זוגות נשואים ורגעי חום, חיוך והקשבה? כך תשלבו תהודה חיובית בזוגיות בלי הבטחות מדעיות מוגזמות.",
+    "image": "/images/generated/blog/positivity-resonance-couple-micro-moments-hero.png"
+  },
+  {
     "id": "self-distancing-couple-arguments",
     "title": "איך להירגע באמצע ריב זוגי? שינוי קטן בדיבור הפנימי שיכול לעזור",
     "date": "2026-11-09",
@@ -16,6 +79,15 @@
     "subcategory": "ילדים רגישים ומחוננים",
     "excerpt": "רגישות לרעש, תגיות והצפה רגשית אינה בהכרח חולשה. מה תיאוריית רגישות היתרון של מייקל פלואס באמת מצאה, ואיך הורים יכולים לסייע?",
     "image": "/images/blog/vantage-sensitivity-parenting-hero.jpg"
+  },
+  {
+    "id": "gifted-asynchronous-development-inner-loneliness",
+    "title": "הילד מדבר כמו גדול ומתפרק כמו ילד? א־סינכרוניות אצל מחוננים",
+    "date": "2026-11-09",
+    "category": "הדרכת הורים",
+    "subcategory": "ילדים מחוננים והתפתחות רגשית",
+    "excerpt": "ילד מחונן יכול להבין רעיונות מורכבים ועדיין להתקשות בוויסות רגשי או בקשרים חברתיים. מהי התפתחות א־סינכרונית, ואיך הורים מגיבים בלי להעמיס ציפיות?",
+    "image": "/images/generated/blog/gifted-asynchrony-parent-child-hero.jpg"
   },
   {
     "id": "stress-crossover-after-work",
