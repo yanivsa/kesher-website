@@ -75,13 +75,17 @@ test('contact inquiry is preselected and hides direct appointment booking', asyn
 test('mobile sticky conversion sends specialty readers to safe intake', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/blog/what-is-parenting-coordination');
+  await expect(page.getByRole('heading', { level: 1, name: 'מה זה תיאום הורי ולמי הוא מתאים?' })).toBeVisible();
   await page.evaluate(() => window.scrollTo(0, 650));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300);
   const sticky = page.locator('div[class*="stickyBar"]');
   await expect(sticky).toBeVisible();
   await expect(sticky.getByRole('link', { name: 'בירור התאמה לתיאום הורי' })).toHaveAttribute('href', inquiry);
 
   await page.goto('/services/parenting');
+  await expect(page.locator('h1')).toHaveCount(1);
   await page.evaluate(() => window.scrollTo(0, 650));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300);
   await expect(page.locator('div[class*="stickyBar"] a[href="/appointment"]')).toBeVisible();
   await expect(page.locator('footer a[href="/appointment"]')).toHaveCount(1);
 });
