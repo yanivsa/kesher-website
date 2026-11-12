@@ -13,6 +13,7 @@ const ContactSection: React.FC = () => {
   const [searchParams] = useSearchParams();
   const initialService = resolveContactService(searchParams.get('service'));
   const isLectureInquiry = initialService === 'lectures';
+  const isCoordinationInquiry = initialService === 'parenting_coordination';
   const whatsappHref = isLectureInquiry
     ? `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent('היי שירה, אני מעוניין/ת לקבל פרטים על הזמנת הרצאה או סדנה בנושא זוגיות, הורות או נושא אחר מהאתר.')}`
     : SITE_CONFIG.links.whatsapp;
@@ -81,10 +82,12 @@ const ContactSection: React.FC = () => {
           <p className={styles.subtitle}>
             {isLectureInquiry
               ? 'ספרו בקצרה מי הקהל, מה הנושא שמעניין אתכם וכל פרט רלוונטי על האירוע. אפשר להשאיר פרטים בטופס או לפנות ישירות בוואטסאפ.'
-              : 'פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי בדרך שנוחה לכם.'}
+              : isCoordinationInquiry
+                ? 'לבירור התאמה לתיאום הורי אפשר להשאיר פרטי קשר בלבד. נא לא למסור כאן פרטים רגישים על הילדים או על הסכסוך; מסגרת השירות תובהר לפני תחילת תהליך.'
+                : 'פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי בדרך שנוחה לכם.'}
           </p>
           <div className={styles.contactActions}>
-            {!isLectureInquiry && (
+            {!isLectureInquiry && !isCoordinationInquiry && (
               <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
                 <FiCalendar aria-hidden="true" />
                 בחירת מועד לפגישה
