@@ -23,6 +23,10 @@ const articleCtaCopy = (post: (typeof posts)[number]) => {
   const subcategory = 'subcategory' in post && typeof post.subcategory === 'string' ? post.subcategory : '';
   const context = `${post.category} ${subcategory} ${post.title}`;
 
+  if (post.category === 'תיאום הורי') {
+    return 'כשמחלוקות בין הורים נמשכות, אפשר לברר מהו סוג הליווי המתאים, ומהם גבולות התהליך. חשוב לבדוק התאמה ובטיחות לפני התחלה.';
+  }
+
   if (/רילוקיישן|עלייה|הגירה/.test(context)) {
     return 'אם המעבר, החזרה לארץ או השינוי הגדול משפיעים גם על הקשר או על האווירה בבית, אפשר לפנות לשירה לייעוץ פרטני. יחד אפשר לעשות סדר במה שקורה ולבחון צעדים שמתאימים לכם.';
   }
@@ -158,7 +162,7 @@ const BlogPost: React.FC = () => {
       <header className={styles.header}>
         <div className="container">
           <Link to="/blog" className={styles.backLink}>← חזרה לבלוג</Link>
-          <span className={styles.category}>{displayCategory}</span>
+          {post.category === 'תיאום הורי' ? <Link to="/blog/category/parenting-coordination" className={styles.category}>{displayCategory}</Link> : <span className={styles.category}>{displayCategory}</span>}
           <h1 className={styles.title}>{post.title}</h1>
           {articleSummary && (
             <div className={styles.directAnswer} role="region" aria-label="תשובה תמציתית">

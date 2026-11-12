@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="לוח שנה עם חלוקת ימים בין שני בתים">
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#F3F3EE"/><stop offset="1" stop-color="#E9EFE8"/></linearGradient></defs><rect width="800" height="500" fill="url(#bg)"/><circle cx="710" cy="65" r="135" fill="#B7CBBF" opacity=".22"/><circle cx="60" cy="455" r="130" fill="#D7B69D" opacity=".2"/>
+<rect x="174" y="102" width="455" height="307" rx="28" fill="#fff" stroke="#617E73" stroke-width="7"/>
+<path d="M174 179h455" stroke="#617E73" stroke-width="7"/><path d="M270 77v55m255-55v55" stroke="#617E73" stroke-width="18" stroke-linecap="round"/>
+<g fill="#E6EEE9"><rect x="205" y="208" width="78" height="55" rx="10"/><rect x="303" y="208" width="78" height="55" rx="10"/><rect x="401" y="208" width="78" height="55" rx="10"/><rect x="499" y="208" width="96" height="55" rx="10"/></g>
+<g fill="#EFD9C8"><rect x="205" y="282" width="78" height="55" rx="10"/><rect x="303" y="282" width="78" height="55" rx="10"/><rect x="401" y="282" width="78" height="55" rx="10"/><rect x="499" y="282" width="96" height="55" rx="10"/></g>
+<path d="M310 378l36-29 36 29v37h-72z" fill="#FDFDFC" stroke="#557C6D" stroke-width="6" stroke-linejoin="round"/><path d="M432 378l36-29 36 29v37h-72z" fill="#FDFDFC" stroke="#BA856B" stroke-width="6" stroke-linejoin="round"/>
+<path d="M391 389h29" stroke="#9DAE9F" stroke-width="6" stroke-linecap="round" stroke-dasharray="7 11"/></svg>

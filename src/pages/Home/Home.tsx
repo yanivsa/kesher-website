@@ -66,7 +66,8 @@ const schemaData = {
         "דייטים",
         "ADHD",
         "תקשורת בזוגיות",
-        "הורות משותפת"
+        "הורות משותפת",
+        "תיאום הורי"
       ],
       "makesOffer": [
         {
@@ -131,6 +132,15 @@ const schemaData = {
             "name": "גישור",
             "url": `${SITE_CONFIG.url}/services/mediation`,
             "description": "גישור לבני זוג, משפחות, הורים, שכנים ושותפים לצורך בניית הסכמות מעשיות."
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "תיאום הורי",
+            "url": `${SITE_CONFIG.url}/services/parenting-coordination`,
+            "description": "מידע ובירור התאמה לתיאום הורי עבור הורים פרודים או גרושים עם מחלוקות מתמשכות סביב הילדים."
           }
         },
         {
@@ -241,6 +251,14 @@ const services = [
     icon: FiCompass,
     accent: 'sand',
     tags: ['הקשבה', 'הסכמות', 'בהירות'],
+  },
+  {
+    title: 'תיאום הורי',
+    description: 'כשהפרידה מאחור אבל המחלוקות סביב הילדים נמשכות — מידע וכלים לבירור התאמה לתהליך תיאום הורי.',
+    link: '/services/parenting-coordination',
+    icon: FiMessageCircle,
+    accent: 'sage',
+    tags: ['הורות משותפת', 'פרידה', 'תקשורת'],
   },
 ];
 
@@ -500,7 +518,7 @@ const Home: React.FC = () => {
             {services.map(({ title, description, link, icon: Icon, accent, tags }, index) => (
               <Link
                 to={link}
-                className={`${styles.serviceCard} ${styles[accent]} ${index < 2 ? styles.primaryService : styles.secondaryService}`}
+                className={`${styles.serviceCard} ${styles[accent]} ${styles.primaryService}`}
                 key={title}
                 style={{ '--delay': `${index * 90}ms` } as React.CSSProperties}
               >

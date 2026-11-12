@@ -75,6 +75,9 @@ export const inferServiceType = (pathname: string): string | undefined => {
 };
 
 const inferContentContext = (pathname: string): AnalyticsParams => {
+  if (pathname.replace(/\/$/, '') === '/blog/category/parenting-coordination') {
+    return { content_type: 'category', content_id: 'parenting_coordination' };
+  }
   const articleMatch = pathname.match(/^\/blog\/([^/]+)/);
   if (!articleMatch?.[1]) return {};
 

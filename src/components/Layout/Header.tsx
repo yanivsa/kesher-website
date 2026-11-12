@@ -146,6 +146,7 @@ const Header: React.FC = () => {
                 <Link to="/services/parenting" onClick={closeMenu}>הדרכת הורים</Link>
                 <Link to="/parenting-guidance-ashdod" onClick={closeMenu}>הדרכת הורים באשדוד</Link>
                 <Link to="/services/mediation" onClick={closeMenu}>גישור</Link>
+                <Link to="/services/parenting-coordination" onClick={closeMenu}>תיאום הורי</Link>
                 <Link to="/couples-mediation-ashdod" onClick={closeMenu}>גישור זוגי באשדוד</Link>
                 <Link to="/services/premarital-first-year" onClick={closeMenu}>הכנה לנישואים והשנה הראשונה</Link>
                 <Link to="/services/couples-aliyah-relocation" onClick={closeMenu}>זוגיות בעלייה וברילוקיישן</Link>
