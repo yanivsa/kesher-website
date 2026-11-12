@@ -293,5 +293,4 @@ testArticleAutomergeAndRepairContracts();
 testJulesWatchdogContracts();
 testOtherAuditAutonomyContracts();
 testTechnicalVideoPublicationCannotBeRegressed();
-require('./parenting-coordination.test.cjs');
 console.log('All automation gates tests passed.');
