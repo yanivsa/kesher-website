@@ -76,8 +76,15 @@ test('contact inquiry is preselected and hides direct appointment booking', asyn
   await expect(form).toContainText('נא לא למסור כאן פרטים רגישים');
   await expect(form.locator('textarea[name="message"]')).toHaveAttribute('placeholder', /ללא פרטי ילדים/);
   await expect(form.locator('a[href="/appointment"]')).toHaveCount(0);
+  await expect(page.locator('header a[href="/appointment"]')).toHaveCount(0);
+  await expect(page.locator('footer a[href="/appointment"]')).toHaveCount(0);
+  await expect(page.locator('header a[href="' + inquiry + '"]')).toHaveCount(1);
+  await expect(page.locator('footer a[href="' + inquiry + '"]')).toHaveCount(1);
+  await expect(page.locator('a[aria-label="יצירת קשר בוואטסאפ"]')).toHaveAttribute('href', /%D7/);
 
   await page.goto('/contact');
+  await expect(page.locator('header a[href="/appointment"]')).toHaveCount(1);
+  await expect(page.locator('footer a[href="/appointment"]')).toHaveCount(1);
   await form.locator('select[name="service"]').selectOption('parenting_coordination');
   await expect(form).toContainText('נא לא למסור כאן פרטים רגישים');
   await expect(form.locator('a[href="/appointment"]')).toHaveCount(0);
