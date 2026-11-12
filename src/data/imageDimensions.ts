@@ -19,6 +19,9 @@ const dimensions: Record<string, { width: number; height: number }> = {
   '/images/generated/blog/parenting-teen-social-anxiety.jpg': { width: 1600, height: 900 },
   '/images/generated/blog/parenting-the-stubborn-child.jpg': { width: 1600, height: 900 },
   '/images/generated/blog/quiet-resignation.jpg': { width: 1600, height: 900 },
+  '/images/parenting-coordination/what-is-parenting-coordination.svg': { width: 800, height: 500 },
+  '/images/parenting-coordination/parenting-coordination-vs-mediation.svg': { width: 800, height: 500 },
+  '/images/parenting-coordination/divorced-parents-communication.svg': { width: 800, height: 500 },
   '/images/generated/blog/relationship-after-childbirth.jpg': { width: 1600, height: 2400 },
   '/images/generated/blog/roman-empire.jpg': { width: 1600, height: 900 },
 };
