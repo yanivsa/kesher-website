@@ -60,6 +60,7 @@ describe('Parenting coordination release regression checks', () => {
     const footer = read('src/components/Layout/Footer.tsx');
     const floating = read('src/components/Layout/FloatingWhatsApp.tsx');
     const contact = read('src/pages/Home/ContactSection.tsx');
+    const contactPage = read('src/pages/Contact/ContactPage.tsx');
     expect(article).toContain('isCoordinationArticle ? PARENTING_COORDINATION_CONTACT_URL : SITE_CONFIG.links.appointment');
     expect(sticky).toContain('coordinationInquiry ? PARENTING_COORDINATION_CONTACT_URL : SITE_CONFIG.links.appointment');
     expect(header).toContain('coordinationInquiry ? PARENTING_COORDINATION_CONTACT_URL : SITE_CONFIG.links.appointment');
@@ -68,5 +69,7 @@ describe('Parenting coordination release regression checks', () => {
     expect(contact).toContain("formData.service === 'parenting_coordination'");
     expect(contact).toContain('ללא פרטי ילדים או פרטים רגישים');
     expect(contact).toContain('!isLectureInquiry && !isCoordinationInquiry');
+    expect(contactPage).toContain('<ContactSection key={serviceKey} />');
+    expect(contact).not.toContain('setFormData((current) => current.service === initialService');
   });
 });
