@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiCalendar, FiShield } from 'react-icons/fi';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -6,17 +6,13 @@ import { SITE_CONFIG } from '../../constants/siteConfig';
 import { submitContact } from '../../lib/contactApi';
 import { pushAnalyticsEvent } from '../../lib/analytics';
 import { CONTACT_SERVICE_OPTIONS, resolveContactService } from '../../lib/contactServices';
+import { PARENTING_COORDINATION_WHATSAPP_MESSAGE } from '../../lib/parentingCoordination';
 import TurnstileWidget from '../../components/TurnstileWidget';
 import styles from './ContactSection.module.css';
 
 const ContactSection: React.FC = () => {
   const [searchParams] = useSearchParams();
   const initialService = resolveContactService(searchParams.get('service'));
-  const isLectureInquiry = initialService === 'lectures';
-  const isCoordinationInquiry = initialService === 'parenting_coordination';
-  const whatsappHref = isLectureInquiry
-    ? `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent('היי שירה, אני מעוניין/ת לקבל פרטים על הזמנת הרצאה או סדנה בנושא זוגיות, הורות או נושא אחר מהאתר.')}`
-    : SITE_CONFIG.links.whatsapp;
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -24,6 +20,16 @@ const ContactSection: React.FC = () => {
     service: initialService as string,
     message: ''
   });
+  useEffect(() => {
+    setFormData((current) => current.service === initialService ? current : { ...current, service: initialService });
+  }, [initialService]);
+  const isLectureInquiry = formData.service === 'lectures';
+  const isCoordinationInquiry = formData.service === 'parenting_coordination';
+  const whatsappHref = isLectureInquiry
+    ? `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent('היי שירה, אני מעוניין/ת לקבל פרטים על הזמנת הרצאה או סדנה בנושא זוגיות, הורות או נושא אחר מהאתר.')}`
+    : isCoordinationInquiry
+      ? `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent(PARENTING_COORDINATION_WHATSAPP_MESSAGE)}`
+      : SITE_CONFIG.links.whatsapp;
   const [company, setCompany] = useState('');
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [turnstileToken, setTurnstileToken] = useState('');
@@ -227,7 +233,7 @@ const ContactSection: React.FC = () => {
                   rows={4} 
                   value={formData.message}
                   onChange={handleChange}
-                  placeholder={isLectureInquiry ? 'למשל: סוג הקהל, נושא מועדף, מועד משוער ומיקום...' : 'ספרו לי קצת על הפנייה שלכם...'}
+                  placeholder={isLectureInquiry ? 'למשל: סוג הקהל, נושא מועדף, מועד משוער ומיקום...' : isCoordinationInquiry ? 'פרטי קשר בלבד, ללא פרטי ילדים או פרטים רגישים על הסכסוך' : 'ספרו לי קצת על הפנייה שלכם...'}
                 ></textarea>
               </div>
               <TurnstileWidget
