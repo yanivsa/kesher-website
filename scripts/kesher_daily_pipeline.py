@@ -914,6 +914,10 @@ def add_source(state: dict[str, Any], item: dict[str, Any], *, allow_exact_recov
                 timeout=180,
             )
         except PipelineError as exc:
+            # Exact OWNER-targeted media work must not delete any earlier notebook source.
+            # An exhausted notebook quota is an explicit blocker, never an archive purge.
+            if (os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip():
+                raise PipelineError("EXACT_SOURCE_ADD_BLOCKED_NO_NOTEBOOK_PRUNE") from exc
             print(f"WARN: source add failed ({exc}), pruning older notebook sources and retrying...")
             prune_notebooklm_sources(NOTEBOOK_ID, keep_count=25)
             payload = run_notebooklm(
