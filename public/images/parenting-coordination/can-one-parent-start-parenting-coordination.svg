@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="שני מסלולים מבתים שונים המובילים לתיאום">
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#EFF3ED"/><stop offset="1" stop-color="#F7EFE8"/></linearGradient></defs><rect width="800" height="500" fill="url(#bg)"/><circle cx="655" cy="82" r="120" fill="#ADC4B4" opacity=".17"/><circle cx="106" cy="440" r="160" fill="#DAB69B" opacity=".18"/>
+<g fill="none" stroke-width="16" stroke-linecap="round"><path d="M202 347c120 0 100-157 198-157" stroke="#688A7B"/><path d="M598 347c-120 0-100-157-198-157" stroke="#C09175"/></g>
+<g stroke-width="8" stroke-linejoin="round"><path d="M100 350l103-78 103 78v105H100z" fill="#fff" stroke="#688A7B"/><path d="M494 350l103-78 103 78v105H494z" fill="#fff" stroke="#C09175"/></g>
+<rect x="173" y="388" width="58" height="67" rx="4" fill="#D7E5DA"/><rect x="567" y="388" width="58" height="67" rx="4" fill="#EBD6C5"/>
+<circle cx="400" cy="187" r="68" fill="#fff" stroke="#A3BAAD" stroke-width="8"/><path d="M370 185l22 21 40-44" fill="none" stroke="#688A7B" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>
