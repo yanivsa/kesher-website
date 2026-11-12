@@ -29,6 +29,7 @@ const Footer: React.FC = () => {
           <Link to="/services/couples">ייעוץ זוגי</Link>
           <Link to="/services/parenting">הדרכת הורים</Link>
           <Link to="/services/mediation">גישור</Link>
+          <Link to="/services/parenting-coordination">תיאום הורי</Link>
           <Link to="/services/premarital-first-year">הכנה לנישואים והשנה הראשונה</Link>
           <Link to="/services/couples-aliyah-relocation">זוגיות בעלייה וברילוקיישן</Link>
           <Link to="/services/late-singleness">ייעוץ ברווקות מאוחרת</Link>
