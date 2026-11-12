@@ -46,6 +46,8 @@ test('all five articles render with an accessible intake CTA, not a direct booki
     await expect(cta.getByRole('link', { name: 'לבירור התאמה ראשוני עם שירה' })).toHaveAttribute('href', inquiry);
     await expect(page.locator('aside a[href="' + inquiry + '"]').first()).toBeVisible();
     await expect(cta.locator('a[href="/appointment"]')).toHaveCount(0);
+    await expect(page.locator('header a[href="' + inquiry + '"]').first()).toHaveAttribute('href', inquiry);
+    await expect(page.locator('footer a[href="' + inquiry + '"]').first()).toHaveAttribute('href', inquiry);
     const width = await page.evaluate(() => ({
       scroll: document.documentElement.scrollWidth,
       available: document.documentElement.clientWidth,
@@ -79,4 +81,5 @@ test('mobile sticky conversion sends specialty readers to safe intake', async ({
   await page.goto('/services/parenting');
   await page.evaluate(() => window.scrollTo(0, 650));
   await expect(page.locator('div[class*="stickyBar"] a[href="/appointment"]')).toBeVisible();
+  await expect(page.locator('footer a[href="/appointment"]')).toHaveCount(1);
 });
