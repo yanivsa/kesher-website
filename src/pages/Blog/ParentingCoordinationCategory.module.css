@@ -1,0 +1,17 @@
+.page { background: var(--color-bg); min-height: 70vh; }
+.hero { padding: clamp(3rem, 6vw, 5rem) 0; background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
+.hero h1 { max-width: 920px; margin: 0.8rem 0 1rem; font-size: clamp(2rem, 4.5vw, 3.5rem); line-height: 1.2; }
+.hero p { max-width: 800px; color: var(--color-text-muted); line-height: 1.85; font-size: 1.1rem; }
+.breadcrumb { color: var(--color-text-muted); font-size: .9rem; }
+.button { display: inline-block; margin-top: 1.25rem; background: var(--color-primary-dark); color: white !important; padding: .9rem 1.4rem; border-radius: var(--radius-md); font-weight: 700; }
+.button:focus-visible, .card a:focus-visible { outline: 3px solid var(--color-primary-dark); outline-offset: 4px; }
+.section { padding-top: 3.5rem; padding-bottom: 4rem; }
+.section > h2 { margin-bottom: 1.5rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 1.5rem; }
+.card { border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-surface); box-shadow: var(--shadow-sm); }
+.card img { width: 100%; height: auto; aspect-ratio: 8 / 5; display: block; object-fit: cover; }
+.cardContent { padding: 1.4rem; }
+.cardContent h3 { font-size: 1.25rem; line-height: 1.45; margin-bottom: .6rem; }
+.cardContent p { color: var(--color-text-muted); line-height: 1.75; }
+.next { margin-top: 3rem; padding: 1.8rem; border-radius: var(--radius-lg); border: 1px solid var(--color-border); background: var(--color-surface); line-height: 1.8; }
+.next h2 { font-size: 1.4rem; }
