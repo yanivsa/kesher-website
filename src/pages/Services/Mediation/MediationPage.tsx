@@ -137,6 +137,7 @@ const MediationPage: React.FC = () => {
               <span className={styles.cardIcon}><FiHome aria-hidden="true" /></span>
               <h3>גישור בין הורים</h3>
               <p>בניית שיתוף פעולה סביב גבולות, שגרה, מסגרות חינוכיות וקבלת החלטות הנוגעות לילדים.</p>
+              <p>כאשר ההורים כבר נפרדו וקיימים הסדרים אך יש קונפליקט חוזר סביב היישום, אפשר לקרוא גם על <Link to="/services/parenting-coordination">תיאום הורי</Link> ועל <Link to="/blog/parenting-coordination-vs-mediation">ההבדל בינו לבין גישור</Link>.</p>
             </article>
             <article className={styles.card}>
               <span className={styles.cardIcon}><FiHome aria-hidden="true" /></span>
