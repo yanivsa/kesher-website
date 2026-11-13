@@ -16,6 +16,15 @@ from pathlib import Path
 OVERVIEW_PIPELINE = "notebooklm-native-signature-v1"
 SHORT_PIPELINE = "notebooklm-native-short-signature-v1"
 
+# The original NotebookLM Short format is native 9:16 in both HD and Full HD.
+# Do not upscale, crop or rebuild approved provider frames to force 1080p.
+NATIVE_SHORT_RESOLUTIONS = frozenset({(720, 1280), (1080, 1920)})
+
+
+def native_short_dimensions_valid(width: int, height: int) -> bool:
+    return (width, height) in NATIVE_SHORT_RESOLUTIONS
+
+
 
 def native_render_requested() -> bool:
     """Native is default; old Remotion rendering is an explicit opt-in only."""
@@ -75,7 +84,7 @@ def render_native_provider(core, raw_path: Path, item: dict, *, kind: str,
             raise core.PipelineError("NATIVE_OVERVIEW_NOT_LANDSCAPE")
         item["content_duration_seconds"] = round(duration, 3)
     else:
-        if (width != 1080 or height != 1920 or item.get("source_mode") != "direct-short"
+        if (not native_short_dimensions_valid(width, height) or item.get("source_mode") != "direct-short"
                 or item.get("provider_video_format") != "short"
                 or item.get("provider_short_fallback_used") is not False):
             raise core.PipelineError("NATIVE_SHORT_NOT_PROVIDER_PORTRAIT")
