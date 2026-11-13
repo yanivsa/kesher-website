@@ -207,12 +207,12 @@ def short_public_portrait_verified(
         height = int(media.get("height") or 0)
     except (TypeError, ValueError):
         return False
-    return (
-        width == 1080
-        and height == 1920
-        and height > width
-        and _signature_verified(item)
-    )
+    from scripts.kesher_runtime.native_media import native_short_dimensions_valid
+    valid_dimensions = ((width, height) == (1080, 1920) or (
+        item.get("visual_pipeline") == CANONICAL_NATIVE_SHORT_PIPELINE
+        and native_short_dimensions_valid(width, height)
+    ))
+    return bool(valid_dimensions and height > width and _signature_verified(item))
 
 
 def delivery_contract(state: dict[str, Any]) -> tuple[bool, dict[str, Any]]:

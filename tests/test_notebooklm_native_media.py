@@ -12,6 +12,7 @@ from unittest.mock import patch
 
 from scripts.kesher_runtime.native_media import (
     _identity_digest, native_render_requested, render_native_provider,
+    native_short_dimensions_valid,
 )
 
 
@@ -80,6 +81,12 @@ class NativeProviderTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "SOURCE_HASH_MISMATCH"):
             render_native_provider(self.core, self.raw, self.item,
                                    kind="overview", signature_path=self.signature)
+
+    def test_native_short_accepts_only_exact_9_by_16_hd_or_full_hd(self):
+        for dimensions in ((720, 1280), (1080, 1920)):
+            self.assertTrue(native_short_dimensions_valid(*dimensions))
+        for dimensions in ((1280, 720), (1920, 1080), (360, 640), (720, 1200)):
+            self.assertFalse(native_short_dimensions_valid(*dimensions))
 
     def test_no_landscape_short_or_fallback(self):
         self.item.update({

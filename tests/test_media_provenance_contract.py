@@ -122,6 +122,24 @@ class SignatureProvenanceTests(unittest.TestCase):
                 self.assertEqual(len(rendered), 3)
 
 
+class NativeShortPublicGeometryTests(unittest.TestCase):
+    def test_native_720p_short_meets_9_by_16_gate_with_all_other_proofs(self):
+        item = bound_short()
+        item['visual_pipeline'] = guard.CANONICAL_NATIVE_SHORT_PIPELINE
+        item['media'].update(width=720, height=1280)
+        item['provider_raw_media'].update(width=720, height=1280)
+        source = item['source']
+        verify_video = lambda i, slug: True
+        self.assertTrue(guard.short_public_portrait_verified(item, source, youtube_verified=verify_video))
+        for width, height in ((1280, 720), (360, 640), (720, 1200)):
+            wrong = copy.deepcopy(item)
+            wrong['media'].update(width=width, height=height)
+            self.assertFalse(guard.short_public_portrait_verified(wrong, source, youtube_verified=verify_video))
+        legacy = copy.deepcopy(item)
+        legacy['visual_pipeline'] = guard.CANONICAL_SHORT_PIPELINE
+        self.assertFalse(guard.short_public_portrait_verified(legacy, source, youtube_verified=verify_video))
+
+
 class ShortOriginProvenanceTests(unittest.TestCase):
     def test_independent_native_short_preserves_natural_duration(self):
         self.assertTrue(guard._short_origin_verified(bound_short()))

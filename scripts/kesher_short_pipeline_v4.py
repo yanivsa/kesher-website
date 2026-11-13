@@ -191,9 +191,13 @@ def short_technical_failures(
     width = int(media.get("width") or 0)
     height = int(media.get("height") or 0)
     ratio = (width / height) if height else 0
-    if width != SHORT_WIDTH or height != SHORT_HEIGHT or not 0.55 <= ratio <= 0.58:
+    from scripts.kesher_runtime.native_media import native_short_dimensions_valid
+    is_native = item is not None and item.get("visual_pipeline") == delivery_guard.CANONICAL_NATIVE_SHORT_PIPELINE
+    dimension_ok = ((width == SHORT_WIDTH and height == SHORT_HEIGHT)
+                    or (is_native and native_short_dimensions_valid(width, height)))
+    if not dimension_ok or not 0.55 <= ratio <= 0.58:
         failures.append(
-            f"יחס התמונה {width}x{height} אינו Short אנכי 1080x1920"
+            f"יחס התמונה {width}x{height} אינו Short אנכי 9:16 (720x1280 או 1080x1920)"
         )
     if video_path and video_path.exists():
         female_ok, pitch_hz, pitch_msg = core.validate_female_voice(video_path, item)
