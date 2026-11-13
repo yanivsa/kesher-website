@@ -37,8 +37,11 @@ test('service page and editorial hub are indexable, linked and responsive', asyn
     expect(sizes.scroll).toBeLessThanOrEqual(sizes.available);
   }
   await expect(page.locator('section[aria-label="מאמרים בנושא תיאום הורי"] article')).toHaveCount(5);
-  const schemaText = (await page.locator('script[type="application/ld+json"]').allTextContents()).join('\n');
-  expect(schemaText).toContain('CollectionPage');
+  // JSON-LD can mount after visible cards during client hydration on slower mobile CI.
+  // Poll for the same required CollectionPage schema rather than racing its insertion.
+  await expect.poll(async () => (
+    await page.locator('script[type="application/ld+json"]').allTextContents()
+  ).join('\n'), { timeout: 15_000 }).toContain('CollectionPage');
   for (const slug of articleIds) {
     await expect(page.locator('section[aria-label="מאמרים בנושא תיאום הורי"] a[href="/blog/' + slug + '"]').first()).toBeVisible();
   }
