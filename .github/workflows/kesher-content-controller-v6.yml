@@ -153,6 +153,13 @@ jobs:
           name="$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}" --jq .name)"
           test "$name" = "kesher-short-v4-state"
           gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" > /tmp/kesher-short-raw-state.zip
+      - name: Install ffmpeg and ffprobe for read-only original media inspection
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          command -v ffprobe
+          command -v ffmpeg
       - name: Verify original SHA and extract non-public diagnostic evidence
         env:
           SHORT_ITEM_ID: ${{ inputs.short_item_id }}
