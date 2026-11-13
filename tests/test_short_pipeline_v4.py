@@ -233,6 +233,16 @@ class ShortPipelineV4Tests(unittest.TestCase):
             derived_item = short.new_item(self.source())
             self.assertEqual(derived_item["source_mode"], "direct-short")
 
+    def test_native_notebooklm_short_720p_passes_geometry_without_remotion(self):
+        item = bound_short()
+        item["visual_pipeline"] = short.delivery_guard.CANONICAL_NATIVE_SHORT_PIPELINE
+        item["media"].update(width=720, height=1280)
+        item["provider_raw_media"].update(width=720, height=1280)
+        self.assertEqual(short.short_technical_failures(item["media"], item=item), [])
+        legacy = dict(item, visual_pipeline=short.VISUAL_PIPELINE)
+        self.assertTrue(any("9:16" in err for err in
+                            short.short_technical_failures(item["media"], item=legacy)))
+
     def test_short_technical_failures_rejects_overview_segment(self):
         media = {"codec": "h264", "audio_codec": "aac", "width": 1080, "height": 1920, "duration": 45.0}
         item = {
