@@ -247,7 +247,7 @@ const ContactSection: React.FC = () => {
               </button>
               <div className={styles.privacyNote}>
                 <FiShield aria-hidden="true" />
-                <span>הפרטים שלכם נשמרים בדיסקרטיות מלאה ומשמשים לחזרה אליכם בלבד.</span>
+                <span>הפרטים נמסרים לצורך מענה לפנייה באמצעות ספק הטפסים. אין לכלול מידע אישי רגיש. למידע נוסף: <Link to="/privacy">מדיניות הפרטיות</Link>.</span>
               </div>
             </form>
           )}
