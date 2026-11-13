@@ -24,6 +24,16 @@ assert.equal(posts.length, 5, 'editorial hub must have five distinct published a
 for (const post of posts) {
   assert.equal(post.category, 'תיאום הורי', post.id + ' category mismatch');
   assert(isPublishable(post), post.id + ' must satisfy editorial length and sections');
+  const visibleText = post.content.replace(/<[^>]*>/g, ' ').replace(/&[^;]+;/g, ' ').trim();
+  const words = visibleText.split(/\s+/).filter(Boolean);
+  assert(words.length >= 850, post.id + ' should provide an in-depth practical guide (850+ words)');
+  assert((post.content.match(/<h3>/g) || []).length >= 7, post.id + ' should have scannable topical sections');
+  assert(post.directAnswer && post.directAnswer.length >= 75 && post.directAnswer.length <= 350, post.id + ' needs concise GEO answer');
+  assert.equal(post.updatedAt, '2026-11-13', post.id + ' updated editorial date must match substantive revision');
+  assert(!/\b(100%|מובטח|הצלחה מובטחת|ממונה מטעם בית משפט|מתאמת הורית מוסמכת)\b/.test(visibleText), post.id + ' must not imply guaranteed outcomes or unverified credentials');
+  assert(post.content.includes('בטיחות') || post.content.includes('אלימות'), post.id + ' must discuss safety suitability');
+  assert(post.content.includes('href="/services/parenting-coordination"') || post.content.includes('href="/blog/'), post.id + ' needs internal topic links');
+
   assert(post.content.includes('href="/services/parenting-coordination"') || post.content.includes('href="/blog/'), post.id + ' lacks internal linking');
   assert(post.image && post.image.startsWith('/images/'), post.id + ' needs local artwork');
   assert(fs.existsSync(path.join(root, 'public', post.image.slice(1))), post.id + ' image missing');
