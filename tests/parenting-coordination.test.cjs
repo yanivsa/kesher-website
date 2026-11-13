@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { loadPosts } = require('../scripts/load-posts.cjs');
 const { isPublishable, STATIC_ROUTES } = require('../scripts/content-policy.cjs');
+const { buildSitemap } = require('../scripts/generate-sitemap.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
@@ -12,6 +13,8 @@ const postIds = ['what-is-parenting-coordination', 'parenting-coordination-vs-me
 
 assert(STATIC_ROUTES.includes(service), 'service must be registered for prerender and sitemap');
 assert(STATIC_ROUTES.includes(category), 'category must be registered for prerender and sitemap');
+assert(buildSitemap(loadPosts()).includes('https://kesher.saharoni.com' + category + '</loc>'), 'topic hub must be in generated sitemap');
+assert(buildSitemap(loadPosts()).includes('https://kesher.saharoni.com' + service + '</loc>'), 'service must be in generated sitemap');
 const app = read('src/App.tsx');
 assert(app.includes('<Route path="' + service + '"'), 'service route must be mounted');
 assert(app.includes('<Route path="' + category + '"'), 'category route must be mounted');
@@ -19,7 +22,10 @@ assert(app.indexOf('<Route path="' + category + '"') < app.indexOf('<Route path=
 assert(app.includes('parentingCoordinationCategory.preload'), 'category must be preloaded');
 assert(app.includes('parentingCoordination.preload'), 'service must be preloaded');
 
-const posts = loadPosts().filter((p) => postIds.includes(p.id));
+const allPublishedPosts = loadPosts().filter(isPublishable);
+const allRoutes = new Set([...STATIC_ROUTES, ...allPublishedPosts.map((p) => '/blog/' + p.id)]);
+const generatedSitemap = buildSitemap(loadPosts());
+const posts = allPublishedPosts.filter((p) => postIds.includes(p.id));
 assert.equal(posts.length, 5, 'editorial hub must have five distinct published articles');
 for (const post of posts) {
   assert.equal(post.category, 'תיאום הורי', post.id + ' category mismatch');
@@ -45,6 +51,14 @@ for (const post of posts) {
   }
   assert(!/[A-Za-z]/.test(post.content.replace(/<[^>]*>/g, ' ')), post.id + ' visible copy must remain in Hebrew');
   assert(post.relatedPostIds?.length >= 2, post.id + ' needs interlinked cluster');
+  assert(generatedSitemap.includes('https://kesher.saharoni.com/blog/' + post.id + '</loc>'), post.id + ' missing from generated sitemap');
+  for (const match of post.content.matchAll(/href="(\/[^"]+)"/g)) {
+    const target = match[1].split(/[?#]/)[0];
+    assert(allRoutes.has(target), post.id + ' has broken internal link: ' + target);
+  }
+  for (const relatedId of post.relatedPostIds) {
+    assert(allRoutes.has('/blog/' + relatedId), post.id + ' has broken related article: ' + relatedId);
+  }
 }
 const serviceContent = read('src/pages/Services/ParentingCoordination/ParentingCoordinationPage.tsx');
 assert(serviceContent.includes('data-analytics-service-type="parenting_coordination"'));
