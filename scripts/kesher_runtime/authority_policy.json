@@ -814,7 +814,7 @@
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "scripts/requirements-article.txt": "8c620822e39bbd1233c03fd0296879f1f58dbc5a1f4366f6650c3d3c7cb32a77",
-          "tests/automation-gates.test.cjs": "e94d7f932907a80f8b1c676e4712229377214a319613851c91b9c67af254ed03",
+          "tests/automation-gates.test.cjs": "d432c7a2ca940975613339b8b8a8a312dbbec0ac3303151cc84274e8731b6b80",
           "tests/test_article_quality_stabilization.py": "64853d3356d4b50a802dfff3a31744439fc54d3a40cec2eaaab5992dfc5fc9ab",
           "tests/test_ci_profile.py": "bf648f9a24e7de3f0702f7cd6c78483f5586db63948c0517d7d9319136c48457",
           "tests/test_kesher_article_contract.py": "82611349b7220a7988878d732c9ebeb7a90a93843848f4981a4b110a7435f1f6",
@@ -1010,7 +1010,7 @@
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "scripts/requirements-article.txt": "8c620822e39bbd1233c03fd0296879f1f58dbc5a1f4366f6650c3d3c7cb32a77",
           "scripts/verify-production-article.py": "1805cbb54d571d525a2b6252744ed8c48910807a12bd7b8ddc1b7b42b0a2e7c7",
-          "tests/automation-gates.test.cjs": "e94d7f932907a80f8b1c676e4712229377214a319613851c91b9c67af254ed03",
+          "tests/automation-gates.test.cjs": "d432c7a2ca940975613339b8b8a8a312dbbec0ac3303151cc84274e8731b6b80",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
           "scripts/kesher_runtime/bridge_admission.py": "98ec29a82a5a62d9bc3a1d6898a6198423872e9015b60f8c5e27cacacce841cc",
           "scripts/kesher_runtime/native_media.py": "f0d5b77074b50b3574c6040b6297697169c63cf84db6ea632a95fb759967c83c"
@@ -1106,7 +1106,7 @@
         "pr_write",
         "read"
       ],
-      "definition_sha256": "a6b5a5546362fb4017f965a1ef2ca9343a73cd96a381fb03d1fc2ac5f8039190",
+      "definition_sha256": "2b87c0faf473c64b11ee9736007260e677e8aa3071c853903e65ea1200ae4ebf",
       "resources": [
         "github.pull_requests",
         "github.refs",
@@ -1143,7 +1143,7 @@
         "pr_write",
         "read"
       ],
-      "definition_sha256": "ed0c4b626867526a0f2fca30fa1da0d0a9676034c63029b3478a6e5c5eaeb845",
+      "definition_sha256": "028d671f955cabaef57793460cebabf009e27ef0308761c28d466c2f1c1f562d",
       "resources": [
         "github.pull_requests",
         "github.refs",
@@ -1317,7 +1317,7 @@
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "scripts/requirements-article.txt": "8c620822e39bbd1233c03fd0296879f1f58dbc5a1f4366f6650c3d3c7cb32a77",
-          "tests/automation-gates.test.cjs": "e94d7f932907a80f8b1c676e4712229377214a319613851c91b9c67af254ed03",
+          "tests/automation-gates.test.cjs": "d432c7a2ca940975613339b8b8a8a312dbbec0ac3303151cc84274e8731b6b80",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
           "scripts/kesher_runtime/authority_client.py": "2faf396e363269382163aafcb73bc80863e630bff551d3e22f872fc42b779e36",
           "scripts/kesher_runtime/cutover_host.py": "9da32d13cd7c8616caeb36160452ba1fcf3981ae611817b6bed72af64b87c99c",
@@ -1588,7 +1588,7 @@
           "src/remotion/kesher-overview/scenes/OpeningScene.tsx": "05129feede87996bbe43b21e632acee2b1f26a988f453bb0b5963377b2eb9b6b",
           "src/remotion/kesher-overview/theme.ts": "e538504fdedf07e753b21472e3010d4d0a6474d44a8f63af392f0bf50b05dc50",
           "src/remotion/kesher-overview/types.ts": "fb8c9cbf959bfe834731d4677dd47aee86be0380def30f171d4fa6eff45ad208",
-          "tests/automation-gates.test.cjs": "e94d7f932907a80f8b1c676e4712229377214a319613851c91b9c67af254ed03",
+          "tests/automation-gates.test.cjs": "d432c7a2ca940975613339b8b8a8a312dbbec0ac3303151cc84274e8731b6b80",
           "tests/kesher_daily_pipeline_suite.py": "2ab33e80c758e025e16e3815515d123ecaac5f39064931eab019179e9bea7132",
           "tests/test_kesher_canonical_state.py": "1b2df228a1bec270e2124babfb977762430da6b1600ed0de9d6f886dac536f0a",
           "tests/test_kesher_daily_pipeline.py": "afcf20a03764242887b47f2d353fa335a38b4c132d2bc888f4bfa853978baba2",

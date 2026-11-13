@@ -36,6 +36,7 @@ test('service page and editorial hub are indexable, linked and responsive', asyn
     }));
     expect(sizes.scroll).toBeLessThanOrEqual(sizes.available);
   }
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', origin + '/images/generated/services/parenting-room.jpg');
   await expect(page.locator('section[aria-label="מאמרים בנושא תיאום הורי"] article')).toHaveCount(5);
   // JSON-LD can mount after visible cards during client hydration on slower mobile CI.
   // Poll for the same required CollectionPage schema rather than racing its insertion.
@@ -55,8 +56,22 @@ test('all five articles render with an accessible intake CTA, not a direct booki
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', origin + route);
     await expect(page.locator('meta[name="description"]')).toHaveCount(1);
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', origin + '/images/generated/services/parenting-room.jpg');
+    const jsonLd = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const schemas = jsonLd.flatMap((raw) => {
+      const data = JSON.parse(raw);
+      return Array.isArray(data['@graph']) ? data['@graph'] : [data];
+    });
+    const articleSchema = schemas.find((item) => item['@type'] === 'Article');
+    const breadcrumbSchema = schemas.find((item) => item['@type'] === 'BreadcrumbList');
+    expect(articleSchema?.isPartOf?.['@id']).toBe(origin + '/blog/category/parenting-coordination#webpage');
+    expect(articleSchema?.about?.name).toBe('תיאום הורי');
+    expect(breadcrumbSchema?.itemListElement?.map((item: { position: number }) => item.position)).toEqual([1, 2, 3, 4]);
+    expect(breadcrumbSchema?.itemListElement?.[2]?.item).toBe(origin + '/blog/category/parenting-coordination');
     await expect(page.locator('a[href="/blog/category/parenting-coordination"]').first()).toBeVisible();
-    await expect(page.locator('img[data-kesher-article-hero]')).toBeVisible();
+    const heroImage = page.locator('img[data-kesher-article-hero]');
+    await expect(heroImage).toBeVisible();
+    await expect.poll(() => heroImage.evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
     const cta = page.getByRole('region', { name: 'פנייה לשירה סהרוני' });
     await expect(cta).toBeVisible();
     await expect(cta.getByRole('link', { name: 'לבירור התאמה ראשוני עם שירה' })).toHaveAttribute('href', inquiry);
@@ -78,6 +93,8 @@ test('contact inquiry is preselected and hides direct appointment booking', asyn
   await expect(form.locator('select[name="service"]')).toHaveValue('parenting_coordination');
   await expect(form).toContainText('נא לא למסור כאן פרטים רגישים');
   await expect(form.locator('textarea[name="message"]')).toHaveAttribute('placeholder', /ללא פרטי ילדים/);
+  await expect(form.locator('a[href="/privacy"]')).toBeVisible();
+  await expect(form).not.toContainText('דיסקרטיות מלאה');
   await expect(form.locator('a[href="/appointment"]')).toHaveCount(0);
   await expect(page.locator('header a[href="/appointment"]')).toHaveCount(0);
   await expect(page.locator('footer a[href="/appointment"]')).toHaveCount(0);
@@ -123,4 +140,24 @@ test('new specialty pages have no serious accessibility violations', async ({ pa
       route,
     ).toEqual([]);
   }
+});
+
+test('topic cluster appears in the blog, the sitemap, RSS and AI-readable catalog', async ({ page, request }) => {
+  const sources = ['/sitemap.xml', '/rss.xml', '/llms-full.txt'];
+  for (const source of sources) {
+    const response = await request.get(source);
+    expect(response.status(), source).toBe(200);
+    const text = await response.text();
+    for (const slug of articleIds) {
+      expect(text, source + ': ' + slug).toContain('/blog/' + slug);
+    }
+  }
+  await page.goto('/blog');
+  await expect(page.getByRole('link', { name: 'מדריכים בנושא תיאום הורי והורות לאחר פרידה' })).toHaveAttribute('href', '/blog/category/parenting-coordination');
+  await expect(page.getByRole('tab', { name: 'תיאום הורי' })).toBeVisible();
+
+  await page.goto('/parenting-guidance-divorce');
+  await expect(page.locator('main a[href="/services/parenting-coordination"]').first()).toBeVisible();
+  await page.goto('/services/parenting');
+  await expect(page.locator('main a[href="/services/parenting-coordination"]').first()).toBeVisible();
 });

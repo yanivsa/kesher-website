@@ -78,6 +78,10 @@ const BlogPost: React.FC = () => {
           "@type": "WebPage",
           "@id": `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`
         },
+        ...(post?.category === 'תיאום הורי' ? {
+          "isPartOf": { "@id": `${SITE_CONFIG.url}/blog/category/parenting-coordination#webpage` },
+          "about": { "@type": "Thing", "name": "תיאום הורי" }
+        } : {}),
         "inLanguage": "he",
         "description": post?.excerpt || "",
         "articleBody": post?.content?.replace(/<[^>]+>/g, ' ') || ""
@@ -98,9 +102,15 @@ const BlogPost: React.FC = () => {
             "name": "בלוג",
             "item": `${SITE_CONFIG.url}/blog`
           },
-          {
+          ...(post?.category === 'תיאום הורי' ? [{
             "@type": "ListItem",
             "position": 3,
+            "name": "תיאום הורי",
+            "item": `${SITE_CONFIG.url}/blog/category/parenting-coordination`
+          }] : []),
+          {
+            "@type": "ListItem",
+            "position": post?.category === 'תיאום הורי' ? 4 : 3,
             "name": post?.title || "",
             "item": `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`
           }
@@ -157,7 +167,7 @@ const BlogPost: React.FC = () => {
         title={post.title}
         description={post.excerpt}
         ogType="article"
-        image={post.image}
+        image={post.category === 'תיאום הורי' ? '/images/generated/services/parenting-room.jpg' : post.image}
         canonical={`${SITE_CONFIG.url}/blog/${canonicalRouteKey}`}
       />
       <SchemaOrg data={schemaData} />

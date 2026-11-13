@@ -119,7 +119,7 @@ const ParentingGuidance: React.FC = () => {
             </div>
           </div>
           <p style={{ marginTop: '1.5rem' }}>
-            בתקופות או בגילים שדורשים מענה ממוקד יותר, אפשר לקרוא על <Link to="/parenting-guidance-divorce">הדרכת הורים בזמן פרידה וגירושין</Link> ועל <Link to="/parenting-guidance-early-childhood">הדרכת הורים לגיל הרך</Link>.
+            בתקופות או בגילים שדורשים מענה ממוקד יותר, אפשר לקרוא על <Link to="/parenting-guidance-divorce">הדרכת הורים בזמן פרידה וגירושין</Link> ועל <Link to="/parenting-guidance-early-childhood">הדרכת הורים לגיל הרך</Link>. כשהמחלוקות נמשכות גם אחרי הפרידה סביב יישום הסדרי ההורות, כדאי להכיר גם את <Link to="/services/parenting-coordination">התיאום ההורי</Link> — תהליך נפרד שמחייב בירור התאמה.
           </p>
         </div>
       </section>

@@ -197,6 +197,18 @@
   color: var(--color-primary);
 }
 
+.privacyNote a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 700;
+}
+
+.privacyNote a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
 .successMessage {
   display: flex;
   flex-direction: column;

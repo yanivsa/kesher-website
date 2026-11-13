@@ -40,6 +40,7 @@ const ParentingCoordinationCategory: React.FC = () => (
       title="תיאום הורי: מאמרים ומדריכים להורים גרושים | שירה סהרוני"
       description="מדריכים מעשיים על תיאום הורי, מחלוקות בין הורים גרושים, תקשורת לאחר פרידה וזמני שהות, עם מקורות מקצועיים והפניה לשירות."
       canonical={url}
+      image="/images/generated/services/parenting-room.jpg"
     />
     <SchemaOrg data={schemaData} />
     <header className={styles.hero}>
