@@ -132,7 +132,7 @@ jobs:
 
       - name: Preserve read-only shadow diagnostic
         if: ${{ github.event_name == 'workflow_dispatch' }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: kesher-v6-production-shadow
           path: /tmp/kesher-v6-production-shadow.json
@@ -222,14 +222,14 @@ jobs:
           print('SHORT_ORIGINAL_FORENSIC_RESULT='+json.dumps(evidence,ensure_ascii=False))
           PY
       - name: Retain only small private QA evidence, no YouTube upload
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: kesher-short-original-diagnosis
           path: short-raw-forensics/evidence.json
           if-no-files-found: error
           retention-days: 7
       - name: Retain private original 3-frame and sound review samples
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: kesher-short-private-samples
           path: |
@@ -336,7 +336,7 @@ jobs:
           PY
 
       - name: Upload only derived evidence for independent review (never to YouTube)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: kesher-short-independent-qa-${{ github.run_id }}
           path: kesher-short-qa/
