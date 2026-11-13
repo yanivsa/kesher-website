@@ -23,6 +23,14 @@ on:
         description: Optional exact native Short item id for read-only QA
         required: false
         type: string
+      qa_mode:
+        description: Read-only QA path; diagnose existing raw media or verify final approved media
+        required: false
+        default: approved
+        type: choice
+        options:
+          - approved
+          - diagnose_raw
   pull_request:
     branches: [main]
     paths:
@@ -129,8 +137,109 @@ jobs:
           name: kesher-v6-production-shadow
           path: /tmp/kesher-v6-production-shadow.json
 
+  diagnose-existing-raw-short:
+    # This never changes provider or uploader state. Final-media QA remains separate.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.qa_mode == 'diagnose_raw' && inputs.short_artifact_id != '' && inputs.short_item_id != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Fetch only immutable allowed Short state artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ inputs.short_artifact_id }}
+        run: |
+          set -euo pipefail
+          [[ "$ARTIFACT_ID" =~ ^[0-9]{6,15}$ ]] || exit 2
+          name="$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}" --jq .name)"
+          test "$name" = "kesher-short-v4-state"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" > /tmp/kesher-short-raw-state.zip
+      - name: Verify original SHA and extract non-public diagnostic evidence
+        env:
+          SHORT_ITEM_ID: ${{ inputs.short_item_id }}
+          ARTICLE_SLUG: ${{ inputs.target_slug }}
+          ARTICLE_SHA: ${{ inputs.target_content_sha256 }}
+          SHORT_ARTIFACT: ${{ inputs.short_artifact_id }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os,re,subprocess
+          from pathlib import Path
+          from zipfile import ZipFile
+          item_id=os.environ['SHORT_ITEM_ID'].strip()
+          slug=os.environ['ARTICLE_SLUG'].strip()
+          sha=os.environ['ARTICLE_SHA'].strip()
+          assert re.fullmatch(r'video-[0-9]{8}-[0-9]{6}-[a-f0-9]{10,64}',item_id)
+          assert re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*',slug)
+          assert re.fullmatch(r'[0-9a-f]{64}',sha)
+          out=Path('short-raw-forensics');out.mkdir(exist_ok=True)
+          with ZipFile('/tmp/kesher-short-raw-state.zip') as archive:
+              state=json.loads(archive.read('state.json'))
+              matches=[i for i in state['items'] if isinstance(i,dict) and i.get('id')==item_id]
+              assert len(matches)==1,'SHORT_ITEM_ID_NOT_UNIQUE'
+              item=matches[0]
+              assert item.get('type')=='article_short' and item.get('source_mode')=='direct-short'
+              assert item.get('provider_video_format')=='short' and item.get('provider_native_short') is True
+              assert item.get('status')=='downloaded','ONLY_DOWNLOADED_SOURCE_PERMITTED'
+              assert (item.get('source') or {}).get('slug')==slug
+              assert (item.get('source') or {}).get('content_sha256')==sha
+              name=item.get('raw_mp4','')
+              assert name==item_id+'-notebooklm.mp4','RAW_PATH_IDENTITY_MISMATCH'
+              assert len([i for i in archive.infolist() if i.filename==name])==1
+              size=archive.getinfo(name).file_size
+              assert 0<size<=256*1024*1024,'RAW_SIZE_OUT_OF_BOUNDS'
+              expected=item.get('raw_sha256','')
+              assert re.fullmatch(r'[0-9a-f]{64}',expected)
+              dst=out/'original-short-private.mp4'
+              digest=hashlib.sha256()
+              with archive.open(name) as src,dst.open('wb') as target:
+                  while chunk:=src.read(1<<20):
+                      target.write(chunk);digest.update(chunk)
+              assert digest.hexdigest()==expected,'RAW_MEDIA_SHA256_MISMATCH'
+          probe=json.loads(subprocess.check_output([
+              'ffprobe','-v','error','-show_streams','-show_format','-of','json',str(dst)],timeout=30))
+          video=next((x for x in probe['streams'] if x['codec_type']=='video'),None)
+          audio=next((x for x in probe['streams'] if x['codec_type']=='audio'),None)
+          assert video is not None and audio is not None,'SOURCE_MISSING_VIDEO_OR_AUDIO'
+          width,height=int(video['width']),int(video['height'])
+          duration=float(probe['format']['duration'])
+          portrait=height>width and .53<=width/height<=.60
+          evidence={'source_slug':slug,'content_sha256':sha,'short_item_id':item_id,
+              'provider_task_id':item.get('task_id'),'provider_source_id':item.get('source_id'),
+              'artifact_id':os.environ['SHORT_ARTIFACT'],'raw_sha256':expected,
+              'size_bytes':size,'duration_seconds':duration,'width':width,'height':height,
+              'portrait_native_9_16':portrait,'audio_codec':audio.get('codec_name'),
+              'video_codec':video.get('codec_name'),'technical_verified':False,
+              'voice_qa':'PENDING','visual_qa':'PENDING','license_qa':'PENDING','published':False}
+          (out/'evidence.json').write_text(json.dumps(evidence,ensure_ascii=False,indent=2),encoding='utf-8')
+          for count,factor in enumerate([.1,.5,.9],start=1):
+              subprocess.run(['ffmpeg','-nostdin','-v','error','-y','-ss',str(duration*factor),
+                  '-i',str(dst),'-frames:v','1',str(out/f'frame-{count}.jpg')],check=True,timeout=60)
+          subprocess.run(['ffmpeg','-nostdin','-v','error','-y','-i',str(dst),
+              '-vn','-t','30','-acodec','aac','-b:a','96k',str(out/'original-audio-30s.m4a')],
+              check=True,timeout=60)
+          # Do not expose the unapproved original video in the review artifact.
+          dst.unlink()
+          print('SHORT_ORIGINAL_FORENSIC_RESULT='+json.dumps(evidence,ensure_ascii=False))
+          PY
+      - name: Retain only small private QA evidence, no YouTube upload
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-short-original-diagnosis
+          path: short-raw-forensics/evidence.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Retain private original 3-frame and sound review samples
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-short-private-samples
+          path: |
+            short-raw-forensics/frame-*.jpg
+            short-raw-forensics/original-audio-30s.m4a
+          if-no-files-found: error
+          retention-days: 3
+
   recover-original-for-qa:
-    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.short_artifact_id != '' && inputs.short_item_id != '' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.short_artifact_id != '' && inputs.short_item_id != '' && inputs.qa_mode != 'diagnose_raw' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
