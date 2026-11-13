@@ -39,6 +39,10 @@ for (const post of posts) {
   assert(fs.existsSync(path.join(root, 'public', post.image.slice(1))), post.id + ' image missing');
   assert(post.imageAlt && post.imageAlt.length >= 20, post.id + ' requires specific alt text');
   assert(Array.isArray(post.evidence) && post.evidence.length >= 1, post.id + ' needs professional source');
+  assert(!/<strong>מקורות (?:להעמקה|מקצועיים):<\/strong>/.test(post.content), post.id + ' should not duplicate the standard evidence component');
+  for (const evidence of post.evidence) {
+    assert(/^https:\/\//.test(evidence.url), post.id + ' must cite absolute HTTPS sources');
+  }
   assert(!/[A-Za-z]/.test(post.content.replace(/<[^>]*>/g, ' ')), post.id + ' visible copy must remain in Hebrew');
   assert(post.relatedPostIds?.length >= 2, post.id + ' needs interlinked cluster');
 }
