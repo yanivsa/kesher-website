@@ -21,6 +21,11 @@ on:
           - owner_publish
           - owner_source_probe
           - owner_reviewed_publish
+          - inspect
+      inspect_item_id:
+        description: Existing source-bound Short item for read-only original media QA
+        required: false
+        type: string
       rebuild_item_id:
         description: Exact technically rejected item to rebuild with Remotion
         required: false
@@ -258,7 +263,7 @@ jobs:
           python -m scripts.kesher_owner_reviewed_publish --slug "$OWNER_SLUG" --source-sha "$OWNER_SHA"
 
       - name: Restore newest valid Short V4 durable state
-        if: ${{ github.event_name != 'pull_request' && inputs.operation != 'preflight' && inputs.operation != 'owner_preview' && inputs.operation != 'owner_publish' && inputs.operation != 'owner_source_probe' && inputs.operation != 'owner_reviewed_publish' }}
+        if: ${{ github.event_name != 'pull_request' && inputs.operation != 'preflight' && inputs.operation != 'owner_preview' && inputs.operation != 'owner_publish' && inputs.operation != 'owner_source_probe' && inputs.operation != 'owner_reviewed_publish' && inputs.operation != 'inspect' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -298,6 +303,64 @@ jobs:
             echo "Short V4 state artifacts exist but none is trustworthy; refusing fresh generation." >&2
             exit 1
           fi
+
+      - name: Read-only source-bound native Short original inspection
+        id: inspect_native
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'inspect' }}
+        env:
+          INSPECT_ID: ${{ inputs.inspect_item_id }}
+          INSPECT_SLUG: ${{ inputs.derive_slug }}
+          INSPECT_SHA: ${{ inputs.derive_content_sha256 }}
+          INSPECT_DEST: ${{ runner.temp }}/kesher-native-short-inspection
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os, shutil, subprocess
+          from pathlib import Path
+          root = Path(os.environ["KESHER_STATE_DIR"])
+          slug, sha, item_id = os.environ["INSPECT_SLUG"], os.environ["INSPECT_SHA"], os.environ["INSPECT_ID"]
+          if not item_id or not slug or len(sha) != 64: raise SystemExit("INVALID_INSPECT_IDENTITY")
+          data = json.loads((root / "state.json").read_text(encoding="utf-8"))
+          matches = [i for i in data["items"] if i.get("type") == "article_short"
+                     and i.get("id") == item_id and (i.get("source") or {}).get("slug") == slug
+                     and (i.get("source") or {}).get("content_sha256") == sha]
+          if len(matches) != 1: raise SystemExit("INSPECT_EXACT_SOURCE_NOT_UNIQUE")
+          item = matches[0]
+          if item.get("provider_video_format") != "short" or item.get("provider_native_short") is not True:
+              raise SystemExit("NOT_NATIVE_PROVIDER_SHORT")
+          name = item.get("raw_mp4")
+          if not isinstance(name, str) or Path(name).name != name: raise SystemExit("INVALID_SHORT_FILENAME")
+          media = root / name
+          if not media.is_file() or media.stat().st_size <= 0: raise SystemExit("SHORT_ORIGINAL_MISSING")
+          digest = hashlib.sha256(media.read_bytes()).hexdigest()
+          if item.get("raw_sha256") != digest: raise SystemExit("SHORT_ORIGINAL_SHA_MISMATCH")
+          probe = json.loads(subprocess.check_output(["ffprobe","-v","error","-show_streams","-show_format","-of","json",str(media)],timeout=30))
+          stream = next(s for s in probe["streams"] if s["codec_type"] == "video")
+          width,height = int(stream["width"]),int(stream["height"])
+          duration = float(probe["format"]["duration"])
+          native = height > width and 0.53 <= width/height <= 0.60
+          out = Path(os.environ["INSPECT_DEST"]); out.mkdir(parents=True,exist_ok=True)
+          report = {"source_slug":slug,"content_sha256":sha,"item_id":item_id,
+                    "provider_source_id":item.get("source_id"),"provider_task_id":item.get("task_id"),
+                    "original_sha256":digest,"width":width,"height":height,"duration":duration,
+                    "native_portrait_9_16":native,"content_voice_license_QA":"pending","uploaded":False}
+          (out/"inspection.json").write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
+          for n,fraction in enumerate((0.1,0.5,0.9),1):
+              subprocess.run(["ffmpeg","-nostdin","-hide_banner","-loglevel","error","-y",
+                              "-ss",str(duration*fraction),"-i",str(media),
+                              "-frames:v","1",str(out/f"frame-{n}.png")],check=True,timeout=35)
+          if media.stat().st_size <= 80*1024*1024: shutil.copy2(media,out/"notebooklm-native-original.mp4")
+          print("NATIVE_SHORT_READ_ONLY_INSPECT",json.dumps(report,ensure_ascii=False))
+          PY
+
+      - name: Preserve isolated original Short inspection bundle
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'inspect' && steps.inspect_native.outcome == 'success' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-native-short-source-inspection
+          path: ${{ runner.temp }}/kesher-native-short-inspection
+          if-no-files-found: error
+          retention-days: 3
 
       - name: Materialize NotebookLM credentials without exposing them
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
@@ -642,7 +705,7 @@ jobs:
           compression-level: 6
 
       - name: Persist lightweight Short controller state
-        if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-short-v4-state/state.json') != '' }}
+        if: ${{ always() && github.event_name != 'pull_request' && inputs.operation != 'inspect' && hashFiles('.kesher-short-v4-state/state.json') != '' }}
         id: persist_controller_state
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
@@ -653,7 +716,7 @@ jobs:
           compression-level: 9
 
       - name: Persist latest Short V4 state and exact recovery evidence
-        if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-short-v4-state/state.json') != '' }}
+        if: ${{ always() && github.event_name != 'pull_request' && inputs.operation != 'inspect' && hashFiles('.kesher-short-v4-state/state.json') != '' }}
         id: persist_state
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
