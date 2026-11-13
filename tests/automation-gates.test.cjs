@@ -16,8 +16,15 @@ function testControllerHardening() {
     '.github/workflows/jules-weekly-content-review.yml',
   ]) {
     const workflow = read(path);
-    assert(workflow.includes('strictly defined as a couples counselor'), `${path} must define the professional role`);
-    assert(workflow.includes('family mediation (גישור)'), `${path} must retain the mediation exclusion`);
+    const currentTopicScope = workflow.includes('The existing service portfolio includes')
+      && workflow.includes('newly published תיאום הורי')
+      && workflow.includes('Do NOT claim that Shira has formal parenting-coordinator certification');
+    const legacyScope = workflow.includes('strictly defined as a couples counselor')
+      && workflow.includes('family mediation (גישור)');
+    assert(currentTopicScope || legacyScope, `${path} must define the professional and editorial boundaries`);
+    if (path.includes('jules-daily-seo-geo-review') || path.includes('jules-daily-mobile-review')) {
+      assert(currentTopicScope, `${path} must recognize the published parenting-coordination topic without unverified credentials`);
+    }
   }
   assert(!articlePolicy.includes('מגשרת מוסמכת'));
   assert(!articlePolicy.includes('עורכת דין בהכשרתה'));
