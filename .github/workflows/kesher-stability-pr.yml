@@ -828,7 +828,7 @@ jobs:
     # New approved automatic_daily 2026-11-11. OWNER-direct private media only.
     permissions:
       contents: read
-    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'owner/daily-2026-11-11-gratitude' && github.event.pull_request.head.repo.full_name == github.repository }}
+    if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'owner/daily-2026-11-11-gratitude' || github.head_ref == 'owner/daily-gratitude-visual-quality-20261111') && github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -868,6 +868,15 @@ jobs:
           python -m scripts.kesher_owner_gratitude_preview preview \
             --source-sha d4921756c12061359fca7cefea175387b534735d1af841a59e46a392edcc8c5f \
             --output owner-daily-gratitude-output
+      - name: Independently transcribe decoded Hebrew voice and compare approved scripts without auto-approving
+        env:
+          HF_HOME: ${{ runner.temp }}/owner-daily-gratitude-asr-hf
+        run: |
+          set -euo pipefail
+          python -m pip install 'faster-whisper==1.2.1' 'av<19'
+          python -m scripts.kesher_owner_gratitude_asr \
+            --source-sha d4921756c12061359fca7cefea175387b534735d1af841a59e46a392edcc8c5f \
+            --output owner-daily-gratitude-output
       - name: Preserve PRIVATE reviewable binary evidence, not YouTube
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
@@ -879,6 +888,8 @@ jobs:
             owner-daily-gratitude-output/*-manifest.json
             owner-daily-gratitude-output/*-visual-contact-sheet.jpg
             owner-daily-gratitude-output/*-frame-*.jpg
+            owner-daily-gratitude-output/*-asr.txt
+            owner-daily-gratitude-output/asr-review.json
           if-no-files-found: error
           compression-level: 0
           retention-days: 60
