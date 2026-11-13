@@ -157,7 +157,7 @@ test('topic cluster appears in the blog, the sitemap, RSS and AI-readable catalo
   await expect(page.getByRole('tab', { name: 'תיאום הורי' })).toBeVisible();
 
   await page.goto('/parenting-guidance-divorce');
-  await expect(page.locator('a[href="/services/parenting-coordination"]').first()).toBeVisible();
+  await expect(page.locator('main a[href="/services/parenting-coordination"]').first()).toBeVisible();
   await page.goto('/services/parenting');
-  await expect(page.locator('a[href="/services/parenting-coordination"]').first()).toBeVisible();
+  await expect(page.locator('main a[href="/services/parenting-coordination"]').first()).toBeVisible();
 });
