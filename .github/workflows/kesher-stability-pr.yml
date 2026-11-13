@@ -142,7 +142,7 @@ jobs:
 
       - name: Archive photographic Overview PRIVATE proof (not for publication)
         if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'owner/licensed-photo-story-overview-') && success() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: kesher-vantage-visual-only-private-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/kesher-vantage-visual-proof/
@@ -161,7 +161,7 @@ jobs:
 
       - name: Archive corrected Vantage full Overview PRIVATE review only
         if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'owner/vantage-full-private-overview-') && success() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: kesher-vantage-research-corrected-private-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/kesher-vantage-full-review/
@@ -170,7 +170,7 @@ jobs:
 
       - name: Retain synthetic render evidence
         if: success()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: synthetic-render-proof-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/kesher-render-proof/
@@ -223,7 +223,7 @@ jobs:
             --source-sha 7b6ae2e8dc3182d798edbf19c2d95e576b02ab093c5e2bf04bad91113a716a00 \
             --output owner-asynchrony-media-output
       - name: Archive reviewable PRIVATE owner outputs only
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: owner-asynchrony-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -293,7 +293,7 @@ jobs:
             --source-sha 6bb5723bbadc7b78725e4cdb477857e7194cca47c1140f27d1c4f3921b6e2d5f \
             --output owner-positivity-media-output
       - name: Archive reviewable PRIVATE owner outputs only
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: owner-positivity-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -354,7 +354,7 @@ jobs:
           gh api repos/yanivsa/kesher-website/actions/artifacts/13757158570/zip > "$RUNNER_TEMP/productive-failure-reviewed-input.zip"
           python -m scripts.kesher_owner_productive_failure_preview repair --source-sha 37f9b2e3ef91fa1b77b923f35281df9a66014d243389bb08e7fa1954bc86ab50 --archive "$RUNNER_TEMP/productive-failure-reviewed-input.zip"
       - name: Archive reviewable PRIVATE outputs only
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: owner-productive-failure-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -420,7 +420,7 @@ jobs:
           set -euo pipefail
           python -m scripts.kesher_owner_7500_preview asr-short --source-sha 797750526c533f41e661123dc86339da3f0a5721d5eff820d70937ee7f6d5bdd
       - name: Archive reviewable PRIVATE outputs only
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: owner-7500-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -437,7 +437,7 @@ jobs:
           retention-days: 60
       - name: Preserve failed private render evidence for targeted recovery (never publish)
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: owner-7500-failed-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -536,7 +536,7 @@ jobs:
         run: python -m scripts.kesher_owner_kindergarten_play_preview asr --source-sha 60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa --output owner-kindergarten-play-repaired-output
       - name: Archive exact targeted repair and unchanged Short for private QA
         if: ${{ steps.targeted_audio_repair.outputs.ready == 'true' }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: owner-kindergarten-play-targeted-audio-repair-60374e686f78
           path: |
@@ -588,7 +588,7 @@ jobs:
           python -m scripts.kesher_owner_kindergarten_play_preview asr --source-sha 60374e686f7857610eeee5594af17f52a80223788650ef467ce27f5ec824dcaa
       - name: Archive reviewable PRIVATE owner outputs only
         if: ${{ github.event.action == 'opened' }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: owner-kindergarten-play-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -605,7 +605,7 @@ jobs:
           retention-days: 60
       - name: Preserve failed private render evidence for targeted recovery (never publish)
         if: ${{ failure() && github.event.action == 'opened' }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: owner-kindergarten-play-failed-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -734,7 +734,7 @@ jobs:
         run: python -m scripts.kesher_owner_midyear_kindergarten_preview asr --source-sha 5b0d6c5e8ba2c7fb001d1b7944a4abca1dbe4d5b0248889466dca4225e393a1a
       - name: Archive reviewable PRIVATE owner outputs only
         if: ${{ steps.admission.outputs.cta == 'true' }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: owner-midyear-kindergarten-final-evidence-5b0d6c5e8ba2
           path: |
@@ -751,7 +751,7 @@ jobs:
           retention-days: 60
       - name: Preserve failed private render evidence for targeted recovery (never publish)
         if: ${{ failure() && steps.admission.outputs.cta == 'true' }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: owner-midyear-kindergarten-failed-private-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -878,7 +878,7 @@ jobs:
             --source-sha d4921756c12061359fca7cefea175387b534735d1af841a59e46a392edcc8c5f \
             --output owner-daily-gratitude-output
       - name: Preserve PRIVATE reviewable binary evidence, not YouTube
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: owner-daily-gratitude-private-20261111-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -895,7 +895,7 @@ jobs:
           retention-days: 60
       - name: Preserve partial evidence on failure without publication
         if: ${{ failure() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: owner-daily-gratitude-failed-private-20261111-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
