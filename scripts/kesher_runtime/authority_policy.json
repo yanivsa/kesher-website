@@ -1801,7 +1801,7 @@
       "capabilities": [
         "read"
       ],
-      "definition_sha256": "90786d6427ddde051f3cb90036a0ac5ef27ab0c900394d51d444e0bec9464ede",
+      "definition_sha256": "12ac0c7df05bbed1927a6c4c5be342f33b3cd53a1a40adf893b930f3f26e4fd2",
       "resources": [],
       "review": {
         "call_chain": {
