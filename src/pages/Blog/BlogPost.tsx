@@ -167,7 +167,7 @@ const BlogPost: React.FC = () => {
         title={post.title}
         description={post.excerpt}
         ogType="article"
-        image={post.image}
+        image={post.category === 'תיאום הורי' ? '/images/generated/services/parenting-room.jpg' : post.image}
         canonical={`${SITE_CONFIG.url}/blog/${canonicalRouteKey}`}
       />
       <SchemaOrg data={schemaData} />
