@@ -55,6 +55,17 @@ test('all five articles render with an accessible intake CTA, not a direct booki
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', origin + route);
     await expect(page.locator('meta[name="description"]')).toHaveCount(1);
+    const jsonLd = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const schemas = jsonLd.flatMap((raw) => {
+      const data = JSON.parse(raw);
+      return Array.isArray(data['@graph']) ? data['@graph'] : [data];
+    });
+    const articleSchema = schemas.find((item) => item['@type'] === 'Article');
+    const breadcrumbSchema = schemas.find((item) => item['@type'] === 'BreadcrumbList');
+    expect(articleSchema?.isPartOf?.['@id']).toBe(origin + '/blog/category/parenting-coordination#webpage');
+    expect(articleSchema?.about?.name).toBe('תיאום הורי');
+    expect(breadcrumbSchema?.itemListElement?.map((item: { position: number }) => item.position)).toEqual([1, 2, 3, 4]);
+    expect(breadcrumbSchema?.itemListElement?.[2]?.item).toBe(origin + '/blog/category/parenting-coordination');
     await expect(page.locator('a[href="/blog/category/parenting-coordination"]').first()).toBeVisible();
     await expect(page.locator('img[data-kesher-article-hero]')).toBeVisible();
     const cta = page.getByRole('region', { name: 'פנייה לשירה סהרוני' });
@@ -78,6 +89,8 @@ test('contact inquiry is preselected and hides direct appointment booking', asyn
   await expect(form.locator('select[name="service"]')).toHaveValue('parenting_coordination');
   await expect(form).toContainText('נא לא למסור כאן פרטים רגישים');
   await expect(form.locator('textarea[name="message"]')).toHaveAttribute('placeholder', /ללא פרטי ילדים/);
+  await expect(form.locator('a[href="/privacy"]')).toBeVisible();
+  await expect(form).not.toContainText('דיסקרטיות מלאה');
   await expect(form.locator('a[href="/appointment"]')).toHaveCount(0);
   await expect(page.locator('header a[href="/appointment"]')).toHaveCount(0);
   await expect(page.locator('footer a[href="/appointment"]')).toHaveCount(0);
