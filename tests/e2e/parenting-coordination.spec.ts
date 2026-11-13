@@ -67,7 +67,9 @@ test('all five articles render with an accessible intake CTA, not a direct booki
     expect(breadcrumbSchema?.itemListElement?.map((item: { position: number }) => item.position)).toEqual([1, 2, 3, 4]);
     expect(breadcrumbSchema?.itemListElement?.[2]?.item).toBe(origin + '/blog/category/parenting-coordination');
     await expect(page.locator('a[href="/blog/category/parenting-coordination"]').first()).toBeVisible();
-    await expect(page.locator('img[data-kesher-article-hero]')).toBeVisible();
+    const heroImage = page.locator('img[data-kesher-article-hero]');
+    await expect(heroImage).toBeVisible();
+    await expect.poll(() => heroImage.evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
     const cta = page.getByRole('region', { name: 'פנייה לשירה סהרוני' });
     await expect(cta).toBeVisible();
     await expect(cta.getByRole('link', { name: 'לבירור התאמה ראשוני עם שירה' })).toHaveAttribute('href', inquiry);
@@ -136,4 +138,24 @@ test('new specialty pages have no serious accessibility violations', async ({ pa
       route,
     ).toEqual([]);
   }
+});
+
+test('topic cluster appears in the blog, the sitemap, RSS and AI-readable catalog', async ({ page, request }) => {
+  const sources = ['/sitemap.xml', '/rss.xml', '/llms-full.txt'];
+  for (const source of sources) {
+    const response = await request.get(source);
+    expect(response.status(), source).toBe(200);
+    const text = await response.text();
+    for (const slug of articleIds) {
+      expect(text, source + ': ' + slug).toContain('/blog/' + slug);
+    }
+  }
+  await page.goto('/blog');
+  await expect(page.getByRole('link', { name: 'מדריכים בנושא תיאום הורי והורות לאחר פרידה' })).toHaveAttribute('href', '/blog/category/parenting-coordination');
+  await expect(page.getByRole('tab', { name: 'תיאום הורי' })).toBeVisible();
+
+  await page.goto('/parenting-guidance-divorce');
+  await expect(page.locator('a[href="/services/parenting-coordination"]').first()).toBeVisible();
+  await page.goto('/services/parenting');
+  await expect(page.locator('a[href="/services/parenting-coordination"]').first()).toBeVisible();
 });
