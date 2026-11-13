@@ -1106,7 +1106,7 @@
         "pr_write",
         "read"
       ],
-      "definition_sha256": "a6b5a5546362fb4017f965a1ef2ca9343a73cd96a381fb03d1fc2ac5f8039190",
+      "definition_sha256": "2b87c0faf473c64b11ee9736007260e677e8aa3071c853903e65ea1200ae4ebf",
       "resources": [
         "github.pull_requests",
         "github.refs",
@@ -1143,7 +1143,7 @@
         "pr_write",
         "read"
       ],
-      "definition_sha256": "ed0c4b626867526a0f2fca30fa1da0d0a9676034c63029b3478a6e5c5eaeb845",
+      "definition_sha256": "028d671f955cabaef57793460cebabf009e27ef0308761c28d466c2f1c1f562d",
       "resources": [
         "github.pull_requests",
         "github.refs",
