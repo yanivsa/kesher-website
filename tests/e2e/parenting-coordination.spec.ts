@@ -36,6 +36,7 @@ test('service page and editorial hub are indexable, linked and responsive', asyn
     }));
     expect(sizes.scroll).toBeLessThanOrEqual(sizes.available);
   }
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', origin + '/images/generated/services/parenting-room.jpg');
   await expect(page.locator('section[aria-label="מאמרים בנושא תיאום הורי"] article')).toHaveCount(5);
   // JSON-LD can mount after visible cards during client hydration on slower mobile CI.
   // Poll for the same required CollectionPage schema rather than racing its insertion.
@@ -55,6 +56,7 @@ test('all five articles render with an accessible intake CTA, not a direct booki
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', origin + route);
     await expect(page.locator('meta[name="description"]')).toHaveCount(1);
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', origin + '/images/generated/services/parenting-room.jpg');
     const jsonLd = await page.locator('script[type="application/ld+json"]').allTextContents();
     const schemas = jsonLd.flatMap((raw) => {
       const data = JSON.parse(raw);
