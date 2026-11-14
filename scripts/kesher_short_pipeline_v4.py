@@ -452,14 +452,12 @@ def validate_and_manifest(
         core.require_hebrew(metadata["description"], "YouTube description", allow_url=True)
         for tag in metadata["tags"]:
             core.require_hebrew(tag, "YouTube tag")
-        description_lines = [line.strip() for line in metadata["description"].splitlines() if line.strip()]
         canonical_url = str((item.get("source") or {}).get("canonical_url") or "").strip()
-        if not canonical_url or canonical_url not in description_lines:
-            raise core.PipelineError("YouTube description is missing the exact article URL")
-        if core.SITE_URL not in description_lines:
-            raise core.PipelineError("YouTube description is missing the standalone Kesher site URL")
-        if core.APPOINTMENT_URL not in description_lines:
-            raise core.PipelineError("YouTube description is missing the appointment URL")
+        core.validate_youtube_description_links(
+            metadata["description"],
+            canonical_url,
+            str((item.get("source") or {}).get("category") or ""),
+        )
     except (KeyError, core.PipelineError) as exc:
         metadata_failure = f"המטא־דאטה אינו עומד בשער העברית והמקור: {exc}"
         technical_failures.append(metadata_failure)
