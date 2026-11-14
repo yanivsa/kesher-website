@@ -63,6 +63,7 @@ NOTEBOOKLM_REQUIRED_VERSION = "0.8.0"
 YOUTUBE_CHANNEL_ID = "UCx5fEFvdVf28HLAR2dFW64Q"
 SITE_URL = "https://kesher.saharoni.com"
 APPOINTMENT_URL = f"{SITE_URL}/appointment"
+PARENTING_COORDINATION_INTAKE_URL = f"{SITE_URL}/contact?service=parenting_coordination"
 DISPLAY_URL = "kesher.saharoni.com"
 STATE_VERSION = 1
 POLL_INTERVAL_SECONDS = 30
@@ -210,14 +211,17 @@ def require_hebrew(value: str, field: str, allow_url: bool = False) -> None:
         raise PipelineError(f"{field} contains no Hebrew")
 
 
-def validate_youtube_description_links(description: str, canonical_url: str) -> None:
+def validate_youtube_description_links(description: str, canonical_url: str, category: str = "") -> None:
     lines = [line.strip() for line in str(description).splitlines() if line.strip()]
     if not canonical_url or canonical_url not in lines:
         raise PipelineError("YouTube description is missing the exact article URL")
     if SITE_URL not in lines:
         raise PipelineError("YouTube description is missing the standalone Kesher site URL")
-    if APPOINTMENT_URL not in lines:
-        raise PipelineError("YouTube description is missing the appointment URL")
+    intake = category == "תיאום הורי"
+    required_cta = PARENTING_COORDINATION_INTAKE_URL if intake else APPOINTMENT_URL
+    if required_cta not in lines:
+        cta_name = "parenting coordination intake URL" if intake else "appointment URL"
+        raise PipelineError(f"YouTube description is missing the {cta_name}")
 
 
 def apply_enhancement_media_credits(item: dict[str, Any]) -> dict[str, Any]:
@@ -297,13 +301,16 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
         require_hebrew(tag, "tag")
     video_tags = media_tags(post, "videoTags", tags)
     short_tags = media_tags(post, "shortTags", tags)
+    intake = category == "תיאום הורי"
+    cta_label = "לבירור התאמה ראשוני" if intake else "לתיאום פגישה"
+    cta_url = PARENTING_COORDINATION_INTAKE_URL if intake else APPOINTMENT_URL
     description = (
         f"{excerpt}\n\nלקריאת המאמר המלא:\n{canonical_url}"
         f"\n\nלאתר קשר:\n{SITE_URL}"
-        f"\n\nלתיאום פגישה:\n{APPOINTMENT_URL}"
+        f"\n\n{cta_label}:\n{cta_url}"
     )
     require_hebrew(description, "description", allow_url=True)
-    validate_youtube_description_links(description, canonical_url)
+    validate_youtube_description_links(description, canonical_url, category)
     source = {
         "id": str(post["id"]),
         "slug": slug,
@@ -1492,6 +1499,7 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         validate_youtube_description_links(
             metadata["description"],
             str((item.get("source") or {}).get("canonical_url") or ""),
+            str((item.get("source") or {}).get("category") or ""),
         )
     except (KeyError, PipelineError) as exc:
         metadata_failure = f"המטא־דאטה אינו עומד בשער העברית והמקור: {exc}"
@@ -2278,7 +2286,7 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
         process_status = processing.get("processingStatus")
         if status.get("privacyStatus") == "public" and process_status == "succeeded" and metadata_evidence is not None:
             uploaded_description = str(snippet.get("description", ""))
-            validate_youtube_description_links(uploaded_description, str((item.get("source") or {}).get("canonical_url") or ""))
+            validate_youtube_description_links(uploaded_description, str((item.get("source") or {}).get("canonical_url") or ""), str((item.get("source") or {}).get("category") or ""))
             require_hebrew(str(snippet.get("title", "")), "uploaded title")
             require_hebrew(uploaded_description, "uploaded description", allow_url=True)
             return {
@@ -2639,6 +2647,7 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
     validate_youtube_description_links(
         description,
         str((item.get("source") or {}).get("canonical_url") or ""),
+        str((item.get("source") or {}).get("category") or ""),
     )
     for tag in metadata.get("tags") or []:
         require_hebrew(str(tag), "YouTube tag")

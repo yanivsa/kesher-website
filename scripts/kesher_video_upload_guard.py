@@ -101,8 +101,11 @@ def validate_candidate(item: dict) -> None:
         raise UploadGuardError("Upload candidate description is missing the exact article URL")
     if SITE_URL not in description_lines:
         raise UploadGuardError("Upload candidate description is missing the standalone Kesher site URL")
-    if APPOINTMENT_URL not in description_lines:
-        raise UploadGuardError("Upload candidate description is missing the appointment URL")
+    intake = source.get("category") == "תיאום הורי"
+    required_cta = f"{SITE_URL}/contact?service=parenting_coordination" if intake else APPOINTMENT_URL
+    if required_cta not in description_lines:
+        cta_name = "parenting coordination intake URL" if intake else "appointment URL"
+        raise UploadGuardError(f"Upload candidate description is missing the {cta_name}")
 
     is_long_video = item.get("visual_pipeline") == "remotion-v1-notebooklm-audio"
     is_short = (
