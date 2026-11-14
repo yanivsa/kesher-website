@@ -350,6 +350,31 @@ def load_posts() -> list[dict[str, Any]]:
     return combine_post_catalogs(historical, recent)
 
 
+def load_targeted_media_posts() -> list[dict[str, Any]]:
+    """Extra published topic articles for EXPLICIT media requests only.
+
+    The ordinary automatic FIFO must keep reading posts.json + postsRecent.json.
+    Keeping this catalog separate prevents a one-off manual media project from
+    reordering the daily production schedule or creating new automatic work.
+    """
+    catalog = POSTS_FILE.with_name("parentingCoordinationPosts.json")
+    if not catalog.exists():
+        return []
+    try:
+        rows = json.loads(catalog.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise PipelineError("Targeted parenting-coordination catalog is unreadable") from exc
+    if not isinstance(rows, list) or not all(isinstance(row, dict) for row in rows):
+        raise PipelineError("Targeted parenting-coordination catalog must contain article objects")
+    seen: set[str] = set()
+    for row in rows:
+        slug = str(row.get("slug") or row.get("id") or "").strip()
+        if not slug or slug in seen or row.get("category") != "תיאום הורי":
+            raise PipelineError("Targeted parenting-coordination article identity is invalid or duplicated")
+        seen.add(slug)
+    return rows
+
+
 def combine_post_catalogs(historical: Any, recent: Any) -> list[dict[str, Any]]:
     """The shared publication catalog contract for local and exact Git readers."""
     if not isinstance(historical, list) or not isinstance(recent, list):
@@ -387,12 +412,17 @@ def select_newest_unused_article(state: dict[str, Any]) -> dict[str, Any]:
 
 
 def article_by_slug(slug: str) -> dict[str, Any]:
-    posts = load_posts()
-    for post in posts:
-        target = str(post.get("slug") or post.get("id") or "").strip()
-        if target == slug:
-            return source_metadata(post)
-    raise PipelineError(f"Article with slug {slug} not found")
+    # Exact targeted requests may use the separate topic catalog. Never add
+    # these entries to load_posts(): it owns the daily FIFO selection contract.
+    candidates = [
+        post for post in [*load_posts(), *load_targeted_media_posts()]
+        if str(post.get("slug") or post.get("id") or "").strip() == slug
+    ]
+    if not candidates:
+        raise PipelineError(f"Article with slug {slug} not found")
+    if len(candidates) != 1:
+        raise PipelineError(f"Duplicate article identity for targeted media: {slug}")
+    return source_metadata(candidates[0])
 
 
 def notebooklm_env() -> dict[str, str]:
