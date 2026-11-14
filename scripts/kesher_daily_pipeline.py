@@ -2363,14 +2363,23 @@ def can_short_item_proceed_toward_publication(item: dict[str, Any] | None) -> bo
     if item.get("status") not in {"pending_review", "approved", "rejected", "uploading"}:
         return False
 
-    # 1. Expected vertical dimensions / portrait contract (1080x1920, height > width)
+    # 1. Match the native NotebookLM geometry contract exactly: 720p/1080p
+    # native Shorts are both approved 9:16 originals. Legacy Remotion output
+    # remains locked to 1080p; never upscale or relabel provider frames.
     media = item.get("media") or {}
     try:
         width = int(media.get("width") or 0)
         height = int(media.get("height") or 0)
     except (TypeError, ValueError):
         return False
-    if width != 1080 or height != 1920 or height <= width:
+    from scripts.kesher_runtime.native_media import SHORT_PIPELINE, native_short_dimensions_valid
+    is_native = item.get("visual_pipeline") == SHORT_PIPELINE
+    if is_native:
+        if not native_short_dimensions_valid(width, height):
+            return False
+    elif width != 1080 or height != 1920:
+        return False
+    if height <= width:
         return False
 
     raw = item.get("provider_raw_media") or {}
@@ -2380,6 +2389,8 @@ def can_short_item_proceed_toward_publication(item: dict[str, Any] | None) -> bo
     except (TypeError, ValueError):
         return False
     if raw_w <= 0 or raw_h <= 0 or raw_h <= raw_w:
+        return False
+    if is_native and (raw_w, raw_h) != (width, height):
         return False
 
     # 2. Canonical Short origin and overview binding
