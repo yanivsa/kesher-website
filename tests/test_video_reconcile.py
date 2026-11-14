@@ -1056,6 +1056,16 @@ class ParentingCoordinationMediaTargetingTests(unittest.TestCase):
                 self.assertEqual(from_pipeline["content_sha256"], from_reconciler["content_sha256"])
                 self.assertEqual(from_pipeline["slug"], slug)
                 self.assertEqual(from_pipeline["category"], "תיאום הורי")
+                self.assertEqual(
+                    pipeline.article_body_for_item({"source": from_pipeline}),
+                    from_pipeline["body"],
+                    "same exact article must survive selection, handoff and reconciliation",
+                )
+                with self.assertRaisesRegex(pipeline.PipelineError, "Article content changed after selection"):
+                    pipeline.article_body_for_item({
+                        "source": {"slug": slug, "content_sha256": "0" * 64}
+                    })
+
                 self.assertRegex(from_pipeline["content_sha256"], r"^[0-9a-f]{64}$")
                 self.assertIn("https://kesher.saharoni.com/blog/" + slug, from_pipeline["body"])
                 for kind in ("youtube_metadata", "short_youtube_metadata"):

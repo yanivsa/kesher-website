@@ -674,17 +674,19 @@ def export_item_target(item: dict[str, Any]) -> None:
 
 
 def article_body_for_item(item: dict[str, Any]) -> str:
-    posts = load_posts()
+    # Reuse the exact same published-source resolver as the selector and
+    # reconciliation stages. A target from a separate editorial catalog must
+    # not disappear between source selection and NotebookLM source creation.
     target_slug = str(item.get("source", {}).get("slug") or item.get("source", {}).get("id") or "").strip()
-    for post in posts:
-        slug = str(post.get("slug") or post.get("id") or "").strip()
-        if slug != target_slug:
-            continue
-        source = source_metadata(post)
-        if source["content_sha256"] != item["source"]["content_sha256"]:
-            raise PipelineError("Article content changed after selection")
-        return source["body"]
-    raise PipelineError("Selected article no longer exists")
+    try:
+        source = article_by_slug(target_slug)
+    except PipelineError as exc:
+        if str(exc) == f"Article with slug {target_slug} not found":
+            raise PipelineError("Selected article no longer exists") from exc
+        raise
+    if source["content_sha256"] != item["source"]["content_sha256"]:
+        raise PipelineError("Article content changed after selection")
+    return source["body"]
 
 
 def reconcile_legacy_effect(
