@@ -2370,7 +2370,14 @@ def can_short_item_proceed_toward_publication(item: dict[str, Any] | None) -> bo
         height = int(media.get("height") or 0)
     except (TypeError, ValueError):
         return False
-    if width != 1080 or height != 1920 or height <= width:
+    from scripts import kesher_e2e_delivery_guard as delivery_guard
+    from scripts.kesher_runtime.native_media import native_short_dimensions_valid
+    if item.get("visual_pipeline") == delivery_guard.CANONICAL_NATIVE_SHORT_PIPELINE:
+        # NotebookLM's native 9:16 Shorts can be either HD or Full HD.
+        # Keep strict 1080x1920 output for non-native/Remotion Shorts.
+        if not native_short_dimensions_valid(width, height):
+            return False
+    elif width != 1080 or height != 1920 or height <= width:
         return False
 
     raw = item.get("provider_raw_media") or {}
