@@ -243,6 +243,33 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertTrue(any("9:16" in err for err in
                             short.short_technical_failures(item["media"], item=legacy)))
 
+    def test_native_notebooklm_short_720p_passes_canonical_upload_gate(self):
+        # Regression: the native renderer explicitly permits 720x1280, and
+        # the pre-upload predicate must agree without relaxing other proofs.
+        item = bound_short()
+        item.update(
+            visual_pipeline=short.delivery_guard.CANONICAL_NATIVE_SHORT_PIPELINE,
+            status="pending_review",
+            technical_verified=True,
+            manifest_sha256="1" * 64,
+            transcript_sha256="2" * 64,
+            source_file_sha256="3" * 64,
+            visual_review_sha256="4" * 64,
+            frame_sha256={"frame-1.png": "5" * 64},
+        )
+        item["media"].update(width=720, height=1280)
+        item["provider_raw_media"].update(width=720, height=1280)
+        self.assertTrue(short.core.can_short_item_proceed_toward_publication(item))
+        self.assertFalse(short.core.can_short_item_proceed_toward_publication(
+            dict(item, visual_pipeline=short.VISUAL_PIPELINE)
+        ))
+        self.assertFalse(short.core.can_short_item_proceed_toward_publication(
+            dict(item, media=dict(item["media"], width=640, height=1138))
+        ))
+        self.assertFalse(short.core.can_short_item_proceed_toward_publication(
+            dict(item, technical_verified=False)
+        ))
+
     def test_short_technical_failures_rejects_overview_segment(self):
         media = {"codec": "h264", "audio_codec": "aac", "width": 1080, "height": 1920, "duration": 45.0}
         item = {
