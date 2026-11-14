@@ -86,9 +86,11 @@ def authoritative_article() -> dict[str, Any]:
 
 
 def current_source_snapshot(slug: str) -> dict[str, Any]:
+    # Include the editorial catalog only for exact identity reconciliation.
+    # The daily auto-selector stays confined to the ordinary article catalogs.
     matches = [
         pipeline.source_metadata(post)
-        for post in posts()
+        for post in [*posts(), *pipeline.load_targeted_media_posts()]
         if str(post.get("slug") or post.get("id") or "").strip() == slug
     ]
     if len(matches) != 1:
@@ -99,9 +101,11 @@ def current_source_snapshot(slug: str) -> dict[str, Any]:
 
 
 def published_slugs() -> set[str]:
+    # A selected topic item remains known to the reconciliation and recovery
+    # guards without becoming a candidate for automatic daily generation.
     return {
         str(post.get("slug") or post.get("id") or "").strip()
-        for post in posts()
+        for post in [*posts(), *pipeline.load_targeted_media_posts()]
     }
 
 

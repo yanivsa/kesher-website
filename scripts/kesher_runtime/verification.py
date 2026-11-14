@@ -37,7 +37,15 @@ def publication_metadata(source: dict, kind: str) -> dict:
     title = prefix + raw_title[:100 - len(prefix)]
     # Reserve complete URLs first, then fit UTF-8 prose into YouTube's byte
     # limit. Cutting the whole description can silently sever an article URL.
-    suffix = f'\n\nלקריאת המאמר המלא:\n{url}\n\nלאתר קשר:\n{SITE_URL}\n\nלתיאום פגישה:\n{APPOINTMENT_URL}'
+    # Specialty parenting coordination must begin with an eligibility and
+    # safety inquiry; direct appointment booking bypasses its intake policy.
+    if source.get('category') == 'תיאום הורי':
+        cta_label = 'לבירור התאמה ראשוני'
+        cta_url = SITE_URL + '/contact?service=parenting_coordination'
+    else:
+        cta_label = 'לתיאום פגישה'
+        cta_url = APPOINTMENT_URL
+    suffix = f'\n\nלקריאת המאמר המלא:\n{url}\n\nלאתר קשר:\n{SITE_URL}\n\n{cta_label}:\n{cta_url}'
     available = 5000 - len(suffix.encode('utf-8'))
     if available < 0:
         raise VerificationError('Canonical links exceed YouTube description limit')

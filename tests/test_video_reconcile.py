@@ -1028,3 +1028,58 @@ class VideoReconcileTests(unittest.TestCase):
 if __name__ == "__main__":
     unittest.main()
 
+
+
+class ParentingCoordinationMediaTargetingTests(unittest.TestCase):
+    """Exact-only topic media access without changing the autonomous daily FIFO."""
+
+    TOPIC_IDS = (
+        "what-is-parenting-coordination",
+        "parenting-coordination-vs-mediation",
+        "divorced-parents-communication",
+        "parenting-time-holidays-after-divorce",
+        "can-one-parent-start-parenting-coordination",
+    )
+
+    def test_all_five_topic_articles_are_explicitly_targetable_and_identity_locked(self):
+        # The automatic selector must remain restricted to the existing daily
+        # catalogs, while deliberate exact-source targeting may see the hub.
+        default_slugs = {str(p.get("slug") or p.get("id")) for p in pipeline.load_posts()}
+        self.assertFalse(default_slugs.intersection(self.TOPIC_IDS))
+        catalog = pipeline.load_targeted_media_posts()
+        self.assertEqual({p["id"] for p in catalog}, set(self.TOPIC_IDS))
+        self.assertTrue(set(self.TOPIC_IDS).issubset(reconcile.published_slugs()))
+        for slug in self.TOPIC_IDS:
+            with self.subTest(slug=slug):
+                from_pipeline = pipeline.article_by_slug(slug)
+                from_reconciler = reconcile.current_source_snapshot(slug)
+                self.assertEqual(from_pipeline["content_sha256"], from_reconciler["content_sha256"])
+                self.assertEqual(from_pipeline["slug"], slug)
+                self.assertEqual(from_pipeline["category"], "תיאום הורי")
+                self.assertRegex(from_pipeline["content_sha256"], r"^[0-9a-f]{64}$")
+                self.assertIn("https://kesher.saharoni.com/blog/" + slug, from_pipeline["body"])
+                for kind in ("youtube_metadata", "short_youtube_metadata"):
+                    description = from_pipeline[kind]["description"]
+                    self.assertIn("https://kesher.saharoni.com/blog/" + slug, description)
+                    self.assertIn("https://kesher.saharoni.com/contact?service=parenting_coordination", description)
+                    self.assertNotIn("https://kesher.saharoni.com/appointment", description)
+
+    def test_regular_daily_article_metadata_and_queue_unchanged(self):
+        daily = pipeline.load_posts()
+        self.assertTrue(daily, "standard daily article catalog must remain intact")
+        source = pipeline.source_metadata(post("regular-daily-article"))
+        self.assertIn("https://kesher.saharoni.com/appointment", source["youtube_metadata"]["description"])
+        self.assertEqual(
+            source["youtube_metadata"]["description"],
+            pipeline.source_metadata(post("regular-daily-article"))["youtube_metadata"]["description"],
+        )
+
+    def test_duplicate_across_autonomous_and_targeted_catalog_fails_closed(self):
+        duplicate = post("duplicate-slug")
+        with mock.patch.object(pipeline, "load_posts", return_value=[duplicate]), mock.patch.object(
+            pipeline, "load_targeted_media_posts", return_value=[duplicate]
+        ):
+            with self.assertRaisesRegex(pipeline.PipelineError, "Duplicate article identity"):
+                pipeline.article_by_slug("duplicate-slug")
+            with self.assertRaisesRegex(pipeline.PipelineError, "Expected exactly one published source"):
+                reconcile.current_source_snapshot("duplicate-slug")
