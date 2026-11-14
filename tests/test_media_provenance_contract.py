@@ -122,6 +122,41 @@ class SignatureProvenanceTests(unittest.TestCase):
                 self.assertEqual(len(rendered), 3)
 
 
+class NativeShortPrepublicationGateTests(unittest.TestCase):
+    def test_exact_native_720p_short_passes_with_full_evidence_and_independent_overview(self):
+        item = bound_short()
+        item['visual_pipeline'] = guard.CANONICAL_NATIVE_SHORT_PIPELINE
+        item['status'] = 'pending_review'
+        item['technical_verified'] = True
+        item['media'].update(width=720, height=1280)
+        item['provider_raw_media'].update(width=720, height=1280)
+        for field in ('manifest_sha256', 'transcript_sha256', 'source_file_sha256', 'visual_review_sha256'):
+            item[field] = '6' * 64
+        item['frame_sha256'] = {'frame-1.png': '7' * 64}
+        self.assertTrue(overview.can_short_item_proceed_toward_publication(item))
+
+        for width, height in ((360, 640), (720, 1200), (1280, 720)):
+            invalid = copy.deepcopy(item)
+            invalid['media'].update(width=width, height=height)
+            self.assertFalse(overview.can_short_item_proceed_toward_publication(invalid))
+
+        mismatched_source = copy.deepcopy(item)
+        mismatched_source['provider_raw_media'].update(width=1080, height=1920)
+        self.assertFalse(overview.can_short_item_proceed_toward_publication(mismatched_source))
+
+        legacy = copy.deepcopy(item)
+        legacy['visual_pipeline'] = guard.CANONICAL_SHORT_PIPELINE
+        self.assertFalse(overview.can_short_item_proceed_toward_publication(legacy))
+
+        broken_origin = copy.deepcopy(item)
+        broken_origin['overview_provider_identity'] = {}
+        self.assertFalse(overview.can_short_item_proceed_toward_publication(broken_origin))
+
+        broken_signature = copy.deepcopy(item)
+        broken_signature['signature_verified'] = False
+        self.assertFalse(overview.can_short_item_proceed_toward_publication(broken_signature))
+
+
 class NativeShortPublicGeometryTests(unittest.TestCase):
     def test_native_720p_short_meets_9_by_16_gate_with_all_other_proofs(self):
         item = bound_short()
