@@ -82,6 +82,21 @@ class VideoUploadGuardTests(unittest.TestCase):
         with self.assertRaisesRegex(guard.UploadGuardError, "appointment URL"):
             guard.validate_candidate(item)
 
+    def test_parenting_coordination_requires_intake_instead_of_direct_booking(self) -> None:
+        item = technical_item("what-is-parenting-coordination")
+        item["source"]["category"] = "תיאום הורי"
+        article = item["source"]["canonical_url"]
+        item["youtube_metadata"]["description"] = (
+            f"תיאור בעברית\n{article}\n{guard.SITE_URL}\n"
+            f"{guard.SITE_URL}/contact?service=parenting_coordination"
+        )
+        guard.validate_candidate(item)
+        item["youtube_metadata"]["description"] = (
+            f"תיאור בעברית\n{article}\n{guard.SITE_URL}\n{guard.APPOINTMENT_URL}"
+        )
+        with self.assertRaisesRegex(guard.UploadGuardError, "parenting coordination intake URL"):
+            guard.validate_candidate(item)
+
     def test_missing_final_sha_fails_closed(self) -> None:
         item = technical_item()
         item["final_sha256"] = ""
