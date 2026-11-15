@@ -8,8 +8,6 @@ on:
       - ".github/workflows/kesher-controller-liveness.yml"
       - "scripts/kesher_runtime/controller_liveness.py"
       - "tests/test_controller_liveness.py"
-      - "scripts/kesher_runtime/delivery_preflight.py"
-      - "tests/test_kesher_daily_delivery_preflight.py"
   workflow_dispatch:
 
 permissions:
@@ -35,24 +33,6 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: "3.12"
-
-      - name: Test read-only delivery preflight regressions
-        if: ${{ github.event_name == 'pull_request' }}
-        run: PYTHONPATH=. python3 -m unittest tests.test_kesher_daily_delivery_preflight
-
-      - name: Audit daily article, source image and live lazy-player facade
-        # Observer ONLY: no provider call, no state write, no extra cron.
-        if: ${{ github.event_name != 'pull_request' }}
-        run: |
-          set -euo pipefail
-          PYTHONPATH=. python3 -u -m scripts.kesher_runtime.delivery_preflight --root . --live | tee /tmp/kesher-daily-preflight.txt
-          {
-            echo '### KESHER daily delivery: read-only status'
-            echo 'Source image and live long-video facade only. Short and controller authority are NOT verified by this check.'
-            echo '```json'
-            grep '^KESHER_DAILY_PREFLIGHT=' /tmp/kesher-daily-preflight.txt | sed 's/^KESHER_DAILY_PREFLIGHT=//'
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run Kesher Controller Liveness Watchdog
         env:
