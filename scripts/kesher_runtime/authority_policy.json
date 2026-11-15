@@ -2038,7 +2038,7 @@
       ],
       "review": {
         "call_chain": {
-          "scripts/kesher_runtime/controller_liveness.py": "f3e631ca9a215b835242ebd67a1ef17d2bfb9bf59f8be766c6108743e0ec8d9e"
+          "scripts/kesher_runtime/controller_liveness.py": "ffda29116debc6bfd722eacd1363821a13681b694547b5bbbbaa3a3064473f75"
         },
         "credential_services": {},
         "credentials": [],
