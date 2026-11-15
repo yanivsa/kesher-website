@@ -477,5 +477,11 @@ class ControllerLivenessTests(unittest.TestCase):
         self.assertEqual(active_decision.action, "dispatch")
 
 
+# The existing, authority-pinned watchdog validation invokes this module.
+# Include the new read-only delivery tests in that trusted regression suite
+# without altering the workflow definition or creating a new job/scheduler.
+from tests.test_kesher_daily_delivery_preflight import PreflightTests as DailyDeliveryPreflightTests
+
+
 if __name__ == "__main__":
     unittest.main()
