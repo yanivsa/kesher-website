@@ -34,6 +34,12 @@ Use one semantic, stable slug. The title and description must match the article'
 
 The article must satisfy the repository's current schema, content-quality checks, metadata requirements, generated publication files, sitemap/RSS/LLM outputs and image contract.
 
+## Editorial preference — reader questions (owner update 2026-11-15)
+
+Prefer question-led visible Hebrew headlines for most new daily articles: a real parent's or partner's concrete question such as "איך...", "למה...", "מה עושים כש...", "מתי..." or "האם...". Prioritize a practical, searchable dilemma over a generic academic or category label. Answer the specific question immediately in the opening 1–2 sentences, then offer trustworthy evidence, context, real-life options and limitations.
+
+Vary interrogatives naturally across days; do not turn every article into the same template, invent search demand, duplicate an existing page's intent, or force a question when it weakens accuracy, owner-mandated wording or reader clarity. The source/voice/image, single-article-per-authorized-slot, verified-primary-keyword and peer-review contracts remain unchanged. Media titles may adapt to platform constraints but must preserve the same exact source identity and claims.
+
 ## PR origin and provenance
 
 Master-authored article branches use:

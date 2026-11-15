@@ -75,6 +75,20 @@ while still matching language people actually search for.
    Avoid labels such as "דינמיקה", "תהליכים", "ויסות", "פערי ציפיות", "סמכות
    הורית" or other professional abstractions in the visible title unless ordinary
    users genuinely use them and they improve clarity.
+6A. OWNER EDITORIAL PREFERENCE — QUESTION-FIRST HEADLINES (2026-11-15):
+   Prefer a concrete, natural Hebrew QUESTION as the final visible H1 in most
+   daily KESHER articles, especially reader questions beginning with "איך",
+   "למה", "מה עושים כש", "מתי" or "האם". Examples of the form (not preapproved
+   facts/topics): "מה עושים כשהילד מסרב לדבר אחרי ריב?" and
+   "למה אנחנו רבים דווקא כשמנסים לעזור?".
+   The first 1-2 sentences must answer the exact question directly, with scope,
+   uncertainty and practical guidance rather than withholding the answer.
+   Keep genuine variety: do NOT use the same interrogative opening repeatedly,
+   add a question mark to a declarative claim, or force a question when the
+   owner's fixed required wording, verified search intent or clarity calls for
+   a different honest headline. Research and source credibility remain mandatory.
+   Question headlines are a STYLE PREFERENCE, not permission to change the
+   owner-supplied topic, create multiple daily articles, or relax QA.
 7. Use curiosity ethically. Never promise certainty, guaranteed outcomes, secret
    tricks, shocking discoveries, universal mistakes, or research claims the article
    cannot substantiate. A title may be punchy; it may not be misleading.
