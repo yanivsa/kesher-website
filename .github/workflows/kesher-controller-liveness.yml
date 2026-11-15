@@ -49,9 +49,9 @@ jobs:
           {
             echo '### KESHER daily delivery: read-only status'
             echo 'Source image and live long-video facade only. Short and controller authority are NOT verified by this check.'
-            echo '\`\`\`json'
+            echo '```json'
             grep '^KESHER_DAILY_PREFLIGHT=' /tmp/kesher-daily-preflight.txt | sed 's/^KESHER_DAILY_PREFLIGHT=//'
-            echo '\`\`\`'
+            echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run Kesher Controller Liveness Watchdog
