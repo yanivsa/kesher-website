@@ -42,6 +42,8 @@ DEFAULT_REPO = "yanivsa/kesher-website"
 DEFAULT_REF = "main"
 
 FRESHNESS_WINDOW = timedelta(minutes=15)
+# Do not treat an indefinitely queued workflow as proof that the controller is alive.
+MAX_ACTIVE_RUN_AGE = timedelta(hours=6)
 DISPATCH_VISIBILITY_GRACE = timedelta(minutes=5)
 MAX_RECOVERIES_PER_CYCLE = 3
 
@@ -199,18 +201,44 @@ def evaluate_liveness(
                 # Beyond visibility grace: intent timed out or dropped by GitHub API
                 # Fall through to evaluate freshness and allow retry if budget permits
 
-    # 5. Active/queued controller run check
+    # 5. Active/queued controller run check. A stale GitHub queued job must
+    # not masquerade indefinitely as a healthy controller (incident 2026-11-15:
+    # run 42522546178 queued since 2026-11-08). Fail closed, not dispatch.
+    stale_active = []
     for run in recent_runs:
         run_status = run.get("status")
-        if run_status in ACTIVE_RUN_STATUSES:
-            run_id = run.get("databaseId") or run.get("id")
-            return LivenessDecision(
-                status="LIVENESS_OK_ACTIVE_RUN_PRESENT",
-                reason=f"Canonical controller run {run_id} is currently {run_status}",
-                cycle=cycle,
-                active_run_id=run_id,
-                intent_id=reconciled_intent_id,
-            )
+        if run_status not in ACTIVE_RUN_STATUSES:
+            continue
+        run_id = run.get("databaseId") or run.get("id")
+        # A GitHub workflow re-run may have a new started_at while keeping the
+        # original created_at and run ID. Prefer that attempt's start time.
+        seen_at = _parse_iso(
+            run.get("run_started_at") or run.get("runStartedAt")
+            or run.get("created_at") or run.get("createdAt")
+        )
+        if (seen_at is None or seen_at > now_utc + timedelta(minutes=5)
+                or now_utc - seen_at > MAX_ACTIVE_RUN_AGE):
+            stale_active.append((run_id, run_status))
+            continue
+        return LivenessDecision(
+            status="LIVENESS_OK_ACTIVE_RUN_PRESENT",
+            reason=f"Canonical controller run {run_id} is currently {run_status}",
+            cycle=cycle,
+            active_run_id=run_id,
+            intent_id=reconciled_intent_id,
+        )
+    if stale_active:
+        run_id, run_status = stale_active[0]
+        return LivenessDecision(
+            status="LIVENESS_BLOCKED_STALE_ACTIVE_RUN",
+            reason=(
+                f"Controller run {run_id} reports {run_status} without a fresh "
+                "attempt timestamp; reconcile its exact GitHub state and "
+                "workflow authority before any new dispatch"
+            ),
+            cycle=cycle,
+            active_run_id=run_id,
+        )
 
     # 6. Freshness check
     activity_timestamps = []

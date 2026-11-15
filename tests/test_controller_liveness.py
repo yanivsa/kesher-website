@@ -260,6 +260,40 @@ class ControllerLivenessTests(unittest.TestCase):
                 self.assertIsNone(decision.action)
                 self.assertEqual(decision.active_run_id, 3003)
 
+    def test_week_old_queued_run_is_not_live_and_never_dispatches(self):
+        state = self.valid_active_state(updated_at=_iso(self.base_time - timedelta(days=7)))
+        old_run = {
+            "databaseId": 42522546178,
+            "status": "queued",
+            "created_at": _iso(self.base_time - timedelta(days=7)),
+        }
+        decision = evaluate_liveness(state, [old_run], {}, self.base_time)
+        self.assertEqual(decision.status, "LIVENESS_BLOCKED_STALE_ACTIVE_RUN")
+        self.assertEqual(decision.active_run_id, 42522546178)
+        self.assertIsNone(decision.action)
+        transport = MockTransport(runs=[old_run], state=state)
+        watchdog = ControllerLivenessWatchdog(
+            repo=DEFAULT_REPO, ledger_path=self.ledger_file, transport=transport
+        )
+        report = watchdog.reconcile(now=self.base_time)
+        self.assertEqual(report["status"], "LIVENESS_BLOCKED_STALE_ACTIVE_RUN")
+        self.assertFalse(report["dispatched"])
+        self.assertEqual(transport.dispatches, [])
+
+    def test_undated_active_run_fails_closed_and_fresh_run_wins(self):
+        state = self.valid_active_state(updated_at=_iso(self.base_time - timedelta(days=7)))
+        old = {"databaseId": 42522546178, "status": "queued"}
+        blocked = evaluate_liveness(state, [old], {}, self.base_time)
+        self.assertEqual(blocked.status, "LIVENESS_BLOCKED_STALE_ACTIVE_RUN")
+        fresh = {
+            "databaseId": 7654,
+            "status": "in_progress",
+            "created_at": _iso(self.base_time - timedelta(minutes=3)),
+        }
+        healthy = evaluate_liveness(state, [old, fresh], {}, self.base_time)
+        self.assertEqual(healthy.status, "LIVENESS_OK_ACTIVE_RUN_PRESENT")
+        self.assertEqual(healthy.active_run_id, 7654)
+
     # 6. Exhausted cycle remains terminal
     def test_exhausted_cycle_remains_terminal(self):
         stale_time = self.base_time - timedelta(hours=2)
