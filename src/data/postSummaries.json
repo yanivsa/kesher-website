@@ -1,5 +1,76 @@
 [
   {
+    "id": "child-bullied-at-school-what-parents-can-do",
+    "title": "מה עושים כשהילד מספר שמציקים לו בבית הספר?",
+    "date": "2026-11-15",
+    "category": "הדרכת הורים",
+    "subcategory": "יחסים חברתיים ובריונות",
+    "excerpt": "הילד מספר שמציקים לו בבית הספר? כך מקשיבים בלי להאשים, מבדילים בין ריב לבריונות, פונים לצוות ומחזירים תחושת ביטחון."
+  },
+  {
+    "id": "parent-apology-without-but",
+    "title": "הורים, מותר להגיד סליחה לילד: מה המחקר מצא על התנצלות בלי ״אבל״",
+    "date": "2026-11-14",
+    "category": "הדרכת הורים",
+    "subcategory": "תקשורת ואמון",
+    "excerpt": "צעקתם על הילד ומפחדים שהתנצלות תפגע בסמכות? מחקרים מ־2025 על מתבגרים בודקים מה משתנה כשמבוגר לוקח אחריות, ואיך מתנצלים בלי להאשים את הילד.",
+    "image": "/images/generated/blog/parent-apology-without-but-photo.jpg"
+  },
+  {
+    "id": "tiger-parenting-myth-vs-supportive-parenting",
+    "title": "הורות נמר: האם לחץ על ציונים באמת עוזר לילדים להצליח?",
+    "date": "2026-11-13",
+    "category": "הדרכת הורים",
+    "subcategory": "גבולות וציפיות",
+    "excerpt": "מה המחקר באמת מצא על הורות נמר והורות תומכת? מחקר אורך של 444 משפחות מלמד על הקשר בין לחץ לימודי, תחושת ערך וגבולות בבית.",
+    "image": "/images/generated/blog/tiger-parenting-myth-vs-supportive-parenting-photo.jpg"
+  },
+  {
+    "id": "what-is-parenting-coordination",
+    "title": "מה זה תיאום הורי ולמי הוא מתאים?",
+    "date": "2026-11-12",
+    "category": "תיאום הורי",
+    "subcategory": "הורות לאחר פרידה",
+    "excerpt": "מהו תיאום הורי, במה הוא שונה מהדרכת הורים, אילו סוגי מחלוקות הוא נועד לסייע לנהל ומתי חשוב לבדוק התאמה ובטיחות לפני תחילת התהליך?",
+    "image": "/images/parenting-coordination/what-is-parenting-coordination.svg"
+  },
+  {
+    "id": "parenting-coordination-vs-mediation",
+    "title": "תיאום הורי לעומת גישור: מה ההבדל ומתי פונים?",
+    "date": "2026-11-12",
+    "category": "תיאום הורי",
+    "subcategory": "הורות לאחר פרידה",
+    "excerpt": "גישור, תיאום הורי והדרכת הורים עוסקים בנושאים משיקים, אך אינם אותו שירות. מדריך שמבהיר את המטרות, התנאים והתפקיד של כל מסגרת.",
+    "image": "/images/parenting-coordination/parenting-coordination-vs-mediation.svg"
+  },
+  {
+    "id": "divorced-parents-communication",
+    "title": "תקשורת בין הורים גרושים: איך מתאמים בלי להיגרר לריב?",
+    "date": "2026-11-12",
+    "category": "תיאום הורי",
+    "subcategory": "הורות לאחר פרידה",
+    "excerpt": "שבעה עקרונות מעשיים להעברת מידע, תיאום זמני שהות והגנה על הילדים מפני ויכוחים בין ההורים — לצד סימנים למקרים שדורשים מענה מקצועי.",
+    "image": "/images/parenting-coordination/divorced-parents-communication.svg"
+  },
+  {
+    "id": "parenting-time-holidays-after-divorce",
+    "title": "זמני שהות, חגים וחופשות אחרי גירושין: איך מפחיתים מחלוקות?",
+    "date": "2026-11-12",
+    "category": "תיאום הורי",
+    "subcategory": "הורות לאחר פרידה",
+    "excerpt": "איך מתכננים חגים, שינויים בזמני שהות וחופשות בלי להכניס את הילדים לוויכוח? כללים מעשיים לתקשורת ולתכנון, ומתי לבדוק תיאום הורי.",
+    "image": "/images/parenting-coordination/parenting-time-holidays-after-divorce.svg"
+  },
+  {
+    "id": "can-one-parent-start-parenting-coordination",
+    "title": "האם שני ההורים חייבים להסכים לתיאום הורי?",
+    "date": "2026-11-12",
+    "category": "תיאום הורי",
+    "subcategory": "הורות לאחר פרידה",
+    "excerpt": "הורה אחד מעוניין בתיאום הורי והאחר מסרב? ההבדל בין פנייה פרטית, בירור ראשוני והפניה משפטית, ומה חשוב לבדוק לפני התחלה.",
+    "image": "/images/parenting-coordination/can-one-parent-start-parenting-coordination.svg"
+  },
+  {
     "id": "invisible-support-couples-responsive-help",
     "title": "תמיכה בבן הזוג: למה דווקא עזרה טובה יכולה להרחיק — ואיך להציע אותה אחרת?",
     "date": "2026-11-12",
@@ -63,6 +134,15 @@
     "image": "/images/generated/blog/positivity-resonance-couple-micro-moments-hero.png"
   },
   {
+    "id": "gifted-asynchronous-development-inner-loneliness",
+    "title": "הילד מדבר כמו גדול ומתפרק כמו ילד? א־סינכרוניות אצל מחוננים",
+    "date": "2026-11-09",
+    "category": "הדרכת הורים",
+    "subcategory": "ילדים מחוננים והתפתחות רגשית",
+    "excerpt": "ילד מחונן יכול להבין רעיונות מורכבים ועדיין להתקשות בוויסות רגשי או בקשרים חברתיים. מהי התפתחות א־סינכרונית, ואיך הורים מגיבים בלי להעמיס ציפיות?",
+    "image": "/images/generated/blog/gifted-asynchrony-parent-child-hero.jpg"
+  },
+  {
     "id": "self-distancing-couple-arguments",
     "title": "איך להירגע באמצע ריב זוגי? שינוי קטן בדיבור הפנימי שיכול לעזור",
     "date": "2026-11-09",
@@ -79,15 +159,6 @@
     "subcategory": "ילדים רגישים ומחוננים",
     "excerpt": "רגישות לרעש, תגיות והצפה רגשית אינה בהכרח חולשה. מה תיאוריית רגישות היתרון של מייקל פלואס באמת מצאה, ואיך הורים יכולים לסייע?",
     "image": "/images/blog/vantage-sensitivity-parenting-hero.jpg"
-  },
-  {
-    "id": "gifted-asynchronous-development-inner-loneliness",
-    "title": "הילד מדבר כמו גדול ומתפרק כמו ילד? א־סינכרוניות אצל מחוננים",
-    "date": "2026-11-09",
-    "category": "הדרכת הורים",
-    "subcategory": "ילדים מחוננים והתפתחות רגשית",
-    "excerpt": "ילד מחונן יכול להבין רעיונות מורכבים ועדיין להתקשות בוויסות רגשי או בקשרים חברתיים. מהי התפתחות א־סינכרונית, ואיך הורים מגיבים בלי להעמיס ציפיות?",
-    "image": "/images/generated/blog/gifted-asynchrony-parent-child-hero.jpg"
   },
   {
     "id": "stress-crossover-after-work",
@@ -485,11 +556,11 @@
   },
   {
     "id": "why-cant-i-find-a-relationship",
-    "title": "למה אני לא מוצאת זוגיות? מה שעוצר אותנו מלהיכנס לקשר ואיך אפשר להסתכל על זה אחרת",
+    "title": "קושי ביצירת קשר זוגי: למה קשה לי למצוא זוגיות?",
     "date": "2026-10-16",
     "category": "זוגיות",
     "subcategory": "מציאת זוגיות",
-    "excerpt": "השאלה 'למה אני לא מוצאת זוגיות' מנקרת אצל רבים, במיוחד אחרי עוד דייט שלא צלח או מערכת יחסים קצרה שהסתיימה. לפעמים החיפוש הופך למעגל מתסכל של השוואות וביקורת עצמית. הנה מבט אחר על מה שלעתים מקשה עלינו למצוא קשר.",
+    "excerpt": "קושי ביצירת קשר זוגי יכול להיות קשור לציפיות, לפחד להיפגע או לשחיקה בדייטים. במאמר נבחן מה עלול לעצור היכרות מלהפוך לקשר, ואיך אפשר לגשת לכך אחרת.",
     "image": "/images/generated/blog/why-cant-i-find-a-relationship.jpg"
   },
   {
