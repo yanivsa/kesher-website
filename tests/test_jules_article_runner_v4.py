@@ -128,6 +128,14 @@ class JulesArticleRunnerV4Tests(unittest.TestCase):
         self.assertIn("Headline Frame: ...", contract)
         self.assertIn("may not be misleading", contract)
 
+    def test_question_led_headlines_are_preferred_not_forced(self):
+        contract = runner.SEARCH_FIRST_CONTRACT
+        self.assertIn("QUESTION-FIRST HEADLINES", contract)
+        self.assertIn('"מה עושים כש"', contract)
+        self.assertIn("first 1-2 sentences must answer", contract)
+        self.assertIn("STYLE PREFERENCE", contract)
+        self.assertIn("owner-supplied topic", contract)
+
     def test_preflight_allows_different_topic_on_same_date_when_owner_brief_present(self):
         posts = [
             {"id": "pacifier-weaning", "date": "2026-10-19", "primaryKeyword": "גמילה ממוצץ", "title": "גמילה ממוצץ"},
