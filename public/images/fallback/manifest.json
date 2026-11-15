@@ -50,6 +50,14 @@
       "category": "singles",
       "path": "public/images/fallback/singles/adulthood_morning_coffee.jpg",
       "description": "צילום מציאותי של הכנת קפה בבוקר במטבח מואר המתאים לנושא שגרה ורווקות"
+    },
+    {
+      "category": "parenting",
+      "path": "public/images/fallback/parenting/parent-listening-after-school-20261115.png",
+      "description": "צילום מקורי מציאותי של אם מקשיבה לבנה ליד שולחן ביתי לאחר יום לימודים, כאשר ילקוט בית הספר לידו",
+      "origin_provider": "OpenAI Image Generation",
+      "origin_provenance": "Original KESHER editorial image generated 2026-11-15, manually inspected, uploaded to Creative Cloud for binary transfer",
+      "sha256": "17ffe2d06e2133804c91ad9105a18fd74b0e7b79128bee42435a5243c7ce9b3f"
     }
   ]
 }
