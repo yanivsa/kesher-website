@@ -23,6 +23,16 @@ on:
       - "public/images/blog/**"
   workflow_dispatch:
     inputs:
+      request_id:
+        description: Immutable Master request ID (Schema-6 only)
+        required: false
+        default: ""
+        type: string
+      request_json:
+        description: Provider-neutral Master intent JSON (Schema-6 only)
+        required: false
+        default: ""
+        type: string
       child_workflow:
         description: Completed child workflow name
         required: false
@@ -85,9 +95,41 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  master_intent:
+    # Explicit owner intent ONLY. Never starts for schedule, push or legacy child events.
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.request_json != '' && inputs.request_id != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: write
+      id-token: write
+    steps:
+      - name: Checkout immutable trusted main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Install observation requirements
+        run: python3 -m pip install -r scripts/requirements-article.txt
+      - name: Run verified Master intent via the single canonical outbox
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MASTER_REQUEST_ID: ${{ inputs.request_id }}
+          REQUEST_JSON: ${{ inputs.request_json }}
+          KESHER_CUTOVER_GATEWAY_URL: ${{ vars.KESHER_CUTOVER_GATEWAY_URL }}
+        run: |
+          set -euo pipefail
+          export MASTER_INTENT_NOW="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          PYTHONPATH=. python3 -m scripts.kesher_runtime.master_intent_entry --mode live --request-json "$REQUEST_JSON"
+
   control:
     # Sole pre-cutover daily authority; automatically fails closed once canonical state becomes Schema 6.
-    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && !(github.event_name == 'workflow_dispatch' && inputs.request_json != '') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

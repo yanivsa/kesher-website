@@ -1,14 +1,17 @@
-"""Read-only shadow entry point for explicit Master-owned KESHER command intents."""
+"""Explicit Master intent entry. Shadow is read-only; live is authority-fenced."""
 from __future__ import annotations
 
 import argparse
 import json
 import os
+import subprocess
 import sys
 
 from .github import GitHub, GitHubError, GitHubStateStore
 from .identity import identity_from_dict
 from .master_intent import MasterIntent, plan_master_command
+from .controller_entry import deliver as deliver_command
+from .authority import require_live
 from .media_audit import ArchivedMediaAuditor
 from .media_observer import YouTubeInventory
 from .observe import RepositoryObserver
@@ -54,7 +57,7 @@ def _observer(github, token: str, *, now: str) -> RepositoryObserver:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--request-json', required=True)
-    parser.add_argument('--mode', choices=('shadow',), default='shadow')
+    parser.add_argument('--mode', choices=('shadow', 'live'), default='shadow')
     args = parser.parse_args(argv)
     try:
         raw = json.loads(args.request_json)
@@ -78,8 +81,27 @@ def main(argv=None) -> int:
         now = os.environ['MASTER_INTENT_NOW']
         github = GitHub(token)
         store = GitHubStateStore(github, REPOSITORY)
+        if args.mode == 'live':
+            expected_workflow = (REPOSITORY +
+                '/.github/workflows/kesher-content-controller.yml@refs/heads/main')
+            if (os.environ.get('GITHUB_REPOSITORY') != REPOSITORY
+                    or os.environ.get('GITHUB_REF') != 'refs/heads/main'
+                    or os.environ.get('GITHUB_EVENT_NAME') != 'workflow_dispatch'
+                    or os.environ.get('GITHUB_WORKFLOW_REF') != expected_workflow
+                    or not workflow_request_id
+                    or not os.environ.get('KESHER_CUTOVER_GATEWAY_URL')):
+                raise StateInvalid('MASTER_LIVE_TRUSTED_INVOCATION_REQUIRED')
+            checkout_sha = subprocess.run(
+                ['git', 'rev-parse', 'HEAD'], check=True, capture_output=True,
+                text=True, timeout=15).stdout.strip()
+            main_ref_sha = github.request(
+                'GET', f'/repos/{REPOSITORY}/git/ref/heads/main')['object']['sha']
+            if checkout_sha != main_ref_sha:
+                raise StateInvalid('MASTER_LIVE_STALE_CHECKOUT')
+            require_live(store)
         loaded = store.load()
-        observation = _observer(github, token, now=now).read(loaded.state)
+        observer = _observer(github, token, now=now)
+        observation = observer.read(loaded.state)
         main_sha = observation.value['main_sha']
         proposed, command_id = plan_master_command(
             loaded.state,
@@ -89,6 +111,20 @@ def main(argv=None) -> int:
             now=now,
         )
         command = proposed['commands'][command_id]
+        if args.mode == 'live':
+            require_live(store)
+            if observation.value['main_sha'] != checkout_sha:
+                raise StateInvalid('MASTER_LIVE_STALE_OBSERVATION')
+            saved = store.save(loaded, proposed)
+            dispatch = deliver_command(store, observer, command_id)
+            print(json.dumps({
+                'mode': 'live', 'request_id': intent.request_id,
+                'command_id': command_id,
+                'written_revision': saved.state['revision'],
+                'dispatch': dispatch,
+                'public_verified': False,
+            }, ensure_ascii=False, sort_keys=True))
+            return 0
         print(json.dumps({
             'mode': 'shadow',
             'request_id': intent.request_id,
@@ -100,8 +136,8 @@ def main(argv=None) -> int:
             'dispatched': False,
         }, ensure_ascii=False, sort_keys=True))
         return 0
-    except (KeyError, TypeError, ValueError, GitHubError, StateInvalid, StateConflict, json.JSONDecodeError) as exc:
-        print(f'MASTER_INTENT_SHADOW_FAILED:{type(exc).__name__}:{exc}', file=sys.stderr)
+    except (KeyError, TypeError, ValueError, GitHubError, StateInvalid, StateConflict, json.JSONDecodeError, subprocess.SubprocessError) as exc:
+        print(f'MASTER_INTENT_FAILED:{type(exc).__name__}', file=sys.stderr)
         return 1
 
 
