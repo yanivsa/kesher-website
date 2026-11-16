@@ -68,7 +68,7 @@ sourceIdentity: "PENDING_APPROVED_PUBLICATION_MANIFEST"
 
 1. Saxbe, D., & Repetti, R. (2010). *For better or worse? Coregulation of couples' cortisol levels and mood states.* Journal of Personality and Social Psychology, 98(1), 92–103. https://pubmed.ncbi.nlm.nih.gov/20053034/ — 30 זוגות; מדידות חוזרות במשך שלושה ימים; מחקר תצפיתי.
 2. Saxbe, D. E., Repetti, R. L., & Nishina, A. (2008). *Marital satisfaction, recovery from work, and diurnal cortisol among men and women.* Health Psychology, 27(1), 15–25. https://pubmed.ncbi.nlm.nih.gov/18230009/ — 60 מבוגרים; מדידות קורטיזול ויומני עבודה; קשרים מורכבים לפי מין.
-3. *Momentary work worries, marital disclosure, and salivary cortisol among parents of young children.* (2010). Psychosomatic Medicine. https://pubmed.ncbi.nlm.nih.gov/20841560/ — 37 זוגות; קשרים תצפיתיים בין דאגות עבודה וקורטיזול.
+3. Slatcher, R. B., Robles, T. F., Repetti, R. L., & Fellows, M. D. (2010). *Momentary work worries, marital disclosure, and salivary cortisol among parents of young children.* Psychosomatic Medicine, 72(9), 887–896. https://pubmed.ncbi.nlm.nih.gov/20841560/ — 37 זוגות; קשרים תצפיתיים בין דאגות עבודה וקורטיזול.
 
 ---
 
@@ -79,6 +79,10 @@ sourceIdentity: "PENDING_APPROVED_PUBLICATION_MANIFEST"
 **Dedup:** Before any production activity, inspect both posts catalogs, all open PRs, prior media artifacts/provider tasks and the same publication slot. Do not adopt this draft if another Nov 16 identity has already claimed it.
 
 **Hero brief (requires original licensed/trusted pixels and image QA):** Authentic documentary-style landscape 16:9 photograph in an Israeli home in early evening. Adult couple, one arriving with a work bag while the other offers a glass of water; warm natural light, emotionally thoughtful but not melodramatic, no text, no logos, no stock watermark. Distinct from published hero imagery. Do not attach placeholder.
+
+
+
+**Generated original hero available for staging (NOT committed/published):** 1536×864 pixel JPEG, 278,467 bytes, SHA256 `ef22c9c755c45aedd8ead6420100b4478a48684a7a20e62cf339e451d688235a`. This original ChatGPT-generated image is available as a conversation attachment named `kesher_stress_crossover_hero_2026-11-16.jpg`; it needs a trusted upload into `public/images/generated/blog/`, image dimensions/provenance QA and final publication manifest binding before any release. Do not treat a conversational download link as a public site asset.
 
 **NotebookLM Long — exact-source-bound script outline (4–5 min; Hebrew female narrator):**
 - Title: "איך עוצרים את הסטרס מהעבודה לפני שהוא הופך לריב?"
