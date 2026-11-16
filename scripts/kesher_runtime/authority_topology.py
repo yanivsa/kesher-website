@@ -101,7 +101,64 @@ def check_definitions(definitions, rules):
                 and 'KESHER_PRE_CUTOVER_DAILY_AUTHORITY' in text
                 and all(j.get('if') == "${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}" for j in jobs.values())
             )
-            if not (canonical or pre_cutover):
+            # The registered controller identity may accept explicit Master
+            # intent only behind a separate OIDC-attested, Schema-6 authority
+            # gate. Cron and legacy events remain on the bridge-gated job.
+            master_job = jobs.get('master_intent', {})
+            legacy_job = jobs.get('control', {})
+            master_guard = ("\u0024{{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.request_json != '' && inputs.request_id != '' }}")
+            legacy_guard = ("\u0024{{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}")
+            master_steps = master_job.get('steps', []) if isinstance(master_job, dict) else []
+            legacy_steps = legacy_job.get('steps', []) if isinstance(legacy_job, dict) else []
+            skip_guard = ("\u0024{{ github.event_name == 'workflow_dispatch' && inputs.request_json != '' }}")
+            legacy_step_guard = ("\u0024{{ steps.master_request.outcome != 'success' }}")
+            protected_legacy_steps = {
+                'Checkout trusted controller',
+                'Verify pre-cutover Schema-5 daily controller authority',
+                'Set up Python',
+                'Install strict article image decoder',
+                'Run Kesher Content Controller',
+            }
+            observed_protected = [
+                s.get('name') for s in legacy_steps if isinstance(s, dict)
+                and s.get('name') in protected_legacy_steps
+                and s.get('if') == legacy_step_guard
+            ]
+            legacy_repair = [
+                s for s in legacy_steps if isinstance(s, dict)
+                and s.get('name') == 'Reconcile bounded controller code repair'
+            ]
+            exclusive_legacy = (
+                bool(legacy_steps)
+                and legacy_steps[0].get('id') == 'master_request'
+                and legacy_steps[0].get('if') == skip_guard
+                and set(observed_protected) == protected_legacy_steps
+                and len(observed_protected) == len(protected_legacy_steps)
+                and len(legacy_repair) == 1
+                and legacy_repair[0].get('if') == (
+                    "\u0024{{ always() && steps.bridge_admission.outcome == 'success' && steps.master_request.outcome != 'success' }}"
+                )
+            )
+            master_live = (
+                path == '.github/workflows/kesher-content-controller.yml'
+                and set(jobs) == {'control', 'master_intent'}
+                and master_job.get('if') == master_guard
+                and legacy_job.get('if') == legacy_guard
+                and exclusive_legacy
+                and master_job.get('permissions', {}).get('id-token') == 'write'
+                and master_job.get('permissions', {}).get('contents') == 'write'
+                and master_job.get('permissions', {}).get('actions') == 'write'
+                and 'scripts.kesher_runtime.bridge_admission --controller' in text
+                and 'scripts/kesher_content_controller_stabilized.py' in text
+                and 'KESHER_PRE_CUTOVER_DAILY_AUTHORITY' in text
+                and 'scripts.kesher_runtime.master_intent_entry --mode live' in text
+                and 'KESHER_CUTOVER_GATEWAY_URL' in text
+                and any('REQUEST_JSON' in (s.get('env') or {}) and
+                        'MASTER_REQUEST_ID' in (s.get('env') or {}) and
+                        'KESHER_CUTOVER_GATEWAY_URL' in (s.get('env') or {})
+                        for s in master_steps if isinstance(s, dict))
+            )
+            if not (canonical or pre_cutover or master_live):
                 raise StateInvalid('AUTHORITY_CONTROLLER_NOT_CANONICAL')
         if role == 'watchdog':
             valid_watchdog = (

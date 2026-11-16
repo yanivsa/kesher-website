@@ -189,6 +189,24 @@ def plan_master_command(state: dict, intent: MasterIntent, *, main_sha: str,
     data = _observation_data(observation, main_sha=main_sha, state_revision=state['revision'])
     facts = reconcile_facts(state, observation, now=now)
     inputs = _derive_inputs(facts, data, intent.target, intent.operation)
+    # Reuse an unresolved command only when every immutable command field
+    # matches the newly observed, revision-bound exact request. Never create
+    # a second provider job for an identical pending source/operation.
+    pending = [
+        row for row in facts['commands'].values()
+        if row['target'] == intent.target.to_dict() and row['outcome'] == 'pending'
+    ]
+    matching = [row for row in pending
+                if row['operation'] == intent.operation
+                and row['inputs'] == inputs and row['code_sha'] == main_sha]
+    if len(pending) == 1 and len(matching) == 1:
+        command_id = matching[0]['id']
+        facts['audit'].append({'at': now, 'event': 'master_intent_resumed',
+                               'request_id': intent.request_id, 'command_id': command_id})
+        validate_transition(state, facts)
+        return facts, command_id
+    if len(pending) > 1:
+        raise StateInvalid('MASTER_INTENT_MULTIPLE_PENDING_COMMANDS')
     ordinals = [row['ordinal'] for row in facts['commands'].values()
                 if row['target'] == intent.target.to_dict() and row['operation'] == intent.operation]
     ordinal = 1 + max(ordinals, default=0)

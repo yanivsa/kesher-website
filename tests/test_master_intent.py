@@ -118,6 +118,15 @@ class MasterIntentValidationTests(unittest.TestCase):
                                 main_sha=MAIN_SHA, observation=self.observation(status='image_required'),
                                 now='2026-10-31T22:06:00+00:00')
 
+    def test_same_pending_exact_intent_resumes_existing_command_without_duplication(self):
+        first, command_id = plan_master_command(self.state(), self.request(), main_sha=MAIN_SHA,
+                                                observation=self.observation(), now=NOW)
+        resumed, resumed_id = plan_master_command(
+            first, self.request(request_id='master-20261031-retry'), main_sha=MAIN_SHA,
+            observation=self.observation(), now='2026-10-31T22:06:00+00:00')
+        self.assertEqual(resumed_id, command_id)
+        self.assertEqual(set(resumed['commands']), {command_id})
+
     def test_target_operation_route_must_be_authorized(self):
         with self.assertRaisesRegex(StateInvalid, 'MASTER_INTENT_ROUTE_FORBIDDEN'):
             plan_master_command(self.state(), self.request(operation='deploy_article'), main_sha=MAIN_SHA,

@@ -1891,7 +1891,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "4dc2fd31392ab25b567c53a4101f0149941380a2757a3a6087b5d3c20233f428",
+      "definition_sha256": "910e75430ceb67b4a71a3531e287b3b5f082171658e7b45677b8f127fe649afc",
       "resources": [
         "cloudflare.account",
         "github.dispatch",
@@ -1982,7 +1982,9 @@
           "scripts/kesher_master_supervisor_shadow.py": "21e9c69cb0c03bc7d6b67b985ed1e1a660716ab39d0725aa99d1f91d6f60b8e7",
           "scripts/kesher_master_supervisor.py": "368f00b850acbb92b9421732462fe466fa2be47057c3c601d2a8ad9cc7d2a8b1",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
-          "scripts/kesher_runtime/native_media.py": "86320d11c239259aee5ef8249c1a5abb2d3322cd5d923992bc9a6c5898eac119"
+          "scripts/kesher_runtime/native_media.py": "86320d11c239259aee5ef8249c1a5abb2d3322cd5d923992bc9a6c5898eac119",
+          "scripts/kesher_runtime/master_intent.py": "29512e574a0eaf7351a13eb5bc1d671bcedf8dd832b5b5ac0052707fbf4a038c",
+          "scripts/kesher_runtime/master_intent_entry.py": "273677856a48df9ea22155176528f586ed6458e0a47d6c3f3a555bddee3ec577"
         },
         "credential_services": {
           "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
@@ -2039,7 +2041,7 @@
       "review": {
         "call_chain": {
           "scripts/kesher_runtime/controller_liveness.py": "ffda29116debc6bfd722eacd1363821a13681b694547b5bbbbaa3a3064473f75",
-        "scripts/kesher_runtime/delivery_preflight.py": "b1eead6da79194fdbf7012ff4e55934e13bc53ca2ef71a1690e45d00f7b2435b"
+          "scripts/kesher_runtime/delivery_preflight.py": "b1eead6da79194fdbf7012ff4e55934e13bc53ca2ef71a1690e45d00f7b2435b"
         },
         "credential_services": {},
         "credentials": [],
@@ -3927,7 +3929,7 @@
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
-          "scripts/kesher_runtime/authority_topology.py": "915eee8f050e0bbc9304ec39a88e970c88388506bbc5418fb3cb38327056f80d",
+          "scripts/kesher_runtime/authority_topology.py": "42e0e08fdb21e87d84ca0e4b833b7e6e4ba716aa5021cc8cf97afae9d130cfce",
           "scripts/kesher_runtime/migration.py": "dffe62f3f56ff66e4afc0e73e15e54b647adb1759d93ceab263a2a0e52b8884c",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
@@ -4248,8 +4250,8 @@
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
           "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858",
           "scripts/kesher_runtime/legacy_retirement.py": "90555d274327debeac3e16adb50ac5e011f38cf353f78e888f228040a3027d4c",
-          "scripts/kesher_runtime/master_intent.py": "79363a5f941a34520de1bed13e2eb4649e77ba1079597a8fda0cd52750773d2b",
-          "scripts/kesher_runtime/master_intent_entry.py": "df53bf9cfec53bae78cb729bc65efa32ea7bd94bab1cae2018cdfec1692087e4",
+          "scripts/kesher_runtime/master_intent.py": "29512e574a0eaf7351a13eb5bc1d671bcedf8dd832b5b5ac0052707fbf4a038c",
+          "scripts/kesher_runtime/master_intent_entry.py": "273677856a48df9ea22155176528f586ed6458e0a47d6c3f3a555bddee3ec577",
           "scripts/kesher_runtime/media_audit.py": "4d2affee1981ef26f098c209087ac8bcab00cc837883e0fe03e4bab789a1be67",
           "scripts/kesher_runtime/media_observer.py": "3d4b1e761b3c77296f1fcb2b3ed1a57d04bd590ed68b5e963f22277b2a8d6b26",
           "scripts/kesher_runtime/media_publication.py": "85004c226175d94264219892dc8806ab9b4fad01b91ef42728c3862421084c6b",
@@ -4345,8 +4347,8 @@
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
           "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858",
           "scripts/kesher_runtime/legacy_retirement.py": "90555d274327debeac3e16adb50ac5e011f38cf353f78e888f228040a3027d4c",
-          "scripts/kesher_runtime/master_intent.py": "79363a5f941a34520de1bed13e2eb4649e77ba1079597a8fda0cd52750773d2b",
-          "scripts/kesher_runtime/master_intent_entry.py": "df53bf9cfec53bae78cb729bc65efa32ea7bd94bab1cae2018cdfec1692087e4",
+          "scripts/kesher_runtime/master_intent.py": "29512e574a0eaf7351a13eb5bc1d671bcedf8dd832b5b5ac0052707fbf4a038c",
+          "scripts/kesher_runtime/master_intent_entry.py": "273677856a48df9ea22155176528f586ed6458e0a47d6c3f3a555bddee3ec577",
           "scripts/kesher_runtime/media_audit.py": "4d2affee1981ef26f098c209087ac8bcab00cc837883e0fe03e4bab789a1be67",
           "scripts/kesher_runtime/media_observer.py": "3d4b1e761b3c77296f1fcb2b3ed1a57d04bd590ed68b5e963f22277b2a8d6b26",
           "scripts/kesher_runtime/media_publication.py": "85004c226175d94264219892dc8806ab9b4fad01b91ef42728c3862421084c6b",
@@ -4372,8 +4374,9 @@
           "tests/test_article_worker_lazy_jules.py": "303ace7839c347112cdd39d5ec8022d7aaca5bc7175cb61b0839e1a4a7a3cb79",
           "tests/test_controller_fact_reconcile.py": "e034b061e3f26b5a2693c01316caf33aadf30799a2a6cf3a4f87603ccdc893f5",
           "tests/test_master_article_origin.py": "1a52e4b230e95f7c432281ec2efe0182b9a636c151354fb0fa459cd8f5e7875c",
-          "tests/test_master_intent.py": "c64b3af568a98d09aa64b73259145342f5062465c4e49618f2566a2553a85f40",
-          "scripts/kesher_runtime/native_media.py": "86320d11c239259aee5ef8249c1a5abb2d3322cd5d923992bc9a6c5898eac119"
+          "tests/test_master_intent.py": "a6b0673a9c04d13547285acee9fd04bde6a5cac5b1a8411f87279842db95f8b5",
+          "scripts/kesher_runtime/native_media.py": "86320d11c239259aee5ef8249c1a5abb2d3322cd5d923992bc9a6c5898eac119",
+          "tests/test_master_intent_live_contract.py": "1d45f1a3b7e809b48ba2ceaafb5bc70cec6c2b32775ac839f4707e2d547c9146"
         },
         "credential_services": {},
         "credentials": [],
