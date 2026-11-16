@@ -589,6 +589,25 @@ def main(argv: Optional[list[str]] = None) -> int:
     dry_run = args.audit or not args.reconcile
     report = watchdog.reconcile(controller_state=state, now=now, dry_run=dry_run)
     print(json.dumps(report, indent=2, ensure_ascii=False))
+    # Read-only daily delivery observation piggybacks on the EXISTING watchdog
+    # execution; it never controls dispatch, alters Schema-5/6 authority, or
+    # infers a Short is public from a workflow exit code.
+    if (not dry_run and args.repo == DEFAULT_REPO
+            and os.environ.get("GITHUB_EVENT_NAME") in ("schedule", "workflow_dispatch")):
+        try:
+            from .delivery_preflight import audit
+            daily = audit(Path(__file__).resolve().parents[2], now, live=True)
+            print("KESHER_DAILY_PREFLIGHT=" + json.dumps(daily, ensure_ascii=False, sort_keys=True))
+            if daily["status"] in ("BLOCKED", "ACTION_REQUIRED"):
+                print("::warning title=KESHER daily publication gap::"
+                      + daily["date"] + ": " + daily["article"]
+                      + "; long=" + daily["long"] + "; short=" + daily["short"])
+        except Exception as exc:
+            # Observer uncertainty is explicit, not production completion.
+            # Keep the existing authority/liveness outcome unmodified.
+            print("KESHER_DAILY_PREFLIGHT=UNKNOWN")
+            print("::warning title=KESHER daily audit unavailable::"
+                  + type(exc).__name__)
     return 0
 
 
