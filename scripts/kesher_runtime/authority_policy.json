@@ -1891,7 +1891,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "e54aea6800af363f0a75c1cc0f7a086f75bd33833843c2f429ec41cedebb05aa",
+      "definition_sha256": "910e75430ceb67b4a71a3531e287b3b5f082171658e7b45677b8f127fe649afc",
       "resources": [
         "cloudflare.account",
         "github.dispatch",
@@ -3929,7 +3929,7 @@
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
-          "scripts/kesher_runtime/authority_topology.py": "a4c10c99377c33af44ea38d75263667f23421f7edca70abd027f7d6d265dca6d",
+          "scripts/kesher_runtime/authority_topology.py": "42e0e08fdb21e87d84ca0e4b833b7e6e4ba716aa5021cc8cf97afae9d130cfce",
           "scripts/kesher_runtime/migration.py": "dffe62f3f56ff66e4afc0e73e15e54b647adb1759d93ceab263a2a0e52b8884c",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
