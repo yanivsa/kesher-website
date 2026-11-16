@@ -2,7 +2,7 @@
 Track: automatic_daily
 daily_date: 2026-11-16
 source_slug: child-led-play-10-minutes-connection
-content_sha256: 493babacc6c035a4e17a429fcc7f2c6464a3519e98fadb95f74b76feceee2e69
+content_sha256: 36c1d366485db4908dfaf34139c73457307c0562b0e3fd7d52eab347a80a1c2c
 Article: https://kesher.saharoni.com/blog/child-led-play-10-minutes-connection
 Media status: NOT_STARTED / QA_PENDING (provider artifacts not generated)
 Do not initiate native NotebookLM generation until canonical Schema6 authority, exact task absence,
