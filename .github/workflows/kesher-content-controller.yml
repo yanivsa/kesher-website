@@ -111,7 +111,6 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
       - name: Set up Python
-        if: ${{ steps.master_request.outcome != 'success' }}
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: "3.12"
@@ -155,6 +154,7 @@ jobs:
         run: python3 -m scripts.kesher_runtime.bridge_admission --controller
 
       - name: Set up Python
+        if: ${{ steps.master_request.outcome != 'success' }}
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: "3.12"
