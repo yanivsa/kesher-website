@@ -107,13 +107,44 @@ def check_definitions(definitions, rules):
             master_job = jobs.get('master_intent', {})
             legacy_job = jobs.get('control', {})
             master_guard = ("\u0024{{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.request_json != '' && inputs.request_id != '' }}")
-            legacy_guard = ("\u0024{{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && !(github.event_name == 'workflow_dispatch' && inputs.request_json != '') }}")
+            legacy_guard = ("\u0024{{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}")
             master_steps = master_job.get('steps', []) if isinstance(master_job, dict) else []
+            legacy_steps = legacy_job.get('steps', []) if isinstance(legacy_job, dict) else []
+            skip_guard = ("\u0024{{ github.event_name == 'workflow_dispatch' && inputs.request_json != '' }}")
+            legacy_step_guard = ("\u0024{{ steps.master_request.outcome != 'success' }}")
+            protected_legacy_steps = {
+                'Checkout trusted controller',
+                'Verify pre-cutover Schema-5 daily controller authority',
+                'Set up Python',
+                'Install strict article image decoder',
+                'Run Kesher Content Controller',
+            }
+            observed_protected = [
+                s.get('name') for s in legacy_steps if isinstance(s, dict)
+                and s.get('name') in protected_legacy_steps
+                and s.get('if') == legacy_step_guard
+            ]
+            legacy_repair = [
+                s for s in legacy_steps if isinstance(s, dict)
+                and s.get('name') == 'Reconcile bounded controller code repair'
+            ]
+            exclusive_legacy = (
+                bool(legacy_steps)
+                and legacy_steps[0].get('id') == 'master_request'
+                and legacy_steps[0].get('if') == skip_guard
+                and set(observed_protected) == protected_legacy_steps
+                and len(observed_protected) == len(protected_legacy_steps)
+                and len(legacy_repair) == 1
+                and legacy_repair[0].get('if') == (
+                    "\u0024{{ always() && steps.bridge_admission.outcome == 'success' && steps.master_request.outcome != 'success' }}"
+                )
+            )
             master_live = (
                 path == '.github/workflows/kesher-content-controller.yml'
                 and set(jobs) == {'control', 'master_intent'}
                 and master_job.get('if') == master_guard
                 and legacy_job.get('if') == legacy_guard
+                and exclusive_legacy
                 and master_job.get('permissions', {}).get('id-token') == 'write'
                 and master_job.get('permissions', {}).get('contents') == 'write'
                 and master_job.get('permissions', {}).get('actions') == 'write'
