@@ -101,7 +101,33 @@ def check_definitions(definitions, rules):
                 and 'KESHER_PRE_CUTOVER_DAILY_AUTHORITY' in text
                 and all(j.get('if') == "${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}" for j in jobs.values())
             )
-            if not (canonical or pre_cutover):
+            # The registered controller identity may accept explicit Master
+            # intent only behind a separate OIDC-attested, Schema-6 authority
+            # gate. Cron and legacy events remain on the bridge-gated job.
+            master_job = jobs.get('master_intent', {})
+            legacy_job = jobs.get('control', {})
+            master_guard = ("\u0024{{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.request_json != '' && inputs.request_id != '' }}")
+            legacy_guard = ("\u0024{{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && !(github.event_name == 'workflow_dispatch' && inputs.request_json != '') }}")
+            master_steps = master_job.get('steps', []) if isinstance(master_job, dict) else []
+            master_live = (
+                path == '.github/workflows/kesher-content-controller.yml'
+                and set(jobs) == {'control', 'master_intent'}
+                and master_job.get('if') == master_guard
+                and legacy_job.get('if') == legacy_guard
+                and master_job.get('permissions', {}).get('id-token') == 'write'
+                and master_job.get('permissions', {}).get('contents') == 'write'
+                and master_job.get('permissions', {}).get('actions') == 'write'
+                and 'scripts.kesher_runtime.bridge_admission --controller' in text
+                and 'scripts/kesher_content_controller_stabilized.py' in text
+                and 'KESHER_PRE_CUTOVER_DAILY_AUTHORITY' in text
+                and 'scripts.kesher_runtime.master_intent_entry --mode live' in text
+                and 'KESHER_CUTOVER_GATEWAY_URL' in text
+                and any('REQUEST_JSON' in (s.get('env') or {}) and
+                        'MASTER_REQUEST_ID' in (s.get('env') or {}) and
+                        'KESHER_CUTOVER_GATEWAY_URL' in (s.get('env') or {})
+                        for s in master_steps if isinstance(s, dict))
+            )
+            if not (canonical or pre_cutover or master_live):
                 raise StateInvalid('AUTHORITY_CONTROLLER_NOT_CANONICAL')
         if role == 'watchdog':
             valid_watchdog = (
