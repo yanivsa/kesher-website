@@ -1,0 +1,19 @@
+{
+  "daily_date": "2026-11-16",
+  "track": "automatic_daily",
+  "source_slug": "child-led-play-10-minutes-connection",
+  "content_sha256": "36c1d366485db4908dfaf34139c73457307c0562b0e3fd7d52eab347a80a1c2c",
+  "article_url": "https://kesher.saharoni.com/blog/child-led-play-10-minutes-connection",
+  "hero_path": "/images/generated/blog/child-led-play-10-minutes-connection-photo.jpg",
+  "hero_license": "Unsplash License (commercial use; identifiable-person limitations reviewed for illustrative/editorial use)",
+  "hero_source_url": "https://images.unsplash.com/photo-1758598737498-03850be1ad89",
+  "article_delivery": "IN_PROGRESS",
+  "article_quality": "QA_PENDING",
+  "overview_delivery": "NOT_STARTED",
+  "overview_quality": "QA_PENDING",
+  "short_delivery": "NOT_STARTED",
+  "short_quality": "QA_PENDING",
+  "provider_overview_task_id": null,
+  "provider_short_task_id": null,
+  "notes": "Editorial source prepared. Do not mark DONE until independent native provider and YouTube publication QA."
+}
