@@ -111,6 +111,7 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
       - name: Set up Python
+        if: ${{ steps.master_request.outcome != 'success' }}
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: "3.12"
@@ -129,17 +130,23 @@ jobs:
 
   control:
     # Sole pre-cutover daily authority; automatically fails closed once canonical state becomes Schema 6.
-    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && !(github.event_name == 'workflow_dispatch' && inputs.request_json != '') }}
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - name: Skip legacy path for explicit Master intent
+        id: master_request
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.request_json != '' }}
+        run: echo "MASTER_INTENT_REQUIRES_INDEPENDENT_AUTHORITY_GATE"
       - name: Checkout trusted controller
+        if: ${{ steps.master_request.outcome != 'success' }}
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: main
           persist-credentials: false
 
       - name: Verify pre-cutover Schema-5 daily controller authority
+        if: ${{ steps.master_request.outcome != 'success' }}
         id: bridge_admission
         env:
           GH_TOKEN: ${{ github.token }}
@@ -153,9 +160,11 @@ jobs:
           python-version: "3.12"
 
       - name: Install strict article image decoder
+        if: ${{ steps.master_request.outcome != 'success' }}
         run: python3 -m pip install -r scripts/requirements-article.txt
 
       - name: Run Kesher Content Controller
+        if: ${{ steps.master_request.outcome != 'success' }}
         id: content_controller
         # Leave time for the always() repair step if the content tick stalls.
         timeout-minutes: 6
@@ -177,7 +186,7 @@ jobs:
         run: PYTHONPATH=. python3 -u scripts/kesher_content_controller_stabilized.py --report-json
 
       - name: Reconcile bounded controller code repair
-        if: ${{ always() && steps.bridge_admission.outcome == 'success' }}
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' && steps.master_request.outcome != 'success' }}
         timeout-minutes: 3
         env:
           GITHUB_TOKEN: ${{ github.token }}
