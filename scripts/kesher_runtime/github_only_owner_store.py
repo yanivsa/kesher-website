@@ -105,6 +105,11 @@ class GitHubOnlyLedgerStore:
             require_sha(value, 40)
         if not isinstance(workflow_run, str) or not _RUN_ID.fullmatch(workflow_run):
             raise StateInvalid("GITHUB_ONLY_EXACT_RUN_ATTEMPT_REQUIRED")
+        # A caller-supplied dataclass, even with a real ref SHA, is not
+        # proof of activation. Re-read immutable Git bytes before deciding.
+        actual = self.load(reviewed_main_sha=loaded.main_sha)
+        if actual != loaded:
+            raise StateConflict("GITHUB_ONLY_SNAPSHOT_NOT_CURRENT")
         ledger = loaded.document
         decision = plan_dispatch(
             ledger=ledger, expected_epoch=epoch,
