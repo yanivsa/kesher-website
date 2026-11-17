@@ -101,7 +101,7 @@ def audit_channel(youtube):
             if (row.get("snippet") or {}).get("channelId") != CHANNEL:
                 raise IncompleteYouTubeInventory("WRONG_YOUTUBE_VIDEO_CHANNEL")
             records[vid] = row
-        unreturned.update(set(chunk) - set(records))
+        unreturned |= set(chunk) - set(records)
     # An uploaded but now-deleted or inaccessible video MUST NOT grant absence.
     scan_complete = not unreturned
     results = []
