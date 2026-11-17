@@ -73,6 +73,9 @@ describe('family finance content publishing contract', () => {
     const worksheet = path.join(root,'public/downloads/financial/money-conversation-worksheet.html');
     const budget = path.join(root,'public/downloads/financial/family-budget-template.csv');
     expect(existsSync(worksheet)).toBe(true);
+    const html = readFileSync(worksheet,'utf8');
+    expect(html).toContain('Ctrl+P');
+    expect(html).not.toContain('onclick=');
     expect(existsSync(budget)).toBe(true);
     const csv = readFileSync(budget,'utf8').replace(/^\uFEFF/,'');
     const rows = csv.trim().split('\n');
