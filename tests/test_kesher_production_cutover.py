@@ -912,4 +912,100 @@ class GithubOnlyAtomicLedgerTests(unittest.TestCase):
         self.assertNotIn('/youtube/v3/', code)
         self.assertNotIn('notebooklm.generate', code)
 
+
+class GithubOnlyProtectedPrepareTests(GithubOnlyAtomicLedgerTests):
+    """Tests the owner-reviewed PREPARED stage using fake GitHub only."""
+
+    def setUp(self):
+        super().setUp()
+        self.gh.missing = True
+        self.legacy_blob = '9' * 40
+        original = self.gh.request
+
+        def request(method, path, body=None, **kwargs):
+            if method == 'GET' and path.endswith(
+                    '/contents/.kesher-controller/state.json?ref=' + self.gh.ref):
+                return {'sha': self.legacy_blob}
+            if method == 'GET' and path == '/repos/yanivsa/kesher-website':
+                return {'node_id':'repo-node-123','full_name':'yanivsa/kesher-website'}
+            answer = original(method, path, body, **kwargs)
+            if method == 'POST' and path == '/graphql' and not self.gh.conflict:
+                self.gh.missing = False
+            return answer
+
+        self.gh.request = request
+        self.proof = dict(status='READY_FOR_REVIEWED_MIGRATION_ONLY', pending=[],
+                          production_activated=False,provider_dispatch=False,
+                          quarantined_old_orphans=[{
+                              'workflow':337960554,'run':42522546178,
+                              'reason':'ORPHAN_ZERO_JOBS_DISABLED_PREDECESSOR'}],
+                          legacy_blob_sha=self.legacy_blob,legacy_cycle='2026-11-08')
+
+    def _prepare(self, **kwargs):
+        from unittest.mock import patch
+        from scripts.kesher_runtime.github_only_owner_prepare import prepare_owner
+        opts=dict(expected_main=self.expected_main,epoch='owner-epoch-1',
+            reviewer_run='123:1',
+            workflow_ref='yanivsa/kesher-website/.github/workflows/kesher-controller-liveness.yml@refs/heads/main',
+            event_name='workflow_dispatch',repository='yanivsa/kesher-website')
+        opts.update(kwargs)
+        with patch('scripts.kesher_runtime.github_only_owner_prepare.inventory',
+                   return_value=self.proof):
+            return prepare_owner(self.gh, **opts)
+
+    def test_protected_review_only_prepares_no_live_controller(self):
+        result = self._prepare()
+        self.assertEqual(result['status'],'PREPARED_NOT_LIVE')
+        self.assertFalse(result['production_activated'])
+        from scripts.kesher_runtime.github_only_owner_store import GitHubOnlyLedgerStore
+        ledger = GitHubOnlyLedgerStore(self.gh).load(
+            reviewed_main_sha=self.expected_main).document
+        self.assertEqual(ledger['activation'],'PREPARED_NOT_LIVE')
+        self.assertFalse(ledger['inventory_complete'])
+        self.assertEqual(ledger['commands'],{})
+        self.assertEqual(ledger['migration_basis']['legacy_blob_sha'],
+                         self.legacy_blob)
+        from scripts.kesher_runtime.github_only_owner_policy import OwnerLedgerBlocked
+        with self.assertRaises(OwnerLedgerBlocked):
+            self._claim(self.store.load(reviewed_main_sha=self.expected_main))
+        self.assertEqual(sum(p=='/graphql' for _,p,_ in self.gh.calls),1)
+
+    def test_repeat_same_epoch_is_noop(self):
+        self._prepare()
+        before=sum(p=='/graphql' for _,p,_ in self.gh.calls)
+        result=self._prepare(reviewer_run='124:1')
+        self.assertEqual(result['status'],'ALREADY_PREPARED_NOOP')
+        self.assertEqual(before,sum(p=='/graphql' for _,p,_ in self.gh.calls))
+
+    def test_wrong_or_dirty_approval_is_fail_closed(self):
+        from scripts.kesher_runtime.state import StateInvalid
+        with self.assertRaises(StateInvalid):
+            self._prepare(epoch='')
+        with self.assertRaises(StateInvalid):
+            self._prepare(workflow_ref='unauthorized/workflow@refs/heads/main')
+        self.proof['pending']=[{'workflow':'kesher-daily-video.yml','run':100}]
+        with self.assertRaisesRegex(StateInvalid,'INVENTORY_NOT_CLEAN'):
+            self._prepare()
+        self.assertFalse(any(method == 'POST' for method,_,_ in self.gh.calls))
+
+    def test_prepare_cas_conflict_never_retries(self):
+        from scripts.kesher_runtime.state import StateConflict
+        self.gh.conflict = True
+        with self.assertRaisesRegex(StateConflict,'REF_CAS_REJECTED'):
+            self._prepare()
+        self.assertEqual(sum(p=='/graphql' for _,p,_ in self.gh.calls),1)
+
+    def test_existing_native_cutover_unchanged_and_review_is_real(self):
+        code=(ROOT/'.github/workflows/kesher-controller-liveness.yml').read_text()
+        prep=code.split('  github_owner_prepare:\n',1)[1].split('\n  watchdog:',1)[0]
+        self.assertIn('environment: kesher-cutover',prep)
+        self.assertIn('needs: github_owner_probe',prep)
+        self.assertIn('github_only_owner_prepare',prep)
+        self.assertIn('contents: write',prep)
+        self.assertNotIn('secrets.',prep)
+        self.assertNotIn('id-token: write',prep)
+        self.assertIn("inputs.route != 'github_only_prepare'",code)
+        self.assertIn('7,22,37,52 * * * *',code)
+        self.assertNotIn('KESHER_CUTOVER_GATEWAY_URL',prep)
+
 if __name__ == '__main__': unittest.main()
