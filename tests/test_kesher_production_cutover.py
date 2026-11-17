@@ -669,7 +669,7 @@ class GithubOwnerReadinessTests(unittest.TestCase):
     def _run(self, gh):
         from scripts.kesher_runtime.github_owner_readiness import inventory
         return inventory(gh,expected_main='a'*40,
-            workflow_ref='yanivsa/kesher-website/.github/workflows/kesher-production-cutover.yml@refs/heads/main',
+            workflow_ref='yanivsa/kesher-website/.github/workflows/kesher-controller-liveness.yml@refs/heads/main',
             event_name='workflow_dispatch',repo='yanivsa/kesher-website')
 
     def test_stale_queued_legacy_run_refuses_activation(self):
@@ -701,13 +701,13 @@ class GithubOwnerReadinessTests(unittest.TestCase):
             self._run(self._github(main='c'*40))
 
     def test_workflow_has_no_production_side_effect_for_probe(self):
-        text=(ROOT/'.github/workflows/kesher-production-cutover.yml').read_text()
-        probe=text.split('  github_only_probe:\n',1)[1].split('\n  readiness:',1)[0]
+        text=(ROOT/'.github/workflows/kesher-controller-liveness.yml').read_text()
+        probe=text.split('  github_owner_probe:\n',1)[1].split('\n  watchdog:',1)[0]
         self.assertNotIn('environment: kesher-cutover',probe)
         self.assertNotIn('id-token: write',probe)
         self.assertNotIn('secrets.',probe)
         self.assertIn('contents: read',probe)
         self.assertIn('github_owner_readiness',probe)
-        self.assertIn("inputs.route == 'native'", text)
+        self.assertIn("inputs.route != 'github_only_probe'", text)
 
 if __name__ == '__main__': unittest.main()
