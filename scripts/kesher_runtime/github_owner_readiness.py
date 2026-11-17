@@ -42,6 +42,7 @@ def inventory(github, *, expected_main, workflow_ref, event_name, repo):
     # Filter server-side for every active status: all-run pagination would
     # conceal old queued identities beneath hundreds of finished runs.
     affected = []
+    quarantined = []
     for target in (OLD_CONTROLLER_ID, *TRACKED):
         for status in sorted(ACTIVE):
             response = github.request(
@@ -56,6 +57,26 @@ def inventory(github, *, expected_main, workflow_ref, event_name, repo):
                 # A stale or unexpected status-filter response is not proof of quiet.
                 if row.get("status") != status or type(row.get("id")) is not int:
                     raise StateInvalid("GITHUB_OWNER_PROBE_UNTRUSTED_ACTIVE_RUN_RECORD")
+                # One exact Nov8 orphan: GitHub GET reports queued, zero jobs,
+                # and neither cancel nor force-cancel nor delete works. Quarantine
+                # only the read-only observation after fresh exact independent
+                # run/job readbacks. This does NOT authorize production.
+                if target == OLD_CONTROLLER_ID and status == "queued" and row["id"] == 42522546178 and workflow.get("state") in STATUS:
+                    detail = github.request("GET", api + "/actions/runs/42522546178")
+                    jobs = github.request("GET", api + "/actions/runs/42522546178/jobs?per_page=100")
+                    if (detail.get("id") == row["id"]
+                            and detail.get("workflow_id") == OLD_CONTROLLER_ID
+                            and detail.get("run_attempt") == 1
+                            and detail.get("event") == "workflow_dispatch"
+                            and detail.get("status") == "queued"
+                            and detail.get("conclusion") is None
+                            and detail.get("created_at") == "2026-11-08T20:55:18Z"
+                            and detail.get("updated_at") == "2026-11-08T20:55:18Z"
+                            and jobs.get("total_count") == 0
+                            and jobs.get("jobs") == []):
+                        quarantined.append({"workflow": target, "run": row["id"],
+                                            "reason": "ORPHAN_ZERO_JOBS_DISABLED_PREDECESSOR"})
+                        continue
                 affected.append({"workflow": target, "run": row["id"], "status": status})
     stateblob = github.request("GET", api + "/contents/.kesher-controller/state.json?ref=automation-state")
     if (stateblob.get("encoding") != "base64" or not isinstance(stateblob.get("content"), str)
@@ -76,6 +97,7 @@ def inventory(github, *, expected_main, workflow_ref, event_name, repo):
         "legacy_blob_sha": stateblob["sha"],
         "legacy_cycle": snapshot.get("cycle"),
         "pending": affected,
+        "quarantined_old_orphans": quarantined,
         "status": "BLOCKED_EXISTING_OWNER_OR_TASK" if affected else "READY_FOR_REVIEWED_MIGRATION_ONLY",
         "production_activated": False,
         "provider_dispatch": False,
