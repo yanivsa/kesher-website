@@ -5,6 +5,7 @@ import financialPosts from '../src/data/financialGuidancePosts.json';
 import summaries from '../src/data/postSummaries.json';
 import { internalLinkBackfillRules } from '../src/data/internalLinkBackfill';
 import { resolveContactService, CONTACT_SERVICE_OPTIONS } from '../src/lib/contactServices';
+import { searchIndex } from '../src/data/searchIndex';
 
 const service = '/services/family-financial-guidance';
 const category = '/blog/category/family-finances';
@@ -17,6 +18,10 @@ const known = new Set([...financialPosts.map(p => p.id), ...legacyIds]);
 const root = process.cwd();
 
 describe('family finance content publishing contract', () => {
+  it('makes service and knowledge hub discoverable in global site search', () => {
+    expect(searchIndex.some(x => x.type === 'service' && x.url === '/services/family-financial-guidance')).toBe(true);
+    expect(searchIndex.some(x => x.url === '/blog/category/family-finances')).toBe(true);
+  });
   it('retains intent on contact and appointment routes without passing sensitive data', () => {
     expect(resolveContactService('family-financial-guidance')).toBe('family-financial-guidance');
     expect(CONTACT_SERVICE_OPTIONS.some(x => x.value === 'family-financial-guidance')).toBe(true);

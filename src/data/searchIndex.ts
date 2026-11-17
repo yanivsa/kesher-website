@@ -11,6 +11,15 @@ export interface SearchItem {
 }
 
 const servicePages: SearchItem[] = [
+  { id: 'service-family-financial-guidance', type: 'service',
+    title: 'ליווי כלכלי לזוגות ומשפחות',
+    body: 'חינוך פיננסי וכלכלת המשפחה, שיח זוגי על כסף, תקציב משפחתי, הוצאות, חיסכון, דמי כיס לילדים וקבלת החלטות בבית עם שירה סהרוני באשדוד ובאונליין.',
+    url: '/services/family-financial-guidance', category: 'שירותים' },
+  { id: 'page-family-finances', type: 'page',
+    title: 'מאמרים על כסף, זוגיות וכלכלת המשפחה',
+    body: 'מרכז מדריכים על ניהול תקציב, כסף בזוגיות, חינוך פיננסי לילדים, הוצאות שנתיות ושינויים בהכנסה.',
+    url: '/blog/category/family-finances', category: 'דפים' },
+
   {
     id: 'service-couples-crisis',
     type: 'service',
