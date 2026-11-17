@@ -728,4 +728,188 @@ class GithubOwnerReadinessTests(unittest.TestCase):
         self.assertIn('github_owner_readiness',probe)
         self.assertIn("inputs.route != 'github_only_probe'", text)
 
+
+class GithubOnlyAtomicLedgerTests(unittest.TestCase):
+    """Disposable GraphQL CAS test; never accesses live GitHub/providers."""
+
+    def setUp(self):
+        import base64
+        from scripts.kesher_runtime.identity import canonical_json
+        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+        self.expected_main = 'a' * 40
+        self.command = 'f' * 64
+        self.ledger = {
+            'schema_version': 1, 'epoch': 'safe-epoch-1',
+            'owner': 'github-only', 'reviewed_main_sha': self.expected_main,
+            'activation': 'PROTECTED_VERIFIED', 'inventory_complete': True,
+            'commands': {},
+        }
+        self.bytes = (canonical_json(self.ledger) + '\n').encode()
+        self.blob = _blob_sha(self.bytes)
+        self.initial_ref = 'b' * 40
+        self.initial_tree = 'c' * 40
+
+        class FakeGithub:
+            def __init__(this):
+                this.ref = self.initial_ref
+                this.main = self.expected_main
+                this.tree = self.initial_tree
+                this.raw = self.bytes
+                this.blob = self.blob
+                this.calls = []
+                this.conflict = False
+                this.unknown_ack = False
+                this.missing = False
+
+            def request(this, method, path, body=None, **kwargs):
+                this.calls.append((method, path, body))
+                if method == 'GET':
+                    if path.endswith('/git/ref/heads/main'):
+                        return {'object': {'sha': this.main}}
+                    if path.endswith('/git/ref/heads/automation-state'):
+                        return {'object': {'sha': this.ref}}
+                    if '/git/commits/' in path:
+                        ref = path.rsplit('/', 1)[1]
+                        return {'sha': ref, 'tree': {'sha': this.tree}}
+                    if '/contents/.kesher-controller/github-only-owner.json?ref=' in path:
+                        if this.missing:
+                            return None
+                        return {'sha': this.blob, 'encoding': 'base64',
+                                'content': base64.b64encode(this.raw).decode()}
+                    if path == '/repos/yanivsa/kesher-website':
+                        return {'node_id': 'repo-node-123'}
+                if method == 'POST':
+                    if path.endswith('/git/blobs'):
+                        this.next_raw = base64.b64decode(body['content'], validate=True)
+                        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+                        return {'sha': _blob_sha(this.next_raw)}
+                    if path.endswith('/git/trees'):
+                        self_outer = this
+                        self_outer.expected_old_tree = body['base_tree']
+                        return {'sha': 'd' * 40}
+                    if path.endswith('/git/commits'):
+                        this.expected_parent = body['parents'][0]
+                        return {'sha': 'e' * 40}
+                    if path == '/graphql':
+                        updates = body['variables']['input']['refUpdates']
+                        assert len(updates) == 2
+                        assert updates[0] == {'name':'refs/heads/main',
+                            'beforeOid':this.main,'afterOid':this.main,'force':False}
+                        assert updates[1]['beforeOid'] == this.ref
+                        assert updates[1]['afterOid'] == 'e'*40
+                        if this.conflict:
+                            return {'errors': [{'message': 'Stale ref'}]}
+                        this.ref = 'e'*40
+                        this.tree = 'd'*40
+                        this.raw = this.next_raw
+                        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+                        this.blob = _blob_sha(this.raw)
+                        if this.unknown_ack:
+                            return {'data': {'updateRefs': {'clientMutationId': None}}}
+                        return {'data': {'updateRefs': {
+                            'clientMutationId': body['variables']['input']['clientMutationId']}}}
+                raise AssertionError((method, path))
+
+        self.gh = FakeGithub()
+        from scripts.kesher_runtime.github_only_owner_store import GitHubOnlyLedgerStore
+        self.store = GitHubOnlyLedgerStore(self.gh)
+
+    def _claim(self, snapshot, *, provider_tasks=None, pending=None):
+        return self.store.claim(
+            snapshot, epoch='safe-epoch-1', command_id=self.command,
+            workflow_run='123:1',
+            observed_provider_tasks={} if provider_tasks is None else provider_tasks,
+            pending_github_runs=[] if pending is None else pending,
+        )
+
+    def test_exact_ref_cas_claim_readback_and_duplicate_noop(self):
+        initial = self.store.load(reviewed_main_sha=self.expected_main)
+        status, written = self._claim(initial)
+        self.assertEqual(status, 'CLAIMED')
+        self.assertEqual(written.ref_sha, 'e'*40)
+        self.assertEqual(written.document['commands'][self.command]['run_id'], '123:1')
+        self.assertEqual(self.gh.expected_old_tree, 'c'*40)
+        self.assertEqual(self.gh.expected_parent, 'b'*40)
+        before = sum(path == '/graphql' for _, path, _ in self.gh.calls)
+        status, _ = self._claim(written)
+        self.assertEqual(status, 'NOOP')
+        self.assertEqual(before, sum(path == '/graphql' for _, path, _ in self.gh.calls))
+
+    def test_competing_ref_is_conflict_not_retry(self):
+        from scripts.kesher_runtime.state import StateConflict
+        initial = self.store.load(reviewed_main_sha=self.expected_main)
+        self.gh.conflict = True
+        with self.assertRaisesRegex(StateConflict, 'CAS_REJECTED'):
+            self._claim(initial)
+        self.assertEqual(sum(path == '/graphql' for _, path, _ in self.gh.calls), 1)
+        self.assertEqual(self.gh.ref, self.initial_ref)
+
+    def test_uncertain_ack_is_never_replayed(self):
+        from scripts.kesher_runtime.github import GitHubError
+        initial = self.store.load(reviewed_main_sha=self.expected_main)
+        self.gh.unknown_ack = True
+        with self.assertRaises(GitHubError) as caught:
+            self._claim(initial)
+        self.assertTrue(caught.exception.uncertain)
+        self.assertEqual(sum(path == '/graphql' for _, path, _ in self.gh.calls), 1)
+
+    def test_no_automatic_bootstrap_or_missing_activation(self):
+        from scripts.kesher_runtime.state import StateInvalid
+        self.gh.missing = True
+        with self.assertRaisesRegex(StateInvalid, 'NOT_BOOTSTRAPPED'):
+            self.store.load(reviewed_main_sha=self.expected_main)
+        self.gh.missing = False
+        initial = self.store.load(reviewed_main_sha=self.expected_main)
+        self.ledger['activation'] = 'READY_FOR_REVIEWED_MIGRATION_ONLY'
+        from scripts.kesher_runtime.identity import canonical_json
+        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+        self.gh.raw = (canonical_json(self.ledger) + '\n').encode()
+        self.gh.blob = _blob_sha(self.gh.raw)
+        blocked = self.store.load(reviewed_main_sha=self.expected_main)
+        from scripts.kesher_runtime.github_only_owner_policy import OwnerLedgerBlocked
+        with self.assertRaisesRegex(OwnerLedgerBlocked, 'PROTECTED_ACTIVATION_REQUIRED'):
+            self._claim(blocked)
+        self.assertFalse(any(method == 'POST' for method, _, _ in self.gh.calls))
+
+    def test_stale_main_unknown_provider_and_parallel_wake_block(self):
+        from scripts.kesher_runtime.state import StateConflict
+        from scripts.kesher_runtime.github_only_owner_policy import OwnerLedgerBlocked
+        initial = self.store.load(reviewed_main_sha=self.expected_main)
+        self.gh.main = 'c'*40
+        with self.assertRaisesRegex(StateConflict, 'MAIN'):
+            self._claim(initial)
+        self.gh.main = self.expected_main
+        with self.assertRaisesRegex(OwnerLedgerBlocked, 'UNRECONCILED_PROVIDER_TASK'):
+            self._claim(initial, provider_tasks={'provider-task':'GENERATING'})
+        with self.assertRaisesRegex(OwnerLedgerBlocked, 'COMPETING_GITHUB_RUN'):
+            self._claim(initial, pending=[{'run_id':987}])
+        self.assertFalse(any(method == 'POST' for method, _, _ in self.gh.calls))
+
+    def test_forged_activation_snapshot_is_not_an_owner_proof(self):
+        from dataclasses import replace
+        from scripts.kesher_runtime.identity import canonical_json
+        from scripts.kesher_runtime.state import StateConflict
+        snapshot = self.store.load(reviewed_main_sha=self.expected_main)
+        forged = snapshot.document
+        forged['epoch'] = 'safe-epoch-1'
+        forged['activation'] = 'PROTECTED_VERIFIED'
+        forged['commands']['other'] = {'phase': 'CLAIMED'}
+        counterfeit = replace(snapshot, encoded=canonical_json(forged))
+        with self.assertRaisesRegex(StateConflict, 'SNAPSHOT_NOT_CURRENT'):
+            self._claim(counterfeit)
+        self.assertFalse(any(method == 'POST' for method, _, _ in self.gh.calls))
+
+    def test_corrupted_git_blob_is_rejected(self):
+        from scripts.kesher_runtime.state import StateInvalid
+        self.gh.blob = '0'*40
+        with self.assertRaisesRegex(StateInvalid, 'BLOB_INTEGRITY'):
+            self.store.load(reviewed_main_sha=self.expected_main)
+
+    def test_module_is_not_a_dispatcher(self):
+        from pathlib import Path
+        code = (ROOT / 'scripts/kesher_runtime/github_only_owner_store.py').read_text()
+        self.assertNotIn('workflow_dispatch', code)
+        self.assertNotIn('/youtube/v3/', code)
+        self.assertNotIn('notebooklm.generate', code)
+
 if __name__ == '__main__': unittest.main()
