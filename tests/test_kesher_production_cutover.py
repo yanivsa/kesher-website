@@ -594,4 +594,48 @@ class CredentialGatewayTests(unittest.TestCase):
         self.assertEqual(guard.requests,0)
 
 
+
+class CutoverApprovalReadinessTests(unittest.TestCase):
+    """Owner approval remains unreachable until an actual matched gateway responds."""
+
+    def _code(self):
+        source = (ROOT / '.github/workflows/kesher-production-cutover.yml').read_text()
+        self.assertIn('  transition:\n    needs: readiness\n', source)
+        self.assertIn('    environment: kesher-cutover\n', source)
+        ready = source.split('  readiness:\n', 1)[1].split('\n  transition:\n', 1)[0]
+        self.assertNotIn('environment: kesher-cutover', ready)
+        body = ready.split('        run: |\n', 1)[1]
+        return '\n'.join(row[10:] if row.startswith('          ') else row for row in body.splitlines())
+
+    def _run(self, **values):
+        import os
+        import subprocess
+        import sys
+        env = dict(os.environ, GATEWAY_URL='', REVIEWED_REVISION='a'*40,
+                   ACTUAL_REVISION='a'*40, CUTOVER_EPOCH='epoch1')
+        env.update(values)
+        return subprocess.run([sys.executable, '-c', self._code()], env=env,
+                              text=True, capture_output=True, timeout=20)
+
+    def test_missing_gateway_never_requests_approval(self):
+        result = self._run()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('KESHER_CUTOVER_GATEWAY_URL_UNCONFIGURED', result.stderr)
+
+    def test_unreviewed_main_never_requests_approval(self):
+        result = self._run(REVIEWED_REVISION='b'*40)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('REVIEWED_MAIN_SHA_MISMATCH', result.stderr)
+
+    def test_untrusted_scheme_rejected_without_http_call(self):
+        result = self._run(GATEWAY_URL='http://example.com')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('PINNED_HTTPS_GATEWAY_REQUIRED', result.stderr)
+
+    def test_health_check_is_not_production_activation(self):
+        code = self._code()
+        self.assertIn('/healthz', code)
+        self.assertIn('GATEWAY_HEALTH_REVISION_OR_EPOCH_MISMATCH', code)
+        self.assertIn('does not attest native resource fences', code)
+
 if __name__ == '__main__': unittest.main()
