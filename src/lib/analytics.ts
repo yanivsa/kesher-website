@@ -51,6 +51,9 @@ const safeSessionRemove = (key: string) => {
 };
 
 const SERVICE_TYPE_BY_PATH: Record<string, string> = {
+  '/services/family-financial-guidance': 'family_financial_guidance',
+  '/financial-guidance-couples': 'family_financial_guidance',
+  '/family-budget-guidance': 'family_financial_guidance',
   '/couples-counseling-ashdod': 'couples_counseling',
   '/parenting-guidance-ashdod': 'parenting_guidance',
   '/couples-mediation-ashdod': 'couples_mediation',
@@ -75,6 +78,9 @@ export const inferServiceType = (pathname: string): string | undefined => {
 };
 
 const inferContentContext = (pathname: string): AnalyticsParams => {
+  if (pathname.replace(/\/$/, '') === '/blog/category/family-finances') {
+    return { content_type: 'category', content_id: 'family_finances' };
+  }
   if (pathname.replace(/\/$/, '') === '/blog/category/parenting-coordination') {
     return { content_type: 'category', content_id: 'parenting_coordination' };
   }

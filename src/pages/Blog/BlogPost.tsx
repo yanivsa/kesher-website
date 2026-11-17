@@ -20,9 +20,14 @@ import { getImageDimensions } from '../../data/imageDimensions';
 import NotFound from '../NotFound/NotFound';
 import styles from './BlogPost.module.css';
 
+const financialLegacyIds = new Set(['money-fights-communication','marriage-preparation-money-fights','marriage-prep-financial-expectations-2026-08-24']);
 const articleCtaCopy = (post: (typeof posts)[number]) => {
   const subcategory = 'subcategory' in post && typeof post.subcategory === 'string' ? post.subcategory : '';
   const context = `${post.category} ${subcategory} ${post.title}`;
+
+  if (financialLegacyIds.has(post.id) || post.category === 'כלכלת המשפחה') {
+    return 'גם כשהנושא נראה כמו מספרים, ההרגלים וההסכמות בבית חשובים. אפשר לברר עם שירה האם ליווי כלכלי־משפחתי מתאים לכם, בלי למסור פרטים כלכליים רגישים בפנייה הראשונה.';
+  }
 
   if (post.category === 'תיאום הורי') {
     return 'כשמחלוקות בין הורים נמשכות, אפשר לברר מהו סוג הליווי המתאים, ומהם גבולות התהליך. חשוב לבדוק התאמה ובטיחות לפני התחלה.';
@@ -64,12 +69,9 @@ const BlogPost: React.FC = () => {
         "dateModified": (post && 'updatedAt' in post && typeof post.updatedAt === 'string' && post.updatedAt.trim())
           ? post.updatedAt.trim()
           : (post?.date || ""),
-        "author": {
-          "@type": "Person",
-          "@id": `${SITE_CONFIG.url}/#shira`,
-          "name": SITE_CONFIG.author,
-          "url": `${SITE_CONFIG.url}/about`
-        },
+        "author": post?.category === 'כלכלת המשפחה' && post.author === 'מערכת אתר קשר'
+          ? { "@type": "Organization", "@id": `${SITE_CONFIG.url}/#business`, "name": "מערכת אתר קשר", "url": SITE_CONFIG.url }
+          : { "@type": "Person", "@id": `${SITE_CONFIG.url}/#shira`, "name": SITE_CONFIG.author, "url": `${SITE_CONFIG.url}/about` },
         "publisher": {
           "@type": "LocalBusiness",
           "@id": `${SITE_CONFIG.url}/#business`
@@ -78,6 +80,7 @@ const BlogPost: React.FC = () => {
           "@type": "WebPage",
           "@id": `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`
         },
+        ...(post?.category === 'כלכלת המשפחה' ? { "isPartOf": { "@id": `${SITE_CONFIG.url}/blog/category/family-finances#webpage` }, "about": { "@type": "Thing", "name": "כלכלת המשפחה" } } : {}),
         ...(post?.category === 'תיאום הורי' ? {
           "isPartOf": { "@id": `${SITE_CONFIG.url}/blog/category/parenting-coordination#webpage` },
           "about": { "@type": "Thing", "name": "תיאום הורי" }
@@ -102,6 +105,7 @@ const BlogPost: React.FC = () => {
             "name": "בלוג",
             "item": `${SITE_CONFIG.url}/blog`
           },
+          ...(post?.category === 'כלכלת המשפחה' ? [{ "@type": "ListItem", "position": 3, "name": "כלכלת המשפחה", "item": `${SITE_CONFIG.url}/blog/category/family-finances` }] : []),
           ...(post?.category === 'תיאום הורי' ? [{
             "@type": "ListItem",
             "position": 3,
@@ -110,7 +114,7 @@ const BlogPost: React.FC = () => {
           }] : []),
           {
             "@type": "ListItem",
-            "position": post?.category === 'תיאום הורי' ? 4 : 3,
+            "position": post?.category === 'תיאום הורי' || post?.category === 'כלכלת המשפחה' ? 4 : 3,
             "name": post?.title || "",
             "item": `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`
           }
@@ -123,13 +127,18 @@ const BlogPost: React.FC = () => {
     return <NotFound />;
   }
 
-  const safeContent = DOMPurify.sanitize(post.content);
+  const legacyFinancialLink = financialLegacyIds.has(post.id)
+    ? '<h3>עוד דרך לעסוק בכסף בזוגיות</h3><p>לצד עבודה על התקשורת, אפשר להיעזר גם ב<a href="/services/family-financial-guidance">ליווי כלכלי לזוגות ומשפחות</a>, כדי להכניס סדר להוצאות, לנסח הסכמות ולתרגל שיחה על כסף. השירות מתמקד בחינוך פיננסי ובהתנהלות הבית, ואינו ייעוץ השקעות, פנסיה או מס. <a href="/blog/category/family-finances">מאמרים נוספים על כלכלת המשפחה</a>.</p>'
+    : '';
+  const safeContent = DOMPurify.sanitize(post.content + legacyFinancialLink);
   const shareUrl = `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`;
   const directAnswer = 'directAnswer' in post && typeof post.directAnswer === 'string'
     ? post.directAnswer.trim()
     : '';
   const articleSummary = directAnswer || post.excerpt.trim();
-  const relatedService = 'serviceUrl' in post
+  const relatedService = financialLegacyIds.has(post.id)
+    ? { url: '/services/family-financial-guidance', label: 'ליווי כלכלי לזוגות ומשפחות' }
+    : 'serviceUrl' in post
     && 'serviceLabel' in post
     && typeof post.serviceUrl === 'string'
     && typeof post.serviceLabel === 'string'
@@ -137,6 +146,7 @@ const BlogPost: React.FC = () => {
     : null;
   const ctaCopy = articleCtaCopy(post);
   const isCoordinationArticle = post.category === 'תיאום הורי';
+  const isFinancialArticle = post.category === 'כלכלת המשפחה';
   const landingTarget = getLandingTargetForPost(post);
   const displayCategory = post.category === 'הנחיית הורים' ? 'הדרכת הורים' : post.category;
   const postSubcategory = 'subcategory' in post && typeof post.subcategory === 'string' ? post.subcategory : '';
@@ -167,14 +177,14 @@ const BlogPost: React.FC = () => {
         title={post.title}
         description={post.excerpt}
         ogType="article"
-        image={post.category === 'תיאום הורי' ? '/images/generated/services/parenting-room.jpg' : post.image}
+        image={post.category === 'תיאום הורי' ? '/images/generated/services/parenting-room.jpg' : post.category === 'כלכלת המשפחה' ? '/images/generated/site/home-hero.jpg' : post.image}
         canonical={`${SITE_CONFIG.url}/blog/${canonicalRouteKey}`}
       />
       <SchemaOrg data={schemaData} />
       <header className={styles.header}>
         <div className="container">
           <Link to="/blog" className={styles.backLink}>← חזרה לבלוג</Link>
-          {post.category === 'תיאום הורי' ? <Link to="/blog/category/parenting-coordination" className={styles.category}>{displayCategory}</Link> : <span className={styles.category}>{displayCategory}</span>}
+          {isCoordinationArticle ? <Link to="/blog/category/parenting-coordination" className={styles.category}>{displayCategory}</Link> : isFinancialArticle ? <Link to="/blog/category/family-finances" className={styles.category}>{displayCategory}</Link> : <span className={styles.category}>{displayCategory}</span>}
           <h1 className={styles.title}>{post.title}</h1>
           {articleSummary && (
             <div className={styles.directAnswer} role="region" aria-label="תשובה תמציתית">
@@ -184,7 +194,7 @@ const BlogPost: React.FC = () => {
           )}
           <div className={styles.authorByline}>
             <span>מאת: </span>
-            <Link to="/about" className={styles.authorLink}>{post.author || SITE_CONFIG.author}</Link>
+            {post.author === 'מערכת אתר קשר' ? <span className={styles.authorLink}>מערכת אתר קשר</span> : <Link to="/about" className={styles.authorLink}>{post.author || SITE_CONFIG.author}</Link>}
             <span className={styles.metaDivider}>•</span>
             <span className={styles.date} data-kesher-article-date={post.date}>{new Date(post.date).toLocaleDateString('he-IL', { timeZone: 'UTC' })}</span>
             {'updatedAt' in post && typeof post.updatedAt === 'string' && post.updatedAt && post.updatedAt !== post.date && (

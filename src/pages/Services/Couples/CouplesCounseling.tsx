@@ -280,6 +280,7 @@ const CouplesCounseling: React.FC = () => {
           <div className={styles.bottomCta}>
             <h2>אפשר לבדוק אם הייעוץ מתאים לכם</h2>
             <p>הפגישה מתקיימת באשדוד או אונליין ונמשכת 50 דקות. לפרטים על הגעה לקליניקה, שאלות נפוצות וקביעת תור, בקרו בעמוד <Link to="/couples-counseling-ashdod" style={{ color: 'inherit', textDecoration: 'underline' }}>ייעוץ זוגי באשדוד</Link>.</p>
+            <p>כשהמחלוקת חוזרת סביב הוצאות או תקציב, אפשר לשלב גם <Link to="/services/family-financial-guidance">ליווי כלכלי לזוגות ומשפחות</Link>, הממוקד בשיחה ובהתנהלות כלכלת הבית.</p>
             <Link to={SITE_CONFIG.links.appointment} className={styles.finalBtn}>בחירת מועד לפגישה</Link>
           </div>
         </div>

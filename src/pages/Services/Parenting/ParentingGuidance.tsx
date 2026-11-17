@@ -251,6 +251,7 @@ const ParentingGuidance: React.FC = () => {
           <div className={styles.finalCall}>
             <h2>אפשר להתחיל ממה שקורה אצלכם השבוע</h2>
             <p>הפגישה הראשונה נועדה להבין את התמונה ולבחור מוקד מעשי להמשך.</p>
+            <p>כדי ללמד ילדים בחירה, דמי כיס והרגלי צריכה, אפשר לעיין ב<Link to="/blog/category/family-finances">מדריכים לחינוך פיננסי במשפחה</Link>.</p>
             <Link to={SITE_CONFIG.links.appointment} className={styles.btnPrimary}>בחירת מועד לפגישה</Link>
           </div>
         </div>

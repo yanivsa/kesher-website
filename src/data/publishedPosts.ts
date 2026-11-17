@@ -1,4 +1,5 @@
 import posts from './posts.json';
+import financialGuidancePosts from './financialGuidancePosts.json';
 import parentingCoordinationPosts from './parentingCoordinationPosts.json';
 import recentPosts from './postsRecent.json';
 import giftedParentPosts from './giftedParentPosts.json';
@@ -11,6 +12,7 @@ import { applyInternalLinkBackfill } from './internalLinkBackfill';
 type BasePost = (typeof posts)[number];
 
 const topicPosts: BasePost[] = [
+  ...(financialGuidancePosts as unknown as BasePost[]),
   ...(parentingCoordinationPosts as unknown as BasePost[]),
   ...(giftedParentPosts as unknown as BasePost[]),
   ...(giftedParentPostsWave2 as unknown as BasePost[]),
