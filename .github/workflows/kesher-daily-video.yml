@@ -511,6 +511,15 @@ jobs:
           python -m unittest tests.test_kesher_ghonly_youtube_gap_audit -v
           python -m scripts.kesher_runtime.ghonly_youtube_gap_audit
 
+      - name: Inspect exact completed original NotebookLM videos (read-only, ephemeral)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'preflight' }}
+        env:
+          KESHER_RECOVERY_READ_ONLY: "true"
+        run: |
+          set -euo pipefail
+          python -m unittest tests.test_kesher_ghonly_existing_artifact_qa -v
+          python -m scripts.kesher_runtime.ghonly_existing_artifact_qa
+
       - name: Prune historical NotebookLM sources
         if: ${{ github.event_name != 'pull_request' && inputs.target_slug == '' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') }}
         continue-on-error: true
