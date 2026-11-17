@@ -337,11 +337,13 @@ class ManualArticleBridgeTests(unittest.TestCase):
                 client.assert_not_called()
             with mock.patch.dict(os.environ, self.invocation(name), clear=True), \
                  mock.patch.object(bridge_admission, 'GitHub'), \
-                 mock.patch.object(bridge_admission, 'GitHubHandover') as handover:
+                 mock.patch.object(bridge_admission, 'GitHubHandover') as handover, \
+                 mock.patch('scripts.kesher_runtime.github_only_legacy_exclusion.require_legacy_bridge_not_superseded') as exclusion:
                 handover.return_value.read_snapshot.return_value.state = {'schema_version': 5}
                 self.assertEqual(bridge_admission.main([]), 0)
                 self.assertEqual(handover.return_value.method_calls,
                                  [mock.call.read_snapshot()])
+                exclusion.assert_called_once()
 
     def test_workflows_are_manual_main_only_with_admission_before_credentials(self):
         import yaml
