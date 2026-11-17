@@ -837,7 +837,7 @@
           "tests/test_v5_delivery_watchdog_contract.py": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631",
           "tests/test_v5_shared_video_controller.py": "d0dfaeaad6d7bb78943c5e54e4f084c633d49411f1caf83f76f479e77b634e49",
           "tests/test_v5_video_source_binding.py": "cef18902a72d505fc3b8da671a706b866890e058ba490a99a3998f96dd5c78cf",
-          "tests/test_kesher_production_cutover.py": "a0e9e6fedf466ab9677d047f7bf389057bfea8c0367598e4df349e77e78b6555",
+          "tests/test_kesher_production_cutover.py": "e5f55696c0c06f80ca6daa2763f4f9f1fe888ce2ba031a2ecd7ea035f78c8d7e",
           "tests/test_kesher_external_exclusion.py": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
           "tests/test_kesher_git_exclusion.py": "60ad776c6da6b084512be14730e73a0ff83676a4ed0cdb8c5cdf03044fb575d4",
@@ -2041,7 +2041,7 @@
       "review": {
         "call_chain": {
           "scripts/kesher_runtime/controller_liveness.py": "ffda29116debc6bfd722eacd1363821a13681b694547b5bbbbaa3a3064473f75",
-        "scripts/kesher_runtime/github_owner_readiness.py": "750c591b7ecea62267a48336ff58e935d774b5d00f210989c562795a29838024",
+        "scripts/kesher_runtime/github_owner_readiness.py": "9bced30f8b5c58f1380af590c8940dff6f5da2ca2dc13717f42a3dc790c912e3",
           "scripts/kesher_runtime/delivery_preflight.py": "b1eead6da79194fdbf7012ff4e55934e13bc53ca2ef71a1690e45d00f7b2435b"
         },
         "credential_services": {},
