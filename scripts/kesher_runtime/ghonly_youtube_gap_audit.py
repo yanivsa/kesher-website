@@ -39,13 +39,57 @@ def _fingerprint(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()[:16]
 
 
+def _is_deleted_upload_marker(row, playlist):
+    """Only the exact authenticated YouTube deleted-upload tombstone counts."""
+    import re
+
+    snippet = row.get("snippet") or {}
+    resource = snippet.get("resourceId") or {}
+    video_id = (row.get("contentDetails") or {}).get("videoId")
+    return (
+        isinstance(video_id, str)
+        and re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id) is not None
+        and snippet.get("channelId") == CHANNEL
+        and snippet.get("playlistId") == playlist
+        and resource.get("kind") == "youtube#video"
+        and resource.get("videoId") == video_id
+        and snippet.get("title") == "Deleted video"
+        and not snippet.get("videoOwnerChannelId")
+        and (row.get("status") or {}).get("privacyStatus") == "privacyStatusUnspecified"
+    )
+
+
+def _confirm_deleted_upload(youtube, playlist, video_id):
+    """Independent exact-video 404 reason is mandatory; no guessed deletion."""
+    try:
+        youtube.playlistItems().list(
+            part="snippet,contentDetails,status",
+            playlistId=playlist, videoId=video_id, maxResults=1,
+        ).execute()
+    except Exception as exc:
+        if getattr(getattr(exc, "resp", None), "status", None) != 404:
+            return False
+        try:
+            error = json.loads(exc.content)["error"]
+            return error.get("code") == 404 and any(
+                r.get("reason") == "videoNotFound"
+                and r.get("domain") == "youtube.playlistItem"
+                and r.get("location") == "videoId"
+                for r in error.get("errors", [])
+            )
+        except (AttributeError, KeyError, TypeError, ValueError):
+            return False
+    return False
+
+
 def _complete_upload_list(youtube, playlist: str):
     ids = []
+    deleted_candidates = set()
     token = None
     seen = set()
     while True:
         page = youtube.playlistItems().list(
-            part="contentDetails", playlistId=playlist, maxResults=50,
+            part="snippet,contentDetails,status", playlistId=playlist, maxResults=50,
             **({"pageToken": token} if token else {}),
         ).execute()
         if not isinstance(page, dict) or not isinstance(page.get("items"), list):
@@ -55,6 +99,8 @@ def _complete_upload_list(youtube, playlist: str):
             if not isinstance(vid, str) or not vid:
                 raise IncompleteYouTubeInventory("UNTRUSTED_UPLOAD_VIDEO_ID")
             ids.append(vid)
+            if _is_deleted_upload_marker(item, playlist):
+                deleted_candidates.add(vid)
         new = page.get("nextPageToken")
         if new is not None and (not isinstance(new, str) or not new):
             raise IncompleteYouTubeInventory("UNTRUSTED_NEXT_PAGE_TOKEN")
@@ -66,7 +112,7 @@ def _complete_upload_list(youtube, playlist: str):
         token = new
     if len(ids) != len(set(ids)):
         raise IncompleteYouTubeInventory("DUPLICATE_UPLOAD_VIDEO_ID")
-    return ids
+    return ids, deleted_candidates
 
 
 def audit_channel(youtube):
@@ -81,11 +127,10 @@ def audit_channel(youtube):
     playlist = (account.get("contentDetails") or {}).get("relatedPlaylists", {}).get("uploads")
     if not isinstance(playlist, str) or not playlist:
         raise IncompleteYouTubeInventory("UPLOAD_PLAYLIST_UNKNOWN")
-    ids = _complete_upload_list(youtube, playlist)
+    ids, deleted_candidates = _complete_upload_list(youtube, playlist)
     records = {}
-    unreturned = set()
-    for i in range(0, len(ids), 50):
-        chunk = ids[i:i+50]
+
+    def collect(chunk):
         response = youtube.videos().list(
             part="snippet,status,processingDetails", id=",".join(chunk),
         ).execute()
@@ -101,8 +146,20 @@ def audit_channel(youtube):
             if (row.get("snippet") or {}).get("channelId") != CHANNEL:
                 raise IncompleteYouTubeInventory("WRONG_YOUTUBE_VIDEO_CHANNEL")
             records[vid] = row
-        unreturned |= set(chunk) - set(records)
-    # An uploaded but now-deleted or inaccessible video MUST NOT grant absence.
+
+    for i in range(0, len(ids), 50):
+        collect(ids[i:i+50])
+    # A batch omission is not proof of deletion. Retry every ID individually.
+    for vid in ids:
+        if vid not in records:
+            collect([vid])
+    missing = set(ids) - set(records)
+    confirmed_deleted = {
+        vid for vid in missing
+        if vid in deleted_candidates and _confirm_deleted_upload(youtube, playlist, vid)
+    }
+    # Any unknown/missing ID remains a hard blocker and is redacted in logs.
+    unreturned = missing - confirmed_deleted
     scan_complete = not unreturned
     results = []
     for day, slug, source_sha in TARGETS:
@@ -149,6 +206,7 @@ def audit_channel(youtube):
     return {
         "channel_verified": True, "uploaded_playlist_count": len(ids),
         "resolved_video_count": len(records),
+        "confirmed_deleted_tombstones": len(confirmed_deleted),
         "unresolved_video_fingerprints": sorted(_fingerprint(x) for x in unreturned),
         "youtube_scan_complete": scan_complete,
         "items": results,
