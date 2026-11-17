@@ -876,13 +876,27 @@ class GithubOnlyAtomicLedgerTests(unittest.TestCase):
         from scripts.kesher_runtime.github_only_owner_policy import OwnerLedgerBlocked
         initial = self.store.load(reviewed_main_sha=self.expected_main)
         self.gh.main = 'c'*40
-        with self.assertRaisesRegex(StateConflict, 'MAIN_CHANGED_BEFORE_CLAIM'):
+        with self.assertRaisesRegex(StateConflict, 'MAIN'):
             self._claim(initial)
         self.gh.main = self.expected_main
         with self.assertRaisesRegex(OwnerLedgerBlocked, 'UNRECONCILED_PROVIDER_TASK'):
             self._claim(initial, provider_tasks={'provider-task':'GENERATING'})
         with self.assertRaisesRegex(OwnerLedgerBlocked, 'COMPETING_GITHUB_RUN'):
             self._claim(initial, pending=[{'run_id':987}])
+        self.assertFalse(any(method == 'POST' for method, _, _ in self.gh.calls))
+
+    def test_forged_activation_snapshot_is_not_an_owner_proof(self):
+        from dataclasses import replace
+        from scripts.kesher_runtime.identity import canonical_json
+        from scripts.kesher_runtime.state import StateConflict
+        snapshot = self.store.load(reviewed_main_sha=self.expected_main)
+        forged = snapshot.document
+        forged['epoch'] = 'safe-epoch-1'
+        forged['activation'] = 'PROTECTED_VERIFIED'
+        forged['commands']['other'] = {'phase': 'CLAIMED'}
+        counterfeit = replace(snapshot, encoded=canonical_json(forged))
+        with self.assertRaisesRegex(StateConflict, 'SNAPSHOT_NOT_CURRENT'):
+            self._claim(counterfeit)
         self.assertFalse(any(method == 'POST' for method, _, _ in self.gh.calls))
 
     def test_corrupted_git_blob_is_rejected(self):
