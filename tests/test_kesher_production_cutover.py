@@ -720,7 +720,7 @@ class GithubOwnerReadinessTests(unittest.TestCase):
 
     def test_workflow_has_no_production_side_effect_for_probe(self):
         text=(ROOT/'.github/workflows/kesher-controller-liveness.yml').read_text()
-        probe=text.split('  github_owner_probe:\n',1)[1].split('\n  watchdog:',1)[0]
+        probe=text.split('  github_owner_probe:\n',1)[1].split('\n  github_owner_prepare:',1)[0]
         self.assertNotIn('environment: kesher-cutover',probe)
         self.assertNotIn('id-token: write',probe)
         self.assertNotIn('secrets.',probe)
