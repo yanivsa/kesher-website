@@ -9,6 +9,20 @@ on:
       - "scripts/kesher_runtime/controller_liveness.py"
       - "tests/test_controller_liveness.py"
   workflow_dispatch:
+    inputs:
+      route:
+        description: Normal liveness or read-only owner-approved GitHub audit
+        required: false
+        default: liveness
+        type: choice
+        options:
+          - liveness
+          - github_only_probe
+      reviewed_revision:
+        description: Exact current main SHA for read-only alternative audit
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: write
@@ -19,8 +33,31 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  github_owner_probe:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.route == 'github_only_probe' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    timeout-minutes: 3
+    steps:
+      - name: Checkout exact current main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Read-only GitHub owner and provider readiness audit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEWED_REVISION: ${{ inputs.reviewed_revision }}
+        run: python -m scripts.kesher_runtime.github_owner_readiness --reviewed-revision "$REVIEWED_REVISION"
+
   watchdog:
-    if: ${{ github.repository == 'yanivsa/kesher-website' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request') }}
+    if: ${{ github.repository == 'yanivsa/kesher-website' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request') && (github.event_name != 'workflow_dispatch' || inputs.route != 'github_only_probe') }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

@@ -638,4 +638,94 @@ class CutoverApprovalReadinessTests(unittest.TestCase):
         self.assertIn('GATEWAY_HEALTH_REVISION_OR_EPOCH_MISMATCH', code)
         self.assertIn('does not attest native resource fences', code)
 
+
+class GithubOwnerReadinessTests(unittest.TestCase):
+    """Approval of the alternative cannot launch a provider or revive Jules."""
+
+    def _github(self, *, old_status='disabled_manually', old_runs=None, provider_runs=None, schema=5, main='a'*40, orphan_jobs=0, orphan_updated='2026-11-08T20:55:18Z'):
+        import base64
+        import json
+        from unittest.mock import Mock
+        gh=Mock()
+        state=json.dumps({'schema_version': schema, 'cycle': '2026-11-08'}).encode()
+        def request(method, path):
+            self.assertEqual(method, 'GET')
+            if path.endswith('/git/ref/heads/main'):
+                return {'object': {'sha': main}}
+            if path.endswith('/actions/workflows/337960554'):
+                return {'id':337960554, 'state':old_status}
+            if path.endswith('/actions/runs/42522546178'):
+                return {'id':42522546178,'workflow_id':337960554,'run_attempt':1,
+                        'status':'queued','conclusion':None,'event':'workflow_dispatch',
+                        'created_at':'2026-11-08T20:55:18Z','updated_at':orphan_updated}
+            if path.endswith('/actions/runs/42522546178/jobs?per_page=100'):
+                return {'jobs':[{'id':1}]*orphan_jobs,'total_count':orphan_jobs}
+            if '/actions/workflows/' in path and '/runs?status=' in path:
+                is_legacy = '/actions/workflows/337960554/runs?' in path
+                status = path.split('status=', 1)[1].split('&', 1)[0]
+                candidate = (old_runs if is_legacy else provider_runs) or []
+                rows = [row for row in candidate if row['status'] == status]
+                return {'workflow_runs':rows,'total_count':len(rows)}
+            if path.endswith('/contents/.kesher-controller/state.json?ref=automation-state'):
+                return {'sha':'b'*40,'encoding':'base64','content':base64.b64encode(state).decode()}
+            raise AssertionError(path)
+        gh.request.side_effect=request
+        return gh
+
+    def _run(self, gh):
+        from scripts.kesher_runtime.github_owner_readiness import inventory
+        return inventory(gh,expected_main='a'*40,
+            workflow_ref='yanivsa/kesher-website/.github/workflows/kesher-controller-liveness.yml@refs/heads/main',
+            event_name='workflow_dispatch',repo='yanivsa/kesher-website')
+
+    def test_exact_zero_job_old_orphan_is_quarantined_read_only(self):
+        result=self._run(self._github(old_runs=[{'id':42522546178,'status':'queued'}]))
+        self.assertEqual(result['status'],'READY_FOR_REVIEWED_MIGRATION_ONLY')
+        self.assertFalse(result['production_activated'])
+        self.assertFalse(result['provider_dispatch'])
+        self.assertEqual(result['quarantined_old_orphans'][0]['run'],42522546178)
+
+    def test_unknown_or_changed_legacy_queue_still_blocks(self):
+        for run, kwargs in (
+            ({'id':111,'status':'queued'}, {}),
+            ({'id':42522546178,'status':'queued'}, {'orphan_jobs':1}),
+            ({'id':42522546178,'status':'queued'}, {'orphan_updated':'2026-11-17T12:00:00Z'}),
+        ):
+            with self.subTest(run=run,kwargs=kwargs):
+                result=self._run(self._github(old_runs=[run],**kwargs))
+                self.assertEqual(result['status'],'BLOCKED_EXISTING_OWNER_OR_TASK')
+                self.assertEqual(result['quarantined_old_orphans'],[])
+
+    def test_unresolved_provider_job_refuses_activation(self):
+        result=self._run(self._github(provider_runs=[{'id':42,'status':'in_progress'}]))
+        self.assertEqual(result['status'],'BLOCKED_EXISTING_OWNER_OR_TASK')
+        self.assertFalse(result['provider_dispatch'])
+
+    def test_quiescent_inventory_only_allows_reviewed_migration(self):
+        result=self._run(self._github())
+        self.assertEqual(result['status'],'READY_FOR_REVIEWED_MIGRATION_ONLY')
+        self.assertFalse(result['production_activated'])
+        self.assertEqual(result['legacy_cycle'],'2026-11-08')
+
+    def test_active_legacy_controller_cannot_approve(self):
+        result=self._run(self._github(old_status='active'))
+        self.assertEqual(result['status'],'BLOCKED_EXISTING_OWNER_OR_TASK')
+
+    def test_legacy_schema_or_main_drift_fails_closed(self):
+        from scripts.kesher_runtime.state import StateInvalid
+        with self.assertRaises(StateInvalid):
+            self._run(self._github(schema=6))
+        with self.assertRaises(StateInvalid):
+            self._run(self._github(main='c'*40))
+
+    def test_workflow_has_no_production_side_effect_for_probe(self):
+        text=(ROOT/'.github/workflows/kesher-controller-liveness.yml').read_text()
+        probe=text.split('  github_owner_probe:\n',1)[1].split('\n  watchdog:',1)[0]
+        self.assertNotIn('environment: kesher-cutover',probe)
+        self.assertNotIn('id-token: write',probe)
+        self.assertNotIn('secrets.',probe)
+        self.assertIn('contents: read',probe)
+        self.assertIn('github_owner_readiness',probe)
+        self.assertIn("inputs.route != 'github_only_probe'", text)
+
 if __name__ == '__main__': unittest.main()
