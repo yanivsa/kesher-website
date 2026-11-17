@@ -642,7 +642,7 @@ class CutoverApprovalReadinessTests(unittest.TestCase):
 class GithubOwnerReadinessTests(unittest.TestCase):
     """Approval of the alternative cannot launch a provider or revive Jules."""
 
-    def _github(self, *, old_status='disabled_manually', old_runs=None, provider_runs=None, schema=5, main='a'*40):
+    def _github(self, *, old_status='disabled_manually', old_runs=None, provider_runs=None, schema=5, main='a'*40, orphan_jobs=0, orphan_updated='2026-11-08T20:55:18Z'):
         import base64
         import json
         from unittest.mock import Mock
@@ -654,6 +654,12 @@ class GithubOwnerReadinessTests(unittest.TestCase):
                 return {'object': {'sha': main}}
             if path.endswith('/actions/workflows/337960554'):
                 return {'id':337960554, 'state':old_status}
+            if path.endswith('/actions/runs/42522546178'):
+                return {'id':42522546178,'workflow_id':337960554,'run_attempt':1,
+                        'status':'queued','conclusion':None,'event':'workflow_dispatch',
+                        'created_at':'2026-11-08T20:55:18Z','updated_at':orphan_updated}
+            if path.endswith('/actions/runs/42522546178/jobs?per_page=100'):
+                return {'jobs':[{'id':1}]*orphan_jobs,'total_count':orphan_jobs}
             if '/actions/workflows/' in path and '/runs?status=' in path:
                 is_legacy = '/actions/workflows/337960554/runs?' in path
                 status = path.split('status=', 1)[1].split('&', 1)[0]
@@ -672,11 +678,23 @@ class GithubOwnerReadinessTests(unittest.TestCase):
             workflow_ref='yanivsa/kesher-website/.github/workflows/kesher-controller-liveness.yml@refs/heads/main',
             event_name='workflow_dispatch',repo='yanivsa/kesher-website')
 
-    def test_stale_queued_legacy_run_refuses_activation(self):
+    def test_exact_zero_job_old_orphan_is_quarantined_read_only(self):
         result=self._run(self._github(old_runs=[{'id':42522546178,'status':'queued'}]))
-        self.assertEqual(result['status'],'BLOCKED_EXISTING_OWNER_OR_TASK')
+        self.assertEqual(result['status'],'READY_FOR_REVIEWED_MIGRATION_ONLY')
         self.assertFalse(result['production_activated'])
-        self.assertEqual(result['pending'][0]['run'],42522546178)
+        self.assertFalse(result['provider_dispatch'])
+        self.assertEqual(result['quarantined_old_orphans'][0]['run'],42522546178)
+
+    def test_unknown_or_changed_legacy_queue_still_blocks(self):
+        for run, kwargs in (
+            ({'id':111,'status':'queued'}, {}),
+            ({'id':42522546178,'status':'queued'}, {'orphan_jobs':1}),
+            ({'id':42522546178,'status':'queued'}, {'orphan_updated':'2026-11-17T12:00:00Z'}),
+        ):
+            with self.subTest(run=run,kwargs=kwargs):
+                result=self._run(self._github(old_runs=[run],**kwargs))
+                self.assertEqual(result['status'],'BLOCKED_EXISTING_OWNER_OR_TASK')
+                self.assertEqual(result['quarantined_old_orphans'],[])
 
     def test_unresolved_provider_job_refuses_activation(self):
         result=self._run(self._github(provider_runs=[{'id':42,'status':'in_progress'}]))
