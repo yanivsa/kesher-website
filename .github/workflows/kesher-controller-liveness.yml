@@ -35,7 +35,7 @@ permissions:
   actions: write
 
 concurrency:
-  group: ${{ github.event_name == 'workflow_dispatch' && inputs.route == 'github_only_prepare' && 'kesher-owner-prepare' || 'kesher-controller-liveness' }}
+  group: kesher-controller-liveness
   cancel-in-progress: false
 
 jobs:
