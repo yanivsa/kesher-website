@@ -70,6 +70,42 @@ class FakeYouTube:
         return _Endpoint(result)
 
 
+class DeletedUploadFake(FakeYouTube):
+    """A deleted YouTube video must have both authentic marker and exact 404."""
+
+    def __init__(self, reason="videoNotFound"):
+        super().__init__()
+        del self.videos_map["Private001x"]
+        self.reason = reason
+        self.pages[1]["items"][0].update({
+            "snippet": {
+                "channelId": CHANNEL, "playlistId": "UPLOADS",
+                "resourceId": {"kind":"youtube#video","videoId":"Private001x"},
+                "title": "Deleted video",
+            },
+            "status": {"privacyStatus": "privacyStatusUnspecified"},
+        })
+
+    def playlistItems(self):
+        base = super().playlistItems()
+        def request(kwargs):
+            if kwargs.get("videoId"):
+                class NotFound(Exception):
+                    def __init__(self, reason):
+                        import json
+                        from types import SimpleNamespace
+                        self.resp = SimpleNamespace(status=404)
+                        self.content = json.dumps({
+                            "error":{"code":404,"errors":[{
+                                "reason": reason, "domain":"youtube.playlistItem",
+                                "location":"videoId",
+                            }]}
+                        }).encode()
+                raise NotFound(self.reason)
+            return base.list(**kwargs).execute()
+        return _Endpoint(request)
+
+
 class ReadOnlyGapAuditTests(unittest.TestCase):
     def test_full_pagination_and_exact_source_with_private_redaction(self):
         yt = FakeYouTube()
@@ -98,6 +134,32 @@ class ReadOnlyGapAuditTests(unittest.TestCase):
         self.assertEqual(result["items"][0]["exact_match_count"], 0)
         self.assertEqual(result["items"][0]["legacy_candidate_count"], 1)
         self.assertFalse(result["items"][0]["source_qa_approved"])
+
+    def test_deleted_tombstone_requires_independent_exact_404(self):
+        yt = DeletedUploadFake()
+        result = audit_channel(yt)
+        self.assertTrue(result["youtube_scan_complete"])
+        self.assertEqual(result["confirmed_deleted_tombstones"], 1)
+        self.assertEqual(result["uploaded_playlist_count"], 2)
+        self.assertEqual(result["resolved_video_count"], 1)
+        self.assertEqual(result["unresolved_video_fingerprints"], [])
+        self.assertFalse(result["items"][1]["upload_authorized"])
+        self.assertNotIn("Private001x", str(result))
+        self.assertTrue(all(x[0] not in ("videos.insert","videos.update")
+                            for x in yt.calls))
+
+    def test_unverified_404_cannot_silently_exclude_video(self):
+        result = audit_channel(DeletedUploadFake(reason="quotaExceeded"))
+        self.assertFalse(result["youtube_scan_complete"])
+        self.assertEqual(result["confirmed_deleted_tombstones"], 0)
+        self.assertEqual(len(result["unresolved_video_fingerprints"]), 1)
+
+    def test_spoofed_deleted_title_alone_not_enough(self):
+        yt = DeletedUploadFake()
+        yt.pages[1]["items"][0]["snippet"]["channelId"] = "WRONG_CHANNEL"
+        result = audit_channel(yt)
+        self.assertFalse(result["youtube_scan_complete"])
+        self.assertEqual(result["confirmed_deleted_tombstones"], 0)
 
     def test_missing_youtube_video_cannot_claim_complete(self):
         yt = FakeYouTube()
