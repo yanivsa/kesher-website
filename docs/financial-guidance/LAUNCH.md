@@ -17,7 +17,7 @@ https://developers.google.com/search/docs/fundamentals/ai-optimization-guide
 https://pop.education.gov.il/tchumey_daat/financial-education/junior-high/curriculum/rationale/
 
 ## שערי איכות לפני פריסה
-1. שירה מאשרת בכתב את הכשרתה כמורה לחינוך פיננסי, היקף השירות, מסלולים, תמחור (אם מוצג), זמינות ומיקום.
+1. שירה מאשרת בכתב את הכשרתה כעוסקת בחינוך פיננסי, היקף השירות, מסלולים, תמחור (אם מוצג), זמינות ומיקום.
 2. שירה מבקרת את כל 20 המאמרים, המידע והטון, כולל אישור שיוך המחבר בשמה. לא לבצע Merge לפני כן.
 3. לפעול רק לאחר CI ו־Stability PR Validation ירוקים על אותו HEAD ומעבר רגרסיות קיימות.
 4. לבצע npm run generate, npm run test:content, npm run test, npm run build, npm run verify:dist, npm run test:e2e; לשמור על מערכת ייצור המאמרים/הווידאו.

@@ -49,7 +49,8 @@ describe('family finance content publishing contract', () => {
     expect(wordCount).toBeGreaterThanOrEqual(500);
     expect(post.content).toContain(service);
     expect(post.content).toContain(category);
-    expect(post.content).toContain('pop.education.gov.il');
+    expect(post.content).toContain('boi.org.il');
+    expect(post.author).toBe('מערכת אתר קשר');
     expect(post.relatedPostIds.length).toBeGreaterThan(0);
     for (const id of post.relatedPostIds) expect(known.has(id)).toBe(true);
     expect(summaries.filter(s => s.id === post.id)).toHaveLength(1);

@@ -69,12 +69,9 @@ const BlogPost: React.FC = () => {
         "dateModified": (post && 'updatedAt' in post && typeof post.updatedAt === 'string' && post.updatedAt.trim())
           ? post.updatedAt.trim()
           : (post?.date || ""),
-        "author": {
-          "@type": "Person",
-          "@id": `${SITE_CONFIG.url}/#shira`,
-          "name": SITE_CONFIG.author,
-          "url": `${SITE_CONFIG.url}/about`
-        },
+        "author": post?.category === 'כלכלת המשפחה' && post.author === 'מערכת אתר קשר'
+          ? { "@type": "Organization", "@id": `${SITE_CONFIG.url}/#business`, "name": "מערכת אתר קשר", "url": SITE_CONFIG.url }
+          : { "@type": "Person", "@id": `${SITE_CONFIG.url}/#shira`, "name": SITE_CONFIG.author, "url": `${SITE_CONFIG.url}/about` },
         "publisher": {
           "@type": "LocalBusiness",
           "@id": `${SITE_CONFIG.url}/#business`
@@ -197,7 +194,7 @@ const BlogPost: React.FC = () => {
           )}
           <div className={styles.authorByline}>
             <span>מאת: </span>
-            <Link to="/about" className={styles.authorLink}>{post.author || SITE_CONFIG.author}</Link>
+            {post.author === 'מערכת אתר קשר' ? <span className={styles.authorLink}>מערכת אתר קשר</span> : <Link to="/about" className={styles.authorLink}>{post.author || SITE_CONFIG.author}</Link>}
             <span className={styles.metaDivider}>•</span>
             <span className={styles.date} data-kesher-article-date={post.date}>{new Date(post.date).toLocaleDateString('he-IL', { timeZone: 'UTC' })}</span>
             {'updatedAt' in post && typeof post.updatedAt === 'string' && post.updatedAt && post.updatedAt !== post.date && (
