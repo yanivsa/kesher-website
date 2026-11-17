@@ -115,7 +115,7 @@ const PremaritalFirstYearPage: React.FC = () => (
           <article className={styles.card}>
             <span className={styles.cardIcon}><FiDollarSign aria-hidden="true" /></span>
             <h3>כסף</h3>
-            <p>חשבונות משותפים או נפרדים, חובות, חיסכון, עזרה מההורים ומה נחשב הוצאה שצריך לתאם.</p>
+            <p>חשבונות משותפים או נפרדים, חובות, חיסכון, עזרה מההורים ומה נחשב הוצאה שצריך לתאם. <Link to="/services/family-financial-guidance">ליווי כלכלי־זוגי</Link> מאפשר להעמיק גם בתכנון ובהרגלי ההתנהלות בבית.</p>
           </article>
           <article className={styles.card}>
             <span className={styles.cardIcon}><FiHome aria-hidden="true" /></span>

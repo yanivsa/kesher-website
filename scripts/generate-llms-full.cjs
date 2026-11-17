@@ -26,6 +26,7 @@ while ((match = faqRegex.exec(faqContent)) !== null) {
 // Add Service Pages Content
 fullContent += '## עמודי שירות מפורטים (Detailed Services)\n\n';
 const services = [
+  { name: 'ליווי כלכלי לזוגות ומשפחות', url: '/services/family-financial-guidance', path: path.join(__dirname, '../src/pages/Services/FinancialGuidance/FinancialGuidancePage.tsx') },
   { name: 'ייעוץ זוגי', url: '/services/couples', path: path.join(__dirname, '../src/pages/Services/Couples/CouplesCounseling.tsx') },
   { name: 'הדרכת הורים', url: '/services/parenting', path: path.join(__dirname, '../src/pages/Services/Parenting/ParentingGuidance.tsx') },
   { name: 'תיאום הורי', url: '/services/parenting-coordination', path: path.join(__dirname, '../src/pages/Services/ParentingCoordination/ParentingCoordinationPage.tsx') },

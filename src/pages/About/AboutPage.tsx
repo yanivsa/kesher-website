@@ -40,7 +40,8 @@ const schemaData = {
           "מעברים חינוכיים",
           "משפחות עולים ותושבים חוזרים",
           "זוגיות בעלייה וברילוקיישן",
-          "הכנה לנישואים והשנה הראשונה"
+          "הכנה לנישואים והשנה הראשונה",
+          "חינוך פיננסי והתנהלות כלכלת המשפחה"
         ],
         "worksFor": {
           "@type": "LocalBusiness",
@@ -190,6 +191,11 @@ const AboutPage: React.FC = () => {
               <FiHeart aria-hidden="true" />
               <strong>הכנה לנישואים והשנה הראשונה</strong>
               <span>כסף, בית, משפחות, תקשורת והסכמות לחיים המשותפים.</span>
+            </Link>
+            <Link to="/services/family-financial-guidance">
+              <FiBookOpen aria-hidden="true" />
+              <strong>ליווי כלכלי לזוגות ומשפחות</strong>
+              <span>חינוך פיננסי, שיח על כסף, תקציב והסכמות בבית.</span>
             </Link>
             <Link to="/services/couples-aliyah-relocation">
               <FiCompass aria-hidden="true" />
