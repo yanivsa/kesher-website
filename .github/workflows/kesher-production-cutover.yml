@@ -18,7 +18,63 @@ concurrency:
   group: kesher-production-cutover
   cancel-in-progress: false
 jobs:
+  readiness:
+    # Read-only checks before a protected owner approval is even requested.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check existing gateway health and pinned epoch before owner review
+        env:
+          GATEWAY_URL: ${{ vars.KESHER_CUTOVER_GATEWAY_URL }}
+          REVIEWED_REVISION: ${{ inputs.reviewed_revision }}
+          ACTUAL_REVISION: ${{ github.sha }}
+          CUTOVER_EPOCH: ${{ inputs.epoch }}
+        run: |
+          import json
+          import os
+          import re
+          import sys
+          import urllib.parse
+          import urllib.request
+          
+          def deny(reason):
+              print("KESHER_CUTOVER_APPROVAL_NOT_READY: " + reason, file=sys.stderr)
+              raise SystemExit(1)
+          
+          reviewed = os.environ.get("REVIEWED_REVISION", "")
+          epoch = os.environ.get("CUTOVER_EPOCH", "")
+          if not re.fullmatch(r"[0-9a-f]{40}", reviewed) or reviewed != os.environ.get("ACTUAL_REVISION"):
+              deny("REVIEWED_MAIN_SHA_MISMATCH")
+          if not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", epoch):
+              deny("EPOCH_MISSING_OR_INVALID")
+          origin = os.environ.get("GATEWAY_URL", "").strip()
+          if not origin:
+              deny("KESHER_CUTOVER_GATEWAY_URL_UNCONFIGURED")
+          url = urllib.parse.urlsplit(origin)
+          if (url.scheme != "https" or not url.hostname or url.username or url.password
+                  or url.path not in ("", "/") or url.query or url.fragment):
+              deny("PINNED_HTTPS_GATEWAY_REQUIRED")
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, *args, **kwargs):
+                  return None
+          try:
+              req = urllib.request.Request(origin.rstrip("/") + "/healthz", method="GET")
+              with urllib.request.build_opener(NoRedirect()).open(req, timeout=15) as res:
+                  if res.status != 200:
+                      deny("GATEWAY_HEALTH_NON_200")
+                  payload = json.loads(res.read(4096))
+          except (OSError, ValueError) as exc:
+              deny("GATEWAY_HEALTH_UNREACHABLE_" + type(exc).__name__)
+          if (not isinstance(payload, dict) or payload.get("service") != "kesher-cutover"
+                  or payload.get("epoch") != epoch or payload.get("reviewed_revision") != reviewed
+                  or not all(re.fullmatch(r"[0-9a-f]{64}", str(payload.get(x, "")))
+                              for x in ("code_sha256", "policy_sha256"))):
+              deny("GATEWAY_HEALTH_REVISION_OR_EPOCH_MISMATCH")
+          print("KESHER_CUTOVER_APPROVAL_PREFLIGHT_OK; does not attest native resource fences")
+
   transition:
+    needs: readiness
     if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     environment: kesher-cutover
     runs-on: ubuntu-latest
