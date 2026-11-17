@@ -11,8 +11,9 @@ on:
           - native
           - github_only_probe
       epoch:
-        description: Independently approved cutover epoch
-        required: true
+        description: Independently approved cutover epoch (native route only)
+        required: false
+        default: ""
         type: string
       reviewed_revision:
         description: Independently reviewed exact current main SHA
@@ -106,8 +107,7 @@ jobs:
 
   transition:
     needs: readiness
-    if: ${{ inputs.route == 'native' }}
-    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.route == 'native' }}
     environment: kesher-cutover
     runs-on: ubuntu-latest
     timeout-minutes: 5
