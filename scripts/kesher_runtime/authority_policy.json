@@ -837,7 +837,7 @@
           "tests/test_v5_delivery_watchdog_contract.py": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631",
           "tests/test_v5_shared_video_controller.py": "d0dfaeaad6d7bb78943c5e54e4f084c633d49411f1caf83f76f479e77b634e49",
           "tests/test_v5_video_source_binding.py": "cef18902a72d505fc3b8da671a706b866890e058ba490a99a3998f96dd5c78cf",
-          "tests/test_kesher_production_cutover.py": "3d37ecd1027f132f2f807f97a5befb8fa837683c986b26ed67b4466f95752ff2",
+          "tests/test_kesher_production_cutover.py": "35015ec907bd3d686cf75c19ac83472059060c35eabdb884476f63c06dc2e6f4",
           "tests/test_kesher_external_exclusion.py": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
           "tests/test_kesher_git_exclusion.py": "60ad776c6da6b084512be14730e73a0ff83676a4ed0cdb8c5cdf03044fb575d4",
@@ -3899,7 +3899,7 @@
     },
     ".github/workflows/kesher-production-cutover.yml": {
       "role": "handover",
-      "definition_sha256": "171fe621953101ab2ceaa747e6681075e9c1b50d3e35c1c0e17cce54c62c8ebb",
+      "definition_sha256": "b20f81a3d65cc952ced64725ba715c210aa0842201cc897fd76cd579ef30a1b3",
       "capabilities": [
         "read",
         "state_write",
@@ -3919,6 +3919,7 @@
       "review": {
         "call_chain": {
           "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
+        "scripts/kesher_runtime/github_owner_readiness.py": "a1066e8b76526f1d839024a36ff906cb83fff3a92180a758acff539f7c835aeb",
           "scripts/kesher_runtime/cutover_auth.py": "27dbbd703912499e0ca553d774bca027844f3e7db116a22d787e54f4ba007a80",
           "scripts/kesher_runtime/cutover_service.py": "7b5bcc7af5391111ccd7a491ca427e7244edb32a438c5fcd81f196a13df898de",
           "scripts/kesher_runtime/cutover_gateway.py": "e8812d0d40bea7a8bae6bf23e3b7ea191dab5f05300d5b8ee8b33e6825b34e06",
