@@ -839,7 +839,7 @@
           "tests/test_v5_delivery_watchdog_contract.py": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631",
           "tests/test_v5_shared_video_controller.py": "d0dfaeaad6d7bb78943c5e54e4f084c633d49411f1caf83f76f479e77b634e49",
           "tests/test_v5_video_source_binding.py": "cef18902a72d505fc3b8da671a706b866890e058ba490a99a3998f96dd5c78cf",
-          "tests/test_kesher_production_cutover.py": "b4219418d0c1929fe56da411dc37004f4cd2871cb7153b65e8d3d1d6a2c59c95",
+          "tests/test_kesher_production_cutover.py": "590f74bd2c81c22b04258f9e7f905459299a515d292b30506f0f52e75aa3be17",
           "tests/test_kesher_external_exclusion.py": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
           "tests/test_kesher_git_exclusion.py": "60ad776c6da6b084512be14730e73a0ff83676a4ed0cdb8c5cdf03044fb575d4",
@@ -2034,7 +2034,7 @@
         "state_write",
         "workflow_dispatch"
       ],
-      "definition_sha256": "df7bd8dc8c777ed217702c127be1100785bbecd5d31fde55392d597ec9d977b3",
+      "definition_sha256": "dc9ce4e8df4900c21efe3f87157e8c08542d44d2e1d26d6d862264643889f24f",
       "resources": [
         "github.dispatch",
         "github.refs",
@@ -2044,6 +2044,7 @@
         "call_chain": {
           "scripts/kesher_runtime/controller_liveness.py": "ffda29116debc6bfd722eacd1363821a13681b694547b5bbbbaa3a3064473f75",
         "scripts/kesher_runtime/github_owner_readiness.py": "9bced30f8b5c58f1380af590c8940dff6f5da2ca2dc13717f42a3dc790c912e3",
+        "scripts/kesher_runtime/github_only_owner_prepare.py": "8cd27f21a5116a7644430e127e571a26ad26ac4eea5e687e5ab6798f1c0756ed",
           "scripts/kesher_runtime/delivery_preflight.py": "b1eead6da79194fdbf7012ff4e55934e13bc53ca2ef71a1690e45d00f7b2435b"
         },
         "credential_services": {},

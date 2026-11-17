@@ -18,8 +18,14 @@ on:
         options:
           - liveness
           - github_only_probe
+          - github_only_prepare
       reviewed_revision:
-        description: Exact current main SHA for read-only alternative audit
+        description: Exact current main SHA for read-only probe or protected prepare
+        required: false
+        default: ""
+        type: string
+      epoch:
+        description: Exact owner-reviewed Git-only epoch for protected preparation
         required: false
         default: ""
         type: string
@@ -34,7 +40,7 @@ concurrency:
 
 jobs:
   github_owner_probe:
-    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.route == 'github_only_probe' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && (inputs.route == 'github_only_probe' || inputs.route == 'github_only_prepare') }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -56,8 +62,39 @@ jobs:
           REVIEWED_REVISION: ${{ inputs.reviewed_revision }}
         run: python -m scripts.kesher_runtime.github_owner_readiness --reviewed-revision "$REVIEWED_REVISION"
 
+  github_owner_prepare:
+    # Existing protected environment requests a genuine GitHub reviewer.
+    # PREPARED_NOT_LIVE never grants publication or provider dispatch.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.route == 'github_only_prepare' }}
+    needs: github_owner_probe
+    environment: kesher-cutover
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    timeout-minutes: 5
+    steps:
+      - name: Checkout immutable reviewed main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Protected Git-only ledger preparation (NOT production activation)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEWED_REVISION: ${{ inputs.reviewed_revision }}
+          OWNER_EPOCH: ${{ inputs.epoch }}
+        run: |
+          python -m scripts.kesher_runtime.github_only_owner_prepare \
+            --reviewed-revision "$REVIEWED_REVISION" \
+            --epoch "$OWNER_EPOCH"
+
   watchdog:
-    if: ${{ github.repository == 'yanivsa/kesher-website' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request') && (github.event_name != 'workflow_dispatch' || inputs.route != 'github_only_probe') }}
+    if: ${{ github.repository == 'yanivsa/kesher-website' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request') && (github.event_name != 'workflow_dispatch' || inputs.route != 'github_only_probe' && inputs.route != 'github_only_prepare') }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
