@@ -2,18 +2,9 @@ name: Kesher explicit production cutover
 on:
   workflow_dispatch:
     inputs:
-      route:
-        description: Independent native cutover, or owner-approved read-only GitHub-only audit
-        required: true
-        default: native
-        type: choice
-        options:
-          - native
-          - github_only_probe
       epoch:
-        description: Independently approved cutover epoch (native route only)
-        required: false
-        default: ""
+        description: Independently approved cutover epoch
+        required: true
         type: string
       reviewed_revision:
         description: Independently reviewed exact current main SHA
@@ -27,32 +18,9 @@ concurrency:
   group: kesher-production-cutover
   cancel-in-progress: false
 jobs:
-  github_only_probe:
-    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.route == 'github_only_probe' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      actions: read
-    timeout-minutes: 3
-    steps:
-      - name: Checkout immutable reviewed main
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          ref: ${{ github.sha }}
-          persist-credentials: false
-      - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
-        with:
-          python-version: '3.12'
-      - name: Audit stale owner and provider tasks without any writes
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REVIEWED_REVISION: ${{ inputs.reviewed_revision }}
-        run: python -m scripts.kesher_runtime.github_owner_readiness --reviewed-revision "$REVIEWED_REVISION"
-
   readiness:
     # Read-only checks before a protected owner approval is even requested.
-    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.route == 'native' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -107,7 +75,7 @@ jobs:
 
   transition:
     needs: readiness
-    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.route == 'native' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     environment: kesher-cutover
     runs-on: ubuntu-latest
     timeout-minutes: 5
