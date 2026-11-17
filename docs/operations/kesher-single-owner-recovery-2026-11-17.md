@@ -57,3 +57,18 @@
 - [ ] לכל יום מאמר, Overview ו־Short ציבוריים עם קישורים והטמעה.
 
 **מסמך זה אינו אישור production cutover, אינו מצדיק הפעלת מסלול ישן או יצירת כפילויות.**
+
+
+## דוגמאות היסטוריות שאומתו מתוך Issue #1210 (בדיקת עומק)
+
+**26.10 — municipal-kindergarten-adjustment:** 
+[מאמר](https://kesher.saharoni.com/blog/municipal-kindergarten-adjustment), [Long](https://youtu.be/FzAzvOP15Mo), [Short](https://youtu.be/xkLKquTygoQ). מזהה מקור d4ece4f847e979ca900a5c98f65bc5b4eecbe994f000d277a353753581f2d836; Long item video-20261026-131504-d4ece4f847-a2, משימת ספק 7120cf18-bee8-4481-bb22-cb1948f69d3f; Short item video-20261026-133251-d4ece4f847, משימת ספק 676c76d2-246b-4abf-abb0-1064ccca4cac. בקר ההפקה חידש את אותו הפריט לאחר עצירה, ללא שכפול. הריצה הייתה בסיוע ידני ולכן לא נחשבה מחזור אוטונומי נקי. **לקח:** הפרדת DONE_PUBLIC לבין CLEAN_AUTONOMOUS, וחידוש אותה משימה לאחר תקלה.
+
+**2.11 — stool-withholding-potty-training:** 
+[מאמר](https://kesher.saharoni.com/blog/stool-withholding-potty-training), [Long](https://youtu.be/xZotdUtnJXw), [Short](https://youtu.be/Yy15MJftfEY). נרשמו שלושה תוצרים ציבוריים תקינים טכנית, אבל ב־idea_history שויך בטעות idea_id של מאמר מחוננים לתוצרי הגמילה. **לקח:** התאמת idea_id/slug/content SHA היא שער עצמאות ותוכן, לא להסתפק בשלושה קישורים אקראיים. אין לשחזר או להעלות מחדש פריטים שכבר פורסמו בגלל שגיאת שיוך בלבד.
+
+**6.11 — relationship-memory-reconstruction:** 
+[מאמר](https://kesher.saharoni.com/blog/relationship-memory-reconstruction), [Long](https://youtu.be/VPUSEiBk2es). בדיקה מאומתת לחשבון YouTube אישרה Long ציבורי ומעובד בהצלחה, בעוד רישום המצב עדיין לא הושלם ו־Short נעצר בהמתנה לשיוך ה־Long. **לקח:** לא להעלות Long שני; לשחזר קודם את רישום ה־Long הציבורי ולחדש את ה־Short הקיים בכפוף למקור ובדיקת איכות.
+
+מקור שלוש הבדיקות: [Issue #1210 והיסטוריית העדכונים בו](https://github.com/yanivsa/kesher-website/issues/1210) ב־26.10, 2.11 ו־6.11. אלה **דוגמאות לשחזור**, ולא הוכחה שהמערכת כיום מתפקדת או שפריט חסר יוצר מחדש.
+
