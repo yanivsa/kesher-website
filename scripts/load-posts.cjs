@@ -52,6 +52,7 @@ const requireUniqueIds = (posts, label) => {
 
 const loadPosts = () => {
   const historical = readList(path.join(ROOT, 'src', 'data', 'posts.json'));
+  const financialGuidancePosts = readList(path.join(ROOT, 'src', 'data', 'financialGuidancePosts.json'));
   const recent = readList(path.join(ROOT, 'src', 'data', 'postsRecent.json'));
   const parentingCoordinationPosts = readList(path.join(ROOT, 'src', 'data', 'parentingCoordinationPosts.json'));
   const giftedParentPosts = readList(path.join(ROOT, 'src', 'data', 'giftedParentPosts.json'));
@@ -64,6 +65,7 @@ const loadPosts = () => {
   const giftedParentWave2Overrides = readObject(path.join(ROOT, 'src', 'data', 'giftedParentWave2Overrides.json'));
 
   const authoritativePosts = [
+    ...financialGuidancePosts,
     ...parentingCoordinationPosts,
     ...manualPostsOct2026,
     ...giftedParentPosts,

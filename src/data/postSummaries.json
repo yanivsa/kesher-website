@@ -1,5 +1,158 @@
 [
   {
+    "id": "financial-secrecy-couples",
+    "title": "בן הזוג מסתיר הוצאות או חובות: איך מתחילים לדבר?",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "כסף וזוגיות",
+    "excerpt": "כשמתגלה הוצאה או התחייבות שהוסתרה, כדאי להתחיל בשיחה מוגדרת: אילו עובדות חסרות, מה ההשפעה המעשית על הבית, ומה יאפשר לכל אחד להרגיש בטוח יותר בהמשך. אין צור",
+    "image": "/images/financial-guidance/articles/financial-secrecy-couples.svg"
+  },
+  {
+    "id": "unequal-income-fair-budget",
+    "title": "מרוויחים סכומים שונים: איך מחלקים אחריות כלכלית בבית?",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "כסף וזוגיות",
+    "excerpt": "חלוקת הוצאות הוגנת אינה חייבת להיות חלוקה של חצי־חצי. אפשר לבחון תרומה לפי הכנסה, לפי יכולת כלכלית או לפי הסכמה אחרת, תוך התייחסות גם לעבודת הבית ולטיפול ב",
+    "image": "/images/financial-guidance/articles/unequal-income-fair-budget.svg"
+  },
+  {
+    "id": "couples-joint-or-separate-accounts",
+    "title": "חשבון משותף או נפרד: איך זוגות יכולים להחליט?",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "כסף וזוגיות",
+    "excerpt": "אין מבנה חשבון שמתאים לכל זוג. אפשר לבחור בחשבון משותף, בחשבונות נפרדים או בשילוב ביניהם. ההחלטה צריכה להישען על הוצאות משותפות, אופן חלוקת האחריות, רמת הש",
+    "image": "/images/financial-guidance/articles/couples-joint-or-separate-accounts.svg"
+  },
+  {
+    "id": "weekly-money-conversation",
+    "title": "שיחת כסף שבועית: 20 דקות בלי לריב",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "כסף וזוגיות",
+    "excerpt": "בחרו זמן קבוע לשיחת כסף של כעשרים דקות, עם שלושה חלקים: מה צפוי בשבוע הקרוב, אילו החלטות צריך לקבל, ועל מה נרצה לעקוב. מתחילים מעובדות ומתייחסים גם לתחושות",
+    "image": "/images/financial-guidance/articles/weekly-money-conversation.svg"
+  },
+  {
+    "id": "financial-boundaries-couples",
+    "title": "איך מציבים גבולות להוצאות בלי להפוך את הכסף לכלי שליטה?",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "כסף וזוגיות",
+    "excerpt": "גבול כלכלי בריא הוא הסכמה הדדית שמשרתת מטרה משותפת ומשאירה לכל צד מרחב בחירה. אפשר להגדיר הוצאות שמחליטים עליהן יחד, סכום אישי פנוי וכלל לבדיקת התקציב. גבו",
+    "image": "/images/financial-guidance/articles/financial-boundaries-couples.svg"
+  },
+  {
+    "id": "family-budget-guide",
+    "title": "איך בונים תקציב משפחתי שאפשר לחיות איתו?",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "תקציב משפחתי",
+    "excerpt": "בניית תקציב משפחתי מתחילה מרישום הכנסות נטו, מיפוי הוצאות קבועות ומשתנות והפיכת הוצאות שנתיות להקצאה חודשית. אחר כך בוחרים סדרי עדיפויות, בודקים שהמסגרת תו",
+    "image": "/images/financial-guidance/articles/family-budget-guide.svg"
+  },
+  {
+    "id": "tracking-family-expenses",
+    "title": "לאן נעלם הכסף בכל חודש? כך ממפים הוצאות",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "תקציב משפחתי",
+    "excerpt": "כדי לזהות לאן הולך הכסף, מרכזים הוצאות של תקופה מייצגת, מסווגים אותן לקבועות, משתנות ועונתיות ובודקים גם מועד חיוב בפועל. אחר כך בוחרים שתיים־שלוש קטגוריות",
+    "image": "/images/financial-guidance/articles/tracking-family-expenses.svg"
+  },
+  {
+    "id": "good-income-negative-balance",
+    "title": "מרוויחים יפה ועדיין במינוס: מאיפה מתחילים?",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "תקציב משפחתי",
+    "excerpt": "הכנסה גבוהה אינה מבטיחה תזרים חיובי. כדי להבין מדוע החשבון במינוס, ממפים הכנסה נטו, הוצאות והתחייבויות לפי תאריך חיוב, ומבדילים בין פער חודשי חוזר לבין חוד",
+    "image": "/images/financial-guidance/articles/good-income-negative-balance.svg"
+  },
+  {
+    "id": "annual-family-expenses",
+    "title": "איך מתכננים הוצאות שנתיות בלי הפתעות?",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "תקציב משפחתי",
+    "excerpt": "ממפים מראש הוצאות שאינן מתרחשות בכל חודש, מסמנים את מועדן המשוער ומעריכים את עלותן על בסיס נתונים קודמים או הצעות מחיר. לצורך תכנון אפשר לחלק סכום שנתי ל־1",
+    "image": "/images/financial-guidance/articles/annual-family-expenses.svg"
+  },
+  {
+    "id": "variable-income-family-budget",
+    "title": "הכנסה לא קבועה: איך מנהלים תקציב משפחתי?",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "תקציב משפחתי",
+    "excerpt": "כאשר ההכנסה משתנה, מתחילים ממיפוי הכנסות שהתקבלו בפועל לאורך כמה תקופות ומזהים סכום שמרני לצורכי תכנון, בלי להניח שחודש חזק יחזור. מפרידים הוצאות חיוניות, ",
+    "image": "/images/financial-guidance/articles/variable-income-family-budget.svg"
+  },
+  {
+    "id": "income-expense-gap-first-steps",
+    "title": "כשההוצאות גבוהות מההכנסות: צעדים ראשונים למשפחה",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "תקציב משפחתי",
+    "excerpt": "כאשר ההוצאות עולות על ההכנסות, ממפים תחילה את גודל הפער, את מועדי התשלום ואת ההוצאות החיוניות. בודקים אילו התחייבויות ניתן לבחון מחדש ואילו מחייבות מענה מק",
+    "image": "/images/financial-guidance/articles/income-expense-gap-first-steps.svg"
+  },
+  {
+    "id": "talking-money-with-kids-by-age",
+    "title": "איך מדברים עם ילדים על כסף בכל גיל?",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "ילדים וכסף",
+    "excerpt": "חינוך פיננסי מתאים לגיל מתחיל בהבדל בין רצון לצורך ובחוויה של בחירה מתוך אפשרויות מוגבלות. לילדים צעירים משתמשים במשחק ובדוגמאות יומיומיות; בגיל בית הספר מ",
+    "image": "/images/financial-guidance/articles/talking-money-with-kids-by-age.svg"
+  },
+  {
+    "id": "allowance-kids-guide",
+    "title": "דמי כיס לילדים: מתי מתחילים ואיך קובעים כללים?",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "ילדים וכסף",
+    "excerpt": "אפשר להתחיל דמי כיס כשיש לילד יכולת להבין בחירה בין קנייה עכשיו לבין המתנה למטרה, ובהתאם לגיל ולמצב המשפחה. מגדירים יחד מה הסכום מאפשר לקנות, באיזו תדירות ",
+    "image": "/images/financial-guidance/articles/allowance-kids-guide.svg"
+  },
+  {
+    "id": "child-purchase-demands-boundaries",
+    "title": "הילד מבקש לקנות הכול: איך מציבים גבולות?",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "ילדים וכסף",
+    "excerpt": "כשילד מבקש לקנות שוב ושוב, כדאי להכין ציפיות מראש, להבחין בין רצון לצורך ולהציע בחירה מצומצמת במקום משא ומתן אינסופי. אפשר להכיר באכזבה בלי לשנות את ההחלטה",
+    "image": "/images/financial-guidance/articles/child-purchase-demands-boundaries.svg"
+  },
+  {
+    "id": "children-family-budget-participation",
+    "title": "איך משתפים ילדים בתקציב המשפחה בלי להלחיץ?",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "ילדים וכסף",
+    "excerpt": "שיתוף ילדים בתקציב צריך להיות מותאם לגיל וממוקד בהחלטות קטנות ובטוחות. מציגים אפשרויות ולא מצב חשבון, מאפשרים לילד לבחור ולשאת באכזבה סבירה, ומבהירים שההור",
+    "image": "/images/financial-guidance/articles/children-family-budget-participation.svg"
+  },
+  {
+    "id": "planning-budget-new-baby",
+    "title": "נולד ילד: איך מתאימים את תקציב המשפחה?",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "מעברים משפחתיים",
+    "excerpt": "כשמשפחה מתרחבת, כדאי למפות הוצאות חד־פעמיות מול הוצאות שוטפות, לבדוק הכנסה צפויה בתקופת הלידה והחזרה לעבודה, ולהשאיר מקום לשינויים. לא צריך לקנות הכול מראש",
+    "image": "/images/financial-guidance/articles/planning-budget-new-baby.svg"
+  },
+  {
+    "id": "dealing-with-income-drop-as-family",
+    "title": "ירידה בהכנסה או אובדן עבודה: איך מתארגנים כמשפחה?",
+    "date": "2026-11-17",
+    "category": "כלכלת המשפחה",
+    "subcategory": "מעברים משפחתיים",
+    "excerpt": "אחרי ירידה בהכנסה כדאי לאסוף מידע על מקורות הכנסה וזכויות אפשריות, למפות הוצאות חיוניות ומועדי התחייבויות, ולבנות תכנון קצר טווח שניתן לעדכון. אין צורך לקב",
+    "image": "/images/financial-guidance/articles/dealing-with-income-drop-as-family.svg"
+  },
+  {
     "id": "child-led-play-10-minutes-connection",
     "title": "לא צריך עוד צעצוע: 10 דקות שבהן הילד מוביל את המשחק",
     "date": "2026-11-16",

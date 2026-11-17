@@ -20,11 +20,12 @@ import { getImageDimensions } from '../../data/imageDimensions';
 import NotFound from '../NotFound/NotFound';
 import styles from './BlogPost.module.css';
 
+const financialLegacyIds = new Set(['money-fights-communication','marriage-preparation-money-fights','marriage-prep-financial-expectations-2026-08-24']);
 const articleCtaCopy = (post: (typeof posts)[number]) => {
   const subcategory = 'subcategory' in post && typeof post.subcategory === 'string' ? post.subcategory : '';
   const context = `${post.category} ${subcategory} ${post.title}`;
 
-  if (post.category === 'כלכלת המשפחה') {
+  if (financialLegacyIds.has(post.id) || post.category === 'כלכלת המשפחה') {
     return 'גם כשהנושא נראה כמו מספרים, ההרגלים וההסכמות בבית חשובים. אפשר לברר עם שירה האם ליווי כלכלי־משפחתי מתאים לכם, בלי למסור פרטים כלכליים רגישים בפנייה הראשונה.';
   }
 
@@ -129,13 +130,18 @@ const BlogPost: React.FC = () => {
     return <NotFound />;
   }
 
-  const safeContent = DOMPurify.sanitize(post.content);
+  const legacyFinancialLink = financialLegacyIds.has(post.id)
+    ? '<h3>עוד דרך לעסוק בכסף בזוגיות</h3><p>לצד עבודה על התקשורת, אפשר להיעזר גם ב<a href="/services/family-financial-guidance">ליווי כלכלי לזוגות ומשפחות</a>, כדי להכניס סדר להוצאות, לנסח הסכמות ולתרגל שיחה על כסף. השירות מתמקד בחינוך פיננסי ובהתנהלות הבית, ואינו ייעוץ השקעות, פנסיה או מס. <a href="/blog/category/family-finances">מאמרים נוספים על כלכלת המשפחה</a>.</p>'
+    : '';
+  const safeContent = DOMPurify.sanitize(post.content + legacyFinancialLink);
   const shareUrl = `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`;
   const directAnswer = 'directAnswer' in post && typeof post.directAnswer === 'string'
     ? post.directAnswer.trim()
     : '';
   const articleSummary = directAnswer || post.excerpt.trim();
-  const relatedService = 'serviceUrl' in post
+  const relatedService = financialLegacyIds.has(post.id)
+    ? { url: '/services/family-financial-guidance', label: 'ליווי כלכלי לזוגות ומשפחות' }
+    : 'serviceUrl' in post
     && 'serviceLabel' in post
     && typeof post.serviceUrl === 'string'
     && typeof post.serviceLabel === 'string'
