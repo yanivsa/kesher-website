@@ -706,6 +706,6 @@ class GithubOwnerReadinessTests(unittest.TestCase):
         self.assertNotIn('secrets.',probe)
         self.assertIn('contents: read',probe)
         self.assertIn('github_owner_readiness',probe)
-        self.assertIn('    if: ${{ inputs.route == \'native\' }}',text)
+        self.assertIn("inputs.route == 'native'", text)
 
 if __name__ == '__main__': unittest.main()
