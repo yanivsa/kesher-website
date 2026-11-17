@@ -30,7 +30,7 @@ const FinancialLandingPage: React.FC<Props> = ({mode}) => {
   const url = SITE_CONFIG.url + data.path;
   const { trackCtaClick, trackWhatsappClick } = useLandingPageAnalytics({landingPagePath:data.path, landingPageType:mode, serviceType:'family_financial_guidance'});
   return <div className={styles.page}>
-    <MetaTags title={data.title} description={data.description} canonical={url} image={data.image} robots="noindex, follow" />
+    <MetaTags title={data.title} description={data.description} canonical={url} image="/images/generated/site/home-hero.jpg" robots="noindex, follow" />
     <SchemaOrg data={{'@context':'https://schema.org','@graph':[
       {'@type':'Service','@id':url+'#service',name:data.title,description:data.description,provider:{'@id':SITE_CONFIG.url+'/#business'},areaServed:'ישראל',url},
       {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'עמוד הבית',item:SITE_CONFIG.url},{'@type':'ListItem',position:2,name:data.title,item:url}]}]}} />

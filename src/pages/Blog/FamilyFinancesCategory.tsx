@@ -23,7 +23,7 @@ const schemaData = { '@context': 'https://schema.org', '@graph': [
 ] };
 const FamilyFinancesCategory: React.FC = () => (
   <div className={styles.page}>
-    <MetaTags title="כלכלת המשפחה: כסף, זוגיות ותקציב" description="מדריכים וכלים לחינוך פיננסי במשפחה, שיח זוגי על כסף, בניית תקציב והתמודדות עם הוצאות. שירה סהרוני, אשדוד ובאונליין." canonical={url} image="/images/financial-guidance/family-financial-guidance.svg" />
+    <MetaTags title="כלכלת המשפחה: כסף, זוגיות ותקציב" description="מדריכים וכלים לחינוך פיננסי במשפחה, שיח זוגי על כסף, בניית תקציב והתמודדות עם הוצאות. שירה סהרוני, אשדוד ובאונליין." canonical={url} image="/images/generated/site/home-hero.jpg" />
     <SchemaOrg data={schemaData} />
     <header className={styles.hero}><div className="container">
       <nav className={styles.breadcrumb} aria-label="נתיב ניווט"><Link to="/">עמוד הבית</Link> / <Link to="/blog">מאמרים</Link> / כלכלת המשפחה</nav>

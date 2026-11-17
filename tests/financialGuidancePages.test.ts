@@ -76,9 +76,10 @@ describe('family finance content publishing contract', () => {
     expect(existsSync(budget)).toBe(true);
     const csv = readFileSync(budget,'utf8').replace(/^\uFEFF/,'');
     const rows = csv.trim().split('\n');
-    expect(rows[14]).toContain('=SUM(C3:C5)');
-    expect(rows[15]).toContain('=SUM(C6:C14)');
-    expect(rows[16]).toContain('=C15-C16');
-    expect(rows[16]).toContain('=D15-D16');
+    expect(rows[0]).toBe('sep=;');
+    expect(rows[14]).toContain('=SUM(C2:C4)');
+    expect(rows[15]).toContain('=SUM(C5:C13)');
+    expect(rows[16]).toContain('=C14-C15');
+    expect(rows[16]).toContain('=D14-D15');
   });
 });

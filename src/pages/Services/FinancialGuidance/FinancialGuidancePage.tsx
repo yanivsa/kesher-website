@@ -23,7 +23,7 @@ const schemaData = {
 };
 const FinancialGuidancePage: React.FC = () => (
   <div className={styles.page}>
-    <MetaTags title="ליווי כלכלי לזוגות ומשפחות" description="ליווי כלכלי לזוגות ולמשפחות באשדוד ובאונליין: סדר בהוצאות, תקציב משפחתי, תקשורת זוגית סביב כסף וחינוך פיננסי בגישה מעשית." canonical={url} image="/images/financial-guidance/family-financial-guidance.svg" />
+    <MetaTags title="ליווי כלכלי לזוגות ומשפחות" description="ליווי כלכלי לזוגות ולמשפחות באשדוד ובאונליין: סדר בהוצאות, תקציב משפחתי, תקשורת זוגית סביב כסף וחינוך פיננסי בגישה מעשית." canonical={url} image="/images/generated/site/home-hero.jpg" />
     <SchemaOrg data={schemaData} />
     <header className={styles.hero}>
       <div className={`container ${styles.heroGrid}`}>
