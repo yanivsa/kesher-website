@@ -39,21 +39,24 @@ def inventory(github, *, expected_main, workflow_ref, event_name, repo):
     workflow = github.request("GET", api + f"/actions/workflows/{OLD_CONTROLLER_ID}")
     if workflow.get("id") != OLD_CONTROLLER_ID:
         raise StateInvalid("GITHUB_OWNER_PROBE_LEGACY_IDENTITY_UNKNOWN")
-    oldruns = github.request("GET", api + f"/actions/workflows/{OLD_CONTROLLER_ID}/runs?per_page=100")
-    if not isinstance(oldruns.get("workflow_runs"), list) or len(oldruns["workflow_runs"]) == 100:
-        raise StateInvalid("GITHUB_OWNER_PROBE_INCOMPLETE_LEGACY_RUN_INVENTORY")
+    # Filter server-side for every active status: all-run pagination would
+    # conceal old queued identities beneath hundreds of finished runs.
     affected = []
-    for row in oldruns["workflow_runs"]:
-        if row.get("status") in ACTIVE:
-            affected.append({"workflow": OLD_CONTROLLER_ID, "run": row.get("id"), "status": row["status"]})
-    for name in TRACKED:
-        response = github.request("GET", api + "/actions/workflows/" + name + "/runs?per_page=100")
-        rows = response.get("workflow_runs")
-        if not isinstance(rows, list) or len(rows) == 100:
-            raise StateInvalid("GITHUB_OWNER_PROBE_INCOMPLETE_PROVIDER_RUN_INVENTORY")
-        for row in rows:
-            if row.get("status") in ACTIVE:
-                affected.append({"workflow": name, "run": row.get("id"), "status": row["status"]})
+    for target in (OLD_CONTROLLER_ID, *TRACKED):
+        for status in sorted(ACTIVE):
+            response = github.request(
+                "GET", api + f"/actions/workflows/{target}/runs?status={status}&per_page=100"
+            )
+            rows = response.get("workflow_runs")
+            total = response.get("total_count", len(rows) if isinstance(rows, list) else None)
+            if (not isinstance(rows, list) or type(total) is not int
+                    or total != len(rows) or len(rows) >= MAX_PER_PAGE):
+                raise StateInvalid("GITHUB_OWNER_PROBE_INCOMPLETE_ACTIVE_RUN_INVENTORY")
+            for row in rows:
+                # A stale or unexpected status-filter response is not proof of quiet.
+                if row.get("status") != status or type(row.get("id")) is not int:
+                    raise StateInvalid("GITHUB_OWNER_PROBE_UNTRUSTED_ACTIVE_RUN_RECORD")
+                affected.append({"workflow": target, "run": row["id"], "status": status})
     stateblob = github.request("GET", api + "/contents/.kesher-controller/state.json?ref=automation-state")
     if (stateblob.get("encoding") != "base64" or not isinstance(stateblob.get("content"), str)
             or not re.fullmatch(r"[0-9a-f]{40}", str(stateblob.get("sha", "")))):
