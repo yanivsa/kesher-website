@@ -25,7 +25,7 @@ class ExistingArtifactQAReadOnlyTests(unittest.TestCase):
         def command(args, **kwargs):
             calls.append(args)
             self.assertEqual(args[:3], ["notebooklm","download","video"])
-            self.assertEqual(args[6], artifact_id)
+            self.assertEqual(args[7], artifact_id)
             Path(args[3]).write_bytes(b"f" * 2048)
             return ""
 
