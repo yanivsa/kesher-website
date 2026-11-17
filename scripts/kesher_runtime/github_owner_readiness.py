@@ -29,7 +29,7 @@ MAX_PER_PAGE = 100
 def inventory(github, *, expected_main, workflow_ref, event_name, repo):
     if (repo != REPOSITORY or event_name != "workflow_dispatch"
             or workflow_ref != REPOSITORY
-            + "/.github/workflows/kesher-production-cutover.yml@refs/heads/main"
+            + "/.github/workflows/kesher-controller-liveness.yml@refs/heads/main"
             or not re.fullmatch(r"[0-9a-f]{40}", expected_main)):
         raise StateInvalid("GITHUB_OWNER_PROBE_EXACT_WORKFLOW_REQUIRED")
     api = "/repos/" + REPOSITORY
