@@ -28,6 +28,7 @@ const config = {
 const FinancialLandingPage: React.FC<Props> = ({mode}) => {
   const data = config[mode];
   const url = SITE_CONFIG.url + data.path;
+  const financialWhatsappUrl = `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent('היי שירה, אשמח לברר התאמה לליווי כלכלי לזוגות ומשפחות.')}`;
   const { trackCtaClick, trackWhatsappClick } = useLandingPageAnalytics({landingPagePath:data.path, landingPageType:mode, serviceType:'family_financial_guidance'});
   return <div className={styles.page}>
     <MetaTags title={data.title} description={data.description} canonical={url} image="/images/generated/site/home-hero.jpg" robots="noindex, follow" />
@@ -36,7 +37,7 @@ const FinancialLandingPage: React.FC<Props> = ({mode}) => {
       {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'עמוד הבית',item:SITE_CONFIG.url},{'@type':'ListItem',position:2,name:data.title,item:url}]}]}} />
     <header className={styles.hero}><div className={`container ${styles.heroGrid}`}>
       <div><h1>{data.title}</h1><p className={styles.lead}>{data.lead}</p>
-        <div className={styles.heroActions}><Link className={styles.primaryButton} to={SITE_CONFIG.links.appointment} onClick={()=>trackCtaClick('קביעת פגישה','hero')}>בירור התאמה עם שירה</Link><a className={styles.secondaryButton} href={SITE_CONFIG.links.whatsapp} onClick={()=>trackWhatsappClick('hero')} rel="noopener noreferrer">שליחת הודעה בוואטסאפ</a></div>
+        <div className={styles.heroActions}><Link className={styles.primaryButton} to="/appointment?service=family-financial-guidance" onClick={()=>trackCtaClick('קביעת פגישה','hero')}>בירור התאמה עם שירה</Link><a className={styles.secondaryButton} href={financialWhatsappUrl} onClick={()=>trackWhatsappClick('hero')} rel="noopener noreferrer">שליחת הודעה בוואטסאפ</a></div>
       </div>
       <aside className={styles.heroPanel}><div className={styles.heroMedia}><img src={data.image} alt={mode==='couples'?'איור שיחה זוגית לצד מחברת ותקציב':'איור חלוקת הוצאות ביתיות על דף תקציב'} width="1200" height="675" fetchPriority="high" /></div><h2>מתי כדאי לברר התאמה?</h2><ul className={styles.checkList}>{data.points.map(p=><li key={p}>{p}</li>)}</ul></aside>
     </div></header>
@@ -44,7 +45,7 @@ const FinancialLandingPage: React.FC<Props> = ({mode}) => {
     <section className={styles.softSection}><div className="container">
       <h2>כדאי לדעת לפני שפונים</h2><p>הליווי עוסק בחינוך פיננסי ובהתנהלות כלכלת הבית לצד תקשורת זוגית ומשפחתית. הוא אינו תחליף לייעוץ השקעות, פנסיה, מס או משפט. בפנייה הראשונה אין לשלוח מידע פיננסי רגיש.</p>
       <p>אפשר לברר אפשרות לפגישה באשדוד או אונליין בהתאם לזמינות ולתיאום מראש. <Link to="/services/family-financial-guidance">קראו על השירות המלא</Link> או <Link to="/blog/category/family-finances">בקרו במרכז המאמרים</Link>.</p>
-      <div className={styles.heroActions}><Link className={styles.primaryButton} to={SITE_CONFIG.links.appointment} onClick={()=>trackCtaClick('קביעת פגישה','footer')}>קביעת פגישת היכרות</Link></div>
+      <div className={styles.heroActions}><Link className={styles.primaryButton} to="/appointment?service=family-financial-guidance" onClick={()=>trackCtaClick('קביעת פגישה','footer')}>קביעת פגישת היכרות</Link></div>
     </div></section>
   </div>;
 };

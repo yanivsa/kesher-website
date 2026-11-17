@@ -1,5 +1,6 @@
 export const CONTACT_SERVICE_OPTIONS = [
   { value: 'couples', label: 'ייעוץ זוגי' },
+  { value: 'family-financial-guidance', label: 'ליווי כלכלי לזוגות ומשפחות' },
   { value: 'premarital-first-year', label: 'הכנה לנישואים וליווי בשנה הראשונה' },
   { value: 'couples-aliyah-relocation', label: 'ייעוץ זוגי בעלייה או ברילוקיישן' },
   { value: 'late-singleness', label: 'ייעוץ במצבי רווקות מאוחרת' },

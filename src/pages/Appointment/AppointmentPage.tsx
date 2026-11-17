@@ -1,10 +1,12 @@
 import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiCalendar, FiClock, FiMapPin, FiShield } from 'react-icons/fi';
 import CalendlyBookingEmbed from '../../components/Booking/CalendlyBookingEmbed';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../constants/siteConfig';
+import { resolveContactService } from '../../lib/contactServices';
 import styles from './AppointmentPage.module.css';
 
 const schemaData = {
@@ -14,7 +16,7 @@ const schemaData = {
       '@type': 'Service',
       '@id': `${SITE_CONFIG.url}/appointment#service`,
       name: 'פגישת ייעוץ עם שירה סהרוני',
-      serviceType: ['ייעוץ זוגי', 'הנחיית הורים', 'גישור'],
+      serviceType: ['ייעוץ זוגי', 'הנחיית הורים', 'גישור', 'חינוך פיננסי וכלכלת המשפחה'],
       url: `${SITE_CONFIG.url}/appointment`,
       provider: {
         '@type': 'LocalBusiness',
@@ -45,6 +47,8 @@ const schemaData = {
 };
 
 const AppointmentPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const financialInquiry = resolveContactService(searchParams.get('service')) === 'family-financial-guidance';
   return (
     <div className={styles.page}>
       <MetaTags
@@ -57,7 +61,7 @@ const AppointmentPage: React.FC = () => {
       <header className={styles.header}>
         <div className={`container ${styles.headerContent}`}>
           <span className={styles.eyebrow}>מתחילים בשיחה</span>
-          <h1>קביעת פגישת ייעוץ עם שירה</h1>
+          <h1>{financialInquiry ? 'קביעת פגישה לליווי כלכלי לזוגות ומשפחות' : 'קביעת פגישת ייעוץ עם שירה'}</h1>
           <p>
             בחרו את המועד שנוח לכם. בפגישה נכיר, נבין מה מעסיק אתכם ונבחן יחד
             איזו דרך מקצועית יכולה להתאים.
@@ -83,6 +87,7 @@ const AppointmentPage: React.FC = () => {
               <li>ייעוץ זוגי ותקשורת בתוך הקשר</li>
               <li>הנחיית הורים והתמודדות משפחתית</li>
               <li>גישור ובניית הסכמות מעשיות</li>
+              <li>חינוך פיננסי וליווי להתנהלות כלכלת המשפחה</li>
             </ul>
             <div className={styles.help}>
               <strong>מעדיפים להתייעץ לפני שקובעים?</strong>
@@ -100,7 +105,7 @@ const AppointmentPage: React.FC = () => {
           <div className={styles.calendlyCard}>
             <CalendlyBookingEmbed
               ariaLabel="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"
-              serviceType="general_consultation"
+              serviceType={financialInquiry ? "family_financial_guidance" : "general_consultation"}
               bookingPagePath="/appointment"
             />
           </div>

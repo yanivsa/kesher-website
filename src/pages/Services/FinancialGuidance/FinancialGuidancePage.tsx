@@ -32,7 +32,7 @@ const FinancialGuidancePage: React.FC = () => (
           <p className={styles.lead}>התנהלות כלכלית אינה רק רשימת מספרים. היא גם סדרי עדיפויות, שיחות שקשה לפתוח, הרגלים שהצטברו והחלטות שמקבלים יחד. שירה סהרוני משלבת חינוך פיננסי עם ניסיון בליווי זוגי ומשפחתי כדי לסייע לכם להבין את התמונה ולבחור צעדים מעשיים שמתאימים לבית שלכם.</p>
           <p>אפשר לבחון יחד את התקציב המשפחתי, ללמוד לנהל שיחות על הוצאות וחיסכון ולבנות הסכמות שמתאימות לאנשים שחיים בבית. אין צורך לחשוף נתוני חשבון או חובות בטופס הפנייה הראשוני.</p>
           <div className={styles.heroActions}>
-            <Link className={styles.primaryButton} to={SITE_CONFIG.links.appointment}>בירור התאמה וקביעת פגישה</Link>
+            <Link className={styles.primaryButton} to="/appointment?service=family-financial-guidance">בירור התאמה וקביעת פגישה</Link>
             <Link className={styles.secondaryButton} to="/blog/category/family-finances">לקריאת מאמרים וכלים</Link>
           </div>
         </div>
@@ -66,7 +66,7 @@ const FinancialGuidancePage: React.FC = () => (
         <article className={styles.column}><h3>האם צריך להגיע יחד?</h3><p>לא תמיד. אפשר לברר בפנייה הראשונה מה מטרת הליווי ואם נכון לקיים שיחה פרטנית או זוגית, בהתאם לשירות המוצע ולנסיבות.</p><h3>האם צריך להגיע עם כל הנתונים הפיננסיים?</h3><p>לא בפנייה הראשונית. אין לשלוח מספרי חשבון, מסמכים או נתונים רגישים דרך הטופס.</p></article>
         <article className={styles.column}><h3>מה ההבדל בין חינוך פיננסי לייעוץ השקעות?</h3><p>חינוך פיננסי עוסק בהבנה, בהרגלים ובקבלת החלטות מושכלת בבית. המלצה פרטנית על ניירות ערך, מוצרים פנסיוניים או שירות אחר הכפוף לרישוי אינה חלק מהשירות המתואר כאן.</p><h3>אפשר להתחיל בשיחה על הנושא בלי להתחייב לתהליך?</h3><p>אפשר לפנות לבירור התאמה ולקבל מידע על אופן העבודה והאפשרויות הקיימות.</p></article>
       </div>
-      <div className={styles.heroActions}><Link className={styles.primaryButton} to={SITE_CONFIG.links.appointment}>ליצירת קשר עם שירה</Link><Link to="/services/couples" className={styles.secondaryButton}>על ייעוץ זוגי</Link></div>
+      <div className={styles.heroActions}><Link className={styles.primaryButton} to="/appointment?service=family-financial-guidance">ליצירת קשר עם שירה</Link><Link to="/services/couples" className={styles.secondaryButton}>על ייעוץ זוגי</Link></div>
     </div></section>
     <section className={styles.softSection}><div className="container"><h2><FiBookOpen aria-hidden="true" /> לקריאה ולהעמקה</h2><p>אפשר להתחיל גם באופן עצמאי:</p><ul className={styles.plainList}><li><a href="/downloads/financial/money-conversation-worksheet.html">דף עבודה להדפסה: שיחת הכסף הזוגית</a></li><li><a href="/downloads/financial/family-budget-template.csv" download>הורדת גיליון תקציב משפחתי (CSV)</a></li><li><Link to="/blog/category/family-finances">מרכז המאמרים על כלכלת המשפחה</Link></li><li><Link to="/blog/money-fights-communication">איך מדברים על הוצאות בלי להיכנס לאותו ריב?</Link></li><li><Link to="/blog/marriage-prep-financial-expectations-2026-08-24">איך מדברים על כסף לפני החתונה?</Link></li><li><Link to="/services/premarital-first-year">ליווי זוגי לפני נישואים</Link></li></ul><p>שירה סהרוני היא מורה לחינוך פיננסי ועוסקת גם בייעוץ זוגי והדרכת הורים. <Link to="/about">עוד על שירה והגישה שלה</Link>.</p></div></section>
   </div>

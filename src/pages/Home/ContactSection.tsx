@@ -22,11 +22,14 @@ const ContactSection: React.FC = () => {
   });
   const isLectureInquiry = formData.service === 'lectures';
   const isCoordinationInquiry = formData.service === 'parenting_coordination';
+  const isFinancialInquiry = formData.service === 'family-financial-guidance';
   const whatsappHref = isLectureInquiry
     ? `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent('היי שירה, אני מעוניין/ת לקבל פרטים על הזמנת הרצאה או סדנה בנושא זוגיות, הורות או נושא אחר מהאתר.')}`
     : isCoordinationInquiry
       ? `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent(PARENTING_COORDINATION_WHATSAPP_MESSAGE)}`
-      : SITE_CONFIG.links.whatsapp;
+      : isFinancialInquiry
+        ? `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent('היי שירה, אשמח לברר התאמה לליווי כלכלי לזוגות ומשפחות.')}`
+        : SITE_CONFIG.links.whatsapp;
   const [company, setCompany] = useState('');
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [turnstileToken, setTurnstileToken] = useState('');
@@ -87,11 +90,13 @@ const ContactSection: React.FC = () => {
               ? 'ספרו בקצרה מי הקהל, מה הנושא שמעניין אתכם וכל פרט רלוונטי על האירוע. אפשר להשאיר פרטים בטופס או לפנות ישירות בוואטסאפ.'
               : isCoordinationInquiry
                 ? 'לבירור התאמה לתיאום הורי אפשר להשאיר פרטי קשר בלבד. נא לא למסור כאן פרטים רגישים על הילדים או על הסכסוך; מסגרת השירות תובהר לפני תחילת תהליך.'
-                : 'פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי בדרך שנוחה לכם.'}
+                : isFinancialInquiry
+                  ? 'ליווי כלכלת המשפחה מתחיל בבירור התאמה ובהבנת מטרת הפנייה. אפשר להשאיר פרטי קשר בלבד, ללא פרטי חובות, הכנסה או חשבון בנק.'
+                  : 'פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי בדרך שנוחה לכם.'}
           </p>
           <div className={styles.contactActions}>
             {!isLectureInquiry && !isCoordinationInquiry && (
-              <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
+              <Link to={isFinancialInquiry ? "/appointment?service=family-financial-guidance" : SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
                 <FiCalendar aria-hidden="true" />
                 בחירת מועד לפגישה
               </Link>
@@ -230,7 +235,7 @@ const ContactSection: React.FC = () => {
                   rows={4} 
                   value={formData.message}
                   onChange={handleChange}
-                  placeholder={isLectureInquiry ? 'למשל: סוג הקהל, נושא מועדף, מועד משוער ומיקום...' : isCoordinationInquiry ? 'פרטי קשר בלבד, ללא פרטי ילדים או פרטים רגישים על הסכסוך' : 'ספרו לי קצת על הפנייה שלכם...'}
+                  placeholder={isLectureInquiry ? 'למשל: סוג הקהל, נושא מועדף, מועד משוער ומיקום...' : isCoordinationInquiry ? 'פרטי קשר בלבד, ללא פרטי ילדים או פרטים רגישים על הסכסוך' : isFinancialInquiry ? 'אפשר לתאר בקצרה את מטרת הפנייה, ללא מספרים או נתונים פיננסיים רגישים' : 'ספרו לי קצת על הפנייה שלכם...'}
                 ></textarea>
               </div>
               <TurnstileWidget

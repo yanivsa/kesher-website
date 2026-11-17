@@ -4,6 +4,7 @@ import path from 'node:path';
 import financialPosts from '../src/data/financialGuidancePosts.json';
 import summaries from '../src/data/postSummaries.json';
 import { internalLinkBackfillRules } from '../src/data/internalLinkBackfill';
+import { resolveContactService, CONTACT_SERVICE_OPTIONS } from '../src/lib/contactServices';
 
 const service = '/services/family-financial-guidance';
 const category = '/blog/category/family-finances';
@@ -16,6 +17,16 @@ const known = new Set([...financialPosts.map(p => p.id), ...legacyIds]);
 const root = process.cwd();
 
 describe('family finance content publishing contract', () => {
+  it('retains intent on contact and appointment routes without passing sensitive data', () => {
+    expect(resolveContactService('family-financial-guidance')).toBe('family-financial-guidance');
+    expect(CONTACT_SERVICE_OPTIONS.some(x => x.value === 'family-financial-guidance')).toBe(true);
+    const booking = readFileSync(path.join(root,'src/pages/Appointment/AppointmentPage.tsx'),'utf8');
+    expect(booking).toContain('family_financial_guidance');
+    const landing = readFileSync(path.join(root,'src/pages/Landing/Financial/FinancialLandingPage.tsx'),'utf8');
+    expect(landing).toContain('/appointment?service=family-financial-guidance');
+    const contact = readFileSync(path.join(root,'src/pages/Home/ContactSection.tsx'),'utf8');
+    expect(contact).toContain('ללא מספרים או נתונים פיננסיים רגישים');
+  });
   it('ships 17 new original articles and retains 3 distinct legacy URLs', () => {
     expect(financialPosts).toHaveLength(17);
     expect(new Set(financialPosts.map(p => p.id)).size).toBe(17);
