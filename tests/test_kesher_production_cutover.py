@@ -913,11 +913,15 @@ class GithubOnlyAtomicLedgerTests(unittest.TestCase):
         self.assertNotIn('notebooklm.generate', code)
 
 
-class GithubOnlyProtectedPrepareTests(GithubOnlyAtomicLedgerTests):
-    """Tests the owner-reviewed PREPARED stage using fake GitHub only."""
+class GithubOnlyProtectedPrepareTests(unittest.TestCase):
+    """Tests owner-reviewed PREPARED only, without inheriting claim test cases."""
 
     def setUp(self):
-        super().setUp()
+        base = GithubOnlyAtomicLedgerTests()
+        base.setUp()
+        self.gh, self.store = base.gh, base.store
+        self.expected_main = base.expected_main
+        self._claim = base._claim
         self.gh.missing = True
         self.legacy_blob = '9' * 40
         original = self.gh.request
