@@ -27,7 +27,7 @@ _RUN_ID = re.compile(r"[1-9][0-9]*:[1-9][0-9]*")
 
 
 def _blob_sha(raw: bytes) -> str:
-    return hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\\0" + raw).hexdigest()
+    return hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
 
 
 @dataclass(frozen=True)
@@ -127,7 +127,7 @@ class GitHubOnlyLedgerStore:
             "epoch": epoch, "reviewed_main_sha": loaded.main_sha,
             "provider_inventory_sha256": digest(observed_provider_tasks),
         }
-        raw = (canonical_json(next_ledger) + "\\n").encode("utf-8")
+        raw = (canonical_json(next_ledger) + "\n").encode("utf-8")
         expected_blob = _blob_sha(raw)
         blob = self.github.request("POST", self.api + "/git/blobs", {
             "content": base64.b64encode(raw).decode("ascii"), "encoding": "base64",
