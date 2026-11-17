@@ -145,6 +145,7 @@ const Header: React.FC = () => {
               <button type="button" className={styles.navLink}>שירותים</button>
               <div className={styles.dropdownContent}>
                 <Link to="/services/couples" onClick={closeMenu}>ייעוץ זוגי</Link>
+                <Link to="/services/family-financial-guidance" onClick={closeMenu}>ליווי כלכלי לזוגות ומשפחות</Link>
                 <Link to="/couples-counseling-ashdod" onClick={closeMenu}>ייעוץ זוגי באשדוד</Link>
                 <Link to="/services/parenting" onClick={closeMenu}>הדרכת הורים</Link>
                 <Link to="/parenting-guidance-ashdod" onClick={closeMenu}>הדרכת הורים באשדוד</Link>
