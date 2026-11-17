@@ -30,8 +30,6 @@ const Footer: React.FC = () => {
           <Link to="/couples-mediation-ashdod">גישור זוגי באשדוד</Link>
           <Link to="/lectures">הרצאות וסדנאות</Link>
           <Link to="/services/couples">ייעוץ זוגי</Link>
-          <Link to="/services/family-financial-guidance">ליווי כלכלי לזוגות ומשפחות</Link>
-          <Link to="/blog/category/family-finances">מאמרים על כלכלת המשפחה</Link>
           <Link to="/services/parenting">הדרכת הורים</Link>
           <Link to="/services/mediation">גישור</Link>
           <Link to="/services/parenting-coordination">תיאום הורי</Link>

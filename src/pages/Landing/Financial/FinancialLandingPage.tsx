@@ -34,7 +34,7 @@ const FinancialLandingPage: React.FC<Props> = ({mode}) => {
     <SchemaOrg data={{'@context':'https://schema.org','@graph':[
       {'@type':'Service','@id':url+'#service',name:data.title,description:data.description,provider:{'@id':SITE_CONFIG.url+'/#business'},areaServed:'ישראל',url},
       {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'עמוד הבית',item:SITE_CONFIG.url},{'@type':'ListItem',position:2,name:data.title,item:url}]}]}} />
-    <header className={styles.hero}><div className={\`container \${styles.heroGrid}\`}>
+    <header className={styles.hero}><div className={`container ${styles.heroGrid}`}>
       <div><h1>{data.title}</h1><p className={styles.lead}>{data.lead}</p>
         <div className={styles.heroActions}><Link className={styles.primaryButton} to={SITE_CONFIG.links.appointment} onClick={()=>trackCtaClick('קביעת פגישה','hero')}>בירור התאמה עם שירה</Link><a className={styles.secondaryButton} href={SITE_CONFIG.links.whatsapp} onClick={()=>trackWhatsappClick('hero')} rel="noopener noreferrer">שליחת הודעה בוואטסאפ</a></div>
       </div>

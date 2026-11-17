@@ -24,10 +24,6 @@ const articleCtaCopy = (post: (typeof posts)[number]) => {
   const subcategory = 'subcategory' in post && typeof post.subcategory === 'string' ? post.subcategory : '';
   const context = `${post.category} ${subcategory} ${post.title}`;
 
-  if (post.category === 'כלכלת המשפחה') {
-    return 'גם כשהנושא נראה כמו מספרים, ההרגלים וההסכמות בבית חשובים. אפשר לברר עם שירה האם ליווי כלכלי־משפחתי מתאים לכם, בלי למסור פרטים כלכליים רגישים בפנייה הראשונה.';
-  }
-
   if (post.category === 'תיאום הורי') {
     return 'כשמחלוקות בין הורים נמשכות, אפשר לברר מהו סוג הליווי המתאים, ומהם גבולות התהליך. חשוב לבדוק התאמה ובטיחות לפני התחלה.';
   }
@@ -82,7 +78,6 @@ const BlogPost: React.FC = () => {
           "@type": "WebPage",
           "@id": `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`
         },
-        ...(post?.category === 'כלכלת המשפחה' ? { "isPartOf": { "@id": `${SITE_CONFIG.url}/blog/category/family-finances#webpage` }, "about": { "@type": "Thing", "name": "כלכלת המשפחה" } } : {}),
         ...(post?.category === 'תיאום הורי' ? {
           "isPartOf": { "@id": `${SITE_CONFIG.url}/blog/category/parenting-coordination#webpage` },
           "about": { "@type": "Thing", "name": "תיאום הורי" }
@@ -107,7 +102,6 @@ const BlogPost: React.FC = () => {
             "name": "בלוג",
             "item": `${SITE_CONFIG.url}/blog`
           },
-          ...(post?.category === 'כלכלת המשפחה' ? [{ "@type": "ListItem", "position": 3, "name": "כלכלת המשפחה", "item": `${SITE_CONFIG.url}/blog/category/family-finances` }] : []),
           ...(post?.category === 'תיאום הורי' ? [{
             "@type": "ListItem",
             "position": 3,
@@ -116,7 +110,7 @@ const BlogPost: React.FC = () => {
           }] : []),
           {
             "@type": "ListItem",
-            "position": post?.category === 'תיאום הורי' || post?.category === 'כלכלת המשפחה' ? 4 : 3,
+            "position": post?.category === 'תיאום הורי' ? 4 : 3,
             "name": post?.title || "",
             "item": `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`
           }
@@ -143,7 +137,6 @@ const BlogPost: React.FC = () => {
     : null;
   const ctaCopy = articleCtaCopy(post);
   const isCoordinationArticle = post.category === 'תיאום הורי';
-  const isFinancialArticle = post.category === 'כלכלת המשפחה';
   const landingTarget = getLandingTargetForPost(post);
   const displayCategory = post.category === 'הנחיית הורים' ? 'הדרכת הורים' : post.category;
   const postSubcategory = 'subcategory' in post && typeof post.subcategory === 'string' ? post.subcategory : '';
@@ -181,7 +174,7 @@ const BlogPost: React.FC = () => {
       <header className={styles.header}>
         <div className="container">
           <Link to="/blog" className={styles.backLink}>← חזרה לבלוג</Link>
-          {isCoordinationArticle ? <Link to="/blog/category/parenting-coordination" className={styles.category}>{displayCategory}</Link> : isFinancialArticle ? <Link to="/blog/category/family-finances" className={styles.category}>{displayCategory}</Link> : <span className={styles.category}>{displayCategory}</span>}
+          {post.category === 'תיאום הורי' ? <Link to="/blog/category/parenting-coordination" className={styles.category}>{displayCategory}</Link> : <span className={styles.category}>{displayCategory}</span>}
           <h1 className={styles.title}>{post.title}</h1>
           {articleSummary && (
             <div className={styles.directAnswer} role="region" aria-label="תשובה תמציתית">

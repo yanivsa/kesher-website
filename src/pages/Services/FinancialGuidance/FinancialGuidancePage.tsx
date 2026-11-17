@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiBookOpen, FiHeart, FiHome, FiMessageCircle, FiUsers } from 'react-icons/fi';
+import { FiBookOpen, FiHeart, FiHome, FiUsers } from 'react-icons/fi';
 import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
@@ -26,7 +26,7 @@ const FinancialGuidancePage: React.FC = () => (
     <MetaTags title="ליווי כלכלי לזוגות ומשפחות" description="ליווי כלכלי לזוגות ולמשפחות באשדוד ובאונליין: סדר בהוצאות, תקציב משפחתי, תקשורת זוגית סביב כסף וחינוך פיננסי בגישה מעשית." canonical={url} image="/images/financial-guidance/family-financial-guidance.svg" />
     <SchemaOrg data={schemaData} />
     <header className={styles.hero}>
-      <div className={\`container \${styles.heroGrid}\`}>
+      <div className={`container ${styles.heroGrid}`}>
         <div>
           <h1>ליווי כלכלי לזוגות ומשפחות — לעשות סדר בכסף ובשיח בבית</h1>
           <p className={styles.lead}>התנהלות כלכלית אינה רק רשימת מספרים. היא גם סדרי עדיפויות, שיחות שקשה לפתוח, הרגלים שהצטברו והחלטות שמקבלים יחד. שירה סהרוני משלבת חינוך פיננסי עם ניסיון בליווי זוגי ומשפחתי כדי לסייע לכם להבין את התמונה ולבחור צעדים מעשיים שמתאימים לבית שלכם.</p>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiBookOpen, FiCompass, FiTrendingUp, FiHeart, FiMessageCircle, FiStar, FiUsers } from 'react-icons/fi';
+import { FiBookOpen, FiCompass, FiHeart, FiMessageCircle, FiStar, FiUsers } from 'react-icons/fi';
 import ServiceCard from '../../components/Services/ServiceCard';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import styles from './ServicesSection.module.css';
@@ -30,7 +30,6 @@ const services = [
 ];
 
 const specializations = [
-  {title: 'ליווי כלכלי לזוגות ומשפחות', description: 'חינוך פיננסי וכלים לתקציב משפחתי לצד שיח זוגי והסכמות סביב כסף.', icon: <FiTrendingUp aria-hidden="true" />, link: '/services/family-financial-guidance'},
   {
     title: 'ייעוץ זוגי באשדוד והסביבה',
     description: 'ליווי מעשי וממוקד בקליניקה באשדוד או אונליין לזוגות המתמודדים עם קשיי תקשורת ומריבות חוזרות.',

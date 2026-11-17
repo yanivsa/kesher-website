@@ -1,7 +1,4 @@
 const dimensions: Record<string, { width: number; height: number }> = {
-  '/images/financial-guidance/family-financial-guidance.svg': { width: 1200, height: 675 },
-  '/images/financial-guidance/money-conversation.svg': { width: 1200, height: 675 },
-  '/images/financial-guidance/family-budget.svg': { width: 1200, height: 675 },
   '/images/generated/site/home-hero.jpg': { width: 1600, height: 900 },
   '/images/shira-saharoni.webp': { width: 477, height: 1024 },
   '/images/shira-saharoni-consult.webp': { width: 477, height: 1024 },
