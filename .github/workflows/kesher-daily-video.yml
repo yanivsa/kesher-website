@@ -446,6 +446,47 @@ jobs:
               else:
                   raise SystemExit(f'NOTEBOOKLM_INVENTORY_{kind.upper()}_INVALID_SHAPE')
               print(f'NOTEBOOKLM_INVENTORY_{kind.upper()}_COUNT={len(rows)}')
+              # Audit exact task identities over ALL returned rows, not only the last 100.
+              # Persisted Nov9-13 task IDs originate from original GitHub artifacts.
+              # This read-only listing cannot establish source provenance, completeness,
+              # approval for a new creation, or any production ownership authority.
+              if kind == 'video':
+                  historical = (
+                      ('2026-11-09','self-distancing-couple-arguments','long','077ede84-dd9c-4a07-b2b6-56acdad27be7'),
+                      ('2026-11-09','self-distancing-couple-arguments','short','5b742ce5-3bd4-421a-aaea-02641f3e10d0'),
+                      ('2026-11-11','gratitude-relationship-genuine-thank-you','long','63b37426-9fd2-49e3-a2ce-a412fc347484'),
+                      ('2026-11-11','gratitude-relationship-genuine-thank-you','short','12c218a9-9912-4f65-869b-3517cacb57a6'),
+                      ('2026-11-12','invisible-support-couples-responsive-help','long','488e8ec8-264f-48c3-88ff-b17df3f9b1d6'),
+                      ('2026-11-12','invisible-support-couples-responsive-help','short','1495a541-b862-4d28-b855-28f1a1eef03d'),
+                      ('2026-11-13','tiger-parenting-myth-vs-supportive-parenting','long','57b334e9-772d-4c58-837b-bc8fe24c4df2'),
+                      ('2026-11-13','tiger-parenting-myth-vs-supportive-parenting','short','7e7cabb9-7d29-43a7-8e52-a0932f6a4452'),
+                  )
+                  seen = {}
+                  for item in rows:
+                      if not isinstance(item, dict):
+                          raise SystemExit('NOTEBOOKLM_EXACT_INVENTORY_NON_OBJECT')
+                      for field in ('id','task_id','artifact_id'):
+                          value = item.get(field)
+                          if isinstance(value,str) and value:
+                              seen.setdefault(value, []).append(item)
+                  for day, slug, media_kind, task_id in historical:
+                      # Multiple separate rows matching a single UUID are ambiguous.
+                      matches = list({id(row): row for row in seen.get(task_id, [])}.values())
+                      if len(matches) > 1:
+                          raise SystemExit('NOTEBOOKLM_EXACT_TASK_DUPLICATE_ID')
+                      row = matches[0] if matches else {}
+                      observed = row.get('status', row.get('state'))
+                      if not isinstance(observed,str) or len(observed)>48:
+                          observed = 'UNKNOWN'
+                      safe = {
+                          'date': day, 'slug': slug, 'kind': media_kind,
+                          'persisted_task_id': task_id,
+                          'observed': 'EXACT_UUID_IN_LIST' if matches else 'NOT_IN_RETURNED_LIST',
+                          'observed_status': observed if matches else 'UNKNOWN',
+                          'source_verified': False, 'catalog_complete': False,
+                          'generation_authorized': False, 'upload_authorized': False,
+                      }
+                      print('KESHER_GHONLY_EXACT_PROVIDER_READBACK ' + json.dumps(safe,ensure_ascii=False,separators=(',',':')))
               for row in rows[-100:]:
                   if not isinstance(row, dict):
                       continue
