@@ -654,10 +654,12 @@ class GithubOwnerReadinessTests(unittest.TestCase):
                 return {'object': {'sha': main}}
             if path.endswith('/actions/workflows/337960554'):
                 return {'id':337960554, 'state':old_status}
-            if path.endswith('/actions/workflows/337960554/runs?per_page=100'):
-                return {'workflow_runs':old_runs if old_runs is not None else []}
-            if '/actions/workflows/' in path and path.endswith('/runs?per_page=100'):
-                return {'workflow_runs':provider_runs if provider_runs is not None else []}
+            if '/actions/workflows/' in path and '/runs?status=' in path:
+                is_legacy = '/actions/workflows/337960554/runs?' in path
+                status = path.split('status=', 1)[1].split('&', 1)[0]
+                candidate = (old_runs if is_legacy else provider_runs) or []
+                rows = [row for row in candidate if row['status'] == status]
+                return {'workflow_runs':rows,'total_count':len(rows)}
             if path.endswith('/contents/.kesher-controller/state.json?ref=automation-state'):
                 return {'sha':'b'*40,'encoding':'base64','content':base64.b64encode(state).decode()}
             raise AssertionError(path)
