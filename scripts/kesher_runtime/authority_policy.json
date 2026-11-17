@@ -3899,7 +3899,7 @@
     },
     ".github/workflows/kesher-production-cutover.yml": {
       "role": "handover",
-      "definition_sha256": "5295fb6326144ec4df95bb1644050c2850da3cf6581764fbb31bd5217c8724af",
+      "definition_sha256": "171fe621953101ab2ceaa747e6681075e9c1b50d3e35c1c0e17cce54c62c8ebb",
       "capabilities": [
         "read",
         "state_write",
