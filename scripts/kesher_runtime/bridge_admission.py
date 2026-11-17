@@ -90,6 +90,8 @@ def main(argv=None):
     try:
         require_invocation(os.environ, dispatcher=args.dispatcher, controller=args.controller)
         github = GitHub(os.environ.get('GH_TOKEN', ''))
+        from .github_only_legacy_exclusion import require_legacy_bridge_not_superseded
+        require_legacy_bridge_not_superseded(github)
         require_bridge(GitHubHandover(github, REPOSITORY, observer=None, fence=None).read_snapshot().state)
         print('PRE_CUTOVER_DAILY_AUTHORITY_OBSERVED' if args.controller else 'MANUAL_BRIDGE_LEGACY_STATE_OBSERVED')
         return 0

@@ -73,9 +73,11 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                     legacy_retirement.retired_entrypoint(state_v5)
                 with mock.patch.dict(os.environ, env, clear=True), \
                      mock.patch.object(bridge_admission, "GitHub"), \
-                     mock.patch.object(bridge_admission, "GitHubHandover") as handover:
+                     mock.patch.object(bridge_admission, "GitHubHandover") as handover, \
+                     mock.patch("scripts.kesher_runtime.github_only_legacy_exclusion.require_legacy_bridge_not_superseded") as exclusion:
                     handover.return_value.read_snapshot.return_value.state = state_v5
                     self.assertEqual(bridge_admission.main(["--controller"]), 0)
+                    exclusion.assert_called_once()
 
     def test_other_workflows_or_non_main_refs_fail_closed_under_pre_cutover_flag(self) -> None:
         state_v5 = {"schema_version": 5, "cycle": "2026-10-11"}
