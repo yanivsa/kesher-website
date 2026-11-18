@@ -12,6 +12,7 @@ import {
   FiMessageCircle,
   FiMonitor,
   FiShield,
+  FiTrendingUp,
   FiUsers,
   FiX,
 } from 'react-icons/fi';
@@ -66,6 +67,8 @@ const schemaData = {
         "דייטים",
         "ADHD",
         "תקשורת בזוגיות",
+        "חינוך פיננסי",
+        "ניהול תקציב משפחתי",
         "הורות משותפת",
         "תיאום הורי"
       ],
@@ -105,6 +108,15 @@ const schemaData = {
             "name": "ליווי למציאת זוגיות",
             "url": `${SITE_CONFIG.url}/services/finding-relationship`,
             "description": "ליווי אישי סביב היכרויות, בחירת קשר, תקשורת, גבולות ובניית קשר."
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "ליווי כלכלי לזוגות ומשפחות",
+            "url": `${SITE_CONFIG.url}/services/family-financial-guidance`,
+            "description": "חינוך פיננסי, שיחה זוגית על כסף, תקציב משפחתי והסכמות להתנהלות הבית."
           }
         },
         {
@@ -260,12 +272,21 @@ const services = [
     accent: 'sage',
     tags: ['הורות משותפת', 'פרידה', 'תקשורת'],
   },
+  {
+    title: 'ליווי כלכלי לזוגות ומשפחות',
+    description: 'עושים סדר בכסף ובשיח סביבו — תקציב משפחתי, חינוך פיננסי והסכמות זוגיות שמתאימות לחיים בבית.',
+    link: '/services/family-financial-guidance',
+    icon: FiTrendingUp,
+    accent: 'sage',
+    tags: ['שיחה על כסף', 'תקציב משפחתי', 'חינוך פיננסי'],
+  },
 ];
 
 const focusAreas = [
   'זוגיות בתקופות של ריחוק ושחיקה',
   'הורות לילדים מחוננים וילדים עם ADHD',
   'הכנה לנישואים והשנה הראשונה',
+  'כסף וזוגיות, תקציב משפחתי וחינוך פיננסי',
   'משפחות בעלייה, בחזרה לישראל וברילוקיישן',
   'רווקות מאוחרת וליווי למציאת זוגיות',
 ];
@@ -518,7 +539,7 @@ const Home: React.FC = () => {
             {services.map(({ title, description, link, icon: Icon, accent, tags }, index) => (
               <Link
                 to={link}
-                className={`${styles.serviceCard} ${styles[accent]} ${styles.primaryService}`}
+                className={`${styles.serviceCard} ${styles[accent]} ${index === services.length - 1 ? styles.secondaryService : styles.primaryService}`}
                 key={title}
                 style={{ '--delay': `${index * 90}ms` } as React.CSSProperties}
               >
@@ -719,6 +740,8 @@ const Home: React.FC = () => {
         <div className={styles.footerLinks}>
           <Link to="/contact">יצירת קשר</Link>
           <Link to="/blog">מאמרים</Link>
+          <Link to="/services/family-financial-guidance">ליווי כלכלי למשפחה</Link>
+          <Link to="/blog/category/family-finances">כלכלת המשפחה — מאמרים</Link>
           <Link to="/privacy">פרטיות</Link>
           <Link to="/accessibility">נגישות</Link>
         </div>
