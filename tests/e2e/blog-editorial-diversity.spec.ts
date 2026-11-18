@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
-import postSummaries from '../../src/data/postSummaries.json';
+import { readFileSync } from 'node:fs';
+
+type BlogSummary = { id: string; title: string; excerpt: string; date: string; category: string };
+const postSummaries = JSON.parse(
+  readFileSync(new URL('../../src/data/postSummaries.json', import.meta.url), 'utf8'),
+) as BlogSummary[];
 
 const selector = 'main article[data-blog-post-id]';
 const originalIds = postSummaries.map((post) => post.id);
