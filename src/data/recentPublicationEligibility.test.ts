@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -17,6 +18,9 @@ describe('recent article production eligibility', () => {
       // independent heading or word-count contract in this regression.
       expect(isPublishablePost(post as Parameters<typeof isPublishablePost>[0])).toBe(true);
       expect(effectiveIds.has(post.id)).toBe(true);
+      expect(post.title).not.toMatch(/[A-Za-z]/);
+      expect(post.excerpt).not.toMatch(/[A-Za-z]/);
+      expect(post.content.replace(/<[^>]*>/g, ' ')).not.toMatch(/[A-Za-z]/);
     },
   );
 
@@ -37,5 +41,6 @@ describe('recent article production eligibility', () => {
     expect(sourceIntent.article_slug).toBe(post.id);
     expect(sourceIntent.article_content_sha256).toMatch(/^[0-9a-f]{64}$/);
     expect(sourceIntent.hero.sha256).toMatch(/^[0-9a-f]{64}$/);
+    expect(createHash('sha256').update(bytes).digest('hex')).toBe(sourceIntent.hero.sha256);
   });
 });
