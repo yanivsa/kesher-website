@@ -293,3 +293,19 @@
   font-size: 0.8rem;
   margin-top: 0.25rem;
 }
+
+.postsSummary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin: 0.5rem 0 1rem;
+  color: var(--color-text-muted);
+}
+
+.topicMixNote {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
