@@ -73,7 +73,7 @@ const FamilyFinancesCategory: React.FC = () => (
       <p><strong>כדי לעשות סדר בכסף כדאי להתחיל גם בשיחה על מה שחשוב בבית.</strong> כאן תמצאו מאמרים על תקציב משפחתי, על פערים בהרגלי הוצאה וחיסכון, על תיאום ציפיות ועל הדרך ללמד ילדים לנהל בחירות כלכליות בלי להעמיס עליהם דאגות של מבוגרים.</p>
       <Link className={styles.button} to="/services/family-financial-guidance">איך עובד ליווי כלכלי לזוגות ומשפחות?</Link>
     </div></header>
-    <main className={'container ' + styles.section} aria-label="מאמרים על כלכלת המשפחה">
+    <section className={'container ' + styles.section} aria-label="מאמרים על כלכלת המשפחה">
       <h2>במה רוצים להתמקד?</h2>
       <nav className={styles.financeTopics} aria-label="קפיצה לנושאים">
         {groups.map(group => <a href={'#' + group.id} key={group.id}>{group.title}<span aria-hidden="true"> ({group.posts.length})</span></a>)}
@@ -90,12 +90,20 @@ const FamilyFinancesCategory: React.FC = () => (
           </div>
         </section>
       ))}
+      <section className={styles.next} aria-labelledby="finance-tools-title">
+        <h2 id="finance-tools-title">כלים חינמיים להתחלה עצמאית</h2>
+        <p>אפשר להתחיל עם שיחה זוגית מסודרת ועם גיליון למיפוי התקציב, ללא הרשמה.</p>
+        <ul>
+          <li><a href="/downloads/financial/money-conversation-worksheet.html">דף עבודה להדפסה: שיחת הכסף הזוגית</a></li>
+          <li><a href="/downloads/financial/family-budget-template.csv" download>גיליון תקציב משפחתי להורדה (CSV)</a></li>
+        </ul>
+      </section>
       <section className={styles.next}>
         <h2>מתי נכון לפנות לליווי אישי?</h2>
         <p>אם הכנתם תקציב אבל מתקשים להתמיד בו, או כשכל שיחה על כסף הופכת לריב, אפשר לברר מה מתאים למשפחה שלכם. <Link to="/services/family-financial-guidance">מידע על הליווי הכלכלי</Link>.</p>
       </section>
       <p className={styles.sources}>המאמרים מציעים חינוך פיננסי וכלים כלליים; אינם מהווים המלצת השקעה, ייעוץ פנסיוני, ייעוץ משפטי או ייעוץ מס אישי.</p>
-    </main>
+    </section>
   </div>
 );
 

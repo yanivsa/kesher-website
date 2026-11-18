@@ -37,6 +37,8 @@ test.describe('Financial guidance release acceptance', () => {
     );
     expect(uniqueLinks).toHaveLength(20);
     expect(new Set(uniqueLinks).size).toBe(20);
+    await expect(page.locator('a[href="/downloads/financial/money-conversation-worksheet.html"]')).toBeVisible();
+    await expect(page.locator('a[href="/downloads/financial/family-budget-template.csv"]')).toBeVisible();
     await page.locator('nav[aria-label="קפיצה לנושאים"] a[href="#finance-budget"]').click();
     await expect(page).toHaveURL(/#finance-budget$/);
   });
