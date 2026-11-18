@@ -18,6 +18,29 @@ const editorialRoutes = [
 ];
 
 test.describe('Financial guidance release acceptance', () => {
+
+  test('the organic hub organizes all 20 articles into four accessible topic sections', async ({ page }) => {
+    await page.goto(hub, { waitUntil: 'domcontentloaded' });
+    const topics = [
+      ['finance-couples', 'כסף וזוגיות', 8],
+      ['finance-budget', 'תקציב משפחתי', 6],
+      ['finance-children', 'ילדים וכסף', 4],
+      ['finance-transitions', 'מעברים משפחתיים', 2],
+    ] as const;
+    for (const [id, title, expectedCount] of topics) {
+      await expect(page.locator('nav[aria-label="קפיצה לנושאים"] a[href="#' + id + '"]')).toBeVisible();
+      await expect(page.locator('#' + id + ' h2')).toHaveText(title);
+      await expect(page.locator('#' + id + ' article')).toHaveCount(expectedCount);
+    }
+    const uniqueLinks = await page.locator('section[id^="finance-"] article h3 a').evaluateAll(
+      anchors => anchors.map(anchor => anchor.getAttribute('href')),
+    );
+    expect(uniqueLinks).toHaveLength(20);
+    expect(new Set(uniqueLinks).size).toBe(20);
+    await page.locator('nav[aria-label="קפיצה לנושאים"] a[href="#finance-budget"]').click();
+    await expect(page).toHaveURL(/#finance-budget$/);
+  });
+
   test('the standalone homepage visibly features financial guidance and the article hub', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     const serviceLink = page.locator('a[href="/services/family-financial-guidance"]').first();
