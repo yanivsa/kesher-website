@@ -11,6 +11,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 POSTS_PATH = ROOT / "src" / "data" / "posts.json"
+FINANCIAL_POSTS_PATH = ROOT / "src" / "data" / "financialGuidancePosts.json"
+FINANCIAL_MIGRATION_PATH = ROOT / "config" / "financial-hero-migration.json"
 CORE_PATH = Path(__file__).with_name("article-image-worker.py")
 CONTRACT_PATH = ROOT / "config" / "kesher-production-contract.json"
 BANNED_SHA256 = {"12371ac5046f21d7874161fafe2d751ecbb3738c43b775062c23d1035a80dc67"}
@@ -85,17 +87,43 @@ def validate_hash_reuse(
 
 def main() -> int:
     posts = json.loads(POSTS_PATH.read_text(encoding="utf-8"))
+    financial_posts = json.loads(FINANCIAL_POSTS_PATH.read_text(encoding="utf-8"))
+    migration = json.loads(FINANCIAL_MIGRATION_PATH.read_text(encoding="utf-8"))
+    financial_legacy_ids = set(migration.get("legacy_svg_ids") or [])
+    financial_ids = {str(p.get("id")) for p in financial_posts}
+    # Both sources feed the live blog. Never let a topic file bypass image QA.
+    unique_posts = {str(p.get("id")): p for p in posts if isinstance(p, dict)}
+    unique_posts.update({str(p.get("id")): p for p in financial_posts if isinstance(p, dict)})
     errors: list[str] = []
     hash_uses: dict[str, list[dict[str, object]]] = {}
     seen_paths: dict[str, str] = {}
     cooldown_days, max_uses = reuse_policy()
 
-    for post in posts if isinstance(posts, list) else []:
+    for post in unique_posts.values():
         if not isinstance(post, dict):
             continue
         pid = str(post.get("id") or "<unknown>")
         image = str(post.get("image") or "").strip()
         alt = str(post.get("imageAlt") or "").strip()
+        if pid in financial_ids:
+            exact_legacy_svg = (
+                pid in financial_legacy_ids
+                and str(post.get("date") or "") == str(migration.get("publication_date") or "")
+                and image == f"/images/financial-guidance/articles/{pid}.svg"
+            )
+            if exact_legacy_svg:
+                if not (ROOT / "public" / image.lstrip("/")).is_file():
+                    errors.append(f"{pid}: legacy waiver image is missing: {image}")
+                continue
+            if image.lower().endswith(".svg"):
+                errors.append(f"{pid}: SVG illustration is not an approved financial article hero")
+                continue
+            if post.get("imageVerified") is not True:
+                errors.append(f"{pid}: financial hero lacks independent pixel-verification proof")
+            if str(post.get("imageProvider") or "") not in {"Gemini", "Pexels", "Pixabay", "Adobe Firefly"}:
+                errors.append(f"{pid}: financial photo lacks trusted provider provenance")
+            if not str(post.get("imageSourceUrl") or ""):
+                errors.append(f"{pid}: missing photo source provenance")
         if not image.startswith("/images/"):
             errors.append(f"{pid}: missing or non-local image reference")
             continue
@@ -147,7 +175,7 @@ def main() -> int:
         for error in errors:
             print(" - " + error, file=sys.stderr)
         return 1
-    print(f"ARTICLE_IMAGE_GUARD_OK posts={len(posts)} unique_sha={len(hash_uses)}")
+    print(f"ARTICLE_IMAGE_GUARD_OK posts={len(unique_posts)} finance={len(financial_posts)} unique_sha={len(hash_uses)}")
     return 0
 
 
