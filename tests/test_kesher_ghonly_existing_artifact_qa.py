@@ -69,11 +69,37 @@ class ExistingArtifactQAReadOnlyTests(unittest.TestCase):
             command.assert_not_called()
 
     def test_no_provider_dispatch_or_youtube_in_source(self):
+        import ast
+
         s = Path("scripts/kesher_runtime/ghonly_existing_artifact_qa.py").read_text()
         flow = Path(".github/workflows/kesher-daily-video.yml").read_text()
-        for forbidden in ("youtube_client(", "upload_only(", ".insert(",
-                          "gh workflow run", "start_generation(", "POST", "mutation"):
-            self.assertNotIn(forbidden, s)
+        tree = ast.parse(s)
+        calls = [node for node in ast.walk(tree) if isinstance(node, ast.Call)]
+        names = {ast.unparse(node.func) for node in calls}
+        for forbidden in (
+            "youtube_client", "upload_only", "start_generation",
+            "requests.post", "httpx.post", "urllib.request.Request",
+            "github.request", "gh_dispatch", "subprocess.Popen",
+        ):
+            self.assertNotIn(forbidden, names)
+        # Test executed commands, not comment/docstring text (which may
+        # correctly explain that provider POSTs are forbidden).
+        external = []
+        for node in calls:
+            if isinstance(node.func, ast.Name) and node.func.id == "_safe_command":
+                self.assertTrue(node.args)
+                self.assertIsInstance(node.args[0], ast.List)
+                head = node.args[0].elts[:3]
+                external.append(tuple(value.value if isinstance(value, ast.Constant)
+                                      and isinstance(value.value, str) else None
+                                      for value in head))
+            if ast.unparse(node.func) == "subprocess.run":
+                self.assertEqual(ast.unparse(node.args[0]), "args")
+        self.assertCountEqual(external, (
+            ("notebooklm", "artifact", "list"),
+            ("notebooklm", "download", "video"),
+            ("ffprobe", "-v", "error"),
+        ))
         self.assertIn("GITHUB_WORKFLOW_REF", s)
         self.assertIn("inputs.operation == 'preflight'", flow)
         self.assertIn("ghonly_existing_artifact_qa", flow)
