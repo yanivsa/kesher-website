@@ -27,7 +27,7 @@ describe('recent article production eligibility', () => {
     expect(post.slug).toBe(targetId);
     expect(post.date).toBe('2026-11-18');
     expect(post.image).toBe('/images/generated/blog/' + targetId + '.jpg');
-    expect(post.content.match(/<h3\\b/g)?.length ?? 0).toBeGreaterThanOrEqual(5);
+    expect(post.content.match(/<h3/g)?.length ?? 0).toBeGreaterThanOrEqual(5);
 
     const file = resolve('public' + post.image);
     const bytes = readFileSync(file);
