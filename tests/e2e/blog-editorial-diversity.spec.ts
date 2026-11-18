@@ -57,13 +57,14 @@ test('topic tabs and search remain in normal chronological order, including mobi
   await expect(page.locator(selector)).toHaveCount(17);
   expect(await cardIds(page)).toEqual(orderForCategory('כלכלת המשפחה'));
 
+  await page.getByRole('button', { name: 'איפוס סינונים' }).click();
   await page.getByRole('textbox', { name: 'חיפוש מאמרים' }).fill('תיאום הורי');
+  await expect(page.locator(selector).first()).toBeVisible();
   await expect(page.getByText('המאמרים משולבים לפי נושאים. תאריכי הפרסום המקוריים נשמרים.')).toHaveCount(0);
-  const filteredIds = await cardIds(page);
-  expect(filteredIds.every((id) => {
-    const post = postSummaries.find((candidate) => candidate.id === id);
-    return post?.title.includes('תיאום הורי') || post?.excerpt.includes('תיאום הורי');
-  })).toBe(true);
+  const expectedSearchIds = postSummaries
+    .filter((post) => post.title.includes('תיאום הורי') || post.excerpt.includes('תיאום הורי'))
+    .map((post) => post.id);
+  expect(await cardIds(page)).toEqual(expectedSearchIds);
 
   await page.getByRole('button', { name: 'איפוס סינונים' }).click();
   await expect(page.locator(selector)).toHaveCount(originalIds.length);
