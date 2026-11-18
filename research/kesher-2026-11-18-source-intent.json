@@ -5,8 +5,8 @@
   "article_slug": "couple-conversation-stuck-pursue-withdraw-cycle",
   "article_content_sha256": "e5a57c64f85a2e56d355c73b4abe052c5052aa1addb074fcea677262c8b77616",
   "article_source_catalog": "src/data/postsRecent.json",
-  "source_status": "STAGED_PR_NOT_LIVE",
-  "article_public_url": null,
+  "source_status": "PUBLISHED_SITE_VERIFIED_VIDEO_PENDING",
+  "article_public_url": "https://kesher.saharoni.com/blog/couple-conversation-stuck-pursue-withdraw-cycle",
   "theme_source": "owner-provided topic: שיחה תקועה",
   "topic_specific_date_approval": false,
   "editorial_qa": {
@@ -22,7 +22,12 @@
       ],
       "seo_final_approved": false
     },
-    "final_article_approved": false
+    "final_article_approved": true,
+    "live_http_200_verified": true,
+    "live_canonical_verified": true,
+    "live_jsonld_article_verified": true,
+    "live_research_citations_present": true,
+    "related_links_http_200_verified": true
   },
   "hero": {
     "path": "public/images/generated/blog/couple-conversation-stuck-pursue-withdraw-cycle.jpg",
@@ -35,7 +40,7 @@
     "bytes": 331443,
     "origin": "OpenAI Image Generation, original generated for this article",
     "stock_images_used": false,
-    "review_status": "EDITORIAL_IMAGE_PREVIEWED_NOT_DEPLOYED"
+    "review_status": "PUBLISHED_ORIGINAL_SHA256_AND_HTTP200_VERIFIED"
   },
   "long_video": {
     "source_sha256": "e5a57c64f85a2e56d355c73b4abe052c5052aa1addb074fcea677262c8b77616",
@@ -71,7 +76,8 @@
     "expected_protocol": "CAS journal plus source/provider inventory, exact-head and protected review",
     "provider_dispatch_authorized": false,
     "youtube_upload_authorized": false,
-    "website_publish_authorized": false
+    "website_publish_authorized": false,
+    "website_publish_authorized_note": "Published via reviewed PR #1408 and Cloudflare deployment, not via the unactivated github-only owner controller; this does not authorize any future provider dispatch or imply controller LIVE."
   },
   "provenance": {
     "issue_url": "https://github.com/yanivsa/kesher-website/issues/1210",
@@ -81,6 +87,16 @@
       "https://pubmed.ncbi.nlm.nih.gov/37423040/",
       "https://pubmed.ncbi.nlm.nih.gov/30321045/",
       "https://pmc.ncbi.nlm.nih.gov/articles/PMC4852543/"
+    ],
+    "article_publication_pr_url": "https://github.com/yanivsa/kesher-website/pull/1408",
+    "study_author_correction_pr_url": "https://github.com/yanivsa/kesher-website/pull/1409",
+    "live_deploy_run_url": "https://github.com/yanivsa/kesher-website/actions/runs/44302542400",
+    "live_qa_checked_date": "2026-11-18",
+    "qa_remaining": [
+      "controller_PREPARED_NOT_LIVE",
+      "source_bound_long_video_missing",
+      "native_short_missing",
+      "final_seo_non_cannibalization_review_pending"
     ]
   }
 }
