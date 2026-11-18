@@ -90,7 +90,36 @@ def _inspect(path: Path):
             "audio_codec": audio[0].get("codec_name")}
 
 
-def audit_one(item, catalog, temporary_root: Path):
+def _media_review_samples(path: Path, preview_root: Path, artifact_id: str) -> dict:
+    """Write bounded nonpublic review samples; never preserve the raw MP4."""
+    import re
+
+    if not re.fullmatch(r"[0-9a-f-]{36}", artifact_id):
+        raise QAReadOnlyBlocked("REVIEW_ARTIFACT_ID_INVALID")
+    preview_root.mkdir(parents=True, exist_ok=True)
+    contact = preview_root / (artifact_id + "-visual.jpg")
+    audio = preview_root / (artifact_id + "-voice.m4a")
+    _safe_command([
+        "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+        "-i", str(path), "-vf", "fps=1/12,scale=320:-2,tile=4x1",
+        "-frames:v", "1", str(contact),
+    ], timeout=120)
+    _safe_command([
+        "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+        "-ss", "12", "-t", "14", "-i", str(path),
+        "-vn", "-ac", "1", "-c:a", "aac", "-b:a", "48k", str(audio),
+    ], timeout=120)
+    result = {}
+    for kind, sample in (("visual", contact), ("voice", audio)):
+        if not sample.is_file() or not 256 < sample.stat().st_size < 2_000_000:
+            raise QAReadOnlyBlocked("REVIEW_SAMPLE_MISSING_OR_UNBOUNDED")
+        with sample.open("rb") as stream:
+            result[kind + "_sha256"] = hashlib.file_digest(stream, "sha256").hexdigest()
+        result[kind + "_bytes"] = sample.stat().st_size
+    return result
+
+
+def audit_one(item, catalog, temporary_root: Path, preview_root: Path | None = None):
     date, slug, kind, source_sha, artifact_id = item
     record = catalog.get(artifact_id)
     if not record or record.get("status", record.get("state")) != "completed":
@@ -110,6 +139,8 @@ def audit_one(item, catalog, temporary_root: Path):
         correct_ratio = (media["width"] * 16 == media["height"] * 9
                          if kind == "short" else
                          media["width"] * 9 == media["height"] * 16)
+        preview = (_media_review_samples(path, preview_root, artifact_id)
+                   if preview_root is not None else None)
         return {
             "date": date, "slug": slug, "kind": kind,
             "persisted_source_sha256": source_sha,
@@ -119,6 +150,7 @@ def audit_one(item, catalog, temporary_root: Path):
             "bytes": path.stat().st_size,
             "technical_media": media,
             "technical_aspect_ratio_pass": correct_ratio,
+            "nonpublic_review_sample": preview,
             "source_body_verified": False,
             "female_hebrew_voice_verified": False,
             "visual_qa_verified": False,
@@ -142,10 +174,21 @@ def main():
         print("GHONLY_EXISTING_ARTIFACT_QA_UNTRUSTED_INVOCATION", file=sys.stderr)
         return 2
     try:
+        preview = os.environ.get("KESHER_QA_PREVIEW_DIR", "")
+        preview_root = None
+        if preview:
+            runner_temp = os.environ.get("RUNNER_TEMP", "")
+            if not runner_temp:
+                raise QAReadOnlyBlocked("REVIEW_PATH_UNTRUSTED")
+            root = Path(runner_temp).resolve()
+            proposed = Path(preview).resolve()
+            if root not in proposed.parents:
+                raise QAReadOnlyBlocked("REVIEW_PATH_OUTSIDE_EPHEMERAL_RUNNER")
+            preview_root = proposed
         catalog = _catalog()
         with tempfile.TemporaryDirectory(prefix="kesher-ghonly-artifacts-") as root:
             for item in TARGETS:
-                result = audit_one(item, catalog, Path(root))
+                result = audit_one(item, catalog, Path(root), preview_root=preview_root)
                 print("GHONLY_EXISTING_ARTIFACT_QA " +
                       json.dumps(result, ensure_ascii=False, sort_keys=True), flush=True)
         return 0
