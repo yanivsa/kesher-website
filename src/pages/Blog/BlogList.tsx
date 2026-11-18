@@ -5,6 +5,7 @@ import SchemaOrg from '../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import posts from '../../data/postSummaries.json';
 import { getImageDimensions } from '../../data/imageDimensions';
+import { interleaveBlogTopicBatches } from '../../utils/interleaveBlogTopicBatches';
 import styles from './BlogList.module.css';
 
 const normalizeCategory = (category: string) => category === 'הנחיית הורים' ? 'הדרכת הורים' : category;
@@ -103,6 +104,12 @@ const BlogList: React.FC = () => {
     );
   }, [categoryFilteredPosts, searchQuery]);
 
+  const isUnfilteredOverview = selectedCategory === 'הכל' && searchQuery.trim() === '';
+  const displayedPosts = useMemo(
+    () => isUnfilteredOverview ? interleaveBlogTopicBatches(filteredPosts) : filteredPosts,
+    [isUnfilteredOverview, filteredPosts],
+  );
+
   return (
     <div className={styles.page}>
       <MetaTags
@@ -192,6 +199,9 @@ const BlogList: React.FC = () => {
               ? `מציג את כל ${posts.length} המאמרים`
               : `נמצאו ${filteredPosts.length} מאמרים`}
           </span>
+          {isUnfilteredOverview && (
+            <span className={styles.editorialMixNote}>המאמרים משולבים לפי נושאים. תאריכי הפרסום המקוריים נשמרים.</span>
+          )}
           {(selectedCategory !== 'הכל' || searchQuery) && (
             <button
               type="button"
@@ -206,10 +216,10 @@ const BlogList: React.FC = () => {
           )}
         </div>
 
-        {filteredPosts.length > 0 ? (
+        {displayedPosts.length > 0 ? (
           <div className={styles.grid}>
-            {filteredPosts.map((post) => (
-              <article key={post.id} className={styles.card}>
+            {displayedPosts.map((post) => (
+              <article key={post.id} className={styles.card} data-blog-post-id={post.id}>
                 {post.image && (
                   <Link to={`/blog/${post.id}`} className={styles.imageLink} aria-label={post.title}>
                     <div className={styles.imageWrapper}>
