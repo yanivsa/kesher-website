@@ -515,10 +515,21 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'preflight' }}
         env:
           KESHER_RECOVERY_READ_ONLY: "true"
+          KESHER_QA_PREVIEW_DIR: ${{ runner.temp }}/kesher-existing-media-qa
         run: |
           set -euo pipefail
           python -m unittest tests.test_kesher_ghonly_existing_artifact_qa -v
           python -m scripts.kesher_runtime.ghonly_existing_artifact_qa
+
+      - name: Save nonpublic short-lived media QA samples (NOT approved for upload)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'preflight' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-existing-media-qa-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/kesher-existing-media-qa
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 6
 
       - name: Prune historical NotebookLM sources
         if: ${{ github.event_name != 'pull_request' && inputs.target_slug == '' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') }}
