@@ -159,7 +159,7 @@ jobs:
     outputs:
       inventory_sha256: ${{ steps.readiness.outputs.inventory_sha256 }}
     env:
-      NOTEBOOKLM_HOME: ${{ runner.temp }}/kesher-ghonly-notebooklm
+      NOTEBOOKLM_HOME: /tmp/kesher-ghonly-notebooklm
     steps:
       - name: Checkout immutable reviewed main
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -225,7 +225,7 @@ jobs:
       actions: read
     timeout-minutes: 15
     env:
-      NOTEBOOKLM_HOME: ${{ runner.temp }}/kesher-ghonly-notebooklm
+      NOTEBOOKLM_HOME: /tmp/kesher-ghonly-notebooklm
     steps:
       - name: Checkout immutable reviewed main
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
