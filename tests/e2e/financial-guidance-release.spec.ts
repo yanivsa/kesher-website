@@ -18,6 +18,17 @@ const editorialRoutes = [
 ];
 
 test.describe('Financial guidance release acceptance', () => {
+  test('the standalone homepage visibly features financial guidance and the article hub', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    const serviceLink = page.locator('a[href="/services/family-financial-guidance"]').first();
+    await expect(serviceLink).toBeVisible();
+    await expect(serviceLink).toContainText('ליווי כלכלי לזוגות ומשפחות');
+    await expect(page.locator('a[href="/blog/category/family-finances"]').first()).toBeVisible();
+    const businessSchema = await page.locator('script[type="application/ld+json"]').allTextContents();
+    expect(businessSchema.join(' ')).toContain('חינוך פיננסי');
+    expect(businessSchema.join(' ')).toContain('/services/family-financial-guidance');
+  });
+
   test('all 22 indexable routes are statically rendered with exactly one H1 and canonical', async ({ request }) => {
     test.setTimeout(120_000);
     expect(editorialRoutes).toHaveLength(22);
