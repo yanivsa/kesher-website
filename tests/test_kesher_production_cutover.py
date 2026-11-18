@@ -1012,4 +1012,177 @@ class GithubOnlyProtectedPrepareTests(unittest.TestCase):
         self.assertIn('7,22,37,52 * * * *',code)
         self.assertNotIn('KESHER_CUTOVER_GATEWAY_URL',prep)
 
+
+class GithubOnlyDurableEffectsTests(unittest.TestCase):
+    """Hermetic crash/duplicate tests. No provider credentials or API calls."""
+
+    def setUp(self):
+        from scripts.kesher_runtime.identity import canonical_json
+        from scripts.kesher_runtime.github_only_owner_policy import command_identity
+        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+        from scripts.kesher_runtime.github_only_effects import GitHubOnlyEffectJournal
+
+        fixture = GithubOnlyAtomicLedgerTests()
+        fixture.setUp()
+        self.gh, self.store = fixture.gh, fixture.store
+        self.main = fixture.expected_main
+        self.slot = "2026-11-18"
+        self.slug = "couple-conversation-stuck-pursue-withdraw-cycle"
+        self.source_sha = "e" * 64
+        self.epoch = "safe-epoch-1"
+        self.run = "123:1"
+        self.operation = "notebooklm_long"
+        self.command = command_identity(
+            slot=self.slot, source_sha256=self.source_sha,
+            operation=self.operation,
+        )
+        self.ledger = fixture.ledger
+        self.ledger["commands"][self.command] = {
+            "phase": "CLAIMED", "run_id": self.run,
+            "epoch": self.epoch, "reviewed_main_sha": self.main,
+        }
+        self.gh.raw = (canonical_json(self.ledger) + "\n").encode()
+        self.gh.blob = _blob_sha(self.gh.raw)
+        self.journal = GitHubOnlyEffectJournal(self.store)
+        self.args = dict(
+            epoch=self.epoch, command_id=self.command,
+            run_id=self.run, slot=self.slot, slug=self.slug,
+            source_sha256=self.source_sha, operation=self.operation,
+        )
+        self.request = "1" * 64
+
+    def _load(self):
+        return self.store.load(reviewed_main_sha=self.main)
+
+    def _begin(self, loaded=None, **kwargs):
+        args = dict(self.args)
+        args.update(dict(effect_kind="notebooklm_long",
+                         request_sha256=self.request))
+        args.update(kwargs)
+        return self.journal.begin(self._load() if loaded is None else loaded,
+                                  **args)
+
+    def _posts(self):
+        return sum(method == "POST" for method, _, _ in self.gh.calls)
+
+    def test_one_intent_recorded_by_dual_ref_cas_and_duplicate_is_noop(self):
+        status, saved = self._begin()
+        self.assertEqual(status, "INTENT_RECORDED")
+        entry = saved.document["commands"][self.command]["effects"]["notebooklm_long"]
+        self.assertEqual(entry["request_sha256"], self.request)
+        self.assertEqual(entry["phase"], "INTENT_RECORDED")
+        self.assertIsNone(entry["provider_id"])
+        self.assertEqual(self.gh.expected_parent, "b" * 40)
+        self.assertEqual(self.gh.expected_old_tree, "c" * 40)
+        self.assertEqual(self._posts(), 4)
+        status, again = self._begin(saved)
+        self.assertEqual(status, "ALREADY_RECORDED_NO_RETRY")
+        self.assertEqual(again, saved)
+        self.assertEqual(self._posts(), 4)
+
+    def test_uncertain_provider_creation_cannot_start_another_effect(self):
+        _, saved = self._begin()
+        with self.assertRaisesRegex(ValueError, "UNCERTAIN_REMOTE_CALL"):
+            self._begin(saved, effect_kind="youtube_long")
+        self.assertEqual(self._posts(), 4)
+
+    def test_owning_run_and_source_identity_cannot_be_forged(self):
+        for changed in (
+            dict(run_id="124:1"),
+            dict(source_sha256="d" * 64),
+            dict(slot="2026-11-17"),
+            dict(slug="../other"),
+            dict(epoch="other-epoch"),
+        ):
+            with self.assertRaises(ValueError):
+                self._begin(**changed)
+        self.assertEqual(self._posts(), 0)
+
+    def test_protected_activation_is_a_hard_precondition(self):
+        from scripts.kesher_runtime.identity import canonical_json
+        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+        for field, value in (("activation", "PREPARED_NOT_LIVE"),
+                             ("inventory_complete", False)):
+            old = self.ledger[field]
+            self.ledger[field] = value
+            self.gh.raw = (canonical_json(self.ledger) + "\n").encode()
+            self.gh.blob = _blob_sha(self.gh.raw)
+            with self.assertRaisesRegex(ValueError, "PROTECTED_LIVE_REQUIRED"):
+                self._begin()
+            self.ledger[field] = old
+        self.assertEqual(self._posts(), 0)
+
+    def test_conflicting_intent_rejected_without_side_effect(self):
+        _, saved = self._begin()
+        with self.assertRaisesRegex(ValueError, "CONFLICTING_RETRY"):
+            self._begin(saved, request_sha256="2" * 64)
+        self.assertEqual(self._posts(), 4)
+
+    def test_remote_id_receipt_must_bind_exact_original_intent(self):
+        _, saved = self._begin()
+        status, observed = self.journal.observe(
+            saved, **self.args, effect_kind="notebooklm_long",
+            request_sha256=self.request,
+            provider_id="63b37426-9fd2-49e3-a2ce-a412fc347484",
+            receipt_sha256="3" * 64,
+        )
+        self.assertEqual(status, "REMOTE_ID_OBSERVED")
+        self.assertEqual(
+            observed.document["commands"][self.command]["effects"]
+                ["notebooklm_long"]["provider_id"],
+            "63b37426-9fd2-49e3-a2ce-a412fc347484",
+        )
+        before = self._posts()
+        status, _ = self.journal.observe(
+            observed, **self.args, effect_kind="notebooklm_long",
+            request_sha256=self.request,
+            provider_id="63b37426-9fd2-49e3-a2ce-a412fc347484",
+            receipt_sha256="3" * 64,
+        )
+        self.assertEqual(status, "ALREADY_OBSERVED_NO_RETRY")
+        self.assertEqual(self._posts(), before)
+        with self.assertRaisesRegex(ValueError, "CONFLICTING_REMOTE_RECEIPT"):
+            self.journal.observe(
+                observed, **self.args, effect_kind="notebooklm_long",
+                request_sha256=self.request,
+                provider_id="12c218a9-9912-4f65-869b-3517cacb57a6",
+                receipt_sha256="3" * 64,
+            )
+
+    def test_cas_conflict_and_unknown_ack_never_auto_retry(self):
+        from scripts.kesher_runtime.state import StateConflict
+        from scripts.kesher_runtime.github import GitHubError
+        self.gh.conflict = True
+        with self.assertRaisesRegex(StateConflict, "CAS_REJECTED"):
+            self._begin()
+        self.assertEqual(self._posts(), 4)
+        self.gh.conflict = False
+        self.gh.unknown_ack = True
+        with self.assertRaises(GitHubError) as caught:
+            self._begin()
+        self.assertTrue(caught.exception.uncertain)
+        self.assertEqual(self._posts(), 8)
+
+    def test_stale_main_and_stale_ref_are_refused(self):
+        from scripts.kesher_runtime.state import StateConflict
+        snap = self._load()
+        self.gh.main = "0" * 40
+        with self.assertRaises(StateConflict):
+            self._begin(snap)
+        self.gh.main = self.main
+        self.gh.ref = "0" * 40
+        with self.assertRaises(StateConflict):
+            self._begin(snap)
+        self.assertEqual(self._posts(), 0)
+
+    def test_invalid_provider_identifier_is_rejected_before_write(self):
+        _, saved = self._begin()
+        with self.assertRaisesRegex(ValueError, "PROVIDER_ID_INVALID"):
+            self.journal.observe(
+                saved, **self.args, effect_kind="notebooklm_long",
+                request_sha256=self.request, provider_id="unknown",
+                receipt_sha256="3" * 64,
+            )
+        self.assertEqual(self._posts(), 4)
+
 if __name__ == '__main__': unittest.main()
