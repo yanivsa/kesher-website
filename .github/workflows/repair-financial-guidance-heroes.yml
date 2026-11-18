@@ -99,7 +99,7 @@ jobs:
           git config user.name "Kesher Financial Hero Repair"
           git config user.email "actions@users.noreply.github.com"
           git switch -c "$branch"
-          git add -f -- src/data/financialGuidancePosts.json src/data/imageDimensions.ts             src/data/postSummaries.json public/images/generated/blog             public/sitemap.xml public/rss.xml public/llms.txt public/llms-full.txt
+          git add -f -- config/financial-hero-migration.json src/data/financialGuidancePosts.json src/data/imageDimensions.ts             src/data/postSummaries.json public/images/generated/blog             public/sitemap.xml public/rss.xml public/llms.txt public/llms-full.txt
           git diff --cached --quiet && { echo "No staged migration changes"; exit 1; }
           git commit -m "fix(blog): replace 17 financial SVG heroes with verified editorial photographs"
           git push origin "HEAD:refs/heads/$branch"
