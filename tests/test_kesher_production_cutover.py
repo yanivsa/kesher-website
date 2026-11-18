@@ -1041,7 +1041,7 @@ class GithubOnlyDurableEffectsTests(unittest.TestCase):
             "phase": "CLAIMED", "run_id": self.run,
             "epoch": self.epoch, "reviewed_main_sha": self.main,
         }
-        self.gh.raw = (canonical_json(self.ledger) + "\\n").encode()
+        self.gh.raw = (canonical_json(self.ledger) + "\n").encode()
         self.gh.blob = _blob_sha(self.gh.raw)
         self.journal = GitHubOnlyEffectJournal(self.store)
         self.args = dict(
@@ -1105,7 +1105,7 @@ class GithubOnlyDurableEffectsTests(unittest.TestCase):
                              ("inventory_complete", False)):
             old = self.ledger[field]
             self.ledger[field] = value
-            self.gh.raw = (canonical_json(self.ledger) + "\\n").encode()
+            self.gh.raw = (canonical_json(self.ledger) + "\n").encode()
             self.gh.blob = _blob_sha(self.gh.raw)
             with self.assertRaisesRegex(ValueError, "PROTECTED_LIVE_REQUIRED"):
                 self._begin()
