@@ -64,7 +64,7 @@ def _loaded_owner(github, expected_main):
     return old_ref, tree, doc
 
 
-def _reviewed_run(github, reviewer_run):
+def _reviewed_run(github, reviewer_run, expected_main):
     if not isinstance(reviewer_run, str) or not _RUN.fullmatch(reviewer_run):
         raise StateInvalid("GHONLY_LIVE_GENUINE_RUN_REQUIRED")
     run_id = reviewer_run.split(":")[0]
@@ -72,7 +72,9 @@ def _reviewed_run(github, reviewer_run):
     run = github.request("GET", api + "/actions/runs/" + run_id)
     if (str(run.get("id")) != run_id
             or run.get("event") != "workflow_dispatch"
-            or run.get("head_branch") != "main"):
+            or run.get("head_branch") != "main"
+            or run.get("head_sha") != expected_main
+            or str(run.get("run_attempt")) != reviewer_run.split(":")[1]):
         raise StateInvalid("GHONLY_LIVE_RUN_NOT_TRUSTED")
     reviews = github.request("GET", api + "/actions/runs/" + run_id + "/approvals")
     if not isinstance(reviews, list) or not any(
@@ -141,7 +143,7 @@ def activate(github, *, expected_main, epoch, reviewer_run,
         raise StateInvalid("GHONLY_LIVE_INVENTORY_REVIEW_DIGEST_REQUIRED")
     # Genuine environment approval must be checked by independent GitHub API,
     # not inferred from an input, local flag or owner Issue comment.
-    _reviewed_run(github, reviewer_run)
+    _reviewed_run(github, reviewer_run, expected_main)
     actual = inspect_live_inventory() if report is None else report
     old_ref, tree, prepared, fresh_inventory_sha = _preflight(
         github, expected_main=expected_main, epoch=epoch, report=actual,
