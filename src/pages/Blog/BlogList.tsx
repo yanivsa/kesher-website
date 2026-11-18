@@ -6,6 +6,7 @@ import { SITE_CONFIG } from '../../constants/siteConfig';
 import posts from '../../data/postSummaries.json';
 import { getFinancialArchiveSlot, getEditorialArchiveSortDate } from '../../data/financialGuidanceArchive';
 import { getImageDimensions } from '../../data/imageDimensions';
+import { spreadParentingCoordinationBatch } from '../../utils/spreadParentingCoordinationBatch';
 import styles from './BlogList.module.css';
 
 const normalizeCategory = (category: string) => category === 'הנחיית הורים' ? 'הדרכת הורים' : category;
@@ -108,6 +109,12 @@ const BlogList: React.FC = () => {
     );
   }, [categoryFilteredPosts, searchQuery]);
 
+  const isUnfilteredOverview = selectedCategory === 'הכל' && searchQuery.trim() === '';
+  const displayedPosts = useMemo(
+    () => isUnfilteredOverview ? spreadParentingCoordinationBatch(filteredPosts) : filteredPosts,
+    [filteredPosts, isUnfilteredOverview],
+  );
+
   return (
     <div className={styles.page}>
       <MetaTags
@@ -197,6 +204,9 @@ const BlogList: React.FC = () => {
               ? `מציג את כל ${posts.length} המאמרים`
               : `נמצאו ${filteredPosts.length} מאמרים`}
           </span>
+          {isUnfilteredOverview && (
+            <span className={styles.topicMixNote}>תצוגה מגוונת לפי נושאים. תאריכי הפרסום המקוריים נשמרים.</span>
+          )}
           {(selectedCategory !== 'הכל' || searchQuery) && (
             <button
               type="button"
@@ -218,9 +228,9 @@ const BlogList: React.FC = () => {
           </p>
         )}
 
-        {filteredPosts.length > 0 ? (
+        {displayedPosts.length > 0 ? (
           <div className={styles.grid}>
-            {filteredPosts.map((post) => (
+            {displayedPosts.map((post) => (
               <article key={post.id} className={styles.card}>
                 {post.image && (
                   <Link to={`/blog/${post.id}`} className={styles.imageLink} aria-label={post.title}>
