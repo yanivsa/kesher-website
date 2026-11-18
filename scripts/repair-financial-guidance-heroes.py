@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 POSTS = ROOT / "src/data/financialGuidancePosts.json"
 DIMENSIONS = ROOT / "src/data/imageDimensions.ts"
+MIGRATION = ROOT / "config/financial-hero-migration.json"
 IMAGE_ROOT = ROOT / "public/images/generated/blog"
 WORKER = ROOT / ".github/scripts/article-image-worker-v4.py"
 
@@ -150,6 +151,9 @@ def main() -> int:
     dims = dims.replace(marker, marker + "\n" + "\n".join(inserted), 1)
     DIMENSIONS.write_text(dims, encoding="utf-8")
     POSTS.write_text(json.dumps(posts, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    migration = json.loads(MIGRATION.read_text(encoding="utf-8"))
+    migration["legacy_svg_ids"] = []
+    MIGRATION.write_text(json.dumps(migration, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"FINANCIAL_HERO_REPAIR_COMPLETE generated={len(prepared)} remaining=0", flush=True)
     return 0
 
