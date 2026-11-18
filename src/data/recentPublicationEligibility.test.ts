@@ -48,7 +48,7 @@ describe('recent article production eligibility', () => {
       'target = [post for post in rows if post.get("id") == "couple-conversation-stuck-pursue-withdraw-cycle"]',
       'assert len(target) == 1',
       'print(source_metadata(target[0])["content_sha256"])',
-    ].join('\\n');
+    ].join('\n');
     const exactSourceSha = execFileSync('python3', ['-c', checkSource], {
       encoding: 'utf8', timeout: 15_000,
     }).trim();
