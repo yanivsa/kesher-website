@@ -3,9 +3,9 @@
   "slot": "2026-11-18",
   "date_timezone": "Asia/Jerusalem",
   "article_slug": "couple-conversation-stuck-pursue-withdraw-cycle",
-  "article_content_sha256": "36f69051fb196c2c243c6af286aedbbad69c67b12391175da0d60e9895d33b02",
+  "article_content_sha256": "af18374300e648bad926de8c4ac64d8e0211b7490e4f243cf2ea12cb5ab1ef8b",
   "article_source_catalog": "src/data/postsRecent.json",
-  "source_status": "STAGED_PR_NOT_LIVE",
+  "source_status": "MERGED_CODE_DEPLOYMENT_NOT_YET_VERIFIED",
   "article_public_url": null,
   "theme_source": "owner-provided topic: שיחה תקועה",
   "topic_specific_date_approval": false,
@@ -38,7 +38,7 @@
     "review_status": "EDITORIAL_IMAGE_PREVIEWED_NOT_DEPLOYED"
   },
   "long_video": {
-    "source_sha256": "36f69051fb196c2c243c6af286aedbbad69c67b12391175da0d60e9895d33b02",
+    "source_sha256": "af18374300e648bad926de8c4ac64d8e0211b7490e4f243cf2ea12cb5ab1ef8b",
     "native_geometry": "16:9",
     "language": "he-IL",
     "narration": "female Israeli Hebrew, subject to audible verification",
@@ -52,7 +52,7 @@
     "licensed_qa_approved": false
   },
   "short_video": {
-    "source_sha256": "36f69051fb196c2c243c6af286aedbbad69c67b12391175da0d60e9895d33b02",
+    "source_sha256": "af18374300e648bad926de8c4ac64d8e0211b7490e4f243cf2ea12cb5ab1ef8b",
     "native_geometry": "9:16",
     "derive_long_item_id": null,
     "source_id": null,
@@ -81,6 +81,7 @@
       "https://pubmed.ncbi.nlm.nih.gov/37423040/",
       "https://pubmed.ncbi.nlm.nih.gov/30321045/",
       "https://pmc.ncbi.nlm.nih.gov/articles/PMC4852543/"
-    ]
+    ],
+    "source_revision_notes": "QA correction 18 Nov: heading h3 eligibility and Hebrew-only visible prose; exact canonical source rehashed independently via original source_metadata-compatible HTML extraction. Public article and video URLs remain unverified."
   }
 }
