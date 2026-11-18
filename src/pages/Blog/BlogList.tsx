@@ -4,6 +4,7 @@ import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import posts from '../../data/postSummaries.json';
+import { getFinancialArchiveSlot, getEditorialArchiveSortDate } from '../../data/financialGuidanceArchive';
 import { getImageDimensions } from '../../data/imageDimensions';
 import styles from './BlogList.module.css';
 
@@ -92,14 +93,18 @@ const BlogList: React.FC = () => {
   const filteredPosts = useMemo(() => {
     const trimmedQuery = searchQuery.trim().toLowerCase();
 
-    if (trimmedQuery === '') {
-      return categoryFilteredPosts;
-    }
+    const matchingPosts = trimmedQuery === ''
+      ? categoryFilteredPosts
+      : categoryFilteredPosts.filter(post =>
+          post.title.toLowerCase().includes(trimmedQuery) ||
+          post.excerpt.toLowerCase().includes(trimmedQuery) ||
+          (('subcategory' in post && post.subcategory) ? post.subcategory.toLowerCase().includes(trimmedQuery) : false)
+        );
 
-    return categoryFilteredPosts.filter(post =>
-      post.title.toLowerCase().includes(trimmedQuery) ||
-      post.excerpt.toLowerCase().includes(trimmedQuery) ||
-      (('subcategory' in post && post.subcategory) ? post.subcategory.toLowerCase().includes(trimmedQuery) : false)
+    // Editorial archive order only; original publication dates remain untouched.
+    return [...matchingPosts].sort((a, b) =>
+      getEditorialArchiveSortDate(b.id, b.date).localeCompare(getEditorialArchiveSortDate(a.id, a.date))
+      || b.date.localeCompare(a.date)
     );
   }, [categoryFilteredPosts, searchQuery]);
 
@@ -206,6 +211,13 @@ const BlogList: React.FC = () => {
           )}
         </div>
 
+        {filteredPosts.some(post => getFinancialArchiveSlot(post.id)) && (
+          <p className={styles.archiveExplanation}>
+            במאמרי כלכלת המשפחה, ״מיקום בארכיון״ מציין סדר עריכתי בלבד — לא את מועד הפרסום.
+            תאריך ״פורסם״ הוא מועד הפרסום האמיתי.
+          </p>
+        )}
+
         {filteredPosts.length > 0 ? (
           <div className={styles.grid}>
             {filteredPosts.map((post) => (
@@ -231,6 +243,7 @@ const BlogList: React.FC = () => {
                 <div className={styles.content}>
                   <div className={styles.meta}>
                     <time dateTime={post.date}>
+                      {getFinancialArchiveSlot(post.id) ? 'פורסם: ' : ''}
                       {new Date(post.date).toLocaleDateString('he-IL', {
                         timeZone: 'UTC',
                         year: 'numeric',
@@ -238,6 +251,16 @@ const BlogList: React.FC = () => {
                         day: 'numeric',
                       })}
                     </time>
+                    {getFinancialArchiveSlot(post.id) && (
+                      <span className={styles.archiveSlot} data-editorial-archive-slot={getFinancialArchiveSlot(post.id)}>
+                        מיקום בארכיון: {new Date(getFinancialArchiveSlot(post.id)!).toLocaleDateString('he-IL', {
+                          timeZone: 'UTC',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </span>
+                    )}
                   </div>
 
                   <h2 className={styles.cardTitle}>
