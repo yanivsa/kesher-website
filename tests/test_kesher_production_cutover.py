@@ -1185,4 +1185,268 @@ class GithubOnlyDurableEffectsTests(unittest.TestCase):
             )
         self.assertEqual(self._posts(), 4)
 
+
+class GithubOnlyProtectedLiveActivationTests(unittest.TestCase):
+    """Disposable, authenticated-review and double-CAS tests with no network."""
+
+    def setUp(self):
+        import base64
+        from scripts.kesher_runtime.identity import canonical_json
+        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+        self.main = "a" * 40
+        self.legacy = "d" * 40
+        self.doc = {
+            "schema_version": 1, "owner": "github-only",
+            "epoch": "kesher-ghonly-20261117-prepare1",
+            "activation": "PREPARED_NOT_LIVE", "inventory_complete": False,
+            "reviewed_main_sha": "f" * 40, "commands": {},
+            "migration_basis": {
+                "legacy_blob_sha": self.legacy,
+                "legacy_cycle": "2026-11-08",
+                "approved_review_run": "44142546286:1",
+            },
+        }
+        self.report = {
+            "notebooklm_authenticated": True, "youtube_authenticated": True,
+            "no_active_notebooklm_tasks": True,
+            "youtube_scan_complete": True, "known_historical_task_count": 8,
+            "provider_mutations": False,
+        }
+        self.audit = {
+            "status": "READY_FOR_REVIEWED_MIGRATION_ONLY",
+            "pending": [], "production_activated": False,
+            "provider_dispatch": False,
+            "legacy_blob_sha": self.legacy,
+            "legacy_cycle": "2026-11-08",
+        }
+
+        class FakeGitHub:
+            def __init__(this):
+                this.main = self.main
+                this.ref = "b" * 40
+                this.tree = "c" * 40
+                this.doc = self.doc
+                this.raw = (canonical_json(this.doc) + "\n").encode()
+                this.blob = _blob_sha(this.raw)
+                this.pending_raw = None
+                this.calls = []
+                this.approved = True
+                this.conflict = False
+                this.missing_ack = False
+
+            def request(this, method, path, body=None, **kwargs):
+                this.calls.append((method, path, body))
+                if method == "GET":
+                    if path.endswith("/git/ref/heads/main"):
+                        return {"object": {"sha": this.main}}
+                    if path.endswith("/git/ref/heads/automation-state"):
+                        return {"object": {"sha": this.ref}}
+                    if "/git/commits/" in path:
+                        return {"sha": path.rsplit("/", 1)[1], "tree": {"sha": this.tree}}
+                    if "/contents/.kesher-controller/github-only-owner.json?ref=" in path:
+                        return {"sha": this.blob, "encoding": "base64",
+                                "content": base64.b64encode(this.raw).decode()}
+                    if path.endswith("/actions/runs/123"):
+                        return {"id": 123, "event": "workflow_dispatch",
+                                "head_branch": "main", "head_sha": this.main, "run_attempt": 1}
+                    if path.endswith("/actions/runs/123/approvals"):
+                        return ([{"state": "approved", "user": {"login": "yanivsa"},
+                                 "environments": [{"name": "kesher-cutover"}]}]
+                                if this.approved else [])
+                    if path == "/repos/yanivsa/kesher-website":
+                        return {"full_name": "yanivsa/kesher-website",
+                                "node_id": "repo-123"}
+                if method == "POST":
+                    if path.endswith("/git/blobs"):
+                        this.pending_raw = base64.b64decode(body["content"])
+                        return {"sha": _blob_sha(this.pending_raw)}
+                    if path.endswith("/git/trees"):
+                        if body["base_tree"] != this.tree:
+                            raise AssertionError("Stale tree")
+                        return {"sha": "1" * 40}
+                    if path.endswith("/git/commits"):
+                        if body["parents"] != [this.ref]:
+                            raise AssertionError("Stale ref")
+                        return {"sha": "2" * 40}
+                    if path == "/graphql":
+                        if this.conflict:
+                            return {"errors": [{"message": "REF_CHANGED"}]}
+                        this.ref = "2" * 40
+                        this.tree = "1" * 40
+                        this.raw = this.pending_raw
+                        this.blob = _blob_sha(this.raw)
+                        return {"data": {"updateRefs": {
+                            "clientMutationId": (
+                                "invalid" if this.missing_ack
+                                else body["variables"]["input"]["clientMutationId"]
+                            )
+                        }}}
+                raise AssertionError((method, path))
+
+        self.gh = FakeGitHub()
+
+    def _act(self, report=None):
+        from scripts.kesher_runtime.github_only_live_activation import activate
+        from scripts.kesher_runtime.identity import digest
+        from unittest.mock import patch
+        with patch("scripts.kesher_runtime.github_only_live_activation.inventory",
+                   return_value=self.audit):
+            return activate(
+                self.gh, expected_main=self.main,
+                epoch=self.doc["epoch"], reviewer_run="123:1",
+                reviewed_inventory_sha256=digest(self.report),
+                report=self.report if report is None else report,
+            )
+
+    def _preflight(self):
+        from scripts.kesher_runtime.github_only_live_activation import preflight
+        from unittest.mock import patch
+        with patch("scripts.kesher_runtime.github_only_live_activation.inventory",
+                   return_value=self.audit):
+            return preflight(self.gh, expected_main=self.main,
+                             epoch=self.doc["epoch"], report=self.report)
+
+    def test_read_only_preflight_does_not_ask_for_approval_or_mutate(self):
+        result = self._preflight()
+        self.assertEqual(result["status"], "READY_FOR_PROTECTED_LIVE_REVIEW")
+        self.assertEqual(result["inventory_sha256"], __import__(
+            "scripts.kesher_runtime.identity", fromlist=["digest"]).digest(self.report))
+        self.assertFalse(any(m != "GET" for m, _, _ in self.gh.calls))
+
+    def test_real_owner_review_and_double_cas_activate_without_media(self):
+        result = self._act()
+        self.assertEqual(result["status"], "PROTECTED_VERIFIED")
+        self.assertFalse(result["provider_dispatch"])
+        self.assertTrue(result["media_qa_required"])
+        self.assertTrue(self.gh.doc["activation"] == "PREPARED_NOT_LIVE")
+        self.assertEqual(__import__("json").loads(self.gh.raw)["commands"], {})
+        self.assertEqual(__import__("json").loads(self.gh.raw)["protected_live"][
+            "approved_review_run"], "123:1")
+        self.assertTrue(any(p == "/graphql" and b["variables"]["input"][
+            "refUpdates"][0]["beforeOid"] == self.main
+            for m, p, b in self.gh.calls if m == "POST"))
+
+    def test_missing_human_environment_approval_blocks_before_any_mutation(self):
+        self.gh.approved = False
+        with self.assertRaisesRegex(ValueError, "HUMAN_ENV_REVIEW_NOT_PROVEN"):
+            self._act()
+        self.assertFalse(any(m == "POST" for m, _, _ in self.gh.calls))
+
+    def test_changed_provider_scan_blocks_before_any_mutation(self):
+        bad = dict(self.report, videos_count=999)
+        with self.assertRaisesRegex(Exception, "INVENTORY_CHANGED_SINCE_REVIEW"):
+            self._act(bad)
+        self.assertFalse(any(m == "POST" for m, _, _ in self.gh.calls))
+
+    def test_unsettled_github_tasks_and_untrusted_legacy_block(self):
+        for change in (
+            ("status", "BLOCKED_EXISTING_OWNER_OR_TASK"),
+            ("legacy_blob_sha", "0" * 40),
+        ):
+            field, next_value = change
+            old = self.audit[field]
+            self.audit[field] = next_value
+            with self.assertRaises(ValueError):
+                self._preflight()
+            self.audit[field] = old
+        self.assertFalse(any(m == "POST" for m, _, _ in self.gh.calls))
+
+    def test_no_commands_allowed_in_prepared_ledger(self):
+        self.doc["commands"]["old"] = {"phase": "WAITING_PROVIDER"}
+        from scripts.kesher_runtime.identity import canonical_json
+        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+        self.gh.raw = (canonical_json(self.doc) + "\n").encode()
+        self.gh.blob = _blob_sha(self.gh.raw)
+        with self.assertRaisesRegex(ValueError, "PREPARED_BASIS_NOT_SAFE"):
+            self._preflight()
+        self.assertFalse(any(m == "POST" for m, _, _ in self.gh.calls))
+
+    def test_cas_conflict_and_unknown_ack_do_not_retry(self):
+        from scripts.kesher_runtime.state import StateConflict
+        from scripts.kesher_runtime.github import GitHubError
+        self.gh.conflict = True
+        with self.assertRaisesRegex(StateConflict, "REF_CAS_REJECTED"):
+            self._act()
+        self.assertEqual(sum(m == "POST" for m, _, _ in self.gh.calls), 4)
+        self.gh.conflict = False
+        self.gh.missing_ack = True
+        with self.assertRaises(GitHubError) as ctx:
+            self._act()
+        self.assertTrue(ctx.exception.uncertain)
+        self.assertEqual(sum(m == "POST" for m, _, _ in self.gh.calls), 8)
+
+    def test_stale_main_refused_before_approval(self):
+        from scripts.kesher_runtime.state import StateConflict
+        self.gh.main = "0" * 40
+        with self.assertRaises(StateConflict):
+            self._preflight()
+        self.assertFalse(any(m == "POST" for m, _, _ in self.gh.calls))
+
+
+class GithubOnlyAuthenticatedProviderInventoryTests(unittest.TestCase):
+    """No provider creation, uploads, token access or GH mutations in tests."""
+
+    def setUp(self):
+        from scripts.kesher_runtime.github_only_live_inventory import HISTORICAL_TASKS
+        self.tasks = HISTORICAL_TASKS
+        self.video_rows = [{"id": k, "status": "completed"} for k in self.tasks]
+        self.sources = [{"id": "source-1"}]
+
+    def command(self, args):
+        if args[0] == "auth":
+            return {"status": "ok", "checks": {"token_fetch": True}}
+        if args[0] == "artifact":
+            return {"artifacts": self.video_rows}
+        if args[0] == "source":
+            return {"sources": self.sources}
+        raise AssertionError("Untrusted provider invocation")
+
+    def test_all_eight_exact_tasks_are_reconciled_without_dispatch(self):
+        from scripts.kesher_runtime.github_only_live_inventory import inspect_provider_catalog
+        result = inspect_provider_catalog(command=self.command)
+        self.assertEqual(result["known_historical_task_count"], 8)
+        self.assertTrue(result["no_active_notebooklm_tasks"])
+
+    def test_active_task_rejected_and_no_new_task_spawned(self):
+        from scripts.kesher_runtime.github_only_live_inventory import inspect_provider_catalog
+        self.video_rows.append({"id": "not-owned", "status": "generating"})
+        with self.assertRaisesRegex(ValueError, "ACTIVE_EXTERNAL_TASK"):
+            inspect_provider_catalog(command=self.command)
+
+    def test_historic_task_missing_fails_closed(self):
+        from scripts.kesher_runtime.github_only_live_inventory import inspect_provider_catalog
+        self.video_rows.pop()
+        with self.assertRaisesRegex(ValueError, "CATALOG_INCOMPLETE|HISTORICAL_TASK_NOT_FOUND"):
+            inspect_provider_catalog(command=self.command)
+
+    def test_unknown_provider_status_fails_closed(self):
+        from scripts.kesher_runtime.github_only_live_inventory import inspect_provider_catalog
+        self.video_rows[0]["status"] = "something-new"
+        with self.assertRaisesRegex(ValueError, "UNKNOWN_EXTERNAL_TASK_STATUS"):
+            inspect_provider_catalog(command=self.command)
+
+    def test_youtube_scan_has_to_be_complete_and_bound_to_all_targets(self):
+        from scripts.kesher_runtime.github_only_live_inventory import inspect_live_inventory
+        from unittest.mock import patch
+        rows = [{"date": "2026-11-%02d" % day, "slug": "example-%d" % day,
+                 "exact_match_count": 0, "legacy_candidate_count": 0,
+                 "youtube_scan_complete": True,
+                 "new_provider_generation_authorized": False,
+                 "upload_authorized": False} for day in range(1, 8)]
+        record = {
+            "channel_verified": True, "youtube_scan_complete": True,
+            "unresolved_video_fingerprints": [],
+            "uploaded_playlist_count": 229, "resolved_video_count": 219,
+            "confirmed_deleted_tombstones": 10, "items": rows,
+        }
+        with patch("scripts.kesher_runtime.ghonly_youtube_gap_audit.audit_channel",
+                   return_value=record):
+            safe = inspect_live_inventory(command=self.command, channel=lambda: object())
+        self.assertFalse(safe["provider_mutations"])
+        record["youtube_scan_complete"] = False
+        with patch("scripts.kesher_runtime.ghonly_youtube_gap_audit.audit_channel",
+                   return_value=record):
+            with self.assertRaisesRegex(ValueError, "YOUTUBE_INVENTORY_UNTRUSTED"):
+                inspect_live_inventory(command=self.command, channel=lambda: object())
+
 if __name__ == '__main__': unittest.main()
