@@ -69,7 +69,7 @@
 ### מקורות מחקריים — מאומתים 18.11.2026
 
 1. Schrodt, P., Witt, P. L., & Shimkowski, J. R. (2014). *A Meta-Analytical Review of the Demand/Withdraw Pattern of Interaction and its Associations with Individual, Relational, and Communicative Outcomes*. **Communication Monographs**, 81(1). https://doi.org/10.1080/03637751.2013.813632 — סקירת 74 מחקרים, 14,255 נבדקים; קשר ולא סיבתיות.
-2. Overall, N. C. & McNulty, J. K. (2023). *Constructive conflict resolution requires tailored responsiveness to specific needs*. **Current Opinion in Psychology**, 52, 101638. https://pubmed.ncbi.nlm.nih.gov/37423040/ — סקירה על התאמה לצרכים, לא פרוטוקול קבוע של "הפסקה וחזרה".
+2. Sasaki, E. & Overall, N. C. (2023). *Constructive conflict resolution requires tailored responsiveness to specific needs*. **Current Opinion in Psychology**, 52, 101638. https://pubmed.ncbi.nlm.nih.gov/37423040/ — סקירה על התאמה לצרכים, לא פרוטוקול קבוע של "הפסקה וחזרה".
 3. McNulty, J. K. et al. (2018). *Communication That Is Maladaptive for Middle-Class Couples Is Adaptive for Socioeconomically Disadvantaged Couples*. **Journal of Personality and Social Psychology**. https://pubmed.ncbi.nlm.nih.gov/30321045/ — ממצאים תלויי הקשר; לא לרשום שנסיגה תמיד מזיקה.
 4. Lavner, J. A., Karney, B. R., & Bradbury, T. N. (2016). *Does Couples’ Communication Predict Marital Satisfaction, or Does Marital Satisfaction Predict Communication?* https://pmc.ncbi.nlm.nih.gov/articles/PMC4852543/ — יחסי הסיבתיות במחקר מורכבים; לא להבטיח שהחלפת משפט תתקן את הזוגיות.
 
