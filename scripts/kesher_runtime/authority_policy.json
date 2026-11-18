@@ -2034,7 +2034,7 @@
         "state_write",
         "workflow_dispatch"
       ],
-      "definition_sha256": "dc9ce4e8df4900c21efe3f87157e8c08542d44d2e1d26d6d862264643889f24f",
+      "definition_sha256": "f49f976843704fdb80809a725a5c304a9dce46a861dc81d8fe02fb0b73b34109",
       "resources": [
         "github.dispatch",
         "github.refs",
@@ -2044,6 +2044,8 @@
         "call_chain": {
           "scripts/kesher_runtime/controller_liveness.py": "ffda29116debc6bfd722eacd1363821a13681b694547b5bbbbaa3a3064473f75",
         "scripts/kesher_runtime/github_owner_readiness.py": "9bced30f8b5c58f1380af590c8940dff6f5da2ca2dc13717f42a3dc790c912e3",
+          "scripts/kesher_runtime/github_only_live_readiness.py": "4f73381efb179023ba4d3847e84547b0d9915e0f93d1bb65d0367ea1838c8c58",
+          "tests/test_kesher_ghonly_live_readiness.py": "40487e371576b4fb157eec8a468180ae7d3d1b6155720df13c0a0ef5208a296f",
         "scripts/kesher_runtime/github_only_owner_prepare.py": "8cd27f21a5116a7644430e127e571a26ad26ac4eea5e687e5ab6798f1c0756ed",
           "scripts/kesher_runtime/delivery_preflight.py": "b1eead6da79194fdbf7012ff4e55934e13bc53ca2ef71a1690e45d00f7b2435b"
         },
