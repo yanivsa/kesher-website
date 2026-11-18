@@ -28,7 +28,8 @@ TARGETS = (
     ("2026-11-13", "tiger-parenting-myth-vs-supportive-parenting",
      "1433affd3b6b0d715145ef26ff2f27792aa98e788d5d7a07df52e57d1bc45eb8"),
     ("2026-11-16", "child-led-play-10-minutes-connection",
-     "36c1d366485db4908dfaf34139c73457307c0562b0e3fd7d52eab347a80a1c2c"),
+     "36c1d366485db4908dfaf34139c73457307c0562b0e3fd7d52eab347a80a1c2c"),    ("2026-11-18", "couple-conversation-stuck-pursue-withdraw-cycle",
+     "e5a57c64f85a2e56d355c73b4abe052c5052aa1addb074fcea677262c8b77616"),
 )
 
 class IncompleteYouTubeInventory(ValueError):

@@ -113,7 +113,7 @@ class ReadOnlyGapAuditTests(unittest.TestCase):
         self.assertTrue(result["channel_verified"])
         self.assertTrue(result["youtube_scan_complete"])
         self.assertEqual(result["uploaded_playlist_count"], 2)
-        self.assertEqual(len(result["items"]), 6)
+        self.assertEqual(len(result["items"]), len(TARGETS))
         self.assertEqual(result["items"][0]["exact_source_candidates"][0]["public_url"],
                          "https://www.youtube.com/watch?v=PubAb1234xy")
         private = result["items"][1]["exact_source_candidates"][0]
@@ -125,6 +125,20 @@ class ReadOnlyGapAuditTests(unittest.TestCase):
                             for x in result["items"]))
         self.assertEqual([x[0] for x in yt.calls],
                          ["channels.list","playlistItems.list","playlistItems.list","videos.list"])
+
+    def test_nov18_source_identity_is_stable_and_exact(self):
+        import json
+        from pathlib import Path
+        from scripts.kesher_daily_pipeline import source_metadata
+        root = Path(__file__).resolve().parents[1]
+        manifest = json.loads((root / "research/kesher-2026-11-18-source-intent.json").read_text())
+        posts = json.loads((root / "src/data/postsRecent.json").read_text())
+        target = [row for row in TARGETS if row[0] == "2026-11-18"]
+        self.assertEqual(len(target), 1)
+        self.assertEqual(target[0][1], manifest["article_slug"])
+        self.assertEqual(target[0][2], manifest["article_content_sha256"])
+        actual = next(p for p in posts if p["id"] == target[0][1])
+        self.assertEqual(source_metadata(actual)["content_sha256"], target[0][2])
 
     def test_missing_source_sha_is_only_unapproved_candidate(self):
         yt = FakeYouTube()
