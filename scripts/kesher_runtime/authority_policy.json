@@ -839,7 +839,7 @@
           "tests/test_v5_delivery_watchdog_contract.py": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631",
           "tests/test_v5_shared_video_controller.py": "d0dfaeaad6d7bb78943c5e54e4f084c633d49411f1caf83f76f479e77b634e49",
           "tests/test_v5_video_source_binding.py": "cef18902a72d505fc3b8da671a706b866890e058ba490a99a3998f96dd5c78cf",
-          "tests/test_kesher_production_cutover.py": "9c11906dc01ed34389320d89359137791fe840398de08714c585c32c3106f13a",
+          "tests/test_kesher_production_cutover.py": "c1860ce87ce185fa129aba0a0e25a43423e93e18ee22f186d098c0a32c31d0c5",
           "scripts/kesher_runtime/github_only_effects.py": "d5015b71af2dade319698f43469abb48442097b566681bb3c9525e52ffcf79ef",
           "tests/test_kesher_external_exclusion.py": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
@@ -2035,27 +2035,47 @@
         "state_write",
         "workflow_dispatch"
       ],
-      "definition_sha256": "f49f976843704fdb80809a725a5c304a9dce46a861dc81d8fe02fb0b73b34109",
+      "definition_sha256": "963cccf10b41ede45816434e3dc2028b989855d8b3abdf9a89210a59dd51adc6",
       "resources": [
         "github.dispatch",
         "github.refs",
-        "github.state"
+        "github.state",
+        "notebooklm.jobs",
+        "youtube.objects"
       ],
       "review": {
         "call_chain": {
           "scripts/kesher_runtime/controller_liveness.py": "ffda29116debc6bfd722eacd1363821a13681b694547b5bbbbaa3a3064473f75",
         "scripts/kesher_runtime/github_owner_readiness.py": "9bced30f8b5c58f1380af590c8940dff6f5da2ca2dc13717f42a3dc790c912e3",
           "scripts/kesher_runtime/github_only_live_readiness.py": "4f73381efb179023ba4d3847e84547b0d9915e0f93d1bb65d0367ea1838c8c58",
+          "scripts/kesher_runtime/github_only_live_inventory.py": "d0baf7cc704479c0d772879d6d2196629ae41c948a3e76f7572d03c48a1b095f",
+          "scripts/kesher_runtime/github_only_live_activation.py": "42c5ff8fe4305b884363d78f5850a40ba24f117af675081888b3d989d5555a75",
+          "scripts/kesher_runtime/ghonly_youtube_gap_audit.py": "7530f422a4b67a3524d2ffb012cbd1aed525d5e3cd684ae1b202401fd5ee76ab",
+          "scripts/kesher_owner_vantage_short.py": "016b0f73870d71be542c52f9e703b16e4d7331306c11cb085e66ed2d6267c252",
           "tests/test_kesher_ghonly_live_readiness.py": "40487e371576b4fb157eec8a468180ae7d3d1b6155720df13c0a0ef5208a296f",
         "scripts/kesher_runtime/github_only_owner_prepare.py": "8cd27f21a5116a7644430e127e571a26ad26ac4eea5e687e5ab6798f1c0756ed",
           "scripts/kesher_runtime/delivery_preflight.py": "b1eead6da79194fdbf7012ff4e55934e13bc53ca2ef71a1690e45d00f7b2435b"
         },
-        "credential_services": {},
-        "credentials": [],
+        "credential_services": {
+          "NOTEBOOKLM_AUTH_JSON": "notebooklm",
+          "NOTEBOOKLM_MASTER_TOKEN_JSON": "notebooklm",
+          "NOTEBOOKLM_STORAGE_STATE_JSON": "notebooklm",
+          "YOUTUBE_CLIENT_ID": "youtube",
+          "YOUTUBE_CLIENT_SECRET": "youtube",
+          "YOUTUBE_REFRESH_TOKEN": "youtube"
+        },
+        "credentials": [
+          "NOTEBOOKLM_AUTH_JSON",
+          "NOTEBOOKLM_MASTER_TOKEN_JSON",
+          "NOTEBOOKLM_STORAGE_STATE_JSON",
+          "YOUTUBE_CLIENT_ID",
+          "YOUTUBE_CLIENT_SECRET",
+          "YOUTUBE_REFRESH_TOKEN"
+        ],
         "dispatches": [
           ".github/workflows/kesher-content-controller.yml"
         ],
-        "note": "Independent production liveness watchdog for Kesher Content Controller; detects dropped cron schedules and wakes the canonical controller without performing pipeline mutations."
+        "note": "Existing production liveness watchdog retains its original cron; manual GitHub-only LIVE route performs authenticated read-only complete provider inventory before existing protected kesher-cutover reviewer, re-checks the inventory and true GH review after approval, and writes exactly one owner state dual-ref CAS. It has no provider creation, media dispatch, YouTube upload or new schedule."
       },
       "role": "watchdog"
     },
