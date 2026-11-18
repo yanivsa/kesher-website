@@ -5,6 +5,10 @@ const financialPosts = JSON.parse(
   readFileSync(new URL('../../src/data/financialGuidancePosts.json', import.meta.url), 'utf8'),
 ) as { id: string; image: string }[];
 
+const archiveSlots = JSON.parse(
+  readFileSync(new URL('../../src/data/financialGuidanceArchiveSlots.json', import.meta.url), 'utf8'),
+) as Record<string, string>;
+
 const origin = 'https://kesher.saharoni.com';
 const service = '/services/family-financial-guidance';
 const hub = '/blog/category/family-finances';
@@ -18,6 +22,53 @@ const editorialRoutes = [
 ];
 
 test.describe('Financial guidance release acceptance', () => {
+
+  test('editorial archive uses 17 vacant dates and retains genuine publication metadata', async ({ page, request }) => {
+    const ids = financialPosts.map(post => post.id);
+    expect(Object.keys(archiveSlots).sort()).toEqual([...ids].sort());
+    expect(new Set(Object.values(archiveSlots)).size).toBe(17);
+    const readPosts = (file: string) => JSON.parse(
+      readFileSync(new URL('../../src/data/' + file, import.meta.url), 'utf8'),
+    ) as { id: string; date: string; updatedAt?: string }[];
+    const original = readPosts('financialGuidancePosts.json');
+    const occupied = new Set([
+      ...readPosts('posts.json'), ...readPosts('postsRecent.json'),
+      ...readPosts('parentingCoordinationPosts.json'), ...readPosts('giftedParentPosts.json'),
+      ...readPosts('giftedParentPostsWave2.json'),
+    ].map(post => post.date));
+    occupied.add('2026-10-24'); // manualPostsOct2026.ts
+    for (const post of original) {
+      const slot = archiveSlots[post.id];
+      expect(slot, post.id).toMatch(/^2026-\d{2}-\d{2}$/);
+      expect(slot < post.date, post.id).toBeTruthy();
+      expect(occupied.has(slot), 'occupied: ' + slot).toBeFalsy();
+      expect(post.date).toBe('2026-11-17');
+      expect(post.updatedAt).toBe('2026-11-17');
+    }
+    await page.goto('/blog', { waitUntil: 'domcontentloaded' });
+    await page.getByRole('tab', { name: 'כלכלת המשפחה', exact: true }).click();
+    const cards = page.locator('article');
+    await expect(cards).toHaveCount(17);
+    const links = await cards.locator('h2 a').evaluateAll(items =>
+      items.map(node => node.getAttribute('href')?.split('/').pop()),
+    );
+    expect(links).toEqual([...ids].sort((a, b) => archiveSlots[b].localeCompare(archiveSlots[a])));
+    for (const post of original) {
+      const card = cards.filter({ has: page.locator('h2 a[href="/blog/' + post.id + '"]') });
+      await expect(card.locator('time')).toHaveAttribute('datetime', '2026-11-17');
+      await expect(card.locator('[data-editorial-archive-slot]'))
+        .toHaveAttribute('data-editorial-archive-slot', archiveSlots[post.id]);
+      await expect(card).toContainText('מיקום בארכיון');
+      await expect(card).toContainText('פורסם:');
+    }
+    const response = await request.get('/blog/' + ids[0]);
+    expect(response.status()).toBe(200);
+    const articleHtml = await response.text();
+    expect(articleHtml).toMatch(/"datePublished":"2026-11-17"/);
+    expect(articleHtml).toContain('data-kesher-article-date="2026-11-17"');
+    expect(articleHtml).not.toContain('data-editorial-archive-slot');
+  });
+
 
   test('the organic hub organizes all 20 articles into four accessible topic sections', async ({ page }) => {
     await page.goto(hub, { waitUntil: 'domcontentloaded' });
