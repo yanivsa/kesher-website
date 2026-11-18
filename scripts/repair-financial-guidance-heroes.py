@@ -39,8 +39,8 @@ SCENES = {
     "income-expense-gap-first-steps": "Two adult partners calmly sorting urgent household bills and a simple expense list at their kitchen table, prioritizing what must be paid.",
     "talking-money-with-kids-by-age": "A parent teaching a school-age child the difference between needs and wants using everyday coins and a shopping list at home, a warm learning moment.",
     "allowance-kids-guide": "A parent and school-age child choosing how to divide allowance coins into savings and spending jars at a home table, natural candid interaction.",
-    "child-purchase-demands-boundaries": "A parent gently talking to a school-age child in a real grocery store aisle about choosing one affordable item rather than everything on the shelf.",
-    "children-family-budget-participation": "A parent involving two school-age children in choosing an affordable family outing using a paper list of options at the kitchen table, reassuring atmosphere.",
+    "child-purchase-demands-boundaries": "A parent gently talking to a school-age child in a real grocery store aisle about choosing one affordable purchase within their family budget rather than everything on the shelf.",
+    "children-family-budget-participation": "A parent involving two school-age children in choosing a family outing within their household budget using a paper list of options at the kitchen table, reassuring atmosphere.",
     "planning-budget-new-baby": "New parents planning baby expenses at home with baby clothes, diapers and a notebook on the table, and a crib in the background.",
     "dealing-with-income-drop-as-family": "Two adult partners at home compassionately reviewing a reduced-income situation with a paper budget and laptop closed nearby, showing mutual support.",
 }
