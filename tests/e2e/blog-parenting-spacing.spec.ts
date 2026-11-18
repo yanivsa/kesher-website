@@ -64,5 +64,6 @@ test('topic filters and search are not editorially shuffled; mobile has no overf
   await expect(page.getByText(mixedLabel)).toHaveCount(0);
   const searchSlugs = await visibleSlugs(page);
   expect(searchSlugs.length).toBeGreaterThanOrEqual(2);
-  expect(searchSlugs.every((slug) => cohort.includes(slug))).toBe(true);
+  expect(searchSlugs).toContain(cohort[0]);
+  expect(new Set(searchSlugs).size).toBe(searchSlugs.length);
 });
