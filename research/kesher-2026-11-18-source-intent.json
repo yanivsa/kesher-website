@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "slot": "2026-11-18",
+  "date_timezone": "Asia/Jerusalem",
+  "article_slug": "couple-conversation-stuck-pursue-withdraw-cycle",
+  "article_content_sha256": "36f69051fb196c2c243c6af286aedbbad69c67b12391175da0d60e9895d33b02",
+  "article_source_catalog": "src/data/postsRecent.json",
+  "source_status": "STAGED_PR_NOT_LIVE",
+  "article_public_url": null,
+  "theme_source": "owner-provided topic: שיחה תקועה",
+  "topic_specific_date_approval": false,
+  "editorial_qa": {
+    "research_sources_count": 4,
+    "original_hero_in_repository": true,
+    "duplicate_catalog_scan": {
+      "historical_posts": 152,
+      "recent_posts": 21,
+      "overlapping_old_articles": [
+        "how-to-stop-repeating-arguments",
+        "breaking-silent-treatment-relationship",
+        "couples-communication-distance"
+      ],
+      "seo_final_approved": false
+    },
+    "final_article_approved": false
+  },
+  "hero": {
+    "path": "public/images/generated/blog/couple-conversation-stuck-pursue-withdraw-cycle.jpg",
+    "sha256": "9b5edff821bc2d6c440ddbfff1c837621d6a80f92e803f075f17b05e2fbbd667",
+    "git_blob_sha": "773c03c31ac30e81a87ee1b0f1f2eeea24cabc34",
+    "dimensions_px": [
+      1536,
+      1024
+    ],
+    "bytes": 331443,
+    "origin": "OpenAI Image Generation, original generated for this article",
+    "stock_images_used": false,
+    "review_status": "EDITORIAL_IMAGE_PREVIEWED_NOT_DEPLOYED"
+  },
+  "long_video": {
+    "source_sha256": "36f69051fb196c2c243c6af286aedbbad69c67b12391175da0d60e9895d33b02",
+    "native_geometry": "16:9",
+    "language": "he-IL",
+    "narration": "female Israeli Hebrew, subject to audible verification",
+    "source_id": null,
+    "provider_task_id": null,
+    "artifact_id": null,
+    "youtube_id": null,
+    "status": "NOT_STARTED_BLOCKED_GHONLY_OWNER",
+    "visual_qa_approved": false,
+    "audio_qa_approved": false,
+    "licensed_qa_approved": false
+  },
+  "short_video": {
+    "source_sha256": "36f69051fb196c2c243c6af286aedbbad69c67b12391175da0d60e9895d33b02",
+    "native_geometry": "9:16",
+    "derive_long_item_id": null,
+    "source_id": null,
+    "provider_task_id": null,
+    "artifact_id": null,
+    "youtube_id": null,
+    "status": "NOT_STARTED_BLOCKED_PUBLIC_LONG",
+    "visual_qa_approved": false,
+    "audio_qa_approved": false,
+    "licensed_qa_approved": false
+  },
+  "authority": {
+    "required_owner": "github-only",
+    "protected_live_required": true,
+    "current_verified_activation": "PREPARED_NOT_LIVE",
+    "expected_protocol": "CAS journal plus source/provider inventory, exact-head and protected review",
+    "provider_dispatch_authorized": false,
+    "youtube_upload_authorized": false,
+    "website_publish_authorized": false
+  },
+  "provenance": {
+    "issue_url": "https://github.com/yanivsa/kesher-website/issues/1210",
+    "content_pr_url": "https://github.com/yanivsa/kesher-website/pull/1406",
+    "reviewed_research": [
+      "https://doi.org/10.1080/03637751.2013.813632",
+      "https://pubmed.ncbi.nlm.nih.gov/37423040/",
+      "https://pubmed.ncbi.nlm.nih.gov/30321045/",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC4852543/"
+    ]
+  }
+}
