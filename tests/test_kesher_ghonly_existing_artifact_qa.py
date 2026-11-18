@@ -68,6 +68,40 @@ class ExistingArtifactQAReadOnlyTests(unittest.TestCase):
                     qa.audit_one(row, record, Path(folder))
             command.assert_not_called()
 
+    def test_review_samples_are_ephemeral_and_not_publication_authority(self):
+        row = qa.TARGETS[0]
+        artifact_id = row[4]
+        calls = []
+
+        def command(args, **kwargs):
+            calls.append(args)
+            if args[:3] == ["notebooklm", "download", "video"]:
+                Path(args[3]).write_bytes(b"v" * 2048)
+            elif args[0] == "ffmpeg":
+                Path(args[-1]).write_bytes(b"p" * 1024)
+            else:
+                self.fail("Unexpected provider command")
+            return ""
+
+        with tempfile.TemporaryDirectory() as folder, \
+             patch.object(qa, "_safe_command", side_effect=command), \
+             patch.object(qa, "_inspect", return_value={
+                 "width": 1280, "height": 720, "duration_seconds": 90,
+                 "video_codec": "h264", "audio_codec": "aac",
+             }):
+            work = Path(folder)
+            result = qa.audit_one(row, {artifact_id: {"status": "completed"}},
+                                  work, preview_root=work / "review")
+            self.assertEqual(len(list((work / "review").glob("*"))), 2)
+            self.assertTrue(result["nonpublic_review_sample"]["visual_sha256"])
+            self.assertTrue(result["nonpublic_review_sample"]["voice_sha256"])
+            self.assertFalse(list(work.glob("*.mp4")))
+            self.assertFalse(result["upload_authorized"])
+            self.assertFalse(result["visual_qa_verified"])
+            self.assertFalse(result["female_hebrew_voice_verified"])
+        self.assertEqual([x[:1] for x in calls],
+                         [["notebooklm"], ["ffmpeg"], ["ffmpeg"]])
+
     def test_no_provider_dispatch_or_youtube_in_source(self):
         import ast
 
@@ -99,7 +133,11 @@ class ExistingArtifactQAReadOnlyTests(unittest.TestCase):
             ("notebooklm", "artifact", "list"),
             ("notebooklm", "download", "video"),
             ("ffprobe", "-v", "error"),
+            ("ffmpeg", "-nostdin", "-hide_banner"),
+            ("ffmpeg", "-nostdin", "-hide_banner"),
         ))
+        self.assertIn("KESHER_QA_PREVIEW_DIR", flow)
+        self.assertIn("retention-days: 1", flow)
         self.assertIn("GITHUB_WORKFLOW_REF", s)
         self.assertIn("inputs.operation == 'preflight'", flow)
         self.assertIn("ghonly_existing_artifact_qa", flow)
