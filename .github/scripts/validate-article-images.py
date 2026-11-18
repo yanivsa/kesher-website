@@ -120,7 +120,7 @@ def main() -> int:
                 continue
             if post.get("imageVerified") is not True:
                 errors.append(f"{pid}: financial hero lacks independent pixel-verification proof")
-            if str(post.get("imageProvider") or "") not in {"Gemini", "Pexels", "Pixabay"}:
+            if str(post.get("imageProvider") or "") not in {"Gemini", "Pexels", "Pixabay", "Adobe Firefly"}:
                 errors.append(f"{pid}: financial photo lacks trusted provider provenance")
             if not str(post.get("imageSourceUrl") or ""):
                 errors.append(f"{pid}: missing photo source provenance")
