@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
-import financialPosts from '../../src/data/financialGuidancePosts.json';
+import { readFileSync } from 'node:fs';
+
+const financialPosts = JSON.parse(
+  readFileSync(new URL('../../src/data/financialGuidancePosts.json', import.meta.url), 'utf8'),
+) as { id: string; image: string }[];
 
 const origin = 'https://kesher.saharoni.com';
 const service = '/services/family-financial-guidance';
