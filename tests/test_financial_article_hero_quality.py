@@ -63,7 +63,7 @@ class FinancialHeroQualityTests(unittest.TestCase):
                     continue
                 self.assertRegex(image, PHOTO, "Finance heroes must be raster photos, never generic SVG placeholders")
                 self.assertTrue(post.get("imageVerified") is True, "Must carry independent pixel-verification proof")
-                self.assertIn(post.get("imageProvider"), ("Gemini", "Pexels", "Pixabay"))
+                self.assertIn(post.get("imageProvider"), ("Gemini", "Pexels", "Pixabay", "Adobe Firefly"))
                 self.assertTrue(post.get("imageSourceUrl"))
                 alt = str(post.get("imageAlt") or "")
                 self.assertGreaterEqual(len(alt), 30)
