@@ -22,12 +22,14 @@
       ],
       "seo_final_approved": false
     },
-    "final_article_approved": true,
+    "final_article_approved": false,
     "live_http_200_verified": true,
     "live_canonical_verified": true,
     "live_jsonld_article_verified": true,
     "live_research_citations_present": true,
-    "related_links_http_200_verified": true
+    "related_links_http_200_verified": true,
+    "technical_article_qa_passed": true,
+    "final_article_approval_note": "Public technical checks passed; no independent final editorial approval or SEO non-cannibalization approval has been asserted."
   },
   "hero": {
     "path": "public/images/generated/blog/couple-conversation-stuck-pursue-withdraw-cycle.jpg",
