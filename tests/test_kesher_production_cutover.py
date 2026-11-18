@@ -1449,4 +1449,17 @@ class GithubOnlyAuthenticatedProviderInventoryTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "YOUTUBE_INVENTORY_UNTRUSTED"):
                 inspect_live_inventory(command=self.command, channel=lambda: object())
 
+
+class GithubOnlyActionsWorkflowContextRegressionTests(unittest.TestCase):
+    def test_ghonly_protected_job_env_has_no_unavailable_runner_context(self):
+        from pathlib import Path
+        workflow = (Path(__file__).resolve().parents[1]
+                    / ".github/workflows/kesher-controller-liveness.yml").read_text()
+        self.assertEqual(
+            workflow.count("NOTEBOOKLM_HOME: /tmp/kesher-ghonly-notebooklm"), 2,
+        )
+        self.assertNotIn("NOTEBOOKLM_HOME: ${{ runner.temp }}", workflow)
+        self.assertIn("environment: kesher-cutover", workflow)
+        self.assertIn("needs: github_owner_live_inventory", workflow)
+
 if __name__ == '__main__': unittest.main()
