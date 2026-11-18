@@ -18,6 +18,14 @@ const known = new Set([...financialPosts.map(p => p.id), ...legacyIds]);
 const root = process.cwd();
 
 describe('family finance content publishing contract', () => {
+  it('does not mutate signed legacy article bodies to add financial backlinks', () => {
+    const page = readFileSync(path.join(root, 'src/pages/Blog/BlogPost.tsx'), 'utf8');
+    expect(page).toContain('DOMPurify.sanitize(post.content)');
+    expect(page).not.toContain('post.content + legacyFinancialLink');
+    expect(page).toContain("financialLegacyIds.has(post.id)");
+    expect(page).toContain("label: 'ליווי כלכלי לזוגות ומשפחות'");
+  });
+
   it('makes service and knowledge hub discoverable in global site search', () => {
     expect(searchIndex.some(x => x.type === 'service' && x.url === '/services/family-financial-guidance')).toBe(true);
     expect(searchIndex.some(x => x.url === '/blog/category/family-finances')).toBe(true);
