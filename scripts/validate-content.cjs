@@ -6,8 +6,16 @@ const { loadPosts } = require('./load-posts.cjs');
 
 const posts = loadPosts();
 const published = posts.filter(isPublishable);
+// The recent catalog is a publication catalog, not a private draft bin.
+// A valid deploy must never silently exclude a newly merged entry from routes.
+const recentCatalog = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/postsRecent.json'), 'utf8'));
 const postSummaries = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/postSummaries.json'), 'utf8'));
 const errors = [];
+for (const post of recentCatalog) {
+  if (!isPublishable(post)) {
+    errors.push(`Unpublishable recent article excluded from prerender and sitemap: ${post.id}. Require >=500 words and >=5 h3 headings.`);
+  }
+}
 const ensureUnique = (label, values) => {
   const seen = new Set();
   for (const value of values) {
