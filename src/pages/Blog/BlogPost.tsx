@@ -127,10 +127,9 @@ const BlogPost: React.FC = () => {
     return <NotFound />;
   }
 
-  const legacyFinancialLink = financialLegacyIds.has(post.id)
-    ? '<h3>עוד דרך לעסוק בכסף בזוגיות</h3><p>לצד עבודה על התקשורת, אפשר להיעזר גם ב<a href="/services/family-financial-guidance">ליווי כלכלי לזוגות ומשפחות</a>, כדי להכניס סדר להוצאות, לנסח הסכמות ולתרגל שיחה על כסף. השירות מתמקד בחינוך פיננסי ובהתנהלות הבית, ואינו ייעוץ השקעות, פנסיה או מס. <a href="/blog/category/family-finances">מאמרים נוספים על כלכלת המשפחה</a>.</p>'
-    : '';
-  const safeContent = DOMPurify.sanitize(post.content + legacyFinancialLink);
+  // Preserve the exact published article source for signed article verification.
+  // Related finance links for legacy articles are rendered in the separate CTA block.
+  const safeContent = DOMPurify.sanitize(post.content);
   const shareUrl = `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`;
   const directAnswer = 'directAnswer' in post && typeof post.directAnswer === 'string'
     ? post.directAnswer.trim()
