@@ -1248,7 +1248,7 @@ class GithubOnlyProtectedLiveActivationTests(unittest.TestCase):
                                 "content": base64.b64encode(this.raw).decode()}
                     if path.endswith("/actions/runs/123"):
                         return {"id": 123, "event": "workflow_dispatch",
-                                "head_branch": "main"}
+                                "head_branch": "main", "head_sha": this.main, "run_attempt": 1}
                     if path.endswith("/actions/runs/123/approvals"):
                         return ([{"state": "approved", "user": {"login": "yanivsa"},
                                  "environments": [{"name": "kesher-cutover"}]}]
