@@ -19,6 +19,7 @@ on:
           - liveness
           - github_only_probe
           - github_only_prepare
+          - github_only_live_probe
       reviewed_revision:
         description: Exact current main SHA for read-only probe or protected prepare
         required: false
@@ -94,7 +95,7 @@ jobs:
             --epoch "$OWNER_EPOCH"
 
   watchdog:
-    if: ${{ github.repository == 'yanivsa/kesher-website' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request') && (github.event_name != 'workflow_dispatch' || inputs.route != 'github_only_probe' && inputs.route != 'github_only_prepare') }}
+    if: ${{ github.repository == 'yanivsa/kesher-website' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request') && (github.event_name != 'workflow_dispatch' || inputs.route != 'github_only_probe' && inputs.route != 'github_only_prepare' && inputs.route != 'github_only_live_probe') }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -118,3 +119,28 @@ jobs:
           else
             PYTHONPATH=. python3 -u -m scripts.kesher_runtime.controller_liveness --reconcile
           fi
+
+  github_owner_live_probe:
+    # Read-only diagnostic only. This intentionally reports BLOCKED and NEVER
+    # requests protected approval or runs provider/YouTube mutation.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.route == 'github_only_live_probe' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    timeout-minutes: 3
+    steps:
+      - name: Checkout immutable main for LIVE readiness inspection
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Diagnose exact GH-only LIVE blockers (read-only, no activation)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEWED_REVISION: ${{ inputs.reviewed_revision }}
+        run: python -m scripts.kesher_runtime.github_only_live_readiness --reviewed-revision "$REVIEWED_REVISION"
