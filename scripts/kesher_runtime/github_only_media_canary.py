@@ -57,17 +57,23 @@ def validate_ledger(github, *, expected_main: str, repo: str, event: str,
             or not isinstance(live.get("approved_review_run"), str)
             or not _HASH.fullmatch(str(live.get("inventory_sha256", "")))):
         raise StateInvalid("GHONLY_CANARY_PROTECTED_OWNER_REQUIRED")
-    _reviewed_run(github, live["approved_review_run"],
-                  ledger["migration_basis"].get("approved_live_main",
-                  ledger["protected_live"].get("approved_live_main",
-                  ledger.get("initial_protected_main_sha", ""))) or expected_main)
     reviews = live.get("code_revision_reviews") or []
-    if reviews:
-        latest = reviews[-1]
-        if (not isinstance(latest, dict)
-                or latest.get("reviewed_main") != expected_main):
-            raise StateInvalid("GHONLY_CANARY_REVISION_REVIEW_STALE")
-        _reviewed_run(github, latest["approved_review_run"], expected_main)
+    if (not isinstance(reviews, list) or not reviews):
+        raise StateInvalid("GHONLY_CANARY_APPROVED_REVISION_ROLLOVER_REQUIRED")
+    prior = reviews[0].get("previous_main") if isinstance(reviews[0], dict) else None
+    if not isinstance(prior, str) or re.fullmatch(r"[a-f0-9]{40}", prior) is None:
+        raise StateInvalid("GHONLY_CANARY_INITIAL_REVIEW_SHA_MISSING")
+    _reviewed_run(github, live["approved_review_run"], prior)
+    for row in reviews:
+        if (not isinstance(row, dict)
+                or row.get("previous_main") != prior
+                or not isinstance(row.get("reviewed_main"), str)
+                or re.fullmatch(r"[a-f0-9]{40}", row["reviewed_main"]) is None):
+            raise StateInvalid("GHONLY_CANARY_APPROVAL_CHAIN_UNTRUSTED")
+        _reviewed_run(github, row["approved_review_run"], row["reviewed_main"])
+        prior = row["reviewed_main"]
+    if prior != expected_main:
+        raise StateInvalid("GHONLY_CANARY_REVISION_REVIEW_STALE")
     return snap
 
 
