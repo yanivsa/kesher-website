@@ -1,0 +1,155 @@
+[
+  {
+    "id": "financial-secrecy-couples",
+    "image": "/images/financial-guidance/articles/financial-secrecy-couples.jpg",
+    "gitBlobSha": "4b0db22f4663f1427245f99e69b42191bc4c46ff",
+    "imageProvider": "OpenAI Image Generation",
+    "imageAlt": "בני זוג יושבים מול מסמכים וחשבונות, והאישה מביטה בדאגה בבן זוגה המניח ניירות בתיק",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "unequal-income-fair-budget",
+    "image": "/images/financial-guidance/articles/unequal-income-fair-budget.jpg",
+    "gitBlobSha": "1eefa2ef64dfeb45d76cb7eacca8635a5d340cba",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "בני זוג משוחחים על חלוקת הוצאות הבית ליד מחשב, כשאחד מהם מחזיק תיק בית ספר",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "couples-joint-or-separate-accounts",
+    "image": "/images/financial-guidance/articles/couples-joint-or-separate-accounts.jpg",
+    "gitBlobSha": "7ae37c2af478fc88e361c45c5173df531b0707a4",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "בני זוג יושבים יחד בבית קפה ומשווים כרטיסי בנק לקראת החלטה על חשבונות משותפים ונפרדים",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "weekly-money-conversation",
+    "image": "/images/financial-guidance/articles/weekly-money-conversation.jpg",
+    "gitBlobSha": "7330e42ed3331c090c9e0381962c6ed2ae3a881f",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "בני זוג יושבים לשיחת כסף רגועה מול מחברות, קבלות ושעון חול על שולחן המטבח",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "financial-boundaries-couples",
+    "image": "/images/financial-guidance/articles/financial-boundaries-couples.jpg",
+    "gitBlobSha": "9ef2979b5b7572e7a31b31528015f8ea3542a224",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "בני זוג מבוגרים משוחחים בנינוחות על קבלה והוצאות כששני ארנקים אישיים מונחים על השולחן",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "family-budget-guide",
+    "image": "/images/financial-guidance/articles/family-budget-guide.jpg",
+    "gitBlobSha": "b5cb8b98667503f622eb4e60f4b78d52bbaa0c1f",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "בני זוג מסדרים קבלות, מחשבון ומצרכי מזון על שולחן המטבח כדי להכין תקציב משפחתי",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "tracking-family-expenses",
+    "image": "/images/financial-guidance/articles/tracking-family-expenses.jpg",
+    "gitBlobSha": "7a9ad32025b7c2030e50021ac45d7589fd08b2ef",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "אישה ממיינת קבלות ומחשבת הוצאות בעזרת מחשבון ומחברת על שולחן ביתי שטוף שמש",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "good-income-negative-balance",
+    "image": "/images/financial-guidance/articles/good-income-negative-balance.jpg",
+    "gitBlobSha": "66e646c7c4921b4528c3ce9a7ae39f30085a56ef",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "בני זוג בחולצות עבודה בוחנים בדאגה חשבונות וכרטיס בנק בסלון ביתם המרוהט",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "annual-family-expenses",
+    "image": "/images/financial-guidance/articles/annual-family-expenses.jpg",
+    "gitBlobSha": "86a4bfab77be94bdb567606039614a79ac24a66d",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "אישה מתכננת הוצאות שנתיות בלוח שנה לצד מעטפות, תיק בית ספר ומזוודה ברקע",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "variable-income-family-budget",
+    "image": "/images/financial-guidance/articles/variable-income-family-budget.jpg",
+    "gitBlobSha": "14da781900d8edd8f700dcd61ddd476459022ce2",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "זוג ליד ציוד צילום בסטודיו ביתי בוחן חשבונות ומכין תקציב להכנסה משתנה",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "income-expense-gap-first-steps",
+    "image": "/images/financial-guidance/articles/income-expense-gap-first-steps.jpg",
+    "gitBlobSha": "390265189db515834162948490e7af5ebb207498",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "בני זוג ממיינים חשבונות ומצרכי מזון ומחשבים סדרי עדיפויות על שולחן המטבח",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "talking-money-with-kids-by-age",
+    "image": "/images/financial-guidance/articles/talking-money-with-kids-by-age.jpg",
+    "gitBlobSha": "7ad0ed9c5e5cb73afeb8355125c6b7669990dcf4",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "אב משוחח בגובה העיניים עם ילדה במרכול על בחירת פירות ותשלום במטבעות",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "allowance-kids-guide",
+    "image": "/images/financial-guidance/articles/allowance-kids-guide.jpg",
+    "gitBlobSha": "2f9affa50fd6f2e60bd462f4cfa0ae74c555d0f2",
+    "imageProvider": "OpenAI Image Generation",
+    "imageAlt": "ילד מכניס מטבע לצנצנת חיסכון ליד אמו, על שולחן עם מטבעות וקופת חיסכון",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "child-purchase-demands-boundaries",
+    "image": "/images/financial-guidance/articles/child-purchase-demands-boundaries.jpg",
+    "gitBlobSha": "93acaa7bb4fa6bb7e82b93eb323e9a2ccd708f86",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "אם כורעת לצד בנה בחנות צעצועים ומציעה בחירה מצומצמת בזמן שהילד מצביע לעבר המדף",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "children-family-budget-participation",
+    "image": "/images/financial-guidance/articles/children-family-budget-participation.jpg",
+    "gitBlobSha": "bcb9102164967824043bc95b4e512c70ed5d619b",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "הורים ושני ילדים בוחרים בין תמונות של פעילויות פנאי לצד צנצנת מטבעות על שולחן משפחתי",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "planning-budget-new-baby",
+    "image": "/images/financial-guidance/articles/planning-budget-new-baby.jpg",
+    "gitBlobSha": "198d387cc622b4c333f8700843718733e745394b",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "בני זוג המצפים לתינוק מתכננים תקציב ליד עריסה ובגדי תינוק קטנים",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  },
+  {
+    "id": "dealing-with-income-drop-as-family",
+    "image": "/images/financial-guidance/articles/dealing-with-income-drop-as-family.jpg",
+    "gitBlobSha": "4c81c7b1c5eaa9adcb131db6a5a42de97add52ac",
+    "imageProvider": "Adobe Firefly",
+    "imageAlt": "בן זוג מחזיק קופסת חפצים ממקום העבודה ונעזר בבת זוגו לתכנון תקציב אחרי ירידה בהכנסה",
+    "reviewedOn": "2026-11-19",
+    "reviewType": "manual-pixel-scene-relevance"
+  }
+]

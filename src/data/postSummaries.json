@@ -6,7 +6,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "כסף וזוגיות",
     "excerpt": "כשמתגלה הוצאה או התחייבות שהוסתרה, כדאי להתחיל בשיחה מוגדרת: אילו עובדות חסרות, מה ההשפעה המעשית על הבית, ומה יאפשר לכל אחד להרגיש בטוח יותר בהמשך.",
-    "image": "/images/financial-guidance/articles/financial-secrecy-couples.svg"
+    "image": "/images/financial-guidance/articles/financial-secrecy-couples.jpg"
   },
   {
     "id": "unequal-income-fair-budget",
@@ -15,7 +15,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "כסף וזוגיות",
     "excerpt": "חלוקת הוצאות הוגנת אינה חייבת להיות חלוקה של חצי־חצי.",
-    "image": "/images/financial-guidance/articles/unequal-income-fair-budget.svg"
+    "image": "/images/financial-guidance/articles/unequal-income-fair-budget.jpg"
   },
   {
     "id": "couples-joint-or-separate-accounts",
@@ -24,7 +24,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "כסף וזוגיות",
     "excerpt": "אין מבנה חשבון שמתאים לכל זוג.",
-    "image": "/images/financial-guidance/articles/couples-joint-or-separate-accounts.svg"
+    "image": "/images/financial-guidance/articles/couples-joint-or-separate-accounts.jpg"
   },
   {
     "id": "weekly-money-conversation",
@@ -33,7 +33,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "כסף וזוגיות",
     "excerpt": "בחרו זמן קבוע לשיחת כסף של כעשרים דקות, עם שלושה חלקים: מה צפוי בשבוע הקרוב, אילו החלטות צריך לקבל, ועל מה נרצה לעקוב.",
-    "image": "/images/financial-guidance/articles/weekly-money-conversation.svg"
+    "image": "/images/financial-guidance/articles/weekly-money-conversation.jpg"
   },
   {
     "id": "financial-boundaries-couples",
@@ -42,7 +42,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "כסף וזוגיות",
     "excerpt": "גבול כלכלי בריא הוא הסכמה הדדית שמשרתת מטרה משותפת ומשאירה לכל צד מרחב בחירה.",
-    "image": "/images/financial-guidance/articles/financial-boundaries-couples.svg"
+    "image": "/images/financial-guidance/articles/financial-boundaries-couples.jpg"
   },
   {
     "id": "family-budget-guide",
@@ -51,7 +51,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "תקציב משפחתי",
     "excerpt": "בניית תקציב משפחתי מתחילה מרישום הכנסות נטו, מיפוי הוצאות קבועות ומשתנות והפיכת הוצאות שנתיות להקצאה חודשית.",
-    "image": "/images/financial-guidance/articles/family-budget-guide.svg"
+    "image": "/images/financial-guidance/articles/family-budget-guide.jpg"
   },
   {
     "id": "tracking-family-expenses",
@@ -60,7 +60,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "תקציב משפחתי",
     "excerpt": "כדי לזהות לאן הולך הכסף, מרכזים הוצאות של תקופה מייצגת, מסווגים אותן לקבועות, משתנות ועונתיות ובודקים גם מועד חיוב בפועל.",
-    "image": "/images/financial-guidance/articles/tracking-family-expenses.svg"
+    "image": "/images/financial-guidance/articles/tracking-family-expenses.jpg"
   },
   {
     "id": "good-income-negative-balance",
@@ -69,7 +69,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "תקציב משפחתי",
     "excerpt": "הכנסה גבוהה אינה מבטיחה תזרים חיובי.",
-    "image": "/images/financial-guidance/articles/good-income-negative-balance.svg"
+    "image": "/images/financial-guidance/articles/good-income-negative-balance.jpg"
   },
   {
     "id": "annual-family-expenses",
@@ -78,7 +78,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "תקציב משפחתי",
     "excerpt": "ממפים מראש הוצאות שאינן מתרחשות בכל חודש, מסמנים את מועדן המשוער ומעריכים את עלותן על בסיס נתונים קודמים או הצעות מחיר.",
-    "image": "/images/financial-guidance/articles/annual-family-expenses.svg"
+    "image": "/images/financial-guidance/articles/annual-family-expenses.jpg"
   },
   {
     "id": "variable-income-family-budget",
@@ -87,7 +87,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "תקציב משפחתי",
     "excerpt": "כאשר ההכנסה משתנה, מתחילים ממיפוי הכנסות שהתקבלו בפועל לאורך כמה תקופות ומזהים סכום שמרני לצורכי תכנון, בלי להניח שחודש חזק יחזור.",
-    "image": "/images/financial-guidance/articles/variable-income-family-budget.svg"
+    "image": "/images/financial-guidance/articles/variable-income-family-budget.jpg"
   },
   {
     "id": "income-expense-gap-first-steps",
@@ -96,7 +96,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "תקציב משפחתי",
     "excerpt": "כאשר ההוצאות עולות על ההכנסות, ממפים תחילה את גודל הפער, את מועדי התשלום ואת ההוצאות החיוניות.",
-    "image": "/images/financial-guidance/articles/income-expense-gap-first-steps.svg"
+    "image": "/images/financial-guidance/articles/income-expense-gap-first-steps.jpg"
   },
   {
     "id": "talking-money-with-kids-by-age",
@@ -105,7 +105,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "ילדים וכסף",
     "excerpt": "חינוך פיננסי מתאים לגיל מתחיל בהבדל בין רצון לצורך ובחוויה של בחירה מתוך אפשרויות מוגבלות.",
-    "image": "/images/financial-guidance/articles/talking-money-with-kids-by-age.svg"
+    "image": "/images/financial-guidance/articles/talking-money-with-kids-by-age.jpg"
   },
   {
     "id": "allowance-kids-guide",
@@ -114,7 +114,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "ילדים וכסף",
     "excerpt": "אפשר להתחיל דמי כיס כשיש לילד יכולת להבין בחירה בין קנייה עכשיו לבין המתנה למטרה, ובהתאם לגיל ולמצב המשפחה.",
-    "image": "/images/financial-guidance/articles/allowance-kids-guide.svg"
+    "image": "/images/financial-guidance/articles/allowance-kids-guide.jpg"
   },
   {
     "id": "child-purchase-demands-boundaries",
@@ -123,7 +123,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "ילדים וכסף",
     "excerpt": "כשילד מבקש לקנות שוב ושוב, כדאי להכין ציפיות מראש, להבחין בין רצון לצורך ולהציע בחירה מצומצמת במקום משא ומתן אינסופי.",
-    "image": "/images/financial-guidance/articles/child-purchase-demands-boundaries.svg"
+    "image": "/images/financial-guidance/articles/child-purchase-demands-boundaries.jpg"
   },
   {
     "id": "children-family-budget-participation",
@@ -132,7 +132,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "ילדים וכסף",
     "excerpt": "שיתוף ילדים בתקציב צריך להיות מותאם לגיל וממוקד בהחלטות קטנות ובטוחות.",
-    "image": "/images/financial-guidance/articles/children-family-budget-participation.svg"
+    "image": "/images/financial-guidance/articles/children-family-budget-participation.jpg"
   },
   {
     "id": "planning-budget-new-baby",
@@ -141,7 +141,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "מעברים משפחתיים",
     "excerpt": "כשמשפחה מתרחבת, כדאי למפות הוצאות חד־פעמיות מול הוצאות שוטפות, לבדוק הכנסה צפויה בתקופת הלידה והחזרה לעבודה, ולהשאיר מקום לשינויים.",
-    "image": "/images/financial-guidance/articles/planning-budget-new-baby.svg"
+    "image": "/images/financial-guidance/articles/planning-budget-new-baby.jpg"
   },
   {
     "id": "dealing-with-income-drop-as-family",
@@ -150,7 +150,7 @@
     "category": "כלכלת המשפחה",
     "subcategory": "מעברים משפחתיים",
     "excerpt": "אחרי ירידה בהכנסה כדאי לאסוף מידע על מקורות הכנסה וזכויות אפשריות, למפות הוצאות חיוניות ומועדי התחייבויות, ולבנות תכנון קצר טווח שניתן לעדכון.",
-    "image": "/images/financial-guidance/articles/dealing-with-income-drop-as-family.svg"
+    "image": "/images/financial-guidance/articles/dealing-with-income-drop-as-family.jpg"
   },
   {
     "id": "child-led-play-10-minutes-connection",

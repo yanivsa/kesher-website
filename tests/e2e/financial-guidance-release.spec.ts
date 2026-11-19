@@ -168,8 +168,11 @@ test.describe('Financial guidance release acceptance', () => {
     for (const post of financialPosts) {
       const image = await request.get(post.image);
       expect(image.status(), post.image).toBe(200);
-      const svg = await image.text();
-      expect(svg, post.image).toContain('<svg');
+      expect(post.image).toMatch(/^\/images\/financial-guidance\/articles\/[a-z0-9-]+\.jpg$/);
+      expect(image.headers()['content-type'], post.image).toMatch(/^image\/jpeg(?:;|$)/i);
+      const jpeg = await image.body();
+      expect(jpeg.length, post.image).toBeGreaterThan(40_000);
+      expect(jpeg.subarray(0, 3), post.image).toEqual(Buffer.from([0xff, 0xd8, 0xff]));
     }
   });
 
