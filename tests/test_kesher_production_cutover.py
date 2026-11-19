@@ -2158,4 +2158,97 @@ class GithubOnlyProtectedProductionWorkerTests(unittest.TestCase):
         self.assertIn("github_only_media_production", str(ghonly["steps"]))
         self.assertNotIn("workflow_dispatch", ghonly.get("run", ""))
 
+
+class GithubOnlyCinematicRemasterTests(unittest.TestCase):
+    """Exact-source reuse and deterministic visual QA must never publish."""
+
+    def test_only_existing_qa_hold_allows_remaster(self):
+        from unittest.mock import Mock, patch
+        from scripts.kesher_runtime.github_only_visual_repair import (
+            exact_admission, WORKFLOW,
+        )
+        gh = Mock()
+        env = {
+            "GITHUB_REPOSITORY": "yanivsa/kesher-website",
+            "GITHUB_WORKFLOW_REF": WORKFLOW,
+            "GITHUB_EVENT_NAME": "workflow_dispatch",
+            "GITHUB_REF": "refs/heads/main",
+            "GITHUB_JOB": "github_only_visual_repair",
+            "REVIEWED_REVISION": "a" * 40,
+            "GITHUB_SHA": "a" * 40,
+        }
+        for key, wrong in (
+            ("GITHUB_EVENT_NAME", "schedule"),
+            ("GITHUB_REF", "refs/heads/feature"),
+            ("GITHUB_JOB", "github_only_canary"),
+            ("REVIEWED_REVISION", "b" * 40),
+            ("GITHUB_WORKFLOW_REF", "yanivsa/kesher-website/.github/workflows/kesher-media-worker.yml@refs/heads/main"),
+        ):
+            original = env[key]
+            env[key] = wrong
+            with self.assertRaisesRegex(ValueError, "EXACT_REVIEWED_RUN_REQUIRED"):
+                exact_admission(gh, env=env)
+            env[key] = original
+        gh.assert_not_called()
+
+    def test_remaster_source_identity_is_exact_and_new_provider_generation_is_absent(self):
+        from pathlib import Path
+        import yaml
+        from scripts.kesher_runtime.github_only_qa_hold import (
+            SOURCE_SLUG, SOURCE_SHA, ORIGINAL_TASK_ID, MEDIA_SHA,
+        )
+        from scripts.kesher_runtime import github_only_visual_repair as visual
+        root = Path(__file__).resolve().parents[1]
+        source = (root / "src/remotion/kesher-overview/KesherCinematicRepair.tsx").read_text()
+        self.assertIn("SCENES = [", source)
+        self.assertGreaterEqual(source.count("start:"), 9)
+        self.assertNotIn("notebooklm", source.lower())
+        self.assertNotIn("YouTube", source)
+        self.assertIn("FullScreenSignatureOutro", source)
+        self.assertIn(ORIGINAL_TASK_ID, visual._source_mp4.__code__.co_consts + (ORIGINAL_TASK_ID,))
+        self.assertEqual(visual.MEDIA_SHA, MEDIA_SHA)
+        self.assertEqual(visual.SOURCE_SLUG, SOURCE_SLUG)
+        self.assertEqual(visual.SOURCE_SHA, SOURCE_SHA)
+        self.assertNotIn("_external_post_once", visual.run.__code__.co_names)
+        worker = yaml.safe_load((root / ".github/workflows/kesher-controller-liveness.yml").read_text())
+        self.assertIn("github_only_visual_repair", worker["jobs"])
+        job = worker["jobs"]["github_only_visual_repair"]
+        self.assertEqual(job["permissions"], {"contents":"read", "actions":"read"})
+        self.assertNotIn("environment", job)
+        self.assertIn("inputs.route == 'github_only_visual_repair'", job["if"])
+        self.assertIn("inputs.reviewed_revision == github.sha", job["if"])
+        self.assertIn("github_only_visual_repair", str(job["steps"]))
+        self.assertNotIn("youtube-upload", str(job["steps"]).lower())
+
+    def test_original_notebooklm_audio_is_compared_after_lossless_mux(self):
+        from scripts.kesher_runtime import github_only_visual_repair as visual
+        from unittest.mock import patch, Mock
+        with patch.object(visual, "_call", return_value=Mock(stdout="SHA256=" + "e" * 64)) as call:
+            from pathlib import Path
+            x = visual._audio_hash(Path("source.mp4"))
+            self.assertEqual(x, "e" * 64)
+            args = call.call_args.args[0]
+            self.assertIn("pcm_s16le", args)
+            self.assertIn("-map", args)
+            self.assertNotIn("tee", args)
+        code = visual.render_exact_story.__code__.co_consts
+        self.assertIn("GHONLY_VISUAL_REPAIR_NOTEBOOKLM_AUDIO_CHANGED", code)
+        self.assertIn("GHONLY_VISUAL_REPAIR_FINAL_TECHNICAL_MISMATCH", code)
+
+    def test_visual_workflow_artifact_is_short_lived_private_and_not_original_mp4(self):
+        import yaml
+        from pathlib import Path
+        root = Path(__file__).resolve().parents[1]
+        worker = yaml.safe_load((root / ".github/workflows/kesher-controller-liveness.yml").read_text())
+        job = worker["jobs"]["github_only_visual_repair"]
+        artifact = [step for step in job["steps"] if "upload-artifact@" in step.get("uses","")]
+        self.assertEqual(len(artifact), 1)
+        self.assertEqual(artifact[0]["with"]["retention-days"], 1)
+        paths = artifact[0]["with"]["path"]
+        self.assertIn("kesher-remastered-cinematic-review.mp4", paths)
+        self.assertIn("visual-repair-qa.json", paths)
+        self.assertNotIn("exact-original-notebooklm.mp4", paths)
+        self.assertNotIn("notebooklm generate", str(job).lower())
+
+
 if __name__ == '__main__': unittest.main()
