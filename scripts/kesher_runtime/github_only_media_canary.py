@@ -114,12 +114,25 @@ def original_media_qa(path: Path, *, core=None):
     media_sha = core.sha256_file(path)
     if not _HASH.fullmatch(media_sha):
         raise StateInvalid("GHONLY_CANARY_MEDIA_HASH_INVALID")
+    # Reuse existing production QA helpers on the original provider output.
+    # Neither ASR nor pitch replaces a full human semantic/audio/visual review.
+    item = {"id": ORIGINAL_ITEM_ID}
+    contact_sheet = core.create_contact_sheet(path, item, media["duration"])
+    transcript_path = core.transcribe_hebrew(path, item)
+    transcript = transcript_path.read_text(encoding="utf-8")
+    hebrew_chars = len(re.findall(r"[\u0590-\u05ff]", transcript))
+    if hebrew_chars < 40:
+        raise StateInvalid("GHONLY_CANARY_HEBREW_TRANSCRIPT_INSUFFICIENT")
     if pitch is None or pitch < core.FEMALE_PITCH_MIN_HZ:
         label = "VOICE_QA_HOLD"
     else:
         label = "TECHNICAL_ACCEPTED_EDITORIAL_HOLD"
     return {"qa_status": label,
             "raw_mp4_sha256": media_sha,
+            "visual_contact_sheet_sha256": core.sha256_file(contact_sheet),
+            "transcript_sha256": core.sha256_file(transcript_path),
+            "hebrew_transcript_chars": hebrew_chars,
+            "visual_review_frames": 8,
             "media": media,
             "pitch_hz": round(pitch, 2) if pitch is not None else None,
             "source_slug": SOURCE_SLUG,
