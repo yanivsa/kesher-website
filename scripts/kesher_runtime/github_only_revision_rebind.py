@@ -28,6 +28,72 @@ _RUN = re.compile(r"[1-9][0-9]*:[1-9][0-9]*")
 _HASH = re.compile(r"[0-9a-f]{64}")
 
 
+def _preserve_settled_original_claim(ledger):
+    """Allow a code-only rebind with ONE immutable already-created media task.
+
+    This is not terminal QA approval and does not release, retry, generate,
+    or complete the original CLAIMED command. Fresh authenticated external
+    catalog readback must show that its exact provider task is terminal.
+    Unknown/changed command or provider status blocks revision review.
+    """
+    commands = ledger.get("commands")
+    if not isinstance(commands, dict):
+        raise StateInvalid("GHONLY_REBIND_COMMAND_JOURNAL_INVALID")
+    if not commands:
+        return
+    # This codebase currently authorizes exactly one protected source command.
+    # Do not allow arbitrary commands or implicit migration of future actors.
+    from .github_only_media_production import (
+        COMMAND_ID, EPOCH, SLUG, SOURCE_SHA256,
+    )
+    if set(commands) != {COMMAND_ID} or ledger.get("epoch") != EPOCH:
+        raise StateInvalid("GHONLY_REBIND_UNKNOWN_EXISTING_COMMAND")
+    command = commands[COMMAND_ID]
+    if (not isinstance(command, dict)
+            or command.get("phase") != "CLAIMED"
+            or command.get("epoch") != EPOCH
+            or command.get("reviewed_main_sha") != ledger.get("reviewed_main_sha")
+            or not _RUN.fullmatch(str(command.get("run_id", "")))
+            or not _HASH.fullmatch(str(command.get("provider_inventory_sha256", "")))):
+        raise StateInvalid("GHONLY_REBIND_UNSAFE_OR_MUTATED_COMMAND")
+    effects = command.get("effects")
+    if not isinstance(effects, dict) or set(effects) != {
+            "notebooklm_source", "notebooklm_long"}:
+        raise StateInvalid("GHONLY_REBIND_UNEXPECTED_EFFECTS")
+    source, long = effects["notebooklm_source"], effects["notebooklm_long"]
+    if not isinstance(source, dict) or not isinstance(long, dict):
+        raise StateInvalid("GHONLY_REBIND_UNTRUSTED_EFFECT_RECORD")
+    for name, entry, expected_phase in (
+            ("source", source, "VERIFIED_OUTPUT"),
+            ("long", long, "REMOTE_ID_OBSERVED")):
+        if (entry.get("phase") != expected_phase
+                or entry.get("source_slug") != SLUG
+                or entry.get("source_sha256") != SOURCE_SHA256
+                or not _HASH.fullmatch(str(entry.get("request_sha256", "")))
+                or not _HASH.fullmatch(str(entry.get("receipt_sha256", "")))
+                or not re.fullmatch(
+                    r"[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}",
+                    str(entry.get("provider_id", "")))):
+            raise StateInvalid("GHONLY_REBIND_UNTRUSTED_" + name.upper())
+    if (source.get("evidence_kind") != "source_fulltext"
+            or source.get("qa_sha256") != SOURCE_SHA256
+            or source["provider_id"] == long["provider_id"]):
+        raise StateInvalid("GHONLY_REBIND_SOURCE_PROOF_INVALID")
+    from .github_only_live_inventory import NOTEBOOK, _provider_json, _rows
+    rows = _rows(_provider_json(
+        ["artifact", "list", "--type", "video", "--notebook", NOTEBOOK]
+    ), "artifacts")
+    matched = [row for row in rows
+               if long["provider_id"] in (
+                   row.get("id"), row.get("task_id"), row.get("artifact_id"))]
+    if (len(matched) != 1
+            or str(matched[0].get(
+                "status", matched[0].get("state", ""))).lower() != "completed"):
+        raise StateInvalid("GHONLY_REBIND_CLAIMED_TASK_NOT_SETTLED")
+    # Do not mutate the claimed command; same identity is blocked from POST.
+
+
+
 def _eligible(github, *, expected_main: str, epoch: str, report: dict):
     require_sha(expected_main, 40)
     if (not isinstance(epoch, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", epoch)
@@ -55,7 +121,7 @@ def _eligible(github, *, expected_main: str, epoch: str, report: dict):
             or ledger.get("activation") != "PROTECTED_VERIFIED"
             or ledger.get("inventory_complete") is not True
             or ledger.get("epoch") != epoch
-            or ledger.get("commands") != {}
+            or not isinstance(ledger.get("commands"), dict)
             or not isinstance(owner, dict)
             or owner.get("single_writer") != "github-only"
             or owner.get("media_qa_required") is not True
@@ -69,6 +135,7 @@ def _eligible(github, *, expected_main: str, epoch: str, report: dict):
             or not re.fullmatch(r"[a-f0-9]{40}", old_sha)
             or old_sha == expected_main):
         raise StateInvalid("GHONLY_REBIND_LIVE_OWNER_NOT_ELIGIBLE")
+    _preserve_settled_original_claim(ledger)
     initial = owner.get("approved_review_run")
     if not isinstance(initial, str) or not _RUN.fullmatch(initial):
         raise StateInvalid("GHONLY_REBIND_ORIGINAL_LIVE_REVIEW_MISSING")

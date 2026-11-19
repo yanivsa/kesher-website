@@ -1710,10 +1710,97 @@ class GithubOnlyLiveRevisionRebindTests(unittest.TestCase):
             self.doc[key] = value
             self.gh.raw = (canonical_json(self.doc) + "\n").encode()
             self.gh.blob = _blob_sha(self.gh.raw)
-            with self.assertRaisesRegex(ValueError, "LIVE_OWNER_NOT_ELIGIBLE"):
+            blocker = ("UNKNOWN_EXISTING_COMMAND" if key == "commands"
+                       else "LIVE_OWNER_NOT_ELIGIBLE")
+            with self.assertRaisesRegex(ValueError, blocker):
                 self._call()
             self.doc[key] = old
         self.assertFalse(any(m == "POST" for m, _, _ in self.gh.calls))
+
+    def _install_genuine_preexisting_qa_hold_task(self):
+        from scripts.kesher_runtime.github_only_media_production import (
+            COMMAND_ID, EPOCH, SLUG, SOURCE_SHA256,
+        )
+        from scripts.kesher_runtime.identity import canonical_json
+        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+        source_id = "12c4d5f7-a321-43fb-bca5-31af47cce735"
+        task_id = "625dcd51-8649-4db1-a170-935423104a33"
+        source = {
+            "phase": "VERIFIED_OUTPUT", "source_slug": SLUG,
+            "source_sha256": SOURCE_SHA256, "request_sha256": "1"*64,
+            "receipt_sha256": "2"*64, "provider_id": source_id,
+            "evidence_kind": "source_fulltext", "qa_sha256": SOURCE_SHA256,
+        }
+        long = {
+            "phase": "REMOTE_ID_OBSERVED", "source_slug": SLUG,
+            "source_sha256": SOURCE_SHA256, "request_sha256": "3"*64,
+            "receipt_sha256": "4"*64, "provider_id": task_id,
+        }
+        self.doc["commands"] = {
+            COMMAND_ID: {"phase": "CLAIMED", "epoch": EPOCH,
+                         "reviewed_main_sha": self.old, "run_id": "900:1",
+                         "provider_inventory_sha256": "5"*64,
+                         "effects": {"notebooklm_source": source,
+                                     "notebooklm_long": long}},
+        }
+        self.gh.raw = (canonical_json(self.doc) + "\n").encode()
+        self.gh.blob = _blob_sha(self.gh.raw)
+        return COMMAND_ID, task_id
+
+    def test_rebind_preserves_exact_existing_completed_task_without_redispatch(self):
+        from unittest.mock import patch
+        command_id, task_id = self._install_genuine_preexisting_qa_hold_task()
+        from scripts.kesher_runtime.identity import canonical_json
+        before = canonical_json(self.doc["commands"])
+        with patch("scripts.kesher_runtime.github_only_live_inventory._provider_json",
+                   return_value={"artifacts": [
+                       {"id": task_id, "status": "completed"}]}) as read:
+            checked = self._call()
+            self.assertEqual(checked["status"],
+                             "READY_FOR_REVIEWED_REVISION_REBIND")
+            self.assertFalse(any(m != "GET" for m, _, _ in self.gh.calls))
+            updated = self._call("rebind")
+            self.assertEqual(updated["status"],
+                             "PROTECTED_REVIEWED_REVISION_REBOUND")
+            read.assert_called()
+        import json
+        final = json.loads(self.gh.raw)
+        self.assertEqual(canonical_json(final["commands"]), before)
+        self.assertEqual(final["commands"][command_id]["phase"], "CLAIMED")
+        self.assertFalse(final["protected_live"]["source_publication_authorized"])
+        self.assertEqual(len([1 for m,p,b in self.gh.calls if p == "/graphql"]), 1)
+
+    def test_rebind_rejects_unsettled_or_swapped_existing_provider_task(self):
+        from unittest.mock import patch
+        from scripts.kesher_runtime.identity import canonical_json
+        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+        command_id, task_id = self._install_genuine_preexisting_qa_hold_task()
+        original_command = canonical_json(self.doc["commands"])
+        for rows in (
+            [{"id": task_id, "status": "generating"}],
+            [{"id": "a" * 8 + "-" + "b" * 4 + "-" + "c" * 4 + "-"
+              + "d" * 4 + "-" + "e" * 12, "status": "completed"}],
+            [{"id": task_id, "status": "completed"},
+             {"id": task_id, "status": "completed"}],
+        ):
+            with patch("scripts.kesher_runtime.github_only_live_inventory._provider_json",
+                       return_value={"artifacts": rows}):
+                with self.assertRaisesRegex(ValueError, "CLAIMED_TASK_NOT_SETTLED"):
+                    self._call()
+        self.assertFalse(any(m != "GET" for m, _, _ in self.gh.calls))
+        mutated = self.doc["commands"][command_id]
+        for field, value in (("phase", "WAITING_PROVIDER"),
+                             ("epoch", "unapproved"),
+                             ("reviewed_main_sha", "9"*40)):
+            original = mutated[field]
+            mutated[field] = value
+            self.gh.raw = (canonical_json(self.doc) + "\n").encode()
+            self.gh.blob = _blob_sha(self.gh.raw)
+            with self.assertRaisesRegex(ValueError, "UNSAFE_OR_MUTATED_COMMAND"):
+                self._call()
+            mutated[field] = original
+        self.assertEqual(canonical_json(self.doc["commands"]), original_command)
+        self.assertFalse(any(m != "GET" for m, _, _ in self.gh.calls))
 
     def test_conflict_or_unknown_ack_never_retries_cas(self):
         from scripts.kesher_runtime.state import StateConflict
@@ -1758,7 +1845,7 @@ class GithubOnlyMediaRecoveryCanaryTests(unittest.TestCase):
             path.write_bytes(b"a" * 2000)
             sheet = Path(d) / "sheet.png"; sheet.write_bytes(b"sheet")
             transcript = Path(d) / "transcript.txt"
-            transcript.write_text("שלום עולם " * 35, encoding="utf-8")
+            transcript.write_text("×©××× ×¢××× " * 35, encoding="utf-8")
             core = Mock()
             core.ffprobe.return_value = {
                 "width": 1280, "height": 720, "duration": 130.0,
