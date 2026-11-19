@@ -839,7 +839,7 @@
           "tests/test_v5_delivery_watchdog_contract.py": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631",
           "tests/test_v5_shared_video_controller.py": "d0dfaeaad6d7bb78943c5e54e4f084c633d49411f1caf83f76f479e77b634e49",
           "tests/test_v5_video_source_binding.py": "cef18902a72d505fc3b8da671a706b866890e058ba490a99a3998f96dd5c78cf",
-          "tests/test_kesher_production_cutover.py": "687adf0df41283b645ca32ef28ceef1380cc88d61caa572e1ce955aeb570c570",
+          "tests/test_kesher_production_cutover.py": "c7adaf43a8c331a8afc1075cdee9191f73e9bc74f7b9702708455f1a97c1c2e6",
           "scripts/kesher_runtime/github_only_effects.py": "3b55004bf4404d09703d9bad889f68a7ff1e65fd4cfe2987abe1d6a8f054b947",
           "tests/test_kesher_external_exclusion.py": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
@@ -2035,7 +2035,7 @@
         "state_write",
         "workflow_dispatch"
       ],
-      "definition_sha256": "45b74ced68ace2e27e8ea4d57172922d84e5e6365e7cf9993b7b85aa47b48e34",
+      "definition_sha256": "f5a98294deafc50bc1659f75a891184782816b9cb5675e2291afd4a3de65c13a",
       "resources": [
         "github.dispatch",
         "github.refs",
@@ -2053,7 +2053,7 @@
           "scripts/kesher_runtime/github_only_revision_rebind.py": "f8a2e3f2823bc79a9e8034abf9cadb7b33dc4ab49aa12b809fca4a464f2f2d47",
           "scripts/kesher_runtime/github_only_qa_hold.py": "d4d565104523aa13540de9ff77c44a740be29565f1d399f6803af145f6b5cbbc",
           "scripts/kesher_runtime/github_only_media_canary.py": "1793c4ca3dcceca3342d529928ca69f065bdc69e6f8b6ef8e87c359cf224c1a3",
-          "scripts/kesher_runtime/github_only_visual_repair.py": "8d577f97a63c9b2f52e788903544d036cde3423965bccc5d70124ac635d8f48c",
+          "scripts/kesher_runtime/github_only_visual_repair.py": "cb42b32fdc20ef3c7868f105b229ba7660a7e8007748b8f2178cae0877605ab3",
           "src/remotion/kesher-overview/KesherCinematicRepair.tsx": "40ad7ccfe688ec276a1854eb2bab1d64bb20545b60527f6415b4a52c89940247",
           "src/remotion/Root.tsx": "b047a450831af2e171da49fa9fee7196bd7edaa81b3a01171717effc3bb6208b",
           "scripts/kesher_runtime/ghonly_youtube_gap_audit.py": "7530f422a4b67a3524d2ffb012cbd1aed525d5e3cd684ae1b202401fd5ee76ab",
