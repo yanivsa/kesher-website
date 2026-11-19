@@ -63,6 +63,14 @@ for (const route of routes) {
   }
 }
 
+const safeIntakeRoute = '/contact/parenting-coordination';
+const safeIntakeHtml = fs.readFileSync(path.join(ROOT, 'dist/contact/parenting-coordination.html'), 'utf8');
+if (!safeIntakeHtml.includes('noindex, nofollow')) errors.push('Specialty intake must be noindex before JavaScript');
+if (!safeIntakeHtml.includes('בירור התאמה לתיאום הורי')) errors.push('Specialty prerender lacks safety inquiry heading');
+if (!/<option[^>]*value="parenting_coordination"[^>]*selected/.test(safeIntakeHtml)) errors.push('Specialty inquiry must preselect the contact service in HTML');
+if (safeIntakeHtml.includes('href="/appointment"') || safeIntakeHtml.includes('אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן')) errors.push('Specialty prerender leaks direct booking');
+if (!safeIntakeHtml.includes(`href="${SITE_ORIGIN}${safeIntakeRoute}"`)) errors.push('Specialty inquiry canonical mismatch');
+
 const todaysUnicodeBlog = posts
   .filter(isPublishable)
   .map(blogRoute)
