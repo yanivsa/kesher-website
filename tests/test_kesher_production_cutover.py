@@ -1530,6 +1530,7 @@ class GithubOnlyLiveRevisionRebindTests(unittest.TestCase):
                 this.pending_raw = None
                 this.cas_conflict = False
                 this.ack_unknown = False
+                this.run_heads = {99: self.old, 100: self.main}
 
             def request(this, method, path, body=None, **kwargs):
                 this.calls.append((method, path, body))
@@ -1544,20 +1545,19 @@ class GithubOnlyLiveRevisionRebindTests(unittest.TestCase):
                     if "/contents/.kesher-controller/github-only-owner.json?ref=" in path:
                         return {"sha": this.blob, "encoding": "base64",
                                 "content": base64.b64encode(this.raw).decode()}
-                    if path.endswith("/actions/runs/99"):
-                        return {"id": 99, "event": "workflow_dispatch",
-                                "head_sha": self.old, "head_branch": "main",
+                    if path.startswith("/repos/yanivsa/kesher-website/actions/runs/"):
+                        parts = path.split("/")
+                        rid = int(parts[6])
+                        if rid not in this.run_heads:
+                            raise AssertionError("Unexpected protected run")
+                        if path.endswith("/approvals"):
+                            return ([{"state": "approved",
+                                      "user": {"login": "yanivsa"},
+                                      "environments": [{"name": "kesher-cutover"}]}]
+                                    if this.approved else [])
+                        return {"id": rid, "event": "workflow_dispatch",
+                                "head_sha": this.run_heads[rid], "head_branch": "main",
                                 "run_attempt": 1}
-                    if path.endswith("/actions/runs/100"):
-                        return {"id": 100, "event": "workflow_dispatch",
-                                "head_sha": self.main, "head_branch": "main",
-                                "run_attempt": 1}
-                    if path.endswith("/actions/runs/99/approvals") or path.endswith("/actions/runs/100/approvals"):
-                        if this.approved:
-                            return [{"state": "approved",
-                                     "user": {"login": "yanivsa"},
-                                     "environments": [{"name": "kesher-cutover"}]}]
-                        return []
                     if "/compare/" in path:
                         return {"status": "ahead" if this.descendant else "diverged",
                                 "ahead_by": 1, "behind_by": 0 if this.descendant else 1,
@@ -1587,6 +1587,7 @@ class GithubOnlyLiveRevisionRebindTests(unittest.TestCase):
                 raise AssertionError((method, path))
 
         self.gh = FakeGitHub()
+        self.reviewer_run = "100:1"
 
     def _call(self, stage="preflight", report=None):
         from scripts.kesher_runtime.github_only_revision_rebind import preflight, rebind
@@ -1598,7 +1599,7 @@ class GithubOnlyLiveRevisionRebindTests(unittest.TestCase):
                 return preflight(self.gh, expected_main=self.main,
                                  epoch=self.doc["epoch"], report=self.report)
             return rebind(self.gh, expected_main=self.main,
-                          epoch=self.doc["epoch"], reviewer_run="100:1",
+                          epoch=self.doc["epoch"], reviewer_run=self.reviewer_run,
                           reviewed_inventory_sha256=digest(self.report),
                           report=report if report is not None else self.report)
 
@@ -1619,6 +1620,65 @@ class GithubOnlyLiveRevisionRebindTests(unittest.TestCase):
         self.assertEqual(next_doc["protected_live"]["code_revision_reviews"][-1][
             "approved_review_run"], "100:1")
         self.assertEqual(len([p for m,p,b in self.gh.calls if p == "/graphql"]), 1)
+
+    def _prepare_second_review(self):
+        from scripts.kesher_runtime.identity import canonical_json
+        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+        # The original LIVE approval 99:1 remains tied to b*40.
+        # The first authentic revision review 100:1 is tied to a*40.
+        # The second pending protected review 101:1 is tied to c*40.
+        self.old = "a" * 40
+        self.main = "c" * 40
+        self.reviewer_run = "101:1"
+        self.gh.main = self.main
+        self.gh.run_heads = {99: "b" * 40, 100: "a" * 40, 101: "c" * 40}
+        self.doc["reviewed_main_sha"] = self.old
+        self.doc["protected_live"]["code_revision_reviews"] = [{
+            "previous_main": "b" * 40,
+            "reviewed_main": "a" * 40,
+            "approved_review_run": "100:1",
+            "prior_ledger_ref": "c" * 40,
+            "inventory_sha256": "f" * 64,
+        }]
+        self.gh.raw = (canonical_json(self.doc) + "\n").encode()
+        self.gh.blob = _blob_sha(self.gh.raw)
+
+    def test_second_rebind_validates_entire_real_review_chain_not_original_against_new_sha(self):
+        self._prepare_second_review()
+        result = self._call()
+        self.assertEqual(result["prior_main"], "a" * 40)
+        self.assertEqual(result["new_main"], "c" * 40)
+        self.assertFalse(any(m != "GET" for m, _, _ in self.gh.calls))
+        checked = [p for m, p, _ in self.gh.calls
+                   if p in {"/repos/yanivsa/kesher-website/actions/runs/99",
+                            "/repos/yanivsa/kesher-website/actions/runs/100"}]
+        self.assertEqual(checked[-2:],
+                         ["/repos/yanivsa/kesher-website/actions/runs/99",
+                          "/repos/yanivsa/kesher-website/actions/runs/100"])
+        activated = self._call("rebind")
+        self.assertEqual(activated["status"], "PROTECTED_REVIEWED_REVISION_REBOUND")
+        self.assertEqual(len(__import__("json").loads(
+            self.gh.raw)["protected_live"]["code_revision_reviews"]), 2)
+
+    def test_second_rebind_tampered_or_skipped_review_never_writes(self):
+        from scripts.kesher_runtime.identity import canonical_json
+        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+        self._prepare_second_review()
+        changes = (
+            ("previous_main", "d" * 40, "NOT_TRUSTED"),
+            ("reviewed_main", "d" * 40, "NOT_TRUSTED"),
+            ("approved_review_run", "101:1", "NOT_TRUSTED"),
+        )
+        for key, tampered, blocker in changes:
+            row = self.doc["protected_live"]["code_revision_reviews"][0]
+            original = row[key]
+            row[key] = tampered
+            self.gh.raw = (canonical_json(self.doc) + "\n").encode()
+            self.gh.blob = _blob_sha(self.gh.raw)
+            with self.assertRaisesRegex(ValueError, blocker):
+                self._call()
+            row[key] = original
+        self.assertEqual(len([1 for m, p, _ in self.gh.calls if m == "POST"]), 0)
 
     def test_missing_review_stale_provider_and_nonancestor_all_block_before_write(self):
         from scripts.kesher_runtime.identity import digest
