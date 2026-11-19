@@ -1040,6 +1040,21 @@ class GithubOnlyDurableEffectsTests(unittest.TestCase):
         self.ledger["commands"][self.command] = {
             "phase": "CLAIMED", "run_id": self.run,
             "epoch": self.epoch, "reviewed_main_sha": self.main,
+            # A NotebookLM Long now MUST follow independently verified
+            # exact-source fulltext. Preserve that safety gate in all
+            # legacy durability tests without relaxing production policy.
+            "effects": {
+                "notebooklm_source": {
+                    "phase": "VERIFIED_OUTPUT",
+                    "source_slug": self.slug,
+                    "source_sha256": self.source_sha,
+                    "request_sha256": "0" * 64,
+                    "provider_id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+                    "receipt_sha256": "1" * 64,
+                    "qa_sha256": self.source_sha,
+                    "evidence_kind": "source_fulltext",
+                }
+            },
         }
         self.gh.raw = (canonical_json(self.ledger) + "\n").encode()
         self.gh.blob = _blob_sha(self.gh.raw)
@@ -1707,7 +1722,16 @@ class GithubOnlyMediaRecoveryCanaryTests(unittest.TestCase):
         import yaml
         root = Path(__file__).resolve().parents[1] / ".github/workflows"
         worker = yaml.safe_load((root / "kesher-media-worker.yml").read_text())
-        self.assertEqual(set(worker["jobs"]), {"media"})
+        self.assertEqual(set(worker["jobs"]), {"media", "github_only_production"})
+        ghonly = worker["jobs"]["github_only_production"]
+        self.assertEqual(ghonly["environment"], "kesher-cutover")
+        self.assertEqual(ghonly["permissions"]["actions"], "read")
+        self.assertEqual(ghonly["permissions"]["contents"], "write")
+        self.assertIn("149ed4c8a86a3da1a8ceca9195d782039e3458cf8553cd1647add649a473fbf9",
+                      ghonly["if"])
+        self.assertIn("inputs.command_id !=", worker["jobs"]["media"]["if"])
+        self.assertIn("github_only_media_production",
+                      str(ghonly["steps"]))
         self.assertEqual(set(worker[True]["workflow_dispatch"]["inputs"]), {"command_id"})
         watchdog = yaml.safe_load((root / "kesher-controller-liveness.yml").read_text())
         canary = watchdog["jobs"]["github_only_canary"]
@@ -1732,5 +1756,153 @@ class GithubOnlyMediaRecoveryCanaryTests(unittest.TestCase):
         self.assertEqual(jobs["github_owner_rebind"]["needs"], "github_owner_rebind_inventory")
         self.assertIn("revision_rebind", str(jobs["github_owner_rebind"]))
         self.assertNotIn("provider_create", content)
+
+
+class GithubOnlyProtectedProductionWorkerTests(unittest.TestCase):
+    def test_exact_canonical_nov18_article_identity_and_hardcoded_one_command(self):
+        from scripts.kesher_runtime.github_only_media_production import (
+            trusted_article, COMMAND_ID, SOURCE_SHA256, SOURCE_TITLE,
+        )
+        from scripts.kesher_runtime.github_only_owner_policy import command_identity
+        source = trusted_article()
+        self.assertEqual(source["content_sha256"], SOURCE_SHA256)
+        self.assertEqual(
+            command_identity(slot="2026-11-18", source_sha256=SOURCE_SHA256,
+                             operation="article"), COMMAND_ID)
+        self.assertEqual(COMMAND_ID, "149ed4c8a86a3da1a8ceca9195d782039e3458cf8553cd1647add649a473fbf9")
+        self.assertTrue(SOURCE_TITLE.endswith(SOURCE_SHA256[:12]))
+
+    def test_exact_run_refuses_any_wrong_command_event_or_sha_before_github_read(self):
+        from scripts.kesher_runtime.github_only_media_production import (
+            _exact_run, COMMAND_ID, WORKFLOW,
+        )
+        from unittest.mock import Mock
+        gh = Mock()
+        env = dict(
+            GITHUB_REPOSITORY="yanivsa/kesher-website", GITHUB_WORKFLOW_REF=WORKFLOW,
+            GITHUB_EVENT_NAME="workflow_dispatch", GITHUB_REF="refs/heads/main",
+            GITHUB_JOB="github_only_production", GITHUB_SHA="a" * 40,
+            GITHUB_WORKFLOW_SHA="a" * 40, GITHUB_RUN_ID="444", GITHUB_RUN_ATTEMPT="1",
+        )
+        for field, corrupt in (
+            ("GITHUB_REPOSITORY", "different/repo"),
+            ("GITHUB_EVENT_NAME", "schedule"),
+            ("GITHUB_REF", "refs/heads/branch"),
+            ("GITHUB_JOB", "media"),
+            ("GITHUB_WORKFLOW_SHA", "b" * 40),
+        ):
+            original = env[field]
+            env[field] = corrupt
+            with self.assertRaisesRegex(ValueError, "EXACT_JOB_SHA_COMMAND_REQUIRED"):
+                _exact_run(gh, environment=env, expected_main="a" * 40,
+                           command_id=COMMAND_ID)
+            env[field] = original
+        with self.assertRaisesRegex(ValueError, "EXACT_JOB_SHA_COMMAND_REQUIRED"):
+            _exact_run(gh, environment=env, expected_main="a" * 40,
+                       command_id="b" * 64)
+        gh.request.assert_not_called()
+
+    def test_existing_source_intent_never_causes_duplicate_post(self):
+        from scripts.kesher_runtime.github_only_media_production import (
+            source_once, long_once, trusted_article,
+        )
+        from unittest.mock import Mock, patch
+        journal = Mock()
+        journal.begin.return_value = ("ALREADY_RECORDED_NO_RETRY", "state")
+        source = trusted_article()
+        with patch("scripts.kesher_runtime.github_only_media_production._external_post_once",
+                   side_effect=AssertionError("must not POST")):
+            state, snap, item = source_once(
+                journal, "before", run_id="123:1", source=source)
+            self.assertEqual(state, "NO_REPEAT_POST")
+            self.assertIsNone(item)
+            with __import__("tempfile").TemporaryDirectory() as d:
+                state, snap, item = long_once(
+                    journal, "before", run_id="123:1", source=source,
+                    source_id="a" * 8 + "-" + "b" * 4 + "-" + "c" * 4 +
+                              "-" + "d" * 4 + "-" + "e" * 12,
+                    folder=Path(d),
+                )
+                self.assertEqual(state, "NO_REPEAT_POST")
+
+    def test_exact_source_verify_flow_persists_intent_before_one_post(self):
+        from scripts.kesher_runtime.github_only_media_production import (
+            source_once, trusted_article,
+        )
+        from unittest.mock import Mock, patch
+        source = trusted_article()
+        sid = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+        journal = Mock()
+        journal.begin.return_value = ("INTENT_RECORDED", "intent")
+        journal.observe.return_value = ("REMOTE_ID_OBSERVED", "observed")
+        journal.verify_output.return_value = ("VERIFIED_OUTPUT", "verified")
+        calls = []
+        def observe(_):
+            calls.append("read")
+            return {"source_id": sid} if len(calls) > 2 else None
+        def post(args):
+            calls.append("post")
+            self.assertEqual(args[:2], ["source", "add"])
+            return {"source_id": sid}
+        with patch("scripts.kesher_runtime.github_only_media_production._source_observer",
+                   side_effect=observe), patch(
+                   "scripts.kesher_runtime.github_only_media_production._external_post_once",
+                   side_effect=post):
+            status, snapshot, identity = source_once(
+                journal, "initial", run_id="123:1", source=source)
+        self.assertEqual(status, "SOURCE_VERIFIED")
+        self.assertEqual(snapshot, "verified")
+        self.assertEqual(identity, sid)
+        self.assertEqual(calls, ["read", "post", "read"])
+        journal.begin.assert_called_once()
+        journal.observe.assert_called_once()
+        journal.verify_output.assert_called_once()
+        self.assertEqual(journal.verify_output.call_args.kwargs["evidence_kind"],
+                         "source_fulltext")
+
+    def test_provider_post_unknown_never_has_automatic_retry(self):
+        from scripts.kesher_runtime.github_only_media_production import _external_post_once
+        from unittest.mock import patch, Mock
+        with patch("scripts.kesher_runtime.github_only_media_production.subprocess.run",
+                   return_value=Mock(returncode=1, stdout="", stderr="secret")) as run:
+            with self.assertRaisesRegex(ValueError, "POST_UNCERTAIN_NO_RETRY"):
+                _external_post_once(["source", "add", "sample"])
+            run.assert_called_once()
+
+    def test_full_provider_catalog_no_pending_or_unknown_jobs(self):
+        from scripts.kesher_runtime.github_only_media_production import (
+            _observed_terminal_tasks,
+        )
+        from unittest.mock import patch
+        videos = [{"id": f"0000000{i}-0000-0000-0000-000000000000",
+                   "status": "completed"} for i in range(8)]
+        with patch("scripts.kesher_runtime.github_only_media_production._provider_json",
+                   return_value={"artifacts": videos}):
+            read = _observed_terminal_tasks()
+            self.assertEqual(len(read), 8)
+            videos[0]["status"] = "generating"
+            with self.assertRaisesRegex(ValueError, "UNSETTLED_OR_DUPLICATE"):
+                _observed_terminal_tasks()
+
+    def test_effect_sequence_will_not_upload_or_generate_short_before_public_long(self):
+        from scripts.kesher_runtime import github_only_effects
+        from scripts.kesher_runtime.github_only_media_production import run
+        self.assertEqual(github_only_effects._ORDER["notebooklm_long"], "notebooklm_source")
+        self.assertEqual(github_only_effects._ORDER["youtube_long"], "notebooklm_long")
+        self.assertEqual(github_only_effects._ORDER["notebooklm_short"], "youtube_long")
+        self.assertEqual(github_only_effects._ORDER["youtube_short"], "notebooklm_short")
+        self.assertNotIn("youtube_upload_authorized", run.__code__.co_names)
+
+    def test_genuine_protected_worker_env_and_exact_command_unchanged(self):
+        import yaml
+        from pathlib import Path
+        path = Path(__file__).resolve().parents[1] / ".github/workflows/kesher-media-worker.yml"
+        yaml_data = yaml.safe_load(path.read_text())
+        self.assertEqual(set(yaml_data[True]["workflow_dispatch"]["inputs"]), {"command_id"})
+        ghonly = yaml_data["jobs"]["github_only_production"]
+        self.assertEqual(ghonly["environment"], "kesher-cutover")
+        self.assertIn("GH_TOKEN", str(ghonly["steps"]))
+        self.assertIn("github_only_media_production", str(ghonly["steps"]))
+        self.assertNotIn("workflow_dispatch", ghonly.get("run", ""))
 
 if __name__ == '__main__': unittest.main()

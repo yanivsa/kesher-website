@@ -1,6 +1,6 @@
-"""Durable, duplicate-safe external-effect journal for the GH-only owner.
+"""Durable, duplicate-safe source, NotebookLM and YouTube effect journal for GH-only owner.
 
-This code NEVER calls NotebookLM, YouTube or GitHub Actions dispatch.
+This code NEVER itself calls NotebookLM, YouTube or GitHub Actions dispatch.
 Before a future separately reviewed worker makes an external API request it must
 CAS-persist the exact effect intent. Unknown provider acknowledgement must be
 reconciled by read-only provider inventory, never retried as a new creation.
@@ -24,7 +24,7 @@ from .identity import canonical_json, digest, require_sha
 from .state import StateConflict, StateInvalid
 
 _EFFECTS = frozenset((
-    "notebooklm_long", "youtube_long", "notebooklm_short", "youtube_short",
+    "notebooklm_source", "notebooklm_long", "youtube_long", "notebooklm_short", "youtube_short",
 ))
 _RUN = re.compile(r"[1-9][0-9]*:[1-9][0-9]*")
 _SHA256 = re.compile(r"[0-9a-f]{64}")
@@ -32,7 +32,8 @@ _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 _UUID = re.compile(r"[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}")
 _VIDEO = re.compile(r"[A-Za-z0-9_-]{11}")
 _ORDER = {
-    "notebooklm_long": None,
+    "notebooklm_source": None,
+    "notebooklm_long": "notebooklm_source",
     "youtube_long": "notebooklm_long",
     "notebooklm_short": "youtube_long",
     "youtube_short": "notebooklm_short",
@@ -228,3 +229,56 @@ class GitHubOnlyEffectJournal:
         observed = self._cas(loaded, next_doc, command_id=command_id,
                              name=effect_kind + "-observed")
         return "REMOTE_ID_OBSERVED", observed
+
+
+    def verify_output(self, loaded, *, epoch, command_id, run_id, slot, slug,
+                      source_sha256, operation, ordinal=1, effect_kind,
+                      request_sha256, provider_id, receipt_sha256,
+                      qa_sha256, evidence_kind):
+        """Persist a corroborated provider result; never grant publication.
+
+        The separately trusted worker MUST independently inspect the exact
+        provider object and source/voice/geometry/visual QC before invoking.
+        A raw provider acknowledgement by itself is insufficient for YouTube.
+        """
+        if (effect_kind not in _EFFECTS
+                or evidence_kind not in ("source_fulltext", "provider_media_qa",
+                                         "youtube_public_readback")
+                or not isinstance(qa_sha256, str)
+                or _SHA256.fullmatch(qa_sha256) is None):
+            raise OwnerLedgerBlocked("GHONLY_EFFECT_VERIFICATION_INVALID")
+        expected = ("source_fulltext" if effect_kind == "notebooklm_source"
+                    else "youtube_public_readback" if effect_kind.startswith("youtube_")
+                    else "provider_media_qa")
+        if evidence_kind != expected:
+            raise OwnerLedgerBlocked("GHONLY_EFFECT_INCORRECT_PROOF_TYPE")
+        doc = self._load_current(loaded)
+        _require_identity(
+            doc, epoch=epoch, command_id=command_id, run_id=run_id,
+            slot=slot, slug=slug, source_sha256=source_sha256,
+            operation=operation, ordinal=ordinal,
+        )
+        entry = (doc["commands"][command_id].get("effects") or {}).get(effect_kind)
+        if (not isinstance(entry, dict)
+                or entry.get("source_sha256") != source_sha256
+                or entry.get("source_slug") != slug
+                or entry.get("request_sha256") != request_sha256
+                or entry.get("provider_id") != provider_id
+                or entry.get("receipt_sha256") != receipt_sha256):
+            raise OwnerLedgerBlocked("GHONLY_EFFECT_VERIFICATION_RECEIPT_MISMATCH")
+        if entry.get("phase") == "VERIFIED_OUTPUT":
+            if (entry.get("qa_sha256") == qa_sha256
+                    and entry.get("evidence_kind") == evidence_kind):
+                return "ALREADY_VERIFIED_NO_RETRY", loaded
+            raise OwnerLedgerBlocked("GHONLY_EFFECT_CONFLICTING_QA")
+        if entry.get("phase") != "REMOTE_ID_OBSERVED":
+            raise OwnerLedgerBlocked("GHONLY_EFFECT_NOT_IN_VERIFIABLE_PHASE")
+        next_doc = copy.deepcopy(doc)
+        next_doc["commands"][command_id]["effects"][effect_kind].update({
+            "phase": "VERIFIED_OUTPUT", "qa_sha256": qa_sha256,
+            "evidence_kind": evidence_kind,
+        })
+        observed = self._cas(
+            loaded, next_doc, command_id=command_id, name=effect_kind + "-verified",
+        )
+        return "VERIFIED_OUTPUT", observed

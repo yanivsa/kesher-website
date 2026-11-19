@@ -20,7 +20,7 @@ concurrency:
 
 jobs:
   media:
-    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.command_id != '149ed4c8a86a3da1a8ceca9195d782039e3458cf8553cd1647add649a473fbf9' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
@@ -127,3 +127,91 @@ jobs:
       - name: Preserve failed command for classified controller recovery
         if: failure() && steps.claim.outputs.execute == 'true'
         run: python -m scripts.kesher_runtime.worker_entry finish "$COMMAND_ID" --failure-class WORKER_FAILED
+
+
+  github_only_production:
+    # Separate review-gated GitHub-only command. Canonical Schema6 worker job
+    # and the single command_id input remain unchanged. No new workflow/cron.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.command_id == '149ed4c8a86a3da1a8ceca9195d782039e3458cf8553cd1647add649a473fbf9' }}
+    environment: kesher-cutover
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    timeout-minutes: 90
+    env:
+      COMMAND_ID: ${{ inputs.command_id }}
+      NOTEBOOKLM_HOME: /tmp/kesher-ghonly-notebooklm
+      KESHER_STATE_DIR: /tmp/kesher-ghonly-new
+      KESHER_GHONLY_OUTPUT: /tmp/kesher-ghonly-new
+      HF_HOME: /tmp/kesher-ghonly-hf
+      KESHER_WHISPER_MODEL: small
+    steps:
+      - name: Checkout immutable reviewed main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up pinned Node and FFmpeg
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install existing media SDK, authentication and QA clients
+        run: |
+          set -euo pipefail
+          python -m pip install -r scripts/requirements-video-cloud.txt
+          python -m pip install google-api-python-client==2.181.0 google-auth==2.40.3
+          npm ci --no-audit --no-fund
+          node -e 'for (const name of ["@ffmpeg-installer/ffmpeg", "@ffprobe-installer/ffprobe"]) require("fs").appendFileSync(process.env.GITHUB_PATH, require("path").dirname(require(name).path) + "\n")'
+      - name: Materialize authenticated NotebookLM profile without logging credentials
+        env:
+          NOTEBOOKLM_STORAGE_STATE_SECRET: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
+          NOTEBOOKLM_MASTER_TOKEN_SECRET: ${{ secrets.NOTEBOOKLM_MASTER_TOKEN_JSON }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          profile=Path(os.environ["NOTEBOOKLM_HOME"])/"profiles"/"default"
+          profile.mkdir(parents=True,exist_ok=True)
+          raw=os.environ.get("NOTEBOOKLM_STORAGE_STATE_SECRET","").strip()
+          if not raw: raise SystemExit("GHONLY_AUTH_MISSING")
+          state=json.loads(raw)
+          if not isinstance(state,dict) or not state.get("cookies"): raise SystemExit("GHONLY_AUTH_INVALID")
+          path=profile/"storage_state.json"
+          path.write_text(json.dumps(state,separators=(",",":")),encoding="utf-8")
+          path.chmod(0o600)
+          master=os.environ.get("NOTEBOOKLM_MASTER_TOKEN_SECRET","").strip()
+          if master:
+              value=json.loads(master)
+              required={"version","email","android_id","master_token"}
+              if not isinstance(value,dict) or not all(value.get(k) for k in required):
+                  raise SystemExit("GHONLY_MASTER_AUTH_INVALID")
+              path=profile/"master_token.json"
+              path.write_text(json.dumps(value,separators=(",",":")),encoding="utf-8")
+              path.chmod(0o600)
+          PY
+
+      - name: Protected single-command CAS source and NotebookLM generation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          python -m scripts.kesher_runtime.github_only_media_production "$COMMAND_ID"
+      - name: Preserve only private quality evidence (no MP4, no tokens)
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-ghonly-protected-production-qa-${{ github.run_id }}
+          path: |
+            /tmp/kesher-ghonly-new/qa.json
+            /tmp/kesher-ghonly-new/ghonly-e5a57c64f85a2e-transcript-he.txt
+            /tmp/kesher-ghonly-new/ghonly-e5a57c64f85a2e-visual-review.png
+          if-no-files-found: warn
+          retention-days: 2
