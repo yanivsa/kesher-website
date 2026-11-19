@@ -17,9 +17,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/financial-secrecy-couples.svg",
-    "imageAlt": "איור מעטפה, מחברת תקציב וסמל שיחה בנושא שקיפות כלכלית",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/financial-secrecy-couples.jpg",
+    "imageAlt": "בני זוג יושבים מול מסמכים וחשבונות, והאישה מביטה בדאגה בבן זוגה המניח ניירות בתיק",
+    "imageProvider": "OpenAI Image Generation",
     "relatedPostIds": [
       "money-fights-communication",
       "financial-boundaries-couples"
@@ -45,9 +45,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/unequal-income-fair-budget.svg",
-    "imageAlt": "איור שתי עמודות הכנסה לא שוות ומחברת משפחתית משותפת",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/unequal-income-fair-budget.jpg",
+    "imageAlt": "בני זוג משוחחים על חלוקת הוצאות הבית ליד מחשב, כשאחד מהם מחזיק תיק בית ספר",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "couples-joint-or-separate-accounts",
       "marriage-preparation-money-fights"
@@ -73,9 +73,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/couples-joint-or-separate-accounts.svg",
-    "imageAlt": "איור שני תיקיות תקציב המתכנסות לסימון החלטה משותפת",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/couples-joint-or-separate-accounts.jpg",
+    "imageAlt": "בני זוג יושבים יחד בבית קפה ומשווים כרטיסי בנק לקראת החלטה על חשבונות משותפים ונפרדים",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "unequal-income-fair-budget",
       "weekly-money-conversation"
@@ -101,9 +101,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/weekly-money-conversation.svg",
-    "imageAlt": "איור שעון, מחברת ושני ספלים כסמל לשיחת תקציב זוגית שבועית",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/weekly-money-conversation.jpg",
+    "imageAlt": "בני זוג יושבים לשיחת כסף רגועה מול מחברות, קבלות ושעון חול על שולחן המטבח",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "money-fights-communication",
       "family-budget-guide"
@@ -129,9 +129,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/financial-boundaries-couples.svg",
-    "imageAlt": "איור שתי מסגרות החלטה עצמאיות המחוברות להסכמה כלכלית",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/financial-boundaries-couples.jpg",
+    "imageAlt": "בני זוג מבוגרים משוחחים בנינוחות על קבלה והוצאות כששני ארנקים אישיים מונחים על השולחן",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "financial-secrecy-couples",
       "weekly-money-conversation"
@@ -157,9 +157,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/family-budget-guide.svg",
-    "imageAlt": "איור מחברת תקציב עם חלוקה להכנסות ולהוצאות משפחתיות",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/family-budget-guide.jpg",
+    "imageAlt": "בני זוג מסדרים קבלות, מחשבון ומצרכי מזון על שולחן המטבח כדי להכין תקציב משפחתי",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "tracking-family-expenses",
       "annual-family-expenses"
@@ -185,9 +185,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/tracking-family-expenses.svg",
-    "imageAlt": "איור קבלות וקטגוריות להוצאות משפחתיות",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/tracking-family-expenses.jpg",
+    "imageAlt": "אישה ממיינת קבלות ומחשבת הוצאות בעזרת מחשבון ומחברת על שולחן ביתי שטוף שמש",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "family-budget-guide",
       "annual-family-expenses"
@@ -213,9 +213,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/good-income-negative-balance.svg",
-    "imageAlt": "איור מסלול תזרים הכנסות והוצאות עם סימן יתרה",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/good-income-negative-balance.jpg",
+    "imageAlt": "בני זוג בחולצות עבודה בוחנים בדאגה חשבונות וכרטיס בנק בסלון ביתם המרוהט",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "income-expense-gap-first-steps",
       "tracking-family-expenses"
@@ -241,9 +241,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/annual-family-expenses.svg",
-    "imageAlt": "איור לוח שנה משפחתי עם סימוני חגים וחוגים",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/annual-family-expenses.jpg",
+    "imageAlt": "אישה מתכננת הוצאות שנתיות בלוח שנה לצד מעטפות, תיק בית ספר ומזוודה ברקע",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "family-budget-guide",
       "tracking-family-expenses"
@@ -269,9 +269,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/variable-income-family-budget.svg",
-    "imageAlt": "איור גלי הכנסה משתנים לצד מחברת תקציב",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/variable-income-family-budget.jpg",
+    "imageAlt": "זוג ליד ציוד צילום בסטודיו ביתי בוחן חשבונות ומכין תקציב להכנסה משתנה",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "family-budget-guide",
       "annual-family-expenses"
@@ -297,9 +297,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/income-expense-gap-first-steps.svg",
-    "imageAlt": "איור שתי עמודות תזרים עם פער המצריך בדיקה",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/income-expense-gap-first-steps.jpg",
+    "imageAlt": "בני זוג ממיינים חשבונות ומצרכי מזון ומחשבים סדרי עדיפויות על שולחן המטבח",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "good-income-negative-balance",
       "tracking-family-expenses"
@@ -325,9 +325,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/talking-money-with-kids-by-age.svg",
-    "imageAlt": "איור ספר משחק וקופת חיסכון לחינוך פיננסי ילדים",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/talking-money-with-kids-by-age.jpg",
+    "imageAlt": "אב משוחח בגובה העיניים עם ילדה במרכול על בחירת פירות ותשלום במטבעות",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "allowance-kids-guide",
       "children-family-budget-participation"
@@ -353,9 +353,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/allowance-kids-guide.svg",
-    "imageAlt": "איור שלוש קופסאות דמי כיס לחיסכון ובחירה",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/allowance-kids-guide.jpg",
+    "imageAlt": "ילד מכניס מטבע לצנצנת חיסכון ליד אמו, על שולחן עם מטבעות וקופת חיסכון",
+    "imageProvider": "OpenAI Image Generation",
     "relatedPostIds": [
       "talking-money-with-kids-by-age",
       "child-purchase-demands-boundaries"
@@ -381,9 +381,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/child-purchase-demands-boundaries.svg",
-    "imageAlt": "איור של רשימת קניות ומשחק ילדים מול סימן בחירה",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/child-purchase-demands-boundaries.jpg",
+    "imageAlt": "אם כורעת לצד בנה בחנות צעצועים ומציעה בחירה מצומצמת בזמן שהילד מצביע לעבר המדף",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "talking-money-with-kids-by-age",
       "allowance-kids-guide"
@@ -409,9 +409,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/children-family-budget-participation.svg",
-    "imageAlt": "איור משפחה בוחרת יחד פעילות מתוך לוח אפשרויות",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/children-family-budget-participation.jpg",
+    "imageAlt": "הורים ושני ילדים בוחרים בין תמונות של פעילויות פנאי לצד צנצנת מטבעות על שולחן משפחתי",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "talking-money-with-kids-by-age",
       "allowance-kids-guide"
@@ -437,9 +437,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/planning-budget-new-baby.svg",
-    "imageAlt": "איור עגלה ובקבוק לצד מחברת תכנון הוצאות לתינוק",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/planning-budget-new-baby.jpg",
+    "imageAlt": "בני זוג המצפים לתינוק מתכננים תקציב ליד עריסה ובגדי תינוק קטנים",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "family-budget-guide",
       "annual-family-expenses"
@@ -465,9 +465,9 @@
     ],
     "serviceUrl": "/services/family-financial-guidance",
     "serviceLabel": "ליווי כלכלי לזוגות ומשפחות",
-    "image": "/images/financial-guidance/articles/dealing-with-income-drop-as-family.svg",
-    "imageAlt": "איור יומן תכנון וסימן שינוי מסלול הכנסה למשפחה",
-    "imageProvider": "Original SVG illustration",
+    "image": "/images/financial-guidance/articles/dealing-with-income-drop-as-family.jpg",
+    "imageAlt": "בן זוג מחזיק קופסת חפצים ממקום העבודה ונעזר בבת זוגו לתכנון תקציב אחרי ירידה בהכנסה",
+    "imageProvider": "Adobe Firefly",
     "relatedPostIds": [
       "income-expense-gap-first-steps",
       "variable-income-family-budget"
