@@ -1701,16 +1701,18 @@ class GithubOnlyLiveRevisionRebindTests(unittest.TestCase):
     def test_existing_command_and_publication_permission_are_hard_blockers(self):
         from scripts.kesher_runtime.github_only_owner_store import _blob_sha
         from scripts.kesher_runtime.identity import canonical_json
-        for key, value in (
-            ("commands", {"unsettled": {"phase": "WAITING_PROVIDER"}}),
+        for key, value, blocker in (
+            ("commands", {"unsettled": {"phase": "WAITING_PROVIDER"}},
+             "GHONLY_QA_HOLD_UNRELATED_COMMAND_BLOCKED"),
             ("protected_live", {**self.doc["protected_live"],
-                                "source_publication_authorized": True}),
+                                "source_publication_authorized": True},
+             "LIVE_OWNER_NOT_ELIGIBLE"),
         ):
             old = self.doc[key]
             self.doc[key] = value
             self.gh.raw = (canonical_json(self.doc) + "\n").encode()
             self.gh.blob = _blob_sha(self.gh.raw)
-            with self.assertRaisesRegex(ValueError, "LIVE_OWNER_NOT_ELIGIBLE"):
+            with self.assertRaisesRegex(ValueError, blocker):
                 self._call()
             self.doc[key] = old
         self.assertFalse(any(m == "POST" for m, _, _ in self.gh.calls))
@@ -1728,6 +1730,197 @@ class GithubOnlyLiveRevisionRebindTests(unittest.TestCase):
             self._call("rebind")
         self.assertTrue(c.exception.uncertain)
         self.assertEqual(len([1 for m,p,b in self.gh.calls if p == "/graphql"]), 2)
+
+
+
+class GithubOnlySealedQualityHoldTests(unittest.TestCase):
+    """No new provider POST, no lost provenance, no QA-as-publication."""
+
+    def setUp(self):
+        from scripts.kesher_runtime.github_only_qa_hold import (
+            COMMAND_ID, ORIGINAL_RUN, ORIGINAL_TASK_ID, ORIGINAL_SOURCE_ID,
+            ORIGINAL_REVIEWED_MAIN, SOURCE_SHA, SOURCE_SLUG, SOURCE_REQUEST,
+            SOURCE_RECEIPT, LONG_REQUEST, LONG_RECEIPT,
+        )
+        self.id = COMMAND_ID
+        self.task = ORIGINAL_TASK_ID
+        self.document = {
+            "epoch": "kesher-ghonly-20261117-prepare1",
+            "commands": {self.id: {
+                "phase": "CLAIMED",
+                "epoch": "kesher-ghonly-20261117-prepare1",
+                "run_id": ORIGINAL_RUN,
+                "reviewed_main_sha": ORIGINAL_REVIEWED_MAIN,
+                "effects": {
+                    "notebooklm_source": {
+                        "phase": "VERIFIED_OUTPUT",
+                        "provider_id": ORIGINAL_SOURCE_ID,
+                        "request_sha256": SOURCE_REQUEST,
+                        "receipt_sha256": SOURCE_RECEIPT,
+                        "qa_sha256": SOURCE_SHA,
+                        "evidence_kind": "source_fulltext",
+                        "source_sha256": SOURCE_SHA,
+                        "source_slug": SOURCE_SLUG,
+                    },
+                    "notebooklm_long": {
+                        "phase": "REMOTE_ID_OBSERVED",
+                        "provider_id": ORIGINAL_TASK_ID,
+                        "request_sha256": LONG_REQUEST,
+                        "receipt_sha256": LONG_RECEIPT,
+                        "source_sha256": SOURCE_SHA,
+                        "source_slug": SOURCE_SLUG,
+                    },
+                },
+            }},
+        }
+
+        class FakeGithub:
+            def __init__(this):
+                this.artifact = True
+                this.approved = True
+                this.run_ok = True
+            def request(this, method, path, *args):
+                from scripts.kesher_runtime.github_only_qa_hold import (
+                    ORIGINAL_RUN, ORIGINAL_REVIEWED_MAIN,
+                    ORIGINAL_ARTIFACT_ID, ORIGINAL_ARTIFACT_NAME, ORIGINAL_ARCHIVE_DIGEST,
+                )
+                self.assertEqual(method, "GET")
+                run_id = int(ORIGINAL_RUN.split(":")[0])
+                if path.endswith("/actions/runs/" + str(run_id)):
+                    return {
+                        "id": run_id, "head_sha": ORIGINAL_REVIEWED_MAIN,
+                        "path": ".github/workflows/kesher-media-worker.yml",
+                        "event": "workflow_dispatch", "head_branch": "main",
+                        "run_attempt": 1,
+                        "status": "completed" if this.run_ok else "in_progress",
+                        "conclusion": "success" if this.run_ok else None,
+                    }
+                if path.endswith("/actions/runs/" + str(run_id) + "/approvals"):
+                    return ([{"state": "approved", "user": {"login": "yanivsa"},
+                             "environments": [{"name": "kesher-cutover"}]}]
+                            if this.approved else [])
+                if path.endswith("/actions/runs/" + str(run_id) + "/artifacts"):
+                    return {"artifacts": [{
+                        "id": ORIGINAL_ARTIFACT_ID,
+                        "name": ORIGINAL_ARTIFACT_NAME,
+                        "digest": (ORIGINAL_ARCHIVE_DIGEST if this.artifact else "sha256:" + "0" * 64),
+                        "expired": False,
+                        "workflow_run": {"id": run_id,
+                                         "head_sha": ORIGINAL_REVIEWED_MAIN},
+                    }]}
+                raise AssertionError(path)
+        self.gh = FakeGithub()
+
+    def _verify(self, rows=None):
+        from scripts.kesher_runtime.github_only_qa_hold import verified_qa_hold
+        if rows is None:
+            rows = [{"id": self.task, "status": "completed"}]
+        return verified_qa_hold(
+            self.gh, self.document, command=lambda args: {"artifacts": rows},
+        )
+
+    def test_empty_journal_has_no_hold_or_provider_request(self):
+        from scripts.kesher_runtime.github_only_qa_hold import hold_basis
+        self.assertIsNone(hold_basis({"commands": {}}))
+
+    def test_completed_original_and_authenticated_artifact_can_be_sealed(self):
+        from scripts.kesher_runtime.github_only_qa_hold import SEALED_EVIDENCE
+        evidence = self._verify()
+        self.assertEqual(evidence, SEALED_EVIDENCE)
+        self.assertEqual(evidence["status"], "QA_HOLD")
+        self.assertFalse(evidence["youtube_upload_authorized"])
+        self.assertFalse(evidence["short_generation_authorized"])
+        self.assertEqual(self.document["commands"][self.id]["phase"], "CLAIMED")
+
+    def test_false_or_missing_github_review_never_seals(self):
+        self.gh.approved = False
+        with self.assertRaisesRegex(ValueError, "HUMAN_ENV_REVIEW_NOT_PROVEN"):
+            self._verify()
+        self.gh.approved = True
+        self.gh.run_ok = False
+        with self.assertRaisesRegex(ValueError, "ORIGINAL_PRODUCTION_RUN_UNTRUSTED"):
+            self._verify()
+
+    def test_tampered_qa_zip_and_incomplete_provider_are_blockers(self):
+        self.gh.artifact = False
+        with self.assertRaisesRegex(ValueError, "ARTIFACT_HASH_MISMATCH"):
+            self._verify()
+        self.gh.artifact = True
+        for rows in (
+            [],
+            [{"id": self.task, "status": "generating"}],
+            [{"id": self.task, "status": "completed"},
+             {"id": self.task, "status": "completed"}],
+        ):
+            with self.assertRaisesRegex(ValueError, "PROVIDER_TASK_NOT_COMPLETED"):
+                self._verify(rows)
+
+    def test_extra_upload_or_changed_receipt_is_hard_blocker(self):
+        from scripts.kesher_runtime.github_only_qa_hold import hold_basis
+        import copy
+        for key, value in (
+            ("phase", "WAITING_PROVIDER"),
+            ("run_id", "111:1"),
+        ):
+            doc = copy.deepcopy(self.document)
+            doc["commands"][self.id][key] = value
+            with self.assertRaises(ValueError):
+                hold_basis(doc)
+        doc = copy.deepcopy(self.document)
+        doc["commands"][self.id]["effects"]["youtube_long"] = {
+            "phase": "VERIFIED_OUTPUT"}
+        with self.assertRaisesRegex(ValueError, "UNVERIFIED_EXTRA_EFFECT"):
+            hold_basis(doc)
+        doc = copy.deepcopy(self.document)
+        doc["commands"][self.id]["effects"]["notebooklm_long"]["receipt_sha256"] = "f" * 64
+        with self.assertRaisesRegex(ValueError, "UNTRUSTED_LONG_RECEIPT"):
+            hold_basis(doc)
+
+    def test_sealed_hold_remains_valid_after_archive_expiry_without_new_post(self):
+        from scripts.kesher_runtime.github_only_qa_hold import (
+            SEALED_EVIDENCE, hold_basis,
+        )
+        self.document["commands"][self.id].update({
+            "phase": "QA_HOLD", "quality_checkpoint": dict(SEALED_EVIDENCE),
+        })
+        self.gh.artifact = False
+        self.assertEqual(self._verify(), SEALED_EVIDENCE)
+        self.document["commands"][self.id]["quality_checkpoint"]["youtube_upload_authorized"] = True
+        with self.assertRaisesRegex(ValueError, "EVIDENCE_TAMPERED"):
+            hold_basis(self.document)
+
+    def test_owner_rebind_preserves_original_run_and_seals_quality_hold_atomically(self):
+        # Main-SHA change is approved by the EXISTING protected rebind action;
+        # it must never mutate the immutable original command/run/receipt.
+        from unittest.mock import patch
+        from scripts.kesher_runtime import github_only_revision_rebind as rev
+        from scripts.kesher_runtime.github_only_qa_hold import SEALED_EVIDENCE
+        from scripts.kesher_runtime.identity import digest
+        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+        from scripts.kesher_runtime.identity import canonical_json
+        case = GithubOnlyLiveRevisionRebindTests("test_rebind_preflight_is_read_only_and_revision_bound")
+        case.setUp()
+        case.doc["commands"] = __import__("copy").deepcopy(self.document["commands"])
+        case.gh.raw = (canonical_json(case.doc) + "\n").encode()
+        case.gh.blob = _blob_sha(case.gh.raw)
+        with patch("scripts.kesher_runtime.github_only_revision_rebind.inventory",
+                   return_value=case.audit), patch(
+             "scripts.kesher_runtime.github_only_revision_rebind.verified_qa_hold",
+             return_value=SEALED_EVIDENCE):
+            verified = rev.rebind(
+                case.gh, expected_main=case.main, epoch=case.doc["epoch"],
+                reviewer_run=case.reviewer_run, report=case.report,
+                reviewed_inventory_sha256=digest(case.report),
+            )
+        self.assertTrue(verified["qa_hold_sealed"])
+        after = __import__("json").loads(case.gh.raw)
+        self.assertEqual(after["commands"][self.id]["phase"], "QA_HOLD")
+        self.assertEqual(after["commands"][self.id]["quality_checkpoint"], SEALED_EVIDENCE)
+        self.assertEqual(after["commands"][self.id]["run_id"], "44462713412:1")
+        self.assertEqual(after["commands"][self.id]["reviewed_main_sha"],
+                         "1eccad173d19e2842f3f7b1e6379c7f55f2cad89")
+        self.assertEqual(after["reviewed_main_sha"], case.main)
+        self.assertFalse(after["protected_live"]["source_publication_authorized"])
 
 
 class GithubOnlyMediaRecoveryCanaryTests(unittest.TestCase):
