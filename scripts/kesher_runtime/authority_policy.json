@@ -839,7 +839,7 @@
           "tests/test_v5_delivery_watchdog_contract.py": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631",
           "tests/test_v5_shared_video_controller.py": "d0dfaeaad6d7bb78943c5e54e4f084c633d49411f1caf83f76f479e77b634e49",
           "tests/test_v5_video_source_binding.py": "cef18902a72d505fc3b8da671a706b866890e058ba490a99a3998f96dd5c78cf",
-          "tests/test_kesher_production_cutover.py": "075bf277a36cb68a080b3307c90c8651c37655d6615d77f6aada1b7fdef76e54",
+          "tests/test_kesher_production_cutover.py": "aaa3d4a3aab8a78c19996824c1727c77a0c0b7356ac78b20dd1dc125d9307fc0",
           "scripts/kesher_runtime/github_only_effects.py": "d5015b71af2dade319698f43469abb48442097b566681bb3c9525e52ffcf79ef",
           "tests/test_kesher_external_exclusion.py": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
@@ -2035,7 +2035,7 @@
         "state_write",
         "workflow_dispatch"
       ],
-      "definition_sha256": "f9a17f23d36a6d85eeccc3ed2c76e123afe02ee0d4c2c6c2996a30f4d6746af8",
+      "definition_sha256": "8703ebd617ac10fa28af9cfc9b62cd29ea6b87ba6163a240c7de0741a2f90f1d",
       "resources": [
         "github.dispatch",
         "github.refs",
@@ -2050,6 +2050,8 @@
           "scripts/kesher_runtime/github_only_live_readiness.py": "4f73381efb179023ba4d3847e84547b0d9915e0f93d1bb65d0367ea1838c8c58",
           "scripts/kesher_runtime/github_only_live_inventory.py": "d0baf7cc704479c0d772879d6d2196629ae41c948a3e76f7572d03c48a1b095f",
           "scripts/kesher_runtime/github_only_live_activation.py": "42c5ff8fe4305b884363d78f5850a40ba24f117af675081888b3d989d5555a75",
+          "scripts/kesher_runtime/github_only_revision_rebind.py": "b804178a4ffbf44ee1f26e38d5a2343d8f0ff56760434e4dd32db884b515f0dd",
+          "scripts/kesher_runtime/github_only_media_canary.py": "1793c4ca3dcceca3342d529928ca69f065bdc69e6f8b6ef8e87c359cf224c1a3",
           "scripts/kesher_runtime/ghonly_youtube_gap_audit.py": "7530f422a4b67a3524d2ffb012cbd1aed525d5e3cd684ae1b202401fd5ee76ab",
           "scripts/kesher_owner_vantage_short.py": "016b0f73870d71be542c52f9e703b16e4d7331306c11cb085e66ed2d6267c252",
           "tests/test_kesher_ghonly_live_readiness.py": "40487e371576b4fb157eec8a468180ae7d3d1b6155720df13c0a0ef5208a296f",
@@ -2075,7 +2077,7 @@
         "dispatches": [
           ".github/workflows/kesher-content-controller.yml"
         ],
-        "note": "Existing production liveness watchdog retains its original cron; manual GitHub-only LIVE route performs authenticated read-only complete provider inventory before existing protected kesher-cutover reviewer, re-checks the inventory and true GH review after approval, and writes exactly one owner state dual-ref CAS. It has no provider creation, media dispatch, YouTube upload or new schedule."
+        "note": "Existing production liveness watchdog retains its original cron; manual GitHub-only LIVE route performs authenticated read-only complete provider inventory before existing protected kesher-cutover reviewer, re-checks the inventory and true GH review after approval, and writes exactly one owner state dual-ref CAS. Also offers a separately reviewed revision rebind through identical pre-/post-review provider inventory, true GitHub environment approval and Git multi-ref CAS; includes a separate authenticated exact-task media recovery QA route with 2-day evidence and no provider creation, media dispatch, YouTube upload or new schedule."
       },
       "role": "watchdog"
     },

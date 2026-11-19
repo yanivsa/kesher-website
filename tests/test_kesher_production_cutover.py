@@ -1456,10 +1456,281 @@ class GithubOnlyActionsWorkflowContextRegressionTests(unittest.TestCase):
         workflow = (Path(__file__).resolve().parents[1]
                     / ".github/workflows/kesher-controller-liveness.yml").read_text()
         self.assertEqual(
-            workflow.count("NOTEBOOKLM_HOME: /tmp/kesher-ghonly-notebooklm"), 2,
+            workflow.count("NOTEBOOKLM_HOME: /tmp/kesher-ghonly-notebooklm"), 5,
         )
         self.assertNotIn("NOTEBOOKLM_HOME: ${{ runner.temp }}", workflow)
         self.assertIn("environment: kesher-cutover", workflow)
         self.assertIn("needs: github_owner_live_inventory", workflow)
+
+
+class GithubOnlyLiveRevisionRebindTests(unittest.TestCase):
+    """Only a real environment review and complete same-inventory CAS can rebind."""
+
+    def setUp(self):
+        import base64
+        from scripts.kesher_runtime.identity import canonical_json
+        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+        self.old = "b" * 40
+        self.main = "a" * 40
+        self.legacy = "e" * 40
+        self.report = {
+            "notebooklm_authenticated": True, "youtube_authenticated": True,
+            "no_active_notebooklm_tasks": True, "youtube_scan_complete": True,
+            "known_historical_task_count": 8, "provider_mutations": False,
+        }
+        self.audit = {
+            "status": "READY_FOR_REVIEWED_MIGRATION_ONLY",
+            "pending": [], "production_activated": False,
+            "provider_dispatch": False,
+            "legacy_blob_sha": self.legacy, "legacy_cycle": "2026-11-08",
+        }
+        self.doc = {
+            "schema_version": 1, "owner": "github-only",
+            "epoch": "kesher-ghonly-20261117-prepare1",
+            "activation": "PROTECTED_VERIFIED", "inventory_complete": True,
+            "reviewed_main_sha": self.old,
+            "commands": {},
+            "migration_basis": {"legacy_blob_sha": self.legacy,
+                                "legacy_cycle": "2026-11-08"},
+            "protected_live": {
+                "approved_review_run": "99:1",
+                "inventory_sha256": "f" * 64,
+                "legacy_blob_sha": self.legacy,
+                "source_publication_authorized": False,
+                "media_qa_required": True, "single_writer": "github-only",
+            },
+        }
+
+        class FakeGitHub:
+            def __init__(this):
+                this.main = self.main
+                this.ref = "c" * 40
+                this.tree = "d" * 40
+                this.doc = self.doc
+                this.raw = (canonical_json(this.doc) + "\n").encode()
+                this.blob = _blob_sha(this.raw)
+                this.calls = []
+                this.approved = True
+                this.descendant = True
+                this.pending_raw = None
+                this.cas_conflict = False
+                this.ack_unknown = False
+
+            def request(this, method, path, body=None, **kwargs):
+                this.calls.append((method, path, body))
+                if method == "GET":
+                    if path.endswith("/git/ref/heads/main"):
+                        return {"object": {"sha": this.main}}
+                    if path.endswith("/git/ref/heads/automation-state"):
+                        return {"object": {"sha": this.ref}}
+                    if "/git/commits/" in path:
+                        return {"sha": path.rsplit("/", 1)[1],
+                                "tree": {"sha": this.tree}}
+                    if "/contents/.kesher-controller/github-only-owner.json?ref=" in path:
+                        return {"sha": this.blob, "encoding": "base64",
+                                "content": base64.b64encode(this.raw).decode()}
+                    if path.endswith("/actions/runs/99"):
+                        return {"id": 99, "event": "workflow_dispatch",
+                                "head_sha": self.old, "head_branch": "main",
+                                "run_attempt": 1}
+                    if path.endswith("/actions/runs/100"):
+                        return {"id": 100, "event": "workflow_dispatch",
+                                "head_sha": self.main, "head_branch": "main",
+                                "run_attempt": 1}
+                    if path.endswith("/actions/runs/99/approvals") or path.endswith("/actions/runs/100/approvals"):
+                        if this.approved:
+                            return [{"state": "approved",
+                                     "user": {"login": "yanivsa"},
+                                     "environments": [{"name": "kesher-cutover"}]}]
+                        return []
+                    if "/compare/" in path:
+                        return {"status": "ahead" if this.descendant else "diverged",
+                                "ahead_by": 1, "behind_by": 0 if this.descendant else 1,
+                                "base_commit": {"sha": self.old},
+                                "merge_base_commit": {"sha": self.old}}
+                    if path == "/repos/yanivsa/kesher-website":
+                        return {"full_name": "yanivsa/kesher-website",
+                                "node_id": "repository-id"}
+                if method == "POST":
+                    if path.endswith("/git/blobs"):
+                        this.pending_raw = base64.b64decode(body["content"])
+                        return {"sha": _blob_sha(this.pending_raw)}
+                    if path.endswith("/git/trees"):
+                        return {"sha": "1" * 40}
+                    if path.endswith("/git/commits"):
+                        self.next_sha = "2" * 40
+                        return {"sha": self.next_sha}
+                    if path == "/graphql":
+                        if this.cas_conflict:
+                            return {"errors": [{"message": "ref changed"}]}
+                        this.ref = self.next_sha
+                        this.tree = "1" * 40
+                        this.raw = this.pending_raw
+                        this.blob = _blob_sha(this.raw)
+                        return {"data": {"updateRefs": {"clientMutationId":
+                            ("wrong" if this.ack_unknown else body["variables"]["input"]["clientMutationId"])}}}
+                raise AssertionError((method, path))
+
+        self.gh = FakeGitHub()
+
+    def _call(self, stage="preflight", report=None):
+        from scripts.kesher_runtime.github_only_revision_rebind import preflight, rebind
+        from scripts.kesher_runtime.identity import digest
+        from unittest.mock import patch
+        with patch("scripts.kesher_runtime.github_only_revision_rebind.inventory",
+                   return_value=self.audit):
+            if stage == "preflight":
+                return preflight(self.gh, expected_main=self.main,
+                                 epoch=self.doc["epoch"], report=self.report)
+            return rebind(self.gh, expected_main=self.main,
+                          epoch=self.doc["epoch"], reviewer_run="100:1",
+                          reviewed_inventory_sha256=digest(self.report),
+                          report=report if report is not None else self.report)
+
+    def test_rebind_preflight_is_read_only_and_revision_bound(self):
+        result = self._call()
+        self.assertEqual(result["status"], "READY_FOR_REVIEWED_REVISION_REBIND")
+        self.assertEqual(result["prior_main"], self.old)
+        self.assertFalse(any(m != "GET" for m, _, _ in self.gh.calls))
+
+    def test_genuine_review_single_dual_ref_cas_rebinds_live_owner_not_media(self):
+        result = self._call("rebind")
+        self.assertEqual(result["status"], "PROTECTED_REVIEWED_REVISION_REBOUND")
+        self.assertFalse(result["provider_dispatch"])
+        next_doc = __import__("json").loads(self.gh.raw)
+        self.assertEqual(next_doc["reviewed_main_sha"], self.main)
+        self.assertEqual(next_doc["activation"], "PROTECTED_VERIFIED")
+        self.assertEqual(next_doc["commands"], {})
+        self.assertEqual(next_doc["protected_live"]["code_revision_reviews"][-1][
+            "approved_review_run"], "100:1")
+        self.assertEqual(len([p for m,p,b in self.gh.calls if p == "/graphql"]), 1)
+
+    def test_missing_review_stale_provider_and_nonancestor_all_block_before_write(self):
+        from scripts.kesher_runtime.identity import digest
+        self.gh.approved = False
+        with self.assertRaisesRegex(ValueError, "HUMAN_ENV_REVIEW_NOT_PROVEN"):
+            self._call("rebind")
+        self.gh.approved = True
+        self.gh.descendant = False
+        with self.assertRaisesRegex(ValueError, "NOT_DESCENDANT"):
+            self._call()
+        self.gh.descendant = True
+        self.audit["pending"] = [{"workflow": "kesher-media-worker.yml", "run": 555}]
+        with self.assertRaisesRegex(ValueError, "COMPETING_OWNER_OR_RUN"):
+            self._call()
+        self.audit["pending"] = []
+        with self.assertRaisesRegex(Exception, "INVENTORY_CHANGED_AFTER_REVIEW"):
+            self._call("rebind", report={**self.report, "videos_count": 999})
+        self.assertFalse(any(m == "POST" for m, _, _ in self.gh.calls))
+
+    def test_existing_command_and_publication_permission_are_hard_blockers(self):
+        from scripts.kesher_runtime.github_only_owner_store import _blob_sha
+        from scripts.kesher_runtime.identity import canonical_json
+        for key, value in (
+            ("commands", {"unsettled": {"phase": "WAITING_PROVIDER"}}),
+            ("protected_live", {**self.doc["protected_live"],
+                                "source_publication_authorized": True}),
+        ):
+            old = self.doc[key]
+            self.doc[key] = value
+            self.gh.raw = (canonical_json(self.doc) + "\n").encode()
+            self.gh.blob = _blob_sha(self.gh.raw)
+            with self.assertRaisesRegex(ValueError, "LIVE_OWNER_NOT_ELIGIBLE"):
+                self._call()
+            self.doc[key] = old
+        self.assertFalse(any(m == "POST" for m, _, _ in self.gh.calls))
+
+    def test_conflict_or_unknown_ack_never_retries_cas(self):
+        from scripts.kesher_runtime.state import StateConflict
+        from scripts.kesher_runtime.github import GitHubError
+        self.gh.cas_conflict = True
+        with self.assertRaisesRegex(StateConflict, "CAS_CONFLICT"):
+            self._call("rebind")
+        self.assertEqual(len([1 for m,p,b in self.gh.calls if p == "/graphql"]), 1)
+        self.gh.cas_conflict = False
+        self.gh.ack_unknown = True
+        with self.assertRaises(GitHubError) as c:
+            self._call("rebind")
+        self.assertTrue(c.exception.uncertain)
+        self.assertEqual(len([1 for m,p,b in self.gh.calls if p == "/graphql"]), 2)
+
+
+class GithubOnlyMediaRecoveryCanaryTests(unittest.TestCase):
+    def test_historical_exact_task_identity_is_unique_and_completed(self):
+        from scripts.kesher_runtime.github_only_media_canary import (
+            exact_provider_task, NOTEBOOK_TASK_ID,
+        )
+        from scripts.kesher_runtime.github_only_live_inventory import HISTORICAL_TASKS
+        video = [{"id": task, "status": "completed"} for task in HISTORICAL_TASKS]
+        def command(args):
+            self.assertEqual(args[:2], ["artifact", "list"])
+            return {"artifacts": video}
+        self.assertEqual(exact_provider_task(command=command)["id"], NOTEBOOK_TASK_ID)
+        video[2]["status"] = "generating"
+        with self.assertRaisesRegex(ValueError, "NOT_COMPLETED"):
+            exact_provider_task(command=command)
+        video[2]["status"] = "completed"
+        video.append({"id": NOTEBOOK_TASK_ID, "status": "completed"})
+        with self.assertRaisesRegex(ValueError, "NOT_UNIQUE"):
+            exact_provider_task(command=command)
+
+    def test_qa_uses_existing_frame_and_hebrew_transcript_without_approval(self):
+        from scripts.kesher_runtime.github_only_media_canary import original_media_qa
+        import tempfile
+        from unittest.mock import Mock
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "original.mp4"
+            path.write_bytes(b"a" * 2000)
+            sheet = Path(d) / "sheet.png"; sheet.write_bytes(b"sheet")
+            transcript = Path(d) / "transcript.txt"
+            transcript.write_text("שלום עולם " * 35, encoding="utf-8")
+            core = Mock()
+            core.ffprobe.return_value = {
+                "width": 1280, "height": 720, "duration": 130.0,
+                "audio_codec": "aac", "codec": "h264",
+            }
+            core.estimate_voice_pitch.return_value = 240.0
+            core.FEMALE_PITCH_MIN_HZ = 155.0
+            core.sha256_file.return_value = "a" * 64
+            core.create_contact_sheet.return_value = sheet
+            core.transcribe_hebrew.return_value = transcript
+            qa = original_media_qa(path, core=core)
+            self.assertEqual(qa["qa_status"], "TECHNICAL_ACCEPTED_EDITORIAL_HOLD")
+            self.assertEqual(qa["visual_review_frames"], 8)
+            self.assertFalse(qa["youtube_upload_authorized"])
+            self.assertFalse(qa["owner_visual_review_approved"])
+            core.create_contact_sheet.assert_called_once()
+            core.transcribe_hebrew.assert_called_once()
+
+    def test_existing_media_worker_remains_exact_command_only_and_canary_is_read_only(self):
+        from pathlib import Path
+        import yaml
+        root = Path(__file__).resolve().parents[1] / ".github/workflows"
+        worker = yaml.safe_load((root / "kesher-media-worker.yml").read_text())
+        self.assertEqual(set(worker["jobs"]), {"media"})
+        self.assertEqual(set(worker[True]["workflow_dispatch"]["inputs"]), {"command_id"})
+        watchdog = yaml.safe_load((root / "kesher-controller-liveness.yml").read_text())
+        canary = watchdog["jobs"]["github_only_canary"]
+        self.assertEqual(canary["permissions"], {"contents": "read", "actions": "read"})
+        self.assertNotIn("environment", canary)
+        self.assertIn("inputs.route == 'github_only_media_canary'", canary["if"])
+        steps = "\n".join(str(x.get("run", "")) for x in canary["steps"])
+        self.assertIn("github_only_media_canary", steps)
+        self.assertNotIn("generate video", steps)
+        self.assertNotIn("upload_only", steps)
+
+    def test_revision_rebind_uses_only_existing_liveness_and_protected_review(self):
+        from pathlib import Path
+        import yaml
+        content = (Path(__file__).resolve().parents[1]
+                   / ".github/workflows/kesher-controller-liveness.yml").read_text()
+        data = yaml.safe_load(content)
+        jobs = data["jobs"]
+        self.assertIn("github_owner_rebind_inventory", jobs)
+        self.assertIn("github_owner_rebind", jobs)
+        self.assertEqual(jobs["github_owner_rebind"]["environment"], "kesher-cutover")
+        self.assertEqual(jobs["github_owner_rebind"]["needs"], "github_owner_rebind_inventory")
+        self.assertIn("revision_rebind", str(jobs["github_owner_rebind"]))
+        self.assertNotIn("provider_create", content)
 
 if __name__ == '__main__': unittest.main()
