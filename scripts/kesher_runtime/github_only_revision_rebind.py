@@ -20,6 +20,7 @@ from .github_only_live_activation import _loaded_owner, _reviewed_run, WORKFLOW_
 from .github_only_live_inventory import inspect_live_inventory
 from .github_owner_readiness import inventory
 from .github_only_owner_store import REF, PATH, REPOSITORY, _blob_sha
+from .github_only_qa_hold import verified_qa_hold, COMMAND_ID as HELD_COMMAND_ID
 from .handover_github import UPDATE_REFS
 from .identity import canonical_json, digest, require_sha
 from .state import StateConflict, StateInvalid
@@ -55,7 +56,7 @@ def _eligible(github, *, expected_main: str, epoch: str, report: dict):
             or ledger.get("activation") != "PROTECTED_VERIFIED"
             or ledger.get("inventory_complete") is not True
             or ledger.get("epoch") != epoch
-            or ledger.get("commands") != {}
+            or not isinstance(ledger.get("commands"), dict)
             or not isinstance(owner, dict)
             or owner.get("single_writer") != "github-only"
             or owner.get("media_qa_required") is not True
@@ -102,6 +103,10 @@ def _eligible(github, *, expected_main: str, epoch: str, report: dict):
         previous_main = review["reviewed_main"]
     if previous_main != old_sha:
         raise StateInvalid("GHONLY_REBIND_APPROVAL_CHAIN_STALE")
+    # A completed and independently QA-rejected provider task may be frozen
+    # into QA_HOLD at the same genuine protected code review. Never silently
+    # clear the command or authorize a second media generation.
+    sealed_hold = verified_qa_hold(github, ledger)
     compare = github.request(
         "GET", "/repos/" + REPOSITORY + "/compare/" + old_sha + "..." + expected_main,
     )
@@ -112,17 +117,18 @@ def _eligible(github, *, expected_main: str, epoch: str, report: dict):
             or (compare.get("base_commit") or {}).get("sha") != old_sha
             or (compare.get("merge_base_commit") or {}).get("sha") != old_sha):
         raise StateInvalid("GHONLY_REBIND_NOT_DESCENDANT_OF_VERIFIED_MAIN")
-    return old_ref, tree, ledger, digest(report)
+    return old_ref, tree, ledger, digest(report), sealed_hold
 
 
 def preflight(github, *, expected_main, epoch, report=None):
     read = inspect_live_inventory() if report is None else report
-    _, _, old, fingerprint = _eligible(
+    _, _, old, fingerprint, sealed_hold = _eligible(
         github, expected_main=expected_main, epoch=epoch, report=read,
     )
     return {"status": "READY_FOR_REVIEWED_REVISION_REBIND",
             "prior_main": old["reviewed_main_sha"], "new_main": expected_main,
             "inventory_sha256": fingerprint,
+            "held_command": HELD_COMMAND_ID if sealed_hold else None,
             "provider_dispatch": False, "publication_authorized": False}
 
 
@@ -134,12 +140,17 @@ def rebind(github, *, expected_main, epoch, reviewer_run,
         raise StateInvalid("GHONLY_REBIND_MISSING_INVENTORY_FINGERPRINT")
     _reviewed_run(github, reviewer_run, expected_main)
     read = inspect_live_inventory() if report is None else report
-    old_ref, tree, previous, fingerprint = _eligible(
+    old_ref, tree, previous, fingerprint, sealed_hold = _eligible(
         github, expected_main=expected_main, epoch=epoch, report=read,
     )
     if fingerprint != reviewed_inventory_sha256:
         raise StateConflict("GHONLY_REBIND_PROVIDER_INVENTORY_CHANGED_AFTER_REVIEW")
     next_ledger = copy.deepcopy(previous)
+    if sealed_hold is not None:
+        command = next_ledger["commands"][HELD_COMMAND_ID]
+        if command["phase"] == "CLAIMED":
+            command["phase"] = "QA_HOLD"
+            command["quality_checkpoint"] = copy.deepcopy(sealed_hold)
     next_ledger["reviewed_main_sha"] = expected_main
     next_ledger["protected_live"].setdefault("code_revision_reviews", []).append({
         "previous_main": previous["reviewed_main_sha"],
@@ -199,6 +210,7 @@ def rebind(github, *, expected_main, epoch, reviewer_run,
         raise StateConflict("GHONLY_REBIND_IMMUTABLE_READBACK_MISMATCH")
     return {"status": "PROTECTED_REVIEWED_REVISION_REBOUND",
             "reviewed_main_sha": expected_main, "ledger_ref": candidate,
+            "qa_hold_sealed": bool(sealed_hold),
             "provider_dispatch": False, "publication_authorized": False}
 
 
