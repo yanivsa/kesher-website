@@ -72,12 +72,36 @@ def _eligible(github, *, expected_main: str, epoch: str, report: dict):
     initial = owner.get("approved_review_run")
     if not isinstance(initial, str) or not _RUN.fullmatch(initial):
         raise StateInvalid("GHONLY_REBIND_ORIGINAL_LIVE_REVIEW_MISSING")
-    _reviewed_run(github, initial, old_sha)
     approvals = owner.get("code_revision_reviews", [])
     if (not isinstance(approvals, list) or len(approvals) > 64
-            or any(not isinstance(x, dict) or "approved_review_run" not in x
+            or any(not isinstance(x, dict) or not isinstance(
+                    x.get("approved_review_run"), str)
+                   or not _RUN.fullmatch(x["approved_review_run"])
+                   or not isinstance(x.get("previous_main"), str)
+                   or re.fullmatch(r"[a-f0-9]{40}", x["previous_main"]) is None
+                   or not isinstance(x.get("reviewed_main"), str)
+                   or re.fullmatch(r"[a-f0-9]{40}", x["reviewed_main"]) is None
+                   or not isinstance(x.get("prior_ledger_ref"), str)
+                   or re.fullmatch(r"[a-f0-9]{40}", x["prior_ledger_ref"]) is None
+                   or not isinstance(x.get("inventory_sha256"), str)
+                   or _HASH.fullmatch(x["inventory_sha256"]) is None
                    for x in approvals)):
         raise StateInvalid("GHONLY_REBIND_HISTORY_INVALID")
+    # The initial protected LIVE review is tied to the FIRST reviewed main.
+    # On later rebinds it MUST NOT be checked against the latest main SHA;
+    # each new main has its own independent kesher-cutover approval receipt.
+    # Verify the FULL append-only chain and forbid skipping/reordering reviews.
+    initial_main = approvals[0]["previous_main"] if approvals else old_sha
+    _reviewed_run(github, initial, initial_main)
+    previous_main = initial_main
+    for review in approvals:
+        if (review["previous_main"] != previous_main
+                or review["reviewed_main"] == previous_main):
+            raise StateInvalid("GHONLY_REBIND_APPROVAL_CHAIN_BROKEN")
+        _reviewed_run(github, review["approved_review_run"], review["reviewed_main"])
+        previous_main = review["reviewed_main"]
+    if previous_main != old_sha:
+        raise StateInvalid("GHONLY_REBIND_APPROVAL_CHAIN_STALE")
     compare = github.request(
         "GET", "/repos/" + REPOSITORY + "/compare/" + old_sha + "..." + expected_main,
     )
