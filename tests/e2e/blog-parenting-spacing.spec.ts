@@ -1,4 +1,10 @@
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+
+// Playwright runs this file in Node ESM mode; read generated JSON through fs
+// rather than relying on JSON import assertions unsupported by its loader.
+const summaries: Array<{ id: string; category: string; date: string }> =
+  JSON.parse(readFileSync('src/data/postSummaries.json', 'utf8'));
 
 const cohort = [
   'what-is-parenting-coordination',
@@ -14,17 +20,25 @@ const visibleSlugs = (page: import('@playwright/test').Page) =>
     links.map((element) => element.getAttribute('href')?.split('/').pop() ?? ''),
   );
 
-test('blog homepage staggers five coordination articles but retains true dates and finance archive slots', async ({ page }) => {
+test('blog homepage staggers coordination articles while retaining true dates and financial archive slots', async ({ page }) => {
   await page.goto('/blog');
   await expect(page.getByRole('heading', { name: 'מאמרים וקריאה מעשירה', level: 1 })).toBeVisible();
   await expect(page.getByText(mixedLabel)).toBeVisible();
   const slugs = await visibleSlugs(page);
   expect(new Set(slugs).size).toBe(slugs.length);
+  // Every newly published article must appear once in the actual rendered blog.
+  expect([...slugs].sort()).toEqual(summaries.map((post) => post.id).sort());
 
   const positions = cohort.map((slug) => slugs.indexOf(slug));
   expect(positions.every((position) => position >= 0)).toBe(true);
   for (let index = 1; index < positions.length; index += 1) {
-    expect(positions[index] - positions[index - 1]).toBeGreaterThanOrEqual(3);
+    expect(positions[index] - positions[index - 1]).toBeGreaterThanOrEqual(4);
+  }
+  const allTopicIds = summaries.filter((post) => post.category === 'תיאום הורי').map((post) => post.id);
+  const allTopicPositions = slugs.flatMap((slug, index) => allTopicIds.includes(slug) ? [index] : []);
+  expect(allTopicPositions).toHaveLength(allTopicIds.length);
+  for (let index = 1; index < allTopicPositions.length; index += 1) {
+    expect(allTopicPositions[index] - allTopicPositions[index - 1]).toBeGreaterThanOrEqual(4);
   }
   for (const slug of cohort) {
     const card = page.locator(cards).filter({ has: page.locator(`h2 a[href="/blog/${slug}"]`) });
@@ -49,13 +63,16 @@ test('topic filters and search are not editorially shuffled; mobile has no overf
   expect(dims.scroll).toBeLessThanOrEqual(dims.viewport);
 
   await page.getByRole('tab', { name: 'תיאום הורי', exact: true }).click();
-  await expect(page.locator(cards)).toHaveCount(cohort.length);
-  expect(await visibleSlugs(page)).toEqual(cohort);
+  const topicSlugs = await visibleSlugs(page);
+  expect(topicSlugs.length).toBeGreaterThanOrEqual(cohort.length);
+  // New topic guides may be added, but the original five and their relative order remain.
+  const originalOrder = topicSlugs.filter((slug) => cohort.includes(slug));
+  expect(originalOrder).toEqual(cohort);
   await expect(page.getByText(mixedLabel)).toHaveCount(0);
 
   await page.getByRole('tab', { name: 'כלכלת המשפחה', exact: true }).click();
-  await expect(page.locator(cards)).toHaveCount(17);
-  await expect(page.locator('[data-editorial-archive-slot]')).toHaveCount(17);
+  expect((await visibleSlugs(page)).length).toBeGreaterThanOrEqual(17);
+  expect(await page.locator('[data-editorial-archive-slot]').count()).toBeGreaterThanOrEqual(17);
   await expect(page.getByText(mixedLabel)).toHaveCount(0);
 
   await page.getByRole('button', { name: 'איפוס סינונים' }).click();

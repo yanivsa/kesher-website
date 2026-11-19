@@ -1,12 +1,13 @@
 /**
- * Spread a large same-day parenting-coordination release among nearby blog posts.
+ * Spread parenting-coordination cards in the unfiltered blog overview.
  *
- * Input order is the existing editorial archive order, which already includes
- * explicitly approved financial-guidance archive slots. Keep that order intact
- * for every other topic, and never alter real publication dates or metadata.
+ * The input has already been sorted into approved editorial archive order.
+ * Preserve every publication date, the relative order of all other topics,
+ * and the relative order of parenting-coordination posts. Do not change
+ * filtered/search results or the dedicated topic hub.
  *
- * Used only for the unfiltered /blog overview. Search, tab filters and focused
- * topic hubs retain their existing behavior.
+ * Multiple substantial same-day batches must remain spread out as the archive
+ * grows. A single newly published topic post should not undo an older batch.
  */
 type DatedBlogPost = Readonly<{
   id: string;
@@ -16,7 +17,7 @@ type DatedBlogPost = Readonly<{
 
 const TOPIC = 'תיאום הורי';
 const MIN_SAME_DAY_BATCH = 3;
-const BETWEEN_BATCH_ARTICLES = 3;
+const OTHER_ARTICLES_BETWEEN_TOPIC_CARDS = 3;
 
 export const spreadParentingCoordinationBatch = <T extends DatedBlogPost>(
   editoriallySorted: readonly T[],
@@ -25,39 +26,43 @@ export const spreadParentingCoordinationBatch = <T extends DatedBlogPost>(
 
   for (const post of editoriallySorted) {
     if (post.category === TOPIC) {
-      dates.set(post.date, (dates.get(post.date) || 0) + 1);
+      dates.set(post.date, (dates.get(post.date) ?? 0) + 1);
     }
   }
 
-  // The input is already sorted; disperse only the latest substantial batch.
-  const batchDate = editoriallySorted.find(
-    (post) => post.category === TOPIC && (dates.get(post.date) || 0) >= MIN_SAME_DAY_BATCH,
-  )?.date;
-
-  if (!batchDate) return [...editoriallySorted];
-
-  const batch = editoriallySorted.filter(
-    (post) => post.category === TOPIC && post.date === batchDate,
-  );
-  const beforeBatch = editoriallySorted.findIndex(
-    (post) => post.category === TOPIC && post.date === batchDate,
-  );
-  const others = editoriallySorted.filter(
-    (post) => !(post.category === TOPIC && post.date === batchDate),
-  );
-
-  const output = others.slice(0, beforeBatch);
-  let cursor = beforeBatch;
-
-  for (const article of batch) {
-    output.push(article);
-
-    // Display three other articles after each item before the next topic card.
-    const nextCursor = Math.min(cursor + BETWEEN_BATCH_ARTICLES, others.length);
-    output.push(...others.slice(cursor, nextCursor));
-    cursor = nextCursor;
+  // Leave ordinary archive searches and unrelated single topic posts alone.
+  // Existing substantial releases stay eligible even after new posts arrive.
+  if (![...dates.values()].some((count) => count >= MIN_SAME_DAY_BATCH)) {
+    return [...editoriallySorted];
   }
 
-  output.push(...others.slice(cursor));
-  return output;
+  const result: T[] = [];
+  const pendingTopic: T[] = [];
+  let otherArticlesSinceTopic = Number.POSITIVE_INFINITY;
+
+  for (const post of editoriallySorted) {
+    if (post.category === TOPIC) {
+      if (pendingTopic.length === 0 && otherArticlesSinceTopic >= OTHER_ARTICLES_BETWEEN_TOPIC_CARDS) {
+        result.push(post);
+        otherArticlesSinceTopic = 0;
+      } else {
+        pendingTopic.push(post);
+      }
+      continue;
+    }
+
+    // Never reshuffle the unrelated editorial archive, including approved
+    // financial article slots; we only insert pending topic cards between it.
+    result.push(post);
+    otherArticlesSinceTopic += 1;
+    if (pendingTopic.length > 0 && otherArticlesSinceTopic >= OTHER_ARTICLES_BETWEEN_TOPIC_CARDS) {
+      result.push(pendingTopic.shift()!);
+      otherArticlesSinceTopic = 0;
+    }
+  }
+
+  // When there are too few unrelated cards, keep every remaining article.
+  // In this edge case three-card spacing is mathematically impossible.
+  result.push(...pendingTopic);
+  return result;
 };
