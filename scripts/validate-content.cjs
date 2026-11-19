@@ -216,6 +216,7 @@ const noindexRoutes = new Set([
   '/couples-counseling-gan-yavne',
   '/financial-guidance-couples',
   '/family-budget-guidance',
+  '/contact/parenting-coordination',
 ]);
 const indexableStaticRoutes = STATIC_ROUTES.filter((route) => !noindexRoutes.has(route));
 for (const route of [...indexableStaticRoutes, ...published.map(blogRoute)]) {

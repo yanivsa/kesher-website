@@ -1,7 +1,8 @@
 /** Centralized routes for the parenting-coordination intake funnel. Published article paths are derived from the canonical catalog. */
 import publishedCoordinationIds from '../data/parentingCoordinationArticleIds.json';
 
-export const PARENTING_COORDINATION_CONTACT_URL = '/contact?service=parenting_coordination';
+export const PARENTING_COORDINATION_CONTACT_URL = '/contact/parenting-coordination';
+// Existing query-string inquiries continue to hydrate safely; new internal CTAs use the prerenderable path.
 
 // This tiny manifest is generated from all published canonical posts during
 // npm run generate. Never bundle the full longform article JSON in the shared
@@ -17,6 +18,7 @@ export const isParentingCoordinationPath = (pathname: string, search = ''): bool
   const isDedicatedIntake = normalized === '/contact'
     && new URLSearchParams(search).get('service') === 'parenting_coordination';
   return isDedicatedIntake
+    || normalized === PARENTING_COORDINATION_CONTACT_URL
     || normalized === '/services/parenting-coordination'
     || normalized === '/blog/category/parenting-coordination'
     || articlePaths.has(normalized);

@@ -9,7 +9,8 @@ const articleIds = [
   'can-one-parent-start-parenting-coordination',
 ];
 const origin = 'https://kesher.saharoni.com';
-const inquiry = '/contact?service=parenting_coordination';
+const inquiry = '/contact/parenting-coordination';
+const legacyInquiry = '/contact?service=parenting_coordination';
 
 const showStickyAfterScroll = async (page: import('@playwright/test').Page) => {
   // The page is prerendered, so its H1 can be present before client-side effects attach.
@@ -87,6 +88,18 @@ test('all five articles render with an accessible intake CTA, not a direct booki
   }
 });
 
+test('safe specialty intake is prerendered, private and appointment-free before JavaScript', async ({ request }) => {
+  const response = await request.get(inquiry);
+  expect(response.status()).toBe(200);
+  const html = await response.text();
+  expect(html).toContain('בירור התאמה לתיאום הורי');
+  expect(html).toContain('noindex, nofollow');
+  expect(html).toContain('href="' + origin + inquiry + '"');
+  expect(html).toMatch(/<option[^>]*value="parenting_coordination"[^>]*selected/);
+  expect(html).not.toContain('href="/appointment"');
+  expect(html).not.toContain('אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן');
+});
+
 test('contact inquiry is preselected and hides direct appointment booking', async ({ page }) => {
   await page.goto(inquiry);
   const form = page.locator('section#contact');
@@ -101,6 +114,10 @@ test('contact inquiry is preselected and hides direct appointment booking', asyn
   await expect(page.locator('header a[href="' + inquiry + '"]')).toHaveCount(1);
   await expect(page.locator('footer a[href="' + inquiry + '"]')).toHaveCount(1);
   await expect(page.locator('a[aria-label="יצירת קשר בוואטסאפ"]')).toHaveAttribute('href', /%D7/);
+
+  await page.goto(legacyInquiry);
+  await expect(form.locator('select[name="service"]')).toHaveValue('parenting_coordination');
+  await expect(page.locator('header a[href="/appointment"]')).toHaveCount(0);
 
   await page.goto('/contact');
   await expect(page.locator('header a[href="/appointment"]')).toHaveCount(1);

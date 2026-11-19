@@ -1,10 +1,11 @@
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import ContactSection from '../Home/ContactSection';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import { resolveContactService } from '../../lib/contactServices';
+import { PARENTING_COORDINATION_CONTACT_URL } from '../../lib/parentingCoordination';
 import styles from './ContactPage.module.css';
 
 const schemaData = {
@@ -51,23 +52,30 @@ const schemaData = {
 
 const ContactPage: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const serviceKey = resolveContactService(searchParams.get('service'));
+  const { pathname } = useLocation();
+  const isSpecialtyInquiry = pathname.replace(/\/$/, '') === PARENTING_COORDINATION_CONTACT_URL;
+  const serviceKey = isSpecialtyInquiry ? 'parenting_coordination' : resolveContactService(searchParams.get('service'));
 
   return (
     <div className={styles.page}>
-      <SchemaOrg data={schemaData} />
+      {!isSpecialtyInquiry && <SchemaOrg data={schemaData} />}
       <MetaTags
-        canonical={`${SITE_CONFIG.url}/contact`}
-        title="צור קשר"
-        description="צרו קשר עם שירה סהרוני לתיאום ייעוץ זוגי, הנחיית הורים, גישור או הזמנת הרצאה וסדנה. זמינה באשדוד ובאונליין."
+        canonical={`${SITE_CONFIG.url}${isSpecialtyInquiry ? PARENTING_COORDINATION_CONTACT_URL : '/contact'}`}
+        title={isSpecialtyInquiry ? 'בירור התאמה לתיאום הורי' : 'צור קשר'}
+        description={isSpecialtyInquiry
+          ? 'פנייה ראשונית לבירור התאמה לתיאום הורי עם שירה סהרוני. השאירו פרטי קשר בלבד, ללא מידע רגיש על ילדים או על הסכסוך.'
+          : 'צרו קשר עם שירה סהרוני לתיאום ייעוץ זוגי, הנחיית הורים, גישור או הזמנת הרצאה וסדנה. זמינה באשדוד ובאונליין.'}
+        noIndex={isSpecialtyInquiry}
       />
       <header className={styles.header}>
         <div className="container">
-          <h1>צרו קשר</h1>
-          <p>אפשר לקבוע מועד לפגישת ייעוץ או להשאיר פרטים לפנייה, כולל להזמנת הרצאה או סדנה.</p>
+          <h1>{isSpecialtyInquiry ? 'בירור התאמה לתיאום הורי' : 'צרו קשר'}</h1>
+          <p>{isSpecialtyInquiry
+            ? 'לפני תחילת תיאום הורי חשוב לבדוק התאמה ובטיחות. השאירו פרטי קשר בלבד; אל תשלחו פרטים מזהים על ילדים, מסמכים משפטיים או תיאורי פגיעה בטופס פתוח.'
+            : 'אפשר לקבוע מועד לפגישת ייעוץ או להשאיר פרטים לפנייה, כולל להזמנת הרצאה או סדנה.'}</p>
         </div>
       </header>
-      <ContactSection key={serviceKey} />
+      <ContactSection key={serviceKey} initialServiceOverride={isSpecialtyInquiry ? 'parenting_coordination' : undefined} />
     </div>
   );
 };

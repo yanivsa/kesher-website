@@ -2,7 +2,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const STATIC_ROUTES = [
-  '/', '/about', '/now', '/friends', '/links', '/lectures', '/contact', '/appointment',
+  '/', '/about', '/now', '/friends', '/links', '/lectures', '/contact', '/contact/parenting-coordination', '/appointment',
   '/services/couples', '/services/parenting', '/services/mediation', '/services/parenting-coordination', '/services/gifted-parenting',
   '/services/aliyah-families', '/services/couples-aliyah-relocation', '/services/premarital-first-year',
   '/services/family-financial-guidance', '/blog/category/family-finances', '/financial-guidance-couples', '/family-budget-guidance',

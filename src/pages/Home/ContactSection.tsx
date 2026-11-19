@@ -10,9 +10,13 @@ import { PARENTING_COORDINATION_WHATSAPP_MESSAGE } from '../../lib/parentingCoor
 import TurnstileWidget from '../../components/TurnstileWidget';
 import styles from './ContactSection.module.css';
 
-const ContactSection: React.FC = () => {
+interface ContactSectionProps {
+  initialServiceOverride?: string;
+}
+
+const ContactSection: React.FC<ContactSectionProps> = ({ initialServiceOverride }) => {
   const [searchParams] = useSearchParams();
-  const initialService = resolveContactService(searchParams.get('service'));
+  const initialService = resolveContactService(initialServiceOverride ?? searchParams.get('service'));
   const [formData, setFormData] = useState({
     name: '',
     email: '',

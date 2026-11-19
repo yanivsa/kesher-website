@@ -56,6 +56,18 @@ const normalizePreviewOrigins = (html) => previewOrigins.reduce(
 const clientSnapshot = async (page) => {
   await page.evaluate(() => {
     document.getElementById('root')?.setAttribute('data-kesher-render', 'client-snapshot');
+    // React's controlled <select> updates the live value property, but Chromium
+    // does not serialize that property as an option[selected] attribute.
+    // Persist the specialty selection for the static no-JS source as well.
+    if (window.location.pathname.replace(/\/$/, '') === '/contact/parenting-coordination') {
+      const select = document.querySelector('select[name="service"]');
+      if (!(select instanceof HTMLSelectElement) || select.value !== 'parenting_coordination') {
+        throw new Error('Specialty intake form did not preselect parenting coordination');
+      }
+      for (const option of select.options) {
+        option.defaultSelected = option.value === 'parenting_coordination';
+      }
+    }
   });
   // Newer Vite builds may materialize runtime preload URLs against the preview
   // origin. That origin dies when prerender completes, so persisting it makes
