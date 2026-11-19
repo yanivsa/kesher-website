@@ -5,8 +5,9 @@ owner ledger, retargets a scheduler or authorizes public publication.
 
 Visuals are ORIGINAL animated Remotion scenes, without external stock URLs.
 The authentic original NotebookLM audio is *stream-copied* (not regenerated).
-The rendered MP4 and proof may be held in a short-lived private GitHub artifact
-for an independent full visual+audio+source QA, NOT a YouTube public video.
+The rendered MP4 stays on the ephemeral runner only. GitHub's PUBLIC repo
+retains just the non-sensitive frame contact sheet and SHA evidence (one day).
+This is a candidate for editorial QA, NOT a public or reviewed full video.
 """
 from __future__ import annotations
 
