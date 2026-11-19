@@ -2158,4 +2158,31 @@ class GithubOnlyProtectedProductionWorkerTests(unittest.TestCase):
         self.assertIn("github_only_media_production", str(ghonly["steps"]))
         self.assertNotIn("workflow_dispatch", ghonly.get("run", ""))
 
+class GithubOnlyProtectedRebindDiagnosticTests(unittest.TestCase):
+    def test_exposes_only_allowlisted_authentic_failure_codes(self):
+        from scripts.kesher_runtime.github_only_revision_rebind import _safe_blocker_code
+        for code in (
+            "GHONLY_REBIND_PROVIDER_INVENTORY_CHANGED_AFTER_REVIEW",
+            "GHONLY_REBIND_APPROVAL_CHAIN_STALE",
+            "GHONLY_QA_HOLD_EXACT_PROVIDER_TASK_NOT_COMPLETED",
+            "KESHER_GHONLY_REBIND_NOT_READY",
+        ):
+            self.assertEqual(_safe_blocker_code(ValueError(code)), code)
+
+    def test_never_leaks_provider_exception_or_token(self):
+        from scripts.kesher_runtime.github_only_revision_rebind import _safe_blocker_code
+        for raw in (
+            "GHONLY_ERROR: bearer ghp_0123456789",
+            "NotebookLM auth expired\\naccess_token=abc",
+            "GHONLY_REBIND_INVALID\\nSUPER_SECRET",
+            "Authorization: Bearer test_value",
+            "GHONLY_REBIND_X;print(token)",
+            "",
+        ):
+            self.assertEqual(
+                _safe_blocker_code(RuntimeError(raw)),
+                "GHONLY_REBIND_UNCLASSIFIED_SAFE_BLOCKER",
+            )
+
+
 if __name__ == '__main__': unittest.main()
