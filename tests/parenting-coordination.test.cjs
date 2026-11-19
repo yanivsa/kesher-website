@@ -18,6 +18,7 @@ for (const id of originalFive) assert(postIds.includes(id), 'foundational guide 
 
 assert(STATIC_ROUTES.includes(service), 'service must be registered for prerender and sitemap');
 assert(STATIC_ROUTES.includes(category), 'category must be registered for prerender and sitemap');
+assert(STATIC_ROUTES.includes('/contact/parenting-coordination'), 'safe intake must be prerendered');
 assert(buildSitemap(loadPosts()).includes('https://kesher.saharoni.com' + category + '</loc>'), 'topic hub must be in generated sitemap');
 assert(buildSitemap(loadPosts()).includes('https://kesher.saharoni.com' + service + '</loc>'), 'service must be in generated sitemap');
 const app = read('src/App.tsx');
@@ -26,10 +27,12 @@ assert(app.includes('<Route path="' + category + '"'), 'category route must be m
 assert(app.indexOf('<Route path="' + category + '"') < app.indexOf('<Route path="/blog/:id"'), 'category route must precede article param route');
 assert(app.includes('parentingCoordinationCategory.preload'), 'category must be preloaded');
 assert(app.includes('parentingCoordination.preload'), 'service must be preloaded');
+assert(app.includes('<Route path="/contact/parenting-coordination"'), 'safe intake must have a route');
 
 const allPublishedPosts = loadPosts().filter(isPublishable);
 const allRoutes = new Set([...STATIC_ROUTES, ...allPublishedPosts.map((p) => '/blog/' + p.id)]);
 const generatedSitemap = buildSitemap(loadPosts());
+assert(!generatedSitemap.includes('https://kesher.saharoni.com/contact/parenting-coordination</loc>'), 'noindex intake must be excluded from sitemap');
 const posts = allPublishedPosts.filter((p) => postIds.includes(p.id));
 assert.equal(posts.length, postIds.length, 'every canonical topic guide must be published and in sitemap');
 for (const post of posts) {
