@@ -86,6 +86,15 @@ describe('unpublished parenting coordination editorial growth pack', () => {
     }
   });
 
+  it('keeps article bodies out of shared navigation chunks and generates routes from the published catalog', () => {
+    const intakeSource = readFileSync('src/lib/parentingCoordination.ts', 'utf8');
+    const generatorSource = readFileSync('scripts/generate-post-summaries.cjs', 'utf8');
+    expect(intakeSource).toContain('parentingCoordinationArticleIds.json');
+    expect(intakeSource).not.toContain('parentingCoordinationPosts.json');
+    expect(generatorSource).toContain("post.category === 'תיאום הורי'");
+    expect(generatorSource).toContain('parentingCoordinationArticleIds.json');
+  });
+
   it('the source of truth automatically covers every future published coordination URL', () => {
     expect([...PARENTING_COORDINATION_ARTICLE_IDS].sort()).toEqual([...publishedIds].sort());
     for (const id of publishedIds) {
