@@ -121,7 +121,7 @@ test.describe('Financial guidance release acceptance', () => {
       expect(html, route).toContain('dir="rtl"');
       const financeArticle = financialPosts.find(({ id }) => route === '/blog/' + id);
       if (financeArticle) {
-        const metaElements = html.match(/<meta\\b[^>]*>/g) || [];
+        const metaElements = html.match(/<meta\b[^>]*>/g) || [];
         const expectedImageUrl = `content="${origin}${financeArticle.image}"`;
         expect(metaElements.find(meta => meta.includes('property="og:image"')), route)
           .toContain(expectedImageUrl);
