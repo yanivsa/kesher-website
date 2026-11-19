@@ -1040,6 +1040,21 @@ class GithubOnlyDurableEffectsTests(unittest.TestCase):
         self.ledger["commands"][self.command] = {
             "phase": "CLAIMED", "run_id": self.run,
             "epoch": self.epoch, "reviewed_main_sha": self.main,
+            # A NotebookLM Long now MUST follow independently verified
+            # exact-source fulltext. Preserve that safety gate in all
+            # legacy durability tests without relaxing production policy.
+            "effects": {
+                "notebooklm_source": {
+                    "phase": "VERIFIED_OUTPUT",
+                    "source_slug": self.slug,
+                    "source_sha256": self.source_sha,
+                    "request_sha256": "0" * 64,
+                    "provider_id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+                    "receipt_sha256": "1" * 64,
+                    "qa_sha256": self.source_sha,
+                    "evidence_kind": "source_fulltext",
+                }
+            },
         }
         self.gh.raw = (canonical_json(self.ledger) + "\n").encode()
         self.gh.blob = _blob_sha(self.gh.raw)
