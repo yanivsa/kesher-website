@@ -12,7 +12,7 @@ const conversionLandingRoutes = new Set([
   '/couples-counseling-ashdod','/parenting-guidance-ashdod','/couples-mediation-ashdod','/parenting-adhd-ashdod',
   '/couples-counseling-after-infidelity','/parenting-guidance-divorce','/parenting-guidance-early-childhood','/couples-adhd','/couples-second-chapter',
 ]);
-const noindexRoutes = new Set(['/thank-you-booked','/thank-you-contact','/couples-crisis-ashdod','/couples-counseling-gan-yavne','/financial-guidance-couples','/family-budget-guidance']);
+const noindexRoutes = new Set(['/thank-you-booked','/thank-you-contact','/couples-crisis-ashdod','/couples-counseling-gan-yavne','/financial-guidance-couples','/family-budget-guidance','/contact/parenting-coordination']);
 const buildSitemap = (posts) => {
   const published = posts.filter(isPublishable);
   const newestPostDate = published.reduce((latest, post) => { const effectiveDate = (post.updatedAt && post.updatedAt > post.date) ? post.updatedAt : post.date; return effectiveDate > latest ? effectiveDate : latest; }, '');
