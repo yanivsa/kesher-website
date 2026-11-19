@@ -1456,7 +1456,7 @@ class GithubOnlyActionsWorkflowContextRegressionTests(unittest.TestCase):
         workflow = (Path(__file__).resolve().parents[1]
                     / ".github/workflows/kesher-controller-liveness.yml").read_text()
         self.assertEqual(
-            workflow.count("NOTEBOOKLM_HOME: /tmp/kesher-ghonly-notebooklm"), 4,
+            workflow.count("NOTEBOOKLM_HOME: /tmp/kesher-ghonly-notebooklm"), 5,
         )
         self.assertNotIn("NOTEBOOKLM_HOME: ${{ runner.temp }}", workflow)
         self.assertIn("environment: kesher-cutover", workflow)
@@ -1702,21 +1702,19 @@ class GithubOnlyMediaRecoveryCanaryTests(unittest.TestCase):
             core.create_contact_sheet.assert_called_once()
             core.transcribe_hebrew.assert_called_once()
 
-    def test_media_worker_has_no_fallback_to_mutating_legacy_or_gateway(self):
+    def test_existing_media_worker_remains_exact_command_only_and_canary_is_read_only(self):
         from pathlib import Path
-        path = (Path(__file__).resolve().parents[1]
-                / ".github/workflows/kesher-media-worker.yml")
-        content = path.read_text(encoding="utf-8")
         import yaml
-        jobs = yaml.safe_load(content)["jobs"]
-        self.assertIn("github_only_canary", jobs)
-        canary = jobs["github_only_canary"]
-        self.assertEqual(canary["permissions"]["contents"], "read")
-        self.assertEqual(canary["permissions"]["actions"], "read")
+        root = Path(__file__).resolve().parents[1] / ".github/workflows"
+        worker = yaml.safe_load((root / "kesher-media-worker.yml").read_text())
+        self.assertEqual(set(worker["jobs"]), {"media"})
+        self.assertEqual(set(worker[True]["workflow_dispatch"]["inputs"]), {"command_id"})
+        watchdog = yaml.safe_load((root / "kesher-controller-liveness.yml").read_text())
+        canary = watchdog["jobs"]["github_only_canary"]
+        self.assertEqual(canary["permissions"], {"contents": "read", "actions": "read"})
         self.assertNotIn("environment", canary)
-        self.assertIn("ghonly_canary", canary["if"])
-        self.assertIn("mode == 'canonical'", jobs["media"]["if"])
-        steps = "\n".join(str(x.get("run","")) for x in canary["steps"])
+        self.assertIn("inputs.route == 'github_only_media_canary'", canary["if"])
+        steps = "\n".join(str(x.get("run", "")) for x in canary["steps"])
         self.assertIn("github_only_media_canary", steps)
         self.assertNotIn("generate video", steps)
         self.assertNotIn("upload_only", steps)
