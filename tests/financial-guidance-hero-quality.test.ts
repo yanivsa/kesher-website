@@ -9,9 +9,9 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-import posts from './financialGuidancePosts.json';
-import approvals from './financialGuidanceHeroApprovals.json';
-import summaries from './postSummaries.json';
+import posts from '../src/data/financialGuidancePosts.json';
+import approvals from '../src/data/financialGuidanceHeroApprovals.json';
+import summaries from '../src/data/postSummaries.json';
 
 const CUTOFF = '2026-11-17';
 
