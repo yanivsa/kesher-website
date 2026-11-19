@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
-import summaries from '../../src/data/postSummaries.json';
+import { readFileSync } from 'node:fs';
+
+// Playwright runs this file in Node ESM mode; read generated JSON through fs
+// rather than relying on JSON import assertions unsupported by its loader.
+const summaries: Array<{ id: string; category: string; date: string }> =
+  JSON.parse(readFileSync('src/data/postSummaries.json', 'utf8'));
 
 const cohort = [
   'what-is-parenting-coordination',
