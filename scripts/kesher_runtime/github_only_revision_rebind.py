@@ -29,6 +29,15 @@ _RUN = re.compile(r"[1-9][0-9]*:[1-9][0-9]*")
 _HASH = re.compile(r"[0-9a-f]{64}")
 
 
+def _safe_blocker_code(exc):
+    # Deliberately refuse raw third-party API errors, exception reprs,
+    # personal data, bearer tokens and line breaks.
+    value = str(exc)
+    if re.fullmatch(r"(?:GHONLY|KESHER)_[A-Z0-9_]{5,120}", value):
+        return value
+    return "GHONLY_REBIND_UNCLASSIFIED_SAFE_BLOCKER"
+
+
 def _eligible(github, *, expected_main: str, epoch: str, report: dict):
     require_sha(expected_main, 40)
     if (not isinstance(epoch, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", epoch)
@@ -253,10 +262,8 @@ def main(argv=None):
         # Provider responses and GitHub exception payloads may contain tokens.
         # Expose ONLY an allow-listed internal error-code shape so the next
         # audited review can identify a genuine blocker without dumping secrets.
-        code = str(exc)
-        if re.fullmatch(r"(?:GHONLY|KESHER)_[A-Z0-9_]{5,120}", code) is None:
-            code = "GHONLY_REBIND_UNCLASSIFIED_SAFE_BLOCKER"
-        print("KESHER_GHONLY_REBIND_BLOCKED:" + code, file=sys.stderr)
+        print("KESHER_GHONLY_REBIND_BLOCKED:" + _safe_blocker_code(exc),
+              file=sys.stderr)
         return 2
 
 
