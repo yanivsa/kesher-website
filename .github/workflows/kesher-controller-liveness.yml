@@ -507,7 +507,7 @@ jobs:
   github_only_visual_repair:
     # Read-only film remaster of the one immutable QA-held NotebookLM Long.
     # Render original SVG cinematic visuals, preserve the exact original audio
-    # stream and put private QA proof into a 1-day Actions artifact. No upload.
+    # stream and retain only contact sheet + hashes in a 1-day artifact. No MP4 upload.
     if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && inputs.route == 'github_only_visual_repair' && inputs.reviewed_revision == github.sha }}
     runs-on: ubuntu-latest
     timeout-minutes: 80
@@ -578,12 +578,11 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           REVIEWED_REVISION: ${{ github.sha }}
         run: python -m scripts.kesher_runtime.github_only_visual_repair
-      - name: Save a private one-day visual review MP4 and QA evidence only
+      - name: Retain one-day visual frame review and hashes only; never MP4
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: kesher-ghonly-cinematic-long-review-${{ github.run_id }}
           path: |
-            /tmp/kesher-ghonly-visual-repair/kesher-remastered-cinematic-review.mp4
             /tmp/kesher-ghonly-visual-repair/visual-repair-qa.json
             /tmp/kesher-ghonly-visual-repair/ghonly-cinematic-e5a57c64f85a2e-remotion-visual-review.png
           if-no-files-found: error
