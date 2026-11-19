@@ -1471,7 +1471,7 @@ class GithubOnlyActionsWorkflowContextRegressionTests(unittest.TestCase):
         workflow = (Path(__file__).resolve().parents[1]
                     / ".github/workflows/kesher-controller-liveness.yml").read_text()
         self.assertEqual(
-            workflow.count("NOTEBOOKLM_HOME: /tmp/kesher-ghonly-notebooklm"), 5,
+            workflow.count("NOTEBOOKLM_HOME: /tmp/kesher-ghonly-notebooklm"), 6,
         )
         self.assertNotIn("NOTEBOOKLM_HOME: ${{ runner.temp }}", workflow)
         self.assertIn("environment: kesher-cutover", workflow)
