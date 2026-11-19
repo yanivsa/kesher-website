@@ -249,8 +249,14 @@ def main(argv=None):
             )
         print("KESHER_GHONLY_REBIND " + canonical_json(result))
         return 0
-    except (RuntimeError, ValueError, OSError, TypeError, KeyError):
-        print("KESHER_GHONLY_REBIND_BLOCKED", file=sys.stderr)
+    except (RuntimeError, ValueError, OSError, TypeError, KeyError) as exc:
+        # Provider responses and GitHub exception payloads may contain tokens.
+        # Expose ONLY an allow-listed internal error-code shape so the next
+        # audited review can identify a genuine blocker without dumping secrets.
+        code = str(exc)
+        if re.fullmatch(r"(?:GHONLY|KESHER)_[A-Z0-9_]{5,120}", code) is None:
+            code = "GHONLY_REBIND_UNCLASSIFIED_SAFE_BLOCKER"
+        print("KESHER_GHONLY_REBIND_BLOCKED:" + code, file=sys.stderr)
         return 2
 
 
