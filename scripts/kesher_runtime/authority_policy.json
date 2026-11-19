@@ -2054,7 +2054,7 @@
           "scripts/kesher_runtime/github_only_qa_hold.py": "d4d565104523aa13540de9ff77c44a740be29565f1d399f6803af145f6b5cbbc",
           "scripts/kesher_runtime/github_only_media_canary.py": "1793c4ca3dcceca3342d529928ca69f065bdc69e6f8b6ef8e87c359cf224c1a3",
           "scripts/kesher_runtime/github_only_visual_repair.py": "8d577f97a63c9b2f52e788903544d036cde3423965bccc5d70124ac635d8f48c",
-          "src/remotion/kesher-overview/KesherCinematicRepair.tsx": "6920d144febca47e7526703122dd35739d5a426ea645df780f6ba01b73b47a51",
+          "src/remotion/kesher-overview/KesherCinematicRepair.tsx": "40ad7ccfe688ec276a1854eb2bab1d64bb20545b60527f6415b4a52c89940247",
           "src/remotion/Root.tsx": "b047a450831af2e171da49fa9fee7196bd7edaa81b3a01171717effc3bb6208b",
           "scripts/kesher_runtime/ghonly_youtube_gap_audit.py": "7530f422a4b67a3524d2ffb012cbd1aed525d5e3cd684ae1b202401fd5ee76ab",
           "scripts/kesher_owner_vantage_short.py": "016b0f73870d71be542c52f9e703b16e4d7331306c11cb085e66ed2d6267c252",
