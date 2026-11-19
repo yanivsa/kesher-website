@@ -30,7 +30,7 @@ SOURCE_SLUG = "gratitude-relationship-genuine-thank-you"
 SOURCE_SHA256 = "d4921756c12061359fca7cefea175387b534735d1af841a59e46a392edcc8c5f"
 ORIGINAL_ITEM_ID = "video-20261113-003733-d4921756c1"
 NOTEBOOK_TASK_ID = "63b37426-9fd2-49e3-a2ce-a412fc347484"
-WORKFLOW_REF = REPOSITORY + "/.github/workflows/kesher-media-worker.yml@refs/heads/main"
+WORKFLOW_REF = REPOSITORY + "/.github/workflows/kesher-controller-liveness.yml@refs/heads/main"
 MAX_MEDIA_BYTES = 1024 * 1024 * 1024
 _HASH = re.compile(r"[a-f0-9]{64}")
 
