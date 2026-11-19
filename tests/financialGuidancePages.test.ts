@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import financialPosts from '../src/data/financialGuidancePosts.json';
 import summaries from '../src/data/postSummaries.json';
@@ -64,20 +65,21 @@ describe('family finance content publishing contract', () => {
     expect(summaries.filter(s => s.id === post.id)).toHaveLength(1);
   });
 
-  it('provides distinctive local illustrations and meaningful Hebrew alt descriptions', () => {
+  it('provides distinctive locally stored JPEG photography and meaningful Hebrew alt descriptions', () => {
     const images = new Set<string>();
     const contents = new Set<string>();
     for (const post of financialPosts) {
-      expect(post.image).toMatch(/^\/images\/financial-guidance\/articles\/[a-z0-9-]+\.svg$/);
+      expect(post.image).toMatch(/^\/images\/financial-guidance\/articles\/[a-z0-9-]+\.jpg$/);
       expect(post.imageAlt.length).toBeGreaterThan(30);
       expect(images.has(post.image)).toBe(false);
       images.add(post.image);
       const file = path.join(root, 'public', post.image.replace(/^\//, ''));
       expect(existsSync(file)).toBe(true);
-      const svg = readFileSync(file, 'utf8');
-      expect(svg).toContain('<svg');
-      expect(contents.has(svg)).toBe(false);
-      contents.add(svg);
+      const jpeg = readFileSync(file);
+      expect(jpeg.subarray(0, 3)).toEqual(Buffer.from([0xff, 0xd8, 0xff]));
+      const fingerprint = createHash('sha256').update(jpeg).digest('hex');
+      expect(contents.has(fingerprint)).toBe(false);
+      contents.add(fingerprint);
     }
   });
 
