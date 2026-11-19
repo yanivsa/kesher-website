@@ -4,6 +4,7 @@ import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import { pushAnalyticsEvent } from '../../../lib/analytics';
+import { PARENTING_COORDINATION_CONTACT_URL } from '../../../lib/parentingCoordination';
 import styles from '../shared/SpecialtyServicePage.module.css';
 
 const path = '/services/parenting-coordination';
@@ -55,7 +56,7 @@ const ParentingCoordinationPage: React.FC = () => (
             חשוב לבדוק את התאמת המשפחה ואת מסגרת התהליך.
           </p>
           <div className={styles.heroActions}>
-            <Link to="/contact?service=parenting_coordination" onClick={trackInquiry} className={styles.primaryButton}>בירור ראשוני והתאמה</Link>
+            <Link to={PARENTING_COORDINATION_CONTACT_URL} onClick={trackInquiry} className={styles.primaryButton}>בירור ראשוני והתאמה</Link>
             <Link to="/blog/category/parenting-coordination" className={styles.secondaryButton}>למאמרים בנושא</Link>
           </div>
         </div>
@@ -138,7 +139,7 @@ const ParentingCoordinationPage: React.FC = () => (
         <h3>איפה ניתן ללמוד עוד?</h3>
         <p>הסבר מקצועי זמין באתר <a href="https://www.afccnet.org/Resource-Center/Family-Resources/Understanding-the-Parenting-Coordination-Process" target="_blank" rel="noopener noreferrer">AFCC</a> ובאתר <a href="https://brookdale.jdc.org.il/publication/parenting_coordination/" target="_blank" rel="noopener noreferrer">מכון ברוקדייל</a>.</p>
         <div className={styles.heroActions}>
-          <Link to="/contact?service=parenting_coordination" onClick={trackInquiry} className={styles.primaryButton}>לבירור ראשוני עם שירה</Link>
+          <Link to={PARENTING_COORDINATION_CONTACT_URL} onClick={trackInquiry} className={styles.primaryButton}>לבירור ראשוני עם שירה</Link>
           <Link to="/blog/category/parenting-coordination" className={styles.secondaryButton}>לכל המאמרים בתיאום הורי</Link>
         </div>
       </div>
