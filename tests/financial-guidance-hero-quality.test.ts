@@ -12,6 +12,7 @@ import { describe, expect, it } from 'vitest';
 import posts from '../src/data/financialGuidancePosts.json';
 import approvals from '../src/data/financialGuidanceHeroApprovals.json';
 import summaries from '../src/data/postSummaries.json';
+import { getImageDimensions } from '../src/data/imageDimensions';
 
 const CUTOFF = '2026-11-17';
 
@@ -70,6 +71,7 @@ describe('financial guidance hero editorial quality approval', () => {
     const bytes = readFileSync(resolve(process.cwd(), 'public', approval.image.slice(1)));
     expect(bytes.length).toBeGreaterThan(40_000);
     const { width, height } = dimensionsOfJpeg(bytes);
+    expect(getImageDimensions(approval.image), `${approval.id}: declared HTML width and height must match real JPEG pixels`).toEqual({ width, height });
     expect(width).toBeGreaterThanOrEqual(1200);
     expect(height).toBeGreaterThanOrEqual(675);
     expect(width / height).toBeGreaterThan(1.2);

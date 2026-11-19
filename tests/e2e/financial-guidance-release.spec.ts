@@ -119,6 +119,15 @@ test.describe('Financial guidance release acceptance', () => {
       expect(html, route).toContain('application/ld+json');
       expect(html, route).not.toMatch(/<meta name="robots" content="noindex/i);
       expect(html, route).toContain('dir="rtl"');
+      const financeArticle = financialPosts.find(({ id }) => route === '/blog/' + id);
+      if (financeArticle) {
+        const metaElements = html.match(/<meta\b[^>]*>/g) || [];
+        const expectedImageUrl = `content="${origin}${financeArticle.image}"`;
+        expect(metaElements.find(meta => meta.includes('property="og:image"')), route)
+          .toContain(expectedImageUrl);
+        expect(metaElements.find(meta => meta.includes('name="twitter:image"')), route)
+          .toContain(expectedImageUrl);
+      }
     }
   });
 
