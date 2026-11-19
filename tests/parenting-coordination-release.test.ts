@@ -34,6 +34,7 @@ describe('Parenting coordination release regression checks', () => {
   it('routes all specialty pages, including trailing slashes, into pre-screening', () => {
     const paths = [
       '/services/parenting-coordination',
+      '/contact/parenting-coordination',
       '/blog/category/parenting-coordination',
       ...PARENTING_COORDINATION_ARTICLE_IDS.map((id) => '/blog/' + id),
     ];
@@ -50,7 +51,7 @@ describe('Parenting coordination release regression checks', () => {
   });
 
   it('uses a valid, privacy-conscious dedicated contact service', () => {
-    expect(PARENTING_COORDINATION_CONTACT_URL).toBe('/contact?service=parenting_coordination');
+    expect(PARENTING_COORDINATION_CONTACT_URL).toBe('/contact/parenting-coordination');
     expect(resolveContactService('parenting_coordination')).toBe('parenting_coordination');
     expect(CONTACT_SERVICE_OPTIONS).toContainEqual({
       value: 'parenting_coordination',
@@ -76,7 +77,8 @@ describe('Parenting coordination release regression checks', () => {
     expect(contact).toContain("formData.service === 'parenting_coordination'");
     expect(contact).toContain('ללא פרטי ילדים או פרטים רגישים');
     expect(contact).toContain('!isLectureInquiry && !isCoordinationInquiry');
-    expect(contactPage).toContain('<ContactSection key={serviceKey} />');
+    expect(contactPage).toContain("initialServiceOverride={isSpecialtyInquiry ? 'parenting_coordination' : undefined}");
+    expect(contactPage).toContain('noIndex={isSpecialtyInquiry}');
     expect(contact).not.toContain('setFormData((current) => current.service === initialService');
   });
 });
