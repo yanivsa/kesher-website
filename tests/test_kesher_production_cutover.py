@@ -1845,7 +1845,7 @@ class GithubOnlyMediaRecoveryCanaryTests(unittest.TestCase):
             path.write_bytes(b"a" * 2000)
             sheet = Path(d) / "sheet.png"; sheet.write_bytes(b"sheet")
             transcript = Path(d) / "transcript.txt"
-            transcript.write_text("×©××× ×¢××× " * 35, encoding="utf-8")
+            transcript.write_text("שלום עולם " * 35, encoding="utf-8")
             core = Mock()
             core.ffprobe.return_value = {
                 "width": 1280, "height": 720, "duration": 130.0,

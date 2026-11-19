@@ -839,7 +839,7 @@
           "tests/test_v5_delivery_watchdog_contract.py": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631",
           "tests/test_v5_shared_video_controller.py": "d0dfaeaad6d7bb78943c5e54e4f084c633d49411f1caf83f76f479e77b634e49",
           "tests/test_v5_video_source_binding.py": "cef18902a72d505fc3b8da671a706b866890e058ba490a99a3998f96dd5c78cf",
-          "tests/test_kesher_production_cutover.py": "56e3951d3f7bfc86e7f2ad4aeee8faf34d2c30f40db1ea48b6f1696dc3e8776c",
+          "tests/test_kesher_production_cutover.py": "0f8fea7b1195bf8b1dca9683c025db0cbc02b87b82851122e245aaec33e9f425",
           "scripts/kesher_runtime/github_only_effects.py": "3b55004bf4404d09703d9bad889f68a7ff1e65fd4cfe2987abe1d6a8f054b947",
           "tests/test_kesher_external_exclusion.py": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
