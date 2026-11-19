@@ -20,4 +20,14 @@ const summaries = posts
   }));
 
 fs.writeFileSync(outputPath, `${JSON.stringify(summaries, null, 2)}\n`);
-console.log(`Generated ${summaries.length} lightweight post summaries.`);
+
+// Small, public-only route manifest for the global intake nav. Never import
+// full article bodies into Header/Footer just to classify the current URL.
+const coordinationIds = summaries
+  .filter((post) => post.category === 'תיאום הורי')
+  .map((post) => post.id);
+fs.writeFileSync(
+  path.join(ROOT, 'src', 'data', 'parentingCoordinationArticleIds.json'),
+  `${JSON.stringify(coordinationIds, null, 2)}\n`,
+);
+console.log(`Generated ${summaries.length} lightweight post summaries and ${coordinationIds.length} coordination routes.`);

@@ -1,13 +1,12 @@
-/** Centralized routes for the parenting-coordination intake funnel. Keep this list aligned with the published topic catalog. */
+/** Centralized routes for the parenting-coordination intake funnel. Published article paths are derived from the canonical catalog. */
+import publishedCoordinationIds from '../data/parentingCoordinationArticleIds.json';
+
 export const PARENTING_COORDINATION_CONTACT_URL = '/contact?service=parenting_coordination';
 
-export const PARENTING_COORDINATION_ARTICLE_IDS = [
-  'what-is-parenting-coordination',
-  'parenting-coordination-vs-mediation',
-  'divorced-parents-communication',
-  'parenting-time-holidays-after-divorce',
-  'can-one-parent-start-parenting-coordination',
-] as const;
+// This tiny manifest is generated from all published canonical posts during
+// npm run generate. Never bundle the full longform article JSON in the shared
+// Header/Footer/mobile-sticky navigation just to decide specialty intake.
+export const PARENTING_COORDINATION_ARTICLE_IDS: readonly string[] = publishedCoordinationIds;
 
 const articlePaths = new Set<string>(
   PARENTING_COORDINATION_ARTICLE_IDS.map(id => `/blog/${id}`),

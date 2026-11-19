@@ -9,7 +9,12 @@ const root = path.resolve(__dirname, '..');
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const service = '/services/parenting-coordination';
 const category = '/blog/category/parenting-coordination';
-const postIds = ['what-is-parenting-coordination', 'parenting-coordination-vs-mediation', 'divorced-parents-communication', 'parenting-time-holidays-after-divorce', 'can-one-parent-start-parenting-coordination'];
+const topicCatalog = JSON.parse(read('src/data/parentingCoordinationPosts.json'));
+const postIds = topicCatalog.map((post) => post.id);
+const originalFive = ['what-is-parenting-coordination', 'parenting-coordination-vs-mediation', 'divorced-parents-communication', 'parenting-time-holidays-after-divorce', 'can-one-parent-start-parenting-coordination'];
+assert.equal(new Set(postIds).size, postIds.length, 'topic ids must remain unique');
+assert(postIds.length >= 5, 'do not remove the five foundational guides');
+for (const id of originalFive) assert(postIds.includes(id), 'foundational guide missing: ' + id);
 
 assert(STATIC_ROUTES.includes(service), 'service must be registered for prerender and sitemap');
 assert(STATIC_ROUTES.includes(category), 'category must be registered for prerender and sitemap');
@@ -26,7 +31,7 @@ const allPublishedPosts = loadPosts().filter(isPublishable);
 const allRoutes = new Set([...STATIC_ROUTES, ...allPublishedPosts.map((p) => '/blog/' + p.id)]);
 const generatedSitemap = buildSitemap(loadPosts());
 const posts = allPublishedPosts.filter((p) => postIds.includes(p.id));
-assert.equal(posts.length, 5, 'editorial hub must have five distinct published articles');
+assert.equal(posts.length, postIds.length, 'every canonical topic guide must be published and in sitemap');
 for (const post of posts) {
   assert.equal(post.category, 'תיאום הורי', post.id + ' category mismatch');
   assert(isPublishable(post), post.id + ' must satisfy editorial length and sections');
@@ -35,7 +40,11 @@ for (const post of posts) {
   assert(words.length >= 850, post.id + ' should provide an in-depth practical guide (850+ words)');
   assert((post.content.match(/<h3>/g) || []).length >= 7, post.id + ' should have scannable topical sections');
   assert(post.directAnswer && post.directAnswer.length >= 75 && post.directAnswer.length <= 350, post.id + ' needs concise GEO answer');
-  assert.equal(post.updatedAt, '2026-11-13', post.id + ' updated editorial date must match substantive revision');
+  assert(/^20\d{2}-\d{2}-\d{2}$/.test(post.date) && /^20\d{2}-\d{2}-\d{2}$/.test(post.updatedAt) && post.updatedAt >= post.date, post.id + ' requires truthful datePublished/dateModified');
+  if (originalFive.includes(post.id)) {
+    assert.equal(post.date, '2026-11-12', post.id + ' original publication date changed');
+    assert.equal(post.updatedAt, '2026-11-13', post.id + ' original editorial revision date changed');
+  }
   assert(!/\b(100%|מובטח|הצלחה מובטחת|ממונה מטעם בית משפט|מתאמת הורית מוסמכת)\b/.test(visibleText), post.id + ' must not imply guaranteed outcomes or unverified credentials');
   assert(post.content.includes('בטיחות') || post.content.includes('אלימות'), post.id + ' must discuss safety suitability');
   assert(post.content.includes('href="/services/parenting-coordination"') || post.content.includes('href="/blog/'), post.id + ' needs internal topic links');

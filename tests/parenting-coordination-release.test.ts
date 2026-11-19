@@ -22,8 +22,12 @@ describe('Parenting coordination release regression checks', () => {
   it('maintains a complete and unique list of published topic articles for route-specific intake', () => {
     const actualIds = posts.map((post) => post.id).sort();
     expect([...PARENTING_COORDINATION_ARTICLE_IDS].sort()).toEqual(actualIds);
-    expect(new Set(actualIds).size).toBe(5);
+    expect(new Set(actualIds).size).toBe(actualIds.length);
+    expect(actualIds.length).toBeGreaterThanOrEqual(5);
     expect(posts.every((post) => post.category === 'תיאום הורי')).toBe(true);
+    for (const foundational of ['what-is-parenting-coordination', 'parenting-coordination-vs-mediation', 'divorced-parents-communication', 'parenting-time-holidays-after-divorce', 'can-one-parent-start-parenting-coordination']) {
+      expect(actualIds).toContain(foundational);
+    }
     expect(posts.every((post) => post.relatedPostIds.length >= 2)).toBe(true);
   });
 
