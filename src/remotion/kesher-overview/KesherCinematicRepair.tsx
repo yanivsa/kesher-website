@@ -68,7 +68,7 @@ export const KesherCinematicRepair: React.FC<CinematicRepairProps> = ({
 }) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const t = frame / fps;
+  const t = Math.min(frame, Math.max(0, durationInFrames - 1)) / fps;
   const i = Math.min(SCENES.length - 1, SCENES.reduce(
     (n, scene, idx) => t >= scene.start ? idx : n, 0,
   ));
