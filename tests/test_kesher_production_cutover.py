@@ -2235,7 +2235,7 @@ class GithubOnlyCinematicRemasterTests(unittest.TestCase):
         self.assertIn("GHONLY_VISUAL_REPAIR_NOTEBOOKLM_AUDIO_CHANGED", code)
         self.assertIn("GHONLY_VISUAL_REPAIR_FINAL_TECHNICAL_MISMATCH", code)
 
-    def test_visual_workflow_artifact_is_short_lived_private_and_not_original_mp4(self):
+    def test_public_repository_artifact_contains_only_frame_review_and_hashes(self):
         import yaml
         from pathlib import Path
         root = Path(__file__).resolve().parents[1]
@@ -2245,7 +2245,7 @@ class GithubOnlyCinematicRemasterTests(unittest.TestCase):
         self.assertEqual(len(artifact), 1)
         self.assertEqual(artifact[0]["with"]["retention-days"], 1)
         paths = artifact[0]["with"]["path"]
-        self.assertIn("kesher-remastered-cinematic-review.mp4", paths)
+        self.assertNotIn("kesher-remastered-cinematic-review.mp4", paths)
         self.assertIn("visual-repair-qa.json", paths)
         self.assertNotIn("exact-original-notebooklm.mp4", paths)
         self.assertNotIn("notebooklm generate", str(job).lower())
