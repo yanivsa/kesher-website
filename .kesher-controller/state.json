@@ -58,12 +58,12 @@
     "quality_content_sha256": "244213e59bf25c3c4b6b240adc3e6bdc88a590a15b02413b394929ad8e78ad7c",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-20T15:55:48.778004+00:00",
+    "quality_checked_at": "2026-11-20T16:01:04.889173+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-11-20T15:52:58.416974+00:00",
     "next_deploy_retry_at": "2026-11-20T15:57:48.326144+00:00",
-    "deploy_run_id": 44766299746
+    "deploy_run_id": 44767710169
   },
   "backlog": [
     {
@@ -3242,11 +3242,12 @@
       "cycle": "2026-11-08",
       "inputs": {},
       "intent_at": "2026-11-20T15:52:48.326144+00:00",
-      "status": "dispatched",
+      "status": "completed_success",
       "previous_run_id": 44766299746,
-      "observed_active_run_id": null,
+      "observed_active_run_id": 44767710169,
       "dispatch_head_sha": "1d00c046d6ef7555f204b4870f4b0f9bc9bdef44",
-      "dispatched_at": "2026-11-20T15:52:48.326144+00:00"
+      "dispatched_at": "2026-11-20T15:52:48.326144+00:00",
+      "conclusion": "success"
     }
   },
   "last_child_notification": {
