@@ -9,6 +9,7 @@ from .state import StateInvalid
 
 ISSUER = 'https://token.actions.githubusercontent.com'
 WORKFLOW = '.github/workflows/kesher-production-cutover.yml'
+CONTROLLER_WORKFLOW = '.github/workflows/kesher-content-controller.yml'
 
 
 def _decode(value):
@@ -23,11 +24,13 @@ def github_jwks():
 
 class ActionsIdentity:
     def __init__(self, github, *, repo, repository_id, main_sha, audience, jwks=github_jwks,
-                 workflows=(WORKFLOW,), environment='kesher-cutover', main_ref_sha=None):
+                 workflows=(WORKFLOW,), environment='kesher-cutover', main_ref_sha=None,
+                 allow_controller_schedule=False):
         self.github, self.repo, self.repository_id = github, repo, str(repository_id)
         self.main_sha, self.audience, self.jwks = main_sha, audience, jwks
         self.workflows, self.environment = frozenset(workflows), environment
         self.main_ref_sha = main_ref_sha or main_sha
+        self.allow_controller_schedule = allow_controller_schedule
 
     def authenticate(self, token, *, allow_unpinned_head=False):
         """Authenticate signed claims before any credentialed native observation.
@@ -55,9 +58,13 @@ class ActionsIdentity:
             now=time.time()
             workflow = claims.get('workflow_ref','').removeprefix(self.repo+'/').removesuffix('@refs/heads/main')
             if workflow not in self.workflows: raise ValueError('workflow identity')
+            event = 'workflow_dispatch'
+            if (self.allow_controller_schedule and self.environment is None
+                    and workflow == CONTROLLER_WORKFLOW and claims.get('event_name') == 'schedule'):
+                event = 'schedule'
             expected={'iss':ISSUER,'aud':self.audience,'repository':self.repo,'repository_id':self.repository_id,
                 'ref':'refs/heads/main','workflow_ref':self.repo+'/'+workflow+'@refs/heads/main',
-                'workflow_sha':self.main_sha,'sha':self.main_sha,'event_name':'workflow_dispatch',
+                'workflow_sha':self.main_sha,'sha':self.main_sha,'event_name':event,
                 'environment':self.environment}
             if allow_unpinned_head:
                 from .identity import require_sha
@@ -84,7 +91,7 @@ class ActionsIdentity:
             run=self.github.request('GET',api+'/actions/runs/'+rid)
             if (run['id'] != int(rid) or run['run_attempt'] != int(attempt) or run['status']!='in_progress'
                     or run['head_sha']!=self.main_sha or run['head_branch']!='main'
-                    or run['event']!='workflow_dispatch' or run['path'].split('@',1)[0]!=workflow
+                    or run['event']!=claims['event_name'] or run['path'].split('@',1)[0]!=workflow
                     or self.github.request('GET',api+'/git/ref/heads/main')['object']['sha']!=self.main_ref_sha):
                 raise ValueError('live run binding')
             return rid+'/'+attempt

@@ -22,20 +22,36 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ControllerActivationContractTests(unittest.TestCase):
-    def test_manual_main_can_run_but_other_events_repositories_and_refs_cannot(self):
+    def test_canonical_and_legacy_controller_jobs_are_mutually_exclusive(self):
         data = yaml.safe_load((ROOT/'.github/workflows/kesher-content-controller.yml').read_text())
         self.assertEqual(set(data.get('on', data.get(True))), {'schedule', 'workflow_run', 'push', 'workflow_dispatch'})
-        expression = data['jobs']['control']['if'].removeprefix('${{').removesuffix('}}').strip()
-        expression = expression.replace('&&', 'and')
-        for repo, ref, event, expected in (
-            ('yanivsa/kesher-website', 'refs/heads/main', 'workflow_dispatch', True),
-            ('yanivsa/kesher-website', 'refs/heads/main', 'schedule', True),
-            ('other/repo', 'refs/heads/main', 'workflow_dispatch', False),
-            ('yanivsa/kesher-website', 'refs/heads/other', 'workflow_dispatch', False),
-        ):
-            with self.subTest(repo=repo, ref=ref, event=event):
-                self.assertEqual(eval(expression, {'__builtins__': {}},
-                    {'github': SimpleNamespace(repository=repo, ref=ref, event_name=event)}), expected)
+        def selected(event='schedule', gateway=True, schedule=True, tick=False,
+                     request='', request_id='', repo='yanivsa/kesher-website', ref='refs/heads/main'):
+            context = {
+                'github': SimpleNamespace(repository=repo, ref=ref, event_name=event),
+                'vars': SimpleNamespace(KESHER_CUTOVER_GATEWAY_URL='https://cutover.example' if gateway else '',
+                                        KESHER_SCHEMA6_SCHEDULE_ENABLED='true' if schedule else ''),
+                'inputs': SimpleNamespace(canonical_tick=tick, request_json=request, request_id=request_id, run_now=False),
+            }
+            active = []
+            for job in ('control', 'canonical_tick', 'master_intent'):
+                expression = data['jobs'][job]['if'].removeprefix('${{').removesuffix('}}')
+                expression = ' '.join(expression.split()).replace('&&', 'and').replace('||', 'or').replace('!inputs.', 'not inputs.')
+                if eval(expression, {'__builtins__': {}}, context):
+                    active.append(job)
+            return active
+
+        self.assertEqual(selected(gateway=False), ['control'])
+        self.assertEqual(selected(gateway=False, event='workflow_dispatch'), ['control'])
+        self.assertEqual(selected(gateway=False, event='workflow_dispatch', tick=True), [])
+        self.assertEqual(selected(), ['canonical_tick'])
+        self.assertEqual(selected(schedule=False), [])
+        self.assertEqual(selected(schedule=False, event='workflow_dispatch', tick=True), ['canonical_tick'])
+        self.assertEqual(selected(event='workflow_dispatch', tick=True, request='{}', request_id='1'), ['master_intent'])
+        self.assertEqual(selected(event='workflow_run'), [])
+        self.assertEqual(selected(event='push'), [])
+        self.assertEqual(selected(repo='other/repo'), [])
+        self.assertEqual(selected(ref='refs/heads/other'), [])
 
 
 class CutoverHostTests(unittest.TestCase):
@@ -405,7 +421,7 @@ class AuthorityClientTests(unittest.TestCase):
             requests.append(request)
             if len(requests)==1:return io.BytesIO(b'{"value":"signed-token"}')
             return io.BytesIO(b'{"main_sha":"observed"}')
-        observation = ActionsAuthorityObserver(env, opener=open_url)()
+        observation = ActionsAuthorityObserver(env | {'GITHUB_EVENT_NAME':'schedule'}, opener=open_url)()
         self.assertEqual(observation, {'main_sha':'observed'})
         self.assertEqual(len(requests),2)
         self.assertEqual(requests[1].full_url,'https://cutover.example/v1/authority')
@@ -413,6 +429,8 @@ class AuthorityClientTests(unittest.TestCase):
         self.assertIsNone(requests[1].data)
         self.assertEqual(requests[1].headers['Authorization'],'Bearer signed-token')
         for change in ({'GITHUB_REF':'refs/heads/repair'}, {'GITHUB_EVENT_NAME':'push'},
+                       {'GITHUB_EVENT_NAME':'schedule', 'GITHUB_WORKFLOW_REF':
+                        'yanivsa/kesher-website/.github/workflows/kesher-media-worker.yml@refs/heads/main'},
                        {'GITHUB_WORKFLOW_REF':'yanivsa/kesher-website/.github/workflows/legacy.yml@refs/heads/main'},
                        {'KESHER_CUTOVER_GATEWAY_URL':'http://cutover.example'},
                        {'ACTIONS_ID_TOKEN_REQUEST_URL':'https://evil.example/token'}):

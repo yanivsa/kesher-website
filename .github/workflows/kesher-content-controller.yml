@@ -23,6 +23,11 @@ on:
       - "public/images/blog/**"
   workflow_dispatch:
     inputs:
+      canonical_tick:
+        description: Run one Schema-6 controller tick after verified cutover
+        required: false
+        default: false
+        type: boolean
       request_id:
         description: Immutable Master request ID (Schema-6 only)
         required: false
@@ -95,6 +100,45 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  canonical_tick:
+    # Keep a manual verification step available before enabling the existing cron.
+    if: >-
+      ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' &&
+          vars.KESHER_CUTOVER_GATEWAY_URL != '' &&
+          ((github.event_name == 'schedule' && vars.KESHER_SCHEMA6_SCHEDULE_ENABLED == 'true') ||
+           (github.event_name == 'workflow_dispatch' && inputs.canonical_tick &&
+            inputs.request_json == '' && inputs.request_id == '' && !inputs.run_now)) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: write
+      pull-requests: read
+      checks: read
+      id-token: write
+    steps:
+      - name: Checkout immutable trusted controller
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Install trusted observation dependencies
+        run: python -m pip install requests==2.33.0 cryptography==50.0.1 PyYAML==6.0.2 -r scripts/requirements-article.txt
+      - name: Reconcile article, Overview and Short through verified authority
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KESHER_CUTOVER_GATEWAY_URL: ${{ vars.KESHER_CUTOVER_GATEWAY_URL }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python -m scripts.kesher_runtime.controller_entry --mode live
+
   master_intent:
     # Explicit owner intent ONLY. Never starts for schedule, push or legacy child events.
     if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.request_json != '' && inputs.request_id != '' }}
@@ -129,7 +173,7 @@ jobs:
 
   control:
     # Sole pre-cutover daily authority; automatically fails closed once canonical state becomes Schema 6.
-    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' && vars.KESHER_CUTOVER_GATEWAY_URL == '' && !inputs.canonical_tick }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
