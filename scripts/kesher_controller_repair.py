@@ -338,14 +338,17 @@ def main():
     def admit():
         require_pre_cutover_controller_invocation(os.environ)
         require_bridge(client.load_controller_state())
+    controller_failed = os.environ.get("KESHER_CONTROLLER_OUTCOME") == "failure"
     result = reconcile(state, store=RepairStore(api), jules=ControllerJulesClient(key) if key else None,
-                       api=api, controller_failed=os.environ.get("KESHER_CONTROLLER_OUTCOME") == "failure", admit=admit,
+                       api=api, controller_failed=controller_failed, admit=admit,
                        deployed_revision=subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip())
     print(json.dumps(result, sort_keys=True))
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
         with Path(summary).open("a") as handle:
             handle.write("\n### Controller repair\n\n```json\n" + json.dumps(result, indent=2) + "\n```\n")
+    if not controller_failed and result.get("status") in {"human_blocker", "uncertain", "awaiting_executor"}:
+        return 0
     return 0 if result["status"] not in {"human_blocker", "authority_refused", "uncertain", "awaiting_executor"} else 1
 
 
