@@ -3,21 +3,21 @@
   "cycle": "2026-11-08",
   "status": "article_retry_wait",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
-    "next_retry_at": "2026-11-08T20:50:49.024971+00:00",
+    "next_retry_at": null,
     "run_id": 42519241414,
     "processed_run_id": 42519241414,
     "provider_id": null,
-    "failure_fingerprint": "ARTICLE_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 2,
       "COMPLETED_WITHOUT_PR": 1,
       "ARTICLE_WORKFLOW_FAILED": 1
     },
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
     "last_run_conclusion": "cancelled",
     "last_worker_result": {
@@ -50,7 +50,17 @@
     "last_jules_session_id": "sessions/6279608980264196665",
     "last_failed_run_id": 42519241414,
     "resume_dispatches": 2,
-    "last_dispatch_at": "2026-11-08T20:16:03.540734+00:00"
+    "last_dispatch_at": "2026-11-08T20:16:03.540734+00:00",
+    "slug": "stress-crossover-after-work",
+    "title": "חזרתם מהעבודה וכל דבר קטן הופך לריב? כך סטרס עובר בין בני זוג",
+    "url": "https://kesher.saharoni.com/blog/stress-crossover-after-work",
+    "published_date": "2026-11-08",
+    "quality_content_sha256": "244213e59bf25c3c4b6b240adc3e6bdc88a590a15b02413b394929ad8e78ad7c",
+    "reconciled_existing_article": true,
+    "quality_status": "passed",
+    "quality_checked_at": "2026-11-20T14:50:02.615736+00:00",
+    "quality_violations": [],
+    "live": false
   },
   "backlog": [
     {
@@ -2581,7 +2591,7 @@
   "updated_at": "2026-11-08T20:50:56.333997+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2589,7 +2599,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "image_path": "/images/blog/stress-crossover-after-work-hero.png"
   },
   "long_video": {
     "attempt_count": 0,
@@ -3213,6 +3224,16 @@
       "previous_run_id": 42516246292,
       "observed_active_run_id": null,
       "dispatched_at": "2026-11-08T20:15:45.961255+00:00"
+    },
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-11-08",
+      "inputs": {},
+      "intent_at": "2026-11-20T14:49:59.478280+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "8ee9604d726ce6441e796f47959b46ce0ad5e685"
     }
   },
   "last_child_notification": {
