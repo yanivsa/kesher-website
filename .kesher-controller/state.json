@@ -18,7 +18,7 @@
       "ARTICLE_WORKFLOW_FAILED": 1
     },
     "attempts": 0,
-    "deploy_attempts": 2,
+    "deploy_attempts": 3,
     "last_run_conclusion": "cancelled",
     "last_worker_result": {
       "schema_version": 1,
@@ -61,8 +61,8 @@
     "quality_checked_at": "2026-11-20T15:52:52.590490+00:00",
     "quality_violations": [],
     "live": false,
-    "last_deploy_dispatch_at": "2026-11-20T15:02:33.984670+00:00",
-    "next_deploy_retry_at": "2026-11-20T15:07:25.558384+00:00",
+    "last_deploy_dispatch_at": "2026-11-20T15:52:58.416974+00:00",
+    "next_deploy_retry_at": "2026-11-20T15:57:48.326144+00:00",
     "deploy_run_id": 44766299746
   },
   "backlog": [
@@ -1776,12 +1776,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-08T16:00:49.744991+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-08T16:01:21.741186+00:00",
       "from": "article_live",
       "to": "blocked",
@@ -2594,9 +2588,19 @@
         "http_status": 200,
         "attempt": 2
       }
+    },
+    {
+      "at": "2026-11-20T15:52:58.417016+00:00",
+      "from": "article_deploying",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 200,
+        "attempt": 3
+      }
     }
   ],
-  "updated_at": "2026-11-20T15:50:54.917940+00:00",
+  "updated_at": "2026-11-20T15:52:58.417023+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -3238,10 +3242,11 @@
       "cycle": "2026-11-08",
       "inputs": {},
       "intent_at": "2026-11-20T15:52:48.326144+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 44766299746,
       "observed_active_run_id": null,
-      "dispatch_head_sha": "1d00c046d6ef7555f204b4870f4b0f9bc9bdef44"
+      "dispatch_head_sha": "1d00c046d6ef7555f204b4870f4b0f9bc9bdef44",
+      "dispatched_at": "2026-11-20T15:52:48.326144+00:00"
     }
   },
   "last_child_notification": {
