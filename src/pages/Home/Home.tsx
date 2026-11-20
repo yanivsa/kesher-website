@@ -323,8 +323,8 @@ const situations = [
     text: 'כשיש בדידות בתוך הזוגיות, ירידה באינטימיות או שגרה עמוסה שמרחיקה במקום לחבר.',
   },
   {
-    title: 'זוג בתקופת שינוי או אתגרי הורות',
-    text: 'כשהורות טרייה, מעבר, שינוי בקריירה או פערים בגישות החינוך יוצרים עומס ודורשים התאמה משותפת.',
+    title: 'משפחה בתקופת שינוי או אתגרי הורות',
+    text: 'כשהורות, מעבר או פערים בגישות החינוך יוצרים עומס בבית, וקשה למצוא שוב דרך משותפת.',
   },
 ];
 
@@ -521,7 +521,7 @@ const Home: React.FC = () => {
         <section className={styles.signalBar} aria-label="תחומי העיסוק של שירה">
           <span>ייעוץ זוגי</span>
           <i aria-hidden="true" />
-          <span>הנחיית הורים</span>
+          <span>הדרכת הורים</span>
           <i aria-hidden="true" />
           <span>גישור</span>
           <i aria-hidden="true" />
@@ -567,7 +567,7 @@ const Home: React.FC = () => {
           <div className={styles.sectionHeading}>
             <span className={styles.kicker}>מצבים בהם ייעוץ יכול לעזור</span>
             <h2>מתי כדאי לפנות לייעוץ?</h2>
-            <p>הפנייה לייעוץ קורית פעמים רבות כשהמנגנונים המוכרים מפסיקים לעבוד, והתחושה בבית הופכת למתוחה.</p>
+            <p>זוגות והורים פונים לליווי כשהדרכים המוכרות מפסיקות לעבוד, כשהמתח בבית גובר או כשהמשפחה עוברת שינוי. יחד נברר מה חוזר על עצמו ונבחר צעד מעשי שמתאים לכם.</p>
           </div>
           <div className={styles.processGrid}>
             {situations.map((item, idx) => (
@@ -587,7 +587,7 @@ const Home: React.FC = () => {
         <section className={`${styles.section} ${styles.trustSection} ${styles.revealSection}`}>
           <div className={styles.trustHeading}>
             <span className={styles.kicker}>אמון נבנה בחוויה</span>
-            <h2>מה משתנה כשמצליחים לדבר אחרת.</h2>
+            <h2>מה משתנה כשמצליחים לדבר אחרת</h2>
             <p>הפרטים המזהים הושמטו כדי לשמור על פרטיות הפונים.</p>
           </div>
           <div className={styles.quoteGrid}>
@@ -624,11 +624,11 @@ const Home: React.FC = () => {
 
           <div className={styles.aboutCopy}>
             <span className={styles.kicker}>נעים מאוד, שירה</span>
-            <h2>מקצועיות שמחזיקה את המורכבות. שיחה שנשארת אנושית.</h2>
+            <h2>מקצועיות שמחזיקה את המורכבות, ושיחה שנשארת אנושית</h2>
             <p className={styles.aboutLead}>
-              אני מלווה זוגות והורים ברגעים שבהם התקשורת נתקעת, העומס גובר
-              או הבית מבקש דרך חדשה. המטרה שלי היא להקשיב ולהבין יחד את הקושי,
-              ולחבר אותו לצעדים מעשיים שאפשר ליישם בחיים עצמם.
+              בעבודה שלי אני מחברת בין השיח הזוגי, ההורות וההסכמות שמחזיקות את הבית.
+              קושי שנראה נקודתי עשוי להיות קשור גם לעומס, למעבר או לדפוס שחוזר במשפחה.
+              יחד ננסה להבין את התמונה הרחבה ולבחור צעדים שמתאימים לחיים שלכם.
             </p>
             <p>
               יחד נפרק מצבים שנראים מסובכים, נזהה את הדפוסים שחוזרים
@@ -640,10 +640,10 @@ const Home: React.FC = () => {
               ))}
             </ul>
             <aside className={styles.professionalProfile} aria-label="הכשרה מקצועית">
-              <span>הכשרה מקצועית מוסמכת</span>
+              <span>רקע והכשרה מקצועית</span>
               <p>
                 העשייה שלי נשענת על הכשרה בייעוץ זוגי ומשפחתי, בהנחיית הורים
-                קבוצתית ופרטנית עם התמחות ב־ADHD, ובגישור.
+                קבוצתית ופרטנית, עם מקום מרכזי למשפחות לילדים עם ADHD, ובגישור.
               </p>
               <small>
                 ההכשרות כוללות לימודים מקצועיים, תעודות ופרקטיקום מעשי.
@@ -660,7 +660,7 @@ const Home: React.FC = () => {
                 <FiArrowLeft aria-hidden="true" />
               </Link>
             </div>
-            <p className={styles.legalBackground}>רקע נוסף: עורכת דין בהכשרתי.</p>
+            <p className={styles.legalBackground}>רקע נוסף: עורכת דין בהכשרתי. במסגרת הגישור איני מנסחת הסכמים משפטיים או מעניקה ייעוץ וייצוג משפטיים.</p>
           </div>
         </section>
 
@@ -703,7 +703,7 @@ const Home: React.FC = () => {
             </article>
             <article className={styles.faqCard}>
               <h3 className={styles.faqQuestion}>האם הדרכת הורים מתקיימת עם הילדים?</h3>
-              <p className={styles.faqAnswer}>בדרך כלל ההדרכה מיועדת להורים בלבד. אנו מתמקדים במתן כלים, הבנה וביטחון להורים כדי לסייע להם להתמודד עם המצבים השונים שעולים בבית. במקרים מסוימים ולפי הצורך, ניתן לשלב מפגש משותף.</p>
+              <p className={styles.faqAnswer}>בדרך כלל ההדרכה מיועדת להורים, אך בהתאם לגיל הילד ולמטרת הליווי אפשר לשלב גם מפגש בהשתתפותו. נבחן יחד מה נכון לכל משפחה.</p>
             </article>
             <article className={styles.faqCard}>
               <h3 className={styles.faqQuestion}>האם ניתן לקיים פגישות מרחוק (אונליין)?</h3>
@@ -734,7 +734,7 @@ const Home: React.FC = () => {
           <span className={styles.brandMark}>ש</span>
           <div>
             <strong>שירה סהרוני</strong>
-            <small>ייעוץ זוגי · הנחיית הורים · גישור</small>
+            <small>ייעוץ זוגי · הדרכת הורים · גישור</small>
           </div>
         </div>
         <div className={styles.footerLinks}>

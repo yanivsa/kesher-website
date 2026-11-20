@@ -12,7 +12,7 @@ const AboutSection: React.FC = () => {
           <div className={styles.imageWrapper}>
             <img
               src="/images/shira-saharoni.webp"
-              alt="שירה סהרוני, יועצת זוגית ומשפחתית, מגשרת ומנחת הורים"
+              alt="שירה סהרוני, יועצת זוגית, מנחת הורים ומגשרת מוסמכת"
               className={styles.aboutImage}
               width="1271"
               height="1280"
@@ -37,7 +37,7 @@ const AboutSection: React.FC = () => {
           <div className={styles.credentials}>
             <div className={styles.credential}>
               <span className={styles.icon}><FiCompass aria-hidden="true" /></span>
-              <span>ייעוץ זוגי וגישור סביב תקשורת, קירבה ובניית הסכמות</span>
+              <span>ייעוץ זוגי וגישור סביב תקשורת, קרבה ובניית הסכמות</span>
             </div>
             <div className={styles.credential}>
               <span className={styles.icon}><FiAward aria-hidden="true" /></span>
