@@ -542,7 +542,7 @@ const ParentingGuidanceAshdodPage: React.FC = () => {
               </div>
               <div className={styles.detailsItem}>
                 <strong>שינוי או ביטול:</strong>
-                <span>עד 24 שעות מראש — ללא חיוב. בביטול מאוחר עשוי לחול חיוב בכפוף לדין. <a href="/terms">לתנאים המלאים</a></span>
+                <span>עד 24 שעות מראש — ללא חיוב. בביטול מאוחר עשוי לחול חיוב בכפוף לדין. <a href="/terms" style={{ textDecoration: "underline", textUnderlineOffset: "0.15em" }}>לתנאים המלאים</a></span>
               </div>
             </div>
 

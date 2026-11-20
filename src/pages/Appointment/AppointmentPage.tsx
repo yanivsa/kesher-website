@@ -61,7 +61,7 @@ const AppointmentPage: React.FC = () => {
       <header className={styles.header}>
         <div className={`container ${styles.headerContent}`}>
           <span className={styles.eyebrow}>מתחילים בשיחה</span>
-          <h1>{financialInquiry ? 'קביעת פגישה לליווי כלכלי לזוגות ומשפחות' : 'קביעת פגישת ייעוץ איתי'}</h1>
+          <h1>{financialInquiry ? 'קביעת פגישה לליווי כלכלי לזוגות ומשפחות' : 'קביעת פגישת ייעוץ עם שירה'}</h1>
           <p>
             בחרו את המועד שנוח לכם. בפגישה נכיר, נבין מה מעסיק אתכם ונבחן יחד
             איזו דרך מקצועית יכולה להתאים.

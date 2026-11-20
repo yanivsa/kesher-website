@@ -447,7 +447,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
             אין מספר קבוע של פגישות שמתאים לכל זוג. אחרי הפגישה הראשונה אפשר להבין יחד מה נכון עבורכם בהמשך.
           </div>
           <div className={styles.sessionsNote}>
-            אם יש אלימות או סכנה בבית, פגישה זוגית משותפת אינה המענה המתאים. לקבלת סיוע מוגן פנו למוקד 118 של משרד הרווחה; בסכנה מיידית חייגו 100 למשטרה. <a href="https://me.health.gov.il/parenting/learn-more/family-parental-welfare/warning-signs-of-domestic-violence/" target="_blank" rel="noopener noreferrer">מידע רשמי על קבלת עזרה</a>.
+            אם יש אלימות או סכנה בבית, פגישה זוגית משותפת אינה המענה המתאים. לקבלת סיוע מוגן פנו למוקד 118 של משרד הרווחה; בסכנה מיידית חייגו 100 למשטרה. <a href="https://me.health.gov.il/parenting/learn-more/family-parental-welfare/warning-signs-of-domestic-violence/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline", textUnderlineOffset: "0.15em" }}>מידע רשמי על קבלת עזרה</a>.
           </div>
 
           <div className={styles.centerCta}>
@@ -574,7 +574,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
               </div>
               <div className={styles.detailsItem}>
                 <strong>שינוי או ביטול:</strong>
-                <span>עד 24 שעות מראש — ללא חיוב. בביטול מאוחר עשוי לחול חיוב בכפוף לדין. <a href="/terms">לתנאים המלאים</a></span>
+                <span>עד 24 שעות מראש — ללא חיוב. בביטול מאוחר עשוי לחול חיוב בכפוף לדין. <a href="/terms" style={{ textDecoration: "underline", textUnderlineOffset: "0.15em" }}>לתנאים המלאים</a></span>
               </div>
             </div>
 
