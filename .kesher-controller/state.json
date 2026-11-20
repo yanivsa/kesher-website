@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-08",
-  "status": "article_retry_wait",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -18,7 +18,7 @@
       "ARTICLE_WORKFLOW_FAILED": 1
     },
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "last_run_conclusion": "cancelled",
     "last_worker_result": {
       "schema_version": 1,
@@ -60,7 +60,9 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-11-20T14:50:02.615736+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-11-20T14:50:08.495136+00:00",
+    "next_deploy_retry_at": "2026-11-20T14:54:59.478280+00:00"
   },
   "backlog": [
     {
@@ -1773,12 +1775,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-08T15:55:46.780157+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-08T15:56:14.014967+00:00",
       "from": "article_live",
       "to": "blocked",
@@ -2586,9 +2582,19 @@
       "details": {
         "retry_at": "2026-11-08T20:50:49.024971+00:00"
       }
+    },
+    {
+      "at": "2026-11-20T14:50:08.495172+00:00",
+      "from": "article_retry_wait",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 200,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-11-08T20:50:56.333997+00:00",
+  "updated_at": "2026-11-20T14:50:08.495180+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -3203,10 +3209,10 @@
     "claimed_at": "2026-11-08T18:45:31.451788+00:00"
   },
   "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/relationship-memory-reconstruction",
-    "overview_youtube_url": "https://youtu.be/VPUSEiBk2es",
+    "article_url": "https://kesher.saharoni.com/blog/stress-crossover-after-work",
+    "overview_youtube_url": null,
     "short_youtube_url": null,
-    "overview_edit_verified": true,
+    "overview_edit_verified": false,
     "short_portrait_verified": false,
     "short_signature_verified": false,
     "short_origin_verified": false
@@ -3230,10 +3236,11 @@
       "cycle": "2026-11-08",
       "inputs": {},
       "intent_at": "2026-11-20T14:49:59.478280+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "8ee9604d726ce6441e796f47959b46ce0ad5e685"
+      "observed_active_run_id": 44757266419,
+      "dispatch_head_sha": "8ee9604d726ce6441e796f47959b46ce0ad5e685",
+      "dispatched_at": "2026-11-20T14:49:59.478280+00:00"
     }
   },
   "last_child_notification": {
