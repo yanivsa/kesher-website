@@ -598,14 +598,15 @@ class CredentialGatewayTests(unittest.TestCase):
 class CutoverApprovalReadinessTests(unittest.TestCase):
     """Owner approval remains unreachable until an actual matched gateway responds."""
 
-    def _code(self):
-        source = (ROOT / '.github/workflows/kesher-production-cutover.yml').read_text()
-        self.assertIn('  transition:\n    needs: readiness\n', source)
-        self.assertIn('    environment: kesher-cutover\n', source)
-        ready = source.split('  readiness:\n', 1)[1].split('\n  transition:\n', 1)[0]
-        self.assertNotIn('environment: kesher-cutover', ready)
-        body = ready.split('        run: |\n', 1)[1]
-        return '\n'.join(row[10:] if row.startswith('          ') else row for row in body.splitlines())
+    def _step(self):
+        import yaml
+
+        source = ROOT / '.github/workflows/kesher-production-cutover.yml'
+        jobs = yaml.safe_load(source.read_text())['jobs']
+        self.assertEqual(jobs['transition']['needs'], 'readiness')
+        self.assertEqual(jobs['transition']['environment'], 'kesher-cutover')
+        self.assertNotIn('environment', jobs['readiness'])
+        return next(step for step in jobs['readiness']['steps'] if 'run' in step)
 
     def _run(self, **values):
         import os
@@ -614,8 +615,10 @@ class CutoverApprovalReadinessTests(unittest.TestCase):
         env = dict(os.environ, GATEWAY_URL='', REVIEWED_REVISION='a'*40,
                    ACTUAL_REVISION='a'*40, CUTOVER_EPOCH='epoch1')
         env.update(values)
-        return subprocess.run([sys.executable, '-c', self._code()], env=env,
-                              text=True, capture_output=True, timeout=20)
+        step = self._step()
+        interpreters = {'python': [sys.executable], 'bash': ['bash', '-e']}
+        command = [*interpreters[step.get('shell', 'bash')], '-c', step['run']]
+        return subprocess.run(command, env=env, text=True, capture_output=True, timeout=20)
 
     def test_missing_gateway_never_requests_approval(self):
         result = self._run()
@@ -633,7 +636,7 @@ class CutoverApprovalReadinessTests(unittest.TestCase):
         self.assertIn('PINNED_HTTPS_GATEWAY_REQUIRED', result.stderr)
 
     def test_health_check_is_not_production_activation(self):
-        code = self._code()
+        code = self._step()['run']
         self.assertIn('/healthz', code)
         self.assertIn('GATEWAY_HEALTH_REVISION_OR_EPOCH_MISMATCH', code)
         self.assertIn('does not attest native resource fences', code)
