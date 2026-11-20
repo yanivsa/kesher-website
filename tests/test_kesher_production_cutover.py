@@ -508,7 +508,29 @@ class CredentialGatewayTests(unittest.TestCase):
         auth=ActionsIdentity(NativeReadback(),repo='owner/repo',repository_id='123',main_sha='b'*40,
             audience='https://cutover.example',jwks=lambda:{'keys':[{'kty':'RSA','kid':'one','n':integer(public.n),'e':integer(public.e)}]})
         self.assertEqual(auth.verify(token(claims)), '42/2')
+        controller = '.github/workflows/kesher-content-controller.yml'
+        worker = '.github/workflows/kesher-media-worker.yml'
+
+        class ScheduledReadback(NativeReadback):
+            def request(self, method, path):
+                row = super().request(method, path)
+                if path.endswith('/actions/runs/42'):
+                    return row | {'path': controller, 'event': 'schedule'}
+                return row
+
+        scheduled = ActionsIdentity(ScheduledReadback(), repo='owner/repo', repository_id='123',
+            main_sha='b'*40, audience='https://cutover.example', jwks=auth.jwks,
+            workflows=(controller, worker), environment=None, allow_controller_schedule=True)
+        scheduled_claims = claims | {'event_name': 'schedule', 'environment': None,
+                                     'workflow_ref': 'owner/repo/' + controller + '@refs/heads/main'}
+        self.assertEqual(scheduled.verify(token(scheduled_claims)), '42/2')
+        with self.assertRaises(StateInvalid):
+            scheduled.authenticate(token(scheduled_claims | {
+                'workflow_ref': 'owner/repo/' + worker + '@refs/heads/main'}))
+        with self.assertRaises(StateInvalid):
+            scheduled.verify(token(scheduled_claims | {'event_name': 'workflow_dispatch'}))
         for change in ({'repository':'other/repo'}, {'workflow_sha':'c'*40}, {'run_attempt':'1'},
+                       {'event_name':'schedule'},
                        {'aud':'https://evil.example'}, {'exp':now-1}, {'ref':'refs/heads/topic'},
                        {'environment':'other'}, {'job_workflow_ref':'unreviewed/reusable@main'}):
             with self.subTest(change=change), self.assertRaises(StateInvalid): auth.verify(token(claims|change))

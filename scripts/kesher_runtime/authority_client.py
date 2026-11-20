@@ -7,6 +7,7 @@ import json
 import urllib.parse
 import urllib.request
 
+from .cutover_auth import CONTROLLER_WORKFLOW
 from .cutover_entry import NoRedirect
 from .github import _unique_object
 from .state import StateInvalid
@@ -27,10 +28,13 @@ class ActionsAuthorityObserver:
         from .cutover_host import https_origin
         env = self.environ
         workflow = env.get('GITHUB_WORKFLOW_REF','')
+        event = env.get('GITHUB_EVENT_NAME')
+        allowed_event = (event == 'workflow_dispatch' or
+                         (event == 'schedule' and workflow == f'{REPOSITORY}/{CONTROLLER_WORKFLOW}@refs/heads/main'))
         gateway = https_origin(env.get('KESHER_CUTOVER_GATEWAY_URL',''))
         endpoint = urllib.parse.urlsplit(env.get('ACTIONS_ID_TOKEN_REQUEST_URL',''))
         if (env.get('GITHUB_REPOSITORY') != REPOSITORY or env.get('GITHUB_REF') != 'refs/heads/main'
-                or env.get('GITHUB_EVENT_NAME') != 'workflow_dispatch'
+                or not allowed_event
                 or workflow not in {REPOSITORY+'/'+p+'@refs/heads/main' for p in CANONICAL_WORKFLOWS}
                 or endpoint.scheme != 'https' or not endpoint.hostname
                 or not endpoint.hostname.endswith('.actions.githubusercontent.com')

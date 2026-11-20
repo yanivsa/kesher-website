@@ -295,7 +295,7 @@ def authority_observation(i, token, *, jwks=github_jwks):
     from .handover import require_authority
     authenticator=ActionsIdentity(ReadOnlyGitHub(i.native.github),repo=i.repo,repository_id=i.repository_id,
         main_sha=i.review['main_sha'],audience=https_origin(i.gateway_url),
-        workflows=CANONICAL_WORKFLOWS,environment=None,jwks=jwks)
+        workflows=CANONICAL_WORKFLOWS,environment=None,jwks=jwks,allow_controller_schedule=True)
     claims=authenticator.authenticate(token,allow_unpinned_head=True)
     reviewed_installation(i)
     observation = i.native.authority_observer()
@@ -313,7 +313,8 @@ def authority_observation(i, token, *, jwks=github_jwks):
         # current main and complete VERIFIED resource admission also pass.
         identity = ActionsIdentity(ReadOnlyGitHub(i.native.github),repo=i.repo,repository_id=i.repository_id,
             main_sha=rows[0]['head_sha'],main_ref_sha=observation['main_sha'],
-            audience=https_origin(i.gateway_url),workflows=CANONICAL_WORKFLOWS,environment=None,jwks=jwks)
+            audience=https_origin(i.gateway_url),workflows=CANONICAL_WORKFLOWS,environment=None,jwks=jwks,
+            allow_controller_schedule=True)
         identity.verify(token)
     except (ValueError,KeyError,IndexError,TypeError):
         raise StateInvalid('CUTOVER_ACTIONS_IDENTITY_DENIED') from None

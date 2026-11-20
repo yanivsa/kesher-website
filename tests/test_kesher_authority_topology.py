@@ -9,6 +9,21 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AuthorityTopologyTests(unittest.TestCase):
+    def test_schema6_schedule_uses_the_existing_controller_and_authority_gate(self):
+        import yaml
+        path = ROOT / '.github/workflows/kesher-content-controller.yml'
+        workflow = yaml.safe_load(path.read_text())
+        tick = workflow['jobs']['canonical_tick']
+        gate = tick['if']
+        self.assertIn("github.event_name == 'schedule'", gate)
+        self.assertIn("vars.KESHER_SCHEMA6_SCHEDULE_ENABLED == 'true'", gate)
+        self.assertIn("vars.KESHER_CUTOVER_GATEWAY_URL != ''", gate)
+        self.assertIn("vars.KESHER_CUTOVER_GATEWAY_URL == ''", workflow['jobs']['control']['if'])
+        self.assertEqual(workflow['concurrency']['group'], 'kesher-content-controller')
+        self.assertEqual(tick['permissions']['id-token'], 'write')
+        self.assertIn('python -m scripts.kesher_runtime.controller_entry --mode live',
+                      [step.get('run') for step in tick['steps']])
+
     def test_oidc_permission_is_not_granted_to_arbitrary_reviewed_roles(self):
         from scripts.kesher_runtime.authority_topology import check_definitions
         for role in ('worker','controller','handover','diagnostic','separate_infrastructure'):

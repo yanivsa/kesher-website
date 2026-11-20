@@ -256,5 +256,10 @@ repository `KESHER_CUTOVER_GATEWAY_URL` variable. Follow the original runbook's
 one-new-invocation-per-step sequence and uncertain-response recovery. After
 VERIFIED and independent resource/state/public proof, the **first controller
 E2E is manual**: `gh workflow run kesher-content-controller.yml --repo
-yanivsa/kesher-website --ref main`. This instruction is conditional, not executed
-by this implementation. No schedule is enabled in this PR.
+yanivsa/kesher-website --ref main -f canonical_tick=true`. Keep
+`KESHER_SCHEMA6_SCHEDULE_ENABLED` unset during this first check. After the
+manual tick verifies the protected controller and its observations, set the
+repository variable `KESHER_SCHEMA6_SCHEDULE_ENABLED` to `true` for the existing
+cron. Confirm a native GitHub `schedule` run reached `canonical_tick` and that
+one article, Overview and native Short share the same source with public
+readback. A workflow success without all three readbacks is insufficient.
