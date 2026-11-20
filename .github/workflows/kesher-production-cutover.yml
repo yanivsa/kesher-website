@@ -25,6 +25,7 @@ jobs:
     timeout-minutes: 2
     steps:
       - name: Check existing gateway health and pinned epoch before owner review
+        shell: python
         env:
           GATEWAY_URL: ${{ vars.KESHER_CUTOVER_GATEWAY_URL }}
           REVIEWED_REVISION: ${{ inputs.reviewed_revision }}
