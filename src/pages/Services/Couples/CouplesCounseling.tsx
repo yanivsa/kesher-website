@@ -279,7 +279,7 @@ const CouplesCounseling: React.FC = () => {
           <LeadMagnet />
           <div className={styles.bottomCta}>
             <h2>כל מה שצריך לדעת לפני שקובעים</h2>
-            <p>פגישת ייעוץ זוגי נמשכת 50 דקות ועלותה 500 ₪ כולל מע״מ, בהתאם למחיר המפורסם בעמוד <Link to="/couples-counseling-ashdod" style={{ color: 'inherit', textDecoration: 'underline' }}>ייעוץ זוגי באשדוד</Link>. אפשר להיפגש בקליניקה באשדוד או אונליין ב־Zoom. לקביעת מועד השתמשו ביומן באתר; אפשר גם לשאול אותי מראש על שינוי או ביטול מועד.</p>
+            <p>פגישת ייעוץ זוגי נמשכת 50 דקות ועלותה 500 ₪ כולל מע״מ, בהתאם למחיר המפורסם בעמוד <Link to="/couples-counseling-ashdod" style={{ color: 'inherit', textDecoration: 'underline' }}>ייעוץ זוגי באשדוד</Link>. אפשר להיפגש בקליניקה באשדוד או אונליין ב־Zoom. לקביעת מועד השתמשו ביומן באתר. שינוי או ביטול עד 24 שעות לפני הפגישה — ללא חיוב. בביטול מאוחר או אי־הגעה עשוי לחול חיוב של מחיר הפגישה, בכפוף לדין ולתנאים שנמסרו מראש בעת ההזמנה.</p>
             <p>כשהמחלוקת חוזרת סביב הוצאות או תקציב, אפשר לשלב גם <Link to="/services/family-financial-guidance">ליווי כלכלי לזוגות ומשפחות</Link>, הממוקד בשיחה ובהתנהלות כלכלת הבית.</p>
             <Link to={SITE_CONFIG.links.appointment} className={styles.finalBtn}>בחירת מועד לפגישה</Link>
           </div>
