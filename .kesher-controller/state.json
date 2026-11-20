@@ -58,11 +58,12 @@
     "quality_content_sha256": "244213e59bf25c3c4b6b240adc3e6bdc88a590a15b02413b394929ad8e78ad7c",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-20T15:00:54.237098+00:00",
+    "quality_checked_at": "2026-11-20T15:02:29.007632+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-11-20T14:50:08.495136+00:00",
-    "next_deploy_retry_at": "2026-11-20T14:54:59.478280+00:00"
+    "next_deploy_retry_at": "2026-11-20T14:54:59.478280+00:00",
+    "deploy_run_id": 44757967726
   },
   "backlog": [
     {
@@ -3235,20 +3236,19 @@
       "workflow": "deploy.yml",
       "cycle": "2026-11-08",
       "inputs": {},
-      "intent_at": "2026-11-20T14:49:59.478280+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 44757266419,
-      "dispatch_head_sha": "8ee9604d726ce6441e796f47959b46ce0ad5e685",
-      "dispatched_at": "2026-11-20T14:49:59.478280+00:00"
+      "intent_at": "2026-11-20T15:02:25.558384+00:00",
+      "status": "intent",
+      "previous_run_id": 44757967726,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "2cd1fe736f8b538f07fff744cf44de33294d92ee"
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 42480131675,
+    "workflow": "Deploy to Cloudflare Pages",
+    "run_id": 44757967726,
     "conclusion": "success",
-    "source_slug": "relationship-memory-reconstruction",
-    "slot": "2026-11-06"
+    "source_slug": null,
+    "slot": "2026-11-08"
   },
   "processed_child_notifications": [],
   "interventions": {
