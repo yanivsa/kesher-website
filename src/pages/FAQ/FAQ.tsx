@@ -73,8 +73,8 @@ const FAQ: React.FC = () => {
       <SchemaOrg data={faqSchema} />
       <header className={styles.header}>
         <div className="container">
-          <h1>שאלות נפוצות</h1>
-          <p>תשובות לשאלות שמעסיקות זוגות, הורים ומשפחות בתהליכי שינוי.</p>
+          <h1>שאלות נפוצות על ייעוץ זוגי, הדרכת הורים וגישור</h1>
+          <p>ריכזתי כאן תשובות לשאלות על זוגיות, הורות, גישור ותקופות מעבר. אפשר לבחור נושא או לעבור בין כל השאלות.</p>
         </div>
       </header>
       <div className={`container ${styles.container}`}>

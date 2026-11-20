@@ -61,13 +61,13 @@ const AppointmentPage: React.FC = () => {
       <header className={styles.header}>
         <div className={`container ${styles.headerContent}`}>
           <span className={styles.eyebrow}>מתחילים בשיחה</span>
-          <h1>{financialInquiry ? 'קביעת פגישה לליווי כלכלי לזוגות ומשפחות' : 'קביעת פגישת ייעוץ עם שירה'}</h1>
+          <h1>{financialInquiry ? 'קביעת פגישה לליווי כלכלי לזוגות ומשפחות' : 'קביעת פגישת ייעוץ איתי'}</h1>
           <p>
             בחרו את המועד שנוח לכם. בפגישה נכיר, נבין מה מעסיק אתכם ונבחן יחד
             איזו דרך מקצועית יכולה להתאים.
           </p>
           <div className={styles.facts} aria-label="פרטי הפגישה">
-            <span><FiClock aria-hidden="true" /> 50 דקות</span>
+            <span><FiClock aria-hidden="true" /> משך בהתאם לסוג הפגישה</span>
             <span><FiMapPin aria-hidden="true" /> אשדוד או אונליין</span>
             <span><FiShield aria-hidden="true" /> מרחב מכבד ודיסקרטי</span>
           </div>
@@ -85,10 +85,12 @@ const AppointmentPage: React.FC = () => {
             </p>
             <ul>
               <li>ייעוץ זוגי ותקשורת בתוך הקשר</li>
-              <li>הנחיית הורים והתמודדות משפחתית</li>
+              <li>הדרכת הורים והתמודדות משפחתית</li>
               <li>גישור ובניית הסכמות מעשיות</li>
               <li>חינוך פיננסי וליווי להתנהלות כלכלת המשפחה</li>
             </ul>
+            <p>ייעוץ זוגי והדרכת הורים: פגישה של 50 דקות, 500 ₪ כולל מע״מ, לפי המחירים המפורסמים בדפי השירות באשדוד.</p>
+            <p>לגבי גישור וליווי כלכלי, מומלץ לברר מראש את משך המפגש, העלות ותנאי התשלום או הביטול המתאימים לסוג הפגישה.</p>
             <div className={styles.help}>
               <strong>מעדיפים להתייעץ לפני שקובעים?</strong>
               <a

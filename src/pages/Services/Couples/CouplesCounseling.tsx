@@ -89,7 +89,7 @@ const CouplesCounseling: React.FC = () => {
           <div className={styles.heroContent}>
             <Link to="/couples-counseling-ashdod" className={styles.badge}>ייעוץ זוגי באשדוד ובאונליין ←</Link>
             <h1>לדבר על מה שקורה <br /><span>לפני ששוברים את הכלים</span></h1>
-            <p className={styles.subtitle}>ייעוץ זוגי סביב מתחים וקשיי תקשורת בזוגיות. לצאת ממעגל הוויכוחים, להחזיר את הקרבה ולהתחיל לתקשר באמת. מרחב בטוח שבו מפסיקים להאשים ומתחילים להבין יחד איך לשפר את הקשר.</p>
+            <p className={styles.subtitle}>ייעוץ זוגי סביב מתחים וקשיי תקשורת בזוגיות. לזהות את מעגל הוויכוחים, לפנות מקום לקרבה ולתרגל דרך אחרת לתקשר. מרחב מכבד שבו אפשר לבחון את הקשר בלי להאשים.</p>
             <div className={styles.heroActions}>
               <Link to={SITE_CONFIG.links.appointment} className={styles.ctaBtn}>
                 קביעת פגישת ייעוץ
@@ -141,13 +141,13 @@ const CouplesCounseling: React.FC = () => {
         <div className="container">
           <div className={styles.sectionHeader}>
             <h2>מה משתנה בייעוץ?</h2>
-            <p>התהליך מאפשר לכם לראות תוצאות מורגשות בחיי היומיום וליצור יחד זוגיות יציבה ובטוחה יותר.</p>
+            <p>בתהליך נזהה דפוסים שחוזרים וננסה דרכי שיחה נוספות, כדי לאפשר יותר הקשבה ושיתוף פעולה — בלי להבטיח תוצאה זהה לכל זוג.</p>
           </div>
           <div className={styles.outcomesGrid}>
             <div className={styles.outcomeCard}>
               <FiCheckCircle className={styles.outcomeIcon} />
               <h3>התקרבות וחיבור רגשי</h3>
-              <p>מפסיקים להרגיש שותפים לדירה ומתחילים לחוות שוב קרבה אינטימית ורגשית.</p>
+              <p>ננסה להבין מה הרחיק ביניכם ולפנות מקום לקרבה רגשית, גם בתוך שגרה עמוסה.</p>
             </div>
             <div className={styles.outcomeCard}>
               <FiCheckCircle className={styles.outcomeIcon} />
@@ -235,7 +235,7 @@ const CouplesCounseling: React.FC = () => {
             <ul className={styles.boundariesList}>
               <li>כאשר רק צד אחד מעוניין להגיע, אפשר להתחיל בליווי אישי ולבחון את הדפוסים והתגובות שלו; אם הצד השני יצטרף בהמשך, אפשר לעבור לעבודה זוגית משותפת.</li>
               <li>כאשר המטרה היחידה היא לשנות את בן או בת הזוג, בלי לבחון את הדינמיקה המשותפת.</li>
-              <li>במצבים של אלימות או סכנה בבית יש לפנות תחילה למענה ייעודי ומותאם.</li>
+              <li>במצבים של אלימות או סכנה בבית, ייעוץ זוגי משותף אינו המענה המתאים. יש לפנות קודם למענה מוגן: מוקד 118 של משרד הרווחה, או מוקד 100 של המשטרה במקרה של סכנה מיידית. למידע נוסף ראו <a href="https://me.health.gov.il/parenting/learn-more/family-parental-welfare/warning-signs-of-domestic-violence/" target="_blank" rel="noopener noreferrer">מידע רשמי ממשרד הבריאות</a>.</li>
             </ul>
           </div>
         </div>
@@ -278,8 +278,8 @@ const CouplesCounseling: React.FC = () => {
         <div className="container">
           <LeadMagnet />
           <div className={styles.bottomCta}>
-            <h2>אפשר לבדוק אם הייעוץ מתאים לכם</h2>
-            <p>הפגישה מתקיימת באשדוד או אונליין ונמשכת 50 דקות. לפרטים על הגעה לקליניקה, שאלות נפוצות וקביעת תור, בקרו בעמוד <Link to="/couples-counseling-ashdod" style={{ color: 'inherit', textDecoration: 'underline' }}>ייעוץ זוגי באשדוד</Link>.</p>
+            <h2>כל מה שצריך לדעת לפני שקובעים</h2>
+            <p>פגישת ייעוץ זוגי נמשכת 50 דקות ועלותה 500 ₪ כולל מע״מ, בהתאם למחיר המפורסם בעמוד <Link to="/couples-counseling-ashdod" style={{ color: 'inherit', textDecoration: 'underline' }}>ייעוץ זוגי באשדוד</Link>. אפשר להיפגש בקליניקה באשדוד או אונליין ב־Zoom. לקביעת מועד השתמשו ביומן באתר; אפשר גם לשאול אותי מראש על שינוי או ביטול מועד.</p>
             <p>כשהמחלוקת חוזרת סביב הוצאות או תקציב, אפשר לשלב גם <Link to="/services/family-financial-guidance">ליווי כלכלי לזוגות ומשפחות</Link>, הממוקד בשיחה ובהתנהלות כלכלת הבית.</p>
             <Link to={SITE_CONFIG.links.appointment} className={styles.finalBtn}>בחירת מועד לפגישה</Link>
           </div>

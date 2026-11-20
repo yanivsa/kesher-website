@@ -72,7 +72,7 @@ const ContactPage: React.FC = () => {
           <h1>{isSpecialtyInquiry ? 'בירור התאמה לתיאום הורי' : 'צרו קשר'}</h1>
           <p>{isSpecialtyInquiry
             ? 'לפני תחילת תיאום הורי חשוב לבדוק התאמה ובטיחות. השאירו פרטי קשר בלבד; אל תשלחו פרטים מזהים על ילדים, מסמכים משפטיים או תיאורי פגיעה בטופס פתוח.'
-            : 'אפשר לקבוע מועד לפגישת ייעוץ או להשאיר פרטים לפנייה, כולל להזמנת הרצאה או סדנה.'}</p>
+            : <>אפשר לקבוע פגישה בייעוץ זוגי, בהדרכת הורים או בגישור, להשאיר פרטים כדי שאחזור אליכם, או לשאול על <a href="/lectures">הרצאות וסדנאות</a>.</>}</p>
         </div>
       </header>
       <ContactSection key={serviceKey} initialServiceOverride={isSpecialtyInquiry ? 'parenting_coordination' : undefined} />

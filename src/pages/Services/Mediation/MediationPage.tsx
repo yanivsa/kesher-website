@@ -99,13 +99,13 @@ const MediationPage: React.FC = () => {
             <article className={styles.card}>
               <span className={styles.cardIcon}><FiMessageCircle aria-hidden="true" /></span>
               <h3>מה תפקיד המגשרת?</h3>
-              <p>המגשרת מנהלת את השיחה באופן ניטרלי, עוזרת להפריד בין עמדות לצרכים ושומרת על תהליך מסודר. ההחלטות עצמן נשארות בידי בני הזוג, וההשתתפות וההסכמות מתקבלות מרצון.</p>
+              <p>אני מנחה את השיחה באופן ניטרלי, מסייעת להפריד בין עמדות לצרכים ושומרת על תהליך מסודר. ההחלטות נשארות בידי המשתתפים, וההשתתפות וההסכמות מתקבלות מרצון.</p>
             </article>
             <article className={styles.card}>
               <span className={styles.cardIcon}><FiHome aria-hidden="true" /></span>
               <h3>מה קורה כשמגיעים להסכם?</h3>
               <p>
-                אם ההסכמות מתגבשות להסכם גירושין, יש להביא אותו לאישור ערכאה שיפוטית מוסמכת כדי שיקבל תוקף של פסק דין. המידע כאן כללי ואינו מחליף ייעוץ משפטי. למידע רשמי ראו{' '}
+                אני מסייעת בגישור לגבש הסכמות, אך איני מנסחת הסכמי גירושין משפטיים ואיני מספקת ייעוץ או ייצוג משפטי. לצורך ניסוח הסכם פורמלי אפשר לפנות לעורך דין לפי בחירתכם. כדי שהסכם גירושין יקבל תוקף של פסק דין יש להביאו לאישור ערכאה שיפוטית מוסמכת. למידע רשמי ראו{' '}
                 <a href="https://www.gov.il/he/service/couple-family-agreement" target="_blank" rel="noopener noreferrer">
                   אישור הסכם גירושין באתר gov.il
                 </a>.
@@ -119,14 +119,14 @@ const MediationPage: React.FC = () => {
         <div className="container">
           <div className={styles.sectionHeader}>
             <h2>אפשרויות גישור</h2>
-            <p>התהליך מותאם לסוג הקשר, לנושאים שעל הפרק ולקצב שבו ניתן להתקדם.</p>
+            <p>התהליך מותאם לסוג הקשר, לנושאים שעל הפרק ולקצב שבו ניתן להתקדם. לצד גישור זוגי ומשפחתי אני מציעה גם גישור בין שכנים, במקום העבודה ובין שותפים עסקיים.</p>
           </div>
           <div className={styles.cardGrid}>
             <article className={styles.card}>
               <span className={styles.cardIcon}><FiMessageCircle aria-hidden="true" /></span>
               <h3>גישור בין בני זוג</h3>
               <p>שיח סביב החלטות משותפות, תקשורת, חלוקת אחריות, כסף, משפחות מוצא ונושאים שחוזרים שוב ושוב ללא פתרון.</p>
-              <p><Link to="/couples-mediation-ashdod">למידע ממוקד על גישור זוגי, שלום בית ופרידה בהסכמה באשדוד</Link></p>
+              <p>למידע נוסף אפשר לקרוא בעמוד <Link to="/couples-mediation-ashdod">גישור זוגי, שלום בית ופרידה בהסכמה באשדוד</Link>.</p>
             </article>
             <article className={styles.card}>
               <span className={styles.cardIcon}><FiUsers aria-hidden="true" /></span>
@@ -179,7 +179,7 @@ const MediationPage: React.FC = () => {
             </article>
           </div>
           <p className={styles.note}>
-            ההשתתפות בגישור וההסכמות מתקבלות מרצון. שירה מנהלת את השיחה באופן ניטרלי; ההחלטות נשארות בידי המשתתפים.
+            ההשתתפות בגישור וההסכמות מתקבלות מרצון. אני מנחה את השיחה באופן ניטרלי; ההחלטות נשארות בידי המשתתפים.
           </p>
         </div>
       </section>
@@ -188,9 +188,10 @@ const MediationPage: React.FC = () => {
 
       <section className={styles.cta}>
         <div className="container">
-          <h2>אפשר להתחיל משיחה קצרה</h2>
-          <p>נבדוק יחד אם גישור הוא המסגרת המתאימה לנושא שמעסיק אתכם.</p>
-          <a href={SITE_CONFIG.links.whatsapp} className={styles.primaryButton}>שליחת הודעה לשירה</a>
+          <h2>איך מתחילים?</h2>
+          <p>אפשר לשלוח לי הודעה קצרה ולברר אם גישור מתאים לכם. אם אתם כבר יודעים שתרצו לקבוע פגישה, אפשר לבחור מועד ביומן האתר. עלויות, משך ומבנה המפגשים נקבעים לפי סוג הגישור ויש לבררם לפני ההזמנה.</p>
+          <a href={SITE_CONFIG.links.whatsapp} className={styles.primaryButton}>שליחת הודעה לבירור התאמה</a>
+          <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>בחירת מועד לפגישה</Link>
         </div>
       </section>
     </div>
