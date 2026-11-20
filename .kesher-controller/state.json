@@ -18,7 +18,7 @@
       "ARTICLE_WORKFLOW_FAILED": 1
     },
     "attempts": 0,
-    "deploy_attempts": 1,
+    "deploy_attempts": 2,
     "last_run_conclusion": "cancelled",
     "last_worker_result": {
       "schema_version": 1,
@@ -61,8 +61,8 @@
     "quality_checked_at": "2026-11-20T15:02:29.007632+00:00",
     "quality_violations": [],
     "live": false,
-    "last_deploy_dispatch_at": "2026-11-20T14:50:08.495136+00:00",
-    "next_deploy_retry_at": "2026-11-20T14:54:59.478280+00:00",
+    "last_deploy_dispatch_at": "2026-11-20T15:02:33.984670+00:00",
+    "next_deploy_retry_at": "2026-11-20T15:07:25.558384+00:00",
     "deploy_run_id": 44757967726
   },
   "backlog": [
@@ -1776,15 +1776,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-08T15:56:14.014967+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts"
-      }
-    },
-    {
       "at": "2026-11-08T16:00:49.744991+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -2593,9 +2584,19 @@
         "http_status": 200,
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-11-20T15:02:33.984709+00:00",
+      "from": "article_deploying",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 200,
+        "attempt": 2
+      }
     }
   ],
-  "updated_at": "2026-11-20T15:00:56.020880+00:00",
+  "updated_at": "2026-11-20T15:02:33.984717+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -3237,10 +3238,11 @@
       "cycle": "2026-11-08",
       "inputs": {},
       "intent_at": "2026-11-20T15:02:25.558384+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 44757967726,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "2cd1fe736f8b538f07fff744cf44de33294d92ee"
+      "observed_active_run_id": 44759280893,
+      "dispatch_head_sha": "2cd1fe736f8b538f07fff744cf44de33294d92ee",
+      "dispatched_at": "2026-11-20T15:02:25.558384+00:00"
     }
   },
   "last_child_notification": {
