@@ -21,6 +21,8 @@ from typing import Any
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
+POSTS_RECENT_FILE = PROJECT_DIR / "src" / "data" / "postsRecent.json"
+ARTICLE_VIDEOS_FILE = PROJECT_DIR / "src" / "data" / "articleVideos.json"
 SITE_URL = "https://kesher.saharoni.com"
 YOUTUBE_CHANNEL_ID = "UCx5fEFvdVf28HLAR2dFW64Q"
 
@@ -75,11 +77,22 @@ def check_site_url(url: str, timeout: int = 15) -> tuple[bool, int, str]:
 
 
 def get_authoritative_article() -> dict[str, Any] | None:
-    if not POSTS_FILE.is_file():
-        return None
-    try:
-        posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
-    except Exception:
+    posts: list[dict[str, Any]] = []
+    if POSTS_RECENT_FILE.is_file():
+        try:
+            recent = json.loads(POSTS_RECENT_FILE.read_text(encoding="utf-8"))
+            if isinstance(recent, list):
+                posts.extend(recent)
+        except Exception:
+            pass
+    if POSTS_FILE.is_file():
+        try:
+            hist = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
+            if isinstance(hist, list):
+                posts.extend(hist)
+        except Exception:
+            pass
+    if not posts:
         return None
     today = israel_now().date().isoformat()
     todays = [p for p in posts if isinstance(p, dict) and str(p.get("date", "")) == today]
@@ -102,7 +115,7 @@ def audit_delivery() -> dict[str, Any]:
         "complete": False,
     }
     if not post:
-        delivery["error"] = "No post found in posts.json"
+        delivery["error"] = "No post found in postsRecent.json or posts.json"
         return delivery
 
     slug = str(post.get("slug") or post.get("id") or "")
@@ -114,6 +127,31 @@ def audit_delivery() -> dict[str, Any]:
     is_live, status, _ = check_site_url(article_url)
     delivery["article"]["live"] = is_live
     delivery["article"]["http_status"] = status
+
+    article_videos = {}
+    if ARTICLE_VIDEOS_FILE.is_file():
+        try:
+            raw_vids = json.loads(ARTICLE_VIDEOS_FILE.read_text(encoding="utf-8"))
+            if isinstance(raw_vids, dict):
+                article_videos = raw_vids
+        except Exception:
+            pass
+
+    vid_entry = article_videos.get(slug) or {}
+    long_vid = post.get("youtubeVideoId") or vid_entry.get("youtubeId")
+    if long_vid:
+        delivery["long_video"]["youtube_id"] = long_vid
+        delivery["long_video"]["youtube_url"] = f"https://www.youtube.com/watch?v={long_vid}"
+        is_pub, _, _ = check_site_url(f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={long_vid}&format=json")
+        delivery["long_video"]["public"] = is_pub
+
+    short_vid = post.get("youtubeShortId") or vid_entry.get("shortYoutubeId") or vid_entry.get("youtubeShortId")
+    if short_vid:
+        delivery["short"]["youtube_id"] = short_vid
+        delivery["short"]["youtube_url"] = f"https://www.youtube.com/shorts/{short_vid}"
+        is_pub, _, _ = check_site_url(f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={short_vid}&format=json")
+        delivery["short"]["public"] = is_pub
+        delivery["short"]["portrait"] = True
 
     try:
         long_state_runs = gh_json([
