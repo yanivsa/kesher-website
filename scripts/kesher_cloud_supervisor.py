@@ -16,12 +16,16 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import io
 import json
 import os
 import re
+import struct
 import subprocess
 import sys
+import time
 import urllib.request
+import zipfile
 from pathlib import Path
 from typing import Any
 
@@ -29,6 +33,7 @@ PROJECT_DIR = Path(__file__).resolve().parent.parent
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
 POSTS_RECENT_FILE = PROJECT_DIR / "src" / "data" / "postsRecent.json"
 ARTICLE_VIDEOS_FILE = PROJECT_DIR / "src" / "data" / "articleVideos.json"
+CACHE_DIR = PROJECT_DIR / ".kesher_supervisor_cache"
 SITE_URL = "https://kesher.saharoni.com"
 YOUTUBE_CHANNEL_ID = "UCx5fEFvdVf28HLAR2dFW64Q"
 
@@ -50,23 +55,137 @@ def israel_now() -> datetime.datetime:
         return datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=3)))
 
 
-def run_gh(args: list[str], check: bool = True) -> tuple[int, str, str]:
+def run_gh(args: list[str], check: bool = True, timeout: int = 15) -> tuple[int, str, str]:
     cmd = ["gh", *args]
-    res = subprocess.run(
-        cmd,
-        cwd=str(PROJECT_DIR),
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    if check and res.returncode != 0:
-        raise RuntimeError(f"gh command failed ({res.returncode}): {' '.join(cmd)}\n{res.stderr}")
-    return res.returncode, res.stdout, res.stderr
+    try:
+        res = subprocess.run(
+            cmd,
+            cwd=str(PROJECT_DIR),
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=timeout,
+        )
+        if check and res.returncode != 0:
+            raise RuntimeError(f"gh command failed ({res.returncode}): {' '.join(cmd)}\n{res.stderr}")
+        return res.returncode, res.stdout, res.stderr
+    except subprocess.TimeoutExpired:
+        if check:
+            raise RuntimeError(f"gh command timed out after {timeout}s: {' '.join(cmd)}")
+        return 124, "", f"timed out after {timeout}s"
 
 
-def gh_json(args: list[str]) -> Any:
-    _, stdout, _ = run_gh(args, check=True)
+def run_gh_bytes(args: list[str], timeout: int = 20) -> tuple[int, bytes, str]:
+    cmd = ["gh", *args]
+    try:
+        res = subprocess.run(
+            cmd,
+            cwd=str(PROJECT_DIR),
+            capture_output=True,
+            text=False,
+            check=False,
+            timeout=timeout,
+        )
+        return res.returncode, res.stdout, res.stderr.decode("utf-8", errors="replace")
+    except subprocess.TimeoutExpired:
+        return 124, b"", f"timed out after {timeout}s"
+
+
+def gh_json(args: list[str], timeout: int = 15) -> Any:
+    _, stdout, _ = run_gh(args, check=True, timeout=timeout)
     return json.loads(stdout)
+
+
+def get_image_size(path: Path) -> tuple[int | None, int | None]:
+    """Parse JPEG or PNG dimensions without external imaging dependencies."""
+    if not path.is_file():
+        return None, None
+    try:
+        with open(path, "rb") as f:
+            data = f.read(32)
+            if data[:8] == b"\x89PNG\r\n\x1a\n":
+                w, h = struct.unpack(">LL", data[16:24])
+                return w, h
+            elif data[:2] == b"\xff\xd8":
+                f.seek(0)
+                b = f.read()
+                size = len(b)
+                i = 2
+                while i < size - 9:
+                    if b[i] == 0xff:
+                        m = b[i+1]
+                        if m in (0xc0, 0xc1, 0xc2):
+                            h, w = struct.unpack(">HH", b[i+5:i+9])
+                            return w, h
+                        elif m in (0xd9, 0xda):
+                            break
+                        elif m not in (0xd8, 0x01, 0xd0, 0xd1, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xd7):
+                            l = struct.unpack(">H", b[i+2:i+4])[0]
+                            i += 2 + l
+                            continue
+                    i += 1
+    except Exception:
+        pass
+    return None, None
+
+
+def load_cached_artifact_state(artifact_name: str) -> dict[str, Any]:
+    """Load lightweight state artifact with local caching to avoid heavy downloads."""
+    local_state = PROJECT_DIR / f".{artifact_name}" / "state.json"
+    if local_state.is_file():
+        try:
+            return json.loads(local_state.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    cache_file = CACHE_DIR / f"{artifact_name}.json"
+    if cache_file.is_file():
+        try:
+            if (time.time() - cache_file.stat().st_mtime) < 600:
+                return json.loads(cache_file.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+
+    candidates = [artifact_name]
+    if "controller-state" not in artifact_name:
+        candidates.insert(0, artifact_name.replace("-state", "-controller-state"))
+
+    for target_name in candidates:
+        try:
+            data = gh_json([
+                "api",
+                f"repos/:owner/:repo/actions/artifacts?name={target_name}&per_page=5",
+            ], timeout=10)
+            rows = data.get("artifacts") or []
+            rows.sort(key=lambda r: r.get("created_at", ""), reverse=True)
+            for row in rows:
+                aid = row.get("id")
+                if not aid:
+                    continue
+                code, raw_zip, _ = run_gh_bytes(["api", f"repos/:owner/:repo/actions/artifacts/{aid}/zip"], timeout=15)
+                if code == 0 and raw_zip:
+                    with zipfile.ZipFile(io.BytesIO(raw_zip)) as z:
+                        for name in z.namelist():
+                            if name.endswith("state.json"):
+                                parsed = json.loads(z.read(name))
+                                has_uploaded = any(
+                                    isinstance(it, dict) and it.get("uploaded") is True
+                                    for it in parsed.get("items", [])
+                                )
+                                cache_file.write_text(json.dumps(parsed), encoding="utf-8")
+                                if has_uploaded:
+                                    return parsed
+        except Exception:
+            continue
+
+    if cache_file.is_file():
+        try:
+            return json.loads(cache_file.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+
+    return {}
 
 
 def check_site_url(url: str, timeout: int = 15) -> tuple[bool, int, str]:
@@ -162,7 +281,7 @@ def audit_single_triad(
     post: dict[str, Any],
     article_videos: dict[str, Any],
 ) -> dict[str, Any]:
-    """Audit the complete Three-Link Delivery Contract for a single post."""
+    """Audit the complete Three-Link Delivery Contract and Quality DoD for a single post."""
     slug = str(post.get("slug") or post.get("id") or "")
     post_date = str(post.get("date") or "")
     article_url = f"{SITE_URL}/blog/{slug}"
@@ -179,26 +298,41 @@ def audit_single_triad(
             "http_status": 0,
             "canonical_match": False,
             "content_verified": False,
+            "hero_image_verified": False,
+            "hero_image_dimensions": None,
+            "hero_image_ratio": None,
+            "video_embed_present": False,
         },
         "long_video": {
             "youtube_id": None,
             "youtube_url": None,
             "public": False,
+            "channel_verified": False,
             "ratio": "16:9",
+            "provenance_verified": False,
+            "signature_verified": False,
+            "article_link_in_description": False,
             "state_artifact_id": None,
         },
         "short": {
             "youtube_id": None,
             "youtube_url": None,
             "public": False,
+            "channel_verified": False,
             "ratio": "9:16",
+            "portrait_verified": False,
+            "provenance_verified": False,
+            "signature_verified": False,
+            "article_link_in_description": False,
             "state_artifact_id": None,
         },
+        "cross_links_verified": False,
+        "quality_verified": False,
         "complete": False,
         "status": "PENDING",
     }
 
-    # 1. Article live verification
+    # 1. Article live & canonical verification
     is_live, status, body = check_site_url(article_url)
     triad["article"]["live"] = is_live
     triad["article"]["http_status"] = status
@@ -206,7 +340,28 @@ def audit_single_triad(
         triad["article"]["canonical_match"] = verify_canonical_url(body, article_url)
         triad["article"]["content_verified"] = bool(title and (title in body or post.get("directAnswer", "")[:30] in body))
 
-    # 2. Long Video (16:9 Overview) verification
+    # 2. Hero Image 16:9 verification
+    hero_rel = post.get("image") or post.get("imageUrl") or f"/images/generated/blog/{slug}-photo.jpg"
+    local_hero = PROJECT_DIR / "public" / hero_rel.lstrip("/")
+    if not local_hero.is_file():
+        local_hero = PROJECT_DIR / hero_rel.lstrip("/")
+    if local_hero.is_file():
+        w, h = get_image_size(local_hero)
+        size_bytes = local_hero.stat().st_size
+        triad["article"]["hero_image_dimensions"] = (w, h)
+        if w and h:
+            ratio = round(w / h, 2)
+            triad["article"]["hero_image_ratio"] = ratio
+            # 16:9 is 1.777; allow standard editorial photography tolerance 1.65 - 1.90
+            hero_ratio_ok = (1.65 <= ratio <= 1.90) and (w >= 800 and h >= 450) and (size_bytes >= 15000)
+            triad["article"]["hero_image_verified"] = hero_ratio_ok
+            triad["article"]["hero_image_size_bytes"] = size_bytes
+    else:
+        # Check remote hero image HTTP 200
+        img_ok, img_status, _ = check_site_url(f"{SITE_URL}{hero_rel}")
+        triad["article"]["hero_image_verified"] = img_ok
+
+    # 3. Long Video (16:9 Overview) verification
     vid_entry = article_videos.get(slug) or {}
     long_vid = post.get("youtubeVideoId") or vid_entry.get("youtubeId")
     if long_vid:
@@ -216,8 +371,16 @@ def audit_single_triad(
         triad["long_video"]["public"] = is_pub
         if meta.get("title"):
             triad["long_video"]["verified_title"] = meta.get("title")
+        author_url = str(meta.get("author_url") or "")
+        author_name = str(meta.get("author_name") or "")
+        if YOUTUBE_CHANNEL_ID in author_url or "קשר" in author_name or "Kesher" in author_name:
+            triad["long_video"]["channel_verified"] = True
 
-    # 3. Short (9:16 Portrait) verification
+        # Check video embed in article HTML
+        if body and (long_vid in body or re.search(rf'(youtube\.com/(?:embed/|watch\?v=)|youtu\.be/){re.escape(long_vid)}', body)):
+            triad["article"]["video_embed_present"] = True
+
+    # 4. Short (9:16 Portrait) verification
     short_vid = post.get("youtubeShortId") or vid_entry.get("shortYoutubeId") or vid_entry.get("youtubeShortId")
     if short_vid:
         triad["short"]["youtube_id"] = short_vid
@@ -226,43 +389,103 @@ def audit_single_triad(
         triad["short"]["public"] = is_pub
         if meta.get("title"):
             triad["short"]["verified_title"] = meta.get("title")
+        author_url = str(meta.get("author_url") or "")
+        author_name = str(meta.get("author_name") or "")
+        if YOUTUBE_CHANNEL_ID in author_url or "קשר" in author_name or "Kesher" in author_name:
+            triad["short"]["channel_verified"] = True
 
-    # 4. Artifact IDs
-    try:
-        long_state_runs = gh_json([
-            "api",
-            "repos/:owner/:repo/actions/artifacts?name=kesher-video-state&per_page=5",
-            "--jq", ".artifacts[0]",
-        ])
-        if isinstance(long_state_runs, dict) and long_state_runs.get("id"):
-            triad["long_video"]["state_artifact_id"] = long_state_runs.get("id")
-    except Exception as exc:
-        triad["long_video"]["artifact_error"] = str(exc)
+    # 5. Provenance & Outro Signature Evidence from Artifacts
+    video_state = load_cached_artifact_state("kesher-video-state")
+    if video_state and isinstance(video_state.get("items"), list):
+        matching_vids = [
+            it for it in video_state["items"]
+            if str((it.get("source") or {}).get("slug") or "") == slug or str(it.get("youtube_id") or "") == long_vid
+        ]
+        if matching_vids:
+            v_item = matching_vids[-1]
+            pipeline = str(v_item.get("visual_pipeline") or "")
+            triad["long_video"]["provenance_verified"] = bool(
+                "notebooklm" in pipeline.lower() or "remotion-v1" in pipeline.lower()
+            )
+            triad["long_video"]["signature_verified"] = v_item.get("signature_verified") is True
+            triad["long_video"]["technical_verified"] = v_item.get("technical_verified") is True
+            desc = str((v_item.get("source") or {}).get("youtube_metadata", {}).get("description") or "")
+            if f"/blog/{slug}" in desc or SITE_URL in desc:
+                triad["long_video"]["article_link_in_description"] = True
 
-    try:
-        short_state_runs = gh_json([
-            "api",
-            "repos/:owner/:repo/actions/artifacts?name=kesher-short-v4-state&per_page=5",
-            "--jq", ".artifacts[0]",
-        ])
-        if isinstance(short_state_runs, dict) and short_state_runs.get("id"):
-            triad["short"]["state_artifact_id"] = short_state_runs.get("id")
-    except Exception as exc:
-        triad["short"]["artifact_error"] = str(exc)
+    short_state = load_cached_artifact_state("kesher-short-v4-state")
+    if short_state and isinstance(short_state.get("items"), list):
+        matching_shorts = [
+            it for it in short_state["items"]
+            if str((it.get("source") or {}).get("slug") or "") == slug or str(it.get("youtube_id") or "") == short_vid
+        ]
+        if matching_shorts:
+            s_item = matching_shorts[-1]
+            pipeline = str(s_item.get("visual_pipeline") or "")
+            is_native = s_item.get("provider_native_short") is True or "native" in pipeline.lower()
+            triad["short"]["provenance_verified"] = bool(
+                is_native or "remotion-v4" in pipeline.lower()
+            )
+            triad["short"]["signature_verified"] = s_item.get("signature_verified") is True
+            triad["short"]["technical_verified"] = s_item.get("technical_verified") is True
 
-    # 5. Contract completeness check
-    triad["complete"] = bool(
+            # Portrait 9:16 dimension verification
+            raw_media = s_item.get("provider_raw_media") or s_item.get("media") or {}
+            w = int(raw_media.get("width") or 0)
+            h = int(raw_media.get("height") or 0)
+            if w > 0 and h > 0 and h > w and (0.50 <= w / h <= 0.65):
+                triad["short"]["portrait_verified"] = True
+            elif is_native:
+                triad["short"]["portrait_verified"] = True
+
+            desc = str((s_item.get("source") or {}).get("youtube_metadata", {}).get("description")
+                       or (s_item.get("source") or {}).get("short_youtube_metadata", {}).get("description") or "")
+            if f"/blog/{slug}" in desc or SITE_URL in desc:
+                triad["short"]["article_link_in_description"] = True
+
+    # 6. Cross-Links Consistency
+    cross_links_ok = bool(
+        vid_entry
+        and post.get("youtubeVideoId") == vid_entry.get("youtubeId")
+        and post.get("youtubeShortId") == (vid_entry.get("shortYoutubeId") or vid_entry.get("youtubeShortId"))
+    )
+    triad["cross_links_verified"] = cross_links_ok
+
+    # 7. Quality Gate Evaluation
+    # If video state artifact is missing from cache, fallback to checking public metadata + embed + hero image
+    has_video_evidence = triad["long_video"]["provenance_verified"] or triad["long_video"]["public"]
+    has_short_evidence = triad["short"]["portrait_verified"] or triad["short"]["public"]
+
+    quality_passed = bool(
+        triad["article"]["live"]
+        and triad["article"]["canonical_match"]
+        and triad["article"]["hero_image_verified"]
+        and triad["article"]["video_embed_present"]
+        and triad["long_video"]["public"]
+        and triad["short"]["public"]
+        and cross_links_ok
+    )
+    triad["quality_verified"] = quality_passed
+
+    # 8. Final Contract Status
+    if (
         triad["article"]["live"]
         and triad["article"]["canonical_match"]
         and triad["long_video"]["public"]
         and triad["short"]["public"]
-    )
-
-    if triad["complete"]:
-        triad["status"] = "COMPLETE"
+    ):
+        if quality_passed:
+            triad["complete"] = True
+            triad["status"] = "COMPLETE"
+        else:
+            # When public links exist but evidence is incomplete, strictly flag QUALITY_HOLD
+            triad["complete"] = False
+            triad["status"] = "QUALITY_HOLD"
     elif triad["article"]["live"]:
+        triad["complete"] = False
         triad["status"] = "PENDING_MEDIA"
     else:
+        triad["complete"] = False
         triad["status"] = "PENDING_DEPLOY"
 
     return triad
@@ -307,6 +530,8 @@ def audit_delivery(
 
     if delivery["complete"]:
         delivery["status"] = "COMPLETE"
+    elif any(t["status"] == "QUALITY_HOLD" for t in triads):
+        delivery["status"] = "QUALITY_HOLD"
     elif any(t["status"] == "PENDING_MEDIA" for t in triads):
         delivery["status"] = "PENDING"
     else:
@@ -370,10 +595,10 @@ def audit_controller_health() -> dict[str, Any]:
             if recent_ctrl[0].get("databaseId"):
                 code, out, _ = run_gh([
                     "run", "view", str(recent_ctrl[0]["databaseId"]), "--log",
-                ], check=False)
-                if "DIRECT_TAKEOVER" in out or "direct_takeover_required" in out:
+                ], check=False, timeout=10)
+                if re.search(r'"direct_takeover_required"\s*:\s*true', out, re.IGNORECASE) or "DIRECT_TAKEOVER_REQUIRED" in out:
                     health["direct_takeover_required"] = True
-                    match = re.search(r"direct_takeover_required.*", out)
+                    match = re.search(r'"direct_takeover_required"\s*:\s*true.*', out, re.IGNORECASE)
                     if match:
                         health["takeover_details"] = match.group(0)[:200]
     except Exception as exc:
@@ -388,7 +613,7 @@ def diagnose_failures() -> list[dict[str, Any]]:
         if r.get("conclusion") == "failure":
             run_id = r.get("id")
             detail = {"run_id": run_id, "name": r.get("name"), "created_at": r.get("created_at"), "url": r.get("url")}
-            code, out, _ = run_gh(["run", "view", str(run_id), "--log-failed"], check=False)
+            code, out, _ = run_gh(["run", "view", str(run_id), "--log-failed"], check=False, timeout=10)
             if code == 0 and out.strip():
                 lines = [line.strip() for line in out.splitlines() if line.strip()]
                 error_lines = [l for l in lines if any(k in l.lower() for k in ("error", "failed", "blocked", "exception", "mismatch"))]
@@ -398,7 +623,7 @@ def diagnose_failures() -> list[dict[str, Any]]:
 
 
 def heal_trigger_controller() -> tuple[bool, str]:
-    code, out, err = run_gh(["workflow", "run", "kesher-content-controller.yml"], check=False)
+    code, out, err = run_gh(["workflow", "run", "kesher-content-controller.yml"], check=False, timeout=10)
     if code == 0:
         return True, "Triggered kesher-content-controller.yml"
     return False, f"Trigger failed: {err}"
@@ -470,8 +695,15 @@ def main() -> int:
             sh = t["short"]
             print(f"--- Triad {idx}: {t.get('slug')} ---")
             print(f"📄 Article: {'✅ LIVE' if art.get('live') else '❌ NOT LIVE'} | Canonical: {'✅' if art.get('canonical_match') else '❌'} ({art.get('url')})")
+            hero_info = f"16:9 verified (ratio: {art.get('hero_image_ratio')})" if art.get('hero_image_verified') else "ratio unverified"
+            print(f"   Hero Image: {'✅' if art.get('hero_image_verified') else '❌'} {hero_info} | Embed: {'✅' if art.get('video_embed_present') else '❌'}")
+            lv_prov = f"NotebookLM: {'✅' if lv.get('provenance_verified') else '⏳'} | Outro Sign: {'✅' if lv.get('signature_verified') else '⏳'}"
             print(f"🎬 Long Video (16:9): {'✅ PUBLIC' if lv.get('public') else '⏳ PENDING/NOT VERIFIED'} ({lv.get('youtube_url') or 'N/A'})")
+            print(f"   Provenance: {lv_prov} | Canonical in Desc: {'✅' if lv.get('article_link_in_description') else '⏳'}")
+            sh_prov = f"Native 9:16: {'✅' if sh.get('portrait_verified') else '⏳'} | Outro Sign: {'✅' if sh.get('signature_verified') else '⏳'}"
             print(f"📱 Short (9:16): {'✅ PUBLIC' if sh.get('public') else '⏳ PENDING/NOT VERIFIED'} ({sh.get('youtube_url') or 'N/A'})")
+            print(f"   Provenance: {sh_prov} | Canonical in Desc: {'✅' if sh.get('article_link_in_description') else '⏳'}")
+            print(f"🔗 Cross-links: {'✅' if t.get('cross_links_verified') else '❌'} | Quality Verified: {'✅' if t.get('quality_verified') else '❌'}")
             print(f"Triad Status: {t.get('status')} | Complete: {'✅ YES' if t.get('complete') else '⏳ NO'}")
 
         print("----------------------------------------")

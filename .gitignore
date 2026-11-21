@@ -37,6 +37,7 @@ scripts/token*.pickle
 scripts/*oauth*.json
 notebooklm-output/cloud/
 .kesher-video-state/
+.kesher_supervisor_cache/
 .cache/huggingface/
 src/**/*.js
 src/**/*.js.map

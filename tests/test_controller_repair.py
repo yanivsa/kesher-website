@@ -350,6 +350,47 @@ class ControllerRepairTests(unittest.TestCase):
         # always() repair step actually gets its execution window.
         self.assertLess(controller.get("timeout-minutes", 10), 10 - coordinator["timeout-minutes"])
 
+    def test_historical_human_blocker_does_not_mutate_store_on_healthy_tick(self):
+        self.store.value["incidents"]["hist-1"] = {
+            "status": "human_blocker", "reason": "ancient_blocker", "fingerprint": "fp1",
+            "created_at": (NOW - timedelta(days=20)).isoformat(), "affected": [],
+        }
+        self.store.value["incidents"]["hist-2"] = {
+            "status": "human_blocker", "reason": "ancient_blocker_2", "fingerprint": "fp2",
+            "created_at": (NOW - timedelta(days=15)).isoformat(), "affected": [],
+        }
+        saves_before = self.store.saves
+        result = self.run_repair(blocked() | {"cycle": "2026-10-30", "status": "complete", "last_error": None})
+        self.assertEqual(result["status"], "human_blocker")
+        self.assertEqual(self.store.saves, saves_before, "Historical blockers must not trigger CAS writes on healthy ticks")
+
+    def test_internal_deadline_breaks_gracefully_before_step_timeout(self):
+        self.store.value["incidents"]["active-1"] = {
+            "status": "intent", "created_at": NOW.isoformat(), "fingerprint": "fp_active",
+            "stage": "controller", "failure_class": "ERROR", "affected": [], "exact": {},
+        }
+        result = self.run_repair(blocked() | {"cycle": "2026-10-30", "status": "complete", "last_error": None}, deadline_seconds=-1.0)
+        self.assertEqual(result["status"], "uncertain")
+        self.assertEqual(result.get("reason"), "internal_deadline_exceeded")
+
+    def test_uncertain_retries_exhausted_becomes_human_blocker(self):
+        self.store.value["incidents"]["hanging-incident"] = {
+            "status": "uncertain", "created_at": NOW.isoformat(), "fingerprint": "fp_hang",
+            "stage": "article", "failure_class": "HANG", "affected": [], "exact": {},
+        }
+        def crash_list(fp):
+            raise ConnectionResetError("network connection reset")
+        self.jules.list_exact = crash_list
+
+        for _ in range(2):
+            res = self.run_repair(blocked() | {"cycle": "2026-10-30", "status": "complete", "last_error": None})
+            self.assertEqual(res["status"], "uncertain")
+
+        third_res = self.run_repair(blocked() | {"cycle": "2026-10-30", "status": "complete", "last_error": None})
+        self.assertEqual(third_res["status"], "human_blocker")
+        self.assertEqual(self.store.value["incidents"]["hanging-incident"]["status"], "human_blocker")
+        self.assertEqual(self.store.value["incidents"]["hanging-incident"]["reason"], "uncertain_reconcile_retries_exhausted")
+
 
 if __name__ == "__main__":
     unittest.main()

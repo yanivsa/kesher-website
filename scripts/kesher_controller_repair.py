@@ -12,6 +12,7 @@ import json
 import os
 import re
 import subprocess
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -28,6 +29,7 @@ JULES_TERMINAL = {"COMPLETED", "FAILED", "CANCELLED", "CANCELED"}
 UNCERTAIN_LIMIT = timedelta(minutes=15)
 RUNNING_LIMIT = timedelta(minutes=90)
 MAX_INCIDENTS = 100
+MAX_RECONCILE_SECONDS = 30.0
 
 
 class ControllerJulesClient(JulesRecoveryClient):
@@ -44,6 +46,32 @@ class ControllerJulesClient(JulesRecoveryClient):
             f"Put this marker in the correction PR body: <!-- kesher-controller-repair {packet.get('fingerprint', '')} -->\n"
             + json.dumps(packet, ensure_ascii=False, sort_keys=True)
         )
+
+    def list_exact(self, fingerprint: str) -> list[dict[str, Any]]:
+        import urllib.parse
+        from scripts import jules_article_runner_core as jules
+        title = self.title(fingerprint)
+        matches: list[dict[str, Any]] = []
+        token = ""
+        seen_tokens: set[str] = set()
+        # Bound pagination to max 3 pages to prevent step timeout
+        for _ in range(3):
+            params = {"pageSize": "100"}
+            if token:
+                params["pageToken"] = token
+            url = f"{jules.API_BASE}/sessions?{urllib.parse.urlencode(params)}"
+            try:
+                payload = jules.request_json("GET", url, jules.jules_headers(self.api_key), max_attempts=2)
+            except Exception:
+                break
+            rows = payload.get("sessions") if isinstance(payload, dict) else []
+            matches.extend(row for row in (rows or []) if isinstance(row, dict) and str(row.get("title") or "") == title)
+            next_token = str(((payload or {}).get("nextPageToken") or "") if isinstance(payload, dict) else "").strip()
+            if not next_token or next_token in seen_tokens:
+                return matches
+            seen_tokens.add(next_token)
+            token = next_token
+        return matches
 
 
 class RepairStore:
@@ -63,6 +91,42 @@ class RepairStore:
 
 
 class ControllerRepairAPI(GitHubApi):
+    def _request(self, method: str, url: str, body: dict[str, Any] | None = None, *, allow_404: bool = False, mutation: bool = False, cas_conflict: bool = False) -> Any:
+        import urllib.request
+        import urllib.error
+        from scripts.kesher_master_supervisor_live import SupervisorCasConflict, SupervisorError
+        from scripts.kesher_runtime.legacy_retirement import github_mutation
+
+        github_mutation(self.repo, method, url)
+        raw = None if body is None else json.dumps(body, ensure_ascii=False).encode("utf-8")
+        attempts = 1 if mutation else 2
+        last: Exception | None = None
+        for attempt in range(attempts):
+            req = urllib.request.Request(
+                url, data=raw, method=method,
+                headers={"Authorization": f"Bearer {self.token}", "Accept": "application/vnd.github+json",
+                         "Content-Type": "application/json", "User-Agent": "kesher-controller-repair-v2"}
+            )
+            try:
+                with urllib.request.urlopen(req, timeout=12) as response:
+                    payload = response.read()
+                    return json.loads(payload.decode("utf-8")) if payload else {}
+            except urllib.error.HTTPError as exc:
+                detail = exc.read().decode("utf-8", errors="replace")[:1500]
+                if allow_404 and exc.code == 404:
+                    return None
+                if cas_conflict and exc.code in {409, 422}:
+                    raise SupervisorCasConflict(f"HTTP {exc.code}: {detail}") from exc
+                if exc.code not in {429, 500, 502, 503, 504} or mutation:
+                    raise SupervisorError(f"GITHUB_HTTP_{exc.code}: {method} {url}: {detail}") from exc
+                last = exc
+            except urllib.error.URLError as exc:
+                if mutation:
+                    raise SupervisorError(f"GITHUB_MUTATION_OUTCOME_UNCERTAIN: {method} {url}: {exc}") from exc
+                last = exc
+        if last is not None:
+            raise last
+
     def contains_commit(self, ancestor, revision):
         if not all(re.fullmatch(r"[a-f0-9]{40}", str(s)) for s in (ancestor, revision)):
             return False
@@ -189,7 +253,8 @@ def _correction_pr_valid(api, number, record):
     return any(p.startswith("scripts/") and p != policy_path for p in files) and any(p.startswith("tests/") for p in files)
 
 
-def reconcile(state, *, store, jules, api, now=None, controller_failed=False, admit=lambda: None, deployed_revision=None):
+def reconcile(state, *, store, jules, api, now=None, controller_failed=False, admit=lambda: None, deployed_revision=None, deadline_seconds=MAX_RECONCILE_SECONDS):
+    start_time = time.monotonic()
     now = now or datetime.now(timezone.utc)
     if (not isinstance(state, dict) or type(state.get("schema_version")) is not int
             or state["schema_version"] != 5 or "handover" in state or "github_exclusion" in state):
@@ -200,6 +265,7 @@ def reconcile(state, *, store, jules, api, now=None, controller_failed=False, ad
         return {"status": "authority_refused"}
     ledger, sha = store.load()
     ledger = copy.deepcopy(ledger)
+    last_saved_hash = _hash(ledger)
     incidents = ledger["incidents"]
     observed = diagnose(state, controller_failed=controller_failed)
     current_key = None
@@ -220,19 +286,28 @@ def reconcile(state, *, store, jules, api, now=None, controller_failed=False, ad
             record.update(status="human_blocker", reason="verified_failure_recurred")
 
     def persist():
-        nonlocal sha
+        nonlocal sha, last_saved_hash
+        current_hash = _hash(ledger)
+        if current_hash == last_saved_hash:
+            return  # Dirty check: avoid redundant commits and network round-trips
         # Re-check the durable authority immediately before every external write.
         admit()
         sha = store.save(ledger, expected_sha=sha)
+        last_saved_hash = current_hash
 
     results = []
     for key, record in incidents.items():
+        if time.monotonic() - start_time > deadline_seconds:
+            results.append({"incident": key, "status": "uncertain", "reason": "internal_deadline_exceeded"})
+            break
+
         if record["status"] in TERMINAL:
-            if key == current_key or record["status"] == "human_blocker":
+            if key == current_key:
                 try:
                     persist()
                 except SupervisorCasConflict:
                     return {"status": "cas_conflict"}
+            if key == current_key or record["status"] == "human_blocker":
                 results.append({"incident": key, "status": record["status"], "reason": record.get("reason")})
             continue
         try:
@@ -314,8 +389,23 @@ def reconcile(state, *, store, jules, api, now=None, controller_failed=False, ad
         except SupervisorCasConflict:
             return {"status": "cas_conflict", "reason": "reconcile_before_any_further_effect"}
         except Exception as exc:
-            # Keep ambiguous effects unresolved and never include exception text/secrets.
-            results.append({"incident": key, "status": "uncertain", "error_type": type(exc).__name__})
+            # Keep ambiguous effects unresolved and track bounded failure count to prevent infinite retry loops.
+            failures = int(record.get("reconcile_failure_count") or 0) + 1
+            record["reconcile_failure_count"] = failures
+            record["last_reconcile_error_type"] = type(exc).__name__
+            if failures >= 3 and record.get("status") in {"uncertain", "intent", "awaiting_executor"}:
+                record.update(status="human_blocker", reason="uncertain_reconcile_retries_exhausted")
+                try:
+                    persist()
+                except Exception:
+                    pass
+                results.append({"incident": key, "status": "human_blocker", "reason": "uncertain_reconcile_retries_exhausted"})
+            else:
+                try:
+                    persist()
+                except Exception:
+                    pass
+                results.append({"incident": key, "status": "uncertain", "error_type": type(exc).__name__})
             continue
         results.append({"incident": key, "status": record["status"], "pr_url": record.get("pr_url"),
                         "reason": record.get("reason")})
