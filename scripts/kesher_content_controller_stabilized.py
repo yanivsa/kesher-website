@@ -256,8 +256,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             raise v5.core.ControllerError("IDEA_RUN_NOW_SLOT_INVALID")
         posts = self.posts_on_main("main")
         targets = self._reconcile_existing_current_day_article(state, posts)
-        if len(targets) > 1:
-            v5.core.block(state, "article", "DUPLICATE_ARTICLE_DATE", f"{len(targets)} articles share owner publication slot {slot}")
+        slugs = [v5.core.canonical_slug(p) for p in targets if v5.core.canonical_slug(p)]
+        shas = [v5.core._post_source_sha256(p) for p in targets if v5.core._post_source_sha256(p)]
+        if len(slugs) != len(set(slugs)) or len(shas) != len(set(shas)):
+            v5.core.block(state, "article", "DUPLICATE_ARTICLE_COLLISION", f"Duplicate slug or sha in publication slot {slot}")
             return v5.core.Action("blocked", "duplicate owner publication-slot articles")
         if targets:
             return None
@@ -366,12 +368,14 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
         posts = self.posts_on_main("main")
         targets = self._reconcile_existing_current_day_article(state, posts)
-        if len(targets) > 1:
+        slugs = [v5.core.canonical_slug(p) for p in targets if v5.core.canonical_slug(p)]
+        shas = [v5.core._post_source_sha256(p) for p in targets if v5.core._post_source_sha256(p)]
+        if len(slugs) != len(set(slugs)) or len(shas) != len(set(shas)):
             v5.core.block(
                 state,
                 "article",
-                "DUPLICATE_ARTICLE_DATE",
-                f"{len(targets)} articles share claimed publication slot {slot}",
+                "DUPLICATE_ARTICLE_COLLISION",
+                f"Duplicate slug or sha in publication slot {slot}",
             )
             return v5.core.Action("blocked", "duplicate claimed publication-slot articles")
         if targets:
@@ -2600,9 +2604,11 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return True, None
         posts = self.posts_on_main("main")
         todays = self._reconcile_existing_current_day_article(state, posts)
-        if len(todays) > 1:
-            v5.core.block(state, "article", "DUPLICATE_ARTICLE_DATE",
-                          f"{len(todays)} articles share Israel date {self.now.date()}")
+        slugs = [v5.core.canonical_slug(p) for p in todays if v5.core.canonical_slug(p)]
+        shas = [v5.core._post_source_sha256(p) for p in todays if v5.core._post_source_sha256(p)]
+        if len(slugs) != len(set(slugs)) or len(shas) != len(set(shas)):
+            v5.core.block(state, "article", "DUPLICATE_ARTICLE_COLLISION",
+                          f"Duplicate article slug or content on Israel date {self.now.date()}")
             return False, v5.core.Action("blocked", "duplicate published articles")
         if not todays:
             return True, None

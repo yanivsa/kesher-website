@@ -181,6 +181,10 @@ def is_controller_adoptable_post(
     if not slug or not post_date:
         return False
     if post.get("controllerManaged") is not False:
+        if state_slug and slug != state_slug:
+            return False
+        if state_content_sha256 and _post_source_sha256(post) != state_content_sha256:
+            return False
         return True
     sha = _post_source_sha256(post)
     if state_slug and state_content_sha256 and slug == state_slug and sha == state_content_sha256:
@@ -1204,8 +1208,44 @@ class Controller:
             state_content_sha256=state_sha,
         )
 
-        if len(todays) == 1:
-            post = todays[0]
+        slugs = [canonical_slug(p) for p in todays if canonical_slug(p)]
+        content_hashes = [hashlib.sha256(_clean_catalog_html(str(p.get("content") or "")).encode("utf-8")).hexdigest()
+                          for p in todays if p.get("content")]
+        idea_ids = [str(p.get("idea_id") or p.get("source_idea_id") or "").strip()
+                    for p in todays if (p.get("idea_id") or p.get("source_idea_id"))]
+        has_collision = (
+            len(slugs) != len(set(slugs))
+            or len(content_hashes) != len(set(content_hashes))
+            or len(idea_ids) != len(set(idea_ids))
+        )
+
+        if len(todays) >= 1 and not has_collision:
+            post = None
+            if state_slug:
+                for p in todays:
+                    if canonical_slug(p) == state_slug:
+                        post = p
+                        break
+            if post is None:
+                archived_slugs: set[str] = set()
+                for archived in state.get("owner_cycle_archive") or []:
+                    if isinstance(archived, dict):
+                        arch_art = archived.get("article")
+                        if isinstance(arch_art, dict):
+                            s = str(arch_art.get("slug") or "").strip()
+                            if s:
+                                archived_slugs.add(s)
+                for hist in state.get("idea_history") or []:
+                    if isinstance(hist, dict):
+                        outputs = hist.get("outputs") or {}
+                        art_slug = str(outputs.get("slug") or "").strip()
+                        if not art_slug and outputs.get("article_url"):
+                            art_slug = str(outputs["article_url"]).rstrip("/").split("/")[-1].strip()
+                        if art_slug:
+                            archived_slugs.add(art_slug)
+                unarchived = [p for p in todays if canonical_slug(p) not in archived_slugs]
+                post = unarchived[0] if unarchived else todays[0]
+
             slug = canonical_slug(post)
             title = str(post.get("title") or "").strip()
             url = f"{SITE_URL}/blog/{slug}"
@@ -1252,6 +1292,7 @@ class Controller:
                 elif article_state.get("last_error") or worker_outcome == "ARTICLE_ALREADY_PUBLISHED":
                     if state.get("status") in {"article_retry_wait", "article_generating"}:
                         state["status"] = "article_live" if article_state.get("live") is True else "article_deploying" if article_state.get("status") == "deploying" else "article_needed"
+            return [post]
         return todays
 
     def _reconcile_completed_article_run(self, state: dict[str, Any]) -> Action | None:
@@ -1398,9 +1439,18 @@ class Controller:
     def _tick(self, state: dict[str, Any]) -> Action:
         posts = self.posts_on_main("main")
         todays = self._reconcile_existing_current_day_article(state, posts)
-        if len(todays) > 1:
-            block(state, "article", "DUPLICATE_ARTICLE_DATE",
-                  f"{len(todays)} articles share Israel date {self.now.date()}")
+        slugs = [canonical_slug(p) for p in todays if canonical_slug(p)]
+        content_hashes = [hashlib.sha256(_clean_catalog_html(str(p.get("content") or "")).encode("utf-8")).hexdigest()
+                          for p in todays if p.get("content")]
+        idea_ids = [str(p.get("idea_id") or p.get("source_idea_id") or "").strip()
+                    for p in todays if (p.get("idea_id") or p.get("source_idea_id"))]
+        if (
+            len(slugs) != len(set(slugs))
+            or len(content_hashes) != len(set(content_hashes))
+            or len(idea_ids) != len(set(idea_ids))
+        ):
+            block(state, "article", "DUPLICATE_ARTICLE_COLLISION",
+                  f"Duplicate article slug, content, or idea detected on {self.now.date()}")
             return Action("blocked", "duplicate published articles")
 
         if not todays:

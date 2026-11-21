@@ -347,10 +347,45 @@ class ControllerTests(unittest.TestCase):
 
     def test_duplicate_published_articles_fail_closed(self):
         gh = FakeGitHub()
-        gh.posts = [article("a"), article("b")]
+        art_a = article("a", "title a")
+        art_b = article("b", "title b")
+        art_a["content"] = "<p>identical content</p>"
+        art_b["content"] = "<p>identical content</p>"
+        gh.posts = [art_a, art_b]
         state, action = self.make(gh).tick()
         self.assertEqual(action.kind, "blocked")
-        self.assertEqual(state["last_error"]["code"], "DUPLICATE_ARTICLE_DATE")
+        self.assertEqual(state["last_error"]["code"], "DUPLICATE_ARTICLE_COLLISION")
+
+    def test_multiple_distinct_articles_same_date_supported(self):
+        gh = FakeGitHub()
+        art_a = article("a", "title a")
+        art_a["content"] = "<p>unique content a</p>"
+        art_b = article("b", "title b")
+        art_b["content"] = "<p>unique content b</p>"
+        gh.posts = [art_a, art_b]
+        site = FakeSite(status=200, body=public_html(art_a))
+        state, action = self.make(gh, site).tick()
+        self.assertEqual(action.kind, "dispatch_video")
+        self.assertEqual(state["article"]["slug"], "a")
+        self.assertIsNone(state.get("last_error"))
+
+    def test_multiple_distinct_articles_targeted_by_slug(self):
+        gh = FakeGitHub()
+        art_a = article("a", "title a")
+        art_a["content"] = "<p>unique content a</p>"
+        art_b = article("b", "title b")
+        art_b["content"] = "<p>unique content b</p>"
+        gh.posts = [art_a, art_b]
+        gh.saved_state = {
+            "cycle": "2026-08-19",
+            "schema_version": controller.STATE_SCHEMA_VERSION,
+            "article": {"slug": "b"},
+        }
+        site = FakeSite(status=200, body=public_html(art_b))
+        state, action = self.make(gh, site).tick()
+        self.assertEqual(action.kind, "dispatch_video")
+        self.assertEqual(state["article"]["slug"], "b")
+        self.assertIsNone(state.get("last_error"))
 
     def test_manual_same_day_publications_do_not_block_managed_article(self):
         gh = FakeGitHub()
