@@ -58,7 +58,7 @@
     "quality_content_sha256": "244213e59bf25c3c4b6b240adc3e6bdc88a590a15b02413b394929ad8e78ad7c",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-21T20:10:48.031794+00:00",
+    "quality_checked_at": "2026-11-21T20:15:49.100032+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-11-21T17:05:48.122864+00:00",
@@ -2648,7 +2648,7 @@
       "reason": "deployment already active"
     }
   ],
-  "updated_at": "2026-11-21T20:10:50.206451+00:00",
+  "updated_at": "2026-11-21T20:15:51.540614+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
