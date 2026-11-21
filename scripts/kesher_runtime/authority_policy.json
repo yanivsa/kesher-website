@@ -4429,6 +4429,33 @@
       },
       "role": "diagnostic",
       "registration_id": 403052684
+    },
+    ".github/workflows/kesher-publish-request.yml": {
+      "capabilities": [
+        "read",
+        "write"
+      ],
+      "definition_sha256": "c09231e47e59e82a8b44394d015434982883aaa24b853073d00681b42b2d4045",
+      "resources": [],
+      "role": "gateway",
+      "registration_id": 449500001,
+      "review": {
+        "call_chain": {
+          "scripts/kesher_cloud_publisher.py": "febcd87e704be2ad17a7869976da19827f88340ce1810390999ceb35fdf3cf9b",
+          "scripts/kesher_cloud_article_generator.py": "310f9595ff8d9d858ac1c9f0067049d7e71dba30438ffaf23cec64008920f5e8",
+          "scripts/kesher_cloud_supervisor.py": "ce0ffa2aae9f5392c348ec97abdeb7486c7814f6115e45586f907fc12b9d6b58",
+          "scripts/kesher_controller_repair.py": "cca61d88287112c3274053784a57816340a264a0b2c793afd5491319bad712df"
+        },
+        "credential_services": {},
+        "credentials": [],
+        "dispatches": [
+          ".github/workflows/deploy.yml",
+          ".github/workflows/kesher-daily-video.yml",
+          ".github/workflows/kesher-short-v4.yml",
+          ".github/workflows/kesher-content-controller.yml"
+        ],
+        "note": "Authoritative remote publishing gateway for ChatGPT and automated execution."
+      }
     }
   }
 }
