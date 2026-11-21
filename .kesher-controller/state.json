@@ -18,7 +18,7 @@
       "ARTICLE_WORKFLOW_FAILED": 1
     },
     "attempts": 0,
-    "deploy_attempts": 3,
+    "deploy_attempts": 4,
     "last_run_conclusion": "cancelled",
     "last_worker_result": {
       "schema_version": 1,
@@ -61,8 +61,8 @@
     "quality_checked_at": "2026-11-21T16:49:58.763435+00:00",
     "quality_violations": [],
     "live": false,
-    "last_deploy_dispatch_at": "2026-11-20T15:52:58.416974+00:00",
-    "next_deploy_retry_at": "2026-11-20T15:57:48.326144+00:00",
+    "last_deploy_dispatch_at": "2026-11-21T16:50:06.937791+00:00",
+    "next_deploy_retry_at": "2026-11-21T17:04:52.933975+00:00",
     "deploy_run_id": 44767710169
   },
   "backlog": [
@@ -1776,15 +1776,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-08T16:01:21.741186+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "SHORT_ATTEMPTS_EXHAUSTED: Short exhausted 3 fresh generation attempts"
-      }
-    },
-    {
       "at": "2026-11-08T16:05:49.864091+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -2598,9 +2589,19 @@
         "http_status": 200,
         "attempt": 3
       }
+    },
+    {
+      "at": "2026-11-21T16:50:06.937829+00:00",
+      "from": "article_deploying",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 200,
+        "attempt": 4
+      }
     }
   ],
-  "updated_at": "2026-11-20T15:55:50.796279+00:00",
+  "updated_at": "2026-11-21T16:50:06.937835+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -3242,10 +3243,11 @@
       "cycle": "2026-11-08",
       "inputs": {},
       "intent_at": "2026-11-21T16:49:52.933975+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 44767710169,
       "observed_active_run_id": null,
-      "dispatch_head_sha": "1eaf6f67b4271dd050c0801d8b95cf82e76020b9"
+      "dispatch_head_sha": "1eaf6f67b4271dd050c0801d8b95cf82e76020b9",
+      "dispatched_at": "2026-11-21T16:49:52.933975+00:00"
     }
   },
   "last_child_notification": {
