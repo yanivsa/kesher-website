@@ -12,7 +12,7 @@ import scripts.kesher_cloud_article_generator as generator
 class CloudArticleGeneratorTests(unittest.TestCase):
     def test_topic_selection_anti_cannibalization(self):
         posts = generator.load_all_posts()
-        slugs, titles = generator.existing_slugs_and_titles(posts)
+        slugs, titles, _ = generator.existing_slugs_and_titles(posts)
         topic = generator.select_original_topic(posts)
         self.assertNotIn(topic["slug"].lower(), slugs)
         self.assertNotIn(topic["title"].lower(), titles)
@@ -70,6 +70,32 @@ class CloudArticleGeneratorTests(unittest.TestCase):
         self.assertIn("<p>", html)
         self.assertIn("<ul>", html)
         self.assertIn("שירה סהרוני", html)
+
+    def test_custom_topic_brief_synthesis(self):
+        posts = generator.load_all_posts()
+        topic = generator.select_original_topic(
+            posts,
+            requested_brief="איך לעזור לילד שמתקשה להיפרד בבוקר בכניסה לגן?",
+            requested_keyword="פרידה בבוקר בגן",
+            requested_id="morning-separation-daycare-tears",
+        )
+        self.assertEqual(topic["slug"], "morning-separation-daycare-tears")
+        self.assertIn("פרידה בבוקר בגן", topic["title"])
+        self.assertEqual(topic["primaryKeyword"], "פרידה בבוקר בגן")
+        self.assertEqual(len(topic["content_sections"]), 5)
+        self.assertTrue(len(topic["evidence"]) >= 1)
+        for ev in topic["evidence"]:
+            self.assertTrue(ev["url"].startswith("https://pubmed.ncbi.nlm.nih.gov/"))
+
+    def test_publishable_word_and_section_count(self):
+        posts = generator.load_all_posts()
+        topic = generator.select_original_topic(posts)
+        html = generator.build_article_html(topic["content_sections"])
+        import re
+        words = len(re.sub(r"<[^>]+>", " ", html).split())
+        h3_count = len(re.findall(r"<h3", html))
+        self.assertGreaterEqual(words, 450)
+        self.assertGreaterEqual(h3_count, 4)
 
     def test_duplicate_slug_injection_rejected(self):
         posts = generator.load_all_posts()

@@ -6,6 +6,10 @@ Provides a unified, secure cloud entrypoint for autonomous publishing:
 - Can be invoked directly via GitHub Actions (kesher-publish-request.yml) or CLI.
 - No dependency on Antigravity, local terminal, or local machine.
 - Fully auditable by kesher_cloud_supervisor.py with Schema 6 safety gates.
+- Exact workflow run identification by dispatch timestamp and event type.
+- Strict conclusion verification at each pipeline stage (deploy, video, short).
+- Cryptographic provenance binding (derive_content_sha256, target_content_sha256).
+- Multi-article same-day support without false duplicate collisions.
 """
 
 from __future__ import annotations
@@ -75,7 +79,8 @@ class GitHubActionsClient:
             raise
 
     def get_latest_run(self, workflow_name: str, created_after_iso: str | None = None) -> dict[str, Any] | None:
-        url = f"{self.base_url}/actions/workflows/{workflow_name}/runs?per_page=5"
+        """Find the matching workflow run strictly filtered by workflow_dispatch and timestamp."""
+        url = f"{self.base_url}/actions/workflows/{workflow_name}/runs?event=workflow_dispatch&per_page=10"
         req = urllib.request.Request(url, headers=self._headers(), method="GET")
         try:
             with urllib.request.urlopen(req, timeout=30) as resp:
@@ -102,18 +107,21 @@ class GitHubActionsClient:
         max_wait_seconds: int = 720,
         interval_seconds: int = 15,
     ) -> dict[str, Any]:
-        """Poll until workflow run completes (conclusion != None)."""
+        """Poll until workflow run completes (conclusion != None) and verify success."""
         start = time.time()
         active_run_id = run_id
 
-        # If run_id not given, wait for run to appear
+        # If run_id not given, wait for run to appear matching dispatched_after_iso
         while not active_run_id and (time.time() - start) < 90:
             time.sleep(6)
             latest = self.get_latest_run(workflow_name, dispatched_after_iso)
             if latest and str(latest.get("status")) in ("queued", "in_progress", "completed"):
-                active_run_id = latest["id"]
-                print(f"Identified run #{active_run_id} for {workflow_name}")
-                break
+                # Ensure the run was actually created around or after our dispatch
+                created_at = str(latest.get("created_at") or "")
+                if not dispatched_after_iso or created_at >= dispatched_after_iso:
+                    active_run_id = latest["id"]
+                    print(f"Identified run #{active_run_id} for {workflow_name} (created {created_at})")
+                    break
 
         if not active_run_id:
             raise TimeoutError(f"Workflow {workflow_name} run did not appear within 90s")
@@ -283,16 +291,33 @@ def handle_run_now(
         # Step 4: Trigger NotebookLM Long Video (16:9)
         print(f"🎬 Triggering NotebookLM Long Video for {slug}...")
         now_iso = datetime.now(timezone.utc).isoformat()
-        client.dispatch("kesher-daily-video.yml", {"operation": "full", "target_slug": slug})
+        client.dispatch(
+            "kesher-daily-video.yml",
+            {
+                "operation": "full",
+                "target_slug": slug,
+                "target_content_sha256": source_sha,
+                "skip_jules_advisory": True,
+            }
+        )
         video_run = client.poll_workflow("kesher-daily-video.yml", dispatched_after_iso=now_iso, max_wait_seconds=900)
-        print(f"Video run completed with: {video_run.get('conclusion')}")
+        if video_run.get("conclusion") != "success":
+            raise RuntimeError(f"Long Video workflow failed with conclusion: {video_run.get('conclusion')}")
 
         # Step 5: Trigger NotebookLM Short (9:16)
         print(f"📱 Triggering NotebookLM Short for {slug}...")
         now_iso = datetime.now(timezone.utc).isoformat()
-        client.dispatch("kesher-short-v4.yml", {"operation": "full", "derive_slug": slug})
+        client.dispatch(
+            "kesher-short-v4.yml",
+            {
+                "operation": "full",
+                "derive_slug": slug,
+                "derive_content_sha256": source_sha,
+            }
+        )
         short_run = client.poll_workflow("kesher-short-v4.yml", dispatched_after_iso=now_iso, max_wait_seconds=900)
-        print(f"Short run completed with: {short_run.get('conclusion')}")
+        if short_run.get("conclusion") != "success":
+            raise RuntimeError(f"Short workflow failed with conclusion: {short_run.get('conclusion')}")
 
         # Step 6: Sync video bindings if updated
         subprocess.run(["git", "pull", "--rebase"], cwd=ROOT)
@@ -349,8 +374,8 @@ def main():
 
     slot = args.slot.strip() or israel_date_now()
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or ""
-    repo = os.environ.get("GITHUB_REPOSITORY") or DEFAULT_REPO
-    client = GitHubActionsClient(token, repo) if token and not args.dry_run else None
+    repo = os.environ.get("GITHUB_REPOSITORY", DEFAULT_REPO)
+    client = GitHubActionsClient(token, repo) if token else None
 
     article_json = None
     if args.article_json:
@@ -360,7 +385,7 @@ def main():
         else:
             article_json = json.loads(raw)
 
-    result = {}
+    result: dict[str, Any]
     try:
         if args.action == "audit":
             result = handle_audit(slot)
@@ -380,18 +405,17 @@ def main():
             )
         elif args.action == "resume":
             result = handle_resume(slot, client, dry_run=args.dry_run)
+        else:
+            raise ValueError(f"Unknown action: {args.action}")
 
-        print("\n================ RESULT SUMMARY ================")
         print(json.dumps(result, ensure_ascii=False, indent=2))
-        print("================================================")
-
-        out_path = Path(args.output_json)
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        out_p = Path(args.output_json)
+        out_p.parent.mkdir(parents=True, exist_ok=True)
+        out_p.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         return 0
     except Exception as exc:
         print(f"FATAL PUBLISHER ERROR: {exc}", file=sys.stderr)
-        err_res = {"action": args.action, "slot": slot, "status": "error", "error": str(exc)}
+        err_res = {"status": "error", "action": args.action, "error": str(exc)}
         Path(args.output_json).write_text(json.dumps(err_res, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         return 1
 

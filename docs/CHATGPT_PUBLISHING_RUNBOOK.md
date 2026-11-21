@@ -11,6 +11,7 @@
 - **Repository:** `yanivsa/kesher-website`
 - **Workflow File:** `.github/workflows/kesher-publish-request.yml`
 - **Workflow Name:** `Kesher Publish Request`
+- **Workflow ID (Registration):** `426278061`
 - **Target Branch:** `main`
 - **Endpoint URL:** `https://api.github.com/repos/yanivsa/kesher-website/actions/workflows/kesher-publish-request.yml/dispatches`
 
@@ -21,7 +22,8 @@
 ### הרשאות נדרשות
 - **GitHub Personal Access Token (PAT) / Actions Token** עם הרשאות:
   - `actions: write` (להפעלת dispatches ומעקב אחרי ריצות)
-  - `contents: read` (לקריאת קבצים ומצב המאגר)
+  - `contents: write` (לעדכון קבצים ומצב המאגר)
+  - `pull-requests: write`
 - הריצות מתבצעות על גבי ענן GitHub Actions המחובר באופן מאובטח ל־Cloudflare Pages, YouTube API ו־NotebookLM באמצעות Secrets המוגדרים במאגר.
 - **אין לחשוף סודות או מפתחות בשיחה או במסמכים.**
 
@@ -33,10 +35,10 @@
 | :--- | :--- | :--- | :--- | :--- |
 | `action` | Choice | **כן** | `daily`, `run_now`, `resume`, `audit`, `repair` | הפעולה המבוקשת לביצוע |
 | `slot` | String | לא | ריק (ברירת מחדל: היום לפי שעון ישראל) | תאריך פרסום בפורמט `YYYY-MM-DD` |
-| `topic_brief` | String | לא | ריק | הנחיה או נושא מותאם אישית למאמר |
-| `idea_id` | String | לא | ריק | מזהה ייחודי למאמר (slug-like token) |
-| `primary_keyword`| String | לא | ריק | ביטוי מפתח ראשי ייחודי בעברית |
-| `article_json` | String | לא | ריק | אופציונלי: JSON מלא של המאמר שנכתב ע״י ChatGPT |
+| `topic_brief` | String | לא | ריק | הנחיה או נושא מותאם אישית למאמר (מוביל יצירה דינמית) |
+| `idea_id` | String | לא | ריק | מזהה ייחודי למאמר (slug באנגלית, lowercase ומקפים) |
+| `primary_keyword`| String | לא | ריק | ביטוי מפתח ראשי ייחודי בעברית (SEO) |
+| `article_json` | String | לא | ריק | אופציונלי: מחרוזת JSON מלאה של מאמר מוכן לקליטה ישירה |
 | `dry_run` | Boolean| לא | `false` | הרצת בדיקה ללא שינוי קבצים, ללא פריסה וללא יצירת וידאו |
 
 ---
@@ -54,8 +56,8 @@ curl -X POST \
   -d '{"ref":"main","inputs":{"action":"daily"}}'
 ```
 
-### ב. יצירת שלישייה חדשה מיד (`run_now`)
-יוצר מאמר נוסף באותו התאריך (או בתאריך מבוקש), תוך הבטחת בידוד מלא ומניעת כפילויות:
+### ב. יצירת שלישייה חדשה מיד (`run_now`) עם בריף מותאם
+מפרסם מאמר חדש לפי בריף מוגדר מראש, כולל תמיכה במספר מאמרים באותו יום:
 ```bash
 curl -X POST \
   -H "Authorization: Bearer $GITHUB_TOKEN" \
@@ -66,12 +68,32 @@ curl -X POST \
     "ref": "main",
     "inputs": {
       "action": "run_now",
-      "topic_brief": "איך לעזור לילדים להיפרד מפעילות אהובה בלי התפרצויות זעם"
+      "topic_brief": "איך לעזור לילד שמתקשה להיפרד בבוקר בכניסה לגן בלי בכי ותסכול",
+      "primary_keyword": "פרידה בבוקר בגן",
+      "idea_id": "morning-separation-daycare-tears"
     }
   }'
 ```
 
-### ג. בדיקת סטטוס ואימות חוזה ללא שינויים (`audit`)
+### ג. הרצת בדיקה יבשה ללא השפעה (`dry_run: true`)
+בודק את המאמר, הניקוד, כותרת, תמונת Hero ושלמות הנתונים בלי לבצע Push, בלי לפרוס ובלי ליצור סרטונים:
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $GITHUB_TOKEN" \
+  -H "Accept: application/vnd.github+json" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/yanivsa/kesher-website/actions/workflows/kesher-publish-request.yml/dispatches \
+  -d '{
+    "ref": "main",
+    "inputs": {
+      "action": "run_now",
+      "topic_brief": "התמודדות עם שחיקה הורית וחלוקת עומס הוגנת בין בני הזוג",
+      "dry_run": true
+    }
+  }'
+```
+
+### ד. בדיקת סטטוס ואימות חוזה ללא שינויים (`audit`)
 מריץ את `kesher_cloud_supervisor.py` ומחזיר דוח מקיף על כל הנכסים של היום:
 ```bash
 curl -X POST \
@@ -82,7 +104,7 @@ curl -X POST \
   -d '{"ref":"main","inputs":{"action":"audit"}}'
 ```
 
-### ד. המשך מחזור שנעצר (`resume`)
+### ה. המשך מחזור שנעצר (`resume`)
 מזהה נכסים חסרים (כגון שורט שלא הושלם או וידאו בהמתנה) ומפעיל את השלב המדויק להשלמת השלישייה:
 ```bash
 curl -X POST \
@@ -93,7 +115,7 @@ curl -X POST \
   -d '{"ref":"main","inputs":{"action":"resume"}}'
 ```
 
-### ה. תיקון ממוקד ומורשה (`repair`)
+### ו. תיקון ממוקד ומורשה (`repair`)
 מפעיל את `scripts.kesher_controller_repair` לסנכרון מצב הבקר ושחרור חסימות:
 ```bash
 curl -X POST \
@@ -108,13 +130,13 @@ curl -X POST \
 
 ## 5. כיצד לזהות את מזהה הריצה (Run ID) ולעקוב אחרי ההתקדמות
 
-מיד לאחר שליחת ה־POST, המתן 5-10 שניות וקרא את רשימת הריצות האחרונות:
+מיד לאחר שליחת ה־POST, המתן 5-10 שניות וקרא את רשימת הריצות האחרונות (מפולטרות לפי `event=workflow_dispatch`):
 ```bash
 curl -s \
   -H "Authorization: Bearer $GITHUB_TOKEN" \
   -H "Accept: application/vnd.github+json" \
-  "https://api.github.com/repos/yanivsa/kesher-website/actions/workflows/kesher-publish-request.yml/runs?per_page=1" \
-  | jq '.workflow_runs[0] | {id: .id, status: .status, conclusion: .conclusion, html_url: .html_url}'
+  "https://api.github.com/repos/yanivsa/kesher-website/actions/workflows/kesher-publish-request.yml/runs?event=workflow_dispatch&per_page=1" \
+  | jq '.workflow_runs[0] | {id: .id, status: .status, conclusion: .conclusion, html_url: .html_url, created_at: .created_at}'
 ```
 
 מעקב אחרי מצב הריצה עד לסיום (`status: "completed"`):
@@ -128,36 +150,42 @@ curl -s \
 
 ---
 
-## 6. קריאת תוצאות האימות (QA Results & Links)
+## 6. תקני איכות מחייבים למאמר ולתמונה
+
+1. **תמונת Hero צילומית בלבד (Editorial Photography Standard):**
+   - יחס 16:9 מדויק (1200x675).
+   - צילום מציאותי ועריכתי בלבד (ללא איורים, ללא ציורי Pillow גאומטריים, ללא טקסט על גבי התמונה).
+   - גודל קובץ מעל 15KB.
+   - גיבוב פיקסלים (SHA-256) ייחודי בכל מאמר למניעת התנגשות בבדיקת `validate-article-images.py`.
+   - טקסט אלטרנטיבי (`imageAlt`) בעברית תיאורית מעל 20 תווים.
+
+2. **איכות תוכן ופרסום:**
+   - לפחות 500 מילים ו־5 פסקאות עם כותרות `<h3>`.
+   - קולה החם, המקצועי והאמפתי של שירה סהרוני.
+   - **0 אותיות לטיניות בתוכן הגלוי** (פרט לקישורים ומראי מקום אקדמיים).
+   - ציטוטים מדעיים אמיתיים בלבד (PubMed) עם קישור תקין `https://pubmed.ncbi.nlm.nih.gov/...`.
+   - קישורים פנימיים למאמרים קיימים בבלוג ולדפי השירותים (`/services/parenting` או `/services/couples`).
+   - כותרת מושכת בפורמט שאלה / בעיית קורא (Search-First Clickable Title).
+
+---
+
+## 7. קריאת תוצאות האימות (QA Results & Links)
 
 בסיום הריצה, הקובץ `kesher-publish-result.json` מועלה כ־Artifact בריצה. ניתן גם לקרוא את פלט הלוג ישירות.
 
 מבנה התוצאה:
 ```json
 {
-  "action": "daily",
+  "action": "run_now",
   "slot": "2026-11-21",
-  "slug": "smooth-transitions-toddler-activities-cooperation",
-  "title": "מעברים חלקים בין פעילויות: איך לעזור לילדים להיפרד ממשחק בלי התפרצויות",
-  "article_url": "https://kesher.saharoni.com/blog/smooth-transitions-toddler-activities-cooperation",
-  "video_url": "https://www.youtube.com/watch?v=XYmhXUSIAaw",
-  "short_url": "https://www.youtube.com/shorts/JxkDcDcJV4c",
+  "slug": "morning-separation-daycare-tears",
+  "title": "איך להתמודד עם פרידה בבוקר בגן? מדריך מעשי לחיזוק הקשר",
+  "article_url": "https://kesher.saharoni.com/blog/morning-separation-daycare-tears",
+  "source_sha256": "...",
   "contract_complete": true,
   "status": "success"
 }
 ```
-
----
-
-## 7. אימות שלושת הקישורים הציבוריים
-
-שלושת הקישורים חייבים לעמוד בתנאי החוזה:
-1. **מאמר באתר:**
-   `https://kesher.saharoni.com/blog/<SLUG>` — מחזיר HTTP 200, כולל תמונת Hero ביחס 16:9, תוכן עשיר בעברית והטמעת הווידאו.
-2. **וידאו ארוך (NotebookLM 16:9):**
-   `https://www.youtube.com/watch?v=<VIDEO_ID>` — סרטון Public בערוץ הרשמי, עם קריינות עברית וחתימת שירה סהרוני.
-3. **שורט (NotebookLM 9:16):**
-   `https://www.youtube.com/shorts/<SHORT_ID>` — שורט אנכי Public בערוץ הרשמי, עם קישור קנוני למאמר בתיאור וחתימת סגיר.
 
 ---
 
@@ -167,4 +195,4 @@ curl -s \
 2. **איסור כתיבה כפולה:** אין לפרסם מאמר עם slug או מזהה שכבר קיימים ב־`posts.json` או `postsRecent.json`.
 3. **איסור דיווח הצלחה שווא:** `Contract Complete: YES` מוחזר אך ורק כאשר שלושת הנכסים אומתו במלואם ב־`kesher_cloud_supervisor.py`.
 4. **איסור הפעלת Workflows שהושבתו במכוון:** כגון מסלול Jules הישן ב־`kesher-article-generation.yml` שהוצא משימוש.
-5. **איסור אותיות לטיניות בתוכן הגלוי:** כל גוף המאמר חייב להיות בעברית שוטפת וטבעית, ללא מונחים באנגלית בסוגריים.
+5. **איסור אותיות לטיניות בתוכן הגלוי:** כל גוף המאמר חייב להיות בעברית שוטפת וטבעית.

@@ -154,6 +154,7 @@ class ProductionCutoverTests(unittest.TestCase):
         # Never invent its GitHub registration ID in historical evidence; project the
         # policy to the exact definition set that existed when the fixture was captured.
         del rules['workflows']['.github/workflows/kesher-video-advisory-review.yml']
+        del rules['workflows']['.github/workflows/kesher-publish-request.yml']
         rows = reconcile_registrations(evidence['workflows'], rules)
         self.assertEqual(len(rows), 111)
         self.assertEqual(len(rules['registrations']), 57)
@@ -189,6 +190,7 @@ class ProductionCutoverTests(unittest.TestCase):
         # The October 4 final snapshot also predates the October 25 advisory reviewer;
         # its real registration must be observed after merge, never guessed here.
         del rules['workflows']['.github/workflows/kesher-video-advisory-review.yml']
+        del rules['workflows']['.github/workflows/kesher-publish-request.yml']
         rows=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-final-20261004.json').read_text())['workflows']
         self.assertEqual(len(reconcile_registrations(rows,rules)),112)
         path='.github/workflows/kesher-targeted-media-recovery-dispatch.yml'
@@ -602,6 +604,7 @@ class CredentialGatewayTests(unittest.TestCase):
         # The October 25 advisory workflow has no historical registration in that evidence;
         # project it out rather than fabricating an ID, while retaining the explicit Oct6 overlay below.
         del rules['workflows']['.github/workflows/kesher-video-advisory-review.yml']
+        del rules['workflows']['.github/workflows/kesher-publish-request.yml']
         evidence=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())
         # Retain the current metadata writer in this unseparated-authority
         # refusal test rather than treating the dated fixture as current.
