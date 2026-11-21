@@ -74,6 +74,41 @@
       "stage": "controller",
       "status": "human_blocker"
     },
+    "302398ba7ca4380749c0c2bf31a3185b5efbbd35ac9dd2a9bb4cfed2225553f3": {
+      "affected": [
+        {
+          "article_run_id": 42519241414,
+          "article_session_id": "sessions/6279608980264196665",
+          "artifact_id": null,
+          "content_sha256": "244213e59bf25c3c4b6b240adc3e6bdc88a590a15b02413b394929ad8e78ad7c",
+          "cycle": "2026-11-08",
+          "idea_id": "couples-after-work-stress-crossover",
+          "item_id": null,
+          "pr_number": null,
+          "slug": "stress-crossover-after-work",
+          "source_id": null,
+          "task_id": null
+        }
+      ],
+      "created_at": "2026-11-21T17:37:23.675693+00:00",
+      "exact": {
+        "article_run_id": 42519241414,
+        "article_session_id": "sessions/6279608980264196665",
+        "artifact_id": null,
+        "content_sha256": "244213e59bf25c3c4b6b240adc3e6bdc88a590a15b02413b394929ad8e78ad7c",
+        "cycle": "2026-11-08",
+        "idea_id": "couples-after-work-stress-crossover",
+        "item_id": null,
+        "pr_number": null,
+        "slug": "stress-crossover-after-work",
+        "source_id": null,
+        "task_id": null
+      },
+      "failure_class": "DEPLOY_ATTEMPTS_EXHAUSTED",
+      "fingerprint": "4bd93dcde828d4769f71199ea9fdcff76d883145339327341654aefbb24a140c",
+      "stage": "article",
+      "status": "intent"
+    },
     "3482e59b487511b826bdc9df1577a89962e60dc11184e295c05764ffb267d55a": {
       "acquisition_started_at": "2026-11-01T06:05:14.670801+00:00",
       "affected": [
