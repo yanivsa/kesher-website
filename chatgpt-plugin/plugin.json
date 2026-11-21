@@ -21,7 +21,6 @@
     "הדרכת הורים",
     "גישור"
   ],
-  "skills": "./skills/",
   "extensions": {
     "com.openai": {
       "interface": {

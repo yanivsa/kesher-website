@@ -102,3 +102,8 @@ Code/package work is complete when the branch passes CI and is merged. Directory
 7. After approval, publish to the selected country availability.
 
 Do not claim the plugin is public or being proactively suggested until the Plugins Directory shows the approved publication.
+
+
+### Portable schema note
+
+Portable Agent Plugins discover the root `skills/` directory automatically. The root `plugin.json` must only contain fields allowed by the Agent Plugins 1.0.0 schema; a root `skills` field is not permitted.

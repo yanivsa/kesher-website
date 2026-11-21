@@ -23,14 +23,20 @@ if (!fs.existsSync(MANIFEST_PATH)) {
     if (manifest.$schema !== 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json') {
       fail('Unexpected Agent Plugins schema URL');
     }
-    if (!/^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/.test(manifest.name || '')) {
-      fail('Plugin name must match public submission naming rules');
+    if (!/^(?!.*(?:--|\.\.))[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(manifest.name || '') || (manifest.name || '').length > 64) {
+      fail('Plugin name must match the Agent Plugins 1.0.0 schema');
     }
     if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(manifest.version || '')) {
       fail('Plugin version must be semantic versioning');
     }
-    if (manifest.skills !== './skills/') fail('Plugin must declare ./skills/');
-    if (manifest.mcpServers || manifest.apps) fail('Skills-only package must not declare MCP/apps');
+    const allowedRootFields = new Set([
+      '$schema', 'name', 'version', 'description', 'author',
+      'homepage', 'repository', 'license', 'keywords', 'extensions',
+    ]);
+    Object.keys(manifest).forEach((key) => {
+      if (!allowedRootFields.has(key)) fail(`Unsupported portable manifest root field: ${key}`);
+    });
+    if (manifest.mcpServers || manifest.apps || manifest.skills) fail('Portable skills-only package must discover skills/ automatically and must not declare MCP/apps/skills root fields');
 
     const openai = manifest.extensions?.['com.openai'];
     const ui = openai?.interface;
