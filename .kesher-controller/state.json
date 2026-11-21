@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-08",
-  "status": "article_deploy_wait",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -58,7 +58,7 @@
     "quality_content_sha256": "244213e59bf25c3c4b6b240adc3e6bdc88a590a15b02413b394929ad8e78ad7c",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-21T17:20:43.871352+00:00",
+    "quality_checked_at": "2026-11-21T17:24:21.013905+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-11-21T17:05:48.122864+00:00",
@@ -1776,12 +1776,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-11-08T16:10:47.883132+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-11-08T16:11:17.343655+00:00",
       "from": "article_live",
       "to": "blocked",
@@ -2606,9 +2600,15 @@
       "details": {
         "retry_at": "2026-11-21T17:20:41.316535+00:00"
       }
+    },
+    {
+      "at": "2026-11-21T17:24:23.563425+00:00",
+      "from": "article_deploy_wait",
+      "to": "article_deploying",
+      "reason": "deployment already active"
     }
   ],
-  "updated_at": "2026-11-21T17:20:45.578448+00:00",
+  "updated_at": "2026-11-21T17:24:23.563446+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
