@@ -97,9 +97,15 @@ def gh_json(args: list[str], timeout: int = 15) -> Any:
 
 
 def get_image_size(path: Path) -> tuple[int | None, int | None]:
-    """Parse JPEG or PNG dimensions without external imaging dependencies."""
+    """Parse image dimensions (using PIL if available, with pure Python fallback)."""
     if not path.is_file():
         return None, None
+    try:
+        from PIL import Image
+        with Image.open(path) as img:
+            return img.size[0], img.size[1]
+    except Exception:
+        pass
     try:
         with open(path, "rb") as f:
             data = f.read(32)
