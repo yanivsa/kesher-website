@@ -58,12 +58,12 @@
     "quality_content_sha256": "244213e59bf25c3c4b6b240adc3e6bdc88a590a15b02413b394929ad8e78ad7c",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-21T19:15:49.109245+00:00",
+    "quality_checked_at": "2026-11-21T19:16:23.675213+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-11-21T17:05:48.122864+00:00",
     "next_deploy_retry_at": "2026-11-21T17:20:41.316535+00:00",
-    "deploy_run_id": 44937833453,
+    "deploy_run_id": 44939361088,
     "deploy_status": "exhausted"
   },
   "backlog": [
@@ -1778,15 +1778,9 @@
     "stage": "article",
     "code": "DEPLOY_ATTEMPTS_EXHAUSTED",
     "message": "Article deployment exhausted maximum allowed attempts (5)",
-    "at": "2026-11-21T19:15:52.279314+00:00"
+    "at": "2026-11-21T19:16:25.293380+00:00"
   },
   "history": [
-    {
-      "at": "2026-11-08T17:05:52.338493+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-11-08T17:06:27.556933+00:00",
       "from": "article_live",
@@ -2636,9 +2630,18 @@
       "details": {
         "message": "Article deployment exhausted maximum allowed attempts (5)"
       }
+    },
+    {
+      "at": "2026-11-21T19:16:25.293394+00:00",
+      "from": "article_needed",
+      "to": "blocked",
+      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "Article deployment exhausted maximum allowed attempts (5)"
+      }
     }
   ],
-  "updated_at": "2026-11-21T19:15:52.279334+00:00",
+  "updated_at": "2026-11-21T19:16:25.293400+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -3278,7 +3281,7 @@
   },
   "last_child_notification": {
     "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 44937833453,
+    "run_id": 44939361088,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-08"
