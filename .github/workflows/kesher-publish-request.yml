@@ -79,7 +79,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python3 -m pip install -r scripts/requirements-article.txt requests==2.33.0 Pillow==11.0.0
+          python3 -m pip install -r scripts/requirements-article.txt
           npm --version
 
       - name: Configure Git author for Cloud Publisher

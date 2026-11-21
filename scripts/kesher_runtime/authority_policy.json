@@ -4435,7 +4435,7 @@
         "read",
         "write"
       ],
-      "definition_sha256": "c09231e47e59e82a8b44394d015434982883aaa24b853073d00681b42b2d4045",
+      "definition_sha256": "2e7b40458ff0f9255cf4544d3cf88b36e2319736871984e32b7bae9f47749923",
       "resources": [],
       "role": "gateway",
       "registration_id": 449500001,
