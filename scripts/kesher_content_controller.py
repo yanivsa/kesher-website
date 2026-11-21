@@ -183,8 +183,6 @@ def is_controller_adoptable_post(
     if post.get("controllerManaged") is not False:
         if state_slug and slug != state_slug:
             return False
-        if state_content_sha256 and _post_source_sha256(post) != state_content_sha256:
-            return False
         return True
     sha = _post_source_sha256(post)
     if state_slug and state_content_sha256 and slug == state_slug and sha == state_content_sha256:
