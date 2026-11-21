@@ -58,7 +58,7 @@
     "quality_content_sha256": "244213e59bf25c3c4b6b240adc3e6bdc88a590a15b02413b394929ad8e78ad7c",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-21T22:45:45.505678+00:00",
+    "quality_checked_at": "2026-11-21T22:50:49.812508+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-11-21T17:05:48.122864+00:00",
@@ -1778,22 +1778,9 @@
     "stage": "article",
     "code": "DEPLOY_ATTEMPTS_EXHAUSTED",
     "message": "Article deployment exhausted maximum allowed attempts (5)",
-    "at": "2026-11-21T22:45:46.993871+00:00"
+    "at": "2026-11-21T22:50:51.785037+00:00"
   },
   "history": [
-    {
-      "at": "2026-11-08T19:00:49.897993+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
-        "retry_at": "2026-11-08T19:05:49.897969+00:00",
-        "failure_streak": 1,
-        "run_id": 42509249169,
-        "session_id": "sessions/13248247772650112609"
-      }
-    },
     {
       "at": "2026-11-08T19:00:52.511246+00:00",
       "from": "article_retry_wait",
@@ -2692,9 +2679,18 @@
       "details": {
         "message": "Article deployment exhausted maximum allowed attempts (5)"
       }
+    },
+    {
+      "at": "2026-11-21T22:50:51.785048+00:00",
+      "from": "article_needed",
+      "to": "blocked",
+      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "Article deployment exhausted maximum allowed attempts (5)"
+      }
     }
   ],
-  "updated_at": "2026-11-21T22:45:46.993893+00:00",
+  "updated_at": "2026-11-21T22:50:51.785054+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
