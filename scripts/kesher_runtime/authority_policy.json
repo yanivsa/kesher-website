@@ -4448,7 +4448,7 @@
       "registration_id": 426278061,
       "review": {
         "call_chain": {
-          "scripts/kesher_cloud_publisher.py": "56c016055b976ad243591bd07d0c5fa9b2c77ff7aa3881e189ca01c2572f1b14",
+          "scripts/kesher_cloud_publisher.py": "8b2e0a4fe256eaac93148234aebaa4faff6799d3d7cc7eb0a33467580caa5a77",
           "scripts/kesher_cloud_article_generator.py": "2ed7742bbbeb866f877f878373df7759ff003fe869897e256fd459edf022bac1",
           "scripts/kesher_cloud_supervisor.py": "ce0ffa2aae9f5392c348ec97abdeb7486c7814f6115e45586f907fc12b9d6b58",
           "scripts/kesher_controller_repair.py": "cca61d88287112c3274053784a57816340a264a0b2c793afd5491319bad712df"
