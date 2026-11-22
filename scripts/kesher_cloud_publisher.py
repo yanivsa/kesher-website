@@ -522,11 +522,22 @@ def handle_run_now(
             ["git", "commit", "-m", f"feat(content): stage KESHER candidate {slug} [{source_sha[:12]}]"],
             check=True, cwd=ROOT, timeout=45,
         )
-        subprocess.run(
-            ["git", "push", "origin", f"HEAD:refs/heads/{branch}"],
-            check=True, cwd=ROOT, timeout=90,
-        )
-        pr = client.create_cloud_candidate_pr(slug, title, source_sha, slot, branch)
+        push_cmd = ["git", "push", "origin", f"HEAD:refs/heads/{branch}"]
+        res = subprocess.run(push_cmd, cwd=ROOT, timeout=90, capture_output=True, text=True)
+        if res.returncode != 0:
+            print(f"Standard push rejected ({res.stderr.strip()}); updating candidate branch...")
+            subprocess.run(["git", "push", "-f", "origin", f"HEAD:refs/heads/{branch}"], check=True, cwd=ROOT, timeout=90)
+
+        try:
+            pr = client.create_cloud_candidate_pr(slug, title, source_sha, slot, branch)
+        except Exception as exc:
+            print(f"Warning: candidate PR creation returned {exc}; checking if PR exists...")
+            existing = client.lookup_cloud_candidate(slug, branch)
+            if existing:
+                pr = existing
+                print(f"Adopted existing candidate PR #{pr['number']}")
+            else:
+                raise
         client.dispatch("ci.yml", ref=branch)
 
         if stage_only:
