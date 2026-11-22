@@ -538,7 +538,9 @@ def generate_article(
     validate_article_candidate(post)
 
     # Hero image creation
-    hero_path = ROOT / post["image"].lstrip("/")
+    # Public URL paths live under ROOT/public; never render outside the
+    # published assets directory or Git cannot stage the article's image.
+    hero_path = ROOT / "public" / post["image"].lstrip("/")
     if not hero_path.is_file() and not dry_run:
         img_size = generate_hero_image(slug, post["title"], post.get("category", ""), hero_path)
         print(f"Hero image generated at {hero_path} ({img_size} bytes, 16:9 photographic standard)")
