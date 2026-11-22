@@ -36,18 +36,32 @@ class PublishRequestWorkflowTests(unittest.TestCase):
         self.assertEqual(headers["X-GitHub-Api-Version"], "2022-11-28")
 
     def test_handle_audit_slot(self):
-        res = publisher.handle_audit("2026-11-21")
+        from unittest.mock import patch
+
+        with patch.object(publisher, "run_supervisor_audit", return_value={"complete": True}):
+            res = publisher.handle_audit("2026-11-21")
         self.assertEqual(res["action"], "audit")
         self.assertEqual(res["slot"], "2026-11-21")
         self.assertTrue(res["contract_complete"])
         self.assertEqual(res["status"], "success")
 
     def test_handle_daily_already_complete_guarantee(self):
-        res = publisher.handle_daily("2026-11-21", client=None, dry_run=True)
+        from unittest.mock import patch
+
+        with patch.object(publisher, "run_supervisor_audit", return_value={"complete": True}):
+            res = publisher.handle_daily("2026-11-21", client=None, dry_run=True)
         self.assertEqual(res["action"], "daily")
         self.assertEqual(res["slot"], "2026-11-21")
         self.assertEqual(res["status"], "already_complete")
         self.assertTrue(res["contract_complete"])
+
+    def test_handle_audit_does_not_claim_success_on_missing_evidence(self):
+        from unittest.mock import patch
+
+        with patch.object(publisher, "run_supervisor_audit", return_value={"complete": False}):
+            result = publisher.handle_audit("2026-11-21")
+        self.assertFalse(result["contract_complete"])
+        self.assertEqual(result["status"], "pending_or_unverified")
 
     def test_supervisor_audit_requires_exact_slug(self):
         from unittest.mock import patch, Mock, MagicMock
