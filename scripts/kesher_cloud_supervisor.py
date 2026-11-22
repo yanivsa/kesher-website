@@ -283,6 +283,43 @@ def verify_youtube_public(video_id: str, is_short: bool = False) -> tuple[bool, 
     return is_pub, meta
 
 
+def article_content_present(title: str, direct_answer: str, body: str) -> bool:
+    """An empty summary must never count as a visible article match."""
+    heading = str(title or "").strip()
+    snippet = str(direct_answer or "").strip()[:30]
+    return bool(body and ((heading and heading in body) or (snippet and snippet in body)))
+
+
+def strict_triad_quality(triad: dict[str, Any]) -> bool:
+    """Only independently evidenced article, long and native Short may pass."""
+    article = triad.get("article") or {}
+    long_video = triad.get("long_video") or {}
+    short = triad.get("short") or {}
+    required = [
+        article.get("live"),
+        article.get("canonical_match"),
+        article.get("content_verified"),
+        article.get("hero_image_verified"),
+        article.get("video_embed_present"),
+        long_video.get("public"),
+        long_video.get("channel_verified"),
+        long_video.get("provenance_verified"),
+        long_video.get("technical_verified"),
+        long_video.get("signature_verified"),
+        long_video.get("landscape_verified"),
+        long_video.get("article_link_in_description"),
+        short.get("public"),
+        short.get("channel_verified"),
+        short.get("provenance_verified"),
+        short.get("technical_verified"),
+        short.get("signature_verified"),
+        short.get("portrait_verified"),
+        short.get("article_link_in_description"),
+        triad.get("cross_links_verified"),
+    ]
+    return all(value is True for value in required)
+
+
 def audit_single_triad(
     post: dict[str, Any],
     article_videos: dict[str, Any],
@@ -297,6 +334,7 @@ def audit_single_triad(
         "slug": slug,
         "date": post_date,
         "title": title,
+        "expected_source_sha256": None,
         "article": {
             "slug": slug,
             "url": article_url,
@@ -317,6 +355,8 @@ def audit_single_triad(
             "ratio": "16:9",
             "provenance_verified": False,
             "signature_verified": False,
+            "technical_verified": False,
+            "landscape_verified": False,
             "article_link_in_description": False,
             "state_artifact_id": None,
         },
@@ -329,6 +369,7 @@ def audit_single_triad(
             "portrait_verified": False,
             "provenance_verified": False,
             "signature_verified": False,
+            "technical_verified": False,
             "article_link_in_description": False,
             "state_artifact_id": None,
         },
@@ -338,13 +379,26 @@ def audit_single_triad(
         "status": "PENDING",
     }
 
+    # Compute the actual immutable NotebookLM identity for this published
+    # article. Any malformed article makes provenance unverifiable.
+    try:
+        from scripts.kesher_daily_pipeline import source_metadata
+        expected_sha = str(source_metadata(post)["content_sha256"])
+        if not re.fullmatch(r"[0-9a-f]{64}", expected_sha):
+            expected_sha = ""
+    except Exception:
+        expected_sha = ""
+    triad["expected_source_sha256"] = expected_sha or None
+
     # 1. Article live & canonical verification
     is_live, status, body = check_site_url(article_url)
     triad["article"]["live"] = is_live
     triad["article"]["http_status"] = status
     if is_live and body:
         triad["article"]["canonical_match"] = verify_canonical_url(body, article_url)
-        triad["article"]["content_verified"] = bool(title and (title in body or post.get("directAnswer", "")[:30] in body))
+        triad["article"]["content_verified"] = article_content_present(
+            title, str(post.get("directAnswer") or ""), body
+        )
 
     # 2. Hero Image 16:9 verification
     hero_rel = post.get("image") or post.get("imageUrl") or f"/images/generated/blog/{slug}-photo.jpg"
@@ -359,13 +413,15 @@ def audit_single_triad(
             ratio = round(w / h, 2)
             triad["article"]["hero_image_ratio"] = ratio
             # 16:9 is 1.777; allow standard editorial photography tolerance 1.65 - 1.90
-            hero_ratio_ok = (1.65 <= ratio <= 1.90) and (w >= 800 and h >= 450) and (size_bytes >= 15000)
+            hero_ratio_ok = (1.75 <= ratio <= 1.81) and (w >= 800 and h >= 450) and (size_bytes >= 15000)
             triad["article"]["hero_image_verified"] = hero_ratio_ok
             triad["article"]["hero_image_size_bytes"] = size_bytes
     else:
-        # Check remote hero image HTTP 200
-        img_ok, img_status, _ = check_site_url(f"{SITE_URL}{hero_rel}")
-        triad["article"]["hero_image_verified"] = img_ok
+        # Remote HTTP 200 is NOT proof of 16:9 dimensions or licensed pixels.
+        # Until a verified image artifact is available locally, fail closed.
+        img_ok, _, _ = check_site_url(f"{SITE_URL}{hero_rel}")
+        triad["article"]["remote_hero_available"] = bool(img_ok)
+        triad["article"]["hero_image_verified"] = False
 
     # 3. Long Video (16:9 Overview) verification
     vid_entry = article_videos.get(slug) or {}
@@ -402,52 +458,74 @@ def audit_single_triad(
 
     # 5. Provenance & Outro Signature Evidence from Artifacts
     video_state = load_cached_artifact_state("kesher-video-state")
-    if video_state and isinstance(video_state.get("items"), list):
+    if long_vid and expected_sha and video_state and isinstance(video_state.get("items"), list):
         matching_vids = [
-            it for it in video_state["items"]
-            if str((it.get("source") or {}).get("slug") or "") == slug or str(it.get("youtube_id") or "") == long_vid
+            item for item in video_state["items"]
+            if isinstance(item, dict)
+            and str(item.get("youtube_id") or "") == str(long_vid)
+            and str((item.get("source") or {}).get("slug") or "") == slug
+            and str((item.get("source") or {}).get("content_sha256") or "") == expected_sha
         ]
-        if matching_vids:
-            v_item = matching_vids[-1]
+        # Never choose the newest of several same-source candidates.
+        if len(matching_vids) == 1:
+            v_item = matching_vids[0]
             pipeline = str(v_item.get("visual_pipeline") or "")
             triad["long_video"]["provenance_verified"] = bool(
-                "notebooklm" in pipeline.lower() or "remotion-v1" in pipeline.lower()
+                v_item.get("uploaded") is True
+                and str(v_item.get("task_id") or "").strip()
+                and ("notebooklm" in pipeline.lower() or "remotion-v1" in pipeline.lower())
             )
             triad["long_video"]["signature_verified"] = v_item.get("signature_verified") is True
             triad["long_video"]["technical_verified"] = v_item.get("technical_verified") is True
+            media = v_item.get("media") or v_item.get("provider_raw_media") or {}
+            if isinstance(media, dict):
+                try:
+                    width, height = int(media.get("width") or 0), int(media.get("height") or 0)
+                    triad["long_video"]["landscape_verified"] = bool(
+                        width >= 800 and height >= 450 and 1.65 <= width / height <= 1.90
+                    ) if height > 0 else False
+                except (ValueError, TypeError):
+                    pass
             desc = str((v_item.get("source") or {}).get("youtube_metadata", {}).get("description") or "")
-            if f"/blog/{slug}" in desc or SITE_URL in desc:
-                triad["long_video"]["article_link_in_description"] = True
+            triad["long_video"]["article_link_in_description"] = f"/blog/{slug}" in desc
 
     short_state = load_cached_artifact_state("kesher-short-v4-state")
-    if short_state and isinstance(short_state.get("items"), list):
+    if short_vid and expected_sha and short_state and isinstance(short_state.get("items"), list):
         matching_shorts = [
-            it for it in short_state["items"]
-            if str((it.get("source") or {}).get("slug") or "") == slug or str(it.get("youtube_id") or "") == short_vid
+            item for item in short_state["items"]
+            if isinstance(item, dict)
+            and str(item.get("youtube_id") or "") == str(short_vid)
+            and str((item.get("source") or {}).get("slug") or "") == slug
+            and str((item.get("source") or {}).get("content_sha256") or "") == expected_sha
         ]
-        if matching_shorts:
-            s_item = matching_shorts[-1]
-            pipeline = str(s_item.get("visual_pipeline") or "")
-            is_native = s_item.get("provider_native_short") is True or "native" in pipeline.lower()
+        if len(matching_shorts) == 1:
+            s_item = matching_shorts[0]
             triad["short"]["provenance_verified"] = bool(
-                is_native or "remotion-v4" in pipeline.lower()
+                s_item.get("uploaded") is True
+                and str(s_item.get("task_id") or "").strip()
+                and s_item.get("provider_native_short") is True
+                and s_item.get("provider_video_format") == "short"
+                and s_item.get("shared_provider_identity") is not True
+                and not s_item.get("adopted_from_long_item_id")
             )
             triad["short"]["signature_verified"] = s_item.get("signature_verified") is True
             triad["short"]["technical_verified"] = s_item.get("technical_verified") is True
-
-            # Portrait 9:16 dimension verification
-            raw_media = s_item.get("provider_raw_media") or s_item.get("media") or {}
-            w = int(raw_media.get("width") or 0)
-            h = int(raw_media.get("height") or 0)
-            if w > 0 and h > 0 and h > w and (0.50 <= w / h <= 0.65):
-                triad["short"]["portrait_verified"] = True
-            elif is_native:
-                triad["short"]["portrait_verified"] = True
-
-            desc = str((s_item.get("source") or {}).get("youtube_metadata", {}).get("description")
-                       or (s_item.get("source") or {}).get("short_youtube_metadata", {}).get("description") or "")
-            if f"/blog/{slug}" in desc or SITE_URL in desc:
-                triad["short"]["article_link_in_description"] = True
+            raw_media = s_item.get("provider_raw_media") or {}
+            if isinstance(raw_media, dict):
+                try:
+                    width, height = int(raw_media.get("width") or 0), int(raw_media.get("height") or 0)
+                    triad["short"]["portrait_verified"] = bool(
+                        width >= 360 and height >= 640 and height > width
+                        and 0.54 <= width / height <= 0.58
+                    ) if height > 0 else False
+                except (ValueError, TypeError):
+                    pass
+            source = s_item.get("source") or {}
+            desc = str(
+                (source.get("youtube_metadata") or {}).get("description")
+                or (source.get("short_youtube_metadata") or {}).get("description") or ""
+            )
+            triad["short"]["article_link_in_description"] = f"/blog/{slug}" in desc
 
     # 6. Cross-Links Consistency
     cross_links_ok = bool(
@@ -457,21 +535,9 @@ def audit_single_triad(
     )
     triad["cross_links_verified"] = cross_links_ok
 
-    # 7. Quality Gate Evaluation
-    # If video state artifact is missing from cache, fallback to checking public metadata + embed + hero image
-    has_video_evidence = triad["long_video"]["provenance_verified"] or triad["long_video"]["public"]
-    has_short_evidence = triad["short"]["portrait_verified"] or triad["short"]["public"]
-
-    quality_passed = bool(
-        triad["article"]["live"]
-        and triad["article"]["canonical_match"]
-        and triad["article"]["hero_image_verified"]
-        and triad["article"]["video_embed_present"]
-        and triad["long_video"]["public"]
-        and triad["short"]["public"]
-        and cross_links_ok
-    )
-    triad["quality_verified"] = quality_passed
+    # 7. Quality Gate — never substitute public oEmbed for provider evidence.
+    triad["quality_verified"] = strict_triad_quality(triad)
+    quality_passed = triad["quality_verified"]
 
     # 8. Final Contract Status
     if (
