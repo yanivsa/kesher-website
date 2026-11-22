@@ -283,6 +283,13 @@ def verify_youtube_public(video_id: str, is_short: bool = False) -> tuple[bool, 
     return is_pub, meta
 
 
+def article_content_present(title: str, direct_answer: str, body: str) -> bool:
+    """An empty summary must never count as a visible article match."""
+    heading = str(title or "").strip()
+    snippet = str(direct_answer or "").strip()[:30]
+    return bool(body and ((heading and heading in body) or (snippet and snippet in body)))
+
+
 def strict_triad_quality(triad: dict[str, Any]) -> bool:
     """Only independently evidenced article, long and native Short may pass."""
     article = triad.get("article") or {}
@@ -389,7 +396,9 @@ def audit_single_triad(
     triad["article"]["http_status"] = status
     if is_live and body:
         triad["article"]["canonical_match"] = verify_canonical_url(body, article_url)
-        triad["article"]["content_verified"] = bool(title and (title in body or post.get("directAnswer", "")[:30] in body))
+        triad["article"]["content_verified"] = article_content_present(
+            title, str(post.get("directAnswer") or ""), body
+        )
 
     # 2. Hero Image 16:9 verification
     hero_rel = post.get("image") or post.get("imageUrl") or f"/images/generated/blog/{slug}-photo.jpg"
