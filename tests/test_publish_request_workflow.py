@@ -92,7 +92,7 @@ class PublishRequestWorkflowTests(unittest.TestCase):
             self.assertFalse(publisher.run_supervisor_audit("2026-11-22")["complete"])
 
     def test_get_latest_run_does_not_adopt_stale_or_ambiguous_dispatch(self):
-        from unittest.mock import patch, Mock
+        from unittest.mock import patch, Mock, MagicMock
 
         client = publisher.GitHubActionsClient("dummy_token")
         def response(rows):
