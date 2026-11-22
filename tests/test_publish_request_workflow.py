@@ -110,6 +110,66 @@ class PublishRequestWorkflowTests(unittest.TestCase):
             )
             self.assertEqual(found["id"], 444)
 
+    def test_live_publish_stages_pr_and_never_pushes_main(self):
+        from unittest.mock import Mock, patch
+
+        sha = "a" * 64
+        article = {
+            "slug": "cloud-publishing-safe-test",
+            "title": "מאמר ניסוי",
+            "source_sha256": sha,
+            "canonical_url": "https://kesher.saharoni.com/blog/cloud-publishing-safe-test",
+            "hero_image": "/images/generated/blog/cloud-publishing-safe-test.jpg",
+        }
+        client = Mock()
+        client.lookup_cloud_candidate.return_value = None
+        client.create_cloud_candidate_pr.return_value = {
+            "number": 8888, "html_url": "https://github.com/yanivsa/kesher-website/pull/8888"
+        }
+        with patch("scripts.kesher_cloud_article_generator.generate_article", return_value=article) as gen:
+            with patch.object(publisher.subprocess, "run") as run:
+                out = publisher.handle_run_now("2026-11-22", client)
+        self.assertEqual(out["status"], "candidate_pr_pending_ci_and_authority")
+        self.assertFalse(out["contract_complete"])
+        self.assertEqual(out["pr_number"], 8888)
+        self.assertFalse(gen.call_args.kwargs["commit"])
+        expected = f"content/kesher-cloud-publishing-safe-test-{sha[:12]}"
+        commands = [call.args[0] for call in run.call_args_list]
+        self.assertIn(["git", "push", "origin", f"HEAD:refs/heads/{expected}"], commands)
+        self.assertFalse(any(cmd[:2] == ["git", "push"] and "main" in cmd for cmd in commands))
+        client.dispatch.assert_called_once_with("ci.yml", ref=expected)
+
+    def test_live_publish_adopts_existing_same_source_candidate(self):
+        from unittest.mock import Mock, patch
+
+        sha = "b" * 64
+        article = {
+            "slug": "existing-cloud-candidate",
+            "title": "מאמר",
+            "source_sha256": sha,
+            "canonical_url": "https://kesher.saharoni.com/blog/existing-cloud-candidate",
+            "hero_image": "/images/generated/blog/existing-cloud-candidate.jpg",
+        }
+        client = Mock()
+        client.lookup_cloud_candidate.return_value = {
+            "number": 7777, "html_url": "https://github.com/yanivsa/kesher-website/pull/7777"
+        }
+        with patch("scripts.kesher_cloud_article_generator.generate_article", return_value=article):
+            with patch.object(publisher.subprocess, "run") as run:
+                out = publisher.handle_run_now("2026-11-22", client)
+        self.assertEqual(out["status"], "candidate_pr_exists")
+        self.assertFalse(out["contract_complete"])
+        run.assert_not_called()
+        client.create_cloud_candidate_pr.assert_not_called()
+
+    def test_live_publish_refuses_missing_github_client_before_content_creation(self):
+        from unittest.mock import patch
+
+        with patch("scripts.kesher_cloud_article_generator.generate_article") as gen:
+            with self.assertRaisesRegex(RuntimeError, "GITHUB_CLIENT_REQUIRED"):
+                publisher.handle_run_now("2026-11-22", None, dry_run=False)
+        gen.assert_not_called()
+
     def test_handle_run_now_dry_run(self):
         res = publisher.handle_run_now("2026-11-21", client=None, dry_run=True)
         self.assertEqual(res["action"], "run_now")
