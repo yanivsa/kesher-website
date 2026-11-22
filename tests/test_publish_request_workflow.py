@@ -50,7 +50,7 @@ class PublishRequestWorkflowTests(unittest.TestCase):
         self.assertTrue(res["contract_complete"])
 
     def test_supervisor_audit_requires_exact_slug(self):
-        from unittest.mock import patch, Mock
+        from unittest.mock import patch, Mock, MagicMock
 
         payload = {
             "delivery": {
@@ -82,7 +82,7 @@ class PublishRequestWorkflowTests(unittest.TestCase):
 
         client = publisher.GitHubActionsClient("dummy_token")
         def response(rows):
-            return Mock(__enter__=Mock(return_value=Mock(
+            return MagicMock(__enter__=Mock(return_value=Mock(
                 read=Mock(return_value=json.dumps({"workflow_runs": rows}).encode("utf-8"))
             )), __exit__=Mock(return_value=False))
 
