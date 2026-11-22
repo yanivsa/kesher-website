@@ -97,6 +97,40 @@ class CloudArticleGeneratorTests(unittest.TestCase):
         self.assertGreaterEqual(words, 450)
         self.assertGreaterEqual(h3_count, 4)
 
+    def test_source_hash_matches_notebooklm(self):
+        """Regression: no JSON-record hash can be substituted for media identity."""
+        from scripts.kesher_daily_pipeline import source_metadata
+
+        topic = generator.select_original_topic(generator.load_all_posts())
+        post = {
+            "id": topic["slug"],
+            "slug": topic["slug"],
+            "title": topic["title"],
+            "date": "2026-11-22",
+            "category": topic["category"],
+            "subcategory": topic.get("subcategory", ""),
+            "excerpt": topic["excerpt"],
+            "content": generator.build_article_html(topic["content_sections"]),
+        }
+        expected = source_metadata(post)["content_sha256"]
+        self.assertEqual(generator.compute_article_sha256(post), expected)
+
+        # Previously the publisher hashed a JSON subset rather than the
+        # exact published NotebookLM source body. This must not regress.
+        import hashlib
+        legacy_subset = {
+            "id": post["id"],
+            "title": post["title"],
+            "excerpt": post["excerpt"],
+            "content": post["content"],
+            "directAnswer": "",
+            "primaryKeyword": "",
+        }
+        legacy = hashlib.sha256(
+            json.dumps(legacy_subset, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        self.assertNotEqual(expected, legacy)
+
     def test_duplicate_slug_injection_rejected(self):
         posts = generator.load_all_posts()
         if not posts:
