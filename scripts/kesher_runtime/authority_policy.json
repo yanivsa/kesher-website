@@ -4449,7 +4449,7 @@
       "review": {
         "call_chain": {
           "scripts/kesher_cloud_publisher.py": "419eea8aa6e67c37b41765d6224f6425199d8553fc5cb0e35f9a9aa4bec04304",
-          "scripts/kesher_cloud_article_generator.py": "9812f3dab2ac4eeb96c07a04d60eba7725019d86ea5a1908aa4cceb42166e287",
+          "scripts/kesher_cloud_article_generator.py": "4dba8007de9e8acdd72785b77328ead843c9ba90f9d40d62a8272edd0b1fc4db",
           "scripts/kesher_cloud_supervisor.py": "be6f15cc9fb8c6507e0d3aa3a77ee7da5b0f64c3b7421bb0701e33c1e3808628",
           "scripts/kesher_controller_repair.py": "cca61d88287112c3274053784a57816340a264a0b2c793afd5491319bad712df"
         },
