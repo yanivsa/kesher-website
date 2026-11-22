@@ -100,6 +100,16 @@ class PublishRequestWorkflowTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "AMBIGUOUS_WORKFLOW_DISPATCH"):
                 client.get_latest_run("kesher-daily-video.yml", start)
 
+        # REST runs report second-granularity created_at even if the dispatch
+        # timestamp includes microseconds within that same second.
+        with patch.object(publisher.urllib.request, "urlopen", return_value=response([
+            {"id": 444, "created_at": "2026-11-22T05:27:52Z", "event": "workflow_dispatch"},
+        ])):
+            found = client.get_latest_run(
+                "kesher-daily-video.yml", "2026-11-22T05:27:52.987654+00:00"
+            )
+            self.assertEqual(found["id"], 444)
+
     def test_handle_run_now_dry_run(self):
         res = publisher.handle_run_now("2026-11-21", client=None, dry_run=True)
         self.assertEqual(res["action"], "run_now")
