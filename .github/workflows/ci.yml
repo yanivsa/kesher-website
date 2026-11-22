@@ -77,6 +77,14 @@ jobs:
             tests.test_ci_regression_suite_coverage \
             -v
 
+      - name: Test ChatGPT cloud publisher and strict media contract
+        run: |
+          python3 -m unittest \
+            tests.test_cloud_article_generator \
+            tests.test_publish_request_workflow \
+            tests.test_kesher_cloud_supervisor_contract \
+            -v
+
       - name: Test Schema-6 production cutover safety
         run: |
           python3 -m unittest \

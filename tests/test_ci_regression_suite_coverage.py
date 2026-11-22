@@ -25,6 +25,13 @@ MANDATORY_PRODUCTION_SAFETY_MODULES = [
 ]
 
 
+MANDATORY_CLOUD_PUBLISHING_MODULES = (
+    "tests.test_cloud_article_generator",
+    "tests.test_publish_request_workflow",
+    "tests.test_kesher_cloud_supervisor_contract",
+)
+
+
 def _queued_idea(index: int) -> dict:
     return {
         "idea_id": f"queued-{index}",
@@ -62,6 +69,20 @@ class CiRegressionSuiteCoverageTests(unittest.TestCase):
                 mod,
                 content,
                 f"Mandatory production-safety test {mod} is omitted from .github/workflows/ci.yml",
+            )
+
+    def test_cloud_publishing_suites_never_omitted_from_ci(self) -> None:
+        ci_path = ROOT / ".github/workflows/ci.yml"
+        ci_content = ci_path.read_text(encoding="utf-8")
+        for module in MANDATORY_CLOUD_PUBLISHING_MODULES:
+            self.assertTrue(
+                (ROOT / (module.replace(".", "/") + ".py")).is_file(),
+                f"Missing cloud publication test module: {module}",
+            )
+            self.assertIn(
+                module,
+                ci_content,
+                f"CI omits mandatory cloud publishing QA module: {module}",
             )
 
     def test_mandatory_suites_included_in_stability_pr_workflow(self) -> None:
