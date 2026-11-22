@@ -52,6 +52,16 @@ def israel_date_now() -> str:
         return date.today().isoformat()
 
 
+class NoAuthRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Prevent forwarding GitHub Authorization header to external pre-signed artifact URLs on redirect."""
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        new_req = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if new_req and ("blob.core.windows.net" in newurl or "githubusercontent.com" in newurl or "api.github.com" not in newurl):
+            new_req.headers.pop("Authorization", None)
+            new_req.headers.pop("authorization", None)
+        return new_req
+
+
 class GitHubActionsClient:
     """Bounded, authenticated GitHub REST client for dispatching and polling workflows."""
 
@@ -159,8 +169,23 @@ class GitHubActionsClient:
             raise RuntimeError(f"ARTIFACT_NOT_FOUND: {artifact_name} for run #{run_id}")
         download_url = artifacts[0]["archive_download_url"]
         down_req = urllib.request.Request(download_url, headers=self._headers(), method="GET")
-        with urllib.request.urlopen(down_req, timeout=60) as resp:
+        opener = urllib.request.build_opener(NoAuthRedirectHandler)
+        with opener.open(down_req, timeout=60) as resp:
             return resp.read()
+
+    def get_latest_artifact_zip(self, artifact_name: str) -> bytes | None:
+        """Download artifact archive bytes for the newest unexpired artifact by name across the repo."""
+        url = f"{self.base_url}/actions/artifacts?name={urllib.parse.quote(artifact_name)}&per_page=10"
+        req = urllib.request.Request(url, headers=self._headers(), method="GET")
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        for artifact in data.get("artifacts", []):
+            if artifact.get("name") == artifact_name and not artifact.get("expired"):
+                down_req = urllib.request.Request(artifact["archive_download_url"], headers=self._headers(), method="GET")
+                opener = urllib.request.build_opener(NoAuthRedirectHandler)
+                with opener.open(down_req, timeout=60) as down_resp:
+                    return down_resp.read()
+        return None
 
     def get_latest_run(
         self,
@@ -326,12 +351,20 @@ def extract_video_state(client: GitHubActionsClient, run_id: int, slug: str) -> 
     with zipfile.ZipFile(io.BytesIO(raw_zip)) as z:
         data = json.loads(z.read("state.json").decode("utf-8"))
     for item in data.get("items", []):
-        if str(item.get("slug")) == slug and item.get("status") == "uploaded":
+        item_slug = str((item.get("source") or {}).get("slug") or item.get("slug") or "")
+        if item_slug == slug:
+            status = item.get("status")
             item_id = str(item.get("id") or item.get("item_id") or "")
-            yt_id = str(item.get("youtube_id") or "")
-            if item_id and yt_id:
-                return item_id, yt_id
-    raise RuntimeError(f"NO_UPLOADED_LONG_VIDEO_FOUND_IN_RUN_{run_id}_FOR_{slug}")
+            if status == "uploaded":
+                yt_id = str(item.get("youtube_id") or "")
+                if item_id and yt_id:
+                    return item_id, yt_id
+            elif status in ("rejected", "failed"):
+                reason = item.get("rejection_reason") or "unknown"
+                raise RuntimeError(f"VIDEO_REJECTED_OR_FAILED: {status} ({reason})")
+            else:
+                return item_id, ""
+    raise RuntimeError(f"NO_VIDEO_ITEM_FOUND_IN_RUN_{run_id}_FOR_{slug}")
 
 
 def extract_short_state(client: GitHubActionsClient, run_id: int, slug: str) -> str:
@@ -340,11 +373,15 @@ def extract_short_state(client: GitHubActionsClient, run_id: int, slug: str) -> 
         data = json.loads(z.read("state.json").decode("utf-8"))
     for item in data.get("items", []):
         item_slug = str((item.get("source") or {}).get("slug") or item.get("slug") or "")
-        if item_slug == slug and item.get("uploaded") is True:
-            yt_id = str(item.get("youtube_id") or "")
-            if yt_id:
-                return yt_id
-    raise RuntimeError(f"NO_UPLOADED_SHORT_FOUND_IN_RUN_{run_id}_FOR_{slug}")
+        if item_slug == slug:
+            status = str(item.get("status") or "")
+            if item.get("uploaded") is True and item.get("youtube_id"):
+                return str(item.get("youtube_id"))
+            if status in ("rejected", "failed"):
+                reason = item.get("rejection_reason") or "unknown"
+                raise RuntimeError(f"SHORT_REJECTED_OR_FAILED: {status} ({reason})")
+            return ""
+    raise RuntimeError(f"NO_SHORT_ITEM_FOUND_IN_RUN_{run_id}_FOR_{slug}")
 
 
 def update_article_videos(slug: str, long_id: str | None = None, short_id: str | None = None) -> None:
@@ -585,59 +622,83 @@ def handle_run_now(
     # Step 5: Verify live article
     verify_live_article(article_url, source_sha)
 
-    # Step 6: Dispatch NotebookLM Long Video (16:9)
-    print(f"🎬 Triggering NotebookLM Long Video for {slug}...")
-    video_start_iso = datetime.now(timezone.utc).isoformat()
-    client.dispatch(
-        "kesher-daily-video.yml",
-        {
-            "operation": "full",
-            "target_slug": slug,
-            "target_content_sha256": source_sha,
-            "skip_jules_advisory": True,
-        },
-        ref="main",
-    )
-    video_run = client.poll_workflow(
-        "kesher-daily-video.yml",
-        branch="main",
-        dispatched_after_iso=video_start_iso,
-        max_wait_seconds=1800,
-    )
-    if video_run.get("conclusion") != "success":
-        raise RuntimeError(f"Long Video workflow failed with conclusion: {video_run.get('conclusion')}")
-    long_item_id, long_yt = extract_video_state(client, video_run["id"], slug)
-    print(f"Long video completed: item_id={long_item_id}, youtube={long_yt}")
+    # Step 6: Dispatch / Poll NotebookLM Long Video (16:9)
+    long_item_id = ""
+    long_yt = ""
+    for video_attempt in range(1, 6):
+        print(f"🎬 [Attempt {video_attempt}/5] Triggering/polling NotebookLM Long Video for {slug}...")
+        video_start_iso = datetime.now(timezone.utc).isoformat()
+        client.dispatch(
+            "kesher-daily-video.yml",
+            {
+                "operation": "full",
+                "target_slug": slug,
+                "target_content_sha256": source_sha,
+                "skip_jules_advisory": True,
+            },
+            ref="main",
+        )
+        video_run = client.poll_workflow(
+            "kesher-daily-video.yml",
+            branch="main",
+            dispatched_after_iso=video_start_iso,
+            max_wait_seconds=1800,
+        )
+        if video_run.get("conclusion") != "success":
+            raise RuntimeError(f"Long Video workflow failed with conclusion: {video_run.get('conclusion')}")
+        long_item_id, long_yt = extract_video_state(client, video_run["id"], slug)
+        if long_item_id and long_yt:
+            print(f"Long video completed: item_id={long_item_id}, youtube={long_yt}")
+            break
+        print(f"Long video generation still in progress on provider, polling next cycle in 15s...")
+        time.sleep(15)
+    else:
+        raise RuntimeError(f"Long video for {slug} did not reach uploaded status after 5 attempts")
 
-    # Step 7: Dispatch NotebookLM Native Short (9:16)
-    print(f"📱 Triggering NotebookLM Native Short for {slug}...")
-    short_start_iso = datetime.now(timezone.utc).isoformat()
-    client.dispatch(
-        "kesher-short-v4.yml",
-        {
-            "operation": "derive",
-            "derive_slug": slug,
-            "derive_content_sha256": source_sha,
-            "derive_long_item_id": long_item_id,
-        },
-        ref="main",
-    )
-    short_run = client.poll_workflow(
-        "kesher-short-v4.yml",
-        branch="main",
-        dispatched_after_iso=short_start_iso,
-        max_wait_seconds=1800,
-    )
-    if short_run.get("conclusion") != "success":
-        raise RuntimeError(f"Short workflow failed with conclusion: {short_run.get('conclusion')}")
-    short_yt = extract_short_state(client, short_run["id"], slug)
-    print(f"Short completed: youtube={short_yt}")
+    # Step 7: Dispatch / Poll NotebookLM Native Short (9:16)
+    short_yt = ""
+    for short_attempt in range(1, 6):
+        print(f"📱 [Attempt {short_attempt}/5] Triggering/polling NotebookLM Native Short for {slug}...")
+        short_start_iso = datetime.now(timezone.utc).isoformat()
+        client.dispatch(
+            "kesher-short-v4.yml",
+            {
+                "operation": "derive",
+                "derive_slug": slug,
+                "derive_content_sha256": source_sha,
+                "derive_long_item_id": long_item_id,
+            },
+            ref="main",
+        )
+        short_run = client.poll_workflow(
+            "kesher-short-v4.yml",
+            branch="main",
+            dispatched_after_iso=short_start_iso,
+            max_wait_seconds=1800,
+        )
+        if short_run.get("conclusion") != "success":
+            raise RuntimeError(f"Short workflow failed with conclusion: {short_run.get('conclusion')}")
+        short_yt = extract_short_state(client, short_run["id"], slug)
+        if short_yt:
+            print(f"Short completed: youtube={short_yt}")
+            break
+        print(f"Short generation still in progress on provider, polling next cycle in 15s...")
+        time.sleep(15)
+    else:
+        raise RuntimeError(f"Short for {slug} did not reach uploaded status after 5 attempts")
 
     # Step 8: Update articleVideos.json and re-deploy
+    subprocess.run(["git", "switch", "main"], check=True, cwd=ROOT, timeout=30)
+    subprocess.run(["git", "reset", "--hard", "HEAD"], check=True, cwd=ROOT, timeout=30)
+    subprocess.run(["git", "clean", "-fd"], check=True, cwd=ROOT, timeout=30)
+    subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=True, cwd=ROOT, timeout=60)
     update_article_videos(slug, long_id=long_yt, short_id=short_yt)
     subprocess.run(["git", "add", "src/data/articleVideos.json"], check=True, cwd=ROOT)
     subprocess.run(["git", "commit", "-m", f"chore(media): bind verified YouTube video and short for {slug}"], check=True, cwd=ROOT)
-    subprocess.run(["git", "push", "origin", "main"], check=True, cwd=ROOT)
+    push_res = subprocess.run(["git", "push", "origin", "main"], cwd=ROOT, timeout=60, capture_output=True, text=True)
+    if push_res.returncode != 0:
+        subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=True, cwd=ROOT, timeout=60)
+        subprocess.run(["git", "push", "origin", "main"], check=True, cwd=ROOT, timeout=60)
 
     deploy2_start_iso = datetime.now(timezone.utc).isoformat()
     client.dispatch("deploy.yml", ref="main")
@@ -714,61 +775,101 @@ def handle_resume(
     # Step 2: Check or dispatch Long Video
     long_item_id = None
     long_yt = None
-    from scripts.kesher_cloud_supervisor import load_cached_artifact_state
-    vstate = load_cached_artifact_state("kesher-video-controller-state")
-    if vstate and isinstance(vstate.get("items"), list):
-        for item in vstate["items"]:
-            if str(item.get("slug")) == slug and item.get("status") == "uploaded":
-                long_item_id = str(item.get("id") or item.get("item_id") or "")
-                long_yt = str(item.get("youtube_id") or "")
-                break
+    try:
+        latest_vzip = client.get_latest_artifact_zip("kesher-video-controller-state")
+        if latest_vzip:
+            with zipfile.ZipFile(io.BytesIO(latest_vzip)) as z:
+                vstate = json.loads(z.read("state.json").decode("utf-8"))
+            if vstate and isinstance(vstate.get("items"), list):
+                for item in vstate["items"]:
+                    item_slug = str((item.get("source") or {}).get("slug") or item.get("slug") or "")
+                    if item_slug == slug and item.get("status") == "uploaded":
+                        long_item_id = str(item.get("id") or item.get("item_id") or "")
+                        long_yt = str(item.get("youtube_id") or "")
+                        if long_item_id and long_yt:
+                            print(f"Found uploaded long video in latest artifact: item_id={long_item_id}, youtube={long_yt}")
+                            break
+    except Exception as exc:
+        print(f"Notice: unable to inspect latest video artifact directly: {exc}")
 
     if not long_item_id or not long_yt:
-        print(f"Long video missing for {slug}; dispatching...")
-        video_now = datetime.now(timezone.utc).isoformat()
-        client.dispatch(
-            "kesher-daily-video.yml",
-            {
-                "operation": "full",
-                "target_slug": slug,
-                "target_content_sha256": source_sha,
-                "skip_jules_advisory": True,
-            },
-            ref="main",
-        )
-        video_run = client.poll_workflow("kesher-daily-video.yml", branch="main", dispatched_after_iso=video_now, max_wait_seconds=1800)
-        long_item_id, long_yt = extract_video_state(client, video_run["id"], slug)
+        for video_attempt in range(1, 6):
+            print(f"🎬 [Resume Attempt {video_attempt}/5] Triggering/polling NotebookLM Long Video for {slug}...")
+            video_now = datetime.now(timezone.utc).isoformat()
+            client.dispatch(
+                "kesher-daily-video.yml",
+                {
+                    "operation": "full",
+                    "target_slug": slug,
+                    "target_content_sha256": source_sha,
+                    "skip_jules_advisory": True,
+                },
+                ref="main",
+            )
+            video_run = client.poll_workflow("kesher-daily-video.yml", branch="main", dispatched_after_iso=video_now, max_wait_seconds=1800)
+            if video_run.get("conclusion") != "success":
+                raise RuntimeError(f"Long Video workflow failed with conclusion: {video_run.get('conclusion')}")
+            long_item_id, long_yt = extract_video_state(client, video_run["id"], slug)
+            if long_item_id and long_yt:
+                print(f"Long video uploaded: item_id={long_item_id}, youtube={long_yt}")
+                break
+            print(f"Long video still generating on provider, retrying poll in 15s...")
+            time.sleep(15)
+        else:
+            raise RuntimeError(f"Long video for {slug} did not reach uploaded status after 5 attempts")
 
     # Step 3: Check or dispatch Short
     short_yt = None
-    sstate = load_cached_artifact_state("kesher-short-v4-state")
-    if sstate and isinstance(sstate.get("items"), list):
-        for item in sstate["items"]:
-            item_slug = str((item.get("source") or {}).get("slug") or item.get("slug") or "")
-            if item_slug == slug and item.get("uploaded") is True:
-                short_yt = str(item.get("youtube_id") or "")
-                break
+    try:
+        latest_szip = client.get_latest_artifact_zip("kesher-short-v4-state")
+        if latest_szip:
+            with zipfile.ZipFile(io.BytesIO(latest_szip)) as z:
+                sstate = json.loads(z.read("state.json").decode("utf-8"))
+            if sstate and isinstance(sstate.get("items"), list):
+                for item in sstate["items"]:
+                    item_slug = str((item.get("source") or {}).get("slug") or item.get("slug") or "")
+                    if item_slug == slug and item.get("uploaded") is True:
+                        short_yt = str(item.get("youtube_id") or "")
+                        if short_yt:
+                            print(f"Found uploaded short in latest artifact: youtube={short_yt}")
+                            break
+    except Exception as exc:
+        print(f"Notice: unable to inspect latest short artifact directly: {exc}")
 
     if not short_yt:
-        print(f"Short missing for {slug}; dispatching with derive_long_item_id={long_item_id}...")
-        short_now = datetime.now(timezone.utc).isoformat()
-        client.dispatch(
-            "kesher-short-v4.yml",
-            {
-                "operation": "derive",
-                "derive_slug": slug,
-                "derive_content_sha256": source_sha,
-                "derive_long_item_id": long_item_id,
-            },
-            ref="main",
-        )
-        short_run = client.poll_workflow("kesher-short-v4.yml", branch="main", dispatched_after_iso=short_now, max_wait_seconds=1800)
-        short_yt = extract_short_state(client, short_run["id"], slug)
+        for short_attempt in range(1, 6):
+            print(f"📱 [Resume Attempt {short_attempt}/5] Triggering/polling NotebookLM Native Short for {slug}...")
+            short_now = datetime.now(timezone.utc).isoformat()
+            client.dispatch(
+                "kesher-short-v4.yml",
+                {
+                    "operation": "derive",
+                    "derive_slug": slug,
+                    "derive_content_sha256": source_sha,
+                    "derive_long_item_id": long_item_id,
+                },
+                ref="main",
+            )
+            short_run = client.poll_workflow("kesher-short-v4.yml", branch="main", dispatched_after_iso=short_now, max_wait_seconds=1800)
+            if short_run.get("conclusion") != "success":
+                raise RuntimeError(f"Short workflow failed with conclusion: {short_run.get('conclusion')}")
+            short_yt = extract_short_state(client, short_run["id"], slug)
+            if short_yt:
+                print(f"Short uploaded: youtube={short_yt}")
+                break
+            print(f"Short still generating on provider, retrying poll in 15s...")
+            time.sleep(15)
+        else:
+            raise RuntimeError(f"Short for {slug} did not reach uploaded status after 5 attempts")
 
     # Step 4: Ensure articleVideos.json is up to date
     vids = json.loads(ARTICLE_VIDEOS_FILE.read_text(encoding="utf-8")) if ARTICLE_VIDEOS_FILE.exists() else {}
     current_entry = vids.get(slug, {})
     if current_entry.get("youtubeId") != long_yt or (current_entry.get("youtubeShortId") != short_yt and current_entry.get("shortYoutubeId") != short_yt):
+        subprocess.run(["git", "switch", "main"], check=True, cwd=ROOT, timeout=30)
+        subprocess.run(["git", "reset", "--hard", "HEAD"], check=True, cwd=ROOT, timeout=30)
+        subprocess.run(["git", "clean", "-fd"], check=True, cwd=ROOT, timeout=30)
+        subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=True, cwd=ROOT, timeout=60)
         update_article_videos(slug, long_id=long_yt, short_id=short_yt)
         subprocess.run(["git", "add", "src/data/articleVideos.json"], check=True, cwd=ROOT)
         subprocess.run(["git", "commit", "-m", f"chore(media): bind verified YouTube video and short for {slug}"], check=True, cwd=ROOT)
