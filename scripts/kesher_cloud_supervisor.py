@@ -404,13 +404,15 @@ def audit_single_triad(
             ratio = round(w / h, 2)
             triad["article"]["hero_image_ratio"] = ratio
             # 16:9 is 1.777; allow standard editorial photography tolerance 1.65 - 1.90
-            hero_ratio_ok = (1.65 <= ratio <= 1.90) and (w >= 800 and h >= 450) and (size_bytes >= 15000)
+            hero_ratio_ok = (1.75 <= ratio <= 1.81) and (w >= 800 and h >= 450) and (size_bytes >= 15000)
             triad["article"]["hero_image_verified"] = hero_ratio_ok
             triad["article"]["hero_image_size_bytes"] = size_bytes
     else:
-        # Check remote hero image HTTP 200
-        img_ok, img_status, _ = check_site_url(f"{SITE_URL}{hero_rel}")
-        triad["article"]["hero_image_verified"] = img_ok
+        # Remote HTTP 200 is NOT proof of 16:9 dimensions or licensed pixels.
+        # Until a verified image artifact is available locally, fail closed.
+        img_ok, _, _ = check_site_url(f"{SITE_URL}{hero_rel}")
+        triad["article"]["remote_hero_available"] = bool(img_ok)
+        triad["article"]["hero_image_verified"] = False
 
     # 3. Long Video (16:9 Overview) verification
     vid_entry = article_videos.get(slug) or {}
