@@ -41,6 +41,31 @@ class CloudArticleGeneratorTests(unittest.TestCase):
             if tmp_path.is_file():
                 tmp_path.unlink()
 
+    def test_production_hero_is_written_to_git_staging_public_path(self):
+        from unittest.mock import patch
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            generated = []
+
+            def save_hero(slug, title, category, output_path):
+                generated.append(output_path)
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+                output_path.write_bytes(b"verified hero path test fixture")
+                return output_path.stat().st_size
+
+            with (
+                patch.object(generator, "ROOT", root),
+                patch.object(generator, "load_all_posts", return_value=[]),
+                patch.object(generator, "generate_hero_image", side_effect=save_hero),
+            ):
+                article = generator.generate_article("2026-11-22", dry_run=False)
+
+            expected = root / "public" / article["hero_image"].lstrip("/")
+            self.assertEqual(generated, [expected])
+            self.assertTrue(expected.is_file())
+            self.assertFalse((root / article["hero_image"].lstrip("/")).is_file())
+
     def test_dry_run_does_not_mutate_files(self):
         recent_text_before = generator.RECENT_POSTS_FILE.read_text(encoding="utf-8")
         result = generator.generate_article("2026-11-21", dry_run=True)
