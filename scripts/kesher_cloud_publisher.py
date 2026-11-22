@@ -87,7 +87,12 @@ class GitHubActionsClient:
         """
         if not created_after_iso:
             raise ValueError("DISPATCH_CORRELATION_REQUIRES_START_TIME")
-        threshold = datetime.fromisoformat(created_after_iso.replace("Z", "+00:00")).astimezone(timezone.utc)
+        # GitHub truncates created_at to whole seconds; floor the dispatch
+        # timestamp to avoid discarding a run created within the same second.
+        # Concurrent same-second candidates are still rejected as ambiguous.
+        threshold = datetime.fromisoformat(
+            created_after_iso.replace("Z", "+00:00")
+        ).astimezone(timezone.utc).replace(microsecond=0)
         url = f"{self.base_url}/actions/workflows/{workflow_name}/runs?event=workflow_dispatch&per_page=100"
         req = urllib.request.Request(url, headers=self._headers(), method="GET")
         with urllib.request.urlopen(req, timeout=30) as resp:
