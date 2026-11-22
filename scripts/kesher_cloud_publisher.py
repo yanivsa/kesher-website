@@ -569,6 +569,8 @@ def handle_run_now(
     print(f"Candidate PR #{pr['number']} merged into main.")
 
     subprocess.run(["git", "switch", "main"], check=True, cwd=ROOT, timeout=30)
+    subprocess.run(["git", "reset", "--hard", "HEAD"], check=True, cwd=ROOT, timeout=30)
+    subprocess.run(["git", "clean", "-fd"], check=True, cwd=ROOT, timeout=30)
     subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=True, cwd=ROOT, timeout=60)
 
     # Step 4: Deploy to Cloudflare Pages
@@ -698,7 +700,16 @@ def handle_resume(
     article_url = f"https://kesher.saharoni.com/blog/{slug}"
 
     # Step 1: Ensure article is live
-    verify_live_article(article_url, source_sha, max_wait_seconds=60)
+    try:
+        verify_live_article(article_url, source_sha, max_wait_seconds=15)
+    except TimeoutError:
+        print(f"Article not yet live; triggering deployment to Cloudflare Pages...")
+        dep_start_iso = datetime.now(timezone.utc).isoformat()
+        client.dispatch("deploy.yml", ref="main")
+        deploy_run = client.poll_workflow("deploy.yml", branch="main", dispatched_after_iso=dep_start_iso, max_wait_seconds=600)
+        if deploy_run.get("conclusion") != "success":
+            raise RuntimeError(f"Deployment failed with conclusion: {deploy_run.get('conclusion')}")
+        verify_live_article(article_url, source_sha, max_wait_seconds=180)
 
     # Step 2: Check or dispatch Long Video
     long_item_id = None
@@ -761,7 +772,10 @@ def handle_resume(
         update_article_videos(slug, long_id=long_yt, short_id=short_yt)
         subprocess.run(["git", "add", "src/data/articleVideos.json"], check=True, cwd=ROOT)
         subprocess.run(["git", "commit", "-m", f"chore(media): bind verified YouTube video and short for {slug}"], check=True, cwd=ROOT)
-        subprocess.run(["git", "push", "origin", "main"], check=True, cwd=ROOT)
+        push_res = subprocess.run(["git", "push", "origin", "main"], cwd=ROOT, timeout=60, capture_output=True, text=True)
+        if push_res.returncode != 0:
+            subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=True, cwd=ROOT, timeout=60)
+            subprocess.run(["git", "push", "origin", "main"], check=True, cwd=ROOT, timeout=60)
         deploy_now = datetime.now(timezone.utc).isoformat()
         client.dispatch("deploy.yml", ref="main")
         client.poll_workflow("deploy.yml", branch="main", dispatched_after_iso=deploy_now, max_wait_seconds=600)
