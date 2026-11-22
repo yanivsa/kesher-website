@@ -1,5 +1,7 @@
 """Fail-closed three-link quality contract regression tests."""
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 from scripts import kesher_cloud_supervisor as supervisor
@@ -59,8 +61,14 @@ class StrictTriadContractTests(unittest.TestCase):
             "author_url": f"https://www.youtube.com/channel/{supervisor.YOUTUBE_CHANNEL_ID}",
             "author_name": "KESHER",
         }
-        with (
-            patch("scripts.kesher_daily_pipeline.source_metadata", return_value={"content_sha256": self.SHA}),
+        with tempfile.TemporaryDirectory() as tmp:
+            hero = Path(tmp) / "public/images/generated/blog" / f"{self.SLUG}.jpg"
+            hero.parent.mkdir(parents=True, exist_ok=True)
+            hero.write_bytes(b"JPEG fixture with verified dimensions " * 700)
+            with (
+                patch.object(supervisor, "PROJECT_DIR", Path(tmp)),
+                patch.object(supervisor, "get_image_size", return_value=(1200, 675)),
+                patch("scripts.kesher_daily_pipeline.source_metadata", return_value={"content_sha256": self.SHA}),
             patch.object(supervisor, "check_site_url", return_value=(True, 200, live_html)),
             patch.object(supervisor, "verify_canonical_url", return_value=True),
             patch.object(supervisor, "verify_youtube_public", return_value=(True, author)),
@@ -68,8 +76,8 @@ class StrictTriadContractTests(unittest.TestCase):
                 video if video is not None else self.video_state(),
                 short if short is not None else self.short_state(),
             ]),
-        ):
-            return supervisor.audit_single_triad(post, catalogue)
+            ):
+                return supervisor.audit_single_triad(post, catalogue)
 
     def test_verified_exact_identity_can_pass(self):
         triad = self.evaluate()
@@ -98,6 +106,20 @@ class StrictTriadContractTests(unittest.TestCase):
         state = self.short_state()
         state["items"][0]["provider_raw_media"] = {"width": 1280, "height": 720}
         self.assertFalse(self.evaluate(short=state)["complete"])
+
+    def test_hero_remote_200_is_not_dimensions_proof(self):
+        post = self.post()
+        with (
+            patch.object(supervisor, "check_site_url", return_value=(True, 200, "irrelevant")),
+            patch.object(supervisor, "verify_canonical_url", return_value=True),
+            patch.object(supervisor, "verify_youtube_public", return_value=(False, {})),
+            patch.object(supervisor, "load_cached_artifact_state", return_value=None),
+            patch("scripts.kesher_daily_pipeline.source_metadata", return_value={"content_sha256": self.SHA}),
+        ):
+            result = supervisor.audit_single_triad(post, {})
+        self.assertTrue(result["article"].get("remote_hero_available"))
+        self.assertFalse(result["article"]["hero_image_verified"])
+        self.assertFalse(result["complete"])
 
     def test_missing_state_never_substituted_by_public_oembed(self):
         triad = self.evaluate(video={"items": []}, short={"items": []})
