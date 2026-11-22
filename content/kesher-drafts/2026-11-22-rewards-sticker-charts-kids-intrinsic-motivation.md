@@ -68,10 +68,11 @@
 ## מקורות מדעיים והסתייגויות
 
 1. Deci, E. L., Koestner, R., & Ryan, R. M. (1999). A meta-analytic review of experiments examining the effects of extrinsic rewards on intrinsic motivation. *Psychological Bulletin*, 125(6), 627–668. https://pubmed.ncbi.nlm.nih.gov/10589297/ . סקירת ניסויים על מוטיבציה פנימית, לא מחקר המוכיח מה יעבוד בכל בית.
-2. Eisenberger, R., & Cameron, J. (1996); Cameron, J., Banko, K. M., & Pierce, W. D. (2001). Debate/reanalysis of reward effects on intrinsic motivation; methodological differences mean results must not be simplified into "all rewards harmful". **Citation/DOI for precise second paper requires editorial cross-check before publication**.
+2. Cameron, J., Banko, K. M., & Pierce, W. D. (2001). Pervasive negative effects of rewards on intrinsic motivation: The myth continues. *The Behavior Analyst*, 24(1), 1–44. https://pubmed.ncbi.nlm.nih.gov/22478353/ . ניתוח מחודש שמציג מסקנות שונות לגבי תנאי התגמול; אין לפרש את הוויכוח המחקרי כהוכחה שכל פרס מועיל או מזיק.
 3. Meta-Analyses: Key Parenting Program Components for Disruptive Child Behavior (2019), *Journal of the American Academy of Child and Adolescent Psychiatry*. https://pubmed.ncbi.nlm.nih.gov/30738545/ . סקירת תוכניות הורות; לא השוואה ניסויית ישירה בין סוגי לוחות מדבקות ביתיים.
+4. Lepper, M. R., Greene, D., & Nisbett, R. E. (1973). Undermining children's intrinsic interest with extrinsic reward: A test of the overjustification hypothesis. *Journal of Personality and Social Psychology*. https://doi.org/10.1037/h0035519 . ניסוי על פעילות עניין אצל ילדי גן; לא תחליף למחקרי תוכניות הורות.
 
-**Editorial restrictions:** לא לייחס אחוז שיפור, לא להבטיח תוצאה, לא להציג משוב חיובי כאילו הוא בהכרח פרס חומרי. לפני פרסום להשלים אימות ביבליוגרפי לפריט 2 או להסירו, ולהשלים סקירה קלינית/תוכנית התאמה לילדים עם צרכים מיוחדים ללא הבטחות כלליות.
+**Editorial restrictions:** לא לייחס אחוז שיפור, לא להבטיח תוצאה, לא להציג משוב חיובי כאילו הוא בהכרח פרס חומרי. לפני פרסום להשלים סקירת עריכה מדעית ותוכנית התאמה לילדים עם צרכים מיוחדים ללא הבטחות כלליות.
 
 ---
 
