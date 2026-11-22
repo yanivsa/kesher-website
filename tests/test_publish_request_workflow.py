@@ -128,21 +128,33 @@ class PublishRequestWorkflowTests(unittest.TestCase):
         from unittest.mock import Mock, patch
 
         sha = "a" * 64
+        post = {
+            "id": "cloud-publishing-safe-test",
+            "slug": "cloud-publishing-safe-test",
+            "title": "מאמר ניסוי",
+            "content": "תוכן",
+            "source_sha256": sha,
+            "date": "2026-11-22",
+        }
         article = {
             "slug": "cloud-publishing-safe-test",
             "title": "מאמר ניסוי",
             "source_sha256": sha,
             "canonical_url": "https://kesher.saharoni.com/blog/cloud-publishing-safe-test",
             "hero_image": "/images/generated/blog/cloud-publishing-safe-test.jpg",
+            "post": post,
         }
         client = Mock()
         client.lookup_cloud_candidate.return_value = None
         client.create_cloud_candidate_pr.return_value = {
             "number": 8888, "html_url": "https://github.com/yanivsa/kesher-website/pull/8888"
         }
+        mock_posts = Mock()
+        mock_posts.read_text.return_value = "[]"
         with patch("scripts.kesher_cloud_article_generator.generate_article", return_value=article) as gen:
             with patch.object(publisher.subprocess, "run") as run:
-                out = publisher.handle_run_now("2026-11-22", client)
+                with patch.object(publisher, "POSTS_FILE", mock_posts):
+                    out = publisher.handle_run_now("2026-11-22", client, stage_only=True)
         self.assertEqual(out["status"], "candidate_pr_pending_ci_and_authority")
         self.assertFalse(out["contract_complete"])
         self.assertEqual(out["pr_number"], 8888)
@@ -170,11 +182,63 @@ class PublishRequestWorkflowTests(unittest.TestCase):
         }
         with patch("scripts.kesher_cloud_article_generator.generate_article", return_value=article):
             with patch.object(publisher.subprocess, "run") as run:
-                out = publisher.handle_run_now("2026-11-22", client)
+                out = publisher.handle_run_now("2026-11-22", client, stage_only=True)
         self.assertEqual(out["status"], "candidate_pr_exists")
         self.assertFalse(out["contract_complete"])
         run.assert_not_called()
         client.create_cloud_candidate_pr.assert_not_called()
+
+    def test_live_publish_full_pipeline_mocked(self):
+        from unittest.mock import Mock, patch
+
+        sha = "c" * 64
+        post = {
+            "id": "cloud-publishing-full-test",
+            "slug": "cloud-publishing-full-test",
+            "title": "מאמר מלא",
+            "content": "תוכן מלא",
+            "source_sha256": sha,
+            "date": "2026-11-22",
+        }
+        article = {
+            "slug": "cloud-publishing-full-test",
+            "title": "מאמר מלא",
+            "source_sha256": sha,
+            "canonical_url": "https://kesher.saharoni.com/blog/cloud-publishing-full-test",
+            "hero_image": "/images/generated/blog/cloud-publishing-full-test.jpg",
+            "post": post,
+        }
+        client = Mock()
+        client.lookup_cloud_candidate.return_value = None
+        client.create_cloud_candidate_pr.return_value = {
+            "number": 9999, "html_url": "https://github.com/yanivsa/kesher-website/pull/9999"
+        }
+        client.poll_workflow.side_effect = [
+            {"conclusion": "success", "id": 101},  # CI
+            {"conclusion": "success", "id": 102},  # Deploy after PR merge
+            {"conclusion": "success", "id": 103},  # Long Video
+            {"conclusion": "success", "id": 104},  # Short
+            {"conclusion": "success", "id": 105},  # Deploy after metadata update
+        ]
+        client.merge_pr.return_value = {"merged": True}
+
+        mock_posts = Mock()
+        mock_posts.read_text.return_value = "[]"
+
+        with patch("scripts.kesher_cloud_article_generator.generate_article", return_value=article), \
+             patch.object(publisher.subprocess, "run"), \
+             patch.object(publisher, "POSTS_FILE", mock_posts), \
+             patch.object(publisher, "verify_live_article", return_value=True), \
+             patch.object(publisher, "extract_video_state", return_value=("item-102", "yt-long-123")), \
+             patch.object(publisher, "extract_short_state", return_value="yt-short-456"), \
+             patch.object(publisher, "update_article_videos"), \
+             patch.object(publisher, "run_supervisor_audit", return_value={"complete": True}):
+            out = publisher.handle_run_now("2026-11-22", client, stage_only=False)
+
+        self.assertEqual(out["status"], "success")
+        self.assertTrue(out["contract_complete"])
+        self.assertEqual(out["youtube_id"], "yt-long-123")
+        self.assertEqual(out["short_youtube_id"], "yt-short-456")
 
     def test_live_publish_refuses_missing_github_client_before_content_creation(self):
         from unittest.mock import patch
