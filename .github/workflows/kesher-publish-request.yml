@@ -40,6 +40,16 @@ run-name: Kesher Publish (${{ inputs.action }}) - ${{ inputs.slot || 'today' }}
         required: false
         default: ""
         type: string
+      target_slug:
+        description: Optional target article slug
+        required: false
+        default: ""
+        type: string
+      stage_only:
+        description: Stage PR and dispatch CI only; do not merge, deploy or generate media
+        required: false
+        default: false
+        type: boolean
       dry_run:
         description: Validate without mutating repository, deploying, or creating media
         required: false
@@ -100,15 +110,19 @@ jobs:
           IDEA_ID: ${{ inputs.idea_id }}
           PRIMARY_KEYWORD: ${{ inputs.primary_keyword }}
           ARTICLE_JSON: ${{ inputs.article_json }}
+          TARGET_SLUG: ${{ inputs.target_slug }}
+          STAGE_ONLY: ${{ inputs.stage_only }}
           DRY_RUN: ${{ inputs.dry_run }}
         run: |
           set -euo pipefail
           extra_args=()
           if [ -n "$SLOT" ]; then extra_args+=(--slot "$SLOT"); fi
+          if [ -n "$TARGET_SLUG" ]; then extra_args+=(--target-slug "$TARGET_SLUG"); fi
           if [ -n "$TOPIC_BRIEF" ]; then extra_args+=(--topic-brief "$TOPIC_BRIEF"); fi
           if [ -n "$IDEA_ID" ]; then extra_args+=(--idea-id "$IDEA_ID"); fi
           if [ -n "$PRIMARY_KEYWORD" ]; then extra_args+=(--primary-keyword "$PRIMARY_KEYWORD"); fi
           if [ -n "$ARTICLE_JSON" ]; then extra_args+=(--article-json "$ARTICLE_JSON"); fi
+          if [ "$STAGE_ONLY" = "true" ]; then extra_args+=(--stage-only); fi
           if [ "$DRY_RUN" = "true" ]; then extra_args+=(--dry-run); fi
 
           python3 scripts/kesher_cloud_publisher.py "$ACTION" "${extra_args[@]}"

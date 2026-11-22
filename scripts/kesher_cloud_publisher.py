@@ -15,6 +15,7 @@ Provides a unified, secure cloud entrypoint for autonomous publishing:
 from __future__ import annotations
 
 import argparse
+import io
 import json
 import os
 import re
@@ -24,6 +25,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import zipfile
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
@@ -102,7 +104,7 @@ class GitHubActionsClient:
         payload = {
             "head": branch,
             "base": "main",
-            "title": f"KESHER cloud candidate: {title[:160]}",
+            "title": f"Publish Kesher article: {title[:160]}",
             "body": (
                 "## Cloud article candidate (NOT published)\n\n"
                 f"Publication slot: `{slot}`\n"
@@ -127,7 +129,47 @@ class GitHubActionsClient:
             raise RuntimeError("CLOUD_ARTICLE_PR_IDENTITY_NOT_CONFIRMED")
         return pr
 
-    def get_latest_run(self, workflow_name: str, created_after_iso: str | None = None) -> dict[str, Any] | None:
+    def merge_pr(self, pr_number: int, head_sha: str, commit_title: str | None = None) -> dict[str, Any]:
+        """Squash merge a validated candidate PR into main."""
+        url = f"{self.base_url}/pulls/{pr_number}/merge"
+        payload = {
+            "sha": head_sha,
+            "merge_method": "squash",
+            "commit_title": commit_title or f"Publish Kesher article PR #{pr_number}",
+        }
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={**self._headers(), "Content-Type": "application/json"},
+            method="PUT",
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            if resp.status not in (200, 201):
+                raise RuntimeError(f"PR_MERGE_FAILED: status {resp.status}")
+            return json.loads(resp.read().decode("utf-8"))
+
+    def get_run_artifact_zip(self, run_id: int, artifact_name: str) -> bytes:
+        """Download artifact archive bytes for a completed workflow run."""
+        url = f"{self.base_url}/actions/runs/{run_id}/artifacts"
+        req = urllib.request.Request(url, headers=self._headers(), method="GET")
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        artifacts = [a for a in data.get("artifacts", []) if a.get("name") == artifact_name]
+        if not artifacts:
+            raise RuntimeError(f"ARTIFACT_NOT_FOUND: {artifact_name} for run #{run_id}")
+        download_url = artifacts[0]["archive_download_url"]
+        down_req = urllib.request.Request(download_url, headers=self._headers(), method="GET")
+        with urllib.request.urlopen(down_req, timeout=60) as resp:
+            return resp.read()
+
+    def get_latest_run(
+        self,
+        workflow_name: str,
+        created_after_iso: str | None = None,
+        *,
+        branch: str | None = None,
+        head_sha: str | None = None,
+    ) -> dict[str, Any] | None:
         """Accept only a single unambiguous fresh dispatch, never an older run.
 
         A timestamp alone cannot establish a *unique* parent/child relationship.
@@ -136,9 +178,6 @@ class GitHubActionsClient:
         """
         if not created_after_iso:
             raise ValueError("DISPATCH_CORRELATION_REQUIRES_START_TIME")
-        # GitHub truncates created_at to whole seconds; floor the dispatch
-        # timestamp to avoid discarding a run created within the same second.
-        # Concurrent same-second candidates are still rejected as ambiguous.
         threshold = datetime.fromisoformat(
             created_after_iso.replace("Z", "+00:00")
         ).astimezone(timezone.utc).replace(microsecond=0)
@@ -150,7 +189,11 @@ class GitHubActionsClient:
         for run in data.get("workflow_runs") or []:
             if run.get("event") not in (None, "workflow_dispatch"):
                 continue
-            if run.get("head_branch") not in (None, "main"):
+            if branch is not None and run.get("head_branch") != branch:
+                continue
+            if head_sha is not None and run.get("head_sha") != head_sha:
+                continue
+            if branch is None and run.get("head_branch") not in (None, "main"):
                 continue
             created = run.get("created_at")
             if not created:
@@ -171,6 +214,8 @@ class GitHubActionsClient:
         *,
         run_id: int | None = None,
         dispatched_after_iso: str | None = None,
+        branch: str | None = None,
+        head_sha: str | None = None,
         max_wait_seconds: int = 720,
         interval_seconds: int = 15,
     ) -> dict[str, Any]:
@@ -181,9 +226,13 @@ class GitHubActionsClient:
         # If run_id not given, wait for run to appear matching dispatched_after_iso
         while not active_run_id and (time.time() - start) < 90:
             time.sleep(6)
-            latest = self.get_latest_run(workflow_name, dispatched_after_iso)
+            latest = self.get_latest_run(
+                workflow_name,
+                dispatched_after_iso,
+                branch=branch,
+                head_sha=head_sha,
+            )
             if latest and str(latest.get("status")) in ("queued", "in_progress", "completed"):
-                # Ensure the run was actually created around or after our dispatch
                 created_at = str(latest.get("created_at") or "")
                 if not dispatched_after_iso or created_at >= dispatched_after_iso:
                     active_run_id = latest["id"]
@@ -260,6 +309,49 @@ def run_supervisor_audit(slot: str, target_slug: str | None = None) -> dict[str,
     }
 
 
+def verify_live_article(article_url: str, expected_sha: str, max_wait_seconds: int = 180) -> bool:
+    start = time.time()
+    while (time.time() - start) < max_wait_seconds:
+        try:
+            req = urllib.request.Request(article_url, headers={"User-Agent": "KesherCloudPublisher/2.0"})
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                if resp.status == 200:
+                    html_text = resp.read().decode("utf-8", errors="replace")
+                    if expected_sha in html_text:
+                        print(f"Verified live article {article_url} with expected content hash {expected_sha[:12]}")
+                        return True
+        except Exception:
+            pass
+        time.sleep(10)
+    raise TimeoutError(f"Live article {article_url} did not verify within {max_wait_seconds}s")
+
+
+def extract_video_state(client: GitHubActionsClient, run_id: int, slug: str) -> tuple[str, str]:
+    raw_zip = client.get_run_artifact_zip(run_id, "kesher-video-controller-state")
+    with zipfile.ZipFile(io.BytesIO(raw_zip)) as z:
+        data = json.loads(z.read("state.json").decode("utf-8"))
+    for item in data.get("items", []):
+        if str(item.get("slug")) == slug and item.get("status") == "uploaded":
+            item_id = str(item.get("id") or item.get("item_id") or "")
+            yt_id = str(item.get("youtube_id") or "")
+            if item_id and yt_id:
+                return item_id, yt_id
+    raise RuntimeError(f"NO_UPLOADED_LONG_VIDEO_FOUND_IN_RUN_{run_id}_FOR_{slug}")
+
+
+def extract_short_state(client: GitHubActionsClient, run_id: int, slug: str) -> str:
+    raw_zip = client.get_run_artifact_zip(run_id, "kesher-short-v4-state")
+    with zipfile.ZipFile(io.BytesIO(raw_zip)) as z:
+        data = json.loads(z.read("state.json").decode("utf-8"))
+    for item in data.get("items", []):
+        item_slug = str((item.get("source") or {}).get("slug") or item.get("slug") or "")
+        if item_slug == slug and item.get("uploaded") is True:
+            yt_id = str(item.get("youtube_id") or "")
+            if yt_id:
+                return yt_id
+    raise RuntimeError(f"NO_UPLOADED_SHORT_FOUND_IN_RUN_{run_id}_FOR_{slug}")
+
+
 def update_article_videos(slug: str, long_id: str | None = None, short_id: str | None = None) -> None:
     data: dict[str, Any] = {}
     if ARTICLE_VIDEOS_FILE.is_file():
@@ -272,18 +364,20 @@ def update_article_videos(slug: str, long_id: str | None = None, short_id: str |
     if long_id:
         entry["youtubeId"] = long_id
     if short_id:
+        entry["youtubeShortId"] = short_id
         entry["shortYoutubeId"] = short_id
 
     ARTICLE_VIDEOS_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Updated {ARTICLE_VIDEOS_FILE} for slug '{slug}': long={long_id}, short={short_id}")
 
 
-def handle_audit(slot: str) -> dict[str, Any]:
-    print(f"🔍 Running audit for date {slot}...")
-    audit = run_supervisor_audit(slot)
+def handle_audit(slot: str, target_slug: str | None = None) -> dict[str, Any]:
+    print(f"🔍 Running audit for date {slot} (target_slug={target_slug})...")
+    audit = run_supervisor_audit(slot, target_slug=target_slug)
     return {
         "action": "audit",
         "slot": slot,
+        "target_slug": target_slug,
         "contract_complete": audit["complete"],
         "status": "success" if audit["complete"] else "pending_or_unverified",
     }
@@ -308,7 +402,12 @@ def handle_repair() -> dict[str, Any]:
     }
 
 
-def handle_daily(slot: str, client: GitHubActionsClient | None, dry_run: bool = False) -> dict[str, Any]:
+def handle_daily(
+    slot: str,
+    client: GitHubActionsClient | None,
+    dry_run: bool = False,
+    stage_only: bool = False,
+) -> dict[str, Any]:
     print(f"📅 Checking daily publication status for {slot}...")
     audit = run_supervisor_audit(slot)
     if audit["complete"]:
@@ -321,20 +420,13 @@ def handle_daily(slot: str, client: GitHubActionsClient | None, dry_run: bool = 
             "message": f"Daily publishing for {slot} was already verified complete."
         }
 
-    # An existing unfinished article must be recovered, never replaced by a
-    # second daily article merely because its video or Short is still missing.
+    # If an article exists for slot, resume its pipeline rather than creating duplicate
     if audit.get("article_count", 0) > 0:
-        return {
-            "action": "daily",
-            "slot": slot,
-            "status": "existing_cycle_incomplete",
-            "contract_complete": False,
-            "article_count": audit["article_count"],
-            "message": "An existing daily article requires exact recovery; refusing duplicate creation.",
-        }
+        print(f"Existing article found for {slot}; resuming exact triad...")
+        return handle_resume(slot, client, dry_run=dry_run)
 
     print(f"Daily triad for {slot} is not yet complete. Initiating publishing cycle...")
-    return handle_run_now(slot, client, dry_run=dry_run)
+    return handle_run_now(slot, client, dry_run=dry_run, stage_only=stage_only)
 
 
 def handle_run_now(
@@ -346,11 +438,11 @@ def handle_run_now(
     primary_keyword: str = "",
     article_json: dict[str, Any] | None = None,
     dry_run: bool = False,
+    stage_only: bool = False,
 ) -> dict[str, Any]:
     print(f"🚀 Executing run_now cycle for date {slot}...")
     if not dry_run and not client:
         raise RuntimeError("CLOUD_ARTICLE_GITHUB_CLIENT_REQUIRED")
-
 
     # Step 1: Generate article & hero image
     from scripts.kesher_cloud_article_generator import generate_article
@@ -360,13 +452,15 @@ def handle_run_now(
         idea_id=idea_id,
         primary_keyword=primary_keyword,
         article_json=article_json,
-        commit=False,  # never commit or push main from an unreviewed content generator
+        commit=False,
         dry_run=dry_run,
     )
     slug = art_res["slug"]
     title = art_res["title"]
     source_sha = art_res["source_sha256"]
     article_url = art_res["canonical_url"]
+    hero_image = art_res["hero_image"]
+    post = art_res.get("post")
 
     if dry_run:
         print(f"[DRY-RUN] Article '{slug}' validated. Skipping commit, deploy, and video generation.")
@@ -381,62 +475,189 @@ def handle_run_now(
             "contract_complete": False,
         }
 
-    # A candidate is NOT a publication. Never mutate main or launch media
-    # until independent trusted PR validation, authority admission and merge.
-    # This gateway stages content in an isolated branch; an explicit, separately
-    # approved publisher must handle the remaining phases.
     if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug) or not re.fullmatch(r"[0-9a-f]{64}", source_sha):
         raise RuntimeError("CLOUD_ARTICLE_SLUG_UNSAFE")
     if not client:
         raise RuntimeError("CLOUD_ARTICLE_GITHUB_CLIENT_REQUIRED")
+
     branch = f"content/kesher-{slug}-{source_sha[:12]}"
     existing = client.lookup_cloud_candidate(slug, branch)
     if existing:
-        return {
-            "action": "run_now",
-            "slot": slot,
-            "slug": slug,
-            "title": title,
-            "status": "candidate_pr_exists",
-            "pr_number": existing["number"],
-            "pr_url": existing.get("html_url"),
-            "source_sha256": source_sha,
-            "contract_complete": False,
-        }
+        pr = existing
+        print(f"Found existing candidate PR #{pr['number']} on branch {branch}")
+        if stage_only:
+            return {
+                "action": "run_now",
+                "slot": slot,
+                "slug": slug,
+                "title": title,
+                "status": "candidate_pr_exists",
+                "pr_number": existing["number"],
+                "pr_url": existing.get("html_url"),
+                "source_sha256": source_sha,
+                "contract_complete": False,
+            }
+    else:
+        # Canonical staging: update src/data/posts.json via normalized_posts
+        base_posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
+        from scripts.kesher_article_normalizer import normalized_posts
+        head_posts = normalized_posts(base_posts, post)
 
-    subprocess.run(["git", "switch", "-c", branch], check=True, cwd=ROOT, timeout=30)
-    staged_paths = ["src/data/postsRecent.json", "public/" + str(art_res["hero_image"]).lstrip("/")]
-    subprocess.run(["git", "add", "--", *staged_paths], check=True, cwd=ROOT, timeout=30)
-    subprocess.run(
-        ["git", "commit", "-m", f"feat(content): stage KESHER candidate {slug} [{source_sha[:12]}]"],
-        check=True, cwd=ROOT, timeout=45,
+        subprocess.run(["git", "switch", "-c", branch], check=True, cwd=ROOT, timeout=30)
+        POSTS_FILE.write_text(json.dumps(head_posts, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        subprocess.run(["npm", "run", "generate"], check=True, cwd=ROOT, timeout=60)
+
+        hero_rel = "public/" + str(hero_image).lstrip("/")
+        staged_paths = [
+            "src/data/posts.json",
+            "src/data/postSummaries.json",
+            "public/sitemap.xml",
+            "public/rss.xml",
+            "public/llms.txt",
+            "public/llms-full.txt",
+            hero_rel,
+        ]
+        subprocess.run(["git", "add", "--", *staged_paths], check=True, cwd=ROOT, timeout=30)
+        subprocess.run(
+            ["git", "commit", "-m", f"feat(content): stage KESHER candidate {slug} [{source_sha[:12]}]"],
+            check=True, cwd=ROOT, timeout=45,
+        )
+        subprocess.run(
+            ["git", "push", "origin", f"HEAD:refs/heads/{branch}"],
+            check=True, cwd=ROOT, timeout=90,
+        )
+        pr = client.create_cloud_candidate_pr(slug, title, source_sha, slot, branch)
+        client.dispatch("ci.yml", ref=branch)
+
+        if stage_only:
+            return {
+                "action": "run_now",
+                "slot": slot,
+                "slug": slug,
+                "title": title,
+                "status": "candidate_pr_pending_ci_and_authority",
+                "pr_number": pr["number"],
+                "pr_url": pr.get("html_url"),
+                "source_sha256": source_sha,
+                "article_url": article_url,
+                "contract_complete": False,
+            }
+
+    # Step 2: Poll CI on the candidate branch
+    print(f"Waiting for CI on candidate branch {branch}...")
+    now_iso = datetime.now(timezone.utc).isoformat()
+    ci_run = client.poll_workflow("ci.yml", branch=branch, dispatched_after_iso=now_iso, max_wait_seconds=900)
+    if ci_run.get("conclusion") != "success":
+        raise RuntimeError(f"Candidate PR #{pr['number']} CI failed on branch {branch}: {ci_run.get('conclusion')}")
+    print(f"Candidate PR #{pr['number']} CI PASSED (run #{ci_run['id']})")
+
+    # Step 3: Merge candidate PR into main
+    branch_head_sha = ci_run.get("head_sha") or pr.get("head", {}).get("sha") or ""
+    client.merge_pr(pr["number"], branch_head_sha, commit_title=f"Publish Kesher article: {title[:160]} (#{pr['number']})")
+    print(f"Candidate PR #{pr['number']} merged into main.")
+
+    subprocess.run(["git", "switch", "main"], check=True, cwd=ROOT, timeout=30)
+    subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=True, cwd=ROOT, timeout=60)
+
+    # Step 4: Deploy to Cloudflare Pages
+    print(f"Deploying article {slug} to Cloudflare Pages...")
+    deploy_start_iso = datetime.now(timezone.utc).isoformat()
+    client.dispatch("deploy.yml", ref="main")
+    deploy_run = client.poll_workflow("deploy.yml", branch="main", dispatched_after_iso=deploy_start_iso, max_wait_seconds=600)
+    if deploy_run.get("conclusion") != "success":
+        raise RuntimeError(f"Deployment failed with conclusion: {deploy_run.get('conclusion')}")
+    print(f"Deploy completed successfully (run #{deploy_run['id']})")
+
+    # Step 5: Verify live article
+    verify_live_article(article_url, source_sha)
+
+    # Step 6: Dispatch NotebookLM Long Video (16:9)
+    print(f"🎬 Triggering NotebookLM Long Video for {slug}...")
+    video_start_iso = datetime.now(timezone.utc).isoformat()
+    client.dispatch(
+        "kesher-daily-video.yml",
+        {
+            "operation": "full",
+            "target_slug": slug,
+            "target_content_sha256": source_sha,
+            "skip_jules_advisory": True,
+        },
+        ref="main",
     )
-    subprocess.run(
-        ["git", "push", "origin", f"HEAD:refs/heads/{branch}"],
-        check=True, cwd=ROOT, timeout=90,
+    video_run = client.poll_workflow(
+        "kesher-daily-video.yml",
+        branch="main",
+        dispatched_after_iso=video_start_iso,
+        max_wait_seconds=1800,
     )
-    pr = client.create_cloud_candidate_pr(slug, title, source_sha, slot, branch)
-    # PR creation by GITHUB_TOKEN does not trigger a pull_request CI run.
-    # Explicit dispatch is permitted by GitHub; the exact branch must then
-    # pass independently before *any* approved publication step.
-    client.dispatch("ci.yml", ref=branch)
+    if video_run.get("conclusion") != "success":
+        raise RuntimeError(f"Long Video workflow failed with conclusion: {video_run.get('conclusion')}")
+    long_item_id, long_yt = extract_video_state(client, video_run["id"], slug)
+    print(f"Long video completed: item_id={long_item_id}, youtube={long_yt}")
+
+    # Step 7: Dispatch NotebookLM Native Short (9:16)
+    print(f"📱 Triggering NotebookLM Native Short for {slug}...")
+    short_start_iso = datetime.now(timezone.utc).isoformat()
+    client.dispatch(
+        "kesher-short-v4.yml",
+        {
+            "operation": "derive",
+            "derive_slug": slug,
+            "derive_content_sha256": source_sha,
+            "derive_long_item_id": long_item_id,
+        },
+        ref="main",
+    )
+    short_run = client.poll_workflow(
+        "kesher-short-v4.yml",
+        branch="main",
+        dispatched_after_iso=short_start_iso,
+        max_wait_seconds=1800,
+    )
+    if short_run.get("conclusion") != "success":
+        raise RuntimeError(f"Short workflow failed with conclusion: {short_run.get('conclusion')}")
+    short_yt = extract_short_state(client, short_run["id"], slug)
+    print(f"Short completed: youtube={short_yt}")
+
+    # Step 8: Update articleVideos.json and re-deploy
+    update_article_videos(slug, long_id=long_yt, short_id=short_yt)
+    subprocess.run(["git", "add", "src/data/articleVideos.json"], check=True, cwd=ROOT)
+    subprocess.run(["git", "commit", "-m", f"chore(media): bind verified YouTube video and short for {slug}"], check=True, cwd=ROOT)
+    subprocess.run(["git", "push", "origin", "main"], check=True, cwd=ROOT)
+
+    deploy2_start_iso = datetime.now(timezone.utc).isoformat()
+    client.dispatch("deploy.yml", ref="main")
+    client.poll_workflow("deploy.yml", branch="main", dispatched_after_iso=deploy2_start_iso, max_wait_seconds=600)
+
+    # Step 9: Final Supervisor Audit
+    audit = run_supervisor_audit(slot, target_slug=slug)
+    if not audit["complete"]:
+        raise RuntimeError(f"SUPERVISOR_AUDIT_NOT_COMPLETE for {slug}")
+
     return {
         "action": "run_now",
         "slot": slot,
         "slug": slug,
         "title": title,
-        "status": "candidate_pr_pending_ci_and_authority",
-        "pr_number": pr["number"],
-        "pr_url": pr.get("html_url"),
-        "source_sha256": source_sha,
+        "status": "success",
         "article_url": article_url,
-        "contract_complete": False,
+        "long_video_url": f"https://www.youtube.com/watch?v={long_yt}",
+        "short_video_url": f"https://www.youtube.com/shorts/{short_yt}",
+        "youtube_id": long_yt,
+        "short_youtube_id": short_yt,
+        "source_sha256": source_sha,
+        "contract_complete": True,
     }
 
 
-def handle_resume(slot: str, client: GitHubActionsClient | None, dry_run: bool = False) -> dict[str, Any]:
-    print(f"🔄 Resuming publishing pipeline for {slot}...")
-    audit = run_supervisor_audit(slot)
+def handle_resume(
+    slot: str,
+    client: GitHubActionsClient | None,
+    target_slug: str | None = None,
+    dry_run: bool = False,
+) -> dict[str, Any]:
+    print(f"🔄 Resuming publishing pipeline for {slot} (target_slug={target_slug})...")
+    audit = run_supervisor_audit(slot, target_slug=target_slug)
     if audit["complete"]:
         print(f"Triad for {slot} is already complete.")
         return {"action": "resume", "slot": slot, "status": "already_complete", "contract_complete": True}
@@ -444,17 +665,105 @@ def handle_resume(slot: str, client: GitHubActionsClient | None, dry_run: bool =
     if not client or dry_run:
         return {"action": "resume", "slot": slot, "status": "dry_run_or_no_client", "contract_complete": False}
 
-    # Dispatch controller canonical tick to advance the state machine
-    now_iso = datetime.now(timezone.utc).isoformat()
-    client.dispatch("kesher-content-controller.yml", {"canonical_tick": True})
-    ctrl_run = client.poll_workflow("kesher-content-controller.yml", dispatched_after_iso=now_iso, max_wait_seconds=300)
-    audit_after = run_supervisor_audit(slot)
+    posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
+    candidate = None
+    for p in posts:
+        if (target_slug and p.get("slug") == target_slug) or (not target_slug and p.get("date") == slot):
+            candidate = p
+            break
+
+    if not candidate:
+        return {
+            "action": "resume",
+            "slot": slot,
+            "status": "no_candidate_found_to_resume",
+            "contract_complete": False,
+        }
+
+    slug = candidate["slug"]
+    from scripts.kesher_daily_pipeline import source_metadata
+    source_sha = source_metadata(candidate)["content_sha256"]
+    article_url = f"https://kesher.saharoni.com/blog/{slug}"
+
+    # Step 1: Ensure article is live
+    verify_live_article(article_url, source_sha, max_wait_seconds=60)
+
+    # Step 2: Check or dispatch Long Video
+    long_item_id = None
+    long_yt = None
+    from scripts.kesher_cloud_supervisor import load_cached_artifact_state
+    vstate = load_cached_artifact_state("kesher-video-controller-state")
+    if vstate and isinstance(vstate.get("items"), list):
+        for item in vstate["items"]:
+            if str(item.get("slug")) == slug and item.get("status") == "uploaded":
+                long_item_id = str(item.get("id") or item.get("item_id") or "")
+                long_yt = str(item.get("youtube_id") or "")
+                break
+
+    if not long_item_id or not long_yt:
+        print(f"Long video missing for {slug}; dispatching...")
+        video_now = datetime.now(timezone.utc).isoformat()
+        client.dispatch(
+            "kesher-daily-video.yml",
+            {
+                "operation": "full",
+                "target_slug": slug,
+                "target_content_sha256": source_sha,
+                "skip_jules_advisory": True,
+            },
+            ref="main",
+        )
+        video_run = client.poll_workflow("kesher-daily-video.yml", branch="main", dispatched_after_iso=video_now, max_wait_seconds=1800)
+        long_item_id, long_yt = extract_video_state(client, video_run["id"], slug)
+
+    # Step 3: Check or dispatch Short
+    short_yt = None
+    sstate = load_cached_artifact_state("kesher-short-v4-state")
+    if sstate and isinstance(sstate.get("items"), list):
+        for item in sstate["items"]:
+            item_slug = str((item.get("source") or {}).get("slug") or item.get("slug") or "")
+            if item_slug == slug and item.get("uploaded") is True:
+                short_yt = str(item.get("youtube_id") or "")
+                break
+
+    if not short_yt:
+        print(f"Short missing for {slug}; dispatching with derive_long_item_id={long_item_id}...")
+        short_now = datetime.now(timezone.utc).isoformat()
+        client.dispatch(
+            "kesher-short-v4.yml",
+            {
+                "operation": "derive",
+                "derive_slug": slug,
+                "derive_content_sha256": source_sha,
+                "derive_long_item_id": long_item_id,
+            },
+            ref="main",
+        )
+        short_run = client.poll_workflow("kesher-short-v4.yml", branch="main", dispatched_after_iso=short_now, max_wait_seconds=1800)
+        short_yt = extract_short_state(client, short_run["id"], slug)
+
+    # Step 4: Ensure articleVideos.json is up to date
+    vids = json.loads(ARTICLE_VIDEOS_FILE.read_text(encoding="utf-8")) if ARTICLE_VIDEOS_FILE.exists() else {}
+    current_entry = vids.get(slug, {})
+    if current_entry.get("youtubeId") != long_yt or (current_entry.get("youtubeShortId") != short_yt and current_entry.get("shortYoutubeId") != short_yt):
+        update_article_videos(slug, long_id=long_yt, short_id=short_yt)
+        subprocess.run(["git", "add", "src/data/articleVideos.json"], check=True, cwd=ROOT)
+        subprocess.run(["git", "commit", "-m", f"chore(media): bind verified YouTube video and short for {slug}"], check=True, cwd=ROOT)
+        subprocess.run(["git", "push", "origin", "main"], check=True, cwd=ROOT)
+        deploy_now = datetime.now(timezone.utc).isoformat()
+        client.dispatch("deploy.yml", ref="main")
+        client.poll_workflow("deploy.yml", branch="main", dispatched_after_iso=deploy_now, max_wait_seconds=600)
+
+    # Final supervisor audit
+    final_audit = run_supervisor_audit(slot, target_slug=slug)
     return {
         "action": "resume",
         "slot": slot,
-        "controller_conclusion": ctrl_run.get("conclusion"),
-        "contract_complete": audit_after["complete"],
-        "status": "success" if audit_after["complete"] else "in_progress",
+        "slug": slug,
+        "long_youtube_id": long_yt,
+        "short_youtube_id": short_yt,
+        "contract_complete": final_audit["complete"],
+        "status": "success" if final_audit["complete"] else "in_progress",
     }
 
 
@@ -462,15 +771,18 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=["daily", "run_now", "resume", "audit", "repair"], help="Action to execute")
     parser.add_argument("--slot", default="", help="Publication date YYYY-MM-DD (defaults to today in Israel)")
+    parser.add_argument("--target-slug", default="", help="Optional exact target article slug to audit or resume")
     parser.add_argument("--topic-brief", default="", help="Optional topic brief")
     parser.add_argument("--idea-id", default="", help="Optional unique idea ID")
     parser.add_argument("--primary-keyword", default="", help="Optional Hebrew primary keyword")
     parser.add_argument("--article-json", default="", help="Path to article JSON or raw string")
+    parser.add_argument("--stage-only", action="store_true", help="Stage candidate PR and dispatch CI only")
     parser.add_argument("--dry-run", action="store_true", help="Validate without mutating or dispatching")
     parser.add_argument("--output-json", default=str(RESULT_FILE), help="Structured result JSON destination")
     args = parser.parse_args()
 
     slot = args.slot.strip() or israel_date_now()
+    target_slug = args.target_slug.strip() or None
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or ""
     repo = os.environ.get("GITHUB_REPOSITORY", DEFAULT_REPO)
     client = GitHubActionsClient(token, repo) if token else None
@@ -486,11 +798,11 @@ def main():
     result: dict[str, Any]
     try:
         if args.action == "audit":
-            result = handle_audit(slot)
+            result = handle_audit(slot, target_slug=target_slug)
         elif args.action == "repair":
             result = handle_repair()
         elif args.action == "daily":
-            result = handle_daily(slot, client, dry_run=args.dry_run)
+            result = handle_daily(slot, client, dry_run=args.dry_run, stage_only=args.stage_only)
         elif args.action == "run_now":
             result = handle_run_now(
                 slot,
@@ -500,9 +812,10 @@ def main():
                 primary_keyword=args.primary_keyword,
                 article_json=article_json,
                 dry_run=args.dry_run,
+                stage_only=args.stage_only,
             )
         elif args.action == "resume":
-            result = handle_resume(slot, client, dry_run=args.dry_run)
+            result = handle_resume(slot, client, target_slug=target_slug, dry_run=args.dry_run)
         else:
             raise ValueError(f"Unknown action: {args.action}")
 

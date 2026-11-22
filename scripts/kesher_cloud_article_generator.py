@@ -555,37 +555,9 @@ def generate_article(
             "slot": slot,
             "source_sha256": source_sha,
             "hero_image": post["image"],
-            "canonical_url": f"https://kesher.saharoni.com/blog/{slug}"
+            "canonical_url": f"https://kesher.saharoni.com/blog/{slug}",
+            "post": post,
         }
-
-    # Append to postsRecent.json
-    recent_posts: list[dict[str, Any]] = []
-    if RECENT_POSTS_FILE.is_file():
-        try:
-            recent_posts = json.loads(RECENT_POSTS_FILE.read_text(encoding="utf-8"))
-        except Exception:
-            recent_posts = []
-
-    if any(str(p.get("slug") or p.get("id")) == slug for p in recent_posts):
-        raise ValueError(f"SLUG_ALREADY_IN_RECENT_POSTS: {slug}")
-
-    recent_posts.append(post)
-    RECENT_POSTS_FILE.write_text(json.dumps(recent_posts, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Appended post '{slug}' to {RECENT_POSTS_FILE}")
-
-    # Run content validation check
-    check_res = subprocess.run(["node", "scripts/validate-content.cjs"], capture_output=True, text=True, cwd=ROOT)
-    if check_res.returncode != 0:
-        print(f"ERROR: validate-content failed:\n{check_res.stderr}\n{check_res.stdout}", file=sys.stderr)
-        raise RuntimeError(f"VALIDATE_CONTENT_FAILED: {check_res.stderr}")
-    print("Content validation PASSED (100% compliant).")
-
-    # Git commit if requested
-    if commit:
-        subprocess.run(["git", "add", str(RECENT_POSTS_FILE), str(hero_path)], check=True, cwd=ROOT)
-        commit_msg = f"feat(content): publish article {slug} for {slot}\n\nTitle: {post['title']}\nSHA256: {source_sha}"
-        subprocess.run(["git", "commit", "-m", commit_msg], check=True, cwd=ROOT)
-        print(f"Committed changes for '{slug}'")
 
     return {
         "status": "success",
@@ -594,7 +566,8 @@ def generate_article(
         "slot": slot,
         "source_sha256": source_sha,
         "hero_image": post["image"],
-        "canonical_url": f"https://kesher.saharoni.com/blog/{slug}"
+        "canonical_url": f"https://kesher.saharoni.com/blog/{slug}",
+        "post": post,
     }
 
 
