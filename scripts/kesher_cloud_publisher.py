@@ -402,6 +402,26 @@ def update_article_videos(slug: str, long_id: str | None = None, short_id: str |
     ARTICLE_VIDEOS_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Updated {ARTICLE_VIDEOS_FILE} for slug '{slug}': long={long_id}, short={short_id}")
 
+    # Synchronize posts.json so post.youtubeVideoId and post.youtubeShortId match articleVideos.json
+    if POSTS_FILE.is_file():
+        try:
+            posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
+            updated_posts = False
+            for p in posts:
+                if (p.get("slug") or p.get("id")) == slug:
+                    if long_id:
+                        p["youtubeVideoId"] = long_id
+                    if short_id:
+                        p["youtubeShortId"] = short_id
+                    updated_posts = True
+                    break
+            if updated_posts:
+                POSTS_FILE.write_text(json.dumps(posts, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+                subprocess.run(["npm", "run", "generate"], check=False, cwd=ROOT, timeout=60)
+                print(f"Updated {POSTS_FILE} with video ids for slug '{slug}'")
+        except Exception as exc:
+            print(f"Warning: unable to synchronize posts.json with video ids: {exc}")
+
 
 def handle_audit(slot: str, target_slug: str | None = None) -> dict[str, Any]:
     print(f"🔍 Running audit for date {slot} (target_slug={target_slug})...")
@@ -693,7 +713,16 @@ def handle_run_now(
     subprocess.run(["git", "clean", "-fd"], check=True, cwd=ROOT, timeout=30)
     subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=True, cwd=ROOT, timeout=60)
     update_article_videos(slug, long_id=long_yt, short_id=short_yt)
-    subprocess.run(["git", "add", "src/data/articleVideos.json"], check=True, cwd=ROOT)
+    staged_media_meta = [
+        "src/data/articleVideos.json",
+        "src/data/posts.json",
+        "src/data/postSummaries.json",
+        "public/sitemap.xml",
+        "public/rss.xml",
+        "public/llms.txt",
+        "public/llms-full.txt",
+    ]
+    subprocess.run(["git", "add", "--", *staged_media_meta], check=True, cwd=ROOT)
     subprocess.run(["git", "commit", "-m", f"chore(media): bind verified YouTube video and short for {slug}"], check=True, cwd=ROOT)
     push_res = subprocess.run(["git", "push", "origin", "main"], cwd=ROOT, timeout=60, capture_output=True, text=True)
     if push_res.returncode != 0:
@@ -862,16 +891,33 @@ def handle_resume(
         else:
             raise RuntimeError(f"Short for {slug} did not reach uploaded status after 5 attempts")
 
-    # Step 4: Ensure articleVideos.json is up to date
+    # Step 4: Ensure articleVideos.json and posts.json are up to date
     vids = json.loads(ARTICLE_VIDEOS_FILE.read_text(encoding="utf-8")) if ARTICLE_VIDEOS_FILE.exists() else {}
     current_entry = vids.get(slug, {})
-    if current_entry.get("youtubeId") != long_yt or (current_entry.get("youtubeShortId") != short_yt and current_entry.get("shortYoutubeId") != short_yt):
+    posts = json.loads(POSTS_FILE.read_text(encoding="utf-8")) if POSTS_FILE.exists() else []
+    current_post = next((p for p in posts if (p.get("slug") or p.get("id")) == slug), {})
+    needs_commit = (
+        current_entry.get("youtubeId") != long_yt
+        or (current_entry.get("youtubeShortId") != short_yt and current_entry.get("shortYoutubeId") != short_yt)
+        or current_post.get("youtubeVideoId") != long_yt
+        or current_post.get("youtubeShortId") != short_yt
+    )
+    if needs_commit:
         subprocess.run(["git", "switch", "main"], check=True, cwd=ROOT, timeout=30)
         subprocess.run(["git", "reset", "--hard", "HEAD"], check=True, cwd=ROOT, timeout=30)
         subprocess.run(["git", "clean", "-fd"], check=True, cwd=ROOT, timeout=30)
         subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=True, cwd=ROOT, timeout=60)
         update_article_videos(slug, long_id=long_yt, short_id=short_yt)
-        subprocess.run(["git", "add", "src/data/articleVideos.json"], check=True, cwd=ROOT)
+        staged_media_meta = [
+            "src/data/articleVideos.json",
+            "src/data/posts.json",
+            "src/data/postSummaries.json",
+            "public/sitemap.xml",
+            "public/rss.xml",
+            "public/llms.txt",
+            "public/llms-full.txt",
+        ]
+        subprocess.run(["git", "add", "--", *staged_media_meta], check=True, cwd=ROOT)
         subprocess.run(["git", "commit", "-m", f"chore(media): bind verified YouTube video and short for {slug}"], check=True, cwd=ROOT)
         push_res = subprocess.run(["git", "push", "origin", "main"], cwd=ROOT, timeout=60, capture_output=True, text=True)
         if push_res.returncode != 0:
