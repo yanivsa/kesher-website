@@ -79,6 +79,12 @@ class StrictTriadContractTests(unittest.TestCase):
             ):
                 return supervisor.audit_single_triad(post, catalogue)
 
+    def test_empty_excerpt_cannot_fake_article_content(self):
+        self.assertFalse(supervisor.article_content_present("כותרת חשובה", "", "תוכן לא קשור"))
+        self.assertFalse(supervisor.article_content_present("", "", "גוף כלשהו"))
+        self.assertTrue(supervisor.article_content_present("כותרת חשובה", "", "כותרת חשובה בגוף"))
+        self.assertTrue(supervisor.article_content_present("כותרת אחרת", "מסקנה מחקרית", "מסקנה מחקרית מפורטת"))
+
     def test_verified_exact_identity_can_pass(self):
         triad = self.evaluate()
         self.assertTrue(triad["quality_verified"])
