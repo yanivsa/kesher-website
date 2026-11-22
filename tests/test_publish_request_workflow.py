@@ -49,6 +49,67 @@ class PublishRequestWorkflowTests(unittest.TestCase):
         self.assertEqual(res["status"], "already_complete")
         self.assertTrue(res["contract_complete"])
 
+    def test_supervisor_audit_requires_exact_slug(self):
+        from unittest.mock import patch, Mock, MagicMock
+
+        payload = {
+            "delivery": {
+                "complete": True,
+                "article_count": 1,
+                "triads": [{"slug": "another-article", "complete": True}],
+            },
+            "controller_health": {"direct_takeover_required": False},
+        }
+        with patch.object(publisher.subprocess, "run", return_value=Mock(
+            stdout=json.dumps(payload), stderr="", returncode=0,
+        )):
+            audit = publisher.run_supervisor_audit("2026-11-21", target_slug="requested-article")
+            self.assertFalse(audit["complete"])
+            audit_ok = publisher.run_supervisor_audit("2026-11-21", target_slug="another-article")
+            self.assertTrue(audit_ok["complete"])
+
+    def test_supervisor_audit_refuses_empty_success(self):
+        from unittest.mock import patch, Mock
+
+        payload = {"delivery": {"complete": True, "article_count": 0, "triads": []}}
+        with patch.object(publisher.subprocess, "run", return_value=Mock(
+            stdout=json.dumps(payload), stderr="", returncode=0,
+        )):
+            self.assertFalse(publisher.run_supervisor_audit("2026-11-22")["complete"])
+
+    def test_get_latest_run_does_not_adopt_stale_or_ambiguous_dispatch(self):
+        from unittest.mock import patch, Mock
+
+        client = publisher.GitHubActionsClient("dummy_token")
+        def response(rows):
+            return MagicMock(__enter__=Mock(return_value=Mock(
+                read=Mock(return_value=json.dumps({"workflow_runs": rows}).encode("utf-8"))
+            )), __exit__=Mock(return_value=False))
+
+        start = "2026-11-22T05:27:52+00:00"
+        with patch.object(publisher.urllib.request, "urlopen", return_value=response([
+            {"id": 111, "created_at": "2026-11-21T00:00:00Z", "event": "workflow_dispatch"},
+        ])):
+            self.assertIsNone(client.get_latest_run("kesher-daily-video.yml", start))
+
+        rows = [
+            {"id": 222, "created_at": "2026-11-22T05:27:53Z", "event": "workflow_dispatch"},
+            {"id": 333, "created_at": "2026-11-22T05:27:54Z", "event": "workflow_dispatch"},
+        ]
+        with patch.object(publisher.urllib.request, "urlopen", return_value=response(rows)):
+            with self.assertRaisesRegex(RuntimeError, "AMBIGUOUS_WORKFLOW_DISPATCH"):
+                client.get_latest_run("kesher-daily-video.yml", start)
+
+        # REST runs report second-granularity created_at even if the dispatch
+        # timestamp includes microseconds within that same second.
+        with patch.object(publisher.urllib.request, "urlopen", return_value=response([
+            {"id": 444, "created_at": "2026-11-22T05:27:52Z", "event": "workflow_dispatch"},
+        ])):
+            found = client.get_latest_run(
+                "kesher-daily-video.yml", "2026-11-22T05:27:52.987654+00:00"
+            )
+            self.assertEqual(found["id"], 444)
+
     def test_handle_run_now_dry_run(self):
         res = publisher.handle_run_now("2026-11-21", client=None, dry_run=True)
         self.assertEqual(res["action"], "run_now")

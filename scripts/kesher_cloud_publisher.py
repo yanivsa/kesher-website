@@ -79,24 +79,42 @@ class GitHubActionsClient:
             raise
 
     def get_latest_run(self, workflow_name: str, created_after_iso: str | None = None) -> dict[str, Any] | None:
-        """Find the matching workflow run strictly filtered by workflow_dispatch and timestamp."""
-        url = f"{self.base_url}/actions/workflows/{workflow_name}/runs?event=workflow_dispatch&per_page=10"
+        """Accept only a single unambiguous fresh dispatch, never an older run.
+
+        A timestamp alone cannot establish a *unique* parent/child relationship.
+        Ambiguous concurrent dispatches therefore fail closed until a stronger
+        request-ID admission protocol is deployed.
+        """
+        if not created_after_iso:
+            raise ValueError("DISPATCH_CORRELATION_REQUIRES_START_TIME")
+        # GitHub truncates created_at to whole seconds; floor the dispatch
+        # timestamp to avoid discarding a run created within the same second.
+        # Concurrent same-second candidates are still rejected as ambiguous.
+        threshold = datetime.fromisoformat(
+            created_after_iso.replace("Z", "+00:00")
+        ).astimezone(timezone.utc).replace(microsecond=0)
+        url = f"{self.base_url}/actions/workflows/{workflow_name}/runs?event=workflow_dispatch&per_page=100"
         req = urllib.request.Request(url, headers=self._headers(), method="GET")
-        try:
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-                runs = data.get("workflow_runs") or []
-                if not runs:
-                    return None
-                if not created_after_iso:
-                    return runs[0]
-                for r in runs:
-                    if str(r.get("created_at") or "") >= created_after_iso:
-                        return r
-                return runs[0]
-        except Exception as exc:
-            print(f"Warning: getting latest run for {workflow_name} failed: {exc}", file=sys.stderr)
-            return None
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        matches = []
+        for run in data.get("workflow_runs") or []:
+            if run.get("event") not in (None, "workflow_dispatch"):
+                continue
+            if run.get("head_branch") not in (None, "main"):
+                continue
+            created = run.get("created_at")
+            if not created:
+                continue
+            created_at = datetime.fromisoformat(str(created).replace("Z", "+00:00")).astimezone(timezone.utc)
+            if created_at >= threshold:
+                matches.append(run)
+        if len(matches) > 1:
+            raise RuntimeError(
+                f"AMBIGUOUS_WORKFLOW_DISPATCH: {workflow_name} has {len(matches)} "
+                "concurrent candidates; refusing to adopt an unknown run"
+            )
+        return matches[0] if matches else None
 
     def poll_workflow(
         self,
@@ -146,22 +164,50 @@ class GitHubActionsClient:
         raise TimeoutError(f"Workflow {workflow_name} (run #{active_run_id}) timed out after {max_wait_seconds}s")
 
 
-def run_supervisor_audit(slot: str) -> dict[str, Any]:
-    """Run kesher_cloud_supervisor.py in-process or via subprocess and parse results."""
-    cmd = [sys.executable, str(SCRIPTS_DIR / "kesher_cloud_supervisor.py"), "--date", slot]
+def run_supervisor_audit(slot: str, target_slug: str | None = None) -> dict[str, Any]:
+    """Verify the exact requested triad via structured supervisor evidence."""
+    cmd = [
+        sys.executable,
+        str(SCRIPTS_DIR / "kesher_cloud_supervisor.py"),
+        "--date", slot,
+        "--report-json",
+    ]
+    if target_slug:
+        cmd.extend(["--slug", target_slug])
     res = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT)
-    print(res.stdout)
     if res.stderr:
         print(res.stderr, file=sys.stderr)
 
-    # Parse contract completion
-    complete = "Overall Contract Complete: ✅ YES" in res.stdout
-    direct_takeover = "Direct Takeover Required: True" in res.stdout
+    try:
+        report = json.loads(res.stdout)
+    except (ValueError, TypeError):
+        return {
+            "complete": False,
+            "direct_takeover_required": False,
+            "exit_code": res.returncode,
+            "article_count": 0,
+            "error": "INVALID_SUPERVISOR_JSON",
+        }
+
+    delivery = report.get("delivery") or {}
+    triads = delivery.get("triads") or []
+    exact = not target_slug or (
+        len(triads) == 1 and str(triads[0].get("slug") or "") == target_slug
+    )
+    count = int(delivery.get("article_count") or 0)
+    complete = (
+        res.returncode == 0 and bool(delivery.get("complete"))
+        and count > 0 and bool(triads) and exact
+    )
     return {
         "complete": complete,
-        "direct_takeover_required": direct_takeover,
+        "direct_takeover_required": bool(
+            (report.get("controller_health") or {}).get("direct_takeover_required")
+        ),
         "exit_code": res.returncode,
-        "stdout": res.stdout,
+        "article_count": count,
+        "target_slug": target_slug,
+        "triad_slugs": [str(row.get("slug") or "") for row in triads],
     }
 
 
@@ -224,6 +270,18 @@ def handle_daily(slot: str, client: GitHubActionsClient | None, dry_run: bool = 
             "status": "already_complete",
             "contract_complete": True,
             "message": f"Daily publishing for {slot} was already verified complete."
+        }
+
+    # An existing unfinished article must be recovered, never replaced by a
+    # second daily article merely because its video or Short is still missing.
+    if audit.get("article_count", 0) > 0:
+        return {
+            "action": "daily",
+            "slot": slot,
+            "status": "existing_cycle_incomplete",
+            "contract_complete": False,
+            "article_count": audit["article_count"],
+            "message": "An existing daily article requires exact recovery; refusing duplicate creation.",
         }
 
     print(f"Daily triad for {slot} is not yet complete. Initiating publishing cycle...")
@@ -322,8 +380,8 @@ def handle_run_now(
         # Step 6: Sync video bindings if updated
         subprocess.run(["git", "pull", "--rebase"], cwd=ROOT)
 
-    # Step 7: Run final supervisor verification
-    audit = run_supervisor_audit(slot)
+    # Step 7: Verify the exact new article, not another triad from the same date.
+    audit = run_supervisor_audit(slot, target_slug=slug)
     return {
         "action": "run_now",
         "slot": slot,
