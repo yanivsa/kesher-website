@@ -747,7 +747,7 @@
         "read",
         "status_write"
       ],
-      "definition_sha256": "6780fbd7cd967816f5b79703f2fd4238e52dc9da04ba7fff1f70759693516cbe",
+      "definition_sha256": "6d4a127da4502adfc34a6d29bc4ba8c983227e88c4af714b38d0d0c3b1edba42",
       "resources": [
         "github.statuses"
       ],
