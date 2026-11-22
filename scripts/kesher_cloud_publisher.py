@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -77,6 +78,54 @@ class GitHubActionsClient:
             err_msg = exc.read().decode("utf-8", errors="replace")
             print(f"ERROR: dispatch to {workflow_name} failed ({exc.code}): {err_msg}", file=sys.stderr)
             raise
+
+    def lookup_cloud_candidate(self, slug: str, expected_branch: str) -> dict[str, Any] | None:
+        """Read back exact open candidates before creating another PR."""
+        url = f"{self.base_url}/pulls?state=open&per_page=100"
+        request = urllib.request.Request(url, headers=self._headers(), method="GET")
+        with urllib.request.urlopen(request, timeout=30) as resp:
+            rows = json.loads(resp.read().decode("utf-8"))
+        matches = []
+        for row in rows:
+            head = str((row.get("head") or {}).get("ref") or "")
+            if head.startswith(f"content/kesher-{slug}-"):
+                matches.append(row)
+        if len(matches) > 1:
+            raise RuntimeError(f"AMBIGUOUS_CLOUD_ARTICLE_PR: {slug}")
+        if matches and str((matches[0].get("head") or {}).get("ref")) != expected_branch:
+            raise RuntimeError(f"CLOUD_ARTICLE_PR_SOURCE_CONFLICT: {slug}")
+        return matches[0] if matches else None
+
+    def create_cloud_candidate_pr(self, slug: str, title: str, source_sha: str, slot: str, branch: str) -> dict[str, Any]:
+        """Create a reviewable PR; never merge or mutate main in this request."""
+        url = f"{self.base_url}/pulls"
+        payload = {
+            "head": branch,
+            "base": "main",
+            "title": f"KESHER cloud candidate: {title[:160]}",
+            "body": (
+                "## Cloud article candidate (NOT published)\n\n"
+                f"Publication slot: \`{slot}\`\n"
+                f"Source slug: \`{slug}\`\n"
+                f"NotebookLM source SHA256: \`{source_sha}\`\n\n"
+                "Requires trusted content/image review, exact-head CI, "
+                "Schema-6 admission and approved merge before deployment or media."
+            ),
+            "draft": False,
+        }
+        request = urllib.request.Request(
+            url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={**self._headers(), "Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(request, timeout=30) as resp:
+            if resp.status != 201:
+                raise RuntimeError("CLOUD_ARTICLE_PR_CREATION_NOT_CONFIRMED")
+            pr = json.loads(resp.read().decode("utf-8"))
+        if not isinstance(pr.get("number"), int) or pr.get("head", {}).get("ref") != branch:
+            raise RuntimeError("CLOUD_ARTICLE_PR_IDENTITY_NOT_CONFIRMED")
+        return pr
 
     def get_latest_run(self, workflow_name: str, created_after_iso: str | None = None) -> dict[str, Any] | None:
         """Accept only a single unambiguous fresh dispatch, never an older run.
@@ -299,6 +348,9 @@ def handle_run_now(
     dry_run: bool = False,
 ) -> dict[str, Any]:
     print(f"🚀 Executing run_now cycle for date {slot}...")
+    if not dry_run and not client:
+        raise RuntimeError("CLOUD_ARTICLE_GITHUB_CLIENT_REQUIRED")
+
 
     # Step 1: Generate article & hero image
     from scripts.kesher_cloud_article_generator import generate_article
@@ -308,7 +360,7 @@ def handle_run_now(
         idea_id=idea_id,
         primary_keyword=primary_keyword,
         article_json=article_json,
-        commit=not dry_run,
+        commit=False,  # never commit or push main from an unreviewed content generator
         dry_run=dry_run,
     )
     slug = art_res["slug"]
@@ -329,68 +381,56 @@ def handle_run_now(
             "contract_complete": False,
         }
 
-    # Step 2: Push changes to main
-    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
-    if token:
-        repo = os.environ.get("GITHUB_REPOSITORY", DEFAULT_REPO)
-        push_url = f"https://x-access-token:{token}@github.com/{repo}.git"
-        subprocess.run(["git", "push", push_url, "main"], check=True, cwd=ROOT)
-        print("Pushed new article and image to main branch.")
+    # A candidate is NOT a publication. Never mutate main or launch media
+    # until independent trusted PR validation, authority admission and merge.
+    # This gateway stages content in an isolated branch; an explicit, separately
+    # approved publisher must handle the remaining phases.
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug):
+        raise RuntimeError("CLOUD_ARTICLE_SLUG_UNSAFE")
+    if not client:
+        raise RuntimeError("CLOUD_ARTICLE_GITHUB_CLIENT_REQUIRED")
+    branch = f"content/kesher-{slug}-{source_sha[:12]}"
+    existing = client.lookup_cloud_candidate(slug, branch)
+    if existing:
+        return {
+            "action": "run_now",
+            "slot": slot,
+            "slug": slug,
+            "title": title,
+            "status": "candidate_pr_exists",
+            "pr_number": existing["number"],
+            "pr_url": existing.get("html_url"),
+            "source_sha256": source_sha,
+            "contract_complete": False,
+        }
 
-    # Step 3: Trigger Cloudflare Pages deployment
-    if client:
-        print("☁️ Triggering Cloudflare Pages deploy (deploy.yml)...")
-        now_iso = datetime.now(timezone.utc).isoformat()
-        client.dispatch("deploy.yml")
-        deploy_run = client.poll_workflow("deploy.yml", dispatched_after_iso=now_iso, max_wait_seconds=600)
-        if deploy_run.get("conclusion") != "success":
-            raise RuntimeError(f"Cloudflare deploy failed with conclusion: {deploy_run.get('conclusion')}")
-
-        # Step 4: Trigger NotebookLM Long Video (16:9)
-        print(f"🎬 Triggering NotebookLM Long Video for {slug}...")
-        now_iso = datetime.now(timezone.utc).isoformat()
-        client.dispatch(
-            "kesher-daily-video.yml",
-            {
-                "operation": "full",
-                "target_slug": slug,
-                "target_content_sha256": source_sha,
-                "skip_jules_advisory": True,
-            }
-        )
-        video_run = client.poll_workflow("kesher-daily-video.yml", dispatched_after_iso=now_iso, max_wait_seconds=900)
-        if video_run.get("conclusion") != "success":
-            raise RuntimeError(f"Long Video workflow failed with conclusion: {video_run.get('conclusion')}")
-
-        # Step 5: Trigger NotebookLM Short (9:16)
-        print(f"📱 Triggering NotebookLM Short for {slug}...")
-        now_iso = datetime.now(timezone.utc).isoformat()
-        client.dispatch(
-            "kesher-short-v4.yml",
-            {
-                "operation": "full",
-                "derive_slug": slug,
-                "derive_content_sha256": source_sha,
-            }
-        )
-        short_run = client.poll_workflow("kesher-short-v4.yml", dispatched_after_iso=now_iso, max_wait_seconds=900)
-        if short_run.get("conclusion") != "success":
-            raise RuntimeError(f"Short workflow failed with conclusion: {short_run.get('conclusion')}")
-
-        # Step 6: Sync video bindings if updated
-        subprocess.run(["git", "pull", "--rebase"], cwd=ROOT)
-
-    # Step 7: Verify the exact new article, not another triad from the same date.
-    audit = run_supervisor_audit(slot, target_slug=slug)
+    subprocess.run(["git", "switch", "-c", branch], check=True, cwd=ROOT, timeout=30)
+    staged_paths = ["src/data/postsRecent.json", "public/" + str(art_res["hero_image"]).lstrip("/")]
+    subprocess.run(["git", "add", "--", *staged_paths], check=True, cwd=ROOT, timeout=30)
+    subprocess.run(
+        ["git", "commit", "-m", f"feat(content): stage KESHER candidate {slug} [{source_sha[:12]}]"],
+        check=True, cwd=ROOT, timeout=45,
+    )
+    subprocess.run(
+        ["git", "push", "origin", f"HEAD:refs/heads/{branch}"],
+        check=True, cwd=ROOT, timeout=90,
+    )
+    pr = client.create_cloud_candidate_pr(slug, title, source_sha, slot, branch)
+    # PR creation by GITHUB_TOKEN does not trigger a pull_request CI run.
+    # Explicit dispatch is permitted by GitHub; the exact branch must then
+    # pass independently before *any* approved publication step.
+    client.dispatch("ci.yml", ref=branch)
     return {
         "action": "run_now",
         "slot": slot,
         "slug": slug,
         "title": title,
-        "article_url": article_url,
+        "status": "candidate_pr_pending_ci_and_authority",
+        "pr_number": pr["number"],
+        "pr_url": pr.get("html_url"),
         "source_sha256": source_sha,
-        "contract_complete": audit["complete"],
-        "status": "success" if audit["complete"] else "pending_verification",
+        "article_url": article_url,
+        "contract_complete": False,
     }
 
 
