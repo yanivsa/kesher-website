@@ -437,16 +437,16 @@ def build_article_html(sections: list[tuple[str, str]]) -> str:
 
 
 def compute_article_sha256(post: Mapping[str, Any]) -> str:
-    canonical = {
-        "id": str(post.get("id") or post.get("slug") or ""),
-        "title": str(post.get("title") or ""),
-        "excerpt": str(post.get("excerpt") or ""),
-        "content": str(post.get("content") or ""),
-        "directAnswer": str(post.get("directAnswer") or ""),
-        "primaryKeyword": str(post.get("primaryKeyword") or ""),
-    }
-    raw = json.dumps(canonical, sort_keys=True, ensure_ascii=False).encode("utf-8")
-    return hashlib.sha256(raw).hexdigest()
+    """Return the exact canonical source identity used by NotebookLM media.
+
+    The media pipeline hashes the cleaned title, excerpt and article content
+    together with the canonical article URL. A JSON-field hash is NOT the media
+    source identity and must never be passed to a video workflow.
+    """
+    from scripts.kesher_daily_pipeline import source_metadata
+
+    source = source_metadata(dict(post))
+    return str(source["content_sha256"])
 
 
 def validate_article_candidate(post: dict[str, Any]) -> None:
