@@ -368,7 +368,7 @@ def extract_video_state(client: GitHubActionsClient, run_id: int, slug: str) -> 
 
 
 def extract_short_state(client: GitHubActionsClient, run_id: int, slug: str) -> str:
-    raw_zip = client.get_run_artifact_zip(run_id, "kesher-short-v4-state")
+    raw_zip = client.get_run_artifact_zip(run_id, "kesher-short-v4-controller-state")
     with zipfile.ZipFile(io.BytesIO(raw_zip)) as z:
         data = json.loads(z.read("state.json").decode("utf-8"))
     for item in data.get("items", []):
@@ -821,7 +821,7 @@ def handle_resume(
     # Step 3: Check or dispatch Short
     short_yt = None
     try:
-        latest_szip = client.get_latest_artifact_zip("kesher-short-v4-state")
+        latest_szip = client.get_latest_artifact_zip("kesher-short-v4-controller-state")
         if latest_szip:
             with zipfile.ZipFile(io.BytesIO(latest_szip)) as z:
                 sstate = json.loads(z.read("state.json").decode("utf-8"))
