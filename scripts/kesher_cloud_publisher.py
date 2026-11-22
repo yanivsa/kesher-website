@@ -105,9 +105,9 @@ class GitHubActionsClient:
             "title": f"KESHER cloud candidate: {title[:160]}",
             "body": (
                 "## Cloud article candidate (NOT published)\n\n"
-                f"Publication slot: \`{slot}\`\n"
-                f"Source slug: \`{slug}\`\n"
-                f"NotebookLM source SHA256: \`{source_sha}\`\n\n"
+                f"Publication slot: `{slot}`\n"
+                f"Source slug: `{slug}`\n"
+                f"NotebookLM source SHA256: `{source_sha}`\n\n"
                 "Requires trusted content/image review, exact-head CI, "
                 "Schema-6 admission and approved merge before deployment or media."
             ),
@@ -385,7 +385,7 @@ def handle_run_now(
     # until independent trusted PR validation, authority admission and merge.
     # This gateway stages content in an isolated branch; an explicit, separately
     # approved publisher must handle the remaining phases.
-    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug):
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug) or not re.fullmatch(r"[0-9a-f]{64}", source_sha):
         raise RuntimeError("CLOUD_ARTICLE_SLUG_UNSAFE")
     if not client:
         raise RuntimeError("CLOUD_ARTICLE_GITHUB_CLIENT_REQUIRED")
