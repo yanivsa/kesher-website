@@ -69,13 +69,13 @@ class StrictTriadContractTests(unittest.TestCase):
                 patch.object(supervisor, "PROJECT_DIR", Path(tmp)),
                 patch.object(supervisor, "get_image_size", return_value=(1200, 675)),
                 patch("scripts.kesher_daily_pipeline.source_metadata", return_value={"content_sha256": self.SHA}),
-            patch.object(supervisor, "check_site_url", return_value=(True, 200, live_html)),
-            patch.object(supervisor, "verify_canonical_url", return_value=True),
-            patch.object(supervisor, "verify_youtube_public", return_value=(True, author)),
-            patch.object(supervisor, "load_cached_artifact_state", side_effect=[
-                video if video is not None else self.video_state(),
-                short if short is not None else self.short_state(),
-            ]),
+                patch.object(supervisor, "check_site_url", return_value=(True, 200, live_html)),
+                patch.object(supervisor, "verify_canonical_url", return_value=True),
+                patch.object(supervisor, "verify_youtube_public", return_value=(True, author)),
+                patch.object(supervisor, "load_cached_artifact_state", side_effect=[
+                    video if video is not None else self.video_state(),
+                    short if short is not None else self.short_state(),
+                ]),
             ):
                 return supervisor.audit_single_triad(post, catalogue)
 
