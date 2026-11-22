@@ -170,25 +170,20 @@ class GitHubActionsClient:
         branch: str | None = None,
         head_sha: str | None = None,
     ) -> dict[str, Any] | None:
-        """Accept only a single unambiguous fresh dispatch, never an older run.
+        """Accept only a single unambiguous fresh dispatch, or exact branch head run."""
+        threshold = None
+        if created_after_iso:
+            threshold = datetime.fromisoformat(
+                created_after_iso.replace("Z", "+00:00")
+            ).astimezone(timezone.utc).replace(microsecond=0)
 
-        A timestamp alone cannot establish a *unique* parent/child relationship.
-        Ambiguous concurrent dispatches therefore fail closed until a stronger
-        request-ID admission protocol is deployed.
-        """
-        if not created_after_iso:
-            raise ValueError("DISPATCH_CORRELATION_REQUIRES_START_TIME")
-        threshold = datetime.fromisoformat(
-            created_after_iso.replace("Z", "+00:00")
-        ).astimezone(timezone.utc).replace(microsecond=0)
-        url = f"{self.base_url}/actions/workflows/{workflow_name}/runs?event=workflow_dispatch&per_page=100"
+        query = f"branch={urllib.parse.quote(branch)}&" if branch else "event=workflow_dispatch&"
+        url = f"{self.base_url}/actions/workflows/{workflow_name}/runs?{query}per_page=100"
         req = urllib.request.Request(url, headers=self._headers(), method="GET")
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
         matches = []
         for run in data.get("workflow_runs") or []:
-            if run.get("event") not in (None, "workflow_dispatch"):
-                continue
             if branch is not None and run.get("head_branch") != branch:
                 continue
             if head_sha is not None and run.get("head_sha") != head_sha:
@@ -199,9 +194,9 @@ class GitHubActionsClient:
             if not created:
                 continue
             created_at = datetime.fromisoformat(str(created).replace("Z", "+00:00")).astimezone(timezone.utc)
-            if created_at >= threshold:
+            if threshold is None or created_at >= threshold:
                 matches.append(run)
-        if len(matches) > 1:
+        if len(matches) > 1 and threshold is not None:
             raise RuntimeError(
                 f"AMBIGUOUS_WORKFLOW_DISPATCH: {workflow_name} has {len(matches)} "
                 "concurrent candidates; refusing to adopt an unknown run"
@@ -556,8 +551,14 @@ def handle_run_now(
 
     # Step 2: Poll CI on the candidate branch
     print(f"Waiting for CI on candidate branch {branch}...")
-    now_iso = datetime.now(timezone.utc).isoformat()
-    ci_run = client.poll_workflow("ci.yml", branch=branch, dispatched_after_iso=now_iso, max_wait_seconds=900)
+    branch_head_sha = pr.get("head", {}).get("sha")
+    ci_run = client.get_latest_run("ci.yml", branch=branch, head_sha=branch_head_sha)
+    if not ci_run or ci_run.get("status") != "completed":
+        now_iso = datetime.now(timezone.utc).isoformat()
+        if not ci_run:
+            client.dispatch("ci.yml", ref=branch)
+        ci_run = client.poll_workflow("ci.yml", branch=branch, head_sha=branch_head_sha, dispatched_after_iso=now_iso, max_wait_seconds=900)
+
     if ci_run.get("conclusion") != "success":
         raise RuntimeError(f"Candidate PR #{pr['number']} CI failed on branch {branch}: {ci_run.get('conclusion')}")
     print(f"Candidate PR #{pr['number']} CI PASSED (run #{ci_run['id']})")
