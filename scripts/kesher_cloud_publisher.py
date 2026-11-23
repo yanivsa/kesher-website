@@ -357,6 +357,28 @@ def verify_live_article(article_url: str, expected_sha: str, max_wait_seconds: i
     raise TimeoutError(f"Live article {article_url} did not verify within {max_wait_seconds}s")
 
 
+def deploy_to_cloudflare(client: GitHubActionsClient, max_retries: int = 3, max_wait_seconds: int = 600) -> dict:
+    """Dispatches and waits for deploy.yml on main, retrying upon transient failure."""
+    last_run = None
+    for attempt in range(1, max_retries + 1):
+        deploy_start_iso = datetime.now(timezone.utc).isoformat()
+        print(f"Deploying to Cloudflare Pages via deploy.yml on main (attempt {attempt}/{max_retries})...")
+        client.dispatch("deploy.yml", ref="main")
+        deploy_run = client.poll_workflow("deploy.yml", branch="main", dispatched_after_iso=deploy_start_iso, max_wait_seconds=max_wait_seconds)
+        last_run = deploy_run
+        if deploy_run.get("conclusion") == "success":
+            print(f"Deploy completed successfully on attempt {attempt} (run #{deploy_run.get('id')})")
+            return deploy_run
+        print(f"Deploy attempt {attempt} finished with conclusion: {deploy_run.get('conclusion')}")
+        if attempt < max_retries:
+            print("Retrying deploy after 20s backoff...")
+            time.sleep(20)
+    raise RuntimeError(
+        f"Deployment to Cloudflare Pages failed after {max_retries} attempts "
+        f"(last run #{last_run.get('id') if last_run else 'none'}, conclusion: {last_run.get('conclusion') if last_run else 'unknown'})"
+    )
+
+
 def extract_video_state(client: GitHubActionsClient, run_id: int, slug: str) -> tuple[str, str]:
     raw_zip = client.get_run_artifact_zip(run_id, "kesher-video-controller-state")
     with zipfile.ZipFile(io.BytesIO(raw_zip)) as z:
@@ -653,12 +675,7 @@ def handle_run_now(
 
     # Step 4: Deploy to Cloudflare Pages
     print(f"Deploying article {slug} to Cloudflare Pages...")
-    deploy_start_iso = datetime.now(timezone.utc).isoformat()
-    client.dispatch("deploy.yml", ref="main")
-    deploy_run = client.poll_workflow("deploy.yml", branch="main", dispatched_after_iso=deploy_start_iso, max_wait_seconds=600)
-    if deploy_run.get("conclusion") != "success":
-        raise RuntimeError(f"Deployment failed with conclusion: {deploy_run.get('conclusion')}")
-    print(f"Deploy completed successfully (run #{deploy_run['id']})")
+    deploy_to_cloudflare(client)
 
     # Step 5: Verify live article
     verify_live_article(article_url, source_sha)
@@ -750,9 +767,7 @@ def handle_run_now(
         subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=True, cwd=ROOT, timeout=60)
         subprocess.run(["git", "push", "origin", "main"], check=True, cwd=ROOT, timeout=60)
 
-    deploy2_start_iso = datetime.now(timezone.utc).isoformat()
-    client.dispatch("deploy.yml", ref="main")
-    client.poll_workflow("deploy.yml", branch="main", dispatched_after_iso=deploy2_start_iso, max_wait_seconds=600)
+    deploy_to_cloudflare(client)
 
     # Step 9: Final Supervisor Audit
     audit = run_supervisor_audit(slot, target_slug=slug)
@@ -815,11 +830,7 @@ def handle_resume(
         verify_live_article(article_url, source_sha, max_wait_seconds=15)
     except TimeoutError:
         print(f"Article not yet live; triggering deployment to Cloudflare Pages...")
-        dep_start_iso = datetime.now(timezone.utc).isoformat()
-        client.dispatch("deploy.yml", ref="main")
-        deploy_run = client.poll_workflow("deploy.yml", branch="main", dispatched_after_iso=dep_start_iso, max_wait_seconds=600)
-        if deploy_run.get("conclusion") != "success":
-            raise RuntimeError(f"Deployment failed with conclusion: {deploy_run.get('conclusion')}")
+        deploy_to_cloudflare(client)
         verify_live_article(article_url, source_sha, max_wait_seconds=180)
 
     # Step 2: Check or dispatch Long Video
@@ -944,9 +955,7 @@ def handle_resume(
         if push_res.returncode != 0:
             subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=True, cwd=ROOT, timeout=60)
             subprocess.run(["git", "push", "origin", "main"], check=True, cwd=ROOT, timeout=60)
-        deploy_now = datetime.now(timezone.utc).isoformat()
-        client.dispatch("deploy.yml", ref="main")
-        client.poll_workflow("deploy.yml", branch="main", dispatched_after_iso=deploy_now, max_wait_seconds=600)
+        deploy_to_cloudflare(client)
 
     # Final supervisor audit
     final_audit = run_supervisor_audit(slot, target_slug=slug)
