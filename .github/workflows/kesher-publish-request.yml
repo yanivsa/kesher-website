@@ -1,5 +1,6 @@
 name: Kesher Publish Request
-run-name: Kesher Publish (${{ inputs.action }}) - ${{ inputs.slot || 'today' }}
+run-name: >-
+  ${{ github.event_name == 'issues' && format('Kesher Publish from Issue #{0}: {1}', github.event.issue.number, github.event.issue.title) || format('Kesher Publish ({0}) - {1}', inputs.action, inputs.slot || 'today') }}
 
 "on":
   workflow_dispatch:
@@ -55,11 +56,14 @@ run-name: Kesher Publish (${{ inputs.action }}) - ${{ inputs.slot || 'today' }}
         required: false
         default: false
         type: boolean
+  issues:
+    types: [opened]
 
 permissions:
   contents: write
   actions: write
   pull-requests: write
+  issues: write
 
 concurrency:
   group: kesher-publish-request
@@ -67,7 +71,15 @@ concurrency:
 
 jobs:
   publish:
-    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    if: >-
+      ${{ github.repository == 'yanivsa/kesher-website' &&
+          (github.event_name == 'workflow_dispatch' ||
+           (github.event_name == 'issues' &&
+            (contains(github.event.issue.title, '[Publish]') ||
+             contains(github.event.issue.title, '[publish]') ||
+             contains(github.event.issue.title, 'publish:') ||
+             contains(github.event.issue.title, 'הפעלת פרסום') ||
+             contains(github.event.issue.labels.*.name, 'publish-request')))) }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -97,6 +109,107 @@ jobs:
           git config --global user.name "Kesher Automation Bot"
           git config --global user.email "bot@kesher.saharoni.com"
 
+      - name: Resolve execution parameters
+        id: params
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_ACTION: ${{ inputs.action }}
+          INPUT_SLOT: ${{ inputs.slot }}
+          INPUT_TOPIC_BRIEF: ${{ inputs.topic_brief }}
+          INPUT_IDEA_ID: ${{ inputs.idea_id }}
+          INPUT_PRIMARY_KEYWORD: ${{ inputs.primary_keyword }}
+          INPUT_ARTICLE_JSON: ${{ inputs.article_json }}
+          INPUT_TARGET_SLUG: ${{ inputs.target_slug }}
+          INPUT_STAGE_ONLY: ${{ inputs.stage_only }}
+          INPUT_DRY_RUN: ${{ inputs.dry_run }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python3 - <<'PY'
+          import os, re
+
+          event = os.environ.get("EVENT_NAME")
+          if event == "workflow_dispatch":
+              action = os.environ.get("INPUT_ACTION") or "daily"
+              slot = os.environ.get("INPUT_SLOT") or ""
+              topic_brief = os.environ.get("INPUT_TOPIC_BRIEF") or ""
+              idea_id = os.environ.get("INPUT_IDEA_ID") or ""
+              primary_keyword = os.environ.get("INPUT_PRIMARY_KEYWORD") or ""
+              article_json = os.environ.get("INPUT_ARTICLE_JSON") or ""
+              target_slug = os.environ.get("INPUT_TARGET_SLUG") or ""
+              stage_only = os.environ.get("INPUT_STAGE_ONLY") or "false"
+              dry_run = os.environ.get("INPUT_DRY_RUN") or "false"
+              issue_number = ""
+          else:
+              title = (os.environ.get("ISSUE_TITLE") or "").strip()
+              body = (os.environ.get("ISSUE_BODY") or "").strip()
+              issue_number = str(os.environ.get("ISSUE_NUMBER") or "").strip()
+
+              clean_topic = re.sub(r"^\[(?:publish|Publish)\]\s*", "", title, flags=re.IGNORECASE)
+              clean_topic = re.sub(r"^publish:\s*", "", clean_topic, flags=re.IGNORECASE)
+              clean_topic = re.sub(r"^הפעלת פרסום:\s*", "", clean_topic, flags=re.IGNORECASE).strip()
+
+              action = "run_now"
+              slot = ""
+              topic_brief = clean_topic
+              idea_id = ""
+              primary_keyword = ""
+              article_json = ""
+              target_slug = ""
+              stage_only = "false"
+              dry_run = "false"
+
+              for raw_line in body.splitlines():
+                  line = raw_line.strip()
+                  if ":" in line:
+                      k, v = line.split(":", 1)
+                      k = k.strip().lower()
+                      v = v.strip()
+                      if k == "action" and v in ("daily", "run_now", "resume", "audit", "repair"):
+                          action = v
+                      elif k == "slot":
+                          slot = v
+                      elif k in ("topic_brief", "topic", "brief") and v:
+                          topic_brief = v
+                      elif k in ("idea_id", "slug"):
+                          idea_id = v
+                      elif k in ("primary_keyword", "keyword"):
+                          primary_keyword = v
+                      elif k == "target_slug":
+                          target_slug = v
+                      elif k == "stage_only":
+                          stage_only = "true" if v.lower() == "true" else "false"
+                      elif k == "dry_run":
+                          dry_run = "true" if v.lower() == "true" else "false"
+
+          out_path = os.environ.get("GITHUB_OUTPUT")
+          if out_path:
+              with open(out_path, "a", encoding="utf-8") as out:
+                  out.write(f"action={action}\n")
+                  out.write(f"slot={slot}\n")
+                  out.write(f"topic_brief={topic_brief}\n")
+                  out.write(f"idea_id={idea_id}\n")
+                  out.write(f"primary_keyword={primary_keyword}\n")
+                  out.write(f"article_json={article_json}\n")
+                  out.write(f"target_slug={target_slug}\n")
+                  out.write(f"stage_only={stage_only}\n")
+                  out.write(f"dry_run={dry_run}\n")
+                  out.write(f"issue_number={issue_number}\n")
+          print(f"Resolved publish params: action={action} topic_brief='{topic_brief}' issue={issue_number}")
+          PY
+
+      - name: Acknowledge issue trigger
+        if: ${{ steps.params.outputs.issue_number != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUM: ${{ steps.params.outputs.issue_number }}
+          RUN_ID: ${{ github.run_id }}
+          TOPIC: ${{ steps.params.outputs.topic_brief }}
+        run: |
+          gh issue comment "$ISSUE_NUM" --body "🚀 **מחזור פרסום ענני הופעל אוטונומית** עבור: **$TOPIC**
+          מעקב ריצה: https://github.com/${{ github.repository }}/actions/runs/$RUN_ID"
+
       - name: Execute Kesher Cloud Publisher
         id: publisher
         env:
@@ -104,15 +217,15 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          ACTION: ${{ inputs.action }}
-          SLOT: ${{ inputs.slot }}
-          TOPIC_BRIEF: ${{ inputs.topic_brief }}
-          IDEA_ID: ${{ inputs.idea_id }}
-          PRIMARY_KEYWORD: ${{ inputs.primary_keyword }}
-          ARTICLE_JSON: ${{ inputs.article_json }}
-          TARGET_SLUG: ${{ inputs.target_slug }}
-          STAGE_ONLY: ${{ inputs.stage_only }}
-          DRY_RUN: ${{ inputs.dry_run }}
+          ACTION: ${{ steps.params.outputs.action }}
+          SLOT: ${{ steps.params.outputs.slot }}
+          TOPIC_BRIEF: ${{ steps.params.outputs.topic_brief }}
+          IDEA_ID: ${{ steps.params.outputs.idea_id }}
+          PRIMARY_KEYWORD: ${{ steps.params.outputs.primary_keyword }}
+          ARTICLE_JSON: ${{ steps.params.outputs.article_json }}
+          TARGET_SLUG: ${{ steps.params.outputs.target_slug }}
+          STAGE_ONLY: ${{ steps.params.outputs.stage_only }}
+          DRY_RUN: ${{ steps.params.outputs.dry_run }}
         run: |
           set -euo pipefail
           extra_args=()
@@ -135,3 +248,42 @@ jobs:
           path: kesher-publish-result.json
           if-no-files-found: ignore
           retention-days: 7
+
+      - name: Report success and close issue
+        if: ${{ always() && steps.params.outputs.issue_number != '' && steps.publisher.outcome == 'success' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUM: ${{ steps.params.outputs.issue_number }}
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          res_file = "kesher-publish-result.json"
+          body = "### ✅ תהליך הפרסום הושלם בהצלחה!\n\n"
+          if os.path.isfile(res_file):
+              try:
+                  with open(res_file, encoding="utf-8") as f:
+                      data = json.load(f)
+                  body += f"- **מאמר:** {data.get('article_url')}\n"
+                  body += f"- **סרטון יוטיוב (16:9):** {data.get('long_video_url')}\n"
+                  body += f"- **שורט יוטיוב (9:16):** {data.get('short_video_url')}\n"
+                  body += f"- **סלאג:** `{data.get('slug')}`\n"
+                  body += f"- **סטטוס חוזה:** `{'מאושר' if data.get('contract_complete') else 'לא מאומת'}`\n"
+              except Exception as exc:
+                  body += f"שגיאה בקריאת פרטי התוצאה: {exc}\n"
+          else:
+              body += "נכסי המדיה פורסמו בייצור.\n"
+
+          issue_num = os.environ["ISSUE_NUM"]
+          subprocess.run(["gh", "issue", "comment", issue_num, "--body", body], check=True)
+          subprocess.run(["gh", "issue", "close", issue_num, "--reason", "completed"], check=True)
+          PY
+
+      - name: Report failure on issue
+        if: ${{ always() && steps.params.outputs.issue_number != '' && steps.publisher.outcome != 'success' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUM: ${{ steps.params.outputs.issue_number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUM" --body "❌ **מחזור הפרסום נכשל.**
+          לפרטים נוספים ראה את לוג הריצה: https://github.com/${{ github.repository }}/actions/runs/$RUN_ID"

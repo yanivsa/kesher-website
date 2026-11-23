@@ -341,6 +341,15 @@ class PublishRequestWorkflowTests(unittest.TestCase):
         yt_id = publisher.extract_short_state(mock_client, 12345, "test-slug")
         self.assertEqual(yt_id, "")
 
+    def test_workflow_supports_issue_opened_trigger(self):
+        content = yaml.safe_load(self.workflow_path.read_text(encoding="utf-8"))
+        on_block = content.get("on") or content.get(True) or {}
+        self.assertIn("issues", on_block)
+        self.assertEqual(on_block["issues"].get("types"), ["opened"])
+
+        permissions = content.get("permissions", {})
+        self.assertEqual(permissions.get("issues"), "write")
+
 
 if __name__ == "__main__":
     unittest.main()

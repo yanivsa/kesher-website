@@ -4434,13 +4434,15 @@
       "capabilities": [
         "artifact_write",
         "branch_write",
+        "issue_write",
         "pr_write",
         "read",
         "workflow_dispatch"
       ],
-      "definition_sha256": "51bddfb71b73e6a26236654d710a4d8ef3f1d2c4067380a51bf7f11e03298aad",
+      "definition_sha256": "a1705b8f4aa5fdd9de67639f1820513eae6815c40391ca6f66270650951a9283",
       "resources": [
         "github.dispatch",
+        "github.issues",
         "github.pull_requests",
         "github.refs"
       ],
