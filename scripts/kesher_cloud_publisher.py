@@ -221,19 +221,22 @@ class GitHubActionsClient:
             created_at = datetime.fromisoformat(str(created).replace("Z", "+00:00")).astimezone(timezone.utc)
             if threshold is None or created_at >= threshold:
                 matches.append(run)
-        if len(matches) > 1 and threshold is not None:
-            # Prefer non-cancelled runs when concurrency has cancelled previous runs
-            non_cancelled = [r for r in matches if r.get("conclusion") != "cancelled"]
-            if len(non_cancelled) == 1:
-                return non_cancelled[0]
-            # Prefer explicitly dispatched workflows when both PR and dispatch events exist
-            dispatched = [r for r in non_cancelled if r.get("event") == "workflow_dispatch"]
-            if len(dispatched) == 1:
-                return dispatched[0]
-            raise RuntimeError(
-                f"AMBIGUOUS_WORKFLOW_DISPATCH: {workflow_name} has {len(matches)} "
-                "concurrent candidates; refusing to adopt an unknown run"
-            )
+        if len(matches) > 1:
+            # Discard non-actionable runs (cancelled concurrency runs or unapproved action_required bot PR events)
+            actionable = [r for r in matches if r.get("conclusion") not in ("cancelled", "action_required")]
+            if len(actionable) == 1:
+                return actionable[0]
+            if actionable:
+                # Prefer explicitly dispatched workflows when both PR and dispatch events exist
+                dispatched = [r for r in actionable if r.get("event") == "workflow_dispatch"]
+                if len(dispatched) == 1:
+                    return dispatched[0]
+                if threshold is not None and len(actionable) > 1:
+                    raise RuntimeError(
+                        f"AMBIGUOUS_WORKFLOW_DISPATCH: {workflow_name} has {len(actionable)} "
+                        "concurrent candidates; refusing to adopt an unknown run"
+                    )
+                return (dispatched or actionable)[0]
         return matches[0] if matches else None
 
     def poll_workflow(
