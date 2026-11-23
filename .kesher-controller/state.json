@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-08",
-  "status": "article_deploying",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -58,12 +58,12 @@
     "quality_content_sha256": "244213e59bf25c3c4b6b240adc3e6bdc88a590a15b02413b394929ad8e78ad7c",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-23T16:50:55.409360+00:00",
+    "quality_checked_at": "2026-11-23T16:53:31.135721+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-11-21T17:05:48.122864+00:00",
     "next_deploy_retry_at": "2026-11-21T17:20:41.316535+00:00",
-    "deploy_run_id": 45084270480,
+    "deploy_run_id": 45219727967,
     "deploy_status": "exhausted"
   },
   "backlog": [
@@ -1774,17 +1774,13 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "DEPLOY_ATTEMPTS_EXHAUSTED",
+    "message": "Article deployment exhausted maximum allowed attempts (5)",
+    "at": "2026-11-23T16:53:34.006184+00:00"
+  },
   "history": [
-    {
-      "at": "2026-11-23T08:25:53.857847+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
     {
       "at": "2026-11-23T08:30:55.648959+00:00",
       "from": "article_needed",
@@ -2666,9 +2662,18 @@
       "from": "article_needed",
       "to": "article_deploying",
       "reason": "deployment already active"
+    },
+    {
+      "at": "2026-11-23T16:53:34.006199+00:00",
+      "from": "article_deploying",
+      "to": "blocked",
+      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "Article deployment exhausted maximum allowed attempts (5)"
+      }
     }
   ],
-  "updated_at": "2026-11-23T16:50:57.253655+00:00",
+  "updated_at": "2026-11-23T16:53:34.006204+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -3308,7 +3313,7 @@
   },
   "last_child_notification": {
     "workflow": "Deploy to Cloudflare Pages",
-    "run_id": 45084270480,
+    "run_id": 45219727967,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-11-08"
