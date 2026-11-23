@@ -3,8 +3,9 @@ name: Kesher Content Controller
 on:
   schedule:
     - cron: "4,9,14,19,24,29,34,39,44,49,54,59 * * * *"
-    # Both Israel UTC offsets; local-window/idempotency guards select one slot.
-    - cron: "35 21,22 * * *"
+    # The canonical 01:00 local daily entrypoint; GitHub applies Israel DST.
+    - cron: "0 1 * * *"
+      timezone: "Asia/Jerusalem"
   workflow_run:
     workflows:
       - Kesher Article Generation
@@ -239,3 +240,79 @@ jobs:
           KESHER_CHILD_WORKFLOW: ${{ github.event.workflow_run.name || inputs.child_workflow || '' }}
           KESHER_CONTROLLER_OUTCOME: ${{ steps.content_controller.outcome }}
         run: PYTHONPATH=. python3 -u -m scripts.kesher_controller_repair
+
+  nightly_daily:
+    # Only this registered controller may own a nightly KESHER schedule.
+    # Finish the incumbent controller tick before evaluating whether a new
+    # daily article request is still needed; never bypass Schema-6 admission.
+    needs: [canonical_tick, control]
+    if: >-
+      ${{ always() && github.repository == 'yanivsa/kesher-website' &&
+          github.ref == 'refs/heads/main' && github.event_name == 'schedule' &&
+          github.event.schedule == '0 1 * * *' &&
+          (vars.KESHER_CUTOVER_GATEWAY_URL == '' ||
+           vars.KESHER_SCHEMA6_SCHEDULE_ENABLED == 'true') &&
+          needs.canonical_tick.result != 'failure' &&
+          needs.control.result != 'failure' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: write
+      pull-requests: read
+    steps:
+      - name: Ensure no duplicate KESHER daily request is in flight
+        id: guard
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import subprocess
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+
+          repo = os.environ["REPO"]
+          slot = datetime.now(ZoneInfo("Asia/Jerusalem")).date().isoformat()
+
+          def get_json(endpoint):
+              # Fail closed if GitHub cannot prove that a launch is safe.
+              raw = subprocess.check_output(
+                  ["gh", "api", f"/repos/{repo}/{endpoint}"], text=True, timeout=45
+              )
+              return json.loads(raw)
+
+          prs = get_json("pulls?state=open&per_page=100")
+          candidates = [
+              p["number"] for p in prs
+              if (p.get("head") or {}).get("ref", "").startswith("content/kesher-")
+              and f"Publication slot: `{slot}`" in (p.get("body") or "")
+          ]
+          runs = get_json("actions/workflows/kesher-publish-request.yml/runs?per_page=100")
+          in_flight = [
+              r["id"] for r in runs.get("workflow_runs", [])
+              if r.get("status") in {"queued", "in_progress", "waiting", "requested", "pending"}
+          ]
+
+          allow = not candidates and not in_flight
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"allow={'true' if allow else 'false'}\n")
+              out.write(f"slot={slot}\n")
+          if not allow:
+              print(f"::notice::Slot {slot} already underway; "
+                    f"PRs={candidates} active publisher runs={in_flight}.")
+          else:
+              print(f"Slot {slot}: safe to dispatch existing canonical daily publisher.")
+          PY
+
+      - name: Dispatch KESHER canonical daily publishing request
+        if: ${{ steps.guard.outputs.allow == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SLOT: ${{ steps.guard.outputs.slot }}
+        run: |
+          gh workflow run kesher-publish-request.yml --ref main \
+            -f action=daily -f slot="$SLOT"
+          echo "Dispatched canonical daily cycle for Israel slot $SLOT."
