@@ -155,7 +155,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         self.assertEqual(
             events["schedule"],
             [{"cron": "4,9,14,19,24,29,34,39,44,49,54,59 * * * *"},
-             {"cron": "35 21,22 * * *"}],
+             {"cron": "0 1 * * *", "timezone": "Asia/Jerusalem"}],
         )
         self.assertEqual(
             controller_data["concurrency"],
@@ -163,6 +163,11 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         )
         self.assertNotIn("KESHER_MANUAL_EMERGENCY_BRIDGE", controller_text)
         self.assertIn('KESHER_PRE_CUTOVER_DAILY_AUTHORITY: "true"', controller_text)
+        self.assertIn("nightly_daily:", controller_text)
+        self.assertIn("needs: [canonical_tick, control]", controller_text)
+        self.assertIn("steps.guard.outputs.allow == 'true'", controller_text)
+        self.assertIn("gh workflow run kesher-publish-request.yml --ref main", controller_text)
+
 
         for wf_path in sorted(WORKFLOWS_DIR.glob("kesher-*.yml")):
             if wf_path.name in {"kesher-content-controller.yml", "kesher-controller-liveness.yml"}:
