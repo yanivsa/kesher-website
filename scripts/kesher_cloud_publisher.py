@@ -222,6 +222,14 @@ class GitHubActionsClient:
             if threshold is None or created_at >= threshold:
                 matches.append(run)
         if len(matches) > 1 and threshold is not None:
+            # Prefer non-cancelled runs when concurrency has cancelled previous runs
+            non_cancelled = [r for r in matches if r.get("conclusion") != "cancelled"]
+            if len(non_cancelled) == 1:
+                return non_cancelled[0]
+            # Prefer explicitly dispatched workflows when both PR and dispatch events exist
+            dispatched = [r for r in non_cancelled if r.get("event") == "workflow_dispatch"]
+            if len(dispatched) == 1:
+                return dispatched[0]
             raise RuntimeError(
                 f"AMBIGUOUS_WORKFLOW_DISPATCH: {workflow_name} has {len(matches)} "
                 "concurrent candidates; refusing to adopt an unknown run"
@@ -535,6 +543,7 @@ def handle_run_now(
         raise RuntimeError("CLOUD_ARTICLE_GITHUB_CLIENT_REQUIRED")
 
     branch = f"content/kesher-{slug}-{source_sha[:12]}"
+    ci_dispatch_iso: str | None = None
     existing = client.lookup_cloud_candidate(slug, branch)
     if existing:
         pr = existing
@@ -592,6 +601,7 @@ def handle_run_now(
                 print(f"Adopted existing candidate PR #{pr['number']}")
             else:
                 raise
+        ci_dispatch_iso = datetime.now(timezone.utc).isoformat()
         client.dispatch("ci.yml", ref=branch)
 
         if stage_only:
@@ -613,10 +623,16 @@ def handle_run_now(
     branch_head_sha = pr.get("head", {}).get("sha")
     ci_run = client.get_latest_run("ci.yml", branch=branch, head_sha=branch_head_sha)
     if not ci_run or ci_run.get("status") != "completed":
-        now_iso = datetime.now(timezone.utc).isoformat()
-        if not ci_run:
+        if not ci_run and not ci_dispatch_iso:
+            ci_dispatch_iso = datetime.now(timezone.utc).isoformat()
             client.dispatch("ci.yml", ref=branch)
-        ci_run = client.poll_workflow("ci.yml", branch=branch, head_sha=branch_head_sha, dispatched_after_iso=now_iso, max_wait_seconds=900)
+        ci_run = client.poll_workflow(
+            "ci.yml",
+            branch=branch,
+            head_sha=branch_head_sha,
+            dispatched_after_iso=ci_dispatch_iso,
+            max_wait_seconds=900,
+        )
 
     if ci_run.get("conclusion") != "success":
         raise RuntimeError(f"Candidate PR #{pr['number']} CI failed on branch {branch}: {ci_run.get('conclusion')}")
