@@ -1894,7 +1894,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "9bb9dc8e0c77846ad2daf411e89be93a8eacd04d7a88418125b98c91f7ef8d16",
+      "definition_sha256": "109d37b35810d8d1bae8bba04074b769c8d0fe4f88f85c4f41189b40ef7c4f97",
       "resources": [
         "cloudflare.account",
         "github.dispatch",
@@ -2020,6 +2020,7 @@
           ".github/workflows/kesher-article-worker.yml",
           ".github/workflows/kesher-daily-video.yml",
           ".github/workflows/kesher-media-worker.yml",
+          ".github/workflows/kesher-publish-request.yml",
           ".github/workflows/kesher-short-v4.yml",
           ".github/workflows/normalize-article-pr.yml"
         ],
@@ -4439,7 +4440,7 @@
         "read",
         "workflow_dispatch"
       ],
-      "definition_sha256": "dbd5d69f59e9263e39fafaa4bd4111eec128bb37f8041e0f5fb74af37ab04da3",
+      "definition_sha256": "a1705b8f4aa5fdd9de67639f1820513eae6815c40391ca6f66270650951a9283",
       "resources": [
         "github.dispatch",
         "github.issues",
