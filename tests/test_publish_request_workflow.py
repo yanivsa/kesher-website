@@ -25,8 +25,14 @@ class PublishRequestWorkflowTests(unittest.TestCase):
         for expected in ("daily", "run_now", "resume", "audit", "repair"):
             self.assertIn(expected, allowed_actions)
 
-        # Single Scheduler policy: Must NOT contain any schedule triggers
-        self.assertNotIn("schedule", on_block)
+        # The reviewed 01:00 owner schedule is the sole direct nightly entrypoint
+        # to this publisher. A read-only duplicate guard must gate its execution.
+        self.assertEqual(
+            on_block["schedule"],
+            [{"cron": "0 1 * * *", "timezone": "Asia/Jerusalem"}],
+        )
+        self.assertIn("steps.scheduled_guard.outputs.allow == 'true'",
+                      self.workflow_path.read_text(encoding="utf-8"))
         self.assertNotIn("push", on_block)
 
     def test_client_headers(self):
