@@ -255,6 +255,92 @@ class PublishRequestWorkflowTests(unittest.TestCase):
         self.assertTrue(res["slug"])
         self.assertTrue(res["article_url"].startswith("https://kesher.saharoni.com/blog/"))
 
+    def test_extract_video_state_rejection_allows_retry(self):
+        import io
+        import zipfile
+        from unittest.mock import MagicMock
+
+        state_data = {
+            "version": 1,
+            "items": [
+                {
+                    "id": "video-attempt-1",
+                    "status": "rejected",
+                    "technical_reasons": ["Detected male voice pitch"],
+                    "failure_signature": "wrong_narrator_gender",
+                    "source": {"slug": "test-slug"},
+                }
+            ],
+        }
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w") as z:
+            z.writestr("state.json", json.dumps(state_data))
+
+        mock_client = MagicMock()
+        mock_client.get_run_artifact_zip.return_value = buf.getvalue()
+
+        item_id, yt_id = publisher.extract_video_state(mock_client, 12345, "test-slug")
+        self.assertEqual(item_id, "video-attempt-1")
+        self.assertEqual(yt_id, "")
+
+    def test_extract_video_state_uploaded(self):
+        import io
+        import zipfile
+        from unittest.mock import MagicMock
+
+        state_data = {
+            "version": 1,
+            "items": [
+                {
+                    "id": "video-attempt-1",
+                    "status": "rejected",
+                    "source": {"slug": "test-slug"},
+                },
+                {
+                    "id": "video-attempt-2",
+                    "status": "uploaded",
+                    "youtube_id": "yt-real-id-999",
+                    "source": {"slug": "test-slug"},
+                },
+            ],
+        }
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w") as z:
+            z.writestr("state.json", json.dumps(state_data))
+
+        mock_client = MagicMock()
+        mock_client.get_run_artifact_zip.return_value = buf.getvalue()
+
+        item_id, yt_id = publisher.extract_video_state(mock_client, 12345, "test-slug")
+        self.assertEqual(item_id, "video-attempt-2")
+        self.assertEqual(yt_id, "yt-real-id-999")
+
+    def test_extract_short_state_rejection_allows_retry(self):
+        import io
+        import zipfile
+        from unittest.mock import MagicMock
+
+        state_data = {
+            "version": 1,
+            "items": [
+                {
+                    "id": "short-attempt-1",
+                    "status": "rejected",
+                    "technical_reasons": ["Voice retry"],
+                    "source": {"slug": "test-slug"},
+                }
+            ],
+        }
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w") as z:
+            z.writestr("state.json", json.dumps(state_data))
+
+        mock_client = MagicMock()
+        mock_client.get_run_artifact_zip.return_value = buf.getvalue()
+
+        yt_id = publisher.extract_short_state(mock_client, 12345, "test-slug")
+        self.assertEqual(yt_id, "")
+
 
 if __name__ == "__main__":
     unittest.main()

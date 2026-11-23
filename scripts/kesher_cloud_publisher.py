@@ -350,7 +350,7 @@ def extract_video_state(client: GitHubActionsClient, run_id: int, slug: str) -> 
     raw_zip = client.get_run_artifact_zip(run_id, "kesher-video-controller-state")
     with zipfile.ZipFile(io.BytesIO(raw_zip)) as z:
         data = json.loads(z.read("state.json").decode("utf-8"))
-    for item in data.get("items", []):
+    for item in reversed(data.get("items", [])):
         item_slug = str((item.get("source") or {}).get("slug") or item.get("slug") or "")
         if item_slug == slug:
             status = item.get("status")
@@ -360,8 +360,9 @@ def extract_video_state(client: GitHubActionsClient, run_id: int, slug: str) -> 
                 if item_id and yt_id:
                     return item_id, yt_id
             elif status in ("rejected", "failed"):
-                reason = item.get("rejection_reason") or "unknown"
-                raise RuntimeError(f"VIDEO_REJECTED_OR_FAILED: {status} ({reason})")
+                reason = item.get("rejection_reason") or item.get("technical_reasons") or item.get("failure_signature") or "unknown"
+                print(f"Notice: video item {item_id} status is {status} ({reason}); will retry in next cycle")
+                return item_id, ""
             else:
                 return item_id, ""
     raise RuntimeError(f"NO_VIDEO_ITEM_FOUND_IN_RUN_{run_id}_FOR_{slug}")
@@ -371,15 +372,16 @@ def extract_short_state(client: GitHubActionsClient, run_id: int, slug: str) -> 
     raw_zip = client.get_run_artifact_zip(run_id, "kesher-short-v4-controller-state")
     with zipfile.ZipFile(io.BytesIO(raw_zip)) as z:
         data = json.loads(z.read("state.json").decode("utf-8"))
-    for item in data.get("items", []):
+    for item in reversed(data.get("items", [])):
         item_slug = str((item.get("source") or {}).get("slug") or item.get("slug") or "")
         if item_slug == slug:
             status = str(item.get("status") or "")
             if item.get("uploaded") is True and item.get("youtube_id"):
                 return str(item.get("youtube_id"))
             if status in ("rejected", "failed"):
-                reason = item.get("rejection_reason") or "unknown"
-                raise RuntimeError(f"SHORT_REJECTED_OR_FAILED: {status} ({reason})")
+                reason = item.get("rejection_reason") or item.get("technical_reasons") or item.get("failure_signature") or "unknown"
+                print(f"Notice: short item status is {status} ({reason}); will retry in next cycle")
+                return ""
             return ""
     raise RuntimeError(f"NO_SHORT_ITEM_FOUND_IN_RUN_{run_id}_FOR_{slug}")
 
