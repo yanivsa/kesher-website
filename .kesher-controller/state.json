@@ -58,7 +58,7 @@
     "quality_content_sha256": "244213e59bf25c3c4b6b240adc3e6bdc88a590a15b02413b394929ad8e78ad7c",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-23T08:45:54.557421+00:00",
+    "quality_checked_at": "2026-11-23T08:50:46.939793+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-11-21T17:05:48.122864+00:00",
@@ -1778,18 +1778,9 @@
     "stage": "article",
     "code": "DEPLOY_ATTEMPTS_EXHAUSTED",
     "message": "Article deployment exhausted maximum allowed attempts (5)",
-    "at": "2026-11-23T08:45:57.859673+00:00"
+    "at": "2026-11-23T08:50:49.736800+00:00"
   },
   "history": [
-    {
-      "at": "2026-11-23T00:25:50.068016+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
     {
       "at": "2026-11-23T00:30:50.710897+00:00",
       "from": "article_needed",
@@ -2668,9 +2659,18 @@
       "details": {
         "message": "Article deployment exhausted maximum allowed attempts (5)"
       }
+    },
+    {
+      "at": "2026-11-23T08:50:49.736816+00:00",
+      "from": "article_needed",
+      "to": "blocked",
+      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "Article deployment exhausted maximum allowed attempts (5)"
+      }
     }
   ],
-  "updated_at": "2026-11-23T08:45:57.859693+00:00",
+  "updated_at": "2026-11-23T08:50:49.736821+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
