@@ -1,8 +1,12 @@
 name: Kesher Publish Request
 run-name: >-
-  ${{ github.event_name == 'issues' && format('Kesher Publish from Issue #{0}: {1}', github.event.issue.number, github.event.issue.title) || format('Kesher Publish ({0}) - {1}', inputs.action, inputs.slot || 'today') }}
+  ${{ github.event_name == 'schedule' && 'Kesher Publish (daily) - 01:00 Israel' || (github.event_name == 'issues' && format('Kesher Publish from Issue #{0}: {1}', github.event.issue.number, github.event.issue.title) || format('Kesher Publish ({0}) - {1}', inputs.action, inputs.slot || 'today')) }}
 
 "on":
+  # Native IANA scheduling fires once per local day through winter/summer time.
+  schedule:
+    - cron: "0 1 * * *"
+      timezone: "Asia/Jerusalem"
   workflow_dispatch:
     inputs:
       action:
@@ -73,7 +77,8 @@ jobs:
   publish:
     if: >-
       ${{ github.repository == 'yanivsa/kesher-website' &&
-          (github.event_name == 'workflow_dispatch' ||
+          (github.event_name == 'schedule' ||
+           github.event_name == 'workflow_dispatch' ||
            (github.event_name == 'issues' &&
             (contains(github.event.issue.title, '[Publish]') ||
              contains(github.event.issue.title, '[publish]') ||
@@ -130,16 +135,17 @@ jobs:
           import os, re
 
           event = os.environ.get("EVENT_NAME")
-          if event == "workflow_dispatch":
-              action = os.environ.get("INPUT_ACTION") or "daily"
-              slot = os.environ.get("INPUT_SLOT") or ""
-              topic_brief = os.environ.get("INPUT_TOPIC_BRIEF") or ""
-              idea_id = os.environ.get("INPUT_IDEA_ID") or ""
-              primary_keyword = os.environ.get("INPUT_PRIMARY_KEYWORD") or ""
-              article_json = os.environ.get("INPUT_ARTICLE_JSON") or ""
-              target_slug = os.environ.get("INPUT_TARGET_SLUG") or ""
-              stage_only = os.environ.get("INPUT_STAGE_ONLY") or "false"
-              dry_run = os.environ.get("INPUT_DRY_RUN") or "false"
+          if event in ("workflow_dispatch", "schedule"):
+              is_scheduled = event == "schedule"
+              action = "daily" if is_scheduled else (os.environ.get("INPUT_ACTION") or "daily")
+              slot = "" if is_scheduled else (os.environ.get("INPUT_SLOT") or "")
+              topic_brief = "" if is_scheduled else (os.environ.get("INPUT_TOPIC_BRIEF") or "")
+              idea_id = "" if is_scheduled else (os.environ.get("INPUT_IDEA_ID") or "")
+              primary_keyword = "" if is_scheduled else (os.environ.get("INPUT_PRIMARY_KEYWORD") or "")
+              article_json = "" if is_scheduled else (os.environ.get("INPUT_ARTICLE_JSON") or "")
+              target_slug = "" if is_scheduled else (os.environ.get("INPUT_TARGET_SLUG") or "")
+              stage_only = "false" if is_scheduled else (os.environ.get("INPUT_STAGE_ONLY") or "false")
+              dry_run = "false" if is_scheduled else (os.environ.get("INPUT_DRY_RUN") or "false")
               issue_number = ""
           else:
               title = (os.environ.get("ISSUE_TITLE") or "").strip()
@@ -210,7 +216,57 @@ jobs:
           gh issue comment "$ISSUE_NUM" --body "🚀 **מחזור פרסום ענני הופעל אוטונומית** עבור: **$TOPIC**
           מעקב ריצה: https://github.com/${{ github.repository }}/actions/runs/$RUN_ID"
 
+      - name: Guard nightly slot against in-flight publishing and unmerged candidate
+        if: ${{ github.event_name == 'schedule' }}
+        id: scheduled_guard
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import subprocess
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+
+          repo = os.environ["REPO"]
+          slot = datetime.now(ZoneInfo("Asia/Jerusalem")).date().isoformat()
+
+          def get_json(endpoint):
+              # Any API failure fails the job closed, rather than risking a duplicate.
+              raw = subprocess.check_output(
+                  ["gh", "api", f"/repos/{repo}/{endpoint}"], text=True, timeout=45
+              )
+              return json.loads(raw)
+
+          prs = get_json("pulls?state=open&per_page=100")
+          pending_today = [
+              p["number"] for p in prs
+              if (p.get("head") or {}).get("ref", "").startswith("content/kesher-")
+              and f"Publication slot: `{slot}`" in (p.get("body") or "")
+          ]
+          runs = get_json("actions/workflows/kesher-publish-request.yml/runs?per_page=100")
+          in_flight = [
+              r["id"] for r in runs.get("workflow_runs", [])
+              if int(r.get("id") or 0) != int(os.environ["RUN_ID"])
+              and r.get("status") in {"queued", "in_progress", "waiting", "requested", "pending"}
+          ]
+
+          allow = not pending_today and not in_flight
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"allow={'true' if allow else 'false'}\n")
+              out.write(f"slot={slot}\n")
+          if not allow:
+              print(f"::notice::Nightly slot {slot}: no duplicate launch; "
+                    f"open candidate PRs={pending_today}; active publish runs={in_flight}.")
+          else:
+              print(f"Nightly slot {slot}: admitted to canonical daily publisher.")
+          PY
+
       - name: Execute Kesher Cloud Publisher
+        if: ${{ github.event_name != 'schedule' || steps.scheduled_guard.outputs.allow == 'true' }}
         id: publisher
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -218,7 +274,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           ACTION: ${{ steps.params.outputs.action }}
-          SLOT: ${{ steps.params.outputs.slot }}
+          SLOT: ${{ github.event_name == 'schedule' && steps.scheduled_guard.outputs.slot || steps.params.outputs.slot }}
           TOPIC_BRIEF: ${{ steps.params.outputs.topic_brief }}
           IDEA_ID: ${{ steps.params.outputs.idea_id }}
           PRIMARY_KEYWORD: ${{ steps.params.outputs.primary_keyword }}
