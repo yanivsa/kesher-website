@@ -29,6 +29,11 @@ from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
+SCRIPTS_DIR = ROOT / "scripts"
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
 POSTS_FILE = ROOT / "src" / "data" / "posts.json"
 RECENT_POSTS_FILE = ROOT / "src" / "data" / "postsRecent.json"
 FALLBACK_MANIFEST = ROOT / "public" / "images" / "fallback" / "manifest.json"
@@ -472,6 +477,12 @@ def validate_article_candidate(post: dict[str, Any]) -> None:
     latin = re.findall(r"[A-Za-z]+", visible)
     if latin:
         raise ValueError(f"ARTICLE_FORBIDDEN_LATIN_PROSE: found Latin tokens in visible body: {latin[:5]}")
+
+    # Publication-grade contract: internal blog links (>=3), service link, PubMed evidence, claims
+    from scripts.article_claim_quality import full_article_violations
+    violations = full_article_violations(post)
+    if violations:
+        raise ValueError(f"ARTICLE_QUALITY_VIOLATIONS: {violations}")
 
 
 def generate_article(

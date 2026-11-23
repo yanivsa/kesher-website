@@ -4438,7 +4438,7 @@
         "read",
         "workflow_dispatch"
       ],
-      "definition_sha256": "058673e411774e53bebf13f97cbdd95e7b166a63eee55f8060cc30becab9a2de",
+      "definition_sha256": "51bddfb71b73e6a26236654d710a4d8ef3f1d2c4067380a51bf7f11e03298aad",
       "resources": [
         "github.dispatch",
         "github.pull_requests",
@@ -4449,7 +4449,7 @@
       "review": {
         "call_chain": {
           "scripts/kesher_cloud_publisher.py": "e4b91ff02a3aa4ec791c91ef1d959da9c7796a40ef7142d8eee280fe27232b54",
-          "scripts/kesher_cloud_article_generator.py": "8e5a17598374c1b45c7ae8249c0d1462ba584ef032e426ec5e3cfcad33498f3a",
+          "scripts/kesher_cloud_article_generator.py": "5d1cd3f9e4f0ef6634813f90de3e5835e3df0100624e249b0041a5b399f8112f",
           "scripts/kesher_cloud_supervisor.py": "2db2dd87565b9cadeaabf06d112a95585e710c18bec4d20559634698e7bdc930",
           "scripts/kesher_controller_repair.py": "cca61d88287112c3274053784a57816340a264a0b2c793afd5491319bad712df"
         },
