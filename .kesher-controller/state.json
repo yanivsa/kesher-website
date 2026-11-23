@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-11-08",
-  "status": "blocked",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -58,7 +58,7 @@
     "quality_content_sha256": "244213e59bf25c3c4b6b240adc3e6bdc88a590a15b02413b394929ad8e78ad7c",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-23T05:43:43.658868+00:00",
+    "quality_checked_at": "2026-11-23T05:45:46.625735+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-11-21T17:05:48.122864+00:00",
@@ -1774,22 +1774,8 @@
       "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-29"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "DEPLOY_ATTEMPTS_EXHAUSTED",
-    "message": "Article deployment exhausted maximum allowed attempts (5)",
-    "at": "2026-11-23T05:43:46.073024+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-11-22T21:35:51.709184+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
     {
       "at": "2026-11-22T21:40:47.047269+00:00",
       "from": "article_needed",
@@ -2671,9 +2657,15 @@
       "details": {
         "message": "Article deployment exhausted maximum allowed attempts (5)"
       }
+    },
+    {
+      "at": "2026-11-23T05:45:48.675766+00:00",
+      "from": "article_needed",
+      "to": "article_deploying",
+      "reason": "deployment already active"
     }
   ],
-  "updated_at": "2026-11-23T05:43:46.073043+00:00",
+  "updated_at": "2026-11-23T05:45:48.675790+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
