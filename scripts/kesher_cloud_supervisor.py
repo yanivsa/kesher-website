@@ -30,6 +30,8 @@ from pathlib import Path
 from typing import Any
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
+if str(PROJECT_DIR) not in sys.path:
+    sys.path.insert(0, str(PROJECT_DIR))
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
 POSTS_RECENT_FILE = PROJECT_DIR / "src" / "data" / "postsRecent.json"
 ARTICLE_VIDEOS_FILE = PROJECT_DIR / "src" / "data" / "articleVideos.json"
