@@ -329,13 +329,14 @@ class ControllerRepairTests(unittest.TestCase):
         self.assertTrue(seen[0].endswith("ref=" + "a" * 40))
         self.assertTrue(seen[1].endswith("ref=" + "b" * 40))
 
-    def test_daily_cron_has_target_minute_for_both_israel_offsets(self):
+    def test_daily_cron_uses_native_israel_timezone_for_both_dst_offsets(self):
         from pathlib import Path
         import yaml
         path = Path(__file__).resolve().parents[1] / ".github/workflows/kesher-content-controller.yml"
         data = yaml.safe_load(path.read_text())
-        crons = [s["cron"] for s in data.get("on", data.get(True))["schedule"]]
-        self.assertIn("35 21,22 * * *", crons)
+        schedules = data.get("on", data.get(True))["schedule"]
+        self.assertIn({"cron": "0 1 * * *", "timezone": "Asia/Jerusalem"}, schedules)
+        self.assertNotIn("35 21,22 * * *", [item["cron"] for item in schedules])
 
     def test_workflow_invokes_coordinator_after_controller_failure(self):
         from pathlib import Path
