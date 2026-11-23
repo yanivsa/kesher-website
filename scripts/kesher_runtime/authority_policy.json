@@ -4439,7 +4439,7 @@
         "read",
         "workflow_dispatch"
       ],
-      "definition_sha256": "a1705b8f4aa5fdd9de67639f1820513eae6815c40391ca6f66270650951a9283",
+      "definition_sha256": "dbd5d69f59e9263e39fafaa4bd4111eec128bb37f8041e0f5fb74af37ab04da3",
       "resources": [
         "github.dispatch",
         "github.issues",
