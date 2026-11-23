@@ -965,7 +965,10 @@ def main():
     article_json = None
     if args.article_json:
         raw = args.article_json.strip()
-        if Path(raw).is_file():
+        # Inline JSON must not be probed as a filesystem path (ENAMETOOLONG).
+        if raw.startswith(("{", "[")):
+            article_json = json.loads(raw)
+        elif Path(raw).is_file():
             article_json = json.loads(Path(raw).read_text(encoding="utf-8"))
         else:
             article_json = json.loads(raw)
