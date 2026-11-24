@@ -296,13 +296,36 @@ jobs:
               if r.get("status") in {"queued", "in_progress", "waiting", "requested", "pending"}
           ]
 
-          allow = not candidates and not in_flight
+          # A merged article may already occupy the slot even when there is no
+          # open PR or running publisher. Read both canonical catalogs from
+          # the same immutable main revision; an unreadable catalog blocks launch.
+          main_sha = get_json("branches/main")["commit"]["sha"]
+          occupied = set()
+          for path in ("src/data/posts.json", "src/data/postsRecent.json"):
+              raw = subprocess.check_output(
+                  ["gh", "api", "-H", "Accept: application/vnd.github.raw+json",
+                   f"/repos/{repo}/contents/{path}?ref={main_sha}"],
+                  text=True, timeout=45,
+              )
+              posts = json.loads(raw)
+              if not isinstance(posts, list) or any(
+                  not isinstance(p, dict) or not isinstance(p.get("date"), str)
+                  for p in posts
+              ):
+                  raise ValueError(f"Invalid article catalog: {path}")
+              occupied.update(
+                  p.get("slug") or p.get("id") or "<unknown>"
+                  for p in posts if p["date"] == slot
+              )
+
+          allow = not candidates and not in_flight and not occupied
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
               out.write(f"allow={'true' if allow else 'false'}\n")
               out.write(f"slot={slot}\n")
           if not allow:
               print(f"::notice::Slot {slot} already underway; "
-                    f"PRs={candidates} active publisher runs={in_flight}.")
+                    f"PRs={candidates} active publisher runs={in_flight} "
+                    f"catalog articles={sorted(occupied)}.")
           else:
               print(f"Slot {slot}: safe to dispatch existing canonical daily publisher.")
           PY
