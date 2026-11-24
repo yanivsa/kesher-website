@@ -353,8 +353,11 @@ def synthesize_article_from_brief(
             slug = f"guidance-{digest}"
 
     # Anti-collision check
-    if slug in slugs:
-        slug = f"{slug}-{len(posts or []) + 1}"
+    base_slug = slug
+    collision_counter = len(posts or []) + 1
+    while slug.lower() in slugs:
+        slug = f"{base_slug}-{collision_counter}"
+        collision_counter += 1
 
     # Determine topic domain
     is_couples = any(w in topic_brief for w in ("זוג", "נישוא", "דייט", "רווק", "קשר", "אינטימיות", "ריחוק", "שתיקה"))
@@ -365,6 +368,11 @@ def synthesize_article_from_brief(
     evidence_key = "couples_communication" if is_couples else "parenting_cooperation"
 
     title = f"איך להתמודד עם {keyword}? מדריך מעשי לחיזוק הקשר"
+    base_title = title
+    title_counter = 2
+    while title.lower() in titles:
+        title = f"{base_title} (חלק {title_counter})"
+        title_counter += 1
     excerpt = f"מדריך מקצועי ומעשי מאת שירה סהרוני: כלים להתמודדות עם {keyword}, הבנת שורש הקושי ובניית תקשורת בטוחה ומקרבת בבית."
     direct_answer = f"התמודדות אפקטיבית עם {keyword} דורשת מעבר משיפוטיות להקשבה עמוקה, זיהוי הצרכים הרגשיים שמתחת למשטח והצבת גבולות רגועים ועקביים. כאשר יוצרים מרחב של ביטחון, הקושי הופך להזדמנות לצמיחה ולחיבור הדדי."
 
@@ -424,9 +432,27 @@ def select_original_topic(
             return candidate
 
     # 3. Dynamic synthesis if reservoir exhausted
+    fallback_topics = [
+        ("חיזוק שיתוף פעולה ותקשורת רגועה בבית מול אתגרי היומיום", "שיתוף פעולה ותקשורת"),
+        ("הצבת גבולות רגועים ועקביים לילדים בלי צעקות", "גבולות ללא צעקות"),
+        ("איך להתמודד עם ריחוק רגשי ושחיקה בזוגיות", "התקרבות ושחיקה בזוגיות"),
+        ("התמודדות עם התפרצויות זעם ותסכול אצל ילדים", "ויסות תסכול והתפרצויות"),
+        ("ניהול שגרת בוקר רגועה בלי לחץ ועצבים", "שגרת בוקר רגועה"),
+        ("תקשורת מקרבת עם מתבגרים ובניית אמון הדדי", "תקשורת עם מתבגרים"),
+    ]
+    for brief, kw in fallback_topics:
+        cand = synthesize_article_from_brief(
+            brief,
+            primary_keyword=kw,
+            idea_id=requested_id,
+            posts=posts,
+        )
+        if cand["slug"].lower() not in slugs and cand["title"].lower() not in titles:
+            return cand
+
     return synthesize_article_from_brief(
-        "חיזוק שיתוף פעולה ותקשורת רגועה בבית מול אתגרי היומיום",
-        primary_keyword="שיתוף פעולה ותקשורת",
+        fallback_topics[0][0],
+        primary_keyword=fallback_topics[0][1],
         idea_id=requested_id,
         posts=posts,
     )

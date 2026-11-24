@@ -311,6 +311,7 @@ jobs:
         if: ${{ steps.guard.outputs.allow == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           SLOT: ${{ steps.guard.outputs.slot }}
         run: |
           gh workflow run kesher-publish-request.yml --ref main \
