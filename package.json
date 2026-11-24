@@ -72,7 +72,7 @@
     "remotion": "^4.0.506",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.1",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.12"
   },
   "overrides": {
     "js-yaml": "^4.3.2"
