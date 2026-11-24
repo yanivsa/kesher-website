@@ -8,8 +8,8 @@
     "still": "remotion still src/index.ts KesherVideo ../remotion-output/kesher-remotion-frame.png --frame=120"
   },
   "dependencies": {
-    "@remotion/cli": "^4.0.486",
-    "@remotion/media": "^4.0.387",
+    "@remotion/cli": "^4.0.546",
+    "@remotion/media": "^4.0.546",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "remotion": "^4.0.387"
