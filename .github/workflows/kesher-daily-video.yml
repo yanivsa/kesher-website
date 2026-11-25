@@ -30,7 +30,7 @@ jobs:
           profile = Path(os.environ["NOTEBOOKLM_HOME"]) / "profiles" / "default"
           profile.mkdir(parents=True)
           for secret, name in (("NOTEBOOKLM_STORAGE_STATE_SECRET", "storage_state.json"),
-                               ("NOTEBOOKLM_MASTER_TOKEN_SECRET", "google-oauth2.json")):
+                               ("NOTEBOOKLM_MASTER_TOKEN_SECRET", "master_token.json")):
               value = os.environ.get(secret)
               if value:
                   (profile / name).write_text(json.dumps(json.loads(value)))
