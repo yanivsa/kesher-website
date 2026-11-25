@@ -58,7 +58,7 @@
     "quality_content_sha256": "244213e59bf25c3c4b6b240adc3e6bdc88a590a15b02413b394929ad8e78ad7c",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-11-25T15:40:47.960049+00:00",
+    "quality_checked_at": "2026-11-25T15:55:59.251181+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-11-21T17:05:48.122864+00:00",
@@ -1775,30 +1775,12 @@
     }
   ],
   "last_error": {
-    "stage": "article",
-    "code": "DEPLOY_ATTEMPTS_EXHAUSTED",
-    "message": "Article deployment exhausted maximum allowed attempts (5)",
-    "at": "2026-11-25T15:40:50.735470+00:00"
+    "stage": "controller",
+    "code": "GITHUB_MUTATION_UNCERTAIN",
+    "message": "GITHUB_MUTATION_UNCERTAIN: PUT https://api.github.com/repos/yanivsa/kesher-website/contents/.kesher-controller/state.json HTTP 500; reconcile before retry",
+    "at": "2026-11-25T15:56:06.115762+00:00"
   },
   "history": [
-    {
-      "at": "2026-11-25T07:30:46.791899+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
-    {
-      "at": "2026-11-25T07:35:46.786670+00:00",
-      "from": "article_needed",
-      "to": "blocked",
-      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Article deployment exhausted maximum allowed attempts (5)"
-      }
-    },
     {
       "at": "2026-11-25T07:40:48.424568+00:00",
       "from": "article_needed",
@@ -2680,9 +2662,27 @@
       "details": {
         "message": "Article deployment exhausted maximum allowed attempts (5)"
       }
+    },
+    {
+      "at": "2026-11-25T15:56:05.348437+00:00",
+      "from": "article_needed",
+      "to": "blocked",
+      "reason": "DEPLOY_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "Article deployment exhausted maximum allowed attempts (5)"
+      }
+    },
+    {
+      "at": "2026-11-25T15:56:06.115781+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "GITHUB_MUTATION_UNCERTAIN",
+      "details": {
+        "message": "GITHUB_MUTATION_UNCERTAIN: PUT https://api.github.com/repos/yanivsa/kesher-website/contents/.kesher-controller/state.json HTTP 500; reconcile before retry"
+      }
     }
   ],
-  "updated_at": "2026-11-25T15:40:50.735491+00:00",
+  "updated_at": "2026-11-25T15:56:06.115828+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
