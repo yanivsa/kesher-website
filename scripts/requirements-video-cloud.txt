@@ -1,4 +1,4 @@
-notebooklm-py[headless] @ git+https://github.com/teng-lin/notebooklm-py.git@8fb61cb125be9f59dfe163561e355922967c604a
+notebooklm-py[headless] @ git+https://github.com/teng-lin/notebooklm-py.git@956400aa7af6b61b4cb988a24c9a081a3abc4ee8
 faster-whisper==1.2.1
 av<19
 requests==2.33.0
