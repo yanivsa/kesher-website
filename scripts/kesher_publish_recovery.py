@@ -85,7 +85,10 @@ def unstarted_receipt(run, jobs, issue_for):
     data = dict(request_root=str(run['id']), request_issue='', recovery_attempt=0,
                 status='error', contract_complete=False, dry_run=False, stage_only=False)
     daily = re.fullmatch(r'Kesher Publish \(daily\) - (\d{4}-\d{2}-\d{2})', title)
-    if run.get('event') == 'workflow_dispatch' and daily:
+    # Without a receipt, the dispatch inputs are unavailable. Only the
+    # existing scheduler's bot dispatch is known to be live, not a manual
+    # dry-run or staging request with the same run name.
+    if run.get('event') == 'workflow_dispatch' and daily and (run.get('actor') or {}).get('login') == 'github-actions[bot]':
         return dict(data, action='daily', slot=daily.group(1))
     match = ISSUE_TITLE.match(title)
     if run.get('event') != 'issues' or not match:
@@ -280,7 +283,10 @@ def main():
             print('::notice::Issue remains open: no complete three-link receipt.')
             subprocess.run(['gh', 'issue', 'comment', args.issue, '--repo', repo, '--body',
                 f'טרם הושלם חוזה הפרסום המלא. הבקשה נשארת פתוחה. ריצה: https://github.com/{repo}/actions/runs/{os.environ["GITHUB_RUN_ID"]}'], check=True)
-            if os.environ.get('PUBLISH_OUTCOME') == 'success' and data.get('action') in {'daily', 'run_now', 'resume'} and not (data.get('stage_only') or data.get('dry_run')):
+            if os.environ.get('PUBLISH_OUTCOME') == 'success' and (
+                not isinstance(data, dict) or not data.get('action') or
+                (data.get('action') in {'daily', 'run_now', 'resume'} and not (data.get('stage_only') is True or data.get('dry_run') is True))
+            ):
                 return 1
         return 0
     client = GitHubActionsClient(os.environ['GH_TOKEN'], repo)
@@ -319,8 +325,8 @@ def main():
                     raise ValueError('RECOVERY_PARENT_SUPERSEDED')
         if identity['action'] == 'daily':
             occupied, candidates = catalog_and_candidates(repo, identity['slot'])
-            if occupied or candidates:
-                raise ValueError('RECOVERY_PLANNING_SLOT_ALREADY_OCCUPIED')
+            if candidates:
+                raise ValueError('RECOVERY_PLANNING_SLOT_HAS_OPEN_CANDIDATE')
         if identity['action'] == 'resume' and isinstance(receipt.get('candidate_post'), dict):
             path = Path(os.environ['RUNNER_TEMP']) / 'kesher-recovery-candidate.json'
             path.write_text(json.dumps(receipt['candidate_post'], ensure_ascii=False), encoding='utf-8')
@@ -339,7 +345,8 @@ def main():
     # The scheduled 01:00 request is retried on a later canonical tick if it
     # was blocked by an in-flight IssueOps request. It never starts a second
     # article for a populated slot or an open candidate.
-    daily_seen = any(r.get('display_title') == f'Kesher Publish (daily) - {slot}' for r in runs)
+    daily_seen = any(r.get('display_title') == f'Kesher Publish (daily) - {slot}'
+                     and (r.get('actor') or {}).get('login') == 'github-actions[bot]' for r in runs)
     if local.hour >= 1 and not occupied and not candidates and not daily_seen:
         output({'allow': 'true', 'slot': slot, 'recovery_run_id': ''})
         return 0
@@ -348,8 +355,8 @@ def main():
         run_id, identity = choice
         if identity['action'] == 'daily':
             old_occupied, old_candidates = catalog_and_candidates(repo, identity['slot'])
-            if old_occupied or old_candidates:
-                output({'allow': 'false', 'reason': 'planning_slot_occupied'})
+            if old_candidates:
+                output({'allow': 'false', 'reason': 'planning_slot_has_open_candidate'})
                 return 0
         output({'allow': 'true', 'slot': identity['slot'], 'recovery_run_id': run_id})
         return 0

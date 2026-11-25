@@ -916,6 +916,8 @@ def handle_resume(
     source_sha = source_metadata(candidate)["content_sha256"]
     if expected_source_sha and source_sha != expected_source_sha:
         raise RuntimeError("RECOVERY_PUBLISHED_SOURCE_CHANGED")
+    if checkpoint:
+        checkpoint(slug=slug, source_sha256=source_sha, phase="published_article")
     audit = run_supervisor_audit(slot, target_slug=slug)
     if audit["complete"]:
         print(f"Triad for {slot} is already complete.")
@@ -924,8 +926,6 @@ def handle_resume(
         return {"action": "resume", "slot": slot, "status": "dry_run_or_no_client", "contract_complete": False}
 
     article_url = f"https://kesher.saharoni.com/blog/{slug}"
-    if checkpoint:
-        checkpoint(slug=slug, source_sha256=source_sha, phase="published_article")
 
     # Step 1: Ensure article is live
     try:
