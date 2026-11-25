@@ -248,64 +248,34 @@ jobs:
     needs: [canonical_tick, control]
     if: >-
       ${{ always() && github.repository == 'yanivsa/kesher-website' &&
-          github.ref == 'refs/heads/main' && github.event_name == 'schedule' &&
-          github.event.schedule == '0 1 * * *' &&
+          github.ref == 'refs/heads/main' &&
+          (github.event_name == 'schedule' ||
+           (github.event_name == 'workflow_dispatch' && !inputs.canonical_tick && !inputs.run_now &&
+            inputs.request_id == '' && inputs.request_json == '' && inputs.child_workflow == '' &&
+            inputs.child_run_id == '' && inputs.source_slug == '' && inputs.slot == '' &&
+            inputs.idea_id == '' && inputs.topic_brief == '')) &&
           (vars.KESHER_CUTOVER_GATEWAY_URL == '' ||
            vars.KESHER_SCHEMA6_SCHEDULE_ENABLED == 'true') &&
-          needs.canonical_tick.result != 'failure' &&
-          needs.control.result != 'failure' }}
+          needs.canonical_tick.result != 'failure' && needs.canonical_tick.result != 'cancelled' &&
+          needs.control.result != 'failure' && needs.control.result != 'cancelled' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       contents: read
       actions: write
       pull-requests: read
+      issues: read
     steps:
+      - name: Checkout reviewed recovery coordinator
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
       - name: Ensure no duplicate KESHER daily request is in flight
         id: guard
         env:
           GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-        run: |
-          python3 - <<'PY'
-          import json
-          import os
-          import subprocess
-          from datetime import datetime
-          from zoneinfo import ZoneInfo
-
-          repo = os.environ["REPO"]
-          slot = datetime.now(ZoneInfo("Asia/Jerusalem")).date().isoformat()
-
-          def get_json(endpoint):
-              # Fail closed if GitHub cannot prove that a launch is safe.
-              raw = subprocess.check_output(
-                  ["gh", "api", f"/repos/{repo}/{endpoint}"], text=True, timeout=45
-              )
-              return json.loads(raw)
-
-          prs = get_json("pulls?state=open&per_page=100")
-          candidates = [
-              p["number"] for p in prs
-              if (p.get("head") or {}).get("ref", "").startswith("content/kesher-")
-              and f"Publication slot: `{slot}`" in (p.get("body") or "")
-          ]
-          runs = get_json("actions/workflows/kesher-publish-request.yml/runs?per_page=100")
-          in_flight = [
-              r["id"] for r in runs.get("workflow_runs", [])
-              if r.get("status") in {"queued", "in_progress", "waiting", "requested", "pending"}
-          ]
-
-          allow = not candidates and not in_flight
-          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
-              out.write(f"allow={'true' if allow else 'false'}\n")
-              out.write(f"slot={slot}\n")
-          if not allow:
-              print(f"::notice::Slot {slot} already underway; "
-                    f"PRs={candidates} active publisher runs={in_flight}.")
-          else:
-              print(f"Slot {slot}: safe to dispatch existing canonical daily publisher.")
-          PY
+        run: python3 scripts/kesher_publish_recovery.py select
 
       - name: Dispatch KESHER canonical daily publishing request
         if: ${{ steps.guard.outputs.allow == 'true' }}
@@ -313,7 +283,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           SLOT: ${{ steps.guard.outputs.slot }}
+          RECOVERY_RUN_ID: ${{ steps.guard.outputs.recovery_run_id }}
         run: |
-          gh workflow run kesher-publish-request.yml --ref main \
-            -f action=daily -f slot="$SLOT"
-          echo "Dispatched canonical daily cycle for Israel slot $SLOT."
+          if [ -n "$RECOVERY_RUN_ID" ]; then
+            gh workflow run kesher-publish-request.yml --ref main \
+              -f action=resume -f recovery_run_id="$RECOVERY_RUN_ID"
+          else
+            gh workflow run kesher-publish-request.yml --ref main \
+              -f action=daily -f slot="$SLOT"
+          fi

@@ -70,7 +70,7 @@ class PublishRequestWorkflowTests(unittest.TestCase):
             "delivery": {
                 "complete": True,
                 "article_count": 1,
-                "triads": [{"slug": "another-article", "complete": True}],
+                "triads": [{"slug": "another-article", "date": "2026-11-21", "complete": True}],
             },
             "controller_health": {"direct_takeover_required": False},
         }
@@ -153,6 +153,7 @@ class PublishRequestWorkflowTests(unittest.TestCase):
         mock_posts.read_text.return_value = "[]"
         with patch("scripts.kesher_cloud_article_generator.generate_article", return_value=article) as gen:
             with patch.object(publisher.subprocess, "run") as run:
+                run.return_value.returncode = 0
                 with patch.object(publisher, "POSTS_FILE", mock_posts):
                     out = publisher.handle_run_now("2026-11-22", client, stage_only=True)
         self.assertEqual(out["status"], "candidate_pr_pending_ci_and_authority")
@@ -226,7 +227,7 @@ class PublishRequestWorkflowTests(unittest.TestCase):
         mock_posts.read_text.return_value = "[]"
 
         with patch("scripts.kesher_cloud_article_generator.generate_article", return_value=article), \
-             patch.object(publisher.subprocess, "run"), \
+             patch.object(publisher.subprocess, "run", return_value=Mock(returncode=0)), \
              patch.object(publisher, "POSTS_FILE", mock_posts), \
              patch.object(publisher, "verify_live_article", return_value=True), \
              patch.object(publisher, "extract_video_state", return_value=("item-102", "yt-long-123")), \
