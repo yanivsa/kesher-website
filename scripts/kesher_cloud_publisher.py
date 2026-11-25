@@ -1161,7 +1161,7 @@ def main():
                 checkpoint=checkpoint,
             )
         elif args.action == "resume":
-            result = handle_resume(slot, client, target_slug=target_slug, dry_run=args.dry_run, checkpoint=checkpoint, expected_source_sha=args.expected_source_sha, candidate_post=article_json)
+            result = handle_resume(slot, client, target_slug=target_slug, dry_run=args.dry_run or args.stage_only, checkpoint=checkpoint, expected_source_sha=args.expected_source_sha, candidate_post=article_json)
         else:
             raise ValueError(f"Unknown action: {args.action}")
 

@@ -62,6 +62,13 @@ class RecoveryTest(unittest.TestCase):
         data = complete(request_issue='', request_root='10', recovery_attempt=1)
         self.assertIsNone(r.choose_recovery([newer,run()], lambda v: data if v['id']==11 else receipt(), lambda _:run(), lambda _:True, today=date.fromisoformat(SLOT), now=NOW))
 
+    def test_recover_cancelled_daily_before_any_mutation(self):
+        daily = dict(run(), event='workflow_dispatch', display_title='Kesher Publish (daily) - '+SLOT, conclusion='cancelled')
+        data = r.unstarted_receipt(daily, {'total_count':0, 'jobs':[]}, lambda _:None)
+        self.assertEqual(r.retry_identity(data,daily,lambda _:daily)['action'],'daily')
+        jobs={'total_count':1,'jobs':[{'steps':[{'name':'Execute Kesher Cloud Publisher','conclusion':'cancelled'}]}]}
+        self.assertIsNone(r.unstarted_receipt(daily,jobs,lambda _:None))
+
     def test_wrong_branch_artifact_rejected_before_read(self):
         client=Mock()
         with self.assertRaisesRegex(ValueError,'NOT_TRUSTED'):

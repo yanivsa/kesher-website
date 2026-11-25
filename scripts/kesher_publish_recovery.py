@@ -69,6 +69,60 @@ def read_receipt(client, run):
     return receipt
 
 
+
+def unstarted_receipt(run, jobs, issue_for):
+    """Recover only a root whose mutating publisher step provably never ran."""
+    if not valid_run(run) or run.get('conclusion') not in {'failure', 'cancelled', 'timed_out'}:
+        return None
+    if run.get('run_attempt', 1) != 1 or jobs.get('total_count') != len(jobs.get('jobs', [])):
+        return None
+    for job in jobs['jobs']:
+        steps = job.get('steps') or []
+        publisher = [step for step in steps if step.get('name') == 'Execute Kesher Cloud Publisher']
+        if not publisher or any(step.get('conclusion') != 'skipped' for step in publisher):
+            return None
+    title = run.get('display_title', '')
+    data = dict(request_root=str(run['id']), request_issue='', recovery_attempt=0,
+                status='error', contract_complete=False, dry_run=False, stage_only=False)
+    daily = re.fullmatch(r'Kesher Publish \(daily\) - (\d{4}-\d{2}-\d{2})', title)
+    if run.get('event') == 'workflow_dispatch' and daily:
+        return dict(data, action='daily', slot=daily.group(1))
+    match = ISSUE_TITLE.match(title)
+    if run.get('event') != 'issues' or not match:
+        return None
+    issue = issue_for(int(match.group(1)))
+    if issue.get('state') != 'open' or issue.get('author_association') not in {'OWNER', 'MEMBER', 'COLLABORATOR'}:
+        return None
+    # Same single-line fields accepted by IssueOps. A changed issue is not
+    # replayed without its original checkpoint.
+    if issue.get('updated_at', '') > run.get('created_at', ''):
+        return None
+    topic = re.sub(r'^\[publish\]\s*|^publish:\s*|^הפעלת פרסום:\s*', '', issue.get('title', ''), flags=re.I).strip()
+    action = 'run_now'
+    slot = datetime.fromisoformat(issue['created_at'].replace('Z', '+00:00')).astimezone(ZoneInfo('Asia/Jerusalem')).date().isoformat()
+    payload = dict(topic_brief=topic, idea_id='', primary_keyword='')
+    for line in (issue.get('body') or '').splitlines():
+        key, sep, value = line.partition(':')
+        key, value = key.strip().lower(), value.strip()
+        if not sep:
+            continue
+        if key == 'action':
+            action = value
+        elif key == 'slot':
+            slot = value
+        elif key in {'stage_only', 'dry_run'} and value.lower() == 'true':
+            return None
+        elif key in {'topic_brief', 'topic', 'brief'} and value:
+            payload['topic_brief'] = value
+        elif key in {'idea_id', 'slug'}:
+            payload['idea_id'] = value
+        elif key in {'primary_keyword', 'keyword'}:
+            payload['primary_keyword'] = value
+    if action != 'run_now' or not payload['topic_brief']:
+        return None
+    return dict(data, action=action, slot=slot, request_issue=match.group(1), request_payload=payload)
+
+
 def complete_receipt(data, *, issue=None):
     """Never close an Issue on dry run, staging, missing links or false completion."""
     if not isinstance(data, dict) or data.get('contract_complete') is not True:
@@ -234,12 +288,21 @@ def main():
     def issue_open(num):
         item = api(repo, f'issues/{num}')
         return item.get('state') == 'open' and item.get('author_association') in {'OWNER', 'MEMBER', 'COLLABORATOR'}
+    def receipt_for(run):
+        receipt = read_receipt(client, run)
+        if receipt is not None:
+            return receipt
+        if run.get('conclusion') in {'failure', 'cancelled', 'timed_out'} and not RECOVERY_TITLE.fullmatch(run.get('display_title', '')):
+            return unstarted_receipt(run, api(repo, f"actions/runs/{run['id']}/jobs?filter=all&per_page=100"),
+                                     lambda num: api(repo, f'issues/{num}'))
+        return None
+
     now = datetime.now(timezone.utc)
     local = now.astimezone(ZoneInfo('Asia/Jerusalem'))
     runs = api(repo, f'actions/workflows/{WORKFLOW}/runs?per_page=100')['workflow_runs']
     if args.mode == 'resolve':
         run = lookup_run(args.run_id)
-        receipt = read_receipt(client, run)
+        receipt = receipt_for(run)
         identity = retry_identity(receipt, run, lookup_run)
         if not identity or (identity['issue_number'] and not issue_open(int(identity['issue_number']))):
             raise ValueError('RECOVERY_IDENTITY_NOT_ADMITTED')
@@ -280,7 +343,7 @@ def main():
     if local.hour >= 1 and not occupied and not candidates and not daily_seen:
         output({'allow': 'true', 'slot': slot, 'recovery_run_id': ''})
         return 0
-    choice = choose_recovery(runs, lambda run: read_receipt(client, run), lookup_run, issue_open, today=local.date(), now=now)
+    choice = choose_recovery(runs, receipt_for, lookup_run, issue_open, today=local.date(), now=now)
     if choice:
         run_id, identity = choice
         if identity['action'] == 'daily':
