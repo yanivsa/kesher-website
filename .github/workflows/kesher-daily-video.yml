@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      NOTEBOOKLM_HOME: ${{ runner.temp }}/notebooklm-diagnostic
       NOTEBOOKLM_STORAGE_STATE_SECRET: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
       NOTEBOOKLM_MASTER_TOKEN_SECRET: ${{ secrets.NOTEBOOKLM_MASTER_TOKEN_JSON }}
     steps:
@@ -23,10 +22,8 @@ jobs:
         run: |
           set -euo pipefail
           umask 077
-          python3 -m venv "$RUNNER_TEMP/notebooklm-venv"
-          source "$RUNNER_TEMP/notebooklm-venv/bin/activate"
-          python -m pip install -q 'notebooklm-py[headless] @ git+https://github.com/teng-lin/notebooklm-py.git@956400aa7af6b61b4cb988a24c9a081a3abc4ee8'
-          python - <<'PY'
+          export NOTEBOOKLM_HOME="$RUNNER_TEMP/notebooklm-diagnostic"
+          python3 - <<'PY'
           import json
           import os
           from pathlib import Path
@@ -39,6 +36,9 @@ jobs:
                   (profile / name).write_text(json.dumps(json.loads(value)))
           PY
           unset NOTEBOOKLM_STORAGE_STATE_SECRET NOTEBOOKLM_MASTER_TOKEN_SECRET
+          python3 -m venv "$RUNNER_TEMP/notebooklm-venv"
+          source "$RUNNER_TEMP/notebooklm-venv/bin/activate"
+          python -m pip install -q 'notebooklm-py[headless] @ git+https://github.com/teng-lin/notebooklm-py.git@956400aa7af6b61b4cb988a24c9a081a3abc4ee8'
           result="$RUNNER_TEMP/notebooklm-result.json"
           notebooklm --version
           notebooklm auth check --test --json >"$result" 2>/dev/null || true
