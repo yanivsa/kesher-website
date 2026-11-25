@@ -1,6 +1,6 @@
 name: Kesher Publish Request
 run-name: >-
-  ${{ github.event_name == 'issues' && format('Kesher Publish from Issue #{0}: {1}', github.event.issue.number, github.event.issue.title) || format('Kesher Publish ({0}) - {1}', inputs.action, inputs.slot || 'today') }}
+  ${{ github.event_name == 'issues' && format('Kesher Publish from Issue #{0}: {1}', github.event.issue.number, github.event.issue.title) || (inputs.recovery_run_id != '' && format('Kesher Publish recovery #{0}', inputs.recovery_run_id)) || format('Kesher Publish ({0}) - {1}', inputs.action, inputs.slot || 'today') }}
 
 "on":
   workflow_dispatch:
@@ -51,6 +51,11 @@ run-name: >-
         required: false
         default: false
         type: boolean
+      recovery_run_id:
+        description: Exact prior main-branch publisher run to recover (controller only)
+        required: false
+        default: ""
+        type: string
       dry_run:
         description: Validate without mutating repository, deploying, or creating media
         required: false
@@ -72,9 +77,10 @@ concurrency:
 jobs:
   publish:
     if: >-
-      ${{ github.repository == 'yanivsa/kesher-website' &&
+      ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' &&
           (github.event_name == 'workflow_dispatch' ||
            (github.event_name == 'issues' &&
+            contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) &&
             (contains(github.event.issue.title, '[Publish]') ||
              contains(github.event.issue.title, '[publish]') ||
              contains(github.event.issue.title, 'publish:') ||
@@ -112,6 +118,8 @@ jobs:
       - name: Resolve execution parameters
         id: params
         env:
+          GH_TOKEN: ${{ github.token }}
+          RECOVERY_RUN_ID: ${{ inputs.recovery_run_id }}
           EVENT_NAME: ${{ github.event_name }}
           INPUT_ACTION: ${{ inputs.action }}
           INPUT_SLOT: ${{ inputs.slot }}
@@ -126,8 +134,17 @@ jobs:
           ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
+          set -euo pipefail
+          if [ -n "$RECOVERY_RUN_ID" ]; then
+            python3 scripts/kesher_publish_recovery.py resolve --run-id "$RECOVERY_RUN_ID"
+            exit 0
+          fi
+          if [ "$GITHUB_RUN_ATTEMPT" != "1" ]; then
+            echo "::error::Do not re-run a possibly mutating publisher job; recover from its exact receipt."
+            exit 1
+          fi
           python3 - <<'PY'
-          import os, re
+          import os, re, uuid
 
           event = os.environ.get("EVENT_NAME")
           if event == "workflow_dispatch":
@@ -185,18 +202,16 @@ jobs:
 
           out_path = os.environ.get("GITHUB_OUTPUT")
           if out_path:
+              fields = dict(action=action, slot=slot, topic_brief=topic_brief, idea_id=idea_id,
+                            primary_keyword=primary_keyword, article_json=article_json,
+                            target_slug=target_slug, stage_only=stage_only, dry_run=dry_run,
+                            issue_number=issue_number, expected_source_sha="",
+                            request_root=os.environ["GITHUB_RUN_ID"], recovery_attempt="0")
               with open(out_path, "a", encoding="utf-8") as out:
-                  out.write(f"action={action}\n")
-                  out.write(f"slot={slot}\n")
-                  out.write(f"topic_brief={topic_brief}\n")
-                  out.write(f"idea_id={idea_id}\n")
-                  out.write(f"primary_keyword={primary_keyword}\n")
-                  out.write(f"article_json={article_json}\n")
-                  out.write(f"target_slug={target_slug}\n")
-                  out.write(f"stage_only={stage_only}\n")
-                  out.write(f"dry_run={dry_run}\n")
-                  out.write(f"issue_number={issue_number}\n")
-          print(f"Resolved publish params: action={action} topic_brief='{topic_brief}' issue={issue_number}")
+                  for key, value in fields.items():
+                      delimiter = uuid.uuid4().hex
+                      out.write(f"{key}<<{delimiter}\n{value}\n{delimiter}\n")
+          print(f"Resolved publish params: action={action} issue={issue_number}")
           PY
 
       - name: Acknowledge issue trigger
@@ -212,6 +227,8 @@ jobs:
 
       - name: Execute Kesher Cloud Publisher
         id: publisher
+        # Preserve time for the always() checkpoint upload and issue reporting.
+        timeout-minutes: 105
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -224,6 +241,10 @@ jobs:
           PRIMARY_KEYWORD: ${{ steps.params.outputs.primary_keyword }}
           ARTICLE_JSON: ${{ steps.params.outputs.article_json }}
           TARGET_SLUG: ${{ steps.params.outputs.target_slug }}
+          EXPECTED_SOURCE_SHA: ${{ steps.params.outputs.expected_source_sha }}
+          KESHER_REQUEST_ISSUE: ${{ steps.params.outputs.issue_number }}
+          KESHER_REQUEST_ROOT: ${{ steps.params.outputs.request_root }}
+          KESHER_RECOVERY_ATTEMPT: ${{ steps.params.outputs.recovery_attempt }}
           STAGE_ONLY: ${{ steps.params.outputs.stage_only }}
           DRY_RUN: ${{ steps.params.outputs.dry_run }}
         run: |
@@ -231,6 +252,7 @@ jobs:
           extra_args=()
           if [ -n "$SLOT" ]; then extra_args+=(--slot "$SLOT"); fi
           if [ -n "$TARGET_SLUG" ]; then extra_args+=(--target-slug "$TARGET_SLUG"); fi
+          if [ -n "$EXPECTED_SOURCE_SHA" ]; then extra_args+=(--expected-source-sha "$EXPECTED_SOURCE_SHA"); fi
           if [ -n "$TOPIC_BRIEF" ]; then extra_args+=(--topic-brief "$TOPIC_BRIEF"); fi
           if [ -n "$IDEA_ID" ]; then extra_args+=(--idea-id "$IDEA_ID"); fi
           if [ -n "$PRIMARY_KEYWORD" ]; then extra_args+=(--primary-keyword "$PRIMARY_KEYWORD"); fi
@@ -238,52 +260,23 @@ jobs:
           if [ "$STAGE_ONLY" = "true" ]; then extra_args+=(--stage-only); fi
           if [ "$DRY_RUN" = "true" ]; then extra_args+=(--dry-run); fi
 
-          python3 scripts/kesher_cloud_publisher.py "$ACTION" "${extra_args[@]}"
+          python3 scripts/kesher_cloud_publisher.py "$ACTION" "${extra_args[@]}" --output-json "$RUNNER_TEMP/kesher-publish-result.json"
 
       - name: Upload Publisher Result Artifact
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: kesher-publish-result-${{ github.run_id }}
-          path: kesher-publish-result.json
+          path: ${{ runner.temp }}/kesher-publish-result.json
           if-no-files-found: ignore
           retention-days: 7
 
-      - name: Report success and close issue
-        if: ${{ always() && steps.params.outputs.issue_number != '' && steps.publisher.outcome == 'success' }}
+      - name: Report verified contract or retain open issue
+        if: ${{ always() && steps.params.outputs.issue_number != '' }}
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
           ISSUE_NUM: ${{ steps.params.outputs.issue_number }}
+          PUBLISH_OUTCOME: ${{ steps.publisher.outcome }}
         run: |
-          python3 - <<'PY'
-          import json, os, subprocess
-          res_file = "kesher-publish-result.json"
-          body = "### ✅ תהליך הפרסום הושלם בהצלחה!\n\n"
-          if os.path.isfile(res_file):
-              try:
-                  with open(res_file, encoding="utf-8") as f:
-                      data = json.load(f)
-                  body += f"- **מאמר:** {data.get('article_url')}\n"
-                  body += f"- **סרטון יוטיוב (16:9):** {data.get('long_video_url')}\n"
-                  body += f"- **שורט יוטיוב (9:16):** {data.get('short_video_url')}\n"
-                  body += f"- **סלאג:** `{data.get('slug')}`\n"
-                  body += f"- **סטטוס חוזה:** `{'מאושר' if data.get('contract_complete') else 'לא מאומת'}`\n"
-              except Exception as exc:
-                  body += f"שגיאה בקריאת פרטי התוצאה: {exc}\n"
-          else:
-              body += "נכסי המדיה פורסמו בייצור.\n"
-
-          issue_num = os.environ["ISSUE_NUM"]
-          subprocess.run(["gh", "issue", "comment", issue_num, "--body", body], check=True)
-          subprocess.run(["gh", "issue", "close", issue_num, "--reason", "completed"], check=True)
-          PY
-
-      - name: Report failure on issue
-        if: ${{ always() && steps.params.outputs.issue_number != '' && steps.publisher.outcome != 'success' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ISSUE_NUM: ${{ steps.params.outputs.issue_number }}
-          RUN_ID: ${{ github.run_id }}
-        run: |
-          gh issue comment "$ISSUE_NUM" --body "❌ **מחזור הפרסום נכשל.**
-          לפרטים נוספים ראה את לוג הריצה: https://github.com/${{ github.repository }}/actions/runs/$RUN_ID"
+          python3 scripts/kesher_publish_recovery.py report --issue "$ISSUE_NUM" \
+            --receipt "$RUNNER_TEMP/kesher-publish-result.json"

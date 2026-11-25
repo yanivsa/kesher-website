@@ -1894,7 +1894,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "76c677bce7748865879c39e2bcebbf99c1765b58b4e0d70cc6d256ca3d00402c",
+      "definition_sha256": "fdf7ed195ad0530752162568a539edd7e76fd3536f4d11ed6cfac25946cadf1e",
       "resources": [
         "cloudflare.account",
         "github.dispatch",
@@ -1987,7 +1987,9 @@
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
           "scripts/kesher_runtime/native_media.py": "86320d11c239259aee5ef8249c1a5abb2d3322cd5d923992bc9a6c5898eac119",
           "scripts/kesher_runtime/master_intent.py": "29512e574a0eaf7351a13eb5bc1d671bcedf8dd832b5b5ac0052707fbf4a038c",
-          "scripts/kesher_runtime/master_intent_entry.py": "273677856a48df9ea22155176528f586ed6458e0a47d6c3f3a555bddee3ec577"
+          "scripts/kesher_runtime/master_intent_entry.py": "273677856a48df9ea22155176528f586ed6458e0a47d6c3f3a555bddee3ec577",
+          "scripts/kesher_publish_recovery.py": "0ad734f47b659553844023c7d3dd30355f95cbe955bb0016afa57296dd213513",
+          "scripts/kesher_cloud_publisher.py": "257f5afcd92c15ba735ce75bedb344e0199364861e5c17ee356b125a727fb3b6"
         },
         "credential_services": {
           "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
@@ -4440,7 +4442,7 @@
         "read",
         "workflow_dispatch"
       ],
-      "definition_sha256": "a1705b8f4aa5fdd9de67639f1820513eae6815c40391ca6f66270650951a9283",
+      "definition_sha256": "dfe529239a11bf1572860c784c3978f64b51e9c54d237f480d9acd221f0dcefa",
       "resources": [
         "github.dispatch",
         "github.issues",
@@ -4451,10 +4453,11 @@
       "registration_id": 426278061,
       "review": {
         "call_chain": {
-          "scripts/kesher_cloud_publisher.py": "520337f05bbd2a7455c7eee9b45dbbb29424e27f3d415f04f0805bfcabd04182",
+          "scripts/kesher_cloud_publisher.py": "257f5afcd92c15ba735ce75bedb344e0199364861e5c17ee356b125a727fb3b6",
           "scripts/kesher_cloud_article_generator.py": "901d80b3bef0bf2713f5a467c772acc3f7ce8227b734c7341f798d5f0415cd07",
           "scripts/kesher_cloud_supervisor.py": "2db2dd87565b9cadeaabf06d112a95585e710c18bec4d20559634698e7bdc930",
-          "scripts/kesher_controller_repair.py": "cca61d88287112c3274053784a57816340a264a0b2c793afd5491319bad712df"
+          "scripts/kesher_controller_repair.py": "cca61d88287112c3274053784a57816340a264a0b2c793afd5491319bad712df",
+          "scripts/kesher_publish_recovery.py": "0ad734f47b659553844023c7d3dd30355f95cbe955bb0016afa57296dd213513"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"

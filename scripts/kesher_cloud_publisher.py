@@ -322,6 +322,7 @@ def run_supervisor_audit(slot: str, target_slug: str | None = None) -> dict[str,
     triads = delivery.get("triads") or []
     exact = not target_slug or (
         len(triads) == 1 and str(triads[0].get("slug") or "") == target_slug
+        and triads[0].get("date") == slot
     )
     count = int(delivery.get("article_count") or 0)
     complete = (
@@ -337,6 +338,7 @@ def run_supervisor_audit(slot: str, target_slug: str | None = None) -> dict[str,
         "article_count": count,
         "target_slug": target_slug,
         "triad_slugs": [str(row.get("slug") or "") for row in triads],
+        "triads": triads,
     }
 
 
@@ -492,11 +494,39 @@ def handle_repair() -> dict[str, Any]:
     }
 
 
+def write_result(path: Path, result: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    temporary.replace(path)
+
+
+def audited_links(audit: dict[str, Any], slug: str | None = None) -> dict[str, Any]:
+    """Return a single exact verified triad's links, never guess missing evidence."""
+    rows = [row for row in audit.get("triads", []) if not slug or row.get("slug") == slug]
+    if not audit.get("complete"):
+        return {}
+    rows = [row for row in rows if row.get("complete") is True]
+    if not rows or (slug and len(rows) != 1):
+        return {}
+    # A daily slot may already have more than one independently requested
+    # complete triad. Choose one verified receipt without producing another.
+    row = sorted(rows, key=lambda row: row.get("slug", ""))[0]
+    return {
+        "slug": row.get("slug"),
+        "source_sha256": row.get("expected_source_sha256"),
+        "article_url": (row.get("article") or {}).get("url"),
+        "long_video_url": (row.get("long_video") or {}).get("youtube_url"),
+        "short_video_url": (row.get("short") or {}).get("youtube_url"),
+    }
+
+
 def handle_daily(
     slot: str,
     client: GitHubActionsClient | None,
     dry_run: bool = False,
     stage_only: bool = False,
+    checkpoint=None,
 ) -> dict[str, Any]:
     print(f"📅 Checking daily publication status for {slot}...")
     audit = run_supervisor_audit(slot)
@@ -507,16 +537,30 @@ def handle_daily(
             "slot": slot,
             "status": "already_complete",
             "contract_complete": True,
-            "message": f"Daily publishing for {slot} was already verified complete."
+            "message": f"Daily publishing for {slot} was already verified complete.",
+            **audited_links(audit)
         }
 
     # If an article exists for slot, resume its pipeline rather than creating duplicate
     if audit.get("article_count", 0) > 0:
         print(f"Existing article found for {slot}; resuming exact triad...")
-        return handle_resume(slot, client, dry_run=dry_run)
+        slugs = audit.get("triad_slugs") or []
+        if len(slugs) != 1:
+            raise RuntimeError("AMBIGUOUS_DAILY_SLOT_REQUIRES_EXACT_TARGET")
+        return handle_resume(slot, client, target_slug=slugs[0], dry_run=dry_run or stage_only, checkpoint=checkpoint)
 
+    # A failed audit is not proof that no article exists. Verify both
+    # canonical catalogs before starting a fresh publication.
+    if audit.get("error"):
+        raise RuntimeError("DAILY_AUDIT_UNAVAILABLE")
+    for catalog in (POSTS_FILE, RECENT_POSTS_FILE):
+        posts = json.loads(catalog.read_text(encoding="utf-8"))
+        if not isinstance(posts, list) or any(not isinstance(p, dict) or not isinstance(p.get("date"), str) for p in posts):
+            raise RuntimeError("DAILY_CATALOG_INVALID")
+        if any(p["date"] == slot for p in posts):
+            raise RuntimeError("DAILY_CATALOG_OCCUPIED_BUT_AUDIT_UNVERIFIED")
     print(f"Daily triad for {slot} is not yet complete. Initiating publishing cycle...")
-    return handle_run_now(slot, client, dry_run=dry_run, stage_only=stage_only)
+    return handle_run_now(slot, client, dry_run=dry_run, stage_only=stage_only, checkpoint=checkpoint)
 
 
 def handle_run_now(
@@ -529,6 +573,7 @@ def handle_run_now(
     article_json: dict[str, Any] | None = None,
     dry_run: bool = False,
     stage_only: bool = False,
+    checkpoint=None,
 ) -> dict[str, Any]:
     print(f"🚀 Executing run_now cycle for date {slot}...")
     if not dry_run and not client:
@@ -571,6 +616,8 @@ def handle_run_now(
         raise RuntimeError("CLOUD_ARTICLE_GITHUB_CLIENT_REQUIRED")
 
     branch = f"content/kesher-{slug}-{source_sha[:12]}"
+    if checkpoint:
+        checkpoint(slug=slug, source_sha256=source_sha, phase="candidate", branch=branch, candidate_post=post)
     ci_dispatch_iso: str | None = None
     existing = client.lookup_cloud_candidate(slug, branch)
     if existing:
@@ -616,8 +663,7 @@ def handle_run_now(
         push_cmd = ["git", "push", "origin", f"HEAD:refs/heads/{branch}"]
         res = subprocess.run(push_cmd, cwd=ROOT, timeout=90, capture_output=True, text=True)
         if res.returncode != 0:
-            print(f"Standard push rejected ({res.stderr.strip()}); updating candidate branch...")
-            subprocess.run(["git", "push", "-f", "origin", f"HEAD:refs/heads/{branch}"], check=True, cwd=ROOT, timeout=90)
+            raise RuntimeError("CANDIDATE_BRANCH_PUSH_NOT_CONFIRMED")
 
         try:
             pr = client.create_cloud_candidate_pr(slug, title, source_sha, slot, branch)
@@ -646,6 +692,15 @@ def handle_run_now(
                 "contract_complete": False,
             }
 
+    return finish_candidate(slot, client, slug, title, source_sha, article_url, branch, pr,
+                            ci_dispatch_iso=ci_dispatch_iso, checkpoint=checkpoint)
+
+
+def finish_candidate(slot, client, slug, title, source_sha, article_url, branch, pr,
+                     *, ci_dispatch_iso=None, checkpoint=None):
+    if checkpoint:
+        checkpoint(pr_number=pr["number"], phase="candidate_pr")
+
     # Step 2: Poll CI on the candidate branch
     print(f"Waiting for CI on candidate branch {branch}...")
     branch_head_sha = pr.get("head", {}).get("sha")
@@ -668,8 +723,12 @@ def handle_run_now(
 
     # Step 3: Merge candidate PR into main
     branch_head_sha = ci_run.get("head_sha") or pr.get("head", {}).get("sha") or ""
-    client.merge_pr(pr["number"], branch_head_sha, commit_title=f"Publish Kesher article: {title[:160]} (#{pr['number']})")
+    merged = client.merge_pr(pr["number"], branch_head_sha, commit_title=f"Publish Kesher article: {title[:160]} (#{pr['number']})")
+    if merged.get("merged") is not True:
+        raise RuntimeError("CANDIDATE_MERGE_NOT_CONFIRMED")
     print(f"Candidate PR #{pr['number']} merged into main.")
+    if checkpoint:
+        checkpoint(phase="published_article")
 
     subprocess.run(["git", "switch", "main"], check=True, cwd=ROOT, timeout=30)
     subprocess.run(["git", "reset", "--hard", "HEAD"], check=True, cwd=ROOT, timeout=30)
@@ -793,40 +852,80 @@ def handle_run_now(
     }
 
 
+def recover_candidate(slot, client, slug, source_sha, *, checkpoint=None, candidate_post=None):
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug) or not re.fullmatch(r"[0-9a-f]{64}", source_sha):
+        raise RuntimeError("RECOVERY_IDENTITY_INVALID")
+    branch = f"content/kesher-{slug}-{source_sha[:12]}"
+    pr = client.lookup_cloud_candidate(slug, branch)
+    # A failure between push and PR creation is recoverable from the exact remote ref.
+    remote = subprocess.run(["git", "ls-remote", "--exit-code", "--heads", "origin", f"refs/heads/{branch}"],
+                            cwd=ROOT, capture_output=True, text=True, timeout=60)
+    if remote.returncode == 2 and pr is None:
+        # No remote candidate exists. Re-stage the exact saved article rather
+        # than regenerating a different topic or changing its source hash.
+        from scripts.kesher_daily_pipeline import source_metadata
+        if (not isinstance(candidate_post, dict) or (candidate_post.get("slug") or candidate_post.get("id")) != slug
+                or candidate_post.get("date") != slot or source_metadata(candidate_post)["content_sha256"] != source_sha):
+            raise RuntimeError("RECOVERY_UNPUSHED_CANDIDATE_NOT_AVAILABLE")
+        return handle_run_now(slot, client, article_json=candidate_post, checkpoint=checkpoint)
+    if remote.returncode != 0:
+        raise RuntimeError("RECOVERY_REMOTE_REF_UNVERIFIED")
+    subprocess.run(["git", "fetch", "origin", f"refs/heads/{branch}"], cwd=ROOT,
+                   capture_output=True, text=True, check=True, timeout=60)
+    head = subprocess.check_output(["git", "rev-parse", "FETCH_HEAD"], cwd=ROOT, text=True, timeout=30).strip()
+    if pr and ((pr.get("head") or {}).get("sha") != head or (pr.get("base") or {}).get("ref") != "main"):
+        raise RuntimeError("RECOVERY_CANDIDATE_HEAD_MISMATCH")
+    posts = json.loads(subprocess.check_output(["git", "show", f"{head}:src/data/posts.json"], cwd=ROOT, text=True, timeout=30))
+    matches = [p for p in posts if (p.get("slug") or p.get("id")) == slug and p.get("date") == slot]
+    from scripts.kesher_daily_pipeline import source_metadata
+    if len(matches) != 1 or source_metadata(matches[0])["content_sha256"] != source_sha:
+        raise RuntimeError("RECOVERY_CANDIDATE_SOURCE_MISMATCH")
+    title = matches[0]["title"]
+    if pr is None:
+        pr = client.create_cloud_candidate_pr(slug, title, source_sha, slot, branch)
+    if (pr.get("head") or {}).get("sha") != head:
+        raise RuntimeError("RECOVERY_PR_HEAD_CHANGED")
+    if checkpoint:
+        checkpoint(slug=slug, source_sha256=source_sha, phase="candidate_pr", branch=branch, pr_number=pr["number"])
+    return finish_candidate(slot, client, slug, title, source_sha,
+                            f"https://kesher.saharoni.com/blog/{slug}", branch, pr, checkpoint=checkpoint)
+
+
 def handle_resume(
     slot: str,
     client: GitHubActionsClient | None,
     target_slug: str | None = None,
     dry_run: bool = False,
+    checkpoint=None,
+    expected_source_sha: str = "",
+    candidate_post=None,
 ) -> dict[str, Any]:
     print(f"🔄 Resuming publishing pipeline for {slot} (target_slug={target_slug})...")
-    audit = run_supervisor_audit(slot, target_slug=target_slug)
+    posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
+    candidates = [p for p in posts if p.get("date") == slot and
+                  (not target_slug or (p.get("slug") or p.get("id")) == target_slug)]
+    if len(candidates) > 1:
+        raise RuntimeError("AMBIGUOUS_RESUME_REQUIRES_EXACT_TARGET")
+    if not candidates:
+        if expected_source_sha and target_slug and client and not dry_run:
+            return recover_candidate(slot, client, target_slug, expected_source_sha, checkpoint=checkpoint, candidate_post=candidate_post)
+        return {"action": "resume", "slot": slot, "status": "no_candidate_found_to_resume", "contract_complete": False}
+    candidate = candidates[0]
+    slug = candidate.get("slug") or candidate["id"]
+    from scripts.kesher_daily_pipeline import source_metadata
+    source_sha = source_metadata(candidate)["content_sha256"]
+    if expected_source_sha and source_sha != expected_source_sha:
+        raise RuntimeError("RECOVERY_PUBLISHED_SOURCE_CHANGED")
+    audit = run_supervisor_audit(slot, target_slug=slug)
     if audit["complete"]:
         print(f"Triad for {slot} is already complete.")
-        return {"action": "resume", "slot": slot, "status": "already_complete", "contract_complete": True}
-
+        return {"action": "resume", "slot": slot, "status": "already_complete", "contract_complete": True, **audited_links(audit, slug)}
     if not client or dry_run:
         return {"action": "resume", "slot": slot, "status": "dry_run_or_no_client", "contract_complete": False}
 
-    posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
-    candidate = None
-    for p in posts:
-        if (target_slug and p.get("slug") == target_slug) or (not target_slug and p.get("date") == slot):
-            candidate = p
-            break
-
-    if not candidate:
-        return {
-            "action": "resume",
-            "slot": slot,
-            "status": "no_candidate_found_to_resume",
-            "contract_complete": False,
-        }
-
-    slug = candidate["slug"]
-    from scripts.kesher_daily_pipeline import source_metadata
-    source_sha = source_metadata(candidate)["content_sha256"]
     article_url = f"https://kesher.saharoni.com/blog/{slug}"
+    if checkpoint:
+        checkpoint(slug=slug, source_sha256=source_sha, phase="published_article")
 
     # Step 1: Ensure article is live
     try:
@@ -856,6 +955,8 @@ def handle_resume(
         print(f"Notice: unable to inspect latest video artifact directly: {exc}")
 
     if not long_item_id or not long_yt:
+        if candidate.get("youtubeVideoId"):
+            raise RuntimeError("EXISTING_LONG_BINDING_WITHOUT_EXACT_STATE")
         for video_attempt in range(1, 6):
             print(f"🎬 [Resume Attempt {video_attempt}/5] Triggering/polling NotebookLM Long Video for {slug}...")
             video_now = datetime.now(timezone.utc).isoformat()
@@ -899,6 +1000,8 @@ def handle_resume(
         print(f"Notice: unable to inspect latest short artifact directly: {exc}")
 
     if not short_yt:
+        if candidate.get("youtubeShortId"):
+            raise RuntimeError("EXISTING_SHORT_BINDING_WITHOUT_EXACT_STATE")
         for short_attempt in range(1, 6):
             print(f"📱 [Resume Attempt {short_attempt}/5] Triggering/polling NotebookLM Native Short for {slug}...")
             short_now = datetime.now(timezone.utc).isoformat()
@@ -958,12 +1061,20 @@ def handle_resume(
             subprocess.run(["git", "push", "origin", "main"], check=True, cwd=ROOT, timeout=60)
         deploy_to_cloudflare(client)
 
-    # Final supervisor audit
+    # If an earlier run pushed bindings but died during deployment, repair the
+    # existing release instead of creating replacement media.
     final_audit = run_supervisor_audit(slot, target_slug=slug)
+    if not needs_commit and not final_audit["complete"]:
+        deploy_to_cloudflare(client)
+        final_audit = run_supervisor_audit(slot, target_slug=slug)
     return {
         "action": "resume",
         "slot": slot,
         "slug": slug,
+        "source_sha256": source_sha,
+        "article_url": article_url,
+        "long_video_url": f"https://www.youtube.com/watch?v={long_yt}",
+        "short_video_url": f"https://www.youtube.com/shorts/{short_yt}",
         "long_youtube_id": long_yt,
         "short_youtube_id": short_yt,
         "contract_complete": final_audit["complete"],
@@ -976,6 +1087,7 @@ def main():
     parser.add_argument("action", choices=["daily", "run_now", "resume", "audit", "repair"], help="Action to execute")
     parser.add_argument("--slot", default="", help="Publication date YYYY-MM-DD (defaults to today in Israel)")
     parser.add_argument("--target-slug", default="", help="Optional exact target article slug to audit or resume")
+    parser.add_argument("--expected-source-sha", default="", help="Exact recovery source revision")
     parser.add_argument("--topic-brief", default="", help="Optional topic brief")
     parser.add_argument("--idea-id", default="", help="Optional unique idea ID")
     parser.add_argument("--primary-keyword", default="", help="Optional Hebrew primary keyword")
@@ -1002,6 +1114,32 @@ def main():
         else:
             article_json = json.loads(raw)
 
+    out_p = Path(args.output_json)
+    identity = {
+        "slot": slot, "action": args.action,
+        "request_issue": os.environ.get("KESHER_REQUEST_ISSUE", ""),
+        "request_root": os.environ.get("KESHER_REQUEST_ROOT") or os.environ.get("GITHUB_RUN_ID", ""),
+        "recovery_attempt": int(os.environ.get("KESHER_RECOVERY_ATTEMPT", "0")),
+        "stage_only": args.stage_only, "dry_run": args.dry_run,
+    }
+    progress = {**identity, "status": "in_progress", "contract_complete": False}
+    if target_slug:
+        progress["slug"] = target_slug
+    if args.expected_source_sha:
+        progress["source_sha256"] = args.expected_source_sha
+        if isinstance(article_json, dict):
+            progress["candidate_post"] = article_json
+    if identity["request_issue"] and args.action == "run_now":
+        # IssueOps prompts are already public on GitHub. Retain only the
+        # original parsed publication fields for a failure before staging.
+        progress["request_payload"] = {"topic_brief": args.topic_brief, "idea_id": args.idea_id,
+                                       "primary_keyword": args.primary_keyword}
+
+    def checkpoint(**fields):
+        progress.update(fields)
+        write_result(out_p, progress)
+
+    checkpoint()
     result: dict[str, Any]
     try:
         if args.action == "audit":
@@ -1009,7 +1147,7 @@ def main():
         elif args.action == "repair":
             result = handle_repair()
         elif args.action == "daily":
-            result = handle_daily(slot, client, dry_run=args.dry_run, stage_only=args.stage_only)
+            result = handle_daily(slot, client, dry_run=args.dry_run, stage_only=args.stage_only, checkpoint=checkpoint)
         elif args.action == "run_now":
             result = handle_run_now(
                 slot,
@@ -1020,21 +1158,34 @@ def main():
                 article_json=article_json,
                 dry_run=args.dry_run,
                 stage_only=args.stage_only,
+                checkpoint=checkpoint,
             )
         elif args.action == "resume":
-            result = handle_resume(slot, client, target_slug=target_slug, dry_run=args.dry_run)
+            result = handle_resume(slot, client, target_slug=target_slug, dry_run=args.dry_run, checkpoint=checkpoint, expected_source_sha=args.expected_source_sha, candidate_post=article_json)
         else:
             raise ValueError(f"Unknown action: {args.action}")
 
-        print(json.dumps(result, ensure_ascii=False, indent=2))
-        out_p = Path(args.output_json)
-        out_p.parent.mkdir(parents=True, exist_ok=True)
-        out_p.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        result = {**progress, **result, **identity}
+        live_publish = args.action in {"daily", "run_now", "resume"} and not (args.dry_run or args.stage_only)
+        if live_publish:
+            from scripts.kesher_publish_recovery import complete_receipt
+            if not complete_receipt(result):
+                result.update(contract_complete=False, status="pending_or_unverified" if result.get("status") in {"success", "already_complete"} else result.get("status"))
+        elif args.dry_run or args.stage_only:
+            result["contract_complete"] = False
+        if result.get("contract_complete") is True:
+            result.pop("candidate_post", None)
+            result.pop("request_payload", None)
+        # Do not emit full draft contents or user prompts into Actions logs.
+        print(json.dumps({k: v for k, v in result.items() if k not in {"candidate_post", "request_payload"}}, ensure_ascii=False, indent=2))
+        write_result(out_p, result)
+        if live_publish:
+            return 0 if result.get("contract_complete") is True else 1
         return 0
     except Exception as exc:
         print(f"FATAL PUBLISHER ERROR: {exc}", file=sys.stderr)
-        err_res = {"status": "error", "action": args.action, "error": str(exc)}
-        Path(args.output_json).write_text(json.dumps(err_res, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        err_res = {**progress, "status": "error", "contract_complete": False, "error": str(exc)}
+        write_result(out_p, err_res)
         return 1
 
 
