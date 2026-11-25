@@ -653,13 +653,23 @@ def active_item(
     if target_item_id:
         # Missing/terminal exact items may never fall through to new generation.
         return existing_item(state, target_item_id, target_slug)
+    target_sha = os.environ.get("TARGET_CONTENT_SHA256", "").strip() if target_slug else ""
+
+    def targets_requested_revision(item: dict[str, Any]) -> bool:
+        source = item.get("source") or {}
+        if target_slug and source.get("slug") != target_slug:
+            return False
+        # A legacy item without a recorded hash remains ambiguous and must
+        # stop exact selection. An item with a known different hash is separate.
+        return not target_sha or source.get("content_sha256") in (None, "", target_sha)
+
     active_statuses = {"source_selected", "source_added", "generating", "downloaded", "pending_review", "approved", "uploading"}
     media_type = os.environ.get("KESHER_MEDIA_MODE") or "video_overview"
     if media_type not in {'video_overview', 'article_short'}:
         raise PipelineError('EXACT_MEDIA_IDENTITY_MISMATCH: unknown media kind')
     if any(not item.get('uploaded') and item.get('status') in active_statuses
            and item.get('type') not in {'video_overview', 'article_short'}
-           and (not target_slug or (item.get('source') or {}).get('slug') == target_slug)
+           and targets_requested_revision(item)
            for item in state['items']):
         raise PipelineError('EXACT_MEDIA_IDENTITY_MISMATCH: unclassified active artifact; refusing duplicate generation')
     matches = [
@@ -668,7 +678,7 @@ def active_item(
             item.get("status") in active_statuses
             or (item.get("status") == "rejected" and item.get("technical_verified") is True)
         )
-        and (not target_slug or (item.get("source") or {}).get("slug") == target_slug)
+        and targets_requested_revision(item)
     ]
     if len(matches) > 1:
         raise PipelineError("More than one active video exists; EXACT_MEDIA_ITEM_ID_REQUIRED: supply the initiating item ID")

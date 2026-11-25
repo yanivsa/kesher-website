@@ -410,6 +410,22 @@ class PipelineTestCase(unittest.TestCase):
             with self.assertRaisesRegex(pipeline.PipelineError, "More than one active video exists"):
                 pipeline.run_generation(0, None)
 
+    def test_exact_revision_ignores_known_stale_item_without_rebinding_it(self) -> None:
+        source = pipeline.source_metadata(hebrew_post())
+        previous = pipeline.new_item(source)
+        previous["source"] = dict(previous["source"], content_sha256="a" * 64)
+        previous["status"] = "generating"
+        state = {"version": 1, "items": [previous]}
+
+        with mock.patch.dict(os.environ, {
+            "TARGET_CONTENT_SHA256": source["content_sha256"],
+            "TARGET_ITEM_ID": "",
+        }):
+            self.assertIsNone(pipeline.active_item(state, slug=source["slug"]))
+            with self.assertRaisesRegex(pipeline.PipelineError, "EXACT_MEDIA_IDENTITY_MISMATCH"):
+                pipeline.active_item(state, slug=source["slug"], item_id=previous["id"])
+            self.assertEqual(previous["source"]["content_sha256"], "a" * 64)
+
     def test_pending_poll_never_starts_a_second_generation(self) -> None:
         item = {"id": "one", "task_id": "task-one", "status": "generating"}
         state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}

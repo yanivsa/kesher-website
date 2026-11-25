@@ -268,7 +268,7 @@ class PublishRequestWorkflowTests(unittest.TestCase):
                     "status": "rejected",
                     "technical_reasons": ["Detected male voice pitch"],
                     "failure_signature": "wrong_narrator_gender",
-                    "source": {"slug": "test-slug"},
+                    "source": {"slug": "test-slug", "content_sha256": "current"},
                 }
             ],
         }
@@ -279,7 +279,7 @@ class PublishRequestWorkflowTests(unittest.TestCase):
         mock_client = MagicMock()
         mock_client.get_run_artifact_zip.return_value = buf.getvalue()
 
-        item_id, yt_id = publisher.extract_video_state(mock_client, 12345, "test-slug")
+        item_id, yt_id = publisher.extract_video_state(mock_client, 12345, "test-slug", "current")
         self.assertEqual(item_id, "video-attempt-1")
         self.assertEqual(yt_id, "")
 
@@ -294,13 +294,19 @@ class PublishRequestWorkflowTests(unittest.TestCase):
                 {
                     "id": "video-attempt-1",
                     "status": "rejected",
-                    "source": {"slug": "test-slug"},
+                    "source": {"slug": "test-slug", "content_sha256": "current"},
                 },
                 {
                     "id": "video-attempt-2",
                     "status": "uploaded",
                     "youtube_id": "yt-real-id-999",
-                    "source": {"slug": "test-slug"},
+                    "source": {"slug": "test-slug", "content_sha256": "current"},
+                },
+                {
+                    "id": "video-previous-revision",
+                    "status": "uploaded",
+                    "youtube_id": "yt-stale",
+                    "source": {"slug": "test-slug", "content_sha256": "previous"},
                 },
             ],
         }
@@ -311,7 +317,7 @@ class PublishRequestWorkflowTests(unittest.TestCase):
         mock_client = MagicMock()
         mock_client.get_run_artifact_zip.return_value = buf.getvalue()
 
-        item_id, yt_id = publisher.extract_video_state(mock_client, 12345, "test-slug")
+        item_id, yt_id = publisher.extract_video_state(mock_client, 12345, "test-slug", "current")
         self.assertEqual(item_id, "video-attempt-2")
         self.assertEqual(yt_id, "yt-real-id-999")
 
@@ -327,7 +333,7 @@ class PublishRequestWorkflowTests(unittest.TestCase):
                     "id": "short-attempt-1",
                     "status": "rejected",
                     "technical_reasons": ["Voice retry"],
-                    "source": {"slug": "test-slug"},
+                    "source": {"slug": "test-slug", "content_sha256": "current"},
                 }
             ],
         }
@@ -338,7 +344,7 @@ class PublishRequestWorkflowTests(unittest.TestCase):
         mock_client = MagicMock()
         mock_client.get_run_artifact_zip.return_value = buf.getvalue()
 
-        yt_id = publisher.extract_short_state(mock_client, 12345, "test-slug")
+        yt_id = publisher.extract_short_state(mock_client, 12345, "test-slug", "current")
         self.assertEqual(yt_id, "")
 
     def test_workflow_supports_issue_opened_trigger(self):
