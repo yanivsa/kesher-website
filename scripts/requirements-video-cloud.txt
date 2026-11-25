@@ -3,4 +3,4 @@ faster-whisper==1.2.1
 av<19
 requests==2.33.0
 cryptography==50.0.1
-CairoSVG==2.8.2  # only rasterize the existing approved KESHER signature; no video regeneration
+CairoSVG==2.9.1  # only rasterize the existing approved KESHER signature; no video regeneration
