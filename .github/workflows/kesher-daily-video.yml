@@ -41,6 +41,22 @@ jobs:
           python -m pip install -q 'notebooklm-py[headless] @ git+https://github.com/teng-lin/notebooklm-py.git@956400aa7af6b61b4cb988a24c9a081a3abc4ee8'
           result="$RUNNER_TEMP/notebooklm-result.json"
           notebooklm --version
-          notebooklm auth check --test --json >"$result" 2>/dev/null || true
+          if notebooklm auth refresh --verify --quiet >"$result" 2>&1; then
+            echo "STORED_SESSION_REFRESH_PASS"
+            exit 0
+          fi
+          echo "STORED_SESSION_REFRESH_FAILED"
+          if notebooklm login --master-token-refresh >"$result" 2>&1; then
+            echo "MASTER_TOKEN_REFRESH_PASS"
+          else
+            echo "MASTER_TOKEN_REFRESH_FAILED"
+            if rg -qi 'BadAuthentication|invalid_grant|NeedsBrowser|credentials.*revoked' "$result"; then
+              echo "GOOGLE_REJECTED_SAVED_CREDENTIAL"
+            elif rg -qi 'not found|no master token|does not exist|missing' "$result"; then
+              echo "MASTER_TOKEN_OR_REQUIRED_AUTH_DATA_MISSING"
+            fi
+            exit 1
+          fi
+          notebooklm auth check --test --passive --json >"$result" 2>/dev/null || true
           jq '{status, token_fetch: .checks.token_fetch}' "$result"
           jq -e '.status == "ok" and .checks.token_fetch == true' "$result" >/dev/null
