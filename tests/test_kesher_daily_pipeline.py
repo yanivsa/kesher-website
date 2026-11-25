@@ -245,11 +245,14 @@ class PipelineTestCase(unittest.TestCase):
     def test_generation_persists_exact_task_and_source_ids(self) -> None:
         source = pipeline.source_metadata(hebrew_post())
         self.write_posts([hebrew_post()])
-        state = self.claimed_media_state(pipeline.new_item(source))
+        with mock.patch.object(pipeline, "NEW_SOURCE_NOTEBOOK_ID", "production-notebook"):
+            state = self.claimed_media_state(pipeline.new_item(source))
         item = state.item
         pipeline.save_state(state)
-        with mock.patch.object(pipeline, "run_notebooklm", return_value={"source": {"id": "source-exact"}}):
+        with mock.patch.object(pipeline, "run_notebooklm", return_value={"source": {"id": "source-exact"}}) as source_run:
             pipeline.add_source(state, item)
+        source_args = source_run.call_args.args[0]
+        self.assertEqual(source_args[source_args.index("--notebook") + 1], "production-notebook")
         self.assertEqual(item["source_id"], "source-exact")
         with mock.patch.object(pipeline, "run_notebooklm", return_value={"task_id": "task-exact"}) as run:
             pipeline.start_generation(state, item)
@@ -259,6 +262,7 @@ class PipelineTestCase(unittest.TestCase):
         self.assertIn("כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד", item["generation_prompt"])
         self.assertEqual(item["generation_prompt_sha256"], pipeline.sha256_text(item["generation_prompt"]))
         arguments = run.call_args.args[0]
+        self.assertEqual(arguments[arguments.index("--notebook") + 1], "production-notebook")
         self.assertEqual(arguments[arguments.index("--style") + 1], "auto")
         self.assertNotIn("--style-prompt", arguments)
         restored = CanonicalMediaState(state.context, item)

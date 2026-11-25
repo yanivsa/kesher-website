@@ -128,7 +128,7 @@ def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
     def create_generation():
         payload = core.run_notebooklm(
             [
-                "generate", "video", "--prompt-file", str(prompt_path), "--notebook", core.NOTEBOOK_ID,
+                "generate", "video", "--prompt-file", str(prompt_path), "--notebook", item.get("notebook_id") or core.NOTEBOOK_ID,
                 "--source", item["source_id"], "--format", provider_format, "--language", "he", "--no-wait",
             ],
             timeout=180,
@@ -138,7 +138,7 @@ def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
             raise core.PipelineError("NotebookLM native Short generation returned no task ID")
         return {"task_id": task_id, "artifact_id": task_id}
 
-    request = {"notebook_id": core.NOTEBOOK_ID, "source_id": item["source_id"], "format": provider_format,
+    request = {"notebook_id": item.get("notebook_id") or core.NOTEBOOK_ID, "source_id": item["source_id"], "format": provider_format,
                "language": "he", "prompt_sha256": core.sha256_text(prompt), "prompt": prompt}
     receipt = state.external('provider_generation', request, create_generation) if isinstance(state, CanonicalMediaState) else create_generation()
     task_id = receipt["task_id"]

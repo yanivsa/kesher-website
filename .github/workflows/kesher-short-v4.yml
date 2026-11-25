@@ -74,6 +74,7 @@ jobs:
       KESHER_STATE_ARTIFACT: kesher-short-v4-state
       NOTEBOOKLM_BIN: notebooklm
       KESHER_NOTEBOOK_ID: e101e7d7-5305-45b3-a611-21a5475ceb63
+      KESHER_NEW_SOURCE_NOTEBOOK_ID: cb535ed5-e750-4a24-841d-4d225d1be9f3
       KESHER_WHISPER_MODEL: small
       HF_HOME: ${{ github.workspace }}/.cache/huggingface
       NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm

@@ -58,6 +58,7 @@ STATE_DIR = Path(os.environ.get("KESHER_STATE_DIR", PROJECT_DIR / "notebooklm-ou
 STATE_FILE = STATE_DIR / "state.json"
 STATE_LOCK_FILE = STATE_FILE.with_name(STATE_FILE.name + ".lock")
 NOTEBOOK_ID = os.environ.get("KESHER_NOTEBOOK_ID", "e101e7d7-5305-45b3-a611-21a5475ceb63")
+NEW_SOURCE_NOTEBOOK_ID = os.environ.get("KESHER_NEW_SOURCE_NOTEBOOK_ID") or NOTEBOOK_ID
 NOTEBOOKLM_BIN = os.environ.get("NOTEBOOKLM_BIN", "notebooklm")
 NOTEBOOKLM_REQUIRED_VERSION = "0.8.6"
 YOUTUBE_CHANNEL_ID = "UCx5fEFvdVf28HLAR2dFW64Q"
@@ -585,7 +586,7 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
         "status": "source_selected",
         "source": {key: value for key, value in source.items() if key != "body"},
         "youtube_metadata": source["youtube_metadata"],
-        "notebook_id": NOTEBOOK_ID,
+        "notebook_id": NEW_SOURCE_NOTEBOOK_ID,
         "source_id": None,
         "task_id": None,
         "artifact_id": None,
@@ -946,10 +947,23 @@ def add_source(state: dict[str, Any], item: dict[str, Any], *, allow_exact_recov
     if isinstance(state, CanonicalMediaState):
         title = f"kesher:{state.context.target.key}:{item.get('fresh_generation_attempt', 1)}"
 
+    notebook_id = item.get("notebook_id") or NOTEBOOK_ID
+    if notebook_id != NEW_SOURCE_NOTEBOOK_ID and not isinstance(state, CanonicalMediaState):
+        effect = (item.get("external_effects") or {}).get("provider_source")
+        if not effect and item.get("id"):
+            effect = _load_remote_media_intent(item["id"], "provider_source")
+        if not any(item.get(key) for key in ("source_id", "task_id", "artifact_id")):
+            if not effect or effect.get("status") == "failed":
+                notebook_id = NEW_SOURCE_NOTEBOOK_ID
+            else:
+                # An unfinished or completed write belongs to the notebook
+                # recorded in its intent, including after a runner restart.
+                notebook_id = (effect.get("request") or {}).get("notebook_id") or notebook_id
+
     def create_source():
         try:
             payload = run_notebooklm(
-                ["source", "add", body, "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
+                ["source", "add", body, "--type", "text", "--title", title, "--notebook", notebook_id],
                 timeout=180,
             )
         except PipelineError as exc:
@@ -958,9 +972,9 @@ def add_source(state: dict[str, Any], item: dict[str, Any], *, allow_exact_recov
             if (os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip():
                 raise PipelineError("EXACT_SOURCE_ADD_BLOCKED_NO_NOTEBOOK_PRUNE") from exc
             print(f"WARN: source add failed ({exc}), pruning older notebook sources and retrying...")
-            prune_notebooklm_sources(NOTEBOOK_ID, keep_count=25)
+            prune_notebooklm_sources(notebook_id, keep_count=25)
             payload = run_notebooklm(
-                ["source", "add", body, "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
+                ["source", "add", body, "--type", "text", "--title", title, "--notebook", notebook_id],
                 timeout=180,
             )
         source_id = nested_identifier(payload, ("source_id", "sourceId", "id"))
@@ -968,13 +982,14 @@ def add_source(state: dict[str, Any], item: dict[str, Any], *, allow_exact_recov
             raise PipelineError("NotebookLM source add returned no source ID")
         return {"source_id": source_id}
 
-    request = {"notebook_id": NOTEBOOK_ID, "title": title, "body_sha256": sha256_text(body),
+    request = {"notebook_id": notebook_id, "title": title, "body_sha256": sha256_text(body),
                "body_normalized_sha256": sha256_text(' '.join(body.split()))}
     if isinstance(state, CanonicalMediaState):
         receipt = state.external('provider_source', request, create_source)
     else:
         receipt = legacy_external_effect(state, item, 'provider_source', request, create_source)
     source_id = receipt["source_id"]
+    item["notebook_id"] = notebook_id
     item["source_id"] = source_id
     item["status"] = "source_added"
     item["updated_at"] = utc_now()
@@ -997,7 +1012,7 @@ def start_generation(state: dict[str, Any], item: dict[str, Any], *, allow_exact
     def create_generation():
         payload = run_notebooklm(
             [
-                "generate", "video", "--prompt-file", str(prompt_path), "--notebook", NOTEBOOK_ID,
+                "generate", "video", "--prompt-file", str(prompt_path), "--notebook", item.get("notebook_id") or NOTEBOOK_ID,
                 "--source", item["source_id"], "--format", "explainer", "--style", "auto",
                 "--language", "he", "--no-wait",
             ],
@@ -1008,7 +1023,7 @@ def start_generation(state: dict[str, Any], item: dict[str, Any], *, allow_exact
             raise PipelineError("NotebookLM generation returned no task ID")
         return {"task_id": task_id, "artifact_id": task_id}
 
-    request = {"notebook_id": NOTEBOOK_ID, "source_id": item["source_id"], "format": "explainer",
+    request = {"notebook_id": item.get("notebook_id") or NOTEBOOK_ID, "source_id": item["source_id"], "format": "explainer",
                "style": "auto", "language": "he", "prompt_sha256": sha256_text(prompt), "prompt": prompt}
     if isinstance(state, CanonicalMediaState):
         receipt = state.external('provider_generation', request, create_generation)
@@ -1036,7 +1051,7 @@ def wait_for_generation(state: dict[str, Any], item: dict[str, Any], max_wait_se
     deadline = time.monotonic() + max(0, max_wait_seconds)
     while True:
         try:
-            payload = run_notebooklm(["artifact", "poll", item["task_id"], "--notebook", NOTEBOOK_ID], timeout=120)
+            payload = run_notebooklm(["artifact", "poll", item["task_id"], "--notebook", item.get("notebook_id") or NOTEBOOK_ID], timeout=120)
         except PipelineError as exc:
             msg = str(exc).lower()
             if any(term in msg for term in ("network error", "timed out", "connection reset", "502", "503", "504", "request timed out")):
@@ -1073,7 +1088,7 @@ def download_artifact(state: dict[str, Any], item: dict[str, Any]) -> Path:
     for attempt in range(1, 4):
         try:
             run_notebooklm(
-                ["download", "video", str(raw_path), "--notebook", NOTEBOOK_ID, "--artifact", item["artifact_id"], "--force"],
+                ["download", "video", str(raw_path), "--notebook", item.get("notebook_id") or NOTEBOOK_ID, "--artifact", item["artifact_id"], "--force"],
                 timeout=900,
             )
             if raw_path.exists() and raw_path.stat().st_size >= 1024:
@@ -1815,7 +1830,7 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
         print(f"Original NotebookLM MP4 is missing. Attempting to redownload artifact {item.get('artifact_id')}")
         raw_path = STATE_DIR / f"{item['id']}-notebooklm.mp4"
         run_notebooklm(
-            ["download", "video", str(raw_path), "--notebook", NOTEBOOK_ID, "--artifact", item["artifact_id"], "--force"],
+            ["download", "video", str(raw_path), "--notebook", item.get("notebook_id") or NOTEBOOK_ID, "--artifact", item["artifact_id"], "--force"],
             timeout=900,
         )
         if not raw_path.exists() or raw_path.stat().st_size < 1024:
