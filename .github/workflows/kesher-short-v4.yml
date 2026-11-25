@@ -352,7 +352,16 @@ jobs:
 
       - name: NotebookLM read-only Short preflight
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
-        run: python -u scripts/kesher_short_pipeline_v4.py --preflight
+        run: |
+          set -euo pipefail
+          if ! python -u scripts/kesher_short_pipeline_v4.py --preflight; then
+            echo "NotebookLM preflight failed. Refreshing the saved session and verifying access."
+            if ! notebooklm auth refresh --verify --quiet >/dev/null 2>&1; then
+              echo "::error::NotebookLM session refresh could not verify access."
+              exit 1
+            fi
+            python -u scripts/kesher_short_pipeline_v4.py --preflight
+          fi
 
       - name: Persist terminal article release without a Short
         if: ${{ github.event_name != 'pull_request' && inputs.operation == 'release' }}

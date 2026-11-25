@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -233,12 +234,12 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(env["NOTEBOOKLM_HOME"], str(self.root / "notebooklm"))
 
     def test_preflight_requires_exact_pinned_version_and_live_token(self) -> None:
-        with mock.patch.object(pipeline.importlib.metadata, "version", return_value="0.8.0"), mock.patch.object(
+        with mock.patch.object(pipeline.importlib.metadata, "version", return_value=pipeline.NOTEBOOKLM_REQUIRED_VERSION), mock.patch.object(
             pipeline, "run_notebooklm", return_value={"status": "ok", "checks": {"token_fetch": True}}
         ):
             self.assertEqual(pipeline.auth_preflight()["auth_status"], "ok")
         with mock.patch.object(pipeline.importlib.metadata, "version", return_value="0.8.1"):
-            with self.assertRaisesRegex(pipeline.PipelineError, "must be 0.8.0"):
+            with self.assertRaisesRegex(pipeline.PipelineError, rf"must be {re.escape(pipeline.NOTEBOOKLM_REQUIRED_VERSION)}"):
                 pipeline.auth_preflight()
 
     def test_generation_persists_exact_task_and_source_ids(self) -> None:

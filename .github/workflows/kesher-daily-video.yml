@@ -412,7 +412,16 @@ jobs:
 
       - name: NotebookLM read-only preflight
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'recovery') }}
-        run: python -u scripts/kesher_daily_pipeline.py --preflight
+        run: |
+          set -euo pipefail
+          if ! python -u scripts/kesher_daily_pipeline.py --preflight; then
+            echo "NotebookLM preflight failed. Refreshing the saved session and verifying access."
+            if ! notebooklm auth refresh --verify --quiet >/dev/null 2>&1; then
+              echo "::error::NotebookLM session refresh could not verify access."
+              exit 1
+            fi
+            python -u scripts/kesher_daily_pipeline.py --preflight
+          fi
 
       - name: Inventory existing native NotebookLM source and video IDs without mutation
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'preflight' }}
