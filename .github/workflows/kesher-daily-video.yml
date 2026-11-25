@@ -43,6 +43,12 @@ jobs:
           notebooklm --version
           if notebooklm auth refresh --verify --quiet >"$result" 2>&1; then
             echo "STORED_SESSION_REFRESH_PASS"
+            if notebooklm source list --notebook e101e7d7-5305-45b3-a611-21a5475ceb63 --json >"$result" 2>/dev/null; then
+              jq -e 'select(.sources | type == "array") | {source_count: (.sources | length)}' "$result"
+            else
+              echo "NOTEBOOK_SOURCE_INVENTORY_FAILED"
+              exit 1
+            fi
             exit 0
           fi
           echo "STORED_SESSION_REFRESH_FAILED"
