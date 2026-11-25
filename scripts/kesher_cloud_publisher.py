@@ -379,13 +379,17 @@ def deploy_to_cloudflare(client: GitHubActionsClient, max_retries: int = 3, max_
     )
 
 
-def extract_video_state(client: GitHubActionsClient, run_id: int, slug: str) -> tuple[str, str]:
+def matches_media_revision(item: dict[str, Any], slug: str, source_sha: str) -> bool:
+    source = item.get("source") or {}
+    return source.get("slug") == slug and source.get("content_sha256") == source_sha
+
+
+def extract_video_state(client: GitHubActionsClient, run_id: int, slug: str, source_sha: str) -> tuple[str, str]:
     raw_zip = client.get_run_artifact_zip(run_id, "kesher-video-controller-state")
     with zipfile.ZipFile(io.BytesIO(raw_zip)) as z:
         data = json.loads(z.read("state.json").decode("utf-8"))
     for item in reversed(data.get("items", [])):
-        item_slug = str((item.get("source") or {}).get("slug") or item.get("slug") or "")
-        if item_slug == slug:
+        if matches_media_revision(item, slug, source_sha):
             status = item.get("status")
             item_id = str(item.get("id") or item.get("item_id") or "")
             if status == "uploaded":
@@ -401,13 +405,12 @@ def extract_video_state(client: GitHubActionsClient, run_id: int, slug: str) -> 
     raise RuntimeError(f"NO_VIDEO_ITEM_FOUND_IN_RUN_{run_id}_FOR_{slug}")
 
 
-def extract_short_state(client: GitHubActionsClient, run_id: int, slug: str) -> str:
+def extract_short_state(client: GitHubActionsClient, run_id: int, slug: str, source_sha: str) -> str:
     raw_zip = client.get_run_artifact_zip(run_id, "kesher-short-v4-controller-state")
     with zipfile.ZipFile(io.BytesIO(raw_zip)) as z:
         data = json.loads(z.read("state.json").decode("utf-8"))
     for item in reversed(data.get("items", [])):
-        item_slug = str((item.get("source") or {}).get("slug") or item.get("slug") or "")
-        if item_slug == slug:
+        if matches_media_revision(item, slug, source_sha):
             status = str(item.get("status") or "")
             if item.get("uploaded") is True and item.get("youtube_id"):
                 return str(item.get("youtube_id"))
@@ -704,7 +707,7 @@ def handle_run_now(
         )
         if video_run.get("conclusion") != "success":
             raise RuntimeError(f"Long Video workflow failed with conclusion: {video_run.get('conclusion')}")
-        long_item_id, long_yt = extract_video_state(client, video_run["id"], slug)
+        long_item_id, long_yt = extract_video_state(client, video_run["id"], slug, source_sha)
         if long_item_id and long_yt:
             print(f"Long video completed: item_id={long_item_id}, youtube={long_yt}")
             break
@@ -736,7 +739,7 @@ def handle_run_now(
         )
         if short_run.get("conclusion") != "success":
             raise RuntimeError(f"Short workflow failed with conclusion: {short_run.get('conclusion')}")
-        short_yt = extract_short_state(client, short_run["id"], slug)
+        short_yt = extract_short_state(client, short_run["id"], slug, source_sha)
         if short_yt:
             print(f"Short completed: youtube={short_yt}")
             break
@@ -843,8 +846,7 @@ def handle_resume(
                 vstate = json.loads(z.read("state.json").decode("utf-8"))
             if vstate and isinstance(vstate.get("items"), list):
                 for item in vstate["items"]:
-                    item_slug = str((item.get("source") or {}).get("slug") or item.get("slug") or "")
-                    if item_slug == slug and item.get("status") == "uploaded":
+                    if matches_media_revision(item, slug, source_sha) and item.get("status") == "uploaded":
                         long_item_id = str(item.get("id") or item.get("item_id") or "")
                         long_yt = str(item.get("youtube_id") or "")
                         if long_item_id and long_yt:
@@ -870,7 +872,7 @@ def handle_resume(
             video_run = client.poll_workflow("kesher-daily-video.yml", branch="main", dispatched_after_iso=video_now, max_wait_seconds=1800)
             if video_run.get("conclusion") != "success":
                 raise RuntimeError(f"Long Video workflow failed with conclusion: {video_run.get('conclusion')}")
-            long_item_id, long_yt = extract_video_state(client, video_run["id"], slug)
+            long_item_id, long_yt = extract_video_state(client, video_run["id"], slug, source_sha)
             if long_item_id and long_yt:
                 print(f"Long video uploaded: item_id={long_item_id}, youtube={long_yt}")
                 break
@@ -888,8 +890,7 @@ def handle_resume(
                 sstate = json.loads(z.read("state.json").decode("utf-8"))
             if sstate and isinstance(sstate.get("items"), list):
                 for item in sstate["items"]:
-                    item_slug = str((item.get("source") or {}).get("slug") or item.get("slug") or "")
-                    if item_slug == slug and item.get("uploaded") is True:
+                    if matches_media_revision(item, slug, source_sha) and item.get("uploaded") is True:
                         short_yt = str(item.get("youtube_id") or "")
                         if short_yt:
                             print(f"Found uploaded short in latest artifact: youtube={short_yt}")
@@ -914,7 +915,7 @@ def handle_resume(
             short_run = client.poll_workflow("kesher-short-v4.yml", branch="main", dispatched_after_iso=short_now, max_wait_seconds=1800)
             if short_run.get("conclusion") != "success":
                 raise RuntimeError(f"Short workflow failed with conclusion: {short_run.get('conclusion')}")
-            short_yt = extract_short_state(client, short_run["id"], slug)
+            short_yt = extract_short_state(client, short_run["id"], slug, source_sha)
             if short_yt:
                 print(f"Short uploaded: youtube={short_yt}")
                 break
