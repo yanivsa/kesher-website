@@ -108,6 +108,23 @@ class RecoveryTest(unittest.TestCase):
             self.assertFalse(data['contract_complete'])
             self.assertEqual(data['request_root'],'10')
 
+    def test_daily_accepts_verified_triad_without_touching_unrelated_pending_article(self):
+        row = {'slug': SLUG, 'date': SLOT, 'complete': True,
+               'expected_source_sha256': SHA,
+               'article': {'url': 'https://kesher.saharoni.com/blog/'+SLUG},
+               'long_video': {'youtube_url': 'https://www.youtube.com/watch?v=abcdefghijk'},
+               'short': {'youtube_url': 'https://www.youtube.com/shorts/lmnopqrstuv'}}
+        other = {'slug': 'unrelated-pending', 'date': SLOT, 'complete': False}
+        aggregate = {'complete': False, 'article_count': 2, 'triads': [row, other]}
+        exact = {'complete': True, 'article_count': 1, 'triads': [row]}
+        with patch.object(p, 'run_supervisor_audit', side_effect=[aggregate, exact]) as audit, patch.object(p, 'handle_run_now') as create, patch.object(p, 'handle_resume') as resume:
+            result = p.handle_daily(SLOT, Mock())
+        self.assertTrue(r.complete_receipt(dict(result, dry_run=False, stage_only=False)))
+        self.assertEqual(result['other_slot_articles_unverified'], ['unrelated-pending'])
+        audit.assert_called_with(SLOT, target_slug=SLUG)
+        create.assert_not_called()
+        resume.assert_not_called()
+
     def test_three_integrated_failure_recovery_cycles(self):
         import sys, io, zipfile
         from contextlib import ExitStack

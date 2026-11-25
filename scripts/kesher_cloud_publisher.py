@@ -541,6 +541,25 @@ def handle_daily(
             **audited_links(audit)
         }
 
+    # The daily contract requires one verified triad, not completion of
+    # unrelated articles sharing the calendar date. Never create media for an
+    # ambiguous article merely because another article is pending.
+    completed_rows = [row for row in audit.get("triads", [])
+                      if row.get("date") == slot and row.get("complete") is True]
+    if completed_rows:
+        slug = sorted(completed_rows, key=lambda row: row["slug"])[0]["slug"]
+        exact = run_supervisor_audit(slot, target_slug=slug)
+        if not exact["complete"]:
+            raise RuntimeError("DAILY_VERIFIED_TRIAD_RECHECK_FAILED")
+        return {
+            "action": "daily", "slot": slot, "status": "already_complete",
+            "contract_complete": True, **audited_links(exact, slug),
+            "other_slot_articles_unverified": [
+                row.get("slug") for row in audit.get("triads", [])
+                if row.get("complete") is not True
+            ],
+        }
+
     # If an article exists for slot, resume its pipeline rather than creating duplicate
     if audit.get("article_count", 0) > 0:
         print(f"Existing article found for {slot}; resuming exact triad...")
