@@ -1,4 +1,4 @@
 # Full pixel decoding for every trusted article image proof consumer.
-Pillow==12.3.0
+Pillow==13.0.0
 # Canonical controller Cloudflare Pages observer/client imports requests at runtime.
 requests==2.33.0
