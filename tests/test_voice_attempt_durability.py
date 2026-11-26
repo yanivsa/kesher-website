@@ -50,6 +50,24 @@ class VoiceAttemptDurabilityTests(unittest.TestCase):
             media.write_bytes(b'changed')
             with self.assertRaisesRegex(p.PipelineError, 'FEMALE_NARRATION_QA_PENDING'):
                 p.require_verified_female_narration(item, media)
+    def test_public_triad_requires_exact_narration_for_both_assets(self):
+        from scripts import kesher_cloud_supervisor as supervisor
+        from scripts.kesher_runtime import media_worker
+        from scripts.kesher_runtime.state import StateInvalid
+        item = {'task_id': 'provider-task'}
+        with mock.patch.object(media_worker, 'require_owner_media_quality', side_effect=StateInvalid('EDITORIAL_QA_PENDING')):
+            self.assertFalse(supervisor.verified_female_narration_receipt(item, 'overview'))
+            self.assertFalse(supervisor.verified_female_narration_receipt(item, 'short'))
+        approval = {'narration': {'status': 'approved', 'female_only': True,
+                                  'language': 'he-IL', 'full_audio_reviewed': True,
+                                  'task_id': 'provider-task'}}
+        with mock.patch.object(media_worker, 'require_owner_media_quality', return_value=approval):
+            for kind in ('overview', 'short'):
+                self.assertTrue(supervisor.verified_female_narration_receipt(item, kind))
+                with mock.patch.dict(approval['narration'], {'female_only': False}):
+                    self.assertFalse(supervisor.verified_female_narration_receipt(item, kind))
+                self.assertFalse(supervisor.verified_female_narration_receipt(dict(item, final_attempt_fallback=True), kind))
+
     def test_retry_continues_recorded_attempt_even_if_retry_counter_is_stale(self):
         old=self.item(2);old['technical_retry_count']=0;state={'version':1,'items':[old]}
         with mock.patch.object(r,'current_source_snapshot',return_value=self.source):new=r.retry_technical_rejection(state,old)
