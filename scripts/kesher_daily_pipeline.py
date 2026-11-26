@@ -1245,30 +1245,33 @@ def validate_female_voice(
     if pitch < FEMALE_PITCH_MIN_HZ:
         return False, pitch, f"Suspected male voice: pitch {pitch:.1f} Hz below {FEMALE_PITCH_MIN_HZ:.0f} Hz screening threshold; Israeli female voice required"
     return True, pitch, f"Voice pitch screening passed ({pitch:.1f} Hz); full audio review still required"
-def require_verified_female_narration(item: dict[str, Any], media_path: Path) -> None:
-    """Require affirmative full-audio review for the exact final media and source.
 
-    Pitch is a screening heuristic, not proof of speaker gender or language.
-    Only an authorized review receipt in protected media state can satisfy this gate.
+
+def require_verified_female_narration(item: dict[str, Any], media_path: Path) -> None:
+    """Check the exact reviewed approval file from the protected checkout.
+
+    No mutable state flag, pitch estimate or transcript can substitute for a
+    full audio review. Reuse the canonical media-quality approval verifier.
     """
-    review = item.get("female_narration_review")
-    source = item.get("source") or {}
+    from scripts.kesher_runtime.media_worker import require_owner_media_quality
+    from scripts.kesher_runtime.state import StateInvalid
+
+    kind = "short" if item.get("type") == "article_short" else "overview"
+    try:
+        approval = require_owner_media_quality(item, kind)
+    except StateInvalid as exc:
+        raise PipelineError(f"FEMALE_NARRATION_QA_PENDING: {exc}") from exc
+    review = approval.get("narration") if isinstance(approval, dict) else None
     digest = sha256_file(media_path)
     if (
         not isinstance(review, dict)
         or review.get("status") != "approved"
-        or review.get("method") != "authorized_full_audio_review"
         or review.get("female_only") is not True
         or review.get("language") != "he-IL"
         or review.get("full_audio_reviewed") is not True
-        or not str(review.get("reviewer_id") or "").strip()
-        or not str(source.get("slug") or source.get("id") or "").strip()
-        or review.get("source_slug") != (source.get("slug") or source.get("id"))
-        or not str(source.get("content_sha256") or "").strip()
-        or review.get("content_sha256") != source.get("content_sha256")
         or not str(item.get("task_id") or "").strip()
         or review.get("task_id") != item.get("task_id")
-        or review.get("final_sha256") != digest
+        or approval.get("final_sha256") != digest
         or item.get("final_sha256") != digest
         or item.get("final_attempt_fallback") is True
         or item.get("voice_gate_waived_after_attempt")
