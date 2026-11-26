@@ -26,29 +26,30 @@ class VoiceAttemptDurabilityTests(unittest.TestCase):
         with mock.patch.object(p, 'estimate_voice_pitch', return_value=None):
             for attempt in (1, 2, 3):
                 self.assertFalse(p.validate_female_voice(Path('fake.mp4'), self.item(attempt))[0])
-    def test_full_audio_review_is_bound_to_source_and_final_bytes(self):
+    def test_full_audio_review_is_bound_to_protected_approval_and_final_bytes(self):
+        from scripts.kesher_runtime import media_worker
+        from scripts.kesher_runtime.state import StateInvalid
         media = Path(self.tmp.name) / 'final.mp4'
         media.write_bytes(b'fixture-media')
         item = self.item()
         item['task_id'] = 'provider-task'
         item['final_sha256'] = p.sha256_file(media)
-        with self.assertRaisesRegex(p.PipelineError, 'FEMALE_NARRATION_QA_PENDING'):
+        with mock.patch.object(media_worker, 'require_owner_media_quality', side_effect=StateInvalid('EDITORIAL_QA_PENDING')):
+            with self.assertRaisesRegex(p.PipelineError, 'FEMALE_NARRATION_QA_PENDING'):
+                p.require_verified_female_narration(item, media)
+        approval = {'final_sha256': item['final_sha256'], 'narration': {
+            'status': 'approved', 'female_only': True, 'language': 'he-IL',
+            'full_audio_reviewed': True, 'task_id': 'provider-task',
+        }}
+        with mock.patch.object(media_worker, 'require_owner_media_quality', return_value=approval):
             p.require_verified_female_narration(item, media)
-        item['female_narration_review'] = {
-            'status': 'approved', 'method': 'authorized_full_audio_review',
-            'female_only': True, 'language': 'he-IL', 'full_audio_reviewed': True,
-            'reviewer_id': 'test-reviewer', 'source_slug': 'one',
-            'content_sha256': 'a'*64, 'task_id': 'provider-task',
-            'final_sha256': item['final_sha256'],
-        }
-        p.require_verified_female_narration(item, media)
-        for field, value in [('female_only', False), ('language', 'en-US'), ('content_sha256', 'b'*64), ('full_audio_reviewed', False), ('task_id', 'other')]:
-            with mock.patch.dict(item['female_narration_review'], {field: value}):
-                with self.assertRaisesRegex(p.PipelineError, 'FEMALE_NARRATION_QA_PENDING'):
-                    p.require_verified_female_narration(item, media)
-        media.write_bytes(b'changed')
-        with self.assertRaisesRegex(p.PipelineError, 'FEMALE_NARRATION_QA_PENDING'):
-            p.require_verified_female_narration(item, media)
+            for field, value in [('female_only', False), ('language', 'en-US'), ('full_audio_reviewed', False), ('task_id', 'other')]:
+                with mock.patch.dict(approval['narration'], {field: value}):
+                    with self.assertRaisesRegex(p.PipelineError, 'FEMALE_NARRATION_QA_PENDING'):
+                        p.require_verified_female_narration(item, media)
+            media.write_bytes(b'changed')
+            with self.assertRaisesRegex(p.PipelineError, 'FEMALE_NARRATION_QA_PENDING'):
+                p.require_verified_female_narration(item, media)
     def test_retry_continues_recorded_attempt_even_if_retry_counter_is_stale(self):
         old=self.item(2);old['technical_retry_count']=0;state={'version':1,'items':[old]}
         with mock.patch.object(r,'current_source_snapshot',return_value=self.source):new=r.retry_technical_rejection(state,old)
