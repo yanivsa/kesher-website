@@ -364,7 +364,7 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertEqual(replacement["technical_retry_count"], 1)
         self.assertEqual(replacement["retry_of"], old["id"])
 
-    def test_technical_retry_is_bounded_to_four_fresh_generations(self) -> None:
+    def test_technical_retry_is_bounded_to_three_fresh_generations(self) -> None:
         today = post("today")
         self.write_posts([today])
         source = pipeline.source_metadata(today)
@@ -380,6 +380,29 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertEqual(saved["status"], "released_without_short")
         self.assertEqual(saved["release_reason"], "fresh_generation_budget_exhausted")
         self.assertEqual(reconcile.unresolved_items(pipeline.load_state()), [])
+
+    def test_targeted_short_never_restarts_exhausted_voice_budget(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        rejected = pipeline.new_item(source)
+        rejected.update(type="article_short", source_mode="direct-short",
+                        status="rejected", technical_verified=False,
+                        fresh_generation_attempt=3, technical_retry_count=2,
+                        failure_signature="wrong_narrator_gender",
+                        task_id="third-native-short")
+        pipeline.save_state({"version": 1, "items": [rejected]})
+        with mock.patch.dict(os.environ, {"KESHER_MEDIA_MODE": "article_short",
+                                         "TARGET_CONTENT_SHA256": source["content_sha256"]}):
+            self.assertEqual(reconcile.prepare_generation("today"), 0)
+            self.assertEqual(reconcile.prepare_generation("today"), 0)
+        rows = pipeline.load_state()["items"]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["status"], "released_without_short")
+        self.assertEqual(rows[0]["fresh_generation_attempt"], 3)
+        self.assertEqual(rows[0]["task_id"], "third-native-short")
+        self.assertFalse(rows[0]["upload_eligible"])
+        self.assertEqual(rows[0]["quality_status"], "QUALITY_HOLD")
 
     def test_explicit_release_marks_existing_item_and_prevents_fifo_retry(self) -> None:
         today = post("today")
