@@ -25,11 +25,8 @@ FALLBACK_PROMOTION_ENABLED = False
 
 
 def is_fallback_promotion_enabled() -> bool:
-    """Production-safe gate for fallback promotion. Default: DISABLED."""
-    env_val = os.environ.get("KESHER_ENABLE_FALLBACK_PROMOTION", "").strip().lower()
-    if env_val in {"1", "true", "yes"}:
-        return True
-    return FALLBACK_PROMOTION_ENABLED
+    """Owner policy: no final-attempt voice waiver, including environment overrides."""
+    return False
 
 
 def _slug(item: dict[str, Any]) -> str:
