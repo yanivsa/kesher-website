@@ -7,8 +7,8 @@ upload is permitted after machine technical verification of the exact
 source/video identity. Provider polling resumes persisted IDs instead of
 creating duplicate videos.
 
-V4 adds a durable ``released_without_short`` tombstone. Four fresh generation
-rounds are the maximum (initial + three technical retries). Once that budget is
+V4 adds a durable ``released_without_short`` tombstone. Three fresh generation
+rounds are the maximum (initial + two technical retries). Once that budget is
 exhausted, or the V4 controller explicitly releases the article, the slug is
 persisted as released and is never selected for generation again.
 """
@@ -38,8 +38,8 @@ UNRESOLVED_STATUSES = {
 }
 PROVIDER_PROGRESS_STATUSES = {"source_selected", "source_added", "generating", "downloaded"}
 RELEASED_STATUS = "released_without_short"
-# Initial generation + three replacement generations = four fresh videos max.
-MAX_TECHNICAL_RETRIES = 3
+# Initial generation + two replacement generations = three fresh videos max.
+MAX_TECHNICAL_RETRIES = 2
 
 
 def workflow_output(name: str, value: str) -> None:
@@ -514,9 +514,13 @@ def prepare_generation(target_slug: str = "") -> int:
         return 0
     if target_slug:
         source = current_source_snapshot(target_slug)
+        requested_sha = (os.environ.get("TARGET_CONTENT_SHA256") or "").strip()
+        if requested_sha and requested_sha != source["content_sha256"]:
+            raise pipeline.PipelineError("EXACT_SHORT_SOURCE_CHANGED")
         same_source = [
             item for item in state.get("items") or []
             if isinstance(item, dict) and source_slug(item) == target_slug
+            and item.get("type") in {"article_short", "short_release", None}
         ]
         verified_public = [
             item for item in same_source
@@ -595,7 +599,7 @@ def prepare_generation(target_slug: str = "") -> int:
                     workflow_output("skip_generation", "true")
                     print(
                         "VIDEO_RECONCILED_GENERATION "
-                        f"slug={target_slug} released_without_short=yes fresh_attempts=4"
+                        f"slug={target_slug} released_without_short=yes attempt_budget_exhausted=true"
                     )
                     return 0
                 export_target(replacement)
@@ -610,6 +614,19 @@ def prepare_generation(target_slug: str = "") -> int:
             )
             return 0
 
+        exact_history = [
+            row for row in same_source
+            if (row.get("source") or {}).get("content_sha256") == source["content_sha256"]
+        ]
+        # A repeated targeted invocation must never reset a consumed budget.
+        if any(row.get("status") == RELEASED_STATUS or
+               int(row.get("fresh_generation_attempt") or 0) >= 3
+               for row in exact_history):
+            workflow_output("skip_generation", "true")
+            print(f"SHORT_GENERATION_BUDGET_CONSUMED slug={target_slug}")
+            return 0
+        if exact_history:
+            raise pipeline.PipelineError("EXACT_SHORT_HISTORY_REQUIRES_RECONCILIATION")
         item = pipeline.new_item(source)
         item["type"] = "article_short"
         item["source_mode"] = "direct-short"
@@ -632,7 +649,7 @@ def prepare_generation(target_slug: str = "") -> int:
                 workflow_output("skip_generation", "true")
                 print(
                     "VIDEO_RECONCILED_GENERATION "
-                    f"slug={source_slug(item)} released_without_short=yes fresh_attempts=4"
+                    f"slug={source_slug(item)} released_without_short=yes attempt_budget_exhausted=true"
                 )
                 return 0
             export_target(replacement)
