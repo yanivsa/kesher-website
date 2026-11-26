@@ -579,6 +579,23 @@ def handle_daily(
         if any(p["date"] == slot for p in posts):
             raise RuntimeError("DAILY_CATALOG_OCCUPIED_BUT_AUDIT_UNVERIFIED")
     print(f"Daily triad for {slot} is not yet complete. Initiating publishing cycle...")
+    # Research is prepared upstream by the existing Master, not by a second publisher.
+    # A complete researched article must first be staged and reviewed, never silently
+    # replaced by generic topic synthesis or sent directly to media generation.
+    if client and not dry_run and os.environ.get("GITHUB_ACTIONS") == "true":
+        from scripts.kesher_daily_trend import load_daily_trend
+        from scripts.kesher_cloud_article_generator import load_all_posts
+        try:
+            trend = load_daily_trend(client, slot, load_all_posts())
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            print(f"Daily trend input unavailable or rejected ({type(exc).__name__}); using regular editorial fallback.")
+            trend = None
+        if trend:
+            issue_number, post = trend
+            print(f"Staging researched daily article from TrendBrief #{issue_number}")
+            if checkpoint:
+                checkpoint(stage_only=True, trend_brief_issue=issue_number)
+            return handle_run_now(slot, client, article_json=post, stage_only=True, checkpoint=checkpoint)
     return handle_run_now(slot, client, dry_run=dry_run, stage_only=stage_only, checkpoint=checkpoint)
 
 
@@ -1155,6 +1172,8 @@ def main():
                                        "primary_keyword": args.primary_keyword}
 
     def checkpoint(**fields):
+        if fields.get("stage_only") is True:
+            identity["stage_only"] = True
         progress.update(fields)
         write_result(out_p, progress)
 
@@ -1185,7 +1204,7 @@ def main():
             raise ValueError(f"Unknown action: {args.action}")
 
         result = {**progress, **result, **identity}
-        live_publish = args.action in {"daily", "run_now", "resume"} and not (args.dry_run or args.stage_only)
+        live_publish = args.action in {"daily", "run_now", "resume"} and not (args.dry_run or identity["stage_only"])
         if live_publish:
             from scripts.kesher_publish_recovery import complete_receipt
             if not complete_receipt(result):
