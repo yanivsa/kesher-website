@@ -342,15 +342,23 @@ def synthesize_article_from_brief(
             words = [w for w in re.findall(r"[\u0590-\u05FF]+", clean_brief or topic_brief) if len(w) > 1]
             keyword = " ".join(words[:3]) if words else "חיזוק הקשר והמשפחה"
 
-    # Derive slug
+    # A specific owner topic must have a meaningful, stable, human-readable URL.
+    # Never publish hash-like / guidance-XXXXXXXX fallbacks for Hebrew briefs.
     slug = idea_id.strip().lower()
     if not slug:
+        if re.search(r"[\u0590-\u05FF]", topic_brief):
+            raise ValueError("SEO_SEMANTIC_SLUG_REQUIRED: supply an English, topic-specific idea_id")
         clean_name = re.sub(r"[^a-z0-9]+", "-", topic_brief.lower()).strip("-")
-        if clean_name and len(clean_name) > 3:
-            slug = clean_name[:40]
-        else:
-            digest = hashlib.sha256(topic_brief.encode("utf-8")).hexdigest()[:8]
-            slug = f"guidance-{digest}"
+        if len(clean_name.split("-")) < 3 or len(clean_name) > 80:
+            raise ValueError("SEO_SEMANTIC_SLUG_REQUIRED: avoid opaque or truncated URLs")
+        slug = clean_name
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug) or re.fullmatch(r"guidance-[0-9a-f]{8}(?:-\d+)?", slug):
+        raise ValueError("SEO_SEMANTIC_SLUG_INVALID: use words describing the actual article topic")
+    if len(topic_brief.strip()) > 450:
+        raise ValueError(
+            "EDITORIAL_BRIEF_REQUIRES_ARTICLE_JSON: the generic template cannot safely "
+            "transform a detailed research brief into an attributed article"
+        )
 
     # Anti-collision check
     base_slug = slug
@@ -359,8 +367,11 @@ def synthesize_article_from_brief(
         slug = f"{base_slug}-{collision_counter}"
         collision_counter += 1
 
-    # Determine topic domain
-    is_couples = any(w in topic_brief for w in ("זוג", "נישוא", "דייט", "רווק", "קשר", "אינטימיות", "ריחוק", "שתיקה"))
+    # Classify by the required primary keyword, not an incidental phrase or
+    # research disclaimer in the full brief ("זוגיות" can occur in parenting briefs).
+    parenting_keyword = any(w in keyword for w in ("הור", "ילד", "פעוט", "מתבגר", "גן", "בית ספר", "אחים"))
+    couples_keyword = any(w in keyword for w in ("זוג", "נישוא", "דייט", "רווק", "אינטימיות", "בן זוג", "בת זוג"))
+    is_couples = couples_keyword and not parenting_keyword
     cat = "ייעוץ זוגי" if is_couples else "הדרכת הורים"
     subcat = "תקשורת ופתרון קונפליקטים" if is_couples else "הצבת גבולות וסמכות הורית"
     service_url = "/services/couples" if is_couples else "/services/parenting"
