@@ -208,18 +208,13 @@ def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dic
         raise pipeline.PipelineError('FRESH_GENERATION_ATTEMPT_INVALID')
     retries = max(int(old.get("technical_retry_count") or 0), recorded - 1)
     voice_rejection = (old.get('failure_signature') == 'wrong_narrator_gender'
-                       or 'Detected male voice' in str((old.get('review_notes') or {}).get('technical', '')))
+                       or any(marker in str((old.get('review_notes') or {}).get('technical', '')) for marker in ('Detected male voice', 'Suspected male voice', 'Voice pitch analysis inconclusive')))
     if voice_rejection:
         policy = json.loads(pipeline.PRODUCTION_CONTRACT_FILE.read_text())['video']['voice_policy']
         if recorded >= int(policy['female_attempts_before_fallback']):
-            if (policy['accept_male_on_final_female_attempt'] is True
-                    and policy['fallback_voice_after_failed_female_attempts'] == 'male'
-                    and old.get('raw_mp4') and old.get('task_id')):
-                old['status'] = 'downloaded'
-                old['voice_fallback_revalidation'] = True
-                old['updated_at'] = pipeline.utc_now()
-                return old  # same receipt, no fourth provider generation
-            _mark_released(old, 'final_voice_attempt_has_no_recoverable_artifact')
+            old['upload_eligible'] = False
+            old['quality_status'] = 'QUALITY_HOLD'
+            _mark_released(old, 'female_narration_attempts_exhausted_no_upload')
             return None
     if retries >= MAX_TECHNICAL_RETRIES:
         _mark_released(old, "fresh_generation_budget_exhausted")
@@ -430,7 +425,7 @@ def prepare_generation(target_slug: str = "") -> int:
                 and item.get("technical_verified") is not True
                 and (
                     item.get("failure_signature") == "wrong_narrator_gender"
-                    or "Detected male voice" in str((item.get("review_notes") or {}).get("technical", ""))
+                    or any(marker in str((item.get("review_notes") or {}).get("technical", "")) for marker in ("Detected male voice", "Suspected male voice", "Voice pitch analysis inconclusive"))
                 )
                 and int(item.get("fresh_generation_attempt") or 1) < 3
             )
