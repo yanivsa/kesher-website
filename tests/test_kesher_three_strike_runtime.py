@@ -227,7 +227,7 @@ class KesherThreeStrikeRuntimeTests(unittest.TestCase):
         self.assertEqual(state["interventions"][incident_key]["strike_count"], 0)
         self.assertNotIn("direct_takeover_required", state)
 
-    def test_media_watchdog_hard_timeout_promotes_fallback_candidate(self):
+    def test_media_watchdog_hard_timeout_never_promotes_rejected_voice(self):
         source = {"slug": "dating-burnout", "content_sha256": "a" * 64}
         start = datetime(2026, 9, 6, 7, 0, tzinfo=timezone.utc)
         second_manifest = {
@@ -302,16 +302,13 @@ class KesherThreeStrikeRuntimeTests(unittest.TestCase):
         self.assertEqual(action2_disabled.reason, "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE")
         self.assertEqual(len(harness.github.dispatches), 0)
 
-        # Strike 2 (FORCE_CONTROLLER_RECOVERY under exhausted attempt 3 when fallback explicitly enabled):
-        # fallback candidate is authoritatively promoted!
+        # Even an explicit legacy environment/flag override must not promote a
+        # rejected narrator or dispatch a new upload after the third attempt.
         with mock.patch.object(fallback, "FALLBACK_PROMOTION_ENABLED", True):
             action2 = harness._media_watchdog_preflight(state, source)
-            self.assertEqual(action2.kind, "long_video_watchdog_recover")
-            self.assertEqual(len(harness.github.dispatches), 1)
-            wf, inputs = harness.github.dispatches[0]
-            self.assertEqual(wf, v5.LONG_VIDEO_WORKFLOW)
-            self.assertEqual(inputs.get("target_item_id"), "item-attempt-2")
-            self.assertEqual(state["long_video"].get("authoritative_item_id"), "item-attempt-2")
+            self.assertEqual(action2.kind, "blocked")
+            self.assertEqual(len(harness.github.dispatches), 0)
+            self.assertNotEqual(state["long_video"].get("authoritative_item_id"), "item-attempt-2")
 
     def test_media_blocked_state_does_not_oscillate_to_article_live(self):
         from scripts.kesher_content_controller_stabilized import StabilizedRuntimeV5Controller
