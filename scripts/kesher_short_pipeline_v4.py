@@ -202,6 +202,9 @@ def short_technical_failures(
     if video_path and video_path.exists():
         female_ok, pitch_hz, pitch_msg = core.validate_female_voice(video_path, item)
         if not female_ok:
+            if item is not None:
+                item['failure_signature'] = 'wrong_narrator_gender'
+                item['failure_fingerprint'] = core.voice_failure_fingerprint(item)
             failures.append(pitch_msg)
 
     if item is not None:
