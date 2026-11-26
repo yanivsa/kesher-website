@@ -1241,31 +1241,39 @@ def validate_female_voice(
 ) -> tuple[bool, float | None, str]:
     pitch = estimate_voice_pitch(media_path)
     if pitch is None:
-        return True, None, "Voice pitch analysis inconclusive (insufficient voiced segments)"
+        return False, None, "Voice pitch analysis inconclusive; female Hebrew narration not verified"
     if pitch < FEMALE_PITCH_MIN_HZ:
-        try:
-            contract = json.loads(PRODUCTION_CONTRACT_FILE.read_text(encoding="utf-8"))
-            policy = contract["video"]["voice_policy"]
-            attempt = max(1, int((item or {}).get("fresh_generation_attempt") or 1))
-            female_attempts = int(policy["female_attempts_before_fallback"])
-            allow_fallback = (
-                policy["fallback_voice_after_failed_female_attempts"] == "male"
-                and policy["accept_male_on_final_female_attempt"] is True
-                and attempt >= female_attempts
-            )
-        except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
-            raise PipelineError(
-                f"Voice fallback policy is unreadable: {type(exc).__name__}"
-            ) from exc
-        if allow_fallback:
-            return (
-                True,
-                pitch,
-                f"Male voice fallback accepted on attempt {attempt} after "
-                f"{female_attempts - 1} rejected female-voice attempts",
-            )
-        return False, pitch, f"Detected male voice pitch ({pitch:.1f} Hz < {FEMALE_PITCH_MIN_HZ:.0f} Hz threshold); Israeli female voice required"
-    return True, pitch, f"Female voice pitch verified ({pitch:.1f} Hz)"
+        return False, pitch, f"Suspected male voice: pitch {pitch:.1f} Hz below {FEMALE_PITCH_MIN_HZ:.0f} Hz screening threshold; Israeli female voice required"
+    return True, pitch, f"Voice pitch screening passed ({pitch:.1f} Hz); full audio review still required"
+def require_verified_female_narration(item: dict[str, Any], media_path: Path) -> None:
+    """Require affirmative full-audio review for the exact final media and source.
+
+    Pitch is a screening heuristic, not proof of speaker gender or language.
+    Only an authorized review receipt in protected media state can satisfy this gate.
+    """
+    review = item.get("female_narration_review")
+    source = item.get("source") or {}
+    digest = sha256_file(media_path)
+    if (
+        not isinstance(review, dict)
+        or review.get("status") != "approved"
+        or review.get("method") != "authorized_full_audio_review"
+        or review.get("female_only") is not True
+        or review.get("language") != "he-IL"
+        or review.get("full_audio_reviewed") is not True
+        or not str(review.get("reviewer_id") or "").strip()
+        or not str(source.get("slug") or source.get("id") or "").strip()
+        or review.get("source_slug") != (source.get("slug") or source.get("id"))
+        or not str(source.get("content_sha256") or "").strip()
+        or review.get("content_sha256") != source.get("content_sha256")
+        or not str(item.get("task_id") or "").strip()
+        or review.get("task_id") != item.get("task_id")
+        or review.get("final_sha256") != digest
+        or item.get("final_sha256") != digest
+        or item.get("final_attempt_fallback") is True
+        or item.get("voice_gate_waived_after_attempt")
+    ):
+        raise PipelineError("FEMALE_NARRATION_QA_PENDING: exact full-audio female Hebrew review required")
 
 
 def _render_context():
@@ -1906,7 +1914,7 @@ def durable_media_restore_required(
     The lightweight state is sufficient for provider polling and fresh technical
     retries. Local MP4/evidence bytes are required only when the next legal step
     consumes those bytes directly (render/review/upload), plus the explicit final
-    wrong-voice fallback which revalidates the third provider artifact in place.
+    no fallback may waive a voice rejection.
     """
     op = (operation or os.environ.get("OPERATION") or "").strip().lower()
     if op in {"upload", "rebuild"}:
@@ -1942,37 +1950,6 @@ def durable_media_restore_required(
            for row in candidates):
         return True
 
-    try:
-        contract = json.loads(PRODUCTION_CONTRACT_FILE.read_text(encoding="utf-8"))
-        voice_policy = contract["video"]["voice_policy"]
-        female_attempts = int(voice_policy["female_attempts_before_fallback"])
-        final_male_fallback = (
-            voice_policy["fallback_voice_after_failed_female_attempts"] == "male"
-            and voice_policy["accept_male_on_final_female_attempt"] is True
-        )
-    except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
-        raise PipelineError(f"Voice fallback policy is unreadable: {type(exc).__name__}") from exc
-
-    if final_male_fallback:
-        for row in candidates:
-            technical_note = str((row.get("review_notes") or {}).get("technical") or "")
-            wrong_voice = (
-                row.get("failure_signature") == "wrong_narrator_gender"
-                or "Detected male voice" in technical_note
-            )
-            try:
-                attempt = int(row.get("fresh_generation_attempt") or 1)
-            except (TypeError, ValueError):
-                attempt = 1
-            if (
-                row.get("status") == "rejected"
-                and row.get("technical_verified") is not True
-                and wrong_voice
-                and attempt >= female_attempts
-                and bool(str(row.get("raw_mp4") or "").strip())
-                and bool(str(row.get("task_id") or "").strip())
-            ):
-                return True
 
     return False
 
@@ -2669,6 +2646,7 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
         raise PipelineError("Final MP4 SHA-256 mismatch")
     if item.get("manifest_sha256") and sha256_file(manifest_path) != item["manifest_sha256"]:
         raise PipelineError("Manifest SHA-256 mismatch")
+    require_verified_female_narration(item, video_path)
     metadata = item.get("youtube_metadata") or {}
     title = str(metadata.get("title", ""))
     description = str(metadata.get("description", ""))
