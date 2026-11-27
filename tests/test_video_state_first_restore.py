@@ -60,7 +60,7 @@ class DurableMediaRestorePolicyTest(unittest.TestCase):
             )
         )
 
-    def test_final_wrong_voice_fallback_keeps_heavy_media_available(self):
+    def test_final_wrong_voice_does_not_restore_for_fallback(self):
         rejected = self._item(
             "rejected",
             failure_signature="wrong_narrator_gender",
@@ -69,7 +69,7 @@ class DurableMediaRestorePolicyTest(unittest.TestCase):
             task_id="task-3",
         )
         state = {"version": 1, "items": [rejected]}
-        self.assertTrue(
+        self.assertFalse(
             pipeline.durable_media_restore_required(
                 state, operation="full", target_item_id="video-exact", target_slug="target-slug"
             )

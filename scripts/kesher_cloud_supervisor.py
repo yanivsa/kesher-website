@@ -292,6 +292,28 @@ def article_content_present(title: str, direct_answer: str, body: str) -> bool:
     return bool(body and ((heading and heading in body) or (snippet and snippet in body)))
 
 
+def verified_female_narration_receipt(item: dict[str, Any], kind: str) -> bool:
+    """Audit the same protected, source- and media-bound approval used before upload."""
+    from scripts.kesher_runtime.media_worker import require_owner_media_quality
+    from scripts.kesher_runtime.state import StateInvalid
+    try:
+        approval = require_owner_media_quality(item, kind)
+    except (StateInvalid, OSError, ValueError, TypeError):
+        return False
+    narration = approval.get("narration") if isinstance(approval, dict) else None
+    return bool(
+        isinstance(narration, dict)
+        and narration.get("status") == "approved"
+        and narration.get("female_only") is True
+        and narration.get("language") == "he-IL"
+        and narration.get("full_audio_reviewed") is True
+        and str(item.get("task_id") or "").strip()
+        and narration.get("task_id") == item.get("task_id")
+        and item.get("final_attempt_fallback") is not True
+        and not item.get("voice_gate_waived_after_attempt")
+    )
+
+
 def strict_triad_quality(triad: dict[str, Any]) -> bool:
     """Only independently evidenced article, long and native Short may pass."""
     article = triad.get("article") or {}
@@ -307,6 +329,7 @@ def strict_triad_quality(triad: dict[str, Any]) -> bool:
         long_video.get("channel_verified"),
         long_video.get("provenance_verified"),
         long_video.get("technical_verified"),
+        long_video.get("female_narration_verified"),
         long_video.get("signature_verified"),
         long_video.get("landscape_verified"),
         long_video.get("article_link_in_description"),
@@ -314,6 +337,7 @@ def strict_triad_quality(triad: dict[str, Any]) -> bool:
         short.get("channel_verified"),
         short.get("provenance_verified"),
         short.get("technical_verified"),
+        short.get("female_narration_verified"),
         short.get("signature_verified"),
         short.get("portrait_verified"),
         short.get("article_link_in_description"),
@@ -359,6 +383,7 @@ def audit_single_triad(
             "signature_verified": False,
             "technical_verified": False,
             "landscape_verified": False,
+            "female_narration_verified": False,
             "article_link_in_description": False,
             "state_artifact_id": None,
         },
@@ -369,6 +394,7 @@ def audit_single_triad(
             "channel_verified": False,
             "ratio": "9:16",
             "portrait_verified": False,
+            "female_narration_verified": False,
             "provenance_verified": False,
             "signature_verified": False,
             "technical_verified": False,
@@ -479,6 +505,7 @@ def audit_single_triad(
             )
             triad["long_video"]["signature_verified"] = v_item.get("signature_verified") is True
             triad["long_video"]["technical_verified"] = v_item.get("technical_verified") is True
+            triad["long_video"]["female_narration_verified"] = verified_female_narration_receipt(v_item, "overview")
             media = v_item.get("media") or v_item.get("provider_raw_media") or {}
             if isinstance(media, dict):
                 try:
@@ -512,6 +539,7 @@ def audit_single_triad(
             )
             triad["short"]["signature_verified"] = s_item.get("signature_verified") is True
             triad["short"]["technical_verified"] = s_item.get("technical_verified") is True
+            triad["short"]["female_narration_verified"] = verified_female_narration_receipt(s_item, "short")
             raw_media = s_item.get("provider_raw_media") or {}
             if isinstance(raw_media, dict):
                 try:

@@ -29,7 +29,7 @@ class MediaRunResult:
     reason: str
 
 
-def require_owner_media_quality(item: dict, kind: str, *, approval_root: Path | None = None) -> None:
+def require_owner_media_quality(item: dict, kind: str, *, approval_root: Path | None = None) -> dict:
     """Fail closed before FIRST upload unless OWNER reviewed these exact media bytes.
 
     GitHub-reviewed approval JSON is an immutable media/source-bound receipt, not
@@ -108,6 +108,7 @@ def require_owner_media_quality(item: dict, kind: str, *, approval_root: Path | 
            or len(rights[key]) > 2048
            for key in ("voice_license_url", "visual_license_url")):
         reject("EDITORIAL_QA_LICENSE_EVIDENCE_MISSING")
+    return approval
 
 
 

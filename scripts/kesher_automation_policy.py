@@ -140,14 +140,19 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         not isinstance(voice_policy, dict)
         or voice_policy.get("preferred_voice") != "female"
         or voice_policy.get("female_attempts_before_fallback") != EXPECTED_FEMALE_VOICE_ATTEMPTS
-        or voice_policy.get("fallback_voice_after_failed_female_attempts") != "male"
+        or voice_policy.get("fallback_voice_after_failed_female_attempts") != "none"
         or voice_policy.get("applies_to") != EXPECTED_MEDIA_VOICE_PRODUCTS
         or voice_policy.get("retry_on_detected_male_before_fallback") is not True
-        or voice_policy.get("accept_male_on_final_female_attempt") is not True
+        or voice_policy.get("accept_male_on_final_female_attempt") is not False
+        or voice_policy.get("require_full_audio_review") is not True
+        or voice_policy.get("require_female_only") is not True
+        or voice_policy.get("required_language") != "he-IL"
+        or voice_policy.get("final_attempt_failure_action") != "quality_hold_no_upload"
+        or voice_policy.get("public_verify_after_fallback_upload") is not False
         or voice_policy.get("stop_voice_retries_after_fallback") is not True
     ):
         raise AutomationPolicyError(
-            "Media voice contract must prefer female voice for Video Overview and Short, retry male results on attempts 1-2, and accept male fallback on attempt 3"
+            "Media voice contract requires verified female Hebrew narration for Overview and Short, at most three attempts, and no upload fallback"
         )
 
     required_invariants = (

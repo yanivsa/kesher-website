@@ -192,7 +192,7 @@ class PipelineTestCase(unittest.TestCase):
             f"wrong_narrator_gender:prompt-sha:{source['content_sha256']}",
         )
 
-    def test_voice_runtime_rejects_early_male_audio_then_accepts_configured_fallback(self) -> None:
+    def test_voice_runtime_rejects_male_audio_on_all_attempts(self) -> None:
         with mock.patch.object(pipeline, "estimate_voice_pitch", return_value=129.0):
             early = pipeline.validate_female_voice(
                 Path("unused.mp4"),
@@ -204,8 +204,8 @@ class PipelineTestCase(unittest.TestCase):
             )
 
         self.assertFalse(early[0])
-        self.assertTrue(fallback[0])
-        self.assertIn("fallback accepted", fallback[2])
+        self.assertFalse(fallback[0])
+        self.assertIn("Israeli female voice required", fallback[2])
 
     def test_latin_visible_metadata_is_rejected(self) -> None:
         post = hebrew_post()

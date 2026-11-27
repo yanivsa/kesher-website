@@ -406,7 +406,7 @@ class KesherRecoveryE2ETests(unittest.TestCase):
         # Snapshot B promotes Attempt 2 and commits to disk
         snapshot_b = {"version": 1, "items": [copy.deepcopy(item2), copy.deepcopy(item3)]}
         pipeline.save_state(snapshot_b)
-        with mock.patch.object(fallback, "FALLBACK_PROMOTION_ENABLED", True):
+        with mock.patch.object(fallback, "is_fallback_promotion_enabled", return_value=True):
             promoted = fallback.promote_last_usable_after_third_attempt(
                 snapshot_b, state_dir=self.state_dir, require_file=False
             )
@@ -506,7 +506,7 @@ class KesherRecoveryE2ETests(unittest.TestCase):
         pipeline.save_state(state)
 
         # Promote Attempt 2 as winner
-        with mock.patch.object(fallback, "FALLBACK_PROMOTION_ENABLED", True):
+        with mock.patch.object(fallback, "is_fallback_promotion_enabled", return_value=True):
             promoted = fallback.promote_last_usable_after_third_attempt(
                 state, state_dir=self.state_dir, require_file=False
             )

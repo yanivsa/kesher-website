@@ -7,8 +7,8 @@ upload is permitted after machine technical verification of the exact
 source/video identity. Provider polling resumes persisted IDs instead of
 creating duplicate videos.
 
-V4 adds a durable ``released_without_short`` tombstone. Four fresh generation
-rounds are the maximum (initial + three technical retries). Once that budget is
+V4 adds a durable ``released_without_short`` tombstone. Three fresh generation
+rounds are the maximum (initial + two technical retries). Once that budget is
 exhausted, or the V4 controller explicitly releases the article, the slug is
 persisted as released and is never selected for generation again.
 """
@@ -38,8 +38,8 @@ UNRESOLVED_STATUSES = {
 }
 PROVIDER_PROGRESS_STATUSES = {"source_selected", "source_added", "generating", "downloaded"}
 RELEASED_STATUS = "released_without_short"
-# Initial generation + three replacement generations = four fresh videos max.
-MAX_TECHNICAL_RETRIES = 3
+# Initial generation + two replacement generations = three fresh videos max.
+MAX_TECHNICAL_RETRIES = 2
 
 
 def workflow_output(name: str, value: str) -> None:
@@ -208,18 +208,13 @@ def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dic
         raise pipeline.PipelineError('FRESH_GENERATION_ATTEMPT_INVALID')
     retries = max(int(old.get("technical_retry_count") or 0), recorded - 1)
     voice_rejection = (old.get('failure_signature') == 'wrong_narrator_gender'
-                       or 'Detected male voice' in str((old.get('review_notes') or {}).get('technical', '')))
+                       or any(marker in str((old.get('review_notes') or {}).get('technical', '')) for marker in ('Detected male voice', 'Suspected male voice', 'Voice pitch analysis inconclusive')))
     if voice_rejection:
         policy = json.loads(pipeline.PRODUCTION_CONTRACT_FILE.read_text())['video']['voice_policy']
         if recorded >= int(policy['female_attempts_before_fallback']):
-            if (policy['accept_male_on_final_female_attempt'] is True
-                    and policy['fallback_voice_after_failed_female_attempts'] == 'male'
-                    and old.get('raw_mp4') and old.get('task_id')):
-                old['status'] = 'downloaded'
-                old['voice_fallback_revalidation'] = True
-                old['updated_at'] = pipeline.utc_now()
-                return old  # same receipt, no fourth provider generation
-            _mark_released(old, 'final_voice_attempt_has_no_recoverable_artifact')
+            old['upload_eligible'] = False
+            old['quality_status'] = 'QUALITY_HOLD'
+            _mark_released(old, 'female_narration_attempts_exhausted_no_upload')
             return None
     if retries >= MAX_TECHNICAL_RETRIES:
         _mark_released(old, "fresh_generation_budget_exhausted")
@@ -430,7 +425,7 @@ def prepare_generation(target_slug: str = "") -> int:
                 and item.get("technical_verified") is not True
                 and (
                     item.get("failure_signature") == "wrong_narrator_gender"
-                    or "Detected male voice" in str((item.get("review_notes") or {}).get("technical", ""))
+                    or any(marker in str((item.get("review_notes") or {}).get("technical", "")) for marker in ("Detected male voice", "Suspected male voice", "Voice pitch analysis inconclusive"))
                 )
                 and int(item.get("fresh_generation_attempt") or 1) < 3
             )
@@ -519,9 +514,13 @@ def prepare_generation(target_slug: str = "") -> int:
         return 0
     if target_slug:
         source = current_source_snapshot(target_slug)
+        requested_sha = (os.environ.get("TARGET_CONTENT_SHA256") or "").strip()
+        if requested_sha and requested_sha != source["content_sha256"]:
+            raise pipeline.PipelineError("EXACT_SHORT_SOURCE_CHANGED")
         same_source = [
             item for item in state.get("items") or []
             if isinstance(item, dict) and source_slug(item) == target_slug
+            and item.get("type") in {"article_short", "short_release", None}
         ]
         verified_public = [
             item for item in same_source
@@ -600,7 +599,7 @@ def prepare_generation(target_slug: str = "") -> int:
                     workflow_output("skip_generation", "true")
                     print(
                         "VIDEO_RECONCILED_GENERATION "
-                        f"slug={target_slug} released_without_short=yes fresh_attempts=4"
+                        f"slug={target_slug} released_without_short=yes attempt_budget_exhausted=true"
                     )
                     return 0
                 export_target(replacement)
@@ -615,6 +614,19 @@ def prepare_generation(target_slug: str = "") -> int:
             )
             return 0
 
+        exact_history = [
+            row for row in same_source
+            if (row.get("source") or {}).get("content_sha256") == source["content_sha256"]
+        ]
+        # A repeated targeted invocation must never reset a consumed budget.
+        if any(row.get("status") == RELEASED_STATUS or
+               int(row.get("fresh_generation_attempt") or 0) >= 3
+               for row in exact_history):
+            workflow_output("skip_generation", "true")
+            print(f"SHORT_GENERATION_BUDGET_CONSUMED slug={target_slug}")
+            return 0
+        if exact_history:
+            raise pipeline.PipelineError("EXACT_SHORT_HISTORY_REQUIRES_RECONCILIATION")
         item = pipeline.new_item(source)
         item["type"] = "article_short"
         item["source_mode"] = "direct-short"
@@ -637,7 +649,7 @@ def prepare_generation(target_slug: str = "") -> int:
                 workflow_output("skip_generation", "true")
                 print(
                     "VIDEO_RECONCILED_GENERATION "
-                    f"slug={source_slug(item)} released_without_short=yes fresh_attempts=4"
+                    f"slug={source_slug(item)} released_without_short=yes attempt_budget_exhausted=true"
                 )
                 return 0
             export_target(replacement)
