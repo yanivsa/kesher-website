@@ -170,5 +170,78 @@ class CloudArticleGeneratorTests(unittest.TestCase):
             )
 
 
+
+class DailyTrendInputTests(unittest.TestCase):
+    def fixture(self):
+        from datetime import datetime, timezone
+        from scripts.kesher_daily_trend import SCHEMA
+        slot = "2026-11-27"
+        posts = [{"slug": s, "category": "הדרכת הורים", "serviceUrl": "/services/parenting"}
+                 for s in ("first-link", "second-link", "third-link")]
+        urls = ["https://example.org/news", "https://example.net/report"]
+        content = "<p>הורות קשובה " + " ".join(["דוגמה"] * 1000) + "</p>"
+        content += "<h3>כותרת</h3>" * 5
+        content += "".join(f'<a href="/blog/{p["slug"]}">קריאה</a>' for p in posts)
+        content += '<a href="/services/parenting">הדרכה</a>'
+        content += "".join(f'<a href="{u}">מקור</a>' for u in urls)
+        article = dict(slug="daily-parenting-trend", title="הורות קשובה בבית", category="הדרכת הורים",
+                       subcategory="קשר", tags=["הורות"], serviceUrl="/services/parenting",
+                       serviceLabel="הדרכת הורים", excerpt="תקציר", directAnswer="תשובה",
+                       evidence=[{"url":"https://pubmed.ncbi.nlm.nih.gov/12345/"}],
+                       content=content, primaryKeyword="הורות קשובה", imageAlt="צילום משפחתי")
+        packet = dict(schema=SCHEMA, slot=slot, article=article,
+                      research=dict(relevance="קשר להורות", trend_signal=dict(url=urls[0], description="סיקור"),
+                                    news=[dict(url=u, title="דיווח", published_date="2026-11-26") for u in urls]))
+        issue = dict(number=1, title=f"[TrendBrief] {slot}", state="open", author_association="OWNER",
+                     user=dict(login="yanivsa"), created_at="2026-11-26T21:00:00Z")
+        return slot, posts, packet, issue
+
+    def test_valid_owner_packet_and_safe_image_identity(self):
+        from unittest.mock import patch
+        from scripts.kesher_daily_trend import select_from_issues
+        slot, posts, packet, issue = self.fixture()
+        issue["body"] = json.dumps(packet, ensure_ascii=False)
+        with patch.object(generator, "validate_article_candidate"):
+            number, post = select_from_issues([issue], slot, posts)
+        self.assertEqual(number, 1)
+        self.assertEqual(post["image"], "/images/generated/blog/daily-parenting-trend.jpg")
+        self.assertEqual(post["date"], slot)
+        self.assertEqual(post["content"], packet["article"]["content"])
+
+    def test_missing_packet_is_regular_fallback(self):
+        from scripts.kesher_daily_trend import select_from_issues
+        slot, posts, _, _ = self.fixture()
+        self.assertIsNone(select_from_issues([], slot, posts))
+
+    def test_duplicate_packet_rejected(self):
+        from scripts.kesher_daily_trend import select_from_issues
+        slot, posts, packet, issue = self.fixture()
+        issue["body"] = json.dumps(packet)
+        with self.assertRaisesRegex(ValueError, "AMBIGUOUS"):
+            select_from_issues([issue, dict(issue, number=2)], slot, posts)
+
+    def test_unsafe_html_and_stale_news_are_rejected(self):
+        from scripts.kesher_daily_trend import parse_issue
+        slot, posts, packet, issue = self.fixture()
+        packet["article"]["content"] += "<script>bad()</script>"
+        issue["body"] = json.dumps(packet)
+        with self.assertRaisesRegex(ValueError, "HTML_TAG"):
+            parse_issue(issue, slot, posts)
+        packet["research"]["news"][0]["published_date"] = "2026-10-01"
+        issue["body"] = json.dumps(packet)
+        with self.assertRaisesRegex(ValueError, "NEWS_STALE"):
+            parse_issue(issue, slot, posts)
+
+    def test_other_owner_or_reused_keyword_rejected(self):
+        from scripts.kesher_daily_trend import parse_issue
+        slot, posts, packet, issue = self.fixture()
+        issue["body"] = json.dumps(packet)
+        with self.assertRaisesRegex(ValueError, "ISSUE_OWNER"):
+            parse_issue(dict(issue, user={"login":"other"}), slot, posts)
+        posts[0]["primaryKeyword"] = packet["article"]["primaryKeyword"]
+        with self.assertRaisesRegex(ValueError, "DUPLICATE"):
+            parse_issue(issue, slot, posts)
+
+
 if __name__ == "__main__":
     unittest.main()
